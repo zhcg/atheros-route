@@ -1,0 +1,223 @@
+dhcpd.leases(5)                                                dhcpd.leases(5)
+
+
+
+NNAAMMEE
+       dhcpd.leases - DHCP client lease database
+
+DDEESSCCRRIIPPTTIIOONN
+       The Internet Systems Consortium DHCP Server keeps a persistent database
+       of leases that it has assigned.  This database  is  a  free-form  ASCII
+       file  containing a series of lease declarations.  Every time a lease is
+       acquired, renewed or released, its new value is recorded at the end  of
+       the  lease  file.   So if more than one declaration appears for a given
+       lease, the last one in the file is the current one.
+
+       When dhcpd is first installed, there is no lease  database.    However,
+       dhcpd  requires  that a lease database be present before it will start.
+       To make the initial lease database, just create an  empty  file  called
+       /var/state/dhcp/dhcpd.leases.   You can do this with:
+
+            touch /var/state/dhcp/dhcpd.leases
+
+       In  order to prevent the lease database from growing without bound, the
+       file is rewritten  from  time  to  time.    First,  a  temporary  lease
+       database  is created and all known leases are dumped to it.   Then, the
+       old lease database is renamed /var/state/dhcp/dhcpd.leases~.   Finally,
+       the newly written lease database is moved into place.
+
+FFOORRMMAATT
+       Lease  descriptions  are  stored in a format that is parsed by the same
+       recursive  descent  parser  used  to   read   the   ddhhccppdd..ccoonnff((55))   and
+       ddhhcclliieenntt..ccoonnff((55))  files.   Lease  files can contain lease declarations,
+       and  also  group  and  subgroup  declarations,  host  declarations  and
+       failover state declarations.  Group, subgroup and host declarations are
+       used to record objects created using the OMAPI protocol.
+
+       The lease file is a log-structured file - whenever a lease changes, the
+       contents of that lease are written to the end of the file.   This means
+       that it is entirely possible and quite reasonable for there to  be  two
+       or  more  declarations  of the same lease in the lease file at the same
+       time.   In that case,  the  instance  of  that  particular  lease  that
+       appears last in the file is the one that is in effect.
+
+       Group,  subgroup and host declarations in the lease file are handled in
+       the same manner, except that if any of these  objects  are  deleted,  a
+       _r_u_b_o_u_t  is  written to the lease file.   This is just the same declara-
+       tion, with {{ ddeelleetteedd;; }} in the scope of  the  declaration.    When  the
+       lease  file  is  rewritten, any such rubouts that can be eliminated are
+       eliminated.   It is possible to delete a declaration in the  ddhhccppdd..ccoonnff
+       file;  in  this  case,  the  rubout  can  never  be eliminated from the
+       ddhhccppdd..lleeaasseess file.
+
+TTHHEE LLEEAASSEE DDEECCLLAARRAATTIIOONN
+       lleeaassee _i_p_-_a_d_d_r_e_s_s {{ _s_t_a_t_e_m_e_n_t_s_._._. }}
+
+       Each lease declaration includes the single IP  address  that  has  been
+       leased  to  the  client.    The statements within the braces define the
+       duration of the lease and to whom it is assigned.
+
+       ssttaarrttss _d_a_t_e;;
+       eennddss _d_a_t_e;;
+       ttssttpp _d_a_t_e;;
+       ttssffpp _d_a_t_e;;
+
+       The start and end time of a lease are recorded  using  the  ssttaarrttss  and
+       eennddss  statements.    The  ttssttpp  statement  is specified if the failover
+       protocol is being used, and indicates what time the peer has been  told
+       the  lease  expires.    The  ttssffpp  statement  is  also specified if the
+       failover protocol is being used, and indicates the  lease  expiry  time
+       that the peer has acknowledged.   The _d_a_t_e is specified as follows:
+
+       _w_e_e_k_d_a_y _y_e_a_r//_m_o_n_t_h//_d_a_y _h_o_u_r::_m_i_n_u_t_e::_s_e_c_o_n_d
+
+       The weekday is present to make it easy for a human to tell when a lease
+       expires - it’s specified as a number from zero to six, with zero  being
+       Sunday.   The  day  of week is ignored on input.  The year is specified
+       with the century, so it should generally  be  four  digits  except  for
+       really long leases.  The month is specified as a number starting with 1
+       for January.  The day of the month is likewise specified starting  with
+       1.   The hour is a number between 0 and 23, the minute a number between
+       0 and 59, and the second also a number between 0 and 59.
+
+       Lease times are specified in Universal Coordinated Time (UTC),  not  in
+       the  local time zone.  There is probably nowhere in the world where the
+       times recorded on a lease are always the same as wall clock times.   On
+       most  unix  machines, you can display the current time in UTC by typing
+       ddaattee --uu.
+
+       If a lease will never expire, _d_a_t_e is nneevveerr instead of an actual  date.
+
+       hhaarrddwwaarree _h_a_r_d_w_a_r_e_-_t_y_p_e _m_a_c_-_a_d_d_r_e_s_s;;
+
+       The hardware statement records the MAC address of the network interface
+       on which the lease will be used.   It is specified as a series of  hex-
+       adecimal octets, separated by colons.
+
+       uuiidd _c_l_i_e_n_t_-_i_d_e_n_t_i_f_i_e_r;;
+
+       The  uuiidd  statement records the client identifier used by the client to
+       acquire the lease.   Clients are not required to  send  client  identi-
+       fiers,  and  this statement only appears if the client did in fact send
+       one.   Client identifiers are normally an ARP  type  (1  for  ethernet)
+       followed  by  the MAC address, just like in the hhaarrddwwaarree _s_t_a_t_e_m_e_n_t_, _b_u_t
+       _t_h_i_s _i_s _n_o_t _r_e_q_u_i_r_e_d_.
+
+       The client identifier is recorded as a colon-separated hexadecimal list
+       or  as  a  quoted string.   If it is recorded as a quoted string and it
+       contains one or more non-printable  characters,  those  characters  are
+       represented  as octal escapes - a backslash character followed by three
+       octal digits.
+
+       cclliieenntt--hhoossttnnaammee _h_o_s_t_n_a_m_e ;;
+
+       Most DHCP clients will send their hostname in the _h_o_s_t_-_n_a_m_e option.  If
+       a  client  sends  its hostname in this way, the hostname is recorded on
+       the lease with a cclliieenntt--hhoossttnnaammee statement.   This is not  required  by
+       the  protocol,  however, so many specialized DHCP clients do not send a
+       host-name option.
+
+       aabbaannddoonneedd;;
+
+       The aabbaannddoonneedd statement indicates that the DHCP  server  has  abandoned
+       the  lease.    In  that  case,  the aabbaannddoonneedd statement will be used to
+       indicate that the lease should  not  be  reassigned.   Please  see  the
+       ddhhccppdd..ccoonnff((55)) manual page for information about abandoned leases.
+
+       bbiinnddiinngg ssttaattee _s_t_a_t_e;; nneexxtt bbiinnddiinngg ssttaattee _s_t_a_t_e;;
+
+       The  bbiinnddiinngg  ssttaattee statement declares the lease’s binding state.  When
+       the DHCP server is not configured  to  use  the  failover  protocol,  a
+       lease’s  binding  state  will  be either aaccttiivvee or ffrreeee.   The failover
+       protocol adds some additional  transitional  states,  as  well  as  the
+       bbaacckkuupp  state,  which indicates that the lease is available for alloca-
+       tion by the failover secondary.
+
+       The nneexxtt bbiinnddiinngg ssttaattee statement indicates what state  the  lease  will
+       move  to  when  the  current state expires.   The time when the current
+       state expires is specified in the _e_n_d_s statement.
+
+       ooppttiioonn aaggeenntt..cciirrccuuiitt--iidd _s_t_r_i_n_g; ooppttiioonn aaggeenntt..rreemmoottee--iidd _s_t_r_i_n_g;
+
+       The ooppttiioonn aaggeenntt..cciirrccuuiitt--iidd and ooppttiioonn aaggeenntt..rreemmoottee--iidd  statements  are
+       used  to  record the circuit ID and remote ID options send by the relay
+       agent, if the relay agent uses  the  _r_e_l_a_y  _a_g_e_n_t  _i_n_f_o_r_m_a_t_i_o_n  _o_p_t_i_o_n.
+       This allows these options to be used consistently in conditional evalu-
+       ations even when the client is contacting the  server  directly  rather
+       than through its relay agent.
+
+       sseett _v_a_r_i_a_b_l_e == _v_a_l_u_e;;
+
+       The  sseett statement sets the value of a variable on the lease.  For gen-
+       eral information on variables, see the ddhhccpp--eevvaall((55)) manual page.
+
+       TThhee _d_d_n_s_-_t_e_x_t vvaarriiaabbllee
+
+       The _d_d_n_s_-_t_e_x_t variable is used to record the value of the client’s  TXT
+       identification  record when the interim ddns update style has been used
+       to update the DNS for a particular lease.
+
+       TThhee _d_d_n_s_-_f_w_d_-_n_a_m_e vvaarriiaabbllee
+
+       The _d_d_n_s_-_f_w_d_-_n_a_m_e vvaarriiaabbllee rreeccoorrddss tthhee vvaalluuee ooff tthhee nnaammee uusseedd iinn uuppddaatt--
+       iinngg  tthhee  cclliieenntt’’ss AA rreeccoorrdd iiff aa DDDDNNSS uuppddaattee hhaass bbeeeenn ssuucccceessssffuullllyy ddoonnee
+       bbyy tthhee sseerrvveerr..   TThhee sseerrvveerr mmaayy aallssoo hhaavvee uusseedd tthhiiss nnaammee ttoo uuppddaattee  tthhee
+       cclliieenntt’’ss PPTTRR rreeccoorrdd..
+
+       TThhee _d_d_n_s_-_c_l_i_e_n_t_-_f_q_d_n vvaarriiaabbllee
+
+       If  the  server is configured to use the interim ddns update style, and
+       is also configured to allow clients to update their own fqdns, and  the
+       client did in fact update its own fqdn, then the _d_d_n_s_-_c_l_i_e_n_t_-_f_q_d_n vari-
+       able records the name that the client has indicated it is using.   This
+       is  the  name that the server will have used to update the client’s PTR
+       record in this case.
+
+       TThhee _d_d_n_s_-_r_e_v_-_n_a_m_e vvaarriiaabbllee
+
+       If the server successfully updates the client’s PTR record, this  vari-
+       able will record the name that the DHCP server used for the PTR record.
+       The name to which the PTR record points will be  either  the  _d_d_n_s_-_f_w_d_-
+       _n_a_m_e or the _d_d_n_s_-_c_l_i_e_n_t_-_f_q_d_n.
+
+       oonn  _e_v_e_n_t_s  {{ _s_t_a_t_e_m_e_n_t_s_._._. }} The oonn _s_t_a_t_e_m_e_n_t _r_e_c_o_r_d_s _a _l_i_s_t _o_f _s_t_a_t_e_-
+       _m_e_n_t_s _t_o _e_x_e_c_u_t_e _i_f _a _c_e_r_t_a_i_n _e_v_e_n_t _o_c_c_u_r_s_.   _T_h_e _p_o_s_s_i_b_l_e _e_v_e_n_t_s  _t_h_a_t
+       _c_a_n  _o_c_c_u_r  _f_o_r _a_n _a_c_t_i_v_e _l_e_a_s_e _a_r_e rreelleeaassee and eexxppiirryy.   More than one
+       event can be specified - if so, the events are separated by ’|’ charac-
+       ters.
+
+       bboooottpp;;  rreesseerrvveedd;;  These  two  statements  are  effectively  flags.  If
+       present, they indicate that the  BOOTP  and  RESERVED  failover  flags,
+       respectively,  should  be  set.   BOOTP and RESERVED dynamic leases are
+       treated differently than normal dynamic leases, as  they  may  only  be
+       used by the client to which they are currently allocated.
+
+TTHHEE FFAAIILLOOVVEERR PPEEEERR SSTTAATTEE DDEECCLLAARRAATTIIOONN
+       The  state of any failover peering arrangements is also recorded in the
+       lease file, using the ffaaiilloovveerr ppeeeerr statement:
+
+       ffaaiilloovveerr ppeeeerr _n_a_m_e ssttaattee {{
+       mmyy ssttaattee _s_t_a_t_e aatt _d_a_t_e;;
+       ppeeeerr ssttaattee _s_t_a_t_e aatt _d_a_t_e;;
+       }}
+
+       The states of the peer named _n_a_m_e is being recorded.   Both  the  state
+       of  the  running server (mmyy ssttaattee) and the other failover partner (_p_e_e_r
+       _s_t_a_t_e) are recorded.   The  following  states  are  possible:  uunnkknnoowwnn--
+       ssttaattee,  ppaarrttnneerr--ddoowwnn,  nnoorrmmaall,  ccoommmmuunniiccaattiioonnss--iinntteerrrruupptteedd, rreessoolluuttiioonn--
+       iinntteerrrruupptteedd,  ppootteennttiiaall--ccoonnfflliicctt,  rreeccoovveerr,   rreeccoovveerr--ddoonnee,   sshhuuttddoowwnn,
+       ppaauusseedd, and ssttaarrttuupp.  //vvaarr//ssttaattee//ddhhccpp//ddhhccppdd..lleeaasseess
+
+SSEEEE AALLSSOO
+       dhcpd(8),   dhcp-options(5),   dhcp-eval(5),   dhcpd.conf(5),  RFC2132,
+       RFC2131.
+
+AAUUTTHHOORR
+       ddhhccppdd((88)) was written by Ted Lemon under a  contract  with  Vixie  Labs.
+       Funding  for  this project was provided by Internet Systems Consortium.
+       Information  about  Internet  Systems  Consortium  can  be  found   at:
+       hhttttpp::////wwwwww..iisscc..oorrgg//
+
+
+
+                                                               dhcpd.leases(5)

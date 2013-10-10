@@ -1,0 +1,9 @@
+offload_stack/driver/target
+apps/wpa2/
+drivers/wlan/adf/
+drivers/wlan/asf/
+drivers/wlan/include
+drivers/wlan/lmac
+drivers/wlan/umac
+drivers/wlan/hal
+drivers/wlan/os/linux

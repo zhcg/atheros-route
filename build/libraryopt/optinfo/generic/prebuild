@@ -1,0 +1,45 @@
+#!/bin/sh
+#
+# generic/prebuild -- prebuild for rebuild shared object
+#    Use for "application" shared object libraries that:
+#    -- are installed in target /lib directory.
+#    -- have a corresponding .a file also installed in target /lib
+#               (but removed in the optimization process).
+#    -- are named with simple ".so" extension
+#    -- the .a file is named same except with ".a" instead of ".so" at end.
+#    -- have no special build needs.
+#    
+#    The .so files may depend upon other application .so files.
+#
+# Usage: 
+#    cd $(TOPDIR)/libopt.temp/....../optinfo/<libname>
+#    ./ prebuild <indextool> <sobject>
+#
+# NOTE: when executed as part of build procedure,
+# the temporary directory we run in has been created
+# (named after the shared object file we create!)
+# and a copy of this script and the build script made 
+# therein, as well as a symlink "required" made to a 
+# directory that contains (or links) to required library files.
+
+
+indextool=${1:?'Missing indextool parameter'}
+sobject=${2:?'Missing sobject parameter'}
+
+libname=`basename $sobject .so`
+afile=$libname.a
+
+cwd=`pwd`
+echo library optimizer prebuild in $cwd for $sobject
+
+# Create 'path' file that tells libopt the target path
+echo /lib/$sobject >path
+
+set -ex
+# unpack component object files
+ar x $afile
+ls -l  # DEBUG -- REMOVE
+
+$indextool $sobject *.o >index
+
+echo Did prebuild of $sobject ok

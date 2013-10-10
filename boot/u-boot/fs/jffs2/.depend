@@ -1,0 +1,85 @@
+jffs2_1pass.o: jffs2_1pass.c \
+  /root/uboot/u-boot-2006-04-06-1725/include/common.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/config.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/configs/ar7100.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/cmd_confdefs.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/linux/bitops.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/asm/bitops.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/linux/types.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/linux/config.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/linux/posix_types.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/linux/stddef.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/asm/posix_types.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/asm/types.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/asm/byteorder.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/linux/byteorder/big_endian.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/linux/byteorder/swab.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/linux/byteorder/generic.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/asm/sgidefs.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/asm/system.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/asm/ptrace.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/asm/isadep.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/linux/string.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/asm/string.h \
+  /usr/lib/gcc/mips-linux/3.4.4/include/stdarg.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/part.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/ide.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/flash.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/image.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/asm/u-boot.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/asm/global_data.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/asm/regdef.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/malloc.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/linux/stat.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/linux/time.h
+compr_rtime.o: compr_rtime.c \
+  /root/uboot/u-boot-2006-04-06-1725/include/config.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/configs/ar7100.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/cmd_confdefs.h
+compr_rubin.o: compr_rubin.c \
+  /root/uboot/u-boot-2006-04-06-1725/include/config.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/configs/ar7100.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/cmd_confdefs.h
+compr_zlib.o: compr_zlib.c \
+  /root/uboot/u-boot-2006-04-06-1725/include/common.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/config.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/configs/ar7100.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/cmd_confdefs.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/linux/bitops.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/asm/bitops.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/linux/types.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/linux/config.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/linux/posix_types.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/linux/stddef.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/asm/posix_types.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/asm/types.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/asm/byteorder.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/linux/byteorder/big_endian.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/linux/byteorder/swab.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/linux/byteorder/generic.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/asm/sgidefs.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/asm/system.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/asm/ptrace.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/asm/isadep.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/linux/string.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/asm/string.h \
+  /usr/lib/gcc/mips-linux/3.4.4/include/stdarg.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/part.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/ide.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/flash.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/image.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/asm/u-boot.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/asm/global_data.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/asm/regdef.h
+mini_inflate.o: mini_inflate.c \
+  /root/uboot/u-boot-2006-04-06-1725/include/config.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/configs/ar7100.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/cmd_confdefs.h
+compr_lzo.o: compr_lzo.c \
+  /root/uboot/u-boot-2006-04-06-1725/include/config.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/configs/ar7100.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/cmd_confdefs.h
+compr_lzari.o: compr_lzari.c \
+  /root/uboot/u-boot-2006-04-06-1725/include/config.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/configs/ar7100.h \
+  /root/uboot/u-boot-2006-04-06-1725/include/cmd_confdefs.h

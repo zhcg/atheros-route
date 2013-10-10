@@ -1,0 +1,1609 @@
+* The following section identifies your Ethernet interface
+* and user name.  Some ISP's need 'username'; others
+* need 'username@isp.com'.  Try both
+ETH=eth0; USER=hzhz021555
+---------------------------------------------
+* The following section shows the pppd command we will invoke
+pppd invocation
+/usr/bin/setsid /usr/sbin/pppd pty '/usr/sbin/pppoe -p /var/run/pppoe.conf-pppoe.pid.pppoe -I eth0 -T 80 -U  -m 1412   '   debug
+---------------------------------------------
+using channel 35
+Using interface ppp0
+Connect: ppp0 <--> /dev/pts/3
+sent [LCP ConfReq id=0x1 <asyncmap 0x0> <magic 0xd4ce6bba> <pcomp> <accomp>]
+Modem hangup
+Connection terminated.
+---------------------------------------------
+* The following section is an extract from your log.
+* Look for error messages from pppd, such as
+* a lack of kernel support for PPP, authentication failure
+* etc.
+Extract from /var/log/messages
+Oct  3 13:49:46 localhost pppd[4001]: PAP authentication succeeded
+Oct  3 13:49:46 localhost pppd[4001]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 13:49:46 localhost pppd[4001]: ############usepeerdns = 1
+Oct  3 13:49:46 localhost pppd[4001]: default route ioctl(SIOCADDRT): File exists
+Oct  3 13:49:46 localhost pppd[4001]: local  IP address 60.176.142.145
+Oct  3 13:49:46 localhost pppd[4001]: remote IP address 220.191.128.20
+Oct  3 13:49:46 localhost pppd[4001]: primary   DNS address 202.101.172.35
+Oct  3 13:49:46 localhost pppd[4001]: secondary DNS address 202.101.172.47
+Oct  3 13:49:59 localhost pppd[4001]: Terminating on signal 15
+Oct  3 13:49:59 localhost pppd[4001]: Connect time 0.3 minutes.
+Oct  3 13:49:59 localhost pppd[4001]: Sent 296 bytes, received 248 bytes.
+Oct  3 13:49:59 localhost pppd[4001]: Connection terminated.
+Oct  3 13:49:59 localhost pppd[4001]: Exit.
+Oct  3 13:49:59 localhost pppd[4005]: Plugin rp-pppoe.so loaded.
+Oct  3 13:49:59 localhost pppd[4005]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 13:49:59 localhost pppd[4005]: 11user[null],passwd[null]
+Oct  3 13:49:59 localhost pppd[4006]: pppd 2.4.4 started by root, uid 0
+Oct  3 13:50:04 localhost pppd[4006]: PPP session is 6538
+Oct  3 13:50:04 localhost pppd[4006]: Using interface ppp0
+Oct  3 13:50:04 localhost pppd[4006]: Connect: ppp0 <--> eth0
+Oct  3 13:50:04 localhost pppd[4006]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 13:50:04 localhost pppd[4006]: ############usepeerdns = 0
+Oct  3 13:50:04 localhost pppd[4006]: LCP terminated by peer
+Oct  3 13:50:07 localhost pppd[4006]: Connection terminated.
+Oct  3 13:50:07 localhost pppd[4006]: Modem hangup
+Oct  3 13:50:07 localhost pppd[4006]: Exit.
+Oct  3 13:50:30 localhost pppd[4025]: Plugin rp-pppoe.so loaded.
+Oct  3 13:50:30 localhost pppd[4025]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 13:50:30 localhost pppd[4025]: 11user[hzhz021555],passwd[123456]
+Oct  3 13:50:30 localhost pppd[4025]: pppd 2.4.4 started by root, uid 0
+Oct  3 13:50:30 localhost pppd[4025]: PPP session is 6547
+Oct  3 13:50:30 localhost pppd[4025]: Using interface ppp0
+Oct  3 13:50:30 localhost pppd[4025]: Connect: ppp0 <--> eth0
+Oct  3 13:50:30 localhost pppd[4025]: PAP authentication succeeded
+Oct  3 13:50:30 localhost pppd[4025]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 13:50:30 localhost pppd[4025]: ############usepeerdns = 1
+Oct  3 13:50:31 localhost pppd[4025]: default route ioctl(SIOCADDRT): File exists
+Oct  3 13:50:31 localhost pppd[4025]: local  IP address 60.186.111.66
+Oct  3 13:50:31 localhost pppd[4025]: remote IP address 220.191.128.20
+Oct  3 13:50:31 localhost pppd[4025]: primary   DNS address 202.101.172.35
+Oct  3 13:50:31 localhost pppd[4025]: secondary DNS address 202.101.172.47
+Oct  3 13:50:44 localhost pppd[4025]: Terminating on signal 15
+Oct  3 13:50:44 localhost pppd[4025]: Connect time 0.3 minutes.
+Oct  3 13:50:44 localhost pppd[4025]: Sent 0 bytes, received 0 bytes.
+Oct  3 13:50:44 localhost pppd[4025]: Connection terminated.
+Oct  3 13:50:44 localhost pppd[4025]: Exit.
+Oct  3 13:50:44 localhost pppd[4029]: 11user[null],passwd[null]
+Oct  3 13:50:44 localhost pppd[4029]: pppd 2.4.4 started by root, uid 0
+Oct  3 13:50:44 localhost pppd[4029]: connect_tty..........
+Oct  3 13:50:45 localhost pppd[4029]: Using interface ppp0
+Oct  3 13:50:45 localhost pppd[4029]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 13:50:49 localhost pppd[4029]: Modem hangup
+Oct  3 13:50:49 localhost pppd[4029]: Connection terminated.
+Oct  3 13:50:49 localhost pppd[4029]: Exit.
+Oct  3 14:11:40 localhost pppd[4392]: Plugin rp-pppoe.so loaded.
+Oct  3 14:11:40 localhost pppd[4392]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:11:40 localhost pppd[4392]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:11:41 localhost pppd[4392]: PPP session is 6945
+Oct  3 14:11:41 localhost pppd[4392]: Using interface ppp0
+Oct  3 14:11:41 localhost pppd[4392]: Connect: ppp0 <--> eth0
+Oct  3 14:11:41 localhost pppd[4392]: PAP authentication succeeded
+Oct  3 14:11:41 localhost pppd[4392]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:11:41 localhost pppd[4392]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:11:41 localhost pppd[4392]: local  IP address 125.118.1.12
+Oct  3 14:11:41 localhost pppd[4392]: remote IP address 220.191.128.20
+Oct  3 14:11:41 localhost pppd[4392]: primary   DNS address 202.101.172.35
+Oct  3 14:11:41 localhost pppd[4392]: secondary DNS address 202.101.172.47
+Oct  3 14:11:52 localhost pppd[4392]: Terminating on signal 15
+Oct  3 14:11:52 localhost pppd[4392]: Connect time 0.2 minutes.
+Oct  3 14:11:52 localhost pppd[4392]: Sent 200 bytes, received 280 bytes.
+Oct  3 14:11:52 localhost pppd[4392]: Connection terminated.
+Oct  3 14:11:52 localhost pppd[4392]: Exit.
+Oct  3 14:11:52 localhost pppd[4396]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:11:55 localhost pppd[4396]: Using interface ppp0
+Oct  3 14:11:55 localhost pppd[4396]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:12:10 localhost pppd[4396]: Modem hangup
+Oct  3 14:12:10 localhost pppd[4396]: Connection terminated.
+Oct  3 14:12:10 localhost pppd[4396]: Exit.
+Oct  3 14:17:35 localhost pppd[4453]: Plugin rp-pppoe.so loaded.
+Oct  3 14:17:35 localhost pppd[4453]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:17:35 localhost pppd[4453]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:17:36 localhost pppd[4453]: PPP session is 7064
+Oct  3 14:17:36 localhost pppd[4453]: Using interface ppp0
+Oct  3 14:17:36 localhost pppd[4453]: Connect: ppp0 <--> eth0
+Oct  3 14:17:36 localhost pppd[4453]: PAP authentication succeeded
+Oct  3 14:17:36 localhost pppd[4453]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:17:36 localhost pppd[4453]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:17:36 localhost pppd[4453]: local  IP address 125.118.6.123
+Oct  3 14:17:36 localhost pppd[4453]: remote IP address 220.191.128.20
+Oct  3 14:17:36 localhost pppd[4453]: primary   DNS address 202.101.172.35
+Oct  3 14:17:36 localhost pppd[4453]: secondary DNS address 202.101.172.47
+Oct  3 14:17:45 localhost pppd[4453]: Terminating on signal 15
+Oct  3 14:17:45 localhost pppd[4453]: Connect time 0.2 minutes.
+Oct  3 14:17:45 localhost pppd[4453]: Sent 120 bytes, received 144 bytes.
+Oct  3 14:17:45 localhost pppd[4453]: Connection terminated.
+Oct  3 14:17:45 localhost pppd[4453]: Exit.
+Oct  3 14:17:45 localhost pppd[4457]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:17:47 localhost pppd[4457]: Using interface ppp0
+Oct  3 14:17:47 localhost pppd[4457]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:17:55 localhost pppd[4457]: Modem hangup
+Oct  3 14:17:55 localhost pppd[4457]: Connection terminated.
+Oct  3 14:17:55 localhost pppd[4457]: Exit.
+Oct  3 14:19:18 localhost pppd[4512]: Plugin rp-pppoe.so loaded.
+Oct  3 14:19:18 localhost pppd[4512]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:19:18 localhost pppd[4512]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:19:18 localhost pppd[4512]: PPP session is 7090
+Oct  3 14:19:18 localhost pppd[4512]: Using interface ppp0
+Oct  3 14:19:18 localhost pppd[4512]: Connect: ppp0 <--> eth0
+Oct  3 14:19:19 localhost pppd[4512]: PAP authentication succeeded
+Oct  3 14:19:19 localhost pppd[4512]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:19:19 localhost pppd[4512]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:19:19 localhost pppd[4512]: local  IP address 125.119.13.224
+Oct  3 14:19:19 localhost pppd[4512]: remote IP address 220.191.128.20
+Oct  3 14:19:19 localhost pppd[4512]: primary   DNS address 202.101.172.35
+Oct  3 14:19:19 localhost pppd[4512]: secondary DNS address 202.101.172.47
+Oct  3 14:19:53 localhost pppd[4512]: Terminating on signal 15
+Oct  3 14:19:53 localhost pppd[4512]: Connect time 0.6 minutes.
+Oct  3 14:19:53 localhost pppd[4512]: Sent 360 bytes, received 4329 bytes.
+Oct  3 14:19:54 localhost pppd[4512]: Connection terminated.
+Oct  3 14:19:54 localhost pppd[4512]: Exit.
+Oct  3 14:19:54 localhost pppd[4517]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:19:55 localhost pppd[4517]: Using interface ppp0
+Oct  3 14:19:55 localhost pppd[4517]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:19:59 localhost pppd[4517]: Modem hangup
+Oct  3 14:19:59 localhost pppd[4517]: Connection terminated.
+Oct  3 14:19:59 localhost pppd[4517]: Exit.
+Oct  3 14:22:04 localhost pppd[4569]: Plugin rp-pppoe.so loaded.
+Oct  3 14:22:04 localhost pppd[4569]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:22:04 localhost pppd[4569]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:22:04 localhost pppd[4569]: PPP session is 7152
+Oct  3 14:22:04 localhost pppd[4569]: Using interface ppp0
+Oct  3 14:22:04 localhost pppd[4569]: Connect: ppp0 <--> eth0
+Oct  3 14:22:08 localhost pppd[4569]: PAP authentication succeeded
+Oct  3 14:22:08 localhost pppd[4569]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:22:08 localhost pppd[4569]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:22:08 localhost pppd[4569]: local  IP address 125.119.8.130
+Oct  3 14:22:08 localhost pppd[4569]: remote IP address 220.191.128.20
+Oct  3 14:22:08 localhost pppd[4569]: primary   DNS address 202.101.172.35
+Oct  3 14:22:08 localhost pppd[4569]: secondary DNS address 202.101.172.47
+Oct  3 14:22:19 localhost pppd[4569]: Terminating on signal 15
+Oct  3 14:22:19 localhost pppd[4569]: Connect time 0.2 minutes.
+Oct  3 14:22:19 localhost pppd[4569]: Sent 40 bytes, received 48 bytes.
+Oct  3 14:22:19 localhost pppd[4569]: Connection terminated.
+Oct  3 14:22:19 localhost pppd[4569]: Exit.
+Oct  3 14:22:20 localhost pppd[4574]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:22:22 localhost pppd[4574]: Using interface ppp0
+Oct  3 14:22:22 localhost pppd[4574]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:22:24 localhost pppd[4574]: Modem hangup
+Oct  3 14:22:24 localhost pppd[4574]: Connection terminated.
+Oct  3 14:22:24 localhost pppd[4574]: Exit.
+Wed Oct  3 14:22:25 CST 2007
+---------------------------------------------
+* The following section is a dump of the packets
+* sent and received by rp-pppoe.  If you don't see
+* any output, it's an Ethernet driver problem.  If you only
+* see three PADI packets and nothing else, check your cables
+* and modem.  Make sure the modem lights flash when you try
+* to connect.  Check that your Ethernet card is in
+* half-duplex, 10Mb/s mode.  If all else fails,
+* try using pppoe-sniff.
+rp-pppoe debugging dump
+* The following section identifies your Ethernet interface
+* and user name.  Some ISP's need 'username'; others
+* need 'username@isp.com'.  Try both
+ETH=eth0; USER=hzhz021555
+---------------------------------------------
+* The following section shows the pppd command we will invoke
+pppd invocation
+/usr/bin/setsid /usr/sbin/pppd pty '/usr/sbin/pppoe -p /var/run/pppoe.conf-pppoe.pid.pppoe -I eth0 -T 80 -U  -m 1412   ' /usr/bin/setsid pppd plugin rp-pppoe.so eth0 noipdefault noauth default-asyncmap usepeerdns defaultroute hide-password nodetach  mtu 1492 mru 1492 noaccomp nodeflate nopcomp novj novjccomp user hzhz021555 password 123456 lcp-echo-interval 20 lcp-echo-failure 3  debug
+---------------------------------------------
+/usr/sbin/pppd: unrecognized option '/usr/bin/setsid'
+pppd version 2.4.4
+Usage: /usr/sbin/pppd [ options ], where options are:
+	<device>	Communicate over the named device
+	<speed>		Set the baud rate to <speed>
+	<loc>:<rem>	Set the local and/or remote interface IP
+			addresses.  Either one may be omitted.
+	asyncmap <n>	Set the desired async map to hex <n>
+	auth		Require authentication from peer
+        connect <p>     Invoke shell command <p> to set up the serial line
+	crtscts		Use hardware RTS/CTS flow control
+	defaultroute	Add default route through interface
+	file <f>	Take options from file <f>
+	modem		Use modem control lines
+	mru <n>		Set MRU value to <n> for negotiation
+See pppd(8) for more options.
+---------------------------------------------
+* The following section is an extract from your log.
+* Look for error messages from pppd, such as
+* a lack of kernel support for PPP, authentication failure
+* etc.
+Extract from /var/log/messages
+Oct  3 13:49:46 localhost pppd[4001]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 13:49:46 localhost pppd[4001]: ############usepeerdns = 1
+Oct  3 13:49:46 localhost pppd[4001]: default route ioctl(SIOCADDRT): File exists
+Oct  3 13:49:46 localhost pppd[4001]: local  IP address 60.176.142.145
+Oct  3 13:49:46 localhost pppd[4001]: remote IP address 220.191.128.20
+Oct  3 13:49:46 localhost pppd[4001]: primary   DNS address 202.101.172.35
+Oct  3 13:49:46 localhost pppd[4001]: secondary DNS address 202.101.172.47
+Oct  3 13:49:59 localhost pppd[4001]: Terminating on signal 15
+Oct  3 13:49:59 localhost pppd[4001]: Connect time 0.3 minutes.
+Oct  3 13:49:59 localhost pppd[4001]: Sent 296 bytes, received 248 bytes.
+Oct  3 13:49:59 localhost pppd[4001]: Connection terminated.
+Oct  3 13:49:59 localhost pppd[4001]: Exit.
+Oct  3 13:49:59 localhost pppd[4005]: Plugin rp-pppoe.so loaded.
+Oct  3 13:49:59 localhost pppd[4005]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 13:49:59 localhost pppd[4005]: 11user[null],passwd[null]
+Oct  3 13:49:59 localhost pppd[4006]: pppd 2.4.4 started by root, uid 0
+Oct  3 13:50:04 localhost pppd[4006]: PPP session is 6538
+Oct  3 13:50:04 localhost pppd[4006]: Using interface ppp0
+Oct  3 13:50:04 localhost pppd[4006]: Connect: ppp0 <--> eth0
+Oct  3 13:50:04 localhost pppd[4006]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 13:50:04 localhost pppd[4006]: ############usepeerdns = 0
+Oct  3 13:50:04 localhost pppd[4006]: LCP terminated by peer
+Oct  3 13:50:07 localhost pppd[4006]: Connection terminated.
+Oct  3 13:50:07 localhost pppd[4006]: Modem hangup
+Oct  3 13:50:07 localhost pppd[4006]: Exit.
+Oct  3 13:50:30 localhost pppd[4025]: Plugin rp-pppoe.so loaded.
+Oct  3 13:50:30 localhost pppd[4025]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 13:50:30 localhost pppd[4025]: 11user[hzhz021555],passwd[123456]
+Oct  3 13:50:30 localhost pppd[4025]: pppd 2.4.4 started by root, uid 0
+Oct  3 13:50:30 localhost pppd[4025]: PPP session is 6547
+Oct  3 13:50:30 localhost pppd[4025]: Using interface ppp0
+Oct  3 13:50:30 localhost pppd[4025]: Connect: ppp0 <--> eth0
+Oct  3 13:50:30 localhost pppd[4025]: PAP authentication succeeded
+Oct  3 13:50:30 localhost pppd[4025]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 13:50:30 localhost pppd[4025]: ############usepeerdns = 1
+Oct  3 13:50:31 localhost pppd[4025]: default route ioctl(SIOCADDRT): File exists
+Oct  3 13:50:31 localhost pppd[4025]: local  IP address 60.186.111.66
+Oct  3 13:50:31 localhost pppd[4025]: remote IP address 220.191.128.20
+Oct  3 13:50:31 localhost pppd[4025]: primary   DNS address 202.101.172.35
+Oct  3 13:50:31 localhost pppd[4025]: secondary DNS address 202.101.172.47
+Oct  3 13:50:44 localhost pppd[4025]: Terminating on signal 15
+Oct  3 13:50:44 localhost pppd[4025]: Connect time 0.3 minutes.
+Oct  3 13:50:44 localhost pppd[4025]: Sent 0 bytes, received 0 bytes.
+Oct  3 13:50:44 localhost pppd[4025]: Connection terminated.
+Oct  3 13:50:44 localhost pppd[4025]: Exit.
+Oct  3 13:50:44 localhost pppd[4029]: 11user[null],passwd[null]
+Oct  3 13:50:44 localhost pppd[4029]: pppd 2.4.4 started by root, uid 0
+Oct  3 13:50:44 localhost pppd[4029]: connect_tty..........
+Oct  3 13:50:45 localhost pppd[4029]: Using interface ppp0
+Oct  3 13:50:45 localhost pppd[4029]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 13:50:49 localhost pppd[4029]: Modem hangup
+Oct  3 13:50:49 localhost pppd[4029]: Connection terminated.
+Oct  3 13:50:49 localhost pppd[4029]: Exit.
+Oct  3 14:11:40 localhost pppd[4392]: Plugin rp-pppoe.so loaded.
+Oct  3 14:11:40 localhost pppd[4392]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:11:40 localhost pppd[4392]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:11:41 localhost pppd[4392]: PPP session is 6945
+Oct  3 14:11:41 localhost pppd[4392]: Using interface ppp0
+Oct  3 14:11:41 localhost pppd[4392]: Connect: ppp0 <--> eth0
+Oct  3 14:11:41 localhost pppd[4392]: PAP authentication succeeded
+Oct  3 14:11:41 localhost pppd[4392]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:11:41 localhost pppd[4392]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:11:41 localhost pppd[4392]: local  IP address 125.118.1.12
+Oct  3 14:11:41 localhost pppd[4392]: remote IP address 220.191.128.20
+Oct  3 14:11:41 localhost pppd[4392]: primary   DNS address 202.101.172.35
+Oct  3 14:11:41 localhost pppd[4392]: secondary DNS address 202.101.172.47
+Oct  3 14:11:52 localhost pppd[4392]: Terminating on signal 15
+Oct  3 14:11:52 localhost pppd[4392]: Connect time 0.2 minutes.
+Oct  3 14:11:52 localhost pppd[4392]: Sent 200 bytes, received 280 bytes.
+Oct  3 14:11:52 localhost pppd[4392]: Connection terminated.
+Oct  3 14:11:52 localhost pppd[4392]: Exit.
+Oct  3 14:11:52 localhost pppd[4396]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:11:55 localhost pppd[4396]: Using interface ppp0
+Oct  3 14:11:55 localhost pppd[4396]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:12:10 localhost pppd[4396]: Modem hangup
+Oct  3 14:12:10 localhost pppd[4396]: Connection terminated.
+Oct  3 14:12:10 localhost pppd[4396]: Exit.
+Oct  3 14:17:35 localhost pppd[4453]: Plugin rp-pppoe.so loaded.
+Oct  3 14:17:35 localhost pppd[4453]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:17:35 localhost pppd[4453]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:17:36 localhost pppd[4453]: PPP session is 7064
+Oct  3 14:17:36 localhost pppd[4453]: Using interface ppp0
+Oct  3 14:17:36 localhost pppd[4453]: Connect: ppp0 <--> eth0
+Oct  3 14:17:36 localhost pppd[4453]: PAP authentication succeeded
+Oct  3 14:17:36 localhost pppd[4453]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:17:36 localhost pppd[4453]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:17:36 localhost pppd[4453]: local  IP address 125.118.6.123
+Oct  3 14:17:36 localhost pppd[4453]: remote IP address 220.191.128.20
+Oct  3 14:17:36 localhost pppd[4453]: primary   DNS address 202.101.172.35
+Oct  3 14:17:36 localhost pppd[4453]: secondary DNS address 202.101.172.47
+Oct  3 14:17:45 localhost pppd[4453]: Terminating on signal 15
+Oct  3 14:17:45 localhost pppd[4453]: Connect time 0.2 minutes.
+Oct  3 14:17:45 localhost pppd[4453]: Sent 120 bytes, received 144 bytes.
+Oct  3 14:17:45 localhost pppd[4453]: Connection terminated.
+Oct  3 14:17:45 localhost pppd[4453]: Exit.
+Oct  3 14:17:45 localhost pppd[4457]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:17:47 localhost pppd[4457]: Using interface ppp0
+Oct  3 14:17:47 localhost pppd[4457]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:17:55 localhost pppd[4457]: Modem hangup
+Oct  3 14:17:55 localhost pppd[4457]: Connection terminated.
+Oct  3 14:17:55 localhost pppd[4457]: Exit.
+Oct  3 14:19:18 localhost pppd[4512]: Plugin rp-pppoe.so loaded.
+Oct  3 14:19:18 localhost pppd[4512]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:19:18 localhost pppd[4512]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:19:18 localhost pppd[4512]: PPP session is 7090
+Oct  3 14:19:18 localhost pppd[4512]: Using interface ppp0
+Oct  3 14:19:18 localhost pppd[4512]: Connect: ppp0 <--> eth0
+Oct  3 14:19:19 localhost pppd[4512]: PAP authentication succeeded
+Oct  3 14:19:19 localhost pppd[4512]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:19:19 localhost pppd[4512]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:19:19 localhost pppd[4512]: local  IP address 125.119.13.224
+Oct  3 14:19:19 localhost pppd[4512]: remote IP address 220.191.128.20
+Oct  3 14:19:19 localhost pppd[4512]: primary   DNS address 202.101.172.35
+Oct  3 14:19:19 localhost pppd[4512]: secondary DNS address 202.101.172.47
+Oct  3 14:19:53 localhost pppd[4512]: Terminating on signal 15
+Oct  3 14:19:53 localhost pppd[4512]: Connect time 0.6 minutes.
+Oct  3 14:19:53 localhost pppd[4512]: Sent 360 bytes, received 4329 bytes.
+Oct  3 14:19:54 localhost pppd[4512]: Connection terminated.
+Oct  3 14:19:54 localhost pppd[4512]: Exit.
+Oct  3 14:19:54 localhost pppd[4517]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:19:55 localhost pppd[4517]: Using interface ppp0
+Oct  3 14:19:55 localhost pppd[4517]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:19:59 localhost pppd[4517]: Modem hangup
+Oct  3 14:19:59 localhost pppd[4517]: Connection terminated.
+Oct  3 14:19:59 localhost pppd[4517]: Exit.
+Oct  3 14:22:04 localhost pppd[4569]: Plugin rp-pppoe.so loaded.
+Oct  3 14:22:04 localhost pppd[4569]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:22:04 localhost pppd[4569]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:22:04 localhost pppd[4569]: PPP session is 7152
+Oct  3 14:22:04 localhost pppd[4569]: Using interface ppp0
+Oct  3 14:22:04 localhost pppd[4569]: Connect: ppp0 <--> eth0
+Oct  3 14:22:08 localhost pppd[4569]: PAP authentication succeeded
+Oct  3 14:22:08 localhost pppd[4569]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:22:08 localhost pppd[4569]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:22:08 localhost pppd[4569]: local  IP address 125.119.8.130
+Oct  3 14:22:08 localhost pppd[4569]: remote IP address 220.191.128.20
+Oct  3 14:22:08 localhost pppd[4569]: primary   DNS address 202.101.172.35
+Oct  3 14:22:08 localhost pppd[4569]: secondary DNS address 202.101.172.47
+Oct  3 14:22:19 localhost pppd[4569]: Terminating on signal 15
+Oct  3 14:22:19 localhost pppd[4569]: Connect time 0.2 minutes.
+Oct  3 14:22:19 localhost pppd[4569]: Sent 40 bytes, received 48 bytes.
+Oct  3 14:22:19 localhost pppd[4569]: Connection terminated.
+Oct  3 14:22:19 localhost pppd[4569]: Exit.
+Oct  3 14:22:20 localhost pppd[4574]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:22:22 localhost pppd[4574]: Using interface ppp0
+Oct  3 14:22:22 localhost pppd[4574]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:22:24 localhost pppd[4574]: Modem hangup
+Oct  3 14:22:24 localhost pppd[4574]: Connection terminated.
+Oct  3 14:22:24 localhost pppd[4574]: Exit.
+Oct  3 14:32:02 localhost pppd[4629]: unrecognized option '/usr/bin/setsid'
+Wed Oct  3 14:32:02 CST 2007
+---------------------------------------------
+* The following section is a dump of the packets
+* sent and received by rp-pppoe.  If you don't see
+* any output, it's an Ethernet driver problem.  If you only
+* see three PADI packets and nothing else, check your cables
+* and modem.  Make sure the modem lights flash when you try
+* to connect.  Check that your Ethernet card is in
+* half-duplex, 10Mb/s mode.  If all else fails,
+* try using pppoe-sniff.
+rp-pppoe debugging dump
+* The following section identifies your Ethernet interface
+* and user name.  Some ISP's need 'username'; others
+* need 'username@isp.com'.  Try both
+ETH=eth0; USER=hzhz021555
+---------------------------------------------
+* The following section shows the pppd command we will invoke
+pppd invocation
+/usr/bin/setsid /usr/sbin/pppd pty '/usr/sbin/pppoe -p /var/run/pppoe.conf-pppoe.pid.pppoe -I eth0 -T 80 -U  -m 1412   ' /usr/bin/setsid pppd  noipdefault noauth default-asyncmap usepeerdns defaultroute hide-password nodetach  mtu 1492 mru 1492 noaccomp nodeflate nopcomp novj novjccomp user hzhz021555 password 123456 lcp-echo-interval 20 lcp-echo-failure 3  debug
+---------------------------------------------
+/usr/sbin/pppd: unrecognized option '/usr/bin/setsid'
+pppd version 2.4.4
+Usage: /usr/sbin/pppd [ options ], where options are:
+	<device>	Communicate over the named device
+	<speed>		Set the baud rate to <speed>
+	<loc>:<rem>	Set the local and/or remote interface IP
+			addresses.  Either one may be omitted.
+	asyncmap <n>	Set the desired async map to hex <n>
+	auth		Require authentication from peer
+        connect <p>     Invoke shell command <p> to set up the serial line
+	crtscts		Use hardware RTS/CTS flow control
+	defaultroute	Add default route through interface
+	file <f>	Take options from file <f>
+	modem		Use modem control lines
+	mru <n>		Set MRU value to <n> for negotiation
+See pppd(8) for more options.
+---------------------------------------------
+* The following section is an extract from your log.
+* Look for error messages from pppd, such as
+* a lack of kernel support for PPP, authentication failure
+* etc.
+Extract from /var/log/messages
+Oct  3 13:49:46 localhost pppd[4001]: ############usepeerdns = 1
+Oct  3 13:49:46 localhost pppd[4001]: default route ioctl(SIOCADDRT): File exists
+Oct  3 13:49:46 localhost pppd[4001]: local  IP address 60.176.142.145
+Oct  3 13:49:46 localhost pppd[4001]: remote IP address 220.191.128.20
+Oct  3 13:49:46 localhost pppd[4001]: primary   DNS address 202.101.172.35
+Oct  3 13:49:46 localhost pppd[4001]: secondary DNS address 202.101.172.47
+Oct  3 13:49:59 localhost pppd[4001]: Terminating on signal 15
+Oct  3 13:49:59 localhost pppd[4001]: Connect time 0.3 minutes.
+Oct  3 13:49:59 localhost pppd[4001]: Sent 296 bytes, received 248 bytes.
+Oct  3 13:49:59 localhost pppd[4001]: Connection terminated.
+Oct  3 13:49:59 localhost pppd[4001]: Exit.
+Oct  3 13:49:59 localhost pppd[4005]: Plugin rp-pppoe.so loaded.
+Oct  3 13:49:59 localhost pppd[4005]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 13:49:59 localhost pppd[4005]: 11user[null],passwd[null]
+Oct  3 13:49:59 localhost pppd[4006]: pppd 2.4.4 started by root, uid 0
+Oct  3 13:50:04 localhost pppd[4006]: PPP session is 6538
+Oct  3 13:50:04 localhost pppd[4006]: Using interface ppp0
+Oct  3 13:50:04 localhost pppd[4006]: Connect: ppp0 <--> eth0
+Oct  3 13:50:04 localhost pppd[4006]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 13:50:04 localhost pppd[4006]: ############usepeerdns = 0
+Oct  3 13:50:04 localhost pppd[4006]: LCP terminated by peer
+Oct  3 13:50:07 localhost pppd[4006]: Connection terminated.
+Oct  3 13:50:07 localhost pppd[4006]: Modem hangup
+Oct  3 13:50:07 localhost pppd[4006]: Exit.
+Oct  3 13:50:30 localhost pppd[4025]: Plugin rp-pppoe.so loaded.
+Oct  3 13:50:30 localhost pppd[4025]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 13:50:30 localhost pppd[4025]: 11user[hzhz021555],passwd[123456]
+Oct  3 13:50:30 localhost pppd[4025]: pppd 2.4.4 started by root, uid 0
+Oct  3 13:50:30 localhost pppd[4025]: PPP session is 6547
+Oct  3 13:50:30 localhost pppd[4025]: Using interface ppp0
+Oct  3 13:50:30 localhost pppd[4025]: Connect: ppp0 <--> eth0
+Oct  3 13:50:30 localhost pppd[4025]: PAP authentication succeeded
+Oct  3 13:50:30 localhost pppd[4025]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 13:50:30 localhost pppd[4025]: ############usepeerdns = 1
+Oct  3 13:50:31 localhost pppd[4025]: default route ioctl(SIOCADDRT): File exists
+Oct  3 13:50:31 localhost pppd[4025]: local  IP address 60.186.111.66
+Oct  3 13:50:31 localhost pppd[4025]: remote IP address 220.191.128.20
+Oct  3 13:50:31 localhost pppd[4025]: primary   DNS address 202.101.172.35
+Oct  3 13:50:31 localhost pppd[4025]: secondary DNS address 202.101.172.47
+Oct  3 13:50:44 localhost pppd[4025]: Terminating on signal 15
+Oct  3 13:50:44 localhost pppd[4025]: Connect time 0.3 minutes.
+Oct  3 13:50:44 localhost pppd[4025]: Sent 0 bytes, received 0 bytes.
+Oct  3 13:50:44 localhost pppd[4025]: Connection terminated.
+Oct  3 13:50:44 localhost pppd[4025]: Exit.
+Oct  3 13:50:44 localhost pppd[4029]: 11user[null],passwd[null]
+Oct  3 13:50:44 localhost pppd[4029]: pppd 2.4.4 started by root, uid 0
+Oct  3 13:50:44 localhost pppd[4029]: connect_tty..........
+Oct  3 13:50:45 localhost pppd[4029]: Using interface ppp0
+Oct  3 13:50:45 localhost pppd[4029]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 13:50:49 localhost pppd[4029]: Modem hangup
+Oct  3 13:50:49 localhost pppd[4029]: Connection terminated.
+Oct  3 13:50:49 localhost pppd[4029]: Exit.
+Oct  3 14:11:40 localhost pppd[4392]: Plugin rp-pppoe.so loaded.
+Oct  3 14:11:40 localhost pppd[4392]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:11:40 localhost pppd[4392]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:11:41 localhost pppd[4392]: PPP session is 6945
+Oct  3 14:11:41 localhost pppd[4392]: Using interface ppp0
+Oct  3 14:11:41 localhost pppd[4392]: Connect: ppp0 <--> eth0
+Oct  3 14:11:41 localhost pppd[4392]: PAP authentication succeeded
+Oct  3 14:11:41 localhost pppd[4392]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:11:41 localhost pppd[4392]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:11:41 localhost pppd[4392]: local  IP address 125.118.1.12
+Oct  3 14:11:41 localhost pppd[4392]: remote IP address 220.191.128.20
+Oct  3 14:11:41 localhost pppd[4392]: primary   DNS address 202.101.172.35
+Oct  3 14:11:41 localhost pppd[4392]: secondary DNS address 202.101.172.47
+Oct  3 14:11:52 localhost pppd[4392]: Terminating on signal 15
+Oct  3 14:11:52 localhost pppd[4392]: Connect time 0.2 minutes.
+Oct  3 14:11:52 localhost pppd[4392]: Sent 200 bytes, received 280 bytes.
+Oct  3 14:11:52 localhost pppd[4392]: Connection terminated.
+Oct  3 14:11:52 localhost pppd[4392]: Exit.
+Oct  3 14:11:52 localhost pppd[4396]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:11:55 localhost pppd[4396]: Using interface ppp0
+Oct  3 14:11:55 localhost pppd[4396]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:12:10 localhost pppd[4396]: Modem hangup
+Oct  3 14:12:10 localhost pppd[4396]: Connection terminated.
+Oct  3 14:12:10 localhost pppd[4396]: Exit.
+Oct  3 14:17:35 localhost pppd[4453]: Plugin rp-pppoe.so loaded.
+Oct  3 14:17:35 localhost pppd[4453]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:17:35 localhost pppd[4453]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:17:36 localhost pppd[4453]: PPP session is 7064
+Oct  3 14:17:36 localhost pppd[4453]: Using interface ppp0
+Oct  3 14:17:36 localhost pppd[4453]: Connect: ppp0 <--> eth0
+Oct  3 14:17:36 localhost pppd[4453]: PAP authentication succeeded
+Oct  3 14:17:36 localhost pppd[4453]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:17:36 localhost pppd[4453]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:17:36 localhost pppd[4453]: local  IP address 125.118.6.123
+Oct  3 14:17:36 localhost pppd[4453]: remote IP address 220.191.128.20
+Oct  3 14:17:36 localhost pppd[4453]: primary   DNS address 202.101.172.35
+Oct  3 14:17:36 localhost pppd[4453]: secondary DNS address 202.101.172.47
+Oct  3 14:17:45 localhost pppd[4453]: Terminating on signal 15
+Oct  3 14:17:45 localhost pppd[4453]: Connect time 0.2 minutes.
+Oct  3 14:17:45 localhost pppd[4453]: Sent 120 bytes, received 144 bytes.
+Oct  3 14:17:45 localhost pppd[4453]: Connection terminated.
+Oct  3 14:17:45 localhost pppd[4453]: Exit.
+Oct  3 14:17:45 localhost pppd[4457]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:17:47 localhost pppd[4457]: Using interface ppp0
+Oct  3 14:17:47 localhost pppd[4457]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:17:55 localhost pppd[4457]: Modem hangup
+Oct  3 14:17:55 localhost pppd[4457]: Connection terminated.
+Oct  3 14:17:55 localhost pppd[4457]: Exit.
+Oct  3 14:19:18 localhost pppd[4512]: Plugin rp-pppoe.so loaded.
+Oct  3 14:19:18 localhost pppd[4512]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:19:18 localhost pppd[4512]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:19:18 localhost pppd[4512]: PPP session is 7090
+Oct  3 14:19:18 localhost pppd[4512]: Using interface ppp0
+Oct  3 14:19:18 localhost pppd[4512]: Connect: ppp0 <--> eth0
+Oct  3 14:19:19 localhost pppd[4512]: PAP authentication succeeded
+Oct  3 14:19:19 localhost pppd[4512]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:19:19 localhost pppd[4512]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:19:19 localhost pppd[4512]: local  IP address 125.119.13.224
+Oct  3 14:19:19 localhost pppd[4512]: remote IP address 220.191.128.20
+Oct  3 14:19:19 localhost pppd[4512]: primary   DNS address 202.101.172.35
+Oct  3 14:19:19 localhost pppd[4512]: secondary DNS address 202.101.172.47
+Oct  3 14:19:53 localhost pppd[4512]: Terminating on signal 15
+Oct  3 14:19:53 localhost pppd[4512]: Connect time 0.6 minutes.
+Oct  3 14:19:53 localhost pppd[4512]: Sent 360 bytes, received 4329 bytes.
+Oct  3 14:19:54 localhost pppd[4512]: Connection terminated.
+Oct  3 14:19:54 localhost pppd[4512]: Exit.
+Oct  3 14:19:54 localhost pppd[4517]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:19:55 localhost pppd[4517]: Using interface ppp0
+Oct  3 14:19:55 localhost pppd[4517]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:19:59 localhost pppd[4517]: Modem hangup
+Oct  3 14:19:59 localhost pppd[4517]: Connection terminated.
+Oct  3 14:19:59 localhost pppd[4517]: Exit.
+Oct  3 14:22:04 localhost pppd[4569]: Plugin rp-pppoe.so loaded.
+Oct  3 14:22:04 localhost pppd[4569]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:22:04 localhost pppd[4569]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:22:04 localhost pppd[4569]: PPP session is 7152
+Oct  3 14:22:04 localhost pppd[4569]: Using interface ppp0
+Oct  3 14:22:04 localhost pppd[4569]: Connect: ppp0 <--> eth0
+Oct  3 14:22:08 localhost pppd[4569]: PAP authentication succeeded
+Oct  3 14:22:08 localhost pppd[4569]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:22:08 localhost pppd[4569]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:22:08 localhost pppd[4569]: local  IP address 125.119.8.130
+Oct  3 14:22:08 localhost pppd[4569]: remote IP address 220.191.128.20
+Oct  3 14:22:08 localhost pppd[4569]: primary   DNS address 202.101.172.35
+Oct  3 14:22:08 localhost pppd[4569]: secondary DNS address 202.101.172.47
+Oct  3 14:22:19 localhost pppd[4569]: Terminating on signal 15
+Oct  3 14:22:19 localhost pppd[4569]: Connect time 0.2 minutes.
+Oct  3 14:22:19 localhost pppd[4569]: Sent 40 bytes, received 48 bytes.
+Oct  3 14:22:19 localhost pppd[4569]: Connection terminated.
+Oct  3 14:22:19 localhost pppd[4569]: Exit.
+Oct  3 14:22:20 localhost pppd[4574]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:22:22 localhost pppd[4574]: Using interface ppp0
+Oct  3 14:22:22 localhost pppd[4574]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:22:24 localhost pppd[4574]: Modem hangup
+Oct  3 14:22:24 localhost pppd[4574]: Connection terminated.
+Oct  3 14:22:24 localhost pppd[4574]: Exit.
+Oct  3 14:32:02 localhost pppd[4629]: unrecognized option '/usr/bin/setsid'
+Oct  3 14:34:26 localhost pppd[4646]: unrecognized option '/usr/bin/setsid'
+Wed Oct  3 14:34:26 CST 2007
+---------------------------------------------
+* The following section is a dump of the packets
+* sent and received by rp-pppoe.  If you don't see
+* any output, it's an Ethernet driver problem.  If you only
+* see three PADI packets and nothing else, check your cables
+* and modem.  Make sure the modem lights flash when you try
+* to connect.  Check that your Ethernet card is in
+* half-duplex, 10Mb/s mode.  If all else fails,
+* try using pppoe-sniff.
+rp-pppoe debugging dump
+* The following section identifies your Ethernet interface
+* and user name.  Some ISP's need 'username'; others
+* need 'username@isp.com'.  Try both
+ETH=eth0; USER=hzhz021555
+---------------------------------------------
+* The following section shows the pppd command we will invoke
+pppd invocation
+/usr/bin/setsid /usr/sbin/pppd pty '/usr/sbin/pppoe -p /var/run/pppoe.conf-pppoe.pid.pppoe -I eth0 -T 80 -U  -m 1412   ' plugin rp-pppoe.so eth0 pppd  noipdefault noauth default-asyncmap usepeerdns defaultroute hide-password nodetach  mtu 1492 mru 1492 noaccomp nodeflate nopcomp novj novjccomp user hzhz021555 password 123456 lcp-echo-interval 20 lcp-echo-failure 3  debug
+---------------------------------------------
+Plugin rp-pppoe.so loaded.
+RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+/usr/sbin/pppd: unrecognized option 'pppd'
+pppd version 2.4.4
+Usage: /usr/sbin/pppd [ options ], where options are:
+	<device>	Communicate over the named device
+	<speed>		Set the baud rate to <speed>
+	<loc>:<rem>	Set the local and/or remote interface IP
+			addresses.  Either one may be omitted.
+	asyncmap <n>	Set the desired async map to hex <n>
+	auth		Require authentication from peer
+        connect <p>     Invoke shell command <p> to set up the serial line
+	crtscts		Use hardware RTS/CTS flow control
+	defaultroute	Add default route through interface
+	file <f>	Take options from file <f>
+	modem		Use modem control lines
+	mru <n>		Set MRU value to <n> for negotiation
+See pppd(8) for more options.
+---------------------------------------------
+* The following section is an extract from your log.
+* Look for error messages from pppd, such as
+* a lack of kernel support for PPP, authentication failure
+* etc.
+Extract from /var/log/messages
+Oct  3 13:49:46 localhost pppd[4001]: remote IP address 220.191.128.20
+Oct  3 13:49:46 localhost pppd[4001]: primary   DNS address 202.101.172.35
+Oct  3 13:49:46 localhost pppd[4001]: secondary DNS address 202.101.172.47
+Oct  3 13:49:59 localhost pppd[4001]: Terminating on signal 15
+Oct  3 13:49:59 localhost pppd[4001]: Connect time 0.3 minutes.
+Oct  3 13:49:59 localhost pppd[4001]: Sent 296 bytes, received 248 bytes.
+Oct  3 13:49:59 localhost pppd[4001]: Connection terminated.
+Oct  3 13:49:59 localhost pppd[4001]: Exit.
+Oct  3 13:49:59 localhost pppd[4005]: Plugin rp-pppoe.so loaded.
+Oct  3 13:49:59 localhost pppd[4005]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 13:49:59 localhost pppd[4005]: 11user[null],passwd[null]
+Oct  3 13:49:59 localhost pppd[4006]: pppd 2.4.4 started by root, uid 0
+Oct  3 13:50:04 localhost pppd[4006]: PPP session is 6538
+Oct  3 13:50:04 localhost pppd[4006]: Using interface ppp0
+Oct  3 13:50:04 localhost pppd[4006]: Connect: ppp0 <--> eth0
+Oct  3 13:50:04 localhost pppd[4006]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 13:50:04 localhost pppd[4006]: ############usepeerdns = 0
+Oct  3 13:50:04 localhost pppd[4006]: LCP terminated by peer
+Oct  3 13:50:07 localhost pppd[4006]: Connection terminated.
+Oct  3 13:50:07 localhost pppd[4006]: Modem hangup
+Oct  3 13:50:07 localhost pppd[4006]: Exit.
+Oct  3 13:50:30 localhost pppd[4025]: Plugin rp-pppoe.so loaded.
+Oct  3 13:50:30 localhost pppd[4025]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 13:50:30 localhost pppd[4025]: 11user[hzhz021555],passwd[123456]
+Oct  3 13:50:30 localhost pppd[4025]: pppd 2.4.4 started by root, uid 0
+Oct  3 13:50:30 localhost pppd[4025]: PPP session is 6547
+Oct  3 13:50:30 localhost pppd[4025]: Using interface ppp0
+Oct  3 13:50:30 localhost pppd[4025]: Connect: ppp0 <--> eth0
+Oct  3 13:50:30 localhost pppd[4025]: PAP authentication succeeded
+Oct  3 13:50:30 localhost pppd[4025]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 13:50:30 localhost pppd[4025]: ############usepeerdns = 1
+Oct  3 13:50:31 localhost pppd[4025]: default route ioctl(SIOCADDRT): File exists
+Oct  3 13:50:31 localhost pppd[4025]: local  IP address 60.186.111.66
+Oct  3 13:50:31 localhost pppd[4025]: remote IP address 220.191.128.20
+Oct  3 13:50:31 localhost pppd[4025]: primary   DNS address 202.101.172.35
+Oct  3 13:50:31 localhost pppd[4025]: secondary DNS address 202.101.172.47
+Oct  3 13:50:44 localhost pppd[4025]: Terminating on signal 15
+Oct  3 13:50:44 localhost pppd[4025]: Connect time 0.3 minutes.
+Oct  3 13:50:44 localhost pppd[4025]: Sent 0 bytes, received 0 bytes.
+Oct  3 13:50:44 localhost pppd[4025]: Connection terminated.
+Oct  3 13:50:44 localhost pppd[4025]: Exit.
+Oct  3 13:50:44 localhost pppd[4029]: 11user[null],passwd[null]
+Oct  3 13:50:44 localhost pppd[4029]: pppd 2.4.4 started by root, uid 0
+Oct  3 13:50:44 localhost pppd[4029]: connect_tty..........
+Oct  3 13:50:45 localhost pppd[4029]: Using interface ppp0
+Oct  3 13:50:45 localhost pppd[4029]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 13:50:49 localhost pppd[4029]: Modem hangup
+Oct  3 13:50:49 localhost pppd[4029]: Connection terminated.
+Oct  3 13:50:49 localhost pppd[4029]: Exit.
+Oct  3 14:11:40 localhost pppd[4392]: Plugin rp-pppoe.so loaded.
+Oct  3 14:11:40 localhost pppd[4392]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:11:40 localhost pppd[4392]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:11:41 localhost pppd[4392]: PPP session is 6945
+Oct  3 14:11:41 localhost pppd[4392]: Using interface ppp0
+Oct  3 14:11:41 localhost pppd[4392]: Connect: ppp0 <--> eth0
+Oct  3 14:11:41 localhost pppd[4392]: PAP authentication succeeded
+Oct  3 14:11:41 localhost pppd[4392]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:11:41 localhost pppd[4392]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:11:41 localhost pppd[4392]: local  IP address 125.118.1.12
+Oct  3 14:11:41 localhost pppd[4392]: remote IP address 220.191.128.20
+Oct  3 14:11:41 localhost pppd[4392]: primary   DNS address 202.101.172.35
+Oct  3 14:11:41 localhost pppd[4392]: secondary DNS address 202.101.172.47
+Oct  3 14:11:52 localhost pppd[4392]: Terminating on signal 15
+Oct  3 14:11:52 localhost pppd[4392]: Connect time 0.2 minutes.
+Oct  3 14:11:52 localhost pppd[4392]: Sent 200 bytes, received 280 bytes.
+Oct  3 14:11:52 localhost pppd[4392]: Connection terminated.
+Oct  3 14:11:52 localhost pppd[4392]: Exit.
+Oct  3 14:11:52 localhost pppd[4396]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:11:55 localhost pppd[4396]: Using interface ppp0
+Oct  3 14:11:55 localhost pppd[4396]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:12:10 localhost pppd[4396]: Modem hangup
+Oct  3 14:12:10 localhost pppd[4396]: Connection terminated.
+Oct  3 14:12:10 localhost pppd[4396]: Exit.
+Oct  3 14:17:35 localhost pppd[4453]: Plugin rp-pppoe.so loaded.
+Oct  3 14:17:35 localhost pppd[4453]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:17:35 localhost pppd[4453]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:17:36 localhost pppd[4453]: PPP session is 7064
+Oct  3 14:17:36 localhost pppd[4453]: Using interface ppp0
+Oct  3 14:17:36 localhost pppd[4453]: Connect: ppp0 <--> eth0
+Oct  3 14:17:36 localhost pppd[4453]: PAP authentication succeeded
+Oct  3 14:17:36 localhost pppd[4453]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:17:36 localhost pppd[4453]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:17:36 localhost pppd[4453]: local  IP address 125.118.6.123
+Oct  3 14:17:36 localhost pppd[4453]: remote IP address 220.191.128.20
+Oct  3 14:17:36 localhost pppd[4453]: primary   DNS address 202.101.172.35
+Oct  3 14:17:36 localhost pppd[4453]: secondary DNS address 202.101.172.47
+Oct  3 14:17:45 localhost pppd[4453]: Terminating on signal 15
+Oct  3 14:17:45 localhost pppd[4453]: Connect time 0.2 minutes.
+Oct  3 14:17:45 localhost pppd[4453]: Sent 120 bytes, received 144 bytes.
+Oct  3 14:17:45 localhost pppd[4453]: Connection terminated.
+Oct  3 14:17:45 localhost pppd[4453]: Exit.
+Oct  3 14:17:45 localhost pppd[4457]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:17:47 localhost pppd[4457]: Using interface ppp0
+Oct  3 14:17:47 localhost pppd[4457]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:17:55 localhost pppd[4457]: Modem hangup
+Oct  3 14:17:55 localhost pppd[4457]: Connection terminated.
+Oct  3 14:17:55 localhost pppd[4457]: Exit.
+Oct  3 14:19:18 localhost pppd[4512]: Plugin rp-pppoe.so loaded.
+Oct  3 14:19:18 localhost pppd[4512]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:19:18 localhost pppd[4512]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:19:18 localhost pppd[4512]: PPP session is 7090
+Oct  3 14:19:18 localhost pppd[4512]: Using interface ppp0
+Oct  3 14:19:18 localhost pppd[4512]: Connect: ppp0 <--> eth0
+Oct  3 14:19:19 localhost pppd[4512]: PAP authentication succeeded
+Oct  3 14:19:19 localhost pppd[4512]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:19:19 localhost pppd[4512]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:19:19 localhost pppd[4512]: local  IP address 125.119.13.224
+Oct  3 14:19:19 localhost pppd[4512]: remote IP address 220.191.128.20
+Oct  3 14:19:19 localhost pppd[4512]: primary   DNS address 202.101.172.35
+Oct  3 14:19:19 localhost pppd[4512]: secondary DNS address 202.101.172.47
+Oct  3 14:19:53 localhost pppd[4512]: Terminating on signal 15
+Oct  3 14:19:53 localhost pppd[4512]: Connect time 0.6 minutes.
+Oct  3 14:19:53 localhost pppd[4512]: Sent 360 bytes, received 4329 bytes.
+Oct  3 14:19:54 localhost pppd[4512]: Connection terminated.
+Oct  3 14:19:54 localhost pppd[4512]: Exit.
+Oct  3 14:19:54 localhost pppd[4517]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:19:55 localhost pppd[4517]: Using interface ppp0
+Oct  3 14:19:55 localhost pppd[4517]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:19:59 localhost pppd[4517]: Modem hangup
+Oct  3 14:19:59 localhost pppd[4517]: Connection terminated.
+Oct  3 14:19:59 localhost pppd[4517]: Exit.
+Oct  3 14:22:04 localhost pppd[4569]: Plugin rp-pppoe.so loaded.
+Oct  3 14:22:04 localhost pppd[4569]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:22:04 localhost pppd[4569]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:22:04 localhost pppd[4569]: PPP session is 7152
+Oct  3 14:22:04 localhost pppd[4569]: Using interface ppp0
+Oct  3 14:22:04 localhost pppd[4569]: Connect: ppp0 <--> eth0
+Oct  3 14:22:08 localhost pppd[4569]: PAP authentication succeeded
+Oct  3 14:22:08 localhost pppd[4569]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:22:08 localhost pppd[4569]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:22:08 localhost pppd[4569]: local  IP address 125.119.8.130
+Oct  3 14:22:08 localhost pppd[4569]: remote IP address 220.191.128.20
+Oct  3 14:22:08 localhost pppd[4569]: primary   DNS address 202.101.172.35
+Oct  3 14:22:08 localhost pppd[4569]: secondary DNS address 202.101.172.47
+Oct  3 14:22:19 localhost pppd[4569]: Terminating on signal 15
+Oct  3 14:22:19 localhost pppd[4569]: Connect time 0.2 minutes.
+Oct  3 14:22:19 localhost pppd[4569]: Sent 40 bytes, received 48 bytes.
+Oct  3 14:22:19 localhost pppd[4569]: Connection terminated.
+Oct  3 14:22:19 localhost pppd[4569]: Exit.
+Oct  3 14:22:20 localhost pppd[4574]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:22:22 localhost pppd[4574]: Using interface ppp0
+Oct  3 14:22:22 localhost pppd[4574]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:22:24 localhost pppd[4574]: Modem hangup
+Oct  3 14:22:24 localhost pppd[4574]: Connection terminated.
+Oct  3 14:22:24 localhost pppd[4574]: Exit.
+Oct  3 14:32:02 localhost pppd[4629]: unrecognized option '/usr/bin/setsid'
+Oct  3 14:34:26 localhost pppd[4646]: unrecognized option '/usr/bin/setsid'
+Oct  3 14:36:07 localhost pppd[4663]: Plugin rp-pppoe.so loaded.
+Oct  3 14:36:07 localhost pppd[4663]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:36:07 localhost pppd[4663]: unrecognized option 'pppd'
+Wed Oct  3 14:36:07 CST 2007
+---------------------------------------------
+* The following section is a dump of the packets
+* sent and received by rp-pppoe.  If you don't see
+* any output, it's an Ethernet driver problem.  If you only
+* see three PADI packets and nothing else, check your cables
+* and modem.  Make sure the modem lights flash when you try
+* to connect.  Check that your Ethernet card is in
+* half-duplex, 10Mb/s mode.  If all else fails,
+* try using pppoe-sniff.
+rp-pppoe debugging dump
+* The following section identifies your Ethernet interface
+* and user name.  Some ISP's need 'username'; others
+* need 'username@isp.com'.  Try both
+ETH=eth0; USER=hzhz021555
+---------------------------------------------
+* The following section shows the pppd command we will invoke
+pppd invocation
+/usr/bin/setsid /usr/sbin/pppd pty '/usr/sbin/pppoe -p /var/run/pppoe.conf-pppoe.pid.pppoe -I eth0 -T 80 -U  -m 1412   ' plugin rp-pppoe.so eth0 noipdefault noauth default-asyncmap usepeerdns defaultroute hide-password nodetach  mtu 1492 mru 1492 noaccomp nodeflate nopcomp novj novjccomp user hzhz021555 password 123456 lcp-echo-interval 20 lcp-echo-failure 3  debug
+---------------------------------------------
+Plugin rp-pppoe.so loaded.
+RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+using channel 36
+Using interface ppp0
+Connect: ppp0 <--> eth0
+sent [LCP ConfReq id=0x1 <mru 1492> <magic 0xb44d4bc8>]
+rcvd [LCP ConfReq id=0xb0 <mru 1492> <auth pap> <magic 0x484631d4>]
+lcp_reqci: returning CONFACK.
+sent [LCP ConfAck id=0xb0 <mru 1492> <auth pap> <magic 0x484631d4>]
+rcvd [LCP ConfAck id=0x1 <mru 1492> <magic 0xb44d4bc8>]
+sent [LCP EchoReq id=0x0 magic=0xb44d4bc8]
+sent [PAP AuthReq id=0x1 user="hzhz021555" password=<hidden>]
+rcvd [LCP EchoRep id=0x0 magic=0x484631d4]
+rcvd [PAP AuthAck id=0x1 ""]
+PAP authentication succeeded
+peer from calling number 00:90:1A:41:5A:A1 authorized
+sent [IPCP ConfReq id=0x1 <addr 0.0.0.0> <ms-dns1 0.0.0.0> <ms-dns3 0.0.0.0>]
+rcvd [IPCP ConfNak id=0x1 <addr 125.119.14.197> <ms-dns1 202.101.172.35> <ms-dns3 202.101.172.47>]
+sent [IPCP ConfReq id=0x2 <addr 125.119.14.197> <ms-dns1 202.101.172.35> <ms-dns3 202.101.172.47>]
+rcvd [IPCP ConfAck id=0x2 <addr 125.119.14.197> <ms-dns1 202.101.172.35> <ms-dns3 202.101.172.47>]
+rcvd [IPCP ConfReq id=0xf5 <addr 220.191.128.20>]
+ipcp: returning Configure-ACK
+sent [IPCP ConfAck id=0xf5 <addr 220.191.128.20>]
+ipcp: up
+default route ioctl(SIOCADDRT): File exists
+local  IP address 125.119.14.197
+remote IP address 220.191.128.20
+primary   DNS address 202.101.172.35
+secondary DNS address 202.101.172.47
+Terminating on signal 15
+ipcp: down
+Connect time 0.2 minutes.
+Sent 0 bytes, received 0 bytes.
+sent [LCP TermReq id=0x2 "User request"]
+rcvd [LCP TermAck id=0x2]
+Connection terminated.
+---------------------------------------------
+* The following section is an extract from your log.
+* Look for error messages from pppd, such as
+* a lack of kernel support for PPP, authentication failure
+* etc.
+Extract from /var/log/messages
+Oct  3 13:50:07 localhost pppd[4006]: Connection terminated.
+Oct  3 13:50:07 localhost pppd[4006]: Modem hangup
+Oct  3 13:50:07 localhost pppd[4006]: Exit.
+Oct  3 13:50:30 localhost pppd[4025]: Plugin rp-pppoe.so loaded.
+Oct  3 13:50:30 localhost pppd[4025]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 13:50:30 localhost pppd[4025]: 11user[hzhz021555],passwd[123456]
+Oct  3 13:50:30 localhost pppd[4025]: pppd 2.4.4 started by root, uid 0
+Oct  3 13:50:30 localhost pppd[4025]: PPP session is 6547
+Oct  3 13:50:30 localhost pppd[4025]: Using interface ppp0
+Oct  3 13:50:30 localhost pppd[4025]: Connect: ppp0 <--> eth0
+Oct  3 13:50:30 localhost pppd[4025]: PAP authentication succeeded
+Oct  3 13:50:30 localhost pppd[4025]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 13:50:30 localhost pppd[4025]: ############usepeerdns = 1
+Oct  3 13:50:31 localhost pppd[4025]: default route ioctl(SIOCADDRT): File exists
+Oct  3 13:50:31 localhost pppd[4025]: local  IP address 60.186.111.66
+Oct  3 13:50:31 localhost pppd[4025]: remote IP address 220.191.128.20
+Oct  3 13:50:31 localhost pppd[4025]: primary   DNS address 202.101.172.35
+Oct  3 13:50:31 localhost pppd[4025]: secondary DNS address 202.101.172.47
+Oct  3 13:50:44 localhost pppd[4025]: Terminating on signal 15
+Oct  3 13:50:44 localhost pppd[4025]: Connect time 0.3 minutes.
+Oct  3 13:50:44 localhost pppd[4025]: Sent 0 bytes, received 0 bytes.
+Oct  3 13:50:44 localhost pppd[4025]: Connection terminated.
+Oct  3 13:50:44 localhost pppd[4025]: Exit.
+Oct  3 13:50:44 localhost pppd[4029]: 11user[null],passwd[null]
+Oct  3 13:50:44 localhost pppd[4029]: pppd 2.4.4 started by root, uid 0
+Oct  3 13:50:44 localhost pppd[4029]: connect_tty..........
+Oct  3 13:50:45 localhost pppd[4029]: Using interface ppp0
+Oct  3 13:50:45 localhost pppd[4029]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 13:50:49 localhost pppd[4029]: Modem hangup
+Oct  3 13:50:49 localhost pppd[4029]: Connection terminated.
+Oct  3 13:50:49 localhost pppd[4029]: Exit.
+Oct  3 14:11:40 localhost pppd[4392]: Plugin rp-pppoe.so loaded.
+Oct  3 14:11:40 localhost pppd[4392]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:11:40 localhost pppd[4392]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:11:41 localhost pppd[4392]: PPP session is 6945
+Oct  3 14:11:41 localhost pppd[4392]: Using interface ppp0
+Oct  3 14:11:41 localhost pppd[4392]: Connect: ppp0 <--> eth0
+Oct  3 14:11:41 localhost pppd[4392]: PAP authentication succeeded
+Oct  3 14:11:41 localhost pppd[4392]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:11:41 localhost pppd[4392]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:11:41 localhost pppd[4392]: local  IP address 125.118.1.12
+Oct  3 14:11:41 localhost pppd[4392]: remote IP address 220.191.128.20
+Oct  3 14:11:41 localhost pppd[4392]: primary   DNS address 202.101.172.35
+Oct  3 14:11:41 localhost pppd[4392]: secondary DNS address 202.101.172.47
+Oct  3 14:11:52 localhost pppd[4392]: Terminating on signal 15
+Oct  3 14:11:52 localhost pppd[4392]: Connect time 0.2 minutes.
+Oct  3 14:11:52 localhost pppd[4392]: Sent 200 bytes, received 280 bytes.
+Oct  3 14:11:52 localhost pppd[4392]: Connection terminated.
+Oct  3 14:11:52 localhost pppd[4392]: Exit.
+Oct  3 14:11:52 localhost pppd[4396]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:11:55 localhost pppd[4396]: Using interface ppp0
+Oct  3 14:11:55 localhost pppd[4396]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:12:10 localhost pppd[4396]: Modem hangup
+Oct  3 14:12:10 localhost pppd[4396]: Connection terminated.
+Oct  3 14:12:10 localhost pppd[4396]: Exit.
+Oct  3 14:17:35 localhost pppd[4453]: Plugin rp-pppoe.so loaded.
+Oct  3 14:17:35 localhost pppd[4453]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:17:35 localhost pppd[4453]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:17:36 localhost pppd[4453]: PPP session is 7064
+Oct  3 14:17:36 localhost pppd[4453]: Using interface ppp0
+Oct  3 14:17:36 localhost pppd[4453]: Connect: ppp0 <--> eth0
+Oct  3 14:17:36 localhost pppd[4453]: PAP authentication succeeded
+Oct  3 14:17:36 localhost pppd[4453]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:17:36 localhost pppd[4453]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:17:36 localhost pppd[4453]: local  IP address 125.118.6.123
+Oct  3 14:17:36 localhost pppd[4453]: remote IP address 220.191.128.20
+Oct  3 14:17:36 localhost pppd[4453]: primary   DNS address 202.101.172.35
+Oct  3 14:17:36 localhost pppd[4453]: secondary DNS address 202.101.172.47
+Oct  3 14:17:45 localhost pppd[4453]: Terminating on signal 15
+Oct  3 14:17:45 localhost pppd[4453]: Connect time 0.2 minutes.
+Oct  3 14:17:45 localhost pppd[4453]: Sent 120 bytes, received 144 bytes.
+Oct  3 14:17:45 localhost pppd[4453]: Connection terminated.
+Oct  3 14:17:45 localhost pppd[4453]: Exit.
+Oct  3 14:17:45 localhost pppd[4457]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:17:47 localhost pppd[4457]: Using interface ppp0
+Oct  3 14:17:47 localhost pppd[4457]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:17:55 localhost pppd[4457]: Modem hangup
+Oct  3 14:17:55 localhost pppd[4457]: Connection terminated.
+Oct  3 14:17:55 localhost pppd[4457]: Exit.
+Oct  3 14:19:18 localhost pppd[4512]: Plugin rp-pppoe.so loaded.
+Oct  3 14:19:18 localhost pppd[4512]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:19:18 localhost pppd[4512]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:19:18 localhost pppd[4512]: PPP session is 7090
+Oct  3 14:19:18 localhost pppd[4512]: Using interface ppp0
+Oct  3 14:19:18 localhost pppd[4512]: Connect: ppp0 <--> eth0
+Oct  3 14:19:19 localhost pppd[4512]: PAP authentication succeeded
+Oct  3 14:19:19 localhost pppd[4512]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:19:19 localhost pppd[4512]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:19:19 localhost pppd[4512]: local  IP address 125.119.13.224
+Oct  3 14:19:19 localhost pppd[4512]: remote IP address 220.191.128.20
+Oct  3 14:19:19 localhost pppd[4512]: primary   DNS address 202.101.172.35
+Oct  3 14:19:19 localhost pppd[4512]: secondary DNS address 202.101.172.47
+Oct  3 14:19:53 localhost pppd[4512]: Terminating on signal 15
+Oct  3 14:19:53 localhost pppd[4512]: Connect time 0.6 minutes.
+Oct  3 14:19:53 localhost pppd[4512]: Sent 360 bytes, received 4329 bytes.
+Oct  3 14:19:54 localhost pppd[4512]: Connection terminated.
+Oct  3 14:19:54 localhost pppd[4512]: Exit.
+Oct  3 14:19:54 localhost pppd[4517]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:19:55 localhost pppd[4517]: Using interface ppp0
+Oct  3 14:19:55 localhost pppd[4517]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:19:59 localhost pppd[4517]: Modem hangup
+Oct  3 14:19:59 localhost pppd[4517]: Connection terminated.
+Oct  3 14:19:59 localhost pppd[4517]: Exit.
+Oct  3 14:22:04 localhost pppd[4569]: Plugin rp-pppoe.so loaded.
+Oct  3 14:22:04 localhost pppd[4569]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:22:04 localhost pppd[4569]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:22:04 localhost pppd[4569]: PPP session is 7152
+Oct  3 14:22:04 localhost pppd[4569]: Using interface ppp0
+Oct  3 14:22:04 localhost pppd[4569]: Connect: ppp0 <--> eth0
+Oct  3 14:22:08 localhost pppd[4569]: PAP authentication succeeded
+Oct  3 14:22:08 localhost pppd[4569]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:22:08 localhost pppd[4569]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:22:08 localhost pppd[4569]: local  IP address 125.119.8.130
+Oct  3 14:22:08 localhost pppd[4569]: remote IP address 220.191.128.20
+Oct  3 14:22:08 localhost pppd[4569]: primary   DNS address 202.101.172.35
+Oct  3 14:22:08 localhost pppd[4569]: secondary DNS address 202.101.172.47
+Oct  3 14:22:19 localhost pppd[4569]: Terminating on signal 15
+Oct  3 14:22:19 localhost pppd[4569]: Connect time 0.2 minutes.
+Oct  3 14:22:19 localhost pppd[4569]: Sent 40 bytes, received 48 bytes.
+Oct  3 14:22:19 localhost pppd[4569]: Connection terminated.
+Oct  3 14:22:19 localhost pppd[4569]: Exit.
+Oct  3 14:22:20 localhost pppd[4574]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:22:22 localhost pppd[4574]: Using interface ppp0
+Oct  3 14:22:22 localhost pppd[4574]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:22:24 localhost pppd[4574]: Modem hangup
+Oct  3 14:22:24 localhost pppd[4574]: Connection terminated.
+Oct  3 14:22:24 localhost pppd[4574]: Exit.
+Oct  3 14:32:02 localhost pppd[4629]: unrecognized option '/usr/bin/setsid'
+Oct  3 14:34:26 localhost pppd[4646]: unrecognized option '/usr/bin/setsid'
+Oct  3 14:36:07 localhost pppd[4663]: Plugin rp-pppoe.so loaded.
+Oct  3 14:36:07 localhost pppd[4663]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:36:07 localhost pppd[4663]: unrecognized option 'pppd'
+Oct  3 14:36:56 localhost pppd[4684]: Plugin rp-pppoe.so loaded.
+Oct  3 14:36:56 localhost pppd[4684]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:36:56 localhost pppd[4684]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:36:56 localhost pppd[4684]: PPP session is 7443
+Oct  3 14:36:56 localhost pppd[4684]: Using interface ppp0
+Oct  3 14:36:56 localhost pppd[4684]: Connect: ppp0 <--> eth0
+Oct  3 14:36:56 localhost pppd[4684]: PAP authentication succeeded
+Oct  3 14:36:56 localhost pppd[4684]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:36:56 localhost pppd[4684]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:36:56 localhost pppd[4684]: local  IP address 125.119.14.197
+Oct  3 14:36:56 localhost pppd[4684]: remote IP address 220.191.128.20
+Oct  3 14:36:56 localhost pppd[4684]: primary   DNS address 202.101.172.35
+Oct  3 14:36:56 localhost pppd[4684]: secondary DNS address 202.101.172.47
+Oct  3 14:37:04 localhost pppd[4684]: Terminating on signal 15
+Oct  3 14:37:04 localhost pppd[4684]: Connect time 0.2 minutes.
+Oct  3 14:37:04 localhost pppd[4684]: Sent 0 bytes, received 0 bytes.
+Oct  3 14:37:04 localhost pppd[4684]: Connection terminated.
+Oct  3 14:37:04 localhost pppd[4684]: Exit.
+Wed Oct  3 14:37:04 CST 2007
+---------------------------------------------
+* The following section is a dump of the packets
+* sent and received by rp-pppoe.  If you don't see
+* any output, it's an Ethernet driver problem.  If you only
+* see three PADI packets and nothing else, check your cables
+* and modem.  Make sure the modem lights flash when you try
+* to connect.  Check that your Ethernet card is in
+* half-duplex, 10Mb/s mode.  If all else fails,
+* try using pppoe-sniff.
+rp-pppoe debugging dump
+* The following section identifies your Ethernet interface
+* and user name.  Some ISP's need 'username'; others
+* need 'username@isp.com'.  Try both
+ETH=eth0; USER=hzhz021555
+---------------------------------------------
+* The following section shows the pppd command we will invoke
+pppd invocation
+/usr/bin/setsid /usr/sbin/pppd pty '/usr/sbin/pppoe -p /var/run/pppoe.conf-pppoe.pid.pppoe -I eth0 -T 80 -U  -m 1412   ' plugin rp-pppoe.so eth0 noipdefault noauth default-asyncmap usepeerdns defaultroute hide-password nodetach  mtu 1492 mru 1492 noaccomp nodeflate nopcomp novj novjccomp user hzhz021555 password 123456 lcp-echo-interval 20 lcp-echo-failure 3  debug
+---------------------------------------------
+Plugin rp-pppoe.so loaded.
+RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+using channel 37
+Using interface ppp0
+Connect: ppp0 <--> eth0
+sent [LCP ConfReq id=0x1 <mru 1492> <magic 0xae8a8f36>]
+rcvd [LCP ConfReq id=0x7f <mru 1492> <auth pap> <magic 0x309379c9>]
+lcp_reqci: returning CONFACK.
+sent [LCP ConfAck id=0x7f <mru 1492> <auth pap> <magic 0x309379c9>]
+rcvd [LCP ConfAck id=0x1 <mru 1492> <magic 0xae8a8f36>]
+sent [LCP EchoReq id=0x0 magic=0xae8a8f36]
+sent [PAP AuthReq id=0x1 user="hzhz021555" password=<hidden>]
+rcvd [LCP EchoRep id=0x0 magic=0x309379c9]
+rcvd [PAP AuthAck id=0x1 ""]
+PAP authentication succeeded
+peer from calling number 00:90:1A:41:5A:A1 authorized
+sent [IPCP ConfReq id=0x1 <addr 0.0.0.0> <ms-dns1 0.0.0.0> <ms-dns3 0.0.0.0>]
+rcvd [IPCP ConfNak id=0x1 <addr 60.176.143.133> <ms-dns1 202.101.172.35> <ms-dns3 202.101.172.47>]
+sent [IPCP ConfReq id=0x2 <addr 60.176.143.133> <ms-dns1 202.101.172.35> <ms-dns3 202.101.172.47>]
+rcvd [IPCP ConfAck id=0x2 <addr 60.176.143.133> <ms-dns1 202.101.172.35> <ms-dns3 202.101.172.47>]
+rcvd [IPCP ConfReq id=0x5e <addr 220.191.128.20>]
+ipcp: returning Configure-ACK
+sent [IPCP ConfAck id=0x5e <addr 220.191.128.20>]
+ipcp: up
+default route ioctl(SIOCADDRT): File exists
+local  IP address 60.176.143.133
+remote IP address 220.191.128.20
+primary   DNS address 202.101.172.35
+secondary DNS address 202.101.172.47
+* The following section identifies your Ethernet interface
+* and user name.  Some ISP's need 'username'; others
+* need 'username@isp.com'.  Try both
+ETH=eth0; USER=hzhz021555
+---------------------------------------------
+* The following section shows the pppd command we will invoke
+pppd invocation
+/usr/bin/setsid /usr/sbin/pppd pty '/usr/sbin/pppoe -p /var/run/pppoe.conf-pppoe.pid.pppoe -I eth0 -T 80 -U  -m 1412   ' plugin rp-pppoe.so eth0 noipdefault noauth default-asyncmap usepeerdns defaultroute hide-password nodetach  mtu 1492 mru 1492 noaccomp nodeflate nopcomp novj novjccomp user hzhz021555 password 123456 lcp-echo-interval 20 lcp-echo-failure 3  debug
+---------------------------------------------
+Plugin rp-pppoe.so loaded.
+RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+using channel 38
+Using interface ppp1
+Connect: ppp1 <--> eth0
+sent [LCP ConfReq id=0x1 <mru 1492> <magic 0xdb50ddbd>]
+rcvd [LCP ConfReq id=0x18 <mru 1492> <auth pap> <magic 0xed7fbb0>]
+lcp_reqci: returning CONFACK.
+sent [LCP ConfAck id=0x18 <mru 1492> <auth pap> <magic 0xed7fbb0>]
+rcvd [LCP ConfAck id=0x1 <mru 1492> <magic 0xdb50ddbd>]
+sent [LCP EchoReq id=0x0 magic=0xdb50ddbd]
+sent [PAP AuthReq id=0x1 user="hzhz021555" password=<hidden>]
+rcvd [LCP EchoRep id=0x0 magic=0xed7fbb0]
+rcvd [PAP AuthAck id=0x1 ""]
+PAP authentication succeeded
+peer from calling number 00:90:1A:41:5A:A1 authorized
+sent [IPCP ConfReq id=0x1 <addr 0.0.0.0> <ms-dns1 0.0.0.0> <ms-dns3 0.0.0.0>]
+rcvd [IPCP ConfNak id=0x1 <addr 125.119.12.72> <ms-dns1 202.101.172.35> <ms-dns3 202.101.172.47>]
+sent [IPCP ConfReq id=0x2 <addr 125.119.12.72> <ms-dns1 202.101.172.35> <ms-dns3 202.101.172.47>]
+rcvd [IPCP ConfAck id=0x2 <addr 125.119.12.72> <ms-dns1 202.101.172.35> <ms-dns3 202.101.172.47>]
+rcvd [IPCP ConfReq id=0x1c <addr 220.191.128.20>]
+ipcp: returning Configure-ACK
+sent [IPCP ConfAck id=0x1c <addr 220.191.128.20>]
+ipcp: up
+not replacing existing default route through ppp0
+not replacing existing default route through ppp0
+local  IP address 125.119.12.72
+remote IP address 220.191.128.20
+primary   DNS address 202.101.172.35
+secondary DNS address 202.101.172.47
+Terminating on signal 15
+ipcp: down
+Connect time 0.3 minutes.
+Sent 1206 bytes, received 842 bytes.
+sent [LCP TermReq id=0x2 "User request"]
+Terminating on signal 15
+ipcp: down
+Connect time 0.2 minutes.
+Sent 0 bytes, received 0 bytes.
+sent [LCP TermReq id=0x2 "User request"]
+rcvd [LCP TermAck id=0x2]
+Connection terminated.
+rcvd [LCP TermAck id=0x2]
+Connection terminated.
+---------------------------------------------
+* The following section is an extract from your log.
+* Look for error messages from pppd, such as
+* a lack of kernel support for PPP, authentication failure
+* etc.
+Extract from /var/log/messages
+---------------------------------------------
+* The following section is an extract from your log.
+* Look for error messages from pppd, such as
+* a lack of kernel support for PPP, authentication failure
+* etc.
+Extract from /var/log/messages
+Oct  3 14:11:41 localhost pppd[4392]: PAP authentication succeeded
+Oct  3 14:11:41 localhost pppd[4392]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:11:41 localhost pppd[4392]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:11:41 localhost pppd[4392]: local  IP address 125.118.1.12
+Oct  3 14:11:41 localhost pppd[4392]: remote IP address 220.191.128.20
+Oct  3 14:11:41 localhost pppd[4392]: primary   DNS address 202.101.172.35
+Oct  3 14:11:41 localhost pppd[4392]: secondary DNS address 202.101.172.47
+Oct  3 14:11:52 localhost pppd[4392]: Terminating on signal 15
+Oct  3 14:11:52 localhost pppd[4392]: Connect time 0.2 minutes.
+Oct  3 14:11:52 localhost pppd[4392]: Sent 200 bytes, received 280 bytes.
+Oct  3 14:11:52 localhost pppd[4392]: Connection terminated.
+Oct  3 14:11:52 localhost pppd[4392]: Exit.
+Oct  3 14:11:52 localhost pppd[4396]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:11:55 localhost pppd[4396]: Using interface ppp0
+Oct  3 14:11:55 localhost pppd[4396]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:12:10 localhost pppd[4396]: Modem hangup
+Oct  3 14:12:10 localhost pppd[4396]: Connection terminated.
+Oct  3 14:12:10 localhost pppd[4396]: Exit.
+Oct  3 14:17:35 localhost pppd[4453]: Plugin rp-pppoe.so loaded.
+Oct  3 14:17:35 localhost pppd[4453]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:17:35 localhost pppd[4453]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:17:36 localhost pppd[4453]: PPP session is 7064
+Oct  3 14:17:36 localhost pppd[4453]: Using interface ppp0
+Oct  3 14:17:36 localhost pppd[4453]: Connect: ppp0 <--> eth0
+Oct  3 14:17:36 localhost pppd[4453]: PAP authentication succeeded
+Oct  3 14:17:36 localhost pppd[4453]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:17:36 localhost pppd[4453]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:17:36 localhost pppd[4453]: local  IP address 125.118.6.123
+Oct  3 14:17:36 localhost pppd[4453]: remote IP address 220.191.128.20
+Oct  3 14:17:36 localhost pppd[4453]: primary   DNS address 202.101.172.35
+Oct  3 14:17:36 localhost pppd[4453]: secondary DNS address 202.101.172.47
+Oct  3 14:17:45 localhost pppd[4453]: Terminating on signal 15
+Oct  3 14:17:45 localhost pppd[4453]: Connect time 0.2 minutes.
+Oct  3 14:17:45 localhost pppd[4453]: Sent 120 bytes, received 144 bytes.
+Oct  3 14:17:45 localhost pppd[4453]: Connection terminated.
+Oct  3 14:17:45 localhost pppd[4453]: Exit.
+Oct  3 14:17:45 localhost pppd[4457]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:17:47 localhost pppd[4457]: Using interface ppp0
+Oct  3 14:17:47 localhost pppd[4457]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:17:55 localhost pppd[4457]: Modem hangup
+Oct  3 14:17:55 localhost pppd[4457]: Connection terminated.
+Oct  3 14:17:55 localhost pppd[4457]: Exit.
+Oct  3 14:19:18 localhost pppd[4512]: Plugin rp-pppoe.so loaded.
+Oct  3 14:19:18 localhost pppd[4512]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:19:18 localhost pppd[4512]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:19:18 localhost pppd[4512]: PPP session is 7090
+Oct  3 14:19:18 localhost pppd[4512]: Using interface ppp0
+Oct  3 14:19:18 localhost pppd[4512]: Connect: ppp0 <--> eth0
+Oct  3 14:19:19 localhost pppd[4512]: PAP authentication succeeded
+Oct  3 14:19:19 localhost pppd[4512]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:19:19 localhost pppd[4512]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:19:19 localhost pppd[4512]: local  IP address 125.119.13.224
+Oct  3 14:19:19 localhost pppd[4512]: remote IP address 220.191.128.20
+Oct  3 14:19:19 localhost pppd[4512]: primary   DNS address 202.101.172.35
+Oct  3 14:19:19 localhost pppd[4512]: secondary DNS address 202.101.172.47
+Oct  3 14:19:53 localhost pppd[4512]: Terminating on signal 15
+Oct  3 14:19:53 localhost pppd[4512]: Connect time 0.6 minutes.
+Oct  3 14:19:53 localhost pppd[4512]: Sent 360 bytes, received 4329 bytes.
+Oct  3 14:19:54 localhost pppd[4512]: Connection terminated.
+Oct  3 14:19:54 localhost pppd[4512]: Exit.
+Oct  3 14:19:54 localhost pppd[4517]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:19:55 localhost pppd[4517]: Using interface ppp0
+Oct  3 14:19:55 localhost pppd[4517]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:19:59 localhost pppd[4517]: Modem hangup
+Oct  3 14:19:59 localhost pppd[4517]: Connection terminated.
+Oct  3 14:19:59 localhost pppd[4517]: Exit.
+Oct  3 14:22:04 localhost pppd[4569]: Plugin rp-pppoe.so loaded.
+Oct  3 14:22:04 localhost pppd[4569]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:22:04 localhost pppd[4569]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:22:04 localhost pppd[4569]: PPP session is 7152
+Oct  3 14:22:04 localhost pppd[4569]: Using interface ppp0
+Oct  3 14:22:04 localhost pppd[4569]: Connect: ppp0 <--> eth0
+Oct  3 14:22:08 localhost pppd[4569]: PAP authentication succeeded
+Oct  3 14:22:08 localhost pppd[4569]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:22:08 localhost pppd[4569]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:22:08 localhost pppd[4569]: local  IP address 125.119.8.130
+Oct  3 14:22:08 localhost pppd[4569]: remote IP address 220.191.128.20
+Oct  3 14:22:08 localhost pppd[4569]: primary   DNS address 202.101.172.35
+Oct  3 14:22:08 localhost pppd[4569]: secondary DNS address 202.101.172.47
+Oct  3 14:22:19 localhost pppd[4569]: Terminating on signal 15
+Oct  3 14:22:19 localhost pppd[4569]: Connect time 0.2 minutes.
+Oct  3 14:22:19 localhost pppd[4569]: Sent 40 bytes, received 48 bytes.
+Oct  3 14:22:19 localhost pppd[4569]: Connection terminated.
+Oct  3 14:22:19 localhost pppd[4569]: Exit.
+Oct  3 14:22:20 localhost pppd[4574]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:22:22 localhost pppd[4574]: Using interface ppp0
+Oct  3 14:22:22 localhost pppd[4574]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:22:24 localhost pppd[4574]: Modem hangup
+Oct  3 14:22:24 localhost pppd[4574]: Connection terminated.
+Oct  3 14:22:24 localhost pppd[4574]: Exit.
+Oct  3 14:32:02 localhost pppd[4629]: unrecognized option '/usr/bin/setsid'
+Oct  3 14:34:26 localhost pppd[4646]: unrecognized option '/usr/bin/setsid'
+Oct  3 14:36:07 localhost pppd[4663]: Plugin rp-pppoe.so loaded.
+Oct  3 14:36:07 localhost pppd[4663]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:36:07 localhost pppd[4663]: unrecognized option 'pppd'
+Oct  3 14:36:56 localhost pppd[4684]: Plugin rp-pppoe.so loaded.
+Oct  3 14:36:56 localhost pppd[4684]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:36:56 localhost pppd[4684]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:36:56 localhost pppd[4684]: PPP session is 7443
+Oct  3 14:36:56 localhost pppd[4684]: Using interface ppp0
+Oct  3 14:36:56 localhost pppd[4684]: Connect: ppp0 <--> eth0
+Oct  3 14:36:56 localhost pppd[4684]: PAP authentication succeeded
+Oct  3 14:36:56 localhost pppd[4684]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:36:56 localhost pppd[4684]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:36:56 localhost pppd[4684]: local  IP address 125.119.14.197
+Oct  3 14:36:56 localhost pppd[4684]: remote IP address 220.191.128.20
+Oct  3 14:36:56 localhost pppd[4684]: primary   DNS address 202.101.172.35
+Oct  3 14:36:56 localhost pppd[4684]: secondary DNS address 202.101.172.47
+Oct  3 14:37:04 localhost pppd[4684]: Terminating on signal 15
+Oct  3 14:37:04 localhost pppd[4684]: Connect time 0.2 minutes.
+Oct  3 14:37:04 localhost pppd[4684]: Sent 0 bytes, received 0 bytes.
+Oct  3 14:37:04 localhost pppd[4684]: Connection terminated.
+Oct  3 14:37:04 localhost pppd[4684]: Exit.
+Oct  3 14:37:10 localhost pppd[4703]: Plugin rp-pppoe.so loaded.
+Oct  3 14:37:10 localhost pppd[4703]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:37:10 localhost pppd[4703]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:37:10 localhost pppd[4703]: PPP session is 7449
+Oct  3 14:37:10 localhost pppd[4703]: Using interface ppp0
+Oct  3 14:37:10 localhost pppd[4703]: Connect: ppp0 <--> eth0
+Oct  3 14:37:11 localhost pppd[4703]: PAP authentication succeeded
+Oct  3 14:37:11 localhost pppd[4703]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:37:11 localhost pppd[4703]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:37:11 localhost pppd[4703]: local  IP address 60.176.143.133
+Oct  3 14:37:11 localhost pppd[4703]: remote IP address 220.191.128.20
+Oct  3 14:37:11 localhost pppd[4703]: primary   DNS address 202.101.172.35
+Oct  3 14:37:11 localhost pppd[4703]: secondary DNS address 202.101.172.47
+Oct  3 14:37:16 localhost pppd[4716]: Plugin rp-pppoe.so loaded.
+Oct  3 14:37:16 localhost pppd[4716]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:37:16 localhost pppd[4716]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:37:16 localhost pppd[4716]: PPP session is 7452
+Oct  3 14:37:16 localhost pppd[4716]: Using interface ppp1
+Oct  3 14:37:16 localhost pppd[4716]: Connect: ppp1 <--> eth0
+Oct  3 14:37:16 localhost pppd[4716]: PAP authentication succeeded
+Oct  3 14:37:16 localhost pppd[4716]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:37:16 localhost pppd[4716]: not replacing existing default route through ppp0
+Oct  3 14:37:16 localhost pppd[4716]: not replacing existing default route through ppp0
+Oct  3 14:37:16 localhost pppd[4716]: local  IP address 125.119.12.72
+Oct  3 14:37:16 localhost pppd[4716]: remote IP address 220.191.128.20
+Oct  3 14:37:16 localhost pppd[4716]: primary   DNS address 202.101.172.35
+Oct  3 14:37:16 localhost pppd[4716]: secondary DNS address 202.101.172.47
+Oct  3 14:37:26 localhost pppd[4703]: Terminating on signal 15
+Oct  3 14:37:26 localhost pppd[4703]: Connect time 0.3 minutes.
+Oct  3 14:37:26 localhost pppd[4703]: Sent 1206 bytes, received 842 bytes.
+Oct  3 14:37:26 localhost pppd[4716]: Terminating on signal 15
+Oct  3 14:37:26 localhost pppd[4716]: Connect time 0.2 minutes.
+Oct  3 14:37:26 localhost pppd[4716]: Sent 0 bytes, received 0 bytes.
+Oct  3 14:37:26 localhost pppd[4703]: Connection terminated.
+Oct  3 14:37:26 localhost pppd[4716]: Connection terminated.
+Oct  3 14:37:26 localhost pppd[4703]: Exit.
+Oct  3 14:37:27 localhost pppd[4716]: Exit.
+Wed Oct  3 14:37:27 CST 2007
+---------------------------------------------
+* The following section is a dump of the packets
+* sent and received by rp-pppoe.  If you don't see
+* any output, it's an Ethernet driver problem.  If you only
+* see three PADI packets and nothing else, check your cables
+* and modem.  Make sure the modem lights flash when you try
+* to connect.  Check that your Ethernet card is in
+* half-duplex, 10Mb/s mode.  If all else fails,
+* try using pppoe-sniff.
+rp-pppoe debugging dump
+Oct  3 14:11:41 localhost pppd[4392]: PAP authentication succeeded
+Oct  3 14:11:41 localhost pppd[4392]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:11:41 localhost pppd[4392]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:11:41 localhost pppd[4392]: local  IP address 125.118.1.12
+Oct  3 14:11:41 localhost pppd[4392]: remote IP address 220.191.128.20
+Oct  3 14:11:41 localhost pppd[4392]: primary   DNS address 202.101.172.35
+Oct  3 14:11:41 localhost pppd[4392]: secondary DNS address 202.101.172.47
+Oct  3 14:11:52 localhost pppd[4392]: Terminating on signal 15
+Oct  3 14:11:52 localhost pppd[4392]: Connect time 0.2 minutes.
+Oct  3 14:11:52 localhost pppd[4392]: Sent 200 bytes, received 280 bytes.
+Oct  3 14:11:52 localhost pppd[4392]: Connection terminated.
+Oct  3 14:11:52 localhost pppd[4392]: Exit.
+Oct  3 14:11:52 localhost pppd[4396]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:11:55 localhost pppd[4396]: Using interface ppp0
+Oct  3 14:11:55 localhost pppd[4396]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:12:10 localhost pppd[4396]: Modem hangup
+Oct  3 14:12:10 localhost pppd[4396]: Connection terminated.
+Oct  3 14:12:10 localhost pppd[4396]: Exit.
+Oct  3 14:17:35 localhost pppd[4453]: Plugin rp-pppoe.so loaded.
+Oct  3 14:17:35 localhost pppd[4453]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:17:35 localhost pppd[4453]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:17:36 localhost pppd[4453]: PPP session is 7064
+Oct  3 14:17:36 localhost pppd[4453]: Using interface ppp0
+Oct  3 14:17:36 localhost pppd[4453]: Connect: ppp0 <--> eth0
+Oct  3 14:17:36 localhost pppd[4453]: PAP authentication succeeded
+Oct  3 14:17:36 localhost pppd[4453]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:17:36 localhost pppd[4453]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:17:36 localhost pppd[4453]: local  IP address 125.118.6.123
+Oct  3 14:17:36 localhost pppd[4453]: remote IP address 220.191.128.20
+Oct  3 14:17:36 localhost pppd[4453]: primary   DNS address 202.101.172.35
+Oct  3 14:17:36 localhost pppd[4453]: secondary DNS address 202.101.172.47
+Oct  3 14:17:45 localhost pppd[4453]: Terminating on signal 15
+Oct  3 14:17:45 localhost pppd[4453]: Connect time 0.2 minutes.
+Oct  3 14:17:45 localhost pppd[4453]: Sent 120 bytes, received 144 bytes.
+Oct  3 14:17:45 localhost pppd[4453]: Connection terminated.
+Oct  3 14:17:45 localhost pppd[4453]: Exit.
+Oct  3 14:17:45 localhost pppd[4457]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:17:47 localhost pppd[4457]: Using interface ppp0
+Oct  3 14:17:47 localhost pppd[4457]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:17:55 localhost pppd[4457]: Modem hangup
+Oct  3 14:17:55 localhost pppd[4457]: Connection terminated.
+Oct  3 14:17:55 localhost pppd[4457]: Exit.
+Oct  3 14:19:18 localhost pppd[4512]: Plugin rp-pppoe.so loaded.
+Oct  3 14:19:18 localhost pppd[4512]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:19:18 localhost pppd[4512]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:19:18 localhost pppd[4512]: PPP session is 7090
+Oct  3 14:19:18 localhost pppd[4512]: Using interface ppp0
+Oct  3 14:19:18 localhost pppd[4512]: Connect: ppp0 <--> eth0
+Oct  3 14:19:19 localhost pppd[4512]: PAP authentication succeeded
+Oct  3 14:19:19 localhost pppd[4512]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:19:19 localhost pppd[4512]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:19:19 localhost pppd[4512]: local  IP address 125.119.13.224
+Oct  3 14:19:19 localhost pppd[4512]: remote IP address 220.191.128.20
+Oct  3 14:19:19 localhost pppd[4512]: primary   DNS address 202.101.172.35
+Oct  3 14:19:19 localhost pppd[4512]: secondary DNS address 202.101.172.47
+Oct  3 14:19:53 localhost pppd[4512]: Terminating on signal 15
+Oct  3 14:19:53 localhost pppd[4512]: Connect time 0.6 minutes.
+Oct  3 14:19:53 localhost pppd[4512]: Sent 360 bytes, received 4329 bytes.
+Oct  3 14:19:54 localhost pppd[4512]: Connection terminated.
+Oct  3 14:19:54 localhost pppd[4512]: Exit.
+Oct  3 14:19:54 localhost pppd[4517]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:19:55 localhost pppd[4517]: Using interface ppp0
+Oct  3 14:19:55 localhost pppd[4517]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:19:59 localhost pppd[4517]: Modem hangup
+Oct  3 14:19:59 localhost pppd[4517]: Connection terminated.
+Oct  3 14:19:59 localhost pppd[4517]: Exit.
+Oct  3 14:22:04 localhost pppd[4569]: Plugin rp-pppoe.so loaded.
+Oct  3 14:22:04 localhost pppd[4569]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:22:04 localhost pppd[4569]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:22:04 localhost pppd[4569]: PPP session is 7152
+Oct  3 14:22:04 localhost pppd[4569]: Using interface ppp0
+Oct  3 14:22:04 localhost pppd[4569]: Connect: ppp0 <--> eth0
+Oct  3 14:22:08 localhost pppd[4569]: PAP authentication succeeded
+Oct  3 14:22:08 localhost pppd[4569]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:22:08 localhost pppd[4569]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:22:08 localhost pppd[4569]: local  IP address 125.119.8.130
+Oct  3 14:22:08 localhost pppd[4569]: remote IP address 220.191.128.20
+Oct  3 14:22:08 localhost pppd[4569]: primary   DNS address 202.101.172.35
+Oct  3 14:22:08 localhost pppd[4569]: secondary DNS address 202.101.172.47
+Oct  3 14:22:19 localhost pppd[4569]: Terminating on signal 15
+Oct  3 14:22:19 localhost pppd[4569]: Connect time 0.2 minutes.
+Oct  3 14:22:19 localhost pppd[4569]: Sent 40 bytes, received 48 bytes.
+Oct  3 14:22:19 localhost pppd[4569]: Connection terminated.
+Oct  3 14:22:19 localhost pppd[4569]: Exit.
+Oct  3 14:22:20 localhost pppd[4574]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:22:22 localhost pppd[4574]: Using interface ppp0
+Oct  3 14:22:22 localhost pppd[4574]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:22:24 localhost pppd[4574]: Modem hangup
+Oct  3 14:22:24 localhost pppd[4574]: Connection terminated.
+Oct  3 14:22:24 localhost pppd[4574]: Exit.
+Oct  3 14:32:02 localhost pppd[4629]: unrecognized option '/usr/bin/setsid'
+Oct  3 14:34:26 localhost pppd[4646]: unrecognized option '/usr/bin/setsid'
+Oct  3 14:36:07 localhost pppd[4663]: Plugin rp-pppoe.so loaded.
+Oct  3 14:36:07 localhost pppd[4663]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:36:07 localhost pppd[4663]: unrecognized option 'pppd'
+Oct  3 14:36:56 localhost pppd[4684]: Plugin rp-pppoe.so loaded.
+Oct  3 14:36:56 localhost pppd[4684]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:36:56 localhost pppd[4684]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:36:56 localhost pppd[4684]: PPP session is 7443
+Oct  3 14:36:56 localhost pppd[4684]: Using interface ppp0
+Oct  3 14:36:56 localhost pppd[4684]: Connect: ppp0 <--> eth0
+Oct  3 14:36:56 localhost pppd[4684]: PAP authentication succeeded
+Oct  3 14:36:56 localhost pppd[4684]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:36:56 localhost pppd[4684]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:36:56 localhost pppd[4684]: local  IP address 125.119.14.197
+Oct  3 14:36:56 localhost pppd[4684]: remote IP address 220.191.128.20
+Oct  3 14:36:56 localhost pppd[4684]: primary   DNS address 202.101.172.35
+Oct  3 14:36:56 localhost pppd[4684]: secondary DNS address 202.101.172.47
+Oct  3 14:37:04 localhost pppd[4684]: Terminating on signal 15
+Oct  3 14:37:04 localhost pppd[4684]: Connect time 0.2 minutes.
+Oct  3 14:37:04 localhost pppd[4684]: Sent 0 bytes, received 0 bytes.
+Oct  3 14:37:04 localhost pppd[4684]: Connection terminated.
+Oct  3 14:37:04 localhost pppd[4684]: Exit.
+Oct  3 14:37:10 localhost pppd[4703]: Plugin rp-pppoe.so loaded.
+Oct  3 14:37:10 localhost pppd[4703]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:37:10 localhost pppd[4703]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:37:10 localhost pppd[4703]: PPP session is 7449
+Oct  3 14:37:10 localhost pppd[4703]: Using interface ppp0
+Oct  3 14:37:10 localhost pppd[4703]: Connect: ppp0 <--> eth0
+Oct  3 14:37:11 localhost pppd[4703]: PAP authentication succeeded
+Oct  3 14:37:11 localhost pppd[4703]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:37:11 localhost pppd[4703]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:37:11 localhost pppd[4703]: local  IP address 60.176.143.133
+Oct  3 14:37:11 localhost pppd[4703]: remote IP address 220.191.128.20
+Oct  3 14:37:11 localhost pppd[4703]: primary   DNS address 202.101.172.35
+Oct  3 14:37:11 localhost pppd[4703]: secondary DNS address 202.101.172.47
+Oct  3 14:37:16 localhost pppd[4716]: Plugin rp-pppoe.so loaded.
+Oct  3 14:37:16 localhost pppd[4716]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:37:16 localhost pppd[4716]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:37:16 localhost pppd[4716]: PPP session is 7452
+Oct  3 14:37:16 localhost pppd[4716]: Using interface ppp1
+Oct  3 14:37:16 localhost pppd[4716]: Connect: ppp1 <--> eth0
+Oct  3 14:37:16 localhost pppd[4716]: PAP authentication succeeded
+Oct  3 14:37:16 localhost pppd[4716]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:37:16 localhost pppd[4716]: not replacing existing default route through ppp0
+Oct  3 14:37:16 localhost pppd[4716]: not replacing existing default route through ppp0
+Oct  3 14:37:16 localhost pppd[4716]: local  IP address 125.119.12.72
+Oct  3 14:37:16 localhost pppd[4716]: remote IP address 220.191.128.20
+Oct  3 14:37:16 localhost pppd[4716]: primary   DNS address 202.101.172.35
+Oct  3 14:37:16 localhost pppd[4716]: secondary DNS address 202.101.172.47
+Oct  3 14:37:26 localhost pppd[4703]: Terminating on signal 15
+Oct  3 14:37:26 localhost pppd[4703]: Connect time 0.3 minutes.
+Oct  3 14:37:26 localhost pppd[4703]: Sent 1206 bytes, received 842 bytes.
+Oct  3 14:37:26 localhost pppd[4716]: Terminating on signal 15
+Oct  3 14:37:26 localhost pppd[4716]: Connect time 0.2 minutes.
+Oct  3 14:37:26 localhost pppd[4716]: Sent 0 bytes, received 0 bytes.
+Oct  3 14:37:26 localhost pppd[4703]: Connection terminated.
+Oct  3 14:37:26 localhost pppd[4716]: Connection terminated.
+Oct  3 14:37:26 localhost pppd[4703]: Exit.
+Oct  3 14:37:27 localhost pppd[4716]: Exit.
+Wed Oct  3 14:37:27 CST 2007
+---------------------------------------------
+* The following section is a dump of the packets
+* sent and received by rp-pppoe.  If you don't see
+* any output, it's an Ethernet driver problem.  If you only
+* see three PADI packets and nothing else, check your cables
+* and modem.  Make sure the modem lights flash when you try
+* to connect.  Check that your Ethernet card is in
+* half-duplex, 10Mb/s mode.  If all else fails,
+* try using pppoe-sniff.
+rp-pppoe debugging dump
+* The following section identifies your Ethernet interface
+* and user name.  Some ISP's need 'username'; others
+* need 'username@isp.com'.  Try both
+ETH=eth0; USER=hzhz021555
+---------------------------------------------
+* The following section shows the pppd command we will invoke
+pppd invocation
+/usr/bin/setsid /usr/sbin/pppd pty '/usr/sbin/pppoe -p /var/run/pppoe.conf-pppoe.pid.pppoe -I eth0 -T 80 -U  -m 1412   ' plugin rp-pppoe.so eth0 noipdefault noauth default-asyncmap usepeerdns defaultroute hide-password nodetach  mtu 1492 mru 1492 noaccomp nodeflate nopcomp novj novjccomp user hzhz021555 password 123456 lcp-echo-interval 20 lcp-echo-failure 3  debug
+---------------------------------------------
+Plugin rp-pppoe.so loaded.
+RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+using channel 39
+Using interface ppp0
+Connect: ppp0 <--> eth0
+sent [LCP ConfReq id=0x1 <mru 1492> <magic 0xc1ae1be2>]
+rcvd [LCP ConfReq id=0x4e <mru 1492> <auth pap> <magic 0x59299c4b>]
+lcp_reqci: returning CONFACK.
+sent [LCP ConfAck id=0x4e <mru 1492> <auth pap> <magic 0x59299c4b>]
+rcvd [LCP ConfAck id=0x1 <mru 1492> <magic 0xc1ae1be2>]
+sent [LCP EchoReq id=0x0 magic=0xc1ae1be2]
+sent [PAP AuthReq id=0x1 user="hzhz021555" password=<hidden>]
+rcvd [LCP EchoRep id=0x0 magic=0x59299c4b]
+rcvd [PAP AuthAck id=0x1 ""]
+PAP authentication succeeded
+peer from calling number 00:90:1A:41:5A:A1 authorized
+sent [IPCP ConfReq id=0x1 <addr 0.0.0.0> <ms-dns1 0.0.0.0> <ms-dns3 0.0.0.0>]
+rcvd [IPCP ConfNak id=0x1 <addr 60.186.104.205> <ms-dns1 202.101.172.35> <ms-dns3 202.101.172.47>]
+sent [IPCP ConfReq id=0x2 <addr 60.186.104.205> <ms-dns1 202.101.172.35> <ms-dns3 202.101.172.47>]
+rcvd [IPCP ConfAck id=0x2 <addr 60.186.104.205> <ms-dns1 202.101.172.35> <ms-dns3 202.101.172.47>]
+rcvd [IPCP ConfReq id=0xff <addr 220.191.128.20>]
+ipcp: returning Configure-ACK
+sent [IPCP ConfAck id=0xff <addr 220.191.128.20>]
+ipcp: up
+default route ioctl(SIOCADDRT): File exists
+local  IP address 60.186.104.205
+remote IP address 220.191.128.20
+primary   DNS address 202.101.172.35
+secondary DNS address 202.101.172.47
+Terminating on signal 15
+ipcp: down
+Connect time 0.2 minutes.
+Sent 0 bytes, received 0 bytes.
+sent [LCP TermReq id=0x2 "User request"]
+rcvd [LCP TermAck id=0x2]
+Connection terminated.
+---------------------------------------------
+* The following section is an extract from your log.
+* Look for error messages from pppd, such as
+* a lack of kernel support for PPP, authentication failure
+* etc.
+Extract from /var/log/messages
+Oct  3 14:17:35 localhost pppd[4453]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:17:35 localhost pppd[4453]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:17:36 localhost pppd[4453]: PPP session is 7064
+Oct  3 14:17:36 localhost pppd[4453]: Using interface ppp0
+Oct  3 14:17:36 localhost pppd[4453]: Connect: ppp0 <--> eth0
+Oct  3 14:17:36 localhost pppd[4453]: PAP authentication succeeded
+Oct  3 14:17:36 localhost pppd[4453]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:17:36 localhost pppd[4453]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:17:36 localhost pppd[4453]: local  IP address 125.118.6.123
+Oct  3 14:17:36 localhost pppd[4453]: remote IP address 220.191.128.20
+Oct  3 14:17:36 localhost pppd[4453]: primary   DNS address 202.101.172.35
+Oct  3 14:17:36 localhost pppd[4453]: secondary DNS address 202.101.172.47
+Oct  3 14:17:45 localhost pppd[4453]: Terminating on signal 15
+Oct  3 14:17:45 localhost pppd[4453]: Connect time 0.2 minutes.
+Oct  3 14:17:45 localhost pppd[4453]: Sent 120 bytes, received 144 bytes.
+Oct  3 14:17:45 localhost pppd[4453]: Connection terminated.
+Oct  3 14:17:45 localhost pppd[4453]: Exit.
+Oct  3 14:17:45 localhost pppd[4457]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:17:47 localhost pppd[4457]: Using interface ppp0
+Oct  3 14:17:47 localhost pppd[4457]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:17:55 localhost pppd[4457]: Modem hangup
+Oct  3 14:17:55 localhost pppd[4457]: Connection terminated.
+Oct  3 14:17:55 localhost pppd[4457]: Exit.
+Oct  3 14:19:18 localhost pppd[4512]: Plugin rp-pppoe.so loaded.
+Oct  3 14:19:18 localhost pppd[4512]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:19:18 localhost pppd[4512]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:19:18 localhost pppd[4512]: PPP session is 7090
+Oct  3 14:19:18 localhost pppd[4512]: Using interface ppp0
+Oct  3 14:19:18 localhost pppd[4512]: Connect: ppp0 <--> eth0
+Oct  3 14:19:19 localhost pppd[4512]: PAP authentication succeeded
+Oct  3 14:19:19 localhost pppd[4512]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:19:19 localhost pppd[4512]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:19:19 localhost pppd[4512]: local  IP address 125.119.13.224
+Oct  3 14:19:19 localhost pppd[4512]: remote IP address 220.191.128.20
+Oct  3 14:19:19 localhost pppd[4512]: primary   DNS address 202.101.172.35
+Oct  3 14:19:19 localhost pppd[4512]: secondary DNS address 202.101.172.47
+Oct  3 14:19:53 localhost pppd[4512]: Terminating on signal 15
+Oct  3 14:19:53 localhost pppd[4512]: Connect time 0.6 minutes.
+Oct  3 14:19:53 localhost pppd[4512]: Sent 360 bytes, received 4329 bytes.
+Oct  3 14:19:54 localhost pppd[4512]: Connection terminated.
+Oct  3 14:19:54 localhost pppd[4512]: Exit.
+Oct  3 14:19:54 localhost pppd[4517]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:19:55 localhost pppd[4517]: Using interface ppp0
+Oct  3 14:19:55 localhost pppd[4517]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:19:59 localhost pppd[4517]: Modem hangup
+Oct  3 14:19:59 localhost pppd[4517]: Connection terminated.
+Oct  3 14:19:59 localhost pppd[4517]: Exit.
+Oct  3 14:22:04 localhost pppd[4569]: Plugin rp-pppoe.so loaded.
+Oct  3 14:22:04 localhost pppd[4569]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:22:04 localhost pppd[4569]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:22:04 localhost pppd[4569]: PPP session is 7152
+Oct  3 14:22:04 localhost pppd[4569]: Using interface ppp0
+Oct  3 14:22:04 localhost pppd[4569]: Connect: ppp0 <--> eth0
+Oct  3 14:22:08 localhost pppd[4569]: PAP authentication succeeded
+Oct  3 14:22:08 localhost pppd[4569]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:22:08 localhost pppd[4569]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:22:08 localhost pppd[4569]: local  IP address 125.119.8.130
+Oct  3 14:22:08 localhost pppd[4569]: remote IP address 220.191.128.20
+Oct  3 14:22:08 localhost pppd[4569]: primary   DNS address 202.101.172.35
+Oct  3 14:22:08 localhost pppd[4569]: secondary DNS address 202.101.172.47
+Oct  3 14:22:19 localhost pppd[4569]: Terminating on signal 15
+Oct  3 14:22:19 localhost pppd[4569]: Connect time 0.2 minutes.
+Oct  3 14:22:19 localhost pppd[4569]: Sent 40 bytes, received 48 bytes.
+Oct  3 14:22:19 localhost pppd[4569]: Connection terminated.
+Oct  3 14:22:19 localhost pppd[4569]: Exit.
+Oct  3 14:22:20 localhost pppd[4574]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:22:22 localhost pppd[4574]: Using interface ppp0
+Oct  3 14:22:22 localhost pppd[4574]: Connect: ppp0 <--> /dev/pts/3
+Oct  3 14:22:24 localhost pppd[4574]: Modem hangup
+Oct  3 14:22:24 localhost pppd[4574]: Connection terminated.
+Oct  3 14:22:24 localhost pppd[4574]: Exit.
+Oct  3 14:32:02 localhost pppd[4629]: unrecognized option '/usr/bin/setsid'
+Oct  3 14:34:26 localhost pppd[4646]: unrecognized option '/usr/bin/setsid'
+Oct  3 14:36:07 localhost pppd[4663]: Plugin rp-pppoe.so loaded.
+Oct  3 14:36:07 localhost pppd[4663]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:36:07 localhost pppd[4663]: unrecognized option 'pppd'
+Oct  3 14:36:56 localhost pppd[4684]: Plugin rp-pppoe.so loaded.
+Oct  3 14:36:56 localhost pppd[4684]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:36:56 localhost pppd[4684]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:36:56 localhost pppd[4684]: PPP session is 7443
+Oct  3 14:36:56 localhost pppd[4684]: Using interface ppp0
+Oct  3 14:36:56 localhost pppd[4684]: Connect: ppp0 <--> eth0
+Oct  3 14:36:56 localhost pppd[4684]: PAP authentication succeeded
+Oct  3 14:36:56 localhost pppd[4684]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:36:56 localhost pppd[4684]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:36:56 localhost pppd[4684]: local  IP address 125.119.14.197
+Oct  3 14:36:56 localhost pppd[4684]: remote IP address 220.191.128.20
+Oct  3 14:36:56 localhost pppd[4684]: primary   DNS address 202.101.172.35
+Oct  3 14:36:56 localhost pppd[4684]: secondary DNS address 202.101.172.47
+Oct  3 14:37:04 localhost pppd[4684]: Terminating on signal 15
+Oct  3 14:37:04 localhost pppd[4684]: Connect time 0.2 minutes.
+Oct  3 14:37:04 localhost pppd[4684]: Sent 0 bytes, received 0 bytes.
+Oct  3 14:37:04 localhost pppd[4684]: Connection terminated.
+Oct  3 14:37:04 localhost pppd[4684]: Exit.
+Oct  3 14:37:10 localhost pppd[4703]: Plugin rp-pppoe.so loaded.
+Oct  3 14:37:10 localhost pppd[4703]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:37:10 localhost pppd[4703]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:37:10 localhost pppd[4703]: PPP session is 7449
+Oct  3 14:37:10 localhost pppd[4703]: Using interface ppp0
+Oct  3 14:37:10 localhost pppd[4703]: Connect: ppp0 <--> eth0
+Oct  3 14:37:11 localhost pppd[4703]: PAP authentication succeeded
+Oct  3 14:37:11 localhost pppd[4703]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:37:11 localhost pppd[4703]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:37:11 localhost pppd[4703]: local  IP address 60.176.143.133
+Oct  3 14:37:11 localhost pppd[4703]: remote IP address 220.191.128.20
+Oct  3 14:37:11 localhost pppd[4703]: primary   DNS address 202.101.172.35
+Oct  3 14:37:11 localhost pppd[4703]: secondary DNS address 202.101.172.47
+Oct  3 14:37:16 localhost pppd[4716]: Plugin rp-pppoe.so loaded.
+Oct  3 14:37:16 localhost pppd[4716]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:37:16 localhost pppd[4716]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:37:16 localhost pppd[4716]: PPP session is 7452
+Oct  3 14:37:16 localhost pppd[4716]: Using interface ppp1
+Oct  3 14:37:16 localhost pppd[4716]: Connect: ppp1 <--> eth0
+Oct  3 14:37:16 localhost pppd[4716]: PAP authentication succeeded
+Oct  3 14:37:16 localhost pppd[4716]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:37:16 localhost pppd[4716]: not replacing existing default route through ppp0
+Oct  3 14:37:16 localhost pppd[4716]: not replacing existing default route through ppp0
+Oct  3 14:37:16 localhost pppd[4716]: local  IP address 125.119.12.72
+Oct  3 14:37:16 localhost pppd[4716]: remote IP address 220.191.128.20
+Oct  3 14:37:16 localhost pppd[4716]: primary   DNS address 202.101.172.35
+Oct  3 14:37:16 localhost pppd[4716]: secondary DNS address 202.101.172.47
+Oct  3 14:37:26 localhost pppd[4703]: Terminating on signal 15
+Oct  3 14:37:26 localhost pppd[4703]: Connect time 0.3 minutes.
+Oct  3 14:37:26 localhost pppd[4703]: Sent 1206 bytes, received 842 bytes.
+Oct  3 14:37:26 localhost pppd[4716]: Terminating on signal 15
+Oct  3 14:37:26 localhost pppd[4716]: Connect time 0.2 minutes.
+Oct  3 14:37:26 localhost pppd[4716]: Sent 0 bytes, received 0 bytes.
+Oct  3 14:37:26 localhost pppd[4703]: Connection terminated.
+Oct  3 14:37:26 localhost pppd[4716]: Connection terminated.
+Oct  3 14:37:26 localhost pppd[4703]: Exit.
+Oct  3 14:37:27 localhost pppd[4716]: Exit.
+Oct  3 14:41:17 localhost pppoe-server[3891]: Terminating on signal 15 -- killing all PPPoE sessions
+Oct  3 14:52:38 localhost pppd[4750]: Plugin rp-pppoe.so loaded.
+Oct  3 14:52:38 localhost pppd[4750]: RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Oct  3 14:52:38 localhost pppd[4750]: pppd 2.4.4 started by root, uid 0
+Oct  3 14:52:38 localhost pppd[4750]: PPP session is 7776
+Oct  3 14:52:38 localhost pppd[4750]: Using interface ppp0
+Oct  3 14:52:38 localhost pppd[4750]: Connect: ppp0 <--> eth0
+Oct  3 14:52:38 localhost pppd[4750]: PAP authentication succeeded
+Oct  3 14:52:38 localhost pppd[4750]: peer from calling number 00:90:1A:41:5A:A1 authorized
+Oct  3 14:52:38 localhost pppd[4750]: default route ioctl(SIOCADDRT): File exists
+Oct  3 14:52:38 localhost pppd[4750]: local  IP address 60.186.104.205
+Oct  3 14:52:38 localhost pppd[4750]: remote IP address 220.191.128.20
+Oct  3 14:52:38 localhost pppd[4750]: primary   DNS address 202.101.172.35
+Oct  3 14:52:38 localhost pppd[4750]: secondary DNS address 202.101.172.47
+Oct  3 14:52:47 localhost pppd[4750]: Terminating on signal 15
+Oct  3 14:52:47 localhost pppd[4750]: Connect time 0.2 minutes.
+Oct  3 14:52:47 localhost pppd[4750]: Sent 0 bytes, received 0 bytes.
+Oct  3 14:52:47 localhost pppd[4750]: Connection terminated.
+Oct  3 14:52:47 localhost pppd[4750]: Exit.
+Wed Oct  3 14:52:47 CST 2007
+---------------------------------------------
+* The following section is a dump of the packets
+* sent and received by rp-pppoe.  If you don't see
+* any output, it's an Ethernet driver problem.  If you only
+* see three PADI packets and nothing else, check your cables
+* and modem.  Make sure the modem lights flash when you try
+* to connect.  Check that your Ethernet card is in
+* half-duplex, 10Mb/s mode.  If all else fails,
+* try using pppoe-sniff.
+rp-pppoe debugging dump

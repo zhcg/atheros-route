@@ -1,0 +1,113 @@
+# Set the toolchain path
+export TOOLCHAIN=gcc-3.4.4-2.16.1
+export TOOLPREFIX=mips-linux-uclibc-
+export TOOLARCH=build_mips
+
+export KERNEL=mips-linux-2.6.15
+export KERNELVER=2.6.15
+export KERNELTARGET=vmlinux.bin
+export COMPRESSKERNEL=y
+export KERNELARCH=mips
+
+export BUSYBOX=busybox-1.01
+export WIRELESSTOOLS=wireless_tools.28
+export WIRELESSTOOLSLIB=libiw.so.28
+
+#
+# Enable the "new" hostapd
+#
+
+export BUILD_WPA2=y
+#for station forwarding support
+export CONFIG_ETHERSTA=y
+
+#
+# UMAC build option
+#
+
+export BUILD_UMAC=1
+
+
+export BUS=GMAC
+export BUSNAME=gmac
+
+export TARGETARCH=mipsisa32-be-elf
+export MAGPIE_IF=gmac
+
+# Firmware variables
+export FW_ROM=magpie_1_1
+export FW_RAM=magpie_ram
+export FW_GMAC_RAM=magpie_ram_gmac
+export BUILD_XMII_FW=y
+
+#
+# Enable HTC for Gmac split driver
+#
+
+# Firmare paths
+export FW_PATH=firmware/split_firmware/magpie_fw_dev
+export FWU_GMAC_PATH=drivers/wlan/htc/hif/gmac/fwd
+
+# Firmware Source files
+export SRC_GMAC=fusion_gmac.ram
+export SRC_GMAC_MDIO=builds.ram
+
+# Firmware file names
+export FWU_GMAC=fwu_magpie_gmac
+export FWU_GMAC_MDIO=fwu_magpie_gmac_mdio
+
+#
+# Enable HTC for split driver
+#
+export ATH_SUPPORT_HTC=1
+export HIF_GMAC_SUPPORT=1
+export ENABLE_MTU_LIMIT=1
+
+#
+# Set a large file size image to take advantage of the 8 MB part by default
+#
+
+export TARGETFSSIZE=0x600000
+export AP_TYPE=dual
+
+#
+# Select the support required for this board
+#
+
+export AH_SUPPORT_AR5210=0
+export AH_SUPPORT_AR5211=0
+export AH_SUPPORT_AR5212=1
+export AH_SUPPORT_AR5416=1
+export AH_SUPPORT_5111=1
+export AH_SUPPORT_5112=1
+export AH_SUPPORT_2413=1
+export AH_SUPPORT_5413=1
+export AH_SUPPORT_2316=1
+export AH_SUPPORT_2317=1
+export AH_SUPPORT_2425=1
+export AH_SUPPORT_2133=1  
+
+export AH_SUPPORT_AR9300=0
+#
+# Environmental variables used to configure the HAL/ATH layers at compile time
+#
+
+export ATH_CAP_PHYERR_DIAG=1
+export AR5416_G_MODE=1
+export AH_SUPPORT_HOWL=0
+export AH_SUPPORT_OWL=1
+export AH_DEBUG=1
+export REMOVE_PKT_LOG=1
+export AR5416_INT_MITIGATION=1
+export ATH_SUPPORT_DFS=1
+#export ATH_SUPPORT_IQUE=1
+export IEEE_MCAST_ENHANCEMENT=1
+export ATH_WPS_IE=1
+
+#
+# Spectral scan enable
+#
+export ATH_SUPPORT_SPECTRAL=0
+#export ATH_SUPPORT_VOWEXT=1
+#export ATH_EXT_AP=1
+export ATH_SUPPORT_VLAN=1

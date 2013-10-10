@@ -1,0 +1,213 @@
+
+This is NX-ROUTED README
+	Copyright (C) 2002 Valery Kholodkov
+	Copyright (C) 2002 Andy Pershin
+	Copyright (C) 2002 Antony Kholodkov
+	
+The version is 0.99 and it is a Beta Release.
+
+  1.1 Introduction
+
+NX-ROUTED is routing information daemon supporting RIP-2 routing
+protocol, according to RFC 2453. RIP-2 is Interior Gateway Protocol used
+for automatic route aquisition and routing table maintaince in corporate
+computer networks. Running standalone NX-ROUTED listens for incoming routing
+table updates from direcly connected links and sends periodical updates to
+other links. It also announces a list of networks and routes specified by
+system administator.
+
+ 1.2 Configuration
+
+NX-ROUTED is controlled by configuration file /etc/router.conf
+Format of configuration file is following:
+
+[general]
+router=<name of routing protocol, currently "rip2">
+links=<list of physical links>
+virtuallinks=<list of virtual links>
+
+[<protocol sections>]
+<protocol attributes>
+
+[<link sections>]
+<link attributes>
+
+[<virtual link sections>]
+<virtual link attributes>
+
+Section "general" describes general behavior of NX-ROUTED daemon. Supported
+attributes are:
+
+router		Specifies routing protocol to be used. Only RIP-2 is now
+		supported, so "rip2" should be specified.
+		
+links		Specifies a list of direcly connected links to use. Every
+		link corresponds to single IP interface, but not every
+		interface should have a corresponding link. Links are used
+		to tell NX-ROUTED where to send updates and what routes
+		to announce. Links could be named randomly, e.g. "caffe",
+		"net1", "marketing", "servers" are acceptable.
+		
+virtuallinks	Specifies a list of virtual links, which are not connected
+		direcly, but routes to them are known. For example, dialup
+		address pool could stand as virtual link. 
+		
+
+Description of particular link (physical or virtual) is given in corresponding
+configuration file section. This section must have the same name as the link
+itself. The list of attributes for physical link is following:
+
+protocol	Specifies which protocol to use for that link. Currently only
+		"rip2" value should be used.
+		
+interface	Specifies the name of network interface on which particular
+		link is based. Example: eth0, eth1, tun1, ie1
+
+cost		Specifies the approximate cost of forwarding packets
+		through link. In most cases this value should be 1.
+		Maximum value is 15. Reachability of links controlled
+		automaticaly by inserting reject routes to avoid loops.
+
+announcethis	Specifies whether to send announces OF THIS link or not.
+
+announceto	Specifies whether to send announces TO THIS link or not.
+		This is useful to avoid routing loops.
+		
+announcedef	Specifies whether to announce default route (0.0.0.0/0)
+                TO THIS link or not.
+
+To announce random destination you should use virtual links. Virtual links
+counted as not connected directly to host machine, but to which route
+is know. For example, you don't want to declare every PPP connection as
+physical link, because they going up and down very frequently, causing much
+routing information traffic. Instead you can declare whole set of PPP links
+as virtual, that would stand as a single route. The list of attributes
+for virtual link is following:
+
+protocol	Specifies which protocol to use for that link. Currently only
+		"rip2" value could be used.
+		
+network		Specifies destination network in Address/Prefix notation.
+		Examples are 192.168.1.0/28, 172.16.44.64/27
+
+cost		Specifies the approximate cost of forwarding packets
+		through that link. In most cases this value should be 1.
+		Maximum value is 16 which is infinity (unreachable).
+
+announcethis	Specifies whether to send announces OF this link or not.
+
+Sample configuration file is given below:
+
+[general]
+router=rip2
+links=eth0, eth1, tun0
+virtuallinks=dialup
+
+[eth0]
+protocol=rip2
+interface=eth0
+cost=2
+announcethis=yes
+announceto=yes
+
+[eth1]
+protocol=rip2
+interface=eth1
+cost=1
+announcethis=yes
+announceto=yes
+
+[tun0]
+protocol=rip2
+interface=tun0
+cost=2
+announcethis=yes
+announceto=no
+
+[dialup]
+protocol=rip2
+network=192.168.1.64/28
+cost=1
+
+You can quickly disable link by removing it from the list.
+
+ 1.2.1 Protocol specific configuration 
+ 
+Currently only RIP-2 routing protocol is supported. There are two options
+available for RIP-2:
+ 
+silent		Turns on silent mode, which prevents a daemon from
+		sending any datagramms to network. Default is disabled.
+		
+allowqueries	Enables or disables responses to RIP-2 queries. RIP-2
+		queries are used by booting gateways to quickly fill in their
+		routing table. For security reason this should be only used
+		in thrusted networks.
+
+RIP-2 specific configuration should be places in section named [rip2].
+Example:
+		
+[rip2]
+silent=no
+allowqueries=no
+ 
+
+ 1.3 Operation
+ 
+NX-ROUTED runs as a daemon. On startup it reads configuration file and
+examines existing interfaces. After 3 seconds daemon starts to announce
+specified links. 
+
+ 1.4 Logging
+
+NX-ROUTED logs every interesting event through syslog 
+
+ 1.5 Developer notes
+ 
+ 1.5.1 Debugging mode
+ 
+To enable debugging mode you should configure by the following way:
+
+./configure --enable-debug=yes 
+
+Also you have to specify debug level with -l command line switch. For
+example "./routed -l 5" will set NX-ROUTED to 5-th debug level. The
+lower debug level is the more debug messages are logged.
+
+  4 - Log routing protocols raw input
+  5 - Log decision process input
+  6 - Log decision process output
+  7 - Log routing protocols output
+  8 - Log routing protocols state
+
+Default debug
+level is 10 so NX-ROUTED will be almost silent. To enable full debug
+mode add DEBUG compile time macro, but this provides A LOT of output.
+Additional there is debug switch "no forking mode" which prevents daemon 
+from moving itself to background. This mode is turned on by "-d" command
+line switch. For RIP-2 routing protocol there is configuration option
+available to prevent NX-ROUTED from sending any datagrams. This is useful
+when testing in real enviroment (you don't want your big network to crash,
+yeah?). The option is called "silent" and looks like:
+
+[rip2]
+silent=yes
+
+Sometimes you want to watch what is really going on in the network. There
+is a simple tool from Andy Pershin which listens on RIP-2 port and prints
+everything what coming in. It is located in tools/rip2sniff under routed/
+tree. Please compile and run as root:
+
+cc rip2sniff.c -o rip2sniff
+
+./rip2sniff
+
+ 1.5.2 Submitting bugs and patches
+ 
+Submit bugs and patches by e-mail to <val_kh@users.sourceforge.net>. Interactive
+bugs and patches submitting procedure could be found at SourceForge.
+The project's unix name is nx-routed.
+See please http://sourceforge.net/projects/nx-routed/
+
+--
+Valery Kholodkov <val_kh@users.sourceforge.net>

@@ -1,0 +1,133 @@
+SHTTPD(1)		  BSD General Commands Manual		     SHTTPD(1)
+
+NAME
+     shttpd - lightweight web server
+
+SYNOPSIS
+     shttpd [OPTIONS] [config_file]
+     shttpd -A htpasswd_file realm username password
+
+DESCRIPTION
+     shttpd is small, fast and easy to use web server with CGI, SSL, Digest
+     Authorization support. It can be run as stand-alone server, be managed by
+     inetd(8) , or be embedded into existing C/C++ application.
+
+     Unlike other web servers, shttpd does not expect CGI scirpts to be put in
+     a special directory. They may be anywhere. CGI files are recognized by an
+     extension, which is ``.cgi'' by default.
+
+     SSI files are also recognized by extension. Currently, the only SSI
+     directive supported is `<!--#include "url-encoded-path" -->' , where
+     `path' can be relative to shttpd working directory, or absolute system
+     path. In the embedded mode, more directives are available: #call,
+     #if/#elif/#endif/#else/#endif.
+
+     It is possible to specify multiple ports to listen on. For example, to
+     make shttpd listen on HTTP port 80 and HTTPS port 443, one should start
+     it as ``shttpd -s cert.pem -p 80,443s''
+
+     shttpd can take configuration parameters from two sources: from the com-
+     mand line and from the configuration file. Command line parameters have
+     higher priority. Every command line parameter has associated configura-
+     tion file keyword, except -A parameter.  In the configuration file, blank
+     lines and lines started with ``#'' character are ignored. All other lines
+     must start with the keyword followed by a whitespace followed by key-
+     word's value.  If both command line parameter and configuration file
+     option are not specified, the default value is taken. The configuration
+     file may not be present at all.
+
+     If shttpd should be managed by inetd(8), add this line to inetd.conf:
+
+	   http stream tcp nowait nobody /path/to/shttpd shttpd -I1 -d /my/www
+
+OPTIONS
+     Below is the list of command line parameters. In the brackets there are
+     corresponding configuration file keywords.
+
+     -A htpasswd server_name user_name user_password
+	     Edit the passwords file. Functionality similar to Apache's
+	     htdigest utility.
+
+     -C file (cgi_interpreter file)
+	     Force file to be a CGI interpreter for all CGI scripts. Default:
+	     none.
+
+     -D 0|1 (list_directories 0|1)
+	     Disable directory listing. Default: enabled.
+
+     -I 0|1 (inetd_mode 0|1)
+	     Enable inetd mode. Default: disabled.
+
+     -N realm (server_name realm)
+	     Authorization realm. Default: ``mydomain.com''.
+
+     -P file (global_htpasswd file)
+	     Location of global passwords file. Per-directory .htpasswd files
+	     are ignored, if this option is set. Default: not set.
+
+     -S list (ssi_extensions list)
+	     SSI extensions. Default: ``.shtml,.shtm,.sht''.
+
+     -U file (put_auth file)
+	     PUT and DELETE passwords file. This must be specified if PUT or
+	     DELETE methods are used. Default: none.
+
+     -V list (cgi_envvar list)
+	     Pass additional environment variables to the CGI script. These
+	     must be comma-separated list of var=val pairs, like this:
+	     "VAR1=VAL1,VAR2=VAL2".  Default: not set.
+
+     -a list (aliases list)
+	     Attach directories (even those outside document_root) to URIs.
+	     The list must be comma-separated list of var=val pairs, like
+	     this: "/etc/=/my_etc,/tmp=/my_tmp". Default: not set.
+
+     -c list (cgi_extension list)
+	     CGI filename pattern. For every requested file, shttpd uses the
+	     pattern to figure out whether to return the file content, ot run
+	     the file as CGI application. Default: ``.cgi''.
+
+     -d directory (document_root directory)
+	     Location of the WWW root directory. Default: working directory
+	     from which shttpd has been started.
+
+     -e file (error_log file)
+	     Error log file. Default: not set, no errors are logged.
+
+     -l file (access_log file)
+	     Access log file. Default: not set, no logging is done.
+
+     -m file (mime_types file)
+	     Location of mime types file. Default: not set, builtins are used.
+
+     -p ports (listen_ports ports)
+	     Comma-separated list of ports to listen on. If the port is SSL, a
+	     letter 's' must be appeneded, for example, "80,443s" will open
+	     port 80 and port 443, and connections on port 443 will be SSL-ed.
+	     Default: 80
+
+     -s pem_file (ssl_certificate pem_file)
+	     Location of SSL certificate file. Default: not set.
+
+     -u login (runtime_uid login)
+	     Switch to given user ID after startup. Default: not set
+
+EMBEDDING
+     shttpd can be built as a library to embed web server functionality into
+     C/C++ application. The API functions are declared in a header file
+     shttpd.h.	Please refer to the source package for a header file and the
+     examples.
+
+FILES
+     /usr/local/etc/shttpd.conf
+
+SEE ALSO
+     inetd(8).
+
+COPYRIGHT
+     shttpd is licensed under the terms of beerware license.
+
+AUTHOR
+     Sergey Lyubka <valenok@gmail.com>.
+
+BSD				 Nov 10, 2006				   BSD

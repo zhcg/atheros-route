@@ -1,0 +1,104 @@
+###############connnection################
+
+
+# 11.21.9.5(pub server)<------ap96(eth0.3 11.21.9.225)port3 
+#
+# nat+route 
+# 
+# ap96(eth0.4 10.21.9.226) port4<------10.21.9.6(privare client)
+
+
+
+
+###############RGMII config##################
+ssdk_sh debug reg set 0x7c 0x0000007e 4
+ssdk_sh debug reg set 0x90 0 4
+ssdk_sh debug reg set 0x94 0 4
+ssdk_sh debug reg set 0x04 0x07400000 4
+ssdk_sh debug reg set 0x0c 0x01020000 4
+ssdk_sh debug reg set 0x624 0x007f7f7f 4
+
+#temp 100 speed
+#ssdk_sh port speed set 3 100
+#ssdk_sh port speed set 4 100
+
+
+###############SWITCH OFFLOAD config##################
+#l3 enable
+ssdk_sh debug reg set 0x30 0x80000304 4
+
+#ROUTER_EN enable
+ssdk_sh debug reg set 0xe00 0x72401 4
+
+#HNAT_EN, HNAPT_EN enable
+ssdk_sh debug reg set 0xe38 0x200a53 4
+
+#PRIVATE_IP_BASE_SEL 0 PRIVATE_IP_BASE_ADDR 10.21.9
+ssdk_sh debug reg set 0x418 0x0a150 4
+ssdk_sh debug reg set 0xe5c 0x0a150 4
+
+###############SWITCH header and vlan-tag config##################
+#header len 4 type 0xaaaa
+ssdk_sh  debug reg set 0x98 0x1aaaa 4
+
+#port0 tx header enable
+ssdk_sh port txhdr set 0 allframe
+ssdk_sh misc cpuPort set enable
+
+#port2,3 default vlan 3,4
+ssdk_sh portvlan defaultCVid set 3 3
+ssdk_sh portvlan defaultCVid set 4 4
+
+#port0 egress vlan tagged
+ssdk_sh portvlan egress set 0 tagged
+ssdk_sh portvlan egress set 3 untagged
+ssdk_sh portvlan egress set 4 untagged
+
+#port0,3,4 vlan check mode
+ssdk_sh portvlan ingress set 0 check
+ssdk_sh portvlan ingress set 3 check
+ssdk_sh portvlan ingress set 4 check
+
+#create vlan 3,4
+ssdk_sh vlan entry append 3 3 0,3 0 3 default default default
+ssdk_sh vlan entry append 4 4 0,4 0 4 default default default
+
+#enable arp ack
+#ssdk_sh misc ptarpreq set 0 disable
+#ssdk_sh misc ptarpack set 0 disable
+#ssdk_sh misc ptarpreq set 3 disable
+#ssdk_sh misc ptarpack set 3 disable
+#ssdk_sh misc ptarpreq set 4 disable
+#ssdk_sh misc ptarpack set 4 disable
+#ssdk_sh misc arpcmd set forward
+
+#broadcast to cpu enable
+ssdk_sh misc ptbcFilter set 0 disable
+
+#add router mac
+ssdk_sh ip intfentry add 0 0 0x1ff 00-03-7F-12-25-9D yes yes
+
+###############OS config##################
+#add vlan if 3,4
+ifconfig br0 down
+brctl delbr br0
+ifconfig eth0 0.0.0.0
+ifconfig eth1 0.0.0.0
+
+vconfig add eth0 3
+vconfig add eth0 4
+
+ifconfig eth0.3 11.21.9.225 up
+ifconfig eth0.4 10.21.9.226 up
+
+echo "1" >> /proc/sys/net/ipv4/ip_forward 
+
+
+#snat
+###############NAT RULE config##################
+#iptables -t nat -A POSTROUTING -p tcp -s 10.21.9.6  -j SNAT --to 11.21.9.66
+
+###############NAPT RULE config##################
+iptables -t nat -A POSTROUTING -p tcp -s 10.21.9.6 -j SNAT --to 11.21.9.225:10116-20116
+
+

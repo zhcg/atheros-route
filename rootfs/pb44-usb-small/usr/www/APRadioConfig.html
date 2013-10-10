@@ -1,0 +1,133 @@
+<HTML><HEAD>
+<LINK REL="stylesheet" href="../styleSheet.css" type="text/css">
+</head><body>
+<FORM METHOD=POST>
+<p class="headind"><INPUT TYPE="SUBMIT" NAME="UPDATE" VALUE="Update">
+&nbsp&nbsp<INPUT TYPE="SUBMIT" NAME="COMMIT" VALUE="Commit">
+&nbsp&nbsp<INPUT TYPE="SUBMIT" NAME="RebootButton" VALUE="Reboot">
+&nbsp&nbsp<INPUT TYPE="SUBMIT" NAME="StartButton" VALUE="Start">
+&nbsp&nbsp<INPUT TYPE="SUBMIT" NAME="StopButton" VALUE="Stop"></p>
+<p class="topnavg">AP Radio Configuration</p>
+<table>
+<tr><td><td class="doctitle">Radio 1 (Slot 0)</td><td >&nbsp&nbsp&nbsp&nbsp</td><td class="doctitle">Radio 2 (Slot 1)</td>
+<tr><td class="header">Channel
+<td><INPUT type="text" id="AP_PRIMARY_CH" name="AP_PRIMARY_CH"
+           class="text2" size="20" maxlength="16"
+           value="~~AP_PRIMARY_CH:6~">
+<td >&nbsp&nbsp&nbsp&nbsp</td>
+<td><INPUT type="text" id="AP_PRIMARY_CH_2" name="AP_PRIMARY_CH_2"
+           class="text2" size="20"  maxlength="16"
+           value="~~AP_PRIMARY_CH_2:40~">
+<tr><td class="header">Mode
+<td><SELECT class="text2" NAME="AP_CHMODE">
+    <OPTION ~sAP_CHMODE:11G~ value=11G>WiFi 11g
+    <OPTION ~sAP_CHMODE:11NGHT20~ value=11NGHT20>WiFi 11gn HT20
+    <OPTION ~sAP_CHMODE:11NGHT40PLUS~ value=11NGHT40PLUS>WiFi 11gn HT40+
+    <OPTION ~sAP_CHMODE:11NGHT40MINUS~ value=11NGHT40MINUS>WiFi 11gn HT40-
+    <OPTION ~sAP_CHMODE:11A~ value=11A>WiFi 11a
+    <OPTION ~sAP_CHMODE:11NAHT20~ value=11NAHT20>WiFi 11an HT20
+    <OPTION ~sAP_CHMODE:11NAHT40PLUS~ value=11NAHT40PLUS>WiFi 11an HT40+
+    <OPTION ~sAP_CHMODE:11NAHT40MINUS~ value=11NAHT40MINUS>WiFi 11an HT40-
+</SELECT>
+<td >&nbsp&nbsp&nbsp&nbsp</td>
+<td><SELECT class="text2" NAME="AP_CHMODE_2">
+    <OPTION ~sAP_CHMODE_2:11G~ value=11G>WiFi 11g
+    <OPTION ~sAP_CHMODE_2:11NGHT20~ value=11NGHT20>WiFi 11gn HT20
+    <OPTION ~sAP_CHMODE_2:11NGHT40PLUS~ value=11NGHT40PLUS>WiFi 11gn HT40+
+    <OPTION ~sAP_CHMODE_2:11NGHT40MINUS~ value=11NGHT40MINUS>WiFi 11gn HT40-
+    <OPTION ~sAP_CHMODE_2:11A~ value=11A>WiFi 11a
+    <OPTION ~sAP_CHMODE_2:11NAHT20~ value=11NAHT20>WiFi 11an HT20
+    <OPTION ~sAP_CHMODE_2:11NAHT40PLUS~ value=11NAHT40PLUS>WiFi 11an HT40+
+    <OPTION ~sAP_CHMODE_2:11NAHT40MINUS~ value=11NAHT40MINUS>WiFi 11an HT40-
+</SELECT>
+
+<tr><td><a class="header">Gating Index:
+<td class="headind"><INPUT type="radio" name="SHORTGI" ~cSHORTGI:1~ value=1> Half&nbsp
+<INPUT type="radio" name="SHORTGI" ~cSHORTGI:0~ value=0> Full&nbsp
+<td >&nbsp&nbsp&nbsp&nbsp</td>
+<td class="headind"><INPUT type="radio" name="SHORTGI_2" ~cSHORTGI_2:1~ value=1> Half&nbsp
+<INPUT type="radio" name="SHORTGI_2" ~cSHORTGI_2:0~ value=0> Full&nbsp
+
+<tr><td><a class="header">Aggregation:
+<td class="headind">
+<INPUT type="radio" name="AMPDUENABLE" ~cAMPDUENABLE:1~ value=1> Enabled&nbsp
+<INPUT type="radio" name="AMPDUENABLE" ~cAMPDUENABLE:0~ value=0> Disabled&nbsp
+<td >&nbsp&nbsp&nbsp&nbsp</td>
+<td class="headind">
+<INPUT type="radio" name="AMPDUENABLE_2" ~cAMPDUENABLE_2:1~ value=1> Enabled&nbsp
+<INPUT type="radio" name="AMPDUENABLE_2" ~cAMPDUENABLE_2:0~ value=0> Disabled&nbsp
+
+<tr><td><a class="header">Agg Frames:
+<td class="headind">
+<INPUT type="text" id="AMPDUFRAMES"	name="AMPDUFRAMES"
+           class="text2" size="20" maxlength="16"
+           value="~~AMPDUFRAMES~">
+<td >&nbsp&nbsp&nbsp&nbsp</td>
+<td class="headind">
+<INPUT type="text" id="AMPDUFRAMES_2" name="AMPDUFRAMES_2"
+           class="text2" size="20" maxlength="16"
+           value="~~AMPDUFRAMES_2~">
+
+<tr><td><a class="header">Agg Size:
+<td class="headind">
+<INPUT type="text" id="AMPDULIMIT" name="AMPDULIMIT"
+           class="text2" size="20" maxlength="16"
+           value="~~AMPDULIMIT~">
+<td >&nbsp&nbsp&nbsp&nbsp</td>
+<td class="headind">
+<INPUT type="text" id="AMPDULIMIT_2" name="AMPDULIMIT_2"
+           class="text2" size="20" maxlength="16"
+           value="~~AMPDULIMIT_2~">
+
+<tr><td><a class="header">Agg Min Size:
+<td class="headind">
+<INPUT type="text" id="AMPDUMIN" name="AMPDUMIN"
+           class="text2" size="20" maxlength="16"
+           value="~~AMPDUMIN~">
+<td >&nbsp&nbsp&nbsp&nbsp</td>
+<td class="headind">
+<INPUT type="text" id="AMPDUMIN_2" name="AMPDUMIN_2"
+           class="text2" size="20" maxlength="16"
+           value="~~AMPDUMIN_2~">
+
+<tr><td><a class="header">Channel Width:
+<td class="headind">
+<INPUT type="radio" name="CWMMODE" ~cCWMMODE:0~ value=0> HT20&nbsp
+<INPUT type="radio" name="CWMMODE" ~cCWMMODE:1~ value=1> HT20/40&nbsp
+<td >&nbsp&nbsp&nbsp&nbsp</td>
+<td class="headind">
+<INPUT type="radio" name="CWMMODE_2" ~cCWMMODE_2:0~ value=0> HT20&nbsp
+<INPUT type="radio" name="CWMMODE_2" ~cCWMMODE_2:1~ value=1> HT20/40&nbsp
+
+<tr><td><a class="header">TX ChainMask:
+<td class="headind">
+<INPUT type="radio" name="TX_CHAINMASK" ~cTX_CHAINMASK:1~ value=1> 1 Chain
+<INPUT type="radio" name="TX_CHAINMASK" ~cTX_CHAINMASK:3~ value=3> 2/2 Chain
+<INPUT type="radio" name="TX_CHAINMASK" ~cTX_CHAINMASK:5~ value=5> 2/3 Chain
+<INPUT type="radio" name="TX_CHAINMASK" ~cTX_CHAINMASK:7~ value=7> 3 Chain
+<INPUT type="radio" name="TX_CHAINMASK" ~cTX_CHAINMASK:0~ value=0> EEPROM
+<td >&nbsp&nbsp&nbsp&nbsp</td>
+<td class="headind">
+<INPUT type="radio" name="TX_CHAINMASK_2" ~cTX_CHAINMASK_2:1~ value=1> 1 Chain
+<INPUT type="radio" name="TX_CHAINMASK_2" ~cTX_CHAINMASK_2:3~ value=3> 2/2 Chain
+<INPUT type="radio" name="TX_CHAINMASK_2" ~cTX_CHAINMASK_2:5~ value=5> 2/3 Chain
+<INPUT type="radio" name="TX_CHAINMASK_2" ~cTX_CHAINMASK_2:7~ value=7> 3 Chain
+<INPUT type="radio" name="TX_CHAINMASK_2" ~cTX_CHAINMASK_2:0~ value=0> EEPROM
+
+<tr><td><a class="header">RX ChainMask:
+<td class="headind">
+<INPUT type="radio" name="RX_CHAINMASK" ~cRX_CHAINMASK:1~ value=1> 1 Chain
+<INPUT type="radio" name="RX_CHAINMASK" ~cRX_CHAINMASK:3~ value=3> 2/2 Chain
+<INPUT type="radio" name="RX_CHAINMASK" ~cRX_CHAINMASK:5~ value=5> 2/3 Chain
+<INPUT type="radio" name="RX_CHAINMASK" ~cRX_CHAINMASK:7~ value=7> 3 Chain
+<INPUT type="radio" name="RX_CHAINMASK" ~cRX_CHAINMASK:0~ value=0> EEPROM
+<td >&nbsp&nbsp&nbsp&nbsp</td>
+<td class="headind">
+<INPUT type="radio" name="RX_CHAINMASK_2" ~cRX_CHAINMASK_2:1~ value=1> 1 Chain
+<INPUT type="radio" name="RX_CHAINMASK_2" ~cRX_CHAINMASK_2:3~ value=3> 2/2 Chain
+<INPUT type="radio" name="RX_CHAINMASK_2" ~cRX_CHAINMASK_2:5~ value=5> 2/3 Chain
+<INPUT type="radio" name="RX_CHAINMASK_2" ~cRX_CHAINMASK_2:7~ value=7> 3 Chain
+<INPUT type="radio" name="RX_CHAINMASK_2" ~cRX_CHAINMASK_2:0~ value=0> EEPROM
+
+</table>
+</body></html>

@@ -1,0 +1,4 @@
+#!/bin/sh
+apup
+confusbdev
+echo "Installed wlan and usb drivers"

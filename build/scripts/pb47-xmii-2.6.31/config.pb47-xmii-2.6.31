@@ -1,0 +1,143 @@
+# Set the toolchain path
+export TOOLCHAIN=gcc-4.3.3
+export UBOOT_GCC_4_3_3_EXTRA_CFLAGS=-fPIC
+export TOOLPREFIX=mips-linux-uclibc-
+export TOOLARCH=build_mips/staging_dir/usr
+
+export KERNEL=mips-linux-2.6.31
+export KERNELVER=2.6.31
+export KERNELTARGET=vmlinux.bin
+export COMPRESSKERNEL=y
+export KERNELARCH=mips
+
+export BUSYBOX=busybox-1.01
+export WIRELESSTOOLS=wireless_tools.29
+export WIRELESSTOOLSLIB=libiw.so.29
+
+#
+# Enable the "new" hostapd
+#
+
+export TARGETFSSIZE=2818048
+
+export BUILD_ATHR_HOSTAP=1
+export BUILD_WPA2=y
+export BUILD_HOSTAPD_P2P=n
+#for station forwarding support
+#export CONFIG_ETHERSTA=y
+
+#
+# UMAC build option
+#
+
+export BUILD_UMAC=1
+
+
+export BUS=GMAC
+export BUSNAME=gmac
+export TARGETARCH=mipsisa32-be-elf
+export MAGPIE_IF=gmac
+
+# Firmware variables
+export FW_ROM=magpie_1_1
+export FW_RAM=magpie_ram
+export FW_GMAC_RAM=magpie_ram_gmac
+export BUILD_XMII_FW=y
+
+#
+# Enable HTC for Gmac split driver
+#
+
+# Firmare paths
+export FW_PATH=firmware/split_firmware/magpie_fw_dev
+export FWU_GMAC_PATH=drivers/wlan/htc/hif/gmac/fwd
+
+# Firmware Source files
+export SRC_GMAC=fusion_gmac.ram
+export SRC_GMAC_MDIO=builds.ram
+
+# Firmware file names
+export FWU_GMAC=fwu_magpie_gmac
+export FWU_GMAC_MDIO=fwu_magpie_gmac_mdio
+
+#
+# Enable HTC for split driver
+#
+export ATH_SUPPORT_HTC=1
+export HIF_GMAC_SUPPORT=1
+
+#
+# Set a large file size image to take advantage of the 8 MB part by default
+#
+
+export TARGETFSSIZE=0x600000
+export AP_TYPE=dual
+
+
+#
+# AG7100 kernel Kconfig Independent compilation flags
+#
+export ATH_GMAC_AR7100=1
+export ETH_CONFIG=_f1e
+
+export AG7100_TX_PKTS=100
+export AG7100_RX_PKTS=252
+export AG7100_MAC_LOCATION=0xbfff0000
+export AG7100_LEN_PER_TX_DS=512
+
+# Fragment support for GMAC 
+export GMAC_FRAGMENT_SUPPORT=1
+
+#
+# Select the support required for this board
+#
+
+export AH_SUPPORT_AR5210=0
+export AH_SUPPORT_AR5211=0
+export AH_SUPPORT_AR5212=1
+export AH_SUPPORT_AR5416=1
+export AH_SUPPORT_5111=1
+export AH_SUPPORT_5112=1
+export AH_SUPPORT_2413=1
+export AH_SUPPORT_5413=1
+export AH_SUPPORT_2316=1
+export AH_SUPPORT_2317=1
+export AH_SUPPORT_2425=1
+export AH_SUPPORT_2133=1  
+
+export AH_SUPPORT_AR9300=0
+#
+# Environmental variables used to configure the HAL/ATH layers at compile time
+#
+
+export ATH_CAP_PHYERR_DIAG=1
+export AR5416_G_MODE=1
+export AH_SUPPORT_HOWL=0
+export AH_SUPPORT_OWL=1
+export AH_DEBUG=1
+export REMOVE_PKT_LOG=1
+export AR5416_INT_MITIGATION=1
+export ATH_SUPPORT_DFS=1
+#export ATH_SUPPORT_IQUE=1
+export IEEE_MCAST_ENHANCEMENT=1
+export ATH_WPS_IE=1
+export CONFIG_MIPS_24K_KERNEL_OPTIMIZATION=1
+
+#
+# Spectral scan enable
+#
+export ATH_SUPPORT_SPECTRAL=0
+#export ATH_SUPPORT_VOWEXT=1
+#export ATH_EXT_AP=1
+export ATH_SUPPORT_VLAN=1
+
+export OFFLOAD_LAN_BYPASS=1
+export OFFLOAD_APPBR=1
+
+# define if Calibration data to be in send from Host
+export AH_CAL_IN_DRAM_FROM_HOST=0
+export AH_CAL_RADIOS_AHB=0
+export AH_CAL_LOCATIONS_DRAM_AHB=0x83ff8000
+export AH_CAL_RADIOS_PCI=0
+export AH_CAL_LOCATIONS_DRAM_PCI=0x83ffc000
+export AH_HOST_FLASH_CALDATD_START=0xbfff0000

@@ -1,0 +1,10 @@
+--- gdb-6.4.org/bfd/ecoff.c	2005-07-06 03:35:41.000000000 -0700
++++ gdb-6.4/bfd/ecoff.c	2009-05-14 17:44:32.000000000 -0700
+@@ -3088,6 +3088,7 @@
+   for (i = 0; i < orl_count; i++)
+     {
+       unsigned int hash, rehash;
++      rehash = 0;       /* Atheros: fix compiler warning */
+ 
+       /* Advance firstreal to the file position of this archive
+ 	 element.  */

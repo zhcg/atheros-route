@@ -1,0 +1,93 @@
+# Set the toolchain path
+export TOOLCHAIN=gcc-3.4.4-2.16.1
+export TOOLPREFIX=mips-linux-uclibc-
+export TOOLARCH=build_mips
+
+export KERNEL=mips-linux-2.6.15
+export KERNELVER=2.6.15
+export KERNELTARGET=vmlinux.bin
+export COMPRESSKERNEL=y
+export KERNELARCH=mips
+
+export BUSYBOX=busybox-1.01
+export WIRELESSTOOLS=wireless_tools.28
+export WIRELESSTOOLSLIB=libiw.so.28
+
+#
+# Enable the "new" hostapd
+#
+
+export BUILD_WPA2=y
+#for station forwarding support
+export CONFIG_ETHERSTA=y
+
+#
+# UMAC build option
+#
+
+export BUILD_UMAC=1
+
+
+export BUS=USB
+export TARGETARCH=mipsisa32-be-elf
+
+#
+# Enable HTC for split driver
+#
+export ATH_SUPPORT_HTC=1
+
+#
+# Set a large file size image to take advantage of the 8 MB part by default
+#
+
+export TARGETFSSIZE=0x600000
+export AP_TYPE=single
+
+#
+# Select the support required for this board
+#
+
+export AH_SUPPORT_AR5210=0
+export AH_SUPPORT_AR5211=0
+export AH_SUPPORT_AR5212=0
+export AH_SUPPORT_AR5416=1
+export AH_SUPPORT_5111=0
+export AH_SUPPORT_5112=0
+export AH_SUPPORT_2413=0
+export AH_SUPPORT_5413=0
+export AH_SUPPORT_2316=0
+export AH_SUPPORT_2317=0
+export AH_SUPPORT_2425=0
+#export AH_SUPPORT_2133=1  
+export AH_SUPPORT_SOWL=0
+export AH_SUPPORT_AR9300=0
+
+#
+# Environmental variables used to configure the HAL/ATH layers at compile time
+#
+
+export ATH_CAP_AMSDU=0
+export ATH_CAP_PHYERR_DIAG=1
+export AR5416_G_MODE=1
+export AH_SUPPORT_HOWL=0
+export AH_SUPPORT_OWL=1
+export AH_DEBUG=1
+export REMOVE_PKT_LOG=1
+export AR5416_INT_MITIGATION=1
+export ATH_SUPPORT_DFS=0
+export ATH_SUPPORT_IQUE=0
+export IEEE_MCAST_ENHANCEMENT=0
+export ATH_WPS_IE=1
+
+# No S/W based crypto support
+export ATH_NO_SW_CRYPTO=0
+
+# Disable spectral module
+export ATH_SUPPORT_SPECTRAL=0
+
+# 802.1q vlan support for wlan driver
+export ATH_SUPPORT_VLAN=1
+
+# Enable target encapsulation
+export ENCAP_OFFLOAD=1
+

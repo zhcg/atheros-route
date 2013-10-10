@@ -1,0 +1,129 @@
+#!/bin/sh
+
+# This script runs when init it run during the boot process.
+# Mounts everything in the fstab
+
+mount -a
+mount -o remount +w /
+
+#
+# Mount the RAM filesystem to /tmp
+#
+
+mount -t ramfs -n none /tmp
+
+export PATH=$PATH:/etc/ath
+##
+## Export the current system configuration
+##
+
+. /etc/ath/apcfg
+
+##
+## Bring up the network
+##
+insmod /lib/modules/2.6.31/net/flowmac_mod.ko 
+insmod /lib/modules/2.6.31/net/athrs_gmac.ko flowmac_on=${LAN_WLAN_FLOWCONTROL:=0}
+insmod /lib/modules/2.6.31/i2s/ar7240_i2s.ko
+
+
+ifconfig $WAN_IF up
+ifconfig $LAN_IF up
+# enable/disable flow control
+# Ideally we should have enabled/disabled per interface. But there are 
+# only interface physically and all 5 ports are in it. So it is enough that
+# we enable only one device
+intf=0
+txfctl=0
+rxfctl=0
+cfg_force=0
+#get device specific flow control configuration
+if [ "${intf}" -eq "0" ]; then
+    flbits=${ETH_FLOW_CONTROL0}
+else
+    flbits=${ETH_FLOW_CONTROL1}
+fi
+# 0 - is default for device, what ever driver chooses
+#   2.6.15 seems choosing 0 for flow control on
+#   2.6.31 seems choosing no flow control at all
+# 1 - allow tx flow control
+# 2 - allow rx flow control
+# 3 - allow both tx and rx flow control
+if [ "${flbits}" -ne 0 ]; then
+    case ${flbits} in
+        1)
+            txfctl=1
+            cfg_force=1
+            ;;
+        2) 
+            rxfctl=1
+            cfg_force=1
+            ;;
+        3)
+            txfctl=1
+            rxfctl=1
+            cfg_force=1
+            ;;
+        4) 
+            txfctl=0
+            rxfctl=0;
+            cfg_force=1
+            ;;
+        *)
+            txfctl=0
+            rxfctl=0
+            cfg_force=0
+            ;;
+    esac;
+fi
+if [ "${cfg_force}" -eq "1" ]; then
+    
+    ethreg --txfctl -i eth${intf} -v ${txfctl}
+    ethreg --rxfctl -i eth${intf} -v ${rxfctl}
+    for i in 0 1 2 3 4 5
+    do
+        ethreg --txfctl -i eth${intf} -p $i -v ${txfctl}
+        ethreg --rxfctl -i eth${intf} -p $i -v ${rxfctl}
+    done
+fi
+/etc/rc.d/rc.network
+/etc/rc.d/rc.bridge
+
+#
+# Enable USB
+#
+hci=o	# for python
+grep virian /proc/cmdline > /dev/null 2>&1
+[ $? -eq 0 ] && hci=e	# for virian
+
+insmod /lib/modules/2.6.31/usb/usbcore.ko
+insmod /lib/modules/2.6.31/usb/${hci}hci-hcd.ko
+insmod /lib/modules/2.6.31/usb/usb-storage.ko
+insmod /lib/modules/2.6.31/usb/usbnet.ko
+insmod /lib/modules/2.6.31/usb/cdc_ether.ko
+
+#
+# Untar the debug tools into /tmp/tools
+#
+
+mkdir /tmp/tools
+cd /tmp/tools
+tar -xzvf /sbin/debug.tgz
+export PATH=$PATH:/tmp/tools
+
+/usr/sbin/telnetd
+/usr/sbin/httpd -h /usr/www/
+/bin/factoryreset /dev/freset
+
+# start the page cache/kmem cache cleanup timer in the kernel
+echo 1 > /proc/sys/vm/drop_caches
+
+##
+## Determine if auto start of AP is required
+##
+
+if [ "${WLAN_ON_BOOT}" = "y" ]; then
+    /etc/ath/apup
+fi
+
+

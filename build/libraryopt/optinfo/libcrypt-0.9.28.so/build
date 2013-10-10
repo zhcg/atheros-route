@@ -1,0 +1,96 @@
+#!/bin/sh
+#
+# build -- rebuild shared object
+#
+# Usage (per libopt documentation!):
+# cd <directory where build script is>
+# ./build <archdir> <archprefix> <dest> <strip> <object>...
+# where:
+# <archdir> is e.g. $(TOPDIR)/libopt.temp (working temp directory)
+# <archprefix> is the prefix of filenames for tools such as xxx-nm (prefix xxx-)
+# <dest> is file to write
+# <strip> is "strip" or "nostrip" to indicate whether to strip output
+# <object>... is list of object files to link together.
+
+# What should this library be known as to ld.so ?
+# This much match how the libraries are built...
+
+soname=libcrypt.so.0
+striparg=-s   # -s to strip 
+
+# ----------------------------------------------------------------
+
+set -ex
+
+archdir=${1:?'Missing archdir'}
+archprefix=${2:?'Missing archprefix'}
+dest=${3:?'Missing dest'}
+strip=${4:?'Missing strip'}
+shift 4
+
+destname=`basename $dest`
+
+
+if [ -f $dest ]
+then
+    #debug# mv $dest $dest.bak
+    rm -f $dest
+fi
+
+# As originally built: 
+# /trees/ted/ted5/build/gcc-3.4.4-2.16.1/build_mips//bin/mips-linux-uclibc-ld -EB -shared --warn-common --warn-once -z combreloc -z relro -z now -z defs -s -soname=libcrypt.so.0 -o lib/libcrypt-0.9.28.so --whole-archive lib/libcrypt.a --no-whole-archive ./lib/interp.os -L./lib ./lib/libc.so /trees/ted/ted5/build/gcc-3.4.4-2.16.1/build_mips/bin/../lib/gcc/mips-linux-uclibc/3.4.4/libgcc.a 
+
+
+# UGH UGH this is so fragile...
+
+$archdir/bin/$archprefix'ld' 	\
+	-EB			\
+        -shared              	\
+	--warn-common		\
+	--warn-once		\
+	-z combreloc		\
+	-z relro     		\
+	-z now			\
+        -z defs 		\
+        $striparg               \
+	-soname $soname  	\
+        -L $archdir/lib   	\
+        -o $dest  		\
+        --whole-archive  	\
+        "$@"  			\
+        --no-whole-archive  	\
+	required/interp.os		\
+	required/libuClibc-*.so		\
+	required/uclibc_nonshared.a	\
+	required/libgcc.a
+echo Built $dest ok
+
+exit
+---------- comment out the exit to use the following
+
+
+# TEMPORARY: See if we can create the original .so
+echo Building reference $dest.ref to see if same as $dest.bak
+$archdir/bin/$archprefix'ld' 	\
+	-EB			\
+        -shared              	\
+	--warn-common		\
+	--warn-once		\
+	-z combreloc		\
+	-z relro     		\
+	-z now			\
+        -z defs 		\
+        $striparg               \
+	-soname $soname  	\
+        -L $archdir/lib   	\
+        -o $dest.ref  		\
+        --whole-archive  	\
+        required/libcrypt.a  	\
+        --no-whole-archive  	\
+	required/interp.os		\
+	required/libuClibc-*.so		\
+	required/uclibc_nonshared.a	\
+	required/libgcc.a
+echo Built $dest.ref ok
+
+

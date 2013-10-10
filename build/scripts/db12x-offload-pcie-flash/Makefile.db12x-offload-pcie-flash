@@ -1,0 +1,249 @@
+#Ethernet
+export ENETDIR=$(TOPDIR)/linux/drivers/ethernet
+
+#WLAN Driver
+export HAL=$(TOPDIR)/drivers/wlan/hal/linux
+export ATH_TOOL_DIR=$(TOPDIR)/drivers/wlan/os/linux/tools/
+export ATH_DFS=$(TOPDIR)/drivers/wlan/lmac/dfs
+export ATHEROSPATH=$(TOPDIR)/drivers/wlan
+export ATH_DRV=$(TOPDIR)/drivers/wlan/os/linux
+
+#USB
+export USBMODPATH=$(INSTALL_ROOT)/lib/modules/$(KERNELVER)/usb
+export USBDIR=${KERNELPATH}/drivers/usb
+
+#PCIE
+#export PCIDIR=${KERNELPATH}/drivers/pci
+#export PCITGTMODPATH=$(INSTALL_ROOT)/lib/modules/$(KERNELVER)/athpci
+
+# OFFLOAD
+export OFFLOAD_STACK=$(TOPDIR)/offload_stack
+export ROM_BOOT_DRV=$(TOPDIR)/boot/rom-boot-drv
+export FWU_UTIL=$(TOPDIR)/boot/utility
+export BUSYBOX_CFG=$(TOPDIR)/apps/$(BUSYBOX)
+export TOOLCHAIN_CFG=$(TOPDIR)/build/$(TOOLCHAIN)
+export TOOLCHAIN_UCLIBC_CFG=$(TOPDIR)/build/$(TOOLCHAIN)/toolchain/uClibc
+export KERNEL_CFG=$(TOPDIR)/linux/kernels/$(KERNEL)/arch/mips/configs
+
+#Package
+PKG_DIR        ?= $(TOPDIR)/pkg
+PKG_SDK_INC    ?= $(TOPDIR)/build/scripts/$(BOARD_TYPE)/SDK.include
+PKG_SDK_EXC    ?= $(TOPDIR)/build/scripts/$(BOARD_TYPE)/SDK.exclude
+PKG_WLAN_INC   ?= $(TOPDIR)/build/scripts/$(BOARD_TYPE)/WLAN.include
+PKG_WLAN_EXC   ?= $(TOPDIR)/build/scripts/$(BOARD_TYPE)/WLAN.exclude
+
+HIF          = pcie
+WLAN_NAME   ?= wlan-sdk
+SDK_NAME    ?= bsp-sdk
+
+# Board specific config file sffix
+CFG_SFX=_cfg
+
+define cleanup_files
+endef
+
+#
+# Makefile for WASP Fusion build.  It has dependancies for both
+# the "common" build and the "jffs2" build.  This is unique for
+# each board type, and must be configured for each board.
+#
+
+# To enable library optimization (removing unused object code from
+# shared libraries) set BUILD_LIBRARYOPT to 'y' else 'n'
+BUILD_LIBRARYOPT := n
+
+target_list :=
+
+ifneq ($(shell cat ./.last_build),$(BOARD_TYPE))
+target_list += kernel_clean
+endif
+
+target_list += 	config_fix check_tftp rootfs_prep toolchain_build \
+				kernel_build kernel_info lzma_uimage enet_build busybox_build sar \
+				driver_build offload_build $(BUILD_TYPE)_build
+            
+
+default: $(target_list)
+$(BOARD_TYPE)_clean: driver_clean offload_clean
+
+config_fix:
+	echo $(BOARD_TYPE)>./.last_build    &&  \
+	cp -f $(TOOLCHAIN_UCLIBC_CFG)/$(PARENT_BOARD).config \
+	$(TOOLCHAIN_UCLIBC_CFG)/$(BOARD_TYPE).config
+	chmod +w $(TOOLCHAIN_UCLIBC_CFG)/$(BOARD_TYPE).config
+	-cat $(TOOLCHAIN_UCLIBC_CFG)/$(BOARD_TYPE)$(CFG_SFX) >> \
+	$(TOOLCHAIN_UCLIBC_CFG)/$(BOARD_TYPE).config
+	
+	cp -f $(TOOLCHAIN_CFG)/$(PARENT_BOARD).config \
+	$(TOOLCHAIN_CFG)/$(BOARD_TYPE).config
+	chmod +w $(TOOLCHAIN_CFG)/$(BOARD_TYPE).config
+	-cat $(TOOLCHAIN_CFG)/$(BOARD_TYPE)$(CFG_SFX) >> \
+	$(TOOLCHAIN_CFG)/$(BOARD_TYPE).config
+	
+	cp -f $(BUSYBOX_CFG)/defconfig-$(PARENT_BOARD) \
+	$(BUSYBOX_CFG)/defconfig-$(BOARD_TYPE)
+	chmod +w $(BUSYBOX_CFG)/defconfig-$(BOARD_TYPE)
+	-cat $(BUSYBOX_CFG)/$(BOARD_TYPE)$(CFG_SFX) >> \
+	$(BUSYBOX_CFG)/defconfig-$(BOARD_TYPE)
+	
+	cp -f $(KERNEL_CFG)/$(PARENT_BOARD)_defconfig \
+	$(KERNEL_CFG)/$(BOARD_TYPE)_defconfig
+	chmod +w $(KERNEL_CFG)/$(BOARD_TYPE)_defconfig
+	-cat $(KERNEL_CFG)/$(BOARD_TYPE)$(CFG_SFX) >> \
+	$(KERNEL_CFG)/$(BOARD_TYPE)_defconfig
+
+
+#
+# Unique rules for the ag7240 PHY with the wasp   board
+#
+
+enet_build:
+	cd $(ENETDIR) && rm -f *.o *.ko *.mod.* && make -f Makefile.inc enet_config.h 
+	$(MAKEARCH) -C $(KERNELPATH) SUBDIRS=$(ENETDIR) modules
+	test -d $(MODULEPATH) || mkdir -p $(MODULEPATH)
+	cp $(ENETDIR)/athrs_gmac.ko $(MODULEPATH)
+
+WIRELESSTOOLNAMES := athstats athstatsclear 80211stats athkey athchans athctrl\
+	athdebug 80211debug wlanconfig athcwm athampdutrc atrc \
+	pktlogconf pktlogdump radartool cgiMain
+
+wireless_tools_clean:
+	if test -n "$(WIRELESSTOOLS)"; then \
+	cd ../apps/$(WIRELESSTOOLS); make clean; \
+	fi
+
+wireless_tools_main:
+	@echo making wireless_tools 
+	if test -n "$(WIRELESSTOOLS)"; then \
+	cd ../apps/$(WIRELESSTOOLS); make clean; make; \
+	cp -f $(WIRELESSTOOLSLIB) $(INSTALL_ROOT)/lib; \
+	cp -f iwpriv $(INSTALL_ROOT)/sbin; \
+	cp -f iwconfig $(INSTALL_ROOT)/sbin; \
+	cp -f iwlist $(INSTALL_ROOT)/sbin; \
+	cd $(TOPDIR)/drivers/wlan/os/linux/tools && make clean; \
+	make wlanconfig BUILD_STATIC=$(BUILD_STATIC); \
+	cp -f wlanconfig $(INSTALL_ROOT)/sbin; \
+	fi
+
+main_hal_clean:
+	@echo clean HAL
+	cd $(HAL) && make TARGET=$(TARGETARCH) clean; 
+	-find $(HAL) -type f -name "*.o" -exec rm -vf {} ';';
+	-find $(HAL) -type f -name ".*.cmd" -exec rm -vrf {} ';';
+	-find $(HAL) -type f -name "modules.order" -exec rm -vrf {} ';';
+	-find $(HAL) -type d -name ".tmp_versions" -exec rm -vff {} ';';
+
+main_hal_build: 
+	@echo making hal
+	if test -n "$(TARGETARCH)"; then \
+	cd $(HAL) && make TARGET=$(TARGETARCH) clean &&  \
+	make TARGET=$(TARGETARCH) && make TARGET=$(TARGETARCH) release; \
+	fi
+
+driver_clean: main_hal_clean wireless_tools_clean
+	@echo cleaning wlan
+	cd $(ATH_DRV) && \
+	$(MAKEARCH) TARGET=$(TARGETARCH) clean;
+	-find $(ATH_DRV) -type f -name "*.o" -exec rm -vf {} ';'; 
+	-find $(ATH_DRV) -type f -name ".*.cmd" -exec rm -vf {} ';';
+	-find $(ATH_DRV) -type f -name "modules.order" -exec rm -vrf {} ';';
+	-find $(ATH_DRV) -type d -name ".tmp_versions" -exec rm -vrf {} ';';
+
+driver_build: main_hal_build wireless_tools_main
+	@echo making wlan
+	cd $(TOPDIR)/drivers/wlan/os/linux && \
+	$(MAKEARCH) TARGET=$(TARGETARCH) clean \
+	&& $(MAKEARCH) TARGET=$(TARGETARCH) && \
+	$(MAKEARCH) DESTDIR=$(INSTALLROOT) TARGET=$(TARGETARCH) install
+	$(MAKE) $(BUILD_TYPE)_build
+	find $(INSTALL_ROOT) -type f -name "ath_pktlog.ko" -exec rm -vf {} ';'; 
+
+usb_build: 
+	test -d $(USBMODPATH) || mkdir -p $(USBMODPATH)
+#	cp -f $(USBDIR)/core/usbcore.ko ${USBMODPATH}
+#	cp -f ${USBDIR}/host/ehci-hcd.ko ${USBMODPATH}
+#	cp -f ${USBDIR}/storage/usb-storage.ko ${USBMODPATH}
+#	cp -f ${USBDIR}/gadget/g_ether.ko ${USBMODPATH}
+#	cp -f ${USBDIR}/gadget/ar9130_udc.ko ${USBMODPATH}
+	cp -f ${USBDIR}/gadget/ath_udc.ko ${USBMODPATH}
+
+#pci_build: kernel_build
+#	test -d $(PCITGTMODPATH) || mkdir -p $(PCITGTMODPATH)
+#	cd $(PCITGTMODPATH) && rm -f *.o *.ko *.mod.*
+#	test -d $(PCITGTMODPATH) || mkdir -p $(PCITGTMODPATH)
+#	cp $(PCIDIR)/ath_pci_tgt.ko $(PCITGTMODPATH)
+
+lzma_build:
+	@echo making lzma.....
+	cd $(TOPDIR)/apps/lzma457/CPP/7zip/Compress/LZMA_Alone && \
+	make -f makefile.gcc clean && \
+	make -f makefile.gcc  && \
+	echo copying lzma... && \
+	cp -f lzma	$(TOPDIR)/build/util
+
+lzma_uimage: lzma_build 
+	@echo "Generating LZMA'ed kernel....."
+	cd $(KERNELPATH)/arch/$(KERNELARCH)/boot && \
+	$(TOPDIR)/build/util/lzma e $(KERNELTARGET) $(KERNELTARGET).lzma && \
+	cp $(KERNELTARGET).lzma $(TFTPPATH)/$(KTFILE).lzma && \
+	cp $(KERNELTARGET).lzma $(IMAGEPATH)/$(KTFILE).lzma;
+	echo Making uImage...
+	cd util && mkuImage.sh $(UBOOTDIR)/tools $(KERNELPATH) $(BUILD_CONFIG) lzma
+
+
+##################################################################
+############### Offload Dev Build Framework ######################
+##################################################################
+
+fwu_util:
+	cd $(FWU_UTIL)	&&	\
+	make clean &&	\
+	make
+
+stage1fw: fwu_util
+	@echo "Building the Stage 1 Firmware"
+	cd $(ROM_BOOT_DRV) && \
+    make clean && \
+	make all && \
+	cp fwu_rombootdrv.c $(IMAGEPATH) 
+
+vmlrd: ram_build
+	cd $(IMAGEPATH) && $(TOPDIR)/build/util/mksingle && \
+	cp -f $(IMAGEPATH)/vmlrd.c $(OFFLOAD_STACK)/driver/host/fw_loader/$(HIF) && \
+	cp -f $(IMAGEPATH)/fwu_rombootdrv.c \
+	$(OFFLOAD_STACK)/driver/host/fw_loader/$(HIF) 
+
+vmlrd_lzma: ram_build
+	cd $(IMAGEPATH) && $(TOPDIR)/build/util/mksingle -2 db12x-offload-ramdisk.lzma && \
+	cp -f $(IMAGEPATH)/vmlrd.bin $(TOPDIR)/boot/wasp-simple-lzma && \
+	cp -f $(IMAGEPATH)/vmlinux.info $(TOPDIR)/boot/wasp-simple-lzma && \
+	cd $(TOPDIR)/boot/wasp-simple-lzma && make && cp vmlrd_lzma.c $(IMAGEPATH) && \
+	cp -f $(IMAGEPATH)/vmlrd_lzma.c $(OFFLOAD_STACK)/driver/host/fw_loader/$(HIF) && \
+	cp -f $(IMAGEPATH)/fwu_rombootdrv.c \
+	$(OFFLOAD_STACK)/driver/host/fw_loader/$(HIF) 
+
+offload_build:
+	@echo "Building the Offload host ..."
+	cd $(OFFLOAD_STACK)/driver/target/linux/build/wasp   &&	\
+	$(MAKEARCH) TARGET=$(TARGETARCH) BUS=$(HIF) && \
+	$(MAKEARCH) DESTDIR=$(INSTALL_ROOT) TARGET=$(TARGETARCH) BUS=$(HIF) install
+    
+offload_clean:
+	@echo "Cleaning the Offload target ..."
+	cd $(OFFLOAD_STACK)/driver/target/linux/build/wasp  &&	\
+	$(MAKEARCH) TARGET=$(TARGETARCH) BUS=$(HIF) clean 
+
+##################################################################
+################### Package SDK Framework ########################
+##################################################################
+
+pkg_sdk: clean
+	mkdir -p $(PKG_DIR)
+	cd $(TOPDIR) &&	\
+	tar -czvf $(PKG_DIR)/$(SDK_NAME).tgz -T $(PKG_SDK_INC) -X $(PKG_SDK_EXC)
+
+
+pkg_wlan: $(BOARD_TYPE)_clean
+	mkdir -p $(PKG_DIR)
+	cd $(TOPDIR) &&	\
+	tar -czvf $(PKG_DIR)/$(WLAN_NAME).tgz -T $(PKG_WLAN_INC) -X $(PKG_WLAN_EXC)

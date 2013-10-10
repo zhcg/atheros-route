@@ -1,0 +1,31 @@
+KDIR	:= $(KERNELPATH)
+PWD	:= $(shell pwd)
+ROOTDIR := $(PWD)/modules
+ARC 	:=mips 
+CROSS_CC :=mips-linux-uclibc-
+
+export KDIR
+export ROOTDIR
+export CROSS_CC
+
+all: default
+
+default:
+	@echo "art.ko build needs a target. Use hydra (for pb42/pb44, ap94 etc) or howl (for ap81/ap83) as target"
+
+hydra:
+	make ARCH=$(ARC) PB42=1 DEBUG=$(DEBUG) CROSS_COMPILE=$(CROSS_CC) -C $(KDIR) M=$(PWD)/modules modules
+
+howl:
+	make ARCH=$(ARC) AP83=1 DEBUG=$(DEBUG) CROSS_COMPILE=$(CROSS_CC) -C $(KDIR) M=$(PWD)/modules modules
+
+python:
+	make ARCH=$(ARC) PYTHON_EMU=1 DEBUG=$(DEBUG) CROSS_COMPILE=$(CROSS_CC) -C $(KDIR) M=$(PWD)/modules modules
+wasp:
+	make ARCH=$(ARC) AP83=1 WASP=1 DEBUG=$(DEBUG) CROSS_COMPILE=$(CROSS_CC) -C $(KDIR) M=$(PWD)/modules modules
+wasp_osprey:
+	make ARCH=$(ARC) AP83=1 WASP=1 PYTHON_EMU=1 WASP_OSPREY=1 DEBUG=$(DEBUG) CROSS_COMPILE=$(CROSS_CC) -C $(KDIR) M=$(PWD)/modules modules
+hornet:
+	make ARCH=$(ARC) AP83=1 HORNET=1 DEBUG=$(DEBUG) CROSS_COMPILE=$(CROSS_CC) -C $(KDIR) M=$(PWD)/modules modules
+clean:
+	cd modules && make clean

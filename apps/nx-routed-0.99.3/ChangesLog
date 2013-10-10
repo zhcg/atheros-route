@@ -1,0 +1,80 @@
+
+ * 2003.08.05 18:17:56 GMT zobo
+   - Changed rip2sniff so it uses RAW socket. This way
+     it doesn't interfere with routed and ppp links.
+   - Timers: call_handler now unlinks timer before it calls it.
+   - expire_routes now has only one timer that points to the route
+     that will get expired first. It also gets changed along
+     with route timeouts.
+
+ * 2003.07.31 09:02 GMT valery
+   - Added partial update support
+
+ * 2003.07.31 05:51 GMT valery
+   - Added basic netlink support
+
+ * 2003.07.30 14:09 GMT valery
+   - Reengineered linkup and linkdown notification code
+
+ * 2003.07.30 11:26 GMT valery
+   - removed configure from CVS, you should now run autoconf
+   - added install target and startup script
+   - updated docs
+
+ * 2003.07.29 12:41 zobo
+   - Interface routes now exist in the routing tables.
+   - Bugs reduced.
+   - Routes that expire, get propagated to all protocols.
+   - New command line switch -p: Prints all debug and notice
+     to syslog and stdout.
+   - set_expire_timer repeatedly sets more and more timers; need
+     to implement new timer code, so only one timer per route exists.
+   
+ * 2003.02.25 10:50 valery
+   - Implemented new timers code, should support from higher
+     layers now
+   - These new timers are completed now but tested, so the 
+     repository is unstable
+
+ * 2003.02.09 12:00 valery
+   - Route deletion process seemes to be working
+   - Figured out how to make expiring timers more graceful.
+     Use reference count on a timer. Reuse timers with
+     timer_find() function.
+   - Routes now have flags (RF_CHANGE, RF_UNREACH)
+ 
+ * 2003.02.05 12:00 valery
+   - Multicast now working correctly
+ 
+ * 2002.10.23 10:53 valery
+   - Fixed some inaccuracies, added error reports
+
+ * 2002.10.19 13:27 valery
+   - Added Andy Pershin's RIP-2 sniffing tool
+   - Found a bug and few others, expiration code is now complete
+
+ * 2002.10.15 12:46 valery
+   - Added safe strNcpy
+   - Fixed some bugs
+   - God, please help me to complete expiration timeouts
+   - Expiration seems to crush process
+   - Again, deletion process is not completed
+
+ * 2002.10.14 13:41 valery
+   - Added timeouts and change flag to route struct
+   - Added RIP-2 auth function, should implement properly now
+   - Added RIP-2 auth entry struct
+
+ * 2002.10.13 21:48 valery
+   - Added silent mode
+   - Added RIP-2 "allowqueries" option
+   - RIP-2 header and RTE sanity checks
+   - Added header consistancy check
+   - Introduced default route announcing
+
+ * 2002.10.12 22:51 valery
+   - Fixed some Split Horizon/Announcing inaccuracies
+   - Removed historic RIP-2 announceto code
+   - Link up/down tracing added on idle events
+   - Fixed timers overrun problem
+ 

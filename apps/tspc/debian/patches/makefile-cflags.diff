@@ -1,0 +1,151 @@
+configurable CFLAGS
+
+--- tspc-2.1.1.orig/src/xml/Makefile
++++ tspc-2.1.1/src/xml/Makefile
+@@ -25,17 +25,18 @@
+ OBJ=$(OBJDIR)/xmlparse.o $(OBJDIR)/xml_req.o $(OBJDIR)/xml_tun.o
+ BIN=../bin
+ 
+-CFLAGS=-O2 -g -Wall -I../../include -I../../platform/$(target)
++CFLAGS=-O2 -g -Wall
++INC=-I../../include -I../../platform/$(target)
+ CC=gcc
+ 
+ all: $(OBJ) 
+ 
+ $(OBJDIR)/xmlparse.o:xmlparse.c
+-	$(CC) $(CFLAGS) -c xmlparse.c -o $(OBJDIR)/xmlparse.o $(DEFINES)
++	$(CC) $(CFLAGS) $(INC) -c xmlparse.c -o $(OBJDIR)/xmlparse.o $(DEFINES)
+ $(OBJDIR)/xml_req.o:xml_req.c
+-	$(CC) $(CFLAGS) -c xml_req.c -o $(OBJDIR)/xml_req.o $(DEFINES)
++	$(CC) $(CFLAGS) $(INC) -c xml_req.c -o $(OBJDIR)/xml_req.o $(DEFINES)
+ $(OBJDIR)/xml_tun.o:xml_tun.c
+-	$(CC) $(CFLAGS) -c xml_tun.c -o $(OBJDIR)/xml_tun.o $(DEFINES)
++	$(CC) $(CFLAGS) $(INC) -c xml_tun.c -o $(OBJDIR)/xml_tun.o $(DEFINES)
+ 
+ clean:
+ 	rm -f $(OBJDIR)/xmlparse.o $(OBJDIR)/xml_req.o $(OBJDIR)/xml_tun.o
+--- tspc-2.1.1.orig/src/net/Makefile
++++ tspc-2.1.1/src/net/Makefile
+@@ -25,23 +25,24 @@
+ OBJ=$(OBJDIR)/net.o $(OBJDIR)/net_rudp.o $(OBJDIR)/net_tcp.o $(OBJDIR)/net_udp.o $(OBJDIR)/net_ka.o $(OBJDIR)/net_cksm.o
+ BIN=../bin
+ 
+-CFLAGS=-O2 -g -Wall -I../../include -I../../platform/$(target)
++CFLAGS=-O2 -g -Wall
++INC=-I../../include -I../../platform/$(target)
+ CC=gcc
+ 
+ all: $(OBJ) 
+ 
+ $(OBJDIR)/net.o:net.c
+-	$(CC) $(CFLAGS) -c net.c -o $(OBJDIR)/net.o $(DEFINES)
++	$(CC) $(CFLAGS) $(INC) -c net.c -o $(OBJDIR)/net.o $(DEFINES)
+ $(OBJDIR)/net_rudp.o:net_rudp.c
+-	$(CC) $(CFLAGS) -c net_rudp.c -o $(OBJDIR)/net_rudp.o $(DEFINES)
++	$(CC) $(CFLAGS) $(INC) -c net_rudp.c -o $(OBJDIR)/net_rudp.o $(DEFINES)
+ $(OBJDIR)/net_tcp.o:net_tcp.c
+-	$(CC) $(CFLAGS) -c net_tcp.c -o $(OBJDIR)/net_tcp.o $(DEFINES)
++	$(CC) $(CFLAGS) $(INC) -c net_tcp.c -o $(OBJDIR)/net_tcp.o $(DEFINES)
+ $(OBJDIR)/net_udp.o:net_udp.c
+-	$(CC) $(CFLAGS) -c net_udp.c -o $(OBJDIR)/net_udp.o $(DEFINES)
++	$(CC) $(CFLAGS) $(INC) -c net_udp.c -o $(OBJDIR)/net_udp.o $(DEFINES)
+ $(OBJDIR)/net_ka.o:net_ka.c
+-	$(CC) $(CFLAGS) -c net_ka.c -o $(OBJDIR)/net_ka.o $(DEFINES)
++	$(CC) $(CFLAGS) $(INC) -c net_ka.c -o $(OBJDIR)/net_ka.o $(DEFINES)
+ $(OBJDIR)/net_cksm.o:net_cksm.c
+-	$(CC) $(CFLAGS) -c net_cksm.c -o $(OBJDIR)/net_cksm.o $(DEFINES)
++	$(CC) $(CFLAGS) $(INC) -c net_cksm.c -o $(OBJDIR)/net_cksm.o $(DEFINES)
+ 
+ clean:
+ 	rm -f $(OBJDIR)/net.o $(OBJDIR)/net_rudp.o $(OBJDIR)/net_tcp.o $(OBJDIR)/net_udp.o $(OBJDIR)/net_ka.o $(OBJDIR)/net_cksm.o    
+--- tspc-2.1.1.orig/src/tsp/Makefile
++++ tspc-2.1.1/src/tsp/Makefile
+@@ -25,21 +25,22 @@
+ OBJ=$(OBJDIR)/tsp_auth.o $(OBJDIR)/tsp_cap.o $(OBJDIR)/tsp_client.o $(OBJDIR)/tsp_net.o $(OBJDIR)/tsp_setup.o 
+ BIN=../bin
+ 
+-CFLAGS=-O2 -g -Wall -I../../include -I../../platform/$(target)
++CFLAGS=-O2 -g -Wall
++INC=-I../../include -I../../platform/$(target)
+ CC=gcc
+ 
+ all: $(OBJ)
+ 
+ $(OBJDIR)/tsp_auth.o:tsp_auth.c
+-	$(CC) $(CFLAGS) -c tsp_auth.c -o $(OBJDIR)/tsp_auth.o $(DEFINES)
++	$(CC) $(CFLAGS) $(INC) -c tsp_auth.c -o $(OBJDIR)/tsp_auth.o $(DEFINES)
+ $(OBJDIR)/tsp_cap.o:tsp_cap.c
+-	$(CC) $(CFLAGS) -c tsp_cap.c -o $(OBJDIR)/tsp_cap.o $(DEFINES)
++	$(CC) $(CFLAGS) $(INC) -c tsp_cap.c -o $(OBJDIR)/tsp_cap.o $(DEFINES)
+ $(OBJDIR)/tsp_client.o:tsp_client.c
+-	$(CC) $(CFLAGS) -c tsp_client.c -o $(OBJDIR)/tsp_client.o $(DEFINES)
++	$(CC) $(CFLAGS) $(INC) -c tsp_client.c -o $(OBJDIR)/tsp_client.o $(DEFINES)
+ $(OBJDIR)/tsp_net.o:tsp_net.c
+-	$(CC) $(CFLAGS) -c tsp_net.c -o $(OBJDIR)/tsp_net.o $(DEFINES)
++	$(CC) $(CFLAGS) $(INC) -c tsp_net.c -o $(OBJDIR)/tsp_net.o $(DEFINES)
+ $(OBJDIR)/tsp_setup.o:tsp_setup.c
+-	$(CC) $(CFLAGS) -c tsp_setup.c -o $(OBJDIR)/tsp_setup.o $(DEFINES)
++	$(CC) $(CFLAGS) $(INC) -c tsp_setup.c -o $(OBJDIR)/tsp_setup.o $(DEFINES)
+ 
+ clean:
+ 	rm -f $(OBJDIR)/tsp_auth.o $(OBJDIR)/tsp_cap.o $(OBJDIR)/tsp_client.o $(OBJDIR)/tsp_net.o $(OBJDIR)/tsp_setup.o 
+--- tspc-2.1.1.orig/src/lib/Makefile
++++ tspc-2.1.1/src/lib/Makefile
+@@ -24,25 +24,26 @@
+ OBJ=$(OBJDIR)/base64.o $(OBJDIR)/cli.o $(OBJDIR)/config.o $(OBJDIR)/lib.o $(OBJDIR)/log.o $(OBJDIR)/md5c.o $(OBJDIR)/cnfchk.o
+ BIN=../bin
+ 
+-CFLAGS=-O2 -g -Wall -I../../include -I../../platform/$(target)
++CFLAGS=-O2 -g -Wall
++INC=-I../../include -I../../platform/$(target)
+ CC=gcc
+ 
+ all: $(OBJ) 
+ 
+ $(OBJDIR)/base64.o:base64.c
+-	$(CC) $(CFLAGS) -c base64.c -o $(OBJDIR)/base64.o $(DEFINES)
++	$(CC) $(CFLAGS) $(INC) -c base64.c -o $(OBJDIR)/base64.o $(DEFINES)
+ $(OBJDIR)/cli.o:cli.c
+-	$(CC) $(CFLAGS) -c cli.c -o $(OBJDIR)/cli.o $(DEFINES)
++	$(CC) $(CFLAGS) $(INC) -c cli.c -o $(OBJDIR)/cli.o $(DEFINES)
+ $(OBJDIR)/config.o:config.c
+-	$(CC) $(CFLAGS) -c config.c -o $(OBJDIR)/config.o $(DEFINES)
++	$(CC) $(CFLAGS) $(INC) -c config.c -o $(OBJDIR)/config.o $(DEFINES)
+ $(OBJDIR)/lib.o:lib.c
+-	$(CC) $(CFLAGS) -c lib.c -o $(OBJDIR)/lib.o $(DEFINES)
++	$(CC) $(CFLAGS) $(INC) -c lib.c -o $(OBJDIR)/lib.o $(DEFINES)
+ $(OBJDIR)/log.o:log.c
+-	$(CC) $(CFLAGS) -c log.c -o $(OBJDIR)/log.o $(DEFINES)
++	$(CC) $(CFLAGS) $(INC) -c log.c -o $(OBJDIR)/log.o $(DEFINES)
+ $(OBJDIR)/md5c.o:md5c.c
+-	$(CC) $(CFLAGS) -c md5c.c -o $(OBJDIR)/md5c.o $(DEFINES)
++	$(CC) $(CFLAGS) $(INC) -c md5c.c -o $(OBJDIR)/md5c.o $(DEFINES)
+ $(OBJDIR)/cnfchk.o:cnfchk.c
+-	$(CC) $(CFLAGS) -c cnfchk.c -o $(OBJDIR)/cnfchk.o $(DEFINES)
++	$(CC) $(CFLAGS) $(INC) -c cnfchk.c -o $(OBJDIR)/cnfchk.o $(DEFINES)
+ 
+ clean:
+ 	rm -f $(OBJDIR)/base64.o $(OBJDIR)/cli.o $(OBJDIR)/config.o $(OBJDIR)/lib.o $(OBJDIR)/log.o $(OBJDIR)/md5c.o $(OBJDIR)/cnfchk.o
+--- tspc-2.1.1.orig/platform/linux/Makefile
++++ tspc-2.1.1/platform/linux/Makefile
+@@ -27,15 +27,16 @@
+ BIN=../../bin
+ TSPC=tspc
+ 
+-CFLAGS=-g -Wall -I../../include -I../../platform/$(target)
++CFLAGS=-g -Wall
++INC=-I../../include -I../../platform/$(target)
+ CC=gcc
+ 
+ all: $(OBJ) $(OBJLINK) $(BIN)/$(TSPC)
+ 
+ $(OBJDIR)/tsp_local.o:tsp_local.c
+-	$(CC) $(CFLAGS) -c tsp_local.c -o $(OBJDIR)/tsp_local.o $(DEFINES)
++	$(CC) $(CFLAGS) $(INC) -c tsp_local.c -o $(OBJDIR)/tsp_local.o $(DEFINES)
+ $(OBJDIR)/tsp_tun.o:tsp_tun.c
+-	$(CC) $(CFLAGS) -c tsp_tun.c -o $(OBJDIR)/tsp_tun.o $(DEFINES)
++	$(CC) $(CFLAGS) $(INC) -c tsp_tun.c -o $(OBJDIR)/tsp_tun.o $(DEFINES)
+ 
+ $(BIN)/$(TSPC): $(OBJ)
+ 	$(CC) $(CFLAGS) -o $(BIN)/$(TSPC) $(OBJLINK)

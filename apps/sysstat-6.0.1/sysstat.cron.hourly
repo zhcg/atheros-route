@@ -1,0 +1,3 @@
+#!/bin/sh
+# Run system activity accounting tool every 10 minutes
+/usr/local/lib/sa/sa1 -d 600 6 &

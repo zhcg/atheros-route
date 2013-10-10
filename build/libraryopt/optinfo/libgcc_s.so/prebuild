@@ -1,0 +1,3 @@
+#!/bin/sh
+#
+echo 'Do we really need a prebuild for libgcc ?'

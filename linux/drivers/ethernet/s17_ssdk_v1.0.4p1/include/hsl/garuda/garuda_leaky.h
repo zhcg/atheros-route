@@ -1,0 +1,97 @@
+/*
+ * Copyright (c) 2007-2008 Atheros Communications, Inc.
+ * All rights reserved.
+ *
+ */
+/**
+ * @defgroup garuda_leaky GARUDA_LEAKY
+ * @{
+ */ 
+#ifndef _GARUDA_LEAKY_H_
+#define _GARUDA_LEAKY_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif                          /* __cplusplus */
+
+#include "fal/fal_leaky.h"
+
+sw_error_t garuda_leaky_init(a_uint32_t dev_id);
+
+#ifdef IN_LEAKY
+    #define GARUDA_LEAKY_INIT(rv, dev_id) \
+    { \
+        rv = garuda_leaky_init(dev_id); \
+        SW_RTN_ON_ERROR(rv); \
+    }
+#else
+    #define GARUDA_LEAKY_INIT(rv, dev_id)
+#endif
+
+#ifdef HSL_STANDALONG
+
+
+HSL_LOCAL sw_error_t
+garuda_uc_leaky_mode_set(a_uint32_t dev_id,
+                         fal_leaky_ctrl_mode_t ctrl_mode);
+
+
+
+HSL_LOCAL sw_error_t
+garuda_uc_leaky_mode_get(a_uint32_t dev_id,
+                         fal_leaky_ctrl_mode_t * ctrl_mode);
+
+
+
+HSL_LOCAL sw_error_t
+garuda_mc_leaky_mode_set(a_uint32_t dev_id,
+                         fal_leaky_ctrl_mode_t ctrl_mode);
+
+
+HSL_LOCAL sw_error_t
+garuda_mc_leaky_mode_get(a_uint32_t dev_id,
+                         fal_leaky_ctrl_mode_t * ctrl_mode);
+
+
+
+HSL_LOCAL sw_error_t
+garuda_port_arp_leaky_set(a_uint32_t dev_id, fal_port_t port_id,
+                          a_bool_t enable);
+
+
+
+HSL_LOCAL sw_error_t
+garuda_port_arp_leaky_get(a_uint32_t dev_id, fal_port_t port_id,
+                          a_bool_t * enable);
+
+
+ 
+HSL_LOCAL sw_error_t
+garuda_port_uc_leaky_set(a_uint32_t dev_id, fal_port_t port_id,
+                         a_bool_t enable);
+
+
+
+HSL_LOCAL sw_error_t
+garuda_port_uc_leaky_get(a_uint32_t dev_id, fal_port_t port_id,
+                         a_bool_t * enable);
+
+
+HSL_LOCAL sw_error_t
+garuda_port_mc_leaky_set(a_uint32_t dev_id, fal_port_t port_id,
+                         a_bool_t enable);
+
+
+
+HSL_LOCAL sw_error_t
+garuda_port_mc_leaky_get(a_uint32_t dev_id, fal_port_t port_id,
+                         a_bool_t * enable);
+#endif
+
+#ifdef __cplusplus
+}
+#endif                          /* __cplusplus */
+#endif                          /* _GARUDA_LEAKY_H_ */
+/**
+ * @}
+ */

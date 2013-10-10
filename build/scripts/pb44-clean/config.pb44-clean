@@ -1,0 +1,145 @@
+# Set the toolchain path
+export TOOLCHAIN=gcc-3.4.4-2.16.1
+export TOOLPREFIX=mips-linux-uclibc-
+export TOOLARCH=build_mips
+
+export KERNEL=mips-linux-2.6.15
+export KERNELVER=2.6.15
+export KERNELTARGET=vmlinux.bin
+export COMPRESSKERNEL=y
+export KERNELARCH=mips
+
+export BUSYBOX=busybox-1.01
+export WIRELESSTOOLS=wireless_tools.28
+export WIRELESSTOOLSLIB=libiw.so.28
+
+#for station forwarding support
+export CONFIG_ETHERSTA=y
+
+#
+# UMAC build option
+#
+
+export BUILD_UMAC=1
+
+
+export BUS=PCI
+export TARGETARCH=mipsisa32-be-elf
+
+#
+# Set a large file size image to take advantage of the 8 MB part by default
+#
+
+export TARGETFSSIZE=0x500000
+export AP_TYPE=dual
+
+#
+# Select the support required for this board
+#
+
+export AH_SUPPORT_AR5210=0
+export AH_SUPPORT_AR5211=0
+export AH_SUPPORT_AR5212=1
+export AH_SUPPORT_AR5416=1
+export AH_SUPPORT_5111=1
+export AH_SUPPORT_5112=1
+export AH_SUPPORT_2413=1
+export AH_SUPPORT_5413=1
+export AH_SUPPORT_2316=1
+export AH_SUPPORT_2317=1
+export AH_SUPPORT_2425=1
+export AH_SUPPORT_2133=1  
+
+export AH_SUPPORT_AR9300=0
+#
+# Environmental variables used to configure the HAL/ATH layers at compile time
+#
+
+export ATH_CAP_PHYERR_DIAG=1
+export AR5416_G_MODE=1
+export AH_SUPPORT_HOWL=0
+export AH_SUPPORT_OWL=1
+export AH_DEBUG=0
+export REMOVE_PKT_LOG=1
+export AR5416_INT_MITIGATION=1
+export ATH_SUPPORT_DFS=1
+export ATH_SUPPORT_IQUE=1
+export ATH_SUPPORT_IQUE_EXT=0
+export IEEE_MCAST_ENHANCEMENT=1
+export ATH_WPS_IE=1
+export ATH_CAP_AMSDU=1
+#
+# Spectral scan enable
+#
+export ATH_SUPPORT_SPECTRAL=0
+# video over wireless, featuer and debug flags
+#   ATH_SUPPORT_VOWEXT - All vow feature enable/disable
+#   ATH_VOW_EXT_STATS  - Extended stats for capdumpts and graph plotter utilities 
+export ATH_SUPPORT_VOWEXT=0
+export ATH_VOW_EXT_STATS=0
+export UMAC_SUPPORT_RPTPLACEMENT=0
+
+#
+# 802.11z TDLS support
+#
+export ATH_SUPPORT_TDLS=0
+export UMAC_SUPPORT_TDLS=0
+
+# TID scheduling enabled
+export VOW_TIDSCHED=0
+# Latency logging disabled
+export VOW_LOGLATENCY=0
+
+#extended AP support ( 3 address WDS )
+export ATH_EXT_AP=0
+# 802.1q vlan support for wlan driver
+export ATH_SUPPORT_VLAN=1
+export ATH_SUPPORT_QUICK_KICKOUT=0
+
+# By default compressed u-boot will be compiled
+export COMPRESSED_UBOOT=1
+
+
+#enable CFEND support
+export ATH_SUPPORT_CFEND=0
+export ATH_SUPPORT_DESCFAST=1
+
+#enable Adhoc mode
+export ATH_SUPPORT_IBSS_HT=0
+export ATH_SUPPORT_IBSS_WMM=0
+export ATH_SUPPORT_IBSS_NETLINK_NOTIFICATION=0
+export ATH_SUPPORT_IBSS_PRIVATE_SECURITY=0
+
+#enable BSS load support
+export UMAC_SUPPORT_BSSLOAD=0
+#enable radio measurement support for voice enterprise
+export UMAC_SUPPORT_RRM=0
+#enable wireless network management support for voice enterprise
+export UMAC_SUPPORT_WNM=0
+#enable WMM admission control support for voice enterprise
+export UMAC_SUPPORT_ADMCTL=0
+
+export UMAC_SUPPORT_NAWDS=0
+
+export ATH_RXBUF_RECYCLE=0
+export ATH_RB=0
+export ATH_STATS_FOR_AP_ONLY=1
+export UMAC_SUPPORT_VI_DBG=0
+export UMAC_SUPPORT_STA_POWERSAVE=0
+export UMAC_SUPPORT_TX_FRAG=0
+export UMAC_SUPPORT_RX_FRAG=0
+export UMAC_SUPPORT_IBSS=0
+export ATH_SUPPORT_IBSS=0
+export ATH_SUPPORT_GREEN_AP=0
+export ATHEROS_LINUX_PERIODIC_SCAN=0
+export UMAC_SUPPORT_SCAN=0
+export UMAC_SUPPORT_APLIST=0
+
+export ATH_DFS_RADAR_DETECTION_ONLY=1
+#export ATH_WLAN_COMBINE=1
+#
+export ATH_SUPPORT_WIRESHARK=0
+export ATH_DEBUG=0
+
+#Use athr-hostapd
+export BUILD_ATHR_HOSTAP=1

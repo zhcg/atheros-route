@@ -1,0 +1,137 @@
+#
+# Linux 2.6 Kbuild file for common modules
+# NB: HAL is build seperately
+#
+
+ifeq ($(obj),)
+obj := .
+endif
+
+DEPTH := ..
+
+#include $(obj)/Makefile.inc
+include $(obj)/$(DEPTH)/os/linux/Makefile-linux.common
+
+INCS += -I$(obj)/$(DEPTH)/include -I$(obj)/$(DEPTH)/umac/include \
+        -I$(obj)/$(DEPTH)/umac/if_lmac -I$(obj)/$(DEPTH)/umac/crypto \
+        -I$(obj)/$(DEPTH)/umac/scan -I$(obj)/$(DEPTH)/umac/resmgr \
+        -I$(obj)/$(DEPTH)/umac/pm -I$(obj)/$(DEPTH)/umac/txrx \
+        -I$(obj)/$(DEPTH)/umac/acs -I$(obj)/$(DEPTH)/umac/txbf \
+        -I$(obj)/$(DEPTH)/umac/tdls \
+        -I$(obj)/$(DEPTH)/umac/rpt_placement \
+        -I$(obj)/$(DEPTH)/umac/wds -I$(obj)/$(DEPTH)/umac/ique \
+        -I$(obj)/$(DEPTH)/hal -I$(obj)/$(DEPTH)/lmac/ath_dev \
+        -I$(obj)/$(DEPTH)/hal/$(OS) \
+        -I$(obj)/$(DEPTH)/umac/aow  \
+        -I$(obj)/$(DEPTH)/umac/vi_dbg \
+        -I$(obj)/$(DEPTH)/umac/smart_antenna
+
+
+obj-m += umac.o
+
+OSDEP_SRC := $(DEPTH)/os/linux/src
+
+ifeq ($(strip $(BUSNAME)),ahb)
+BUS_OBJ = $(OSDEP_SRC)/if_ath_ahb.o
+endif
+
+ifeq ($(strip $(BUSNAME)),pci)
+BUS_OBJ = $(OSDEP_SRC)/if_ath_pci.o
+endif
+
+ifeq ($(strip $(BUSNAME)),usb)
+BUS_OBJ = $(OSDEP_SRC)/usb_eth.o
+endif
+
+ifeq ($(strip $(BUSNAME)),gmac)
+BUS_OBJ = $(OSDEP_SRC)/if_ath_gmac.o
+endif
+
+ifeq ($(strip $(BUSNAME)),dual)
+BUS_OBJ = $(OSDEP_SRC)/if_ath_ahb.o $(OSDEP_SRC)/if_ath_pci.o
+endif
+
+ifneq ($(strip $(UMAC_SUPPORT_APONLY)),0)
+OSDEP_OBJS := $(OSDEP_SRC)/ath_linux.o $(BUS_OBJ) $(OSDEP_SRC)/ieee80211_wireless.o $(OSDEP_SRC)/osif_umac.o $(OSDEP_SRC)/if_media.o $(OSDEP_SRC)/ieee80211_aponly.o
+else
+OSDEP_OBJS := $(OSDEP_SRC)/ath_linux.o $(BUS_OBJ) $(OSDEP_SRC)/ieee80211_wireless.o $(OSDEP_SRC)/osif_umac.o $(OSDEP_SRC)/if_media.o
+endif
+
+ifeq ($(ATH_SUPPORT_VLAN), 1)
+OSDEP_OBJS +=  $(OSDEP_SRC)/adf_net_vlan.o
+endif
+
+ifeq ($(ATH_SUPPORT_HTC), 1)
+OSDEP_OBJS += $(OSDEP_SRC)/ath_htc.o \
+              $(OSDEP_SRC)/htc_thread.o
+OSDEP_OBJS += base/ieee80211_target.o \
+              if_lmac/if_ath_htc.o
+endif
+
+ifeq ($(ATH_SUPPORT_LINUX_VENDOR), 1)
+OSDEP_OBJS += $(OSDEP_OBJS_VENDOR)
+endif
+
+ifeq ($(ATH_RXBUF_RECYCLE), 1)
+OSDEP_OBJS += $(OSDEP_SRC)/ath_skbrecycle.o
+endif
+
+ifdef ATH_CARR_DIR
+PLTFRM_OBJS = $(DEPTH)/../../build/scripts/$(BOARD_TYPE)/carrier/$(ATH_CARR_DIR)/ath_carr_pltfrm.o
+endif
+
+EXTRA_CFLAGS+= $(INCS) $(COPTS) -Wno-unused-function
+
+umac-objs := base/ieee80211_channel.o base/ieee80211_common.o base/ieee80211_config.o \
+             base/ieee80211_node.o base/ieee80211_node_ap.o base/ieee80211_node_sta.o \
+             base/ieee80211_node_ibss.o base/ieee80211_rateset.o base/ieee80211_vap.o \
+             base/ieee80211_msg.o base/ieee80211_tsftimer.o base/ieee80211_vap_ath_info.o \
+             base/ieee80211_node_tdls.o \
+             crypto/ieee80211_crypto.o crypto/ieee80211_crypto_ccmp.o \
+             crypto/ieee80211_crypto_ccmp_sw.o \
+             crypto/ieee80211_crypto_none.o crypto/ieee80211_crypto_tkip.o \
+             crypto/ieee80211_crypto_tkip_sw.o \
+             crypto/ieee80211_crypto_wep.o crypto/ieee80211_rsn.o \
+             crypto/ieee80211_crypto_rijndael.o crypto/ieee80211_wps.o \
+             crypto/ieee80211_wapi.o crypto/ieee80211_crypto_wpi_sms4.o \
+             crypto/ieee80211_crypto_wep_mbssid.o \
+             if_lmac/if_ath.o if_lmac/if_ath_amsdu.o if_lmac/ath_cwm.o if_lmac/ath_cwm_project.o if_lmac/if_ath_uapsd.o if_lmac/if_ath_dfs.o \
+             mlme/ieee80211_beacon.o mlme/ieee80211_ie.o mlme/ieee80211_mgmt.o \
+             mlme/ieee80211_mgmt_ap.o mlme/ieee80211_mgmt_sta.o mlme/ieee80211_mlme.o mlme/ieee80211_proto.o \
+             mlme/ieee80211_mlme_ap.o mlme/ieee80211_mlme_sta.o mlme/ieee80211_mlme_ibss.o  \
+             mlme/ieee80211_mgmt_ibss.o  mlme/ieee80211_mgmt_bss.o mlme/ieee80211_mlme_sw_bmiss.o \
+             mlme/ieee80211_mlme_app_ie.o  mlme/ieee80211_ie_utils.o \
+             pm/ieee80211_ap_power.o pm/ieee80211_power.o pm/ieee80211_sta_power.o \
+             pm/ieee80211_power_queue.o \
+             regdmn/ieee80211_regdmn.o resmgr/ieee80211_resmgr.o resmgr/ieee80211_resmgr_sm.o \
+             resmgr/ieee80211_resmgr_oc_scheduler.o \
+             scan/ieee80211_scan.o scan/ieee80211_aplist.o scan/ieee80211_scanentry.o \
+             acs/ieee80211_acs.o \
+             acl/ieee80211_acl.o \
+             tdls/ieee80211_tdls.o \
+             wds/ieee80211_wds.o \
+             txbf/ieee80211_txbf.o \
+             sme/ieee80211_sm.o sme/ieee80211_assoc_sm.o \
+             sme/ieee80211_connection_sm.o sme/ieee80211_ibss_sm.o \
+             txrx/ieee80211_input.o txrx/ieee80211_output.o txrx/ieee80211_frag.o $(OSDEP_OBJS) $(PLTFRM_OBJS) \
+             ique/ieee80211_me.o ique/ieee80211_hbr.o base/ieee80211_vap_pause.o \
+             rpt_placement/ieee80211_rptplacement.o \
+             vi_dbg/ieee80211_vi_dbg.o \
+             smart_antenna/ieee80211_smartantenna.o
+ifeq ($(ATH_SUPPORT_AOW), 1)
+umac-objs += aow/ieee80211_aow.o if_lmac/if_ath_aow.o
+endif
+
+ifeq ($(strip ${ATH_SUPPORT_P2P}),1)
+umac-objs +=  p2p/ieee80211_notify_tx_bcn.o p2p/ieee80211_p2p_client.o \
+              p2p/ieee80211_p2p_client_power.o \
+              p2p/ieee80211_p2p_device.o p2p/ieee80211_p2p_go.o \
+              p2p/ieee80211_p2p_go_schedule.o p2p/ieee80211_p2p_ie.o \
+              p2p/ieee80211_p2p_kernel.o p2p/ieee80211_p2p_go_power.o
+INCS += -I$(obj)/$(DEPTH)/umac/p2p
+endif
+
+
+ifeq ($(ATH_EXT_AP), 1)
+umac-objs += extap/ieee80211_mitbl.o extap/ieee80211_extap.o
+endif

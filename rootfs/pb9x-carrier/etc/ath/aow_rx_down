@@ -1,0 +1,4 @@
+#!/bin/sh
+apdown
+rmmod ar7240_i2s
+echo "Uninstalled wlan and i2s drivers"

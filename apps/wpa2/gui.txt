@@ -1,0 +1,145 @@
+The GUI (from Sony) suffers from bit rot and no longer works.
+This is for historical interest or in case someone wants to revive it.
+
+============================================================================
+WPS Client Operation -- Using Sony GUI
+============================================================================
+
+CURRENTLY BROKEN (need to convert to new wpa_supplicant commands)::::::::
+
+If previously operated as an AP, it may be necessary to remove and
+reassert the wifi card to work around some issues, as noted by Sony/Saice.
+I haven't done this and have not seen any problem.
+
+cd to "install" directory
+Insure that sta_start is patched (see problem below)
+export LD_LIBRARY_PATH=`pwd`/lib 
+Run ./testbed_sta
+Set:
+  wireless interface -- ath0 (?)
+  wireless driver -- madwifi (?)
+  check "wireless IP address" and given an IP address that won't conflict
+  uncheck "NFC interface"
+  wired interface -- eth0 (see problem below)
+  check "wired IP address" and given currently used IP address
+  click "next"
+  click "get configuration"
+  click "push button"
+Push button on AP
+   click "start"
+Should say "complete"
+In another terminal window, cd to "install directory" and run "./wpa_cli";
+use the command: save_config
+and then:  q
+[TODO?: add save_config button to interface or ?????????]
+Back at testbed_sta, press "cancel" to quit it.
+Manually edit wpa_supplicant.conf (in install directory) to fix problems
+(see below).
+Then manually start wpa_supplicant:
+./wpa_supplicant -ddd -Dmadwifi -iath0 -c./wpa_supplicant.conf
+In separate terminal window, cd to install directory:
+./wpa_cli
+select_network 0
+q
+
+Then set IP address for ath0, e.g.:
+ifconfig ath0 192.168.1.99
+
+Then test using ping..........
+
+============================================================================
+WPS Server Operation -- Using Sony GUI
+============================================================================
+
+CURRENTLY BROKEN (need to convert to new hostapd commands)::::::::
+
+If previously operated as a STA, it may be necessary to remove and
+reassert the wifi card to work around some issues, as noted by Sony/Saice...
+i haven't noticed this myself.
+
+cd to install directory
+export LD_LIBRARY_PATH=`pwd`/lib 
+Run: ./testbed_ap
+Make sure that "wired interface" says e.g. "eth0" and not "br0"
+Unclick NFC box
+Fix IP address as necessary
+Hit next
+Select reasonable values for ssid, key, etc.
+"Configured" doesn't matter.
+Hit next
+
+hostapd should now be fully functional.
+
+Use the dialog to do PIN or push button configuration of enrollees.
+NOTE that in PIN method it does NOT produce WPS beacon IEs! and
+the PIN must be provided from elsewhere.
+
+============================================================================
+Configuring access point -- using Sony GUI
+============================================================================
+
+CURRENTLY BROKEN (need to convert to new hostapd commands)::::::::
+
+On laptop #1 (the "AP"): 
+
+cd to install directory
+export LD_LIBRARY_PATH=`pwd`/lib 
+Run: ./testbed_ap
+Make sure that "wired interface" says e.g. "eth0" and not "br0"
+Unclick NFC box
+Fix IP address as necessary
+Hit next.
+Select reasonable values for ssid, key, etc.
+"Configured" is advisory and matters for e.g. Windows Vista registrar
+but not for sony wps STA.... set "unconfigured".
+Hit next
+
+hostapd should now be fully functional.
+
+Select the "Get configuration" tab.
+
+For PIN method, click on "Start authentication", then when that button
+changes to say "Use default PIN", click on it again.
+Note the displayed PIN, you will need it on registrar.
+
+Alternative 1: On laptop #2 (the STA registrar):
+
+Attach ethernet cable with connectivity to "AP" so you can test upnp
+cd to "install" directory
+Insure that sta_start is patched (see problem below)
+Run ./testbed_sta
+Set:
+  wireless interface -- ath0 (?)
+  wireless driver -- madwifi (?)
+  check "wireless IP address" and give an IP address that won't conflict
+  uncheck "NFC interface"
+  wired interface -- eth0 (see problem below)
+  check "wired IP address" and fix the IP address to match what you are using.
+  click "next"
+  click "configure access point"
+  set reasonable network configuration
+  click "next"
+  click "PIN"
+  Now you have a choice of in-band (wifi) or upnp; in either case,
+    click "update" to update the list (the wifi list at least always
+    seems to be out of date... actually, the list still has cruft even
+    after update)
+  Click on the desired AP and hit "next"
+  Copy the PIN from the "AP" and hit "next"
+  should quickly work.
+
+Alternative 2: Using Windows Vista wired registrar
+Note: you must have the AP in "unconfigured" state (see above).
+Note: if there are any other "unconfigured" APs visible to Windows Vista
+it is likely to insist on configuring the wrong one.
+Note: if AP was previously seen as "configured" by Vista, you will need
+to reset this by e.g. rebooting.
+If in doubt, reboot Windows.
+
+Make sure you can ping windows from the "AP".
+
+Windows start icon -> startup -> network (make sure it shows your AP)
+    -> sharing center -> setup connection -> set up access point -> next ...
+    Copy the PIN from your "AP" and next --> should quickly work.
+
+

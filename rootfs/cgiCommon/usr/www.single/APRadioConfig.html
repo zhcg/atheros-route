@@ -1,0 +1,136 @@
+<HTML><HEAD>
+<LINK REL="stylesheet" href="../styleSheet.css" type="text/css">
+</head><body>
+<FORM METHOD=POST>
+<p class="headind"><INPUT TYPE="SUBMIT" NAME="UPDATE" VALUE="Update">
+&nbsp&nbsp<INPUT TYPE="SUBMIT" NAME="COMMIT" VALUE="Save">
+&nbsp&nbsp<INPUT TYPE="SUBMIT" NAME="RebootButton" VALUE="Reboot">
+&nbsp&nbsp<INPUT TYPE="SUBMIT" NAME="StartButton" VALUE="Start">
+&nbsp&nbsp<INPUT TYPE="SUBMIT" NAME="StopButton" VALUE="Stop"></p>
+<p class="topnavg">AP Radio Configuration</p>
+<table>
+<tr>
+    <td></td>
+    <td class="doctitle">Radio 1 ( 2.4 / 5 GHz )</td>
+</tr>
+<tr>
+    <td class="header">Channel</td>
+    <td><SELECT class="text2" NAME="AP_PRIMARY_CH">
+            <OPTION ~sAP_PRIMARY_CH:1~ value=1>2.412 GHz (1)
+            <OPTION ~sAP_PRIMARY_CH:2~ value=2>2.417 GHz (2)
+            <OPTION ~sAP_PRIMARY_CH:3~ value=3>2.422 GHz (3)
+            <OPTION ~sAP_PRIMARY_CH:4~ value=4>2.427 GHz (4)
+            <OPTION ~sAP_PRIMARY_CH:5~ value=5>2.432 GHz (5)
+            <OPTION ~sAP_PRIMARY_CH:6~ value=6>2.437 GHz (6)
+            <OPTION ~sAP_PRIMARY_CH:7~ value=7>2.442 GHz (7)
+            <OPTION ~sAP_PRIMARY_CH:8~ value=8>2.447 GHz (8)
+            <OPTION ~sAP_PRIMARY_CH:9~ value=9>2.452 GHz (9)
+            <OPTION ~sAP_PRIMARY_CH:10~ value=10>2.457 GHz (10)
+            <OPTION ~sAP_PRIMARY_CH:11~ value=11>2.462 GHz (11)
+            <OPTION ~sAP_PRIMARY_CH:11ng~ value=11ng>2.4 GHz Auto select
+            <OPTION ~sAP_PRIMARY_CH:36~ value=36>5.18 GHz (36)
+            <OPTION ~sAP_PRIMARY_CH:40~ value=40>5.20 GHz (40)
+            <OPTION ~sAP_PRIMARY_CH:44~ value=44>5.22 GHz (44)
+            <OPTION ~sAP_PRIMARY_CH:48~ value=48>5.24 GHz (48)
+            <OPTION ~sAP_PRIMARY_CH:52~ value=52>5.26 GHz (52)
+            <OPTION ~sAP_PRIMARY_CH:56~ value=56>5.28 GHz (56)
+            <OPTION ~sAP_PRIMARY_CH:60~ value=60>5.3 GHz (60)
+            <OPTION ~sAP_PRIMARY_CH:64~ value=64>5.32 GHz (64)
+            <OPTION ~sAP_PRIMARY_CH:100~ value=100>5.5 GHz (100)
+            <OPTION ~sAP_PRIMARY_CH:104~ value=104>5.52 GHz (104)
+            <OPTION ~sAP_PRIMARY_CH:108~ value=108>5.54 GHz (108)
+            <OPTION ~sAP_PRIMARY_CH:112~ value=112>5.56 GHz (112)
+            <OPTION ~sAP_PRIMARY_CH:116~ value=116>5.58 GHz (116)
+            <OPTION ~sAP_PRIMARY_CH:120~ value=120>5.6 GHz (120)
+            <OPTION ~sAP_PRIMARY_CH:124~ value=124>5.62 GHz (124)
+            <OPTION ~sAP_PRIMARY_CH:128~ value=128>5.64 GHz (128)
+            <OPTION ~sAP_PRIMARY_CH:132~ value=132>5.66 GHz (132)
+            <OPTION ~sAP_PRIMARY_CH:136~ value=136>5.68 GHz (136)
+            <OPTION ~sAP_PRIMARY_CH:140~ value=140>5.70 GHz (140)
+            <OPTION ~sAP_PRIMARY_CH:149~ value=149>5.745 GHz (149)
+            <OPTION ~sAP_PRIMARY_CH:153~ value=153>5.765 GHz (153)
+            <OPTION ~sAP_PRIMARY_CH:157~ value=157>5.785 GHz (157)
+            <OPTION ~sAP_PRIMARY_CH:161~ value=161>5.805 GHz (161)
+            <OPTION ~sAP_PRIMARY_CH:11na~ value=11na>5 GHz Auto Select
+        </SELECT>
+    </td>
+</tr>
+<tr>
+    <td class="header">Mode</td>
+    <td><SELECT class="text2" NAME="AP_CHMODE">
+            <OPTION ~sAP_CHMODE:11G~ value=11G>WiFi 11g
+            <OPTION ~sAP_CHMODE:11NGHT20~ value=11NGHT20>WiFi 11gn HT20
+            <OPTION ~sAP_CHMODE:11NGHT40PLUS~ value=11NGHT40PLUS>WiFi 11gn HT40+
+            <OPTION ~sAP_CHMODE:11NGHT40MINUS~ value=11NGHT40MINUS>WiFi 11gn HT40-
+            <OPTION ~sAP_CHMODE:11A~ value=11A>WiFi 11a
+            <OPTION ~sAP_CHMODE:11NAHT20~ value=11NAHT20>WiFi 11an HT20
+            <OPTION ~sAP_CHMODE:11NAHT40MINUS~ value=11NAHT40MINUS>WiFi 11an HT40-
+            <OPTION ~sAP_CHMODE:11NAHT40PLUS~ value=11NAHT40PLUS>WiFi 11an HT40+
+        </SELECT>
+    </td>
+</tr>
+<tr>
+    <td><a class="header">Gating Index:</td>
+    <td class="headind"><INPUT type="radio" name="SHORTGI" ~cSHORTGI:1~ value=1> Half&nbsp
+        <INPUT type="radio" name="SHORTGI" ~cSHORTGI:0~ value=0> Full&nbsp
+    </td>
+</tr>
+<tr>
+    <td><a class="header">Aggregation:</td>
+    <td class="headind">
+        <INPUT type="radio" name="AMPDUENABLE" ~cAMPDUENABLE:1~ value=1> Enabled&nbsp
+        <INPUT type="radio" name="AMPDUENABLE" ~cAMPDUENABLE:0~ value=0> Disabled&nbsp
+    </td>
+</tr>
+<tr>
+    <td><a class="header">Agg Frames:</td>
+    <td class="headind">
+        <INPUT type="text" id="AMPDUFRAMES"	name="AMPDUFRAMES" class="text2" size="20" maxlength="16" value="~~AMPDUFRAMES~">
+    </td>
+</tr>
+<tr>
+    <td><a class="header">Agg Size:</td>
+    <td class="headind">
+        <INPUT type="text" id="AMPDULIMIT" name="AMPDULIMIT" class="text2" size="20" maxlength="16" value="~~AMPDULIMIT~">
+    </td>
+</tr>
+<tr>
+    <td><a class="header">Agg Min Size:</td>
+    <td class="headind">
+        <INPUT type="text" id="AMPDUMIN" name="AMPDUMIN" class="text2" size="20" maxlength="16" value="~~AMPDUMIN~">
+    </td>
+</tr>
+<tr>
+    <td><a class="header">Channel Width:</td>
+    <td class="headind">
+        <INPUT type="radio" name="CWMMODE" ~cCWMMODE:0~ value=0> HT20&nbsp
+        <INPUT type="radio" name="CWMMODE" ~cCWMMODE:1~ value=1> HT20/40&nbsp
+    </td>
+</tr>
+<tr>
+    <td><a class="header">TX ChainMask:</td>
+    <td class="headind">
+        <INPUT type="radio" name="TX_CHAINMASK" ~cTX_CHAINMASK:1~ value=1> 1 Chain
+        <INPUT type="radio" name="TX_CHAINMASK" ~cTX_CHAINMASK:3~ value=3> 2 Chain
+        <INPUT type="radio" name="TX_CHAINMASK" ~cTX_CHAINMASK:7~ value=7> 3 Chain
+        <INPUT type="radio" name="TX_CHAINMASK" ~cTX_CHAINMASK:0~ value=0> EEPROM
+    </td>
+</tr>
+<tr>
+    <td><a class="header">RX ChainMask:</td>
+    <td class="headind">
+        <INPUT type="radio" name="RX_CHAINMASK" ~cRX_CHAINMASK:1~ value=1> 1 Chain
+        <INPUT type="radio" name="RX_CHAINMASK" ~cRX_CHAINMASK:3~ value=3> 2 Chain
+        <INPUT type="radio" name="RX_CHAINMASK" ~cRX_CHAINMASK:7~ value=7> 3 Chain
+        <INPUT type="radio" name="RX_CHAINMASK" ~cRX_CHAINMASK:0~ value=0> EEPROM
+    </td>
+</tr>
+<tr>
+    <td class="header" >Video Features: </td>
+    <td class="headind">
+        <INPUT type="radio" name="VOW_ENABLE" ~cVOW_ENABLE:1~ value=1>Enable&nbsp
+        <INPUT type="radio" name="VOW_ENABLE" ~cVOW_ENABLE:0~ value=0>Disable&nbsp
+    </td>
+</tr>
+</table>
+</body></html>

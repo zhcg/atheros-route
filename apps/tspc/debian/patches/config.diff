@@ -1,0 +1,101 @@
+sane default config and fix permission
+
+Index: tspc/conf/tspc.conf.in
+===================================================================
+--- tspc.orig/conf/tspc.conf.in	2008-12-04 22:31:26.651493243 +0800
++++ tspc/conf/tspc.conf.in	2008-12-04 22:36:42.440493499 +0800
+@@ -18,13 +18,6 @@
+ # to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+ # MA 02111-1307 USA
+ #------------------------------------------------------------------------------
+-#
+-#
+-# tsp directory:
+-#  the only use is for the OS scripts which will be taken 
+-#  from $tsp_dir/template
+-#
+-tsp_dir=@tsp_dir@
+ 
+ #
+ # authentication method:
+@@ -66,28 +59,19 @@
+ 
+ #
+ # Name of the script:
+-# template=checktunnel|freebsd|netbsd|linux|windows|darwin|cisco|
+-#   solaris|openbsd
++# template=checktunnel|linux
+ #
+-# the value is the file name of the script in the tsp_dir/template directory
++# the value is the file name of the script in the /usr/lib/tspc directory
+ # The script will be executed after the TSP session is completed. The script
+ #  is configuring the tunnel interface and routes.
+ # checktunnel is only printing information and does not configure any tunnel
+-# freebsd is for FreeBSD 4.X and above
+-# netbsd is for NetBSD 1.6 and above
+-# linux is for Linux (most distributions)
+-# windows is for WindowsXP
+-# darwin is for MacOS X 10.2 and above
+-# cisco is for Cisco IOS. This script prints the cisco configuration while
+-#  not configuring the cisco itself.
+-# solaris is for Solaris 8 and above.
+-# openbsd is for OpenBSD 3.X and above
++# setup will do the actual work
+ # you could customize your own script, name it and put the filename in 
+ #  the template variable.
+ # on unix, '.sh' is added to the name of the script. 
+ # on windows, '.bat' is added to the name of the script.
+ # 
+-template=@target@
++template=linux
+ 
+ #
+ # 'server' is the tunnel broker identifier
+Index: tspc/platform/linux/tsp_local.c
+===================================================================
+--- tspc.orig/platform/linux/tsp_local.c	2008-12-04 22:36:38.042493672 +0800
++++ tspc/platform/linux/tsp_local.c	2008-12-04 22:37:15.807493764 +0800
+@@ -59,13 +59,13 @@
+ 
+ /* these globals are defined by US used by alot of things in  */
+ 
+-char *FileName  = "tspc.conf";
+-char *LogFile   = "tspc.log";
++char *FileName  = "/etc/tsp/tspc.conf";
++char *LogFile   = "/var/log/tspc.log";
+ char *LogFileName = NULL;
+-char *ScriptInterpretor = "/bin/sh";
++char *ScriptInterpretor = "";
+ char *ScriptExtension = "sh";
+ char *ScriptDir = NULL;
+-char *TspHomeDir = "/usr/local/etc/tsp";
++char *TspHomeDir = "/usr/lib/tspc";
+ char DirSeparator = '/';
+ 
+ int Verbose = 0;
+Index: tspc/conf/Makefile
+===================================================================
+--- tspc.orig/conf/Makefile	2008-12-04 22:31:26.724493460 +0800
++++ tspc/conf/Makefile	2008-12-04 22:36:42.441493626 +0800
+@@ -42,7 +42,7 @@
+ 	 sed -e "s+@ifname_tun@+$(ifname_tun)+" -e "s+@ifname@+$(ifname)+" -e "s+@target@+$(target)+" -e "s+@tsp_dir@+$(configdir)+" tspc.conf.in >$(BIN)/tspc.conf.sample; \
+ 	fi
+ 
+-	chmod 700 $(BIN)/tspc.conf.sample
++	chmod 600 $(BIN)/tspc.conf.sample
+ 	
+ 
+ clean:
+Index: tspc/src/lib/config.c
+===================================================================
+--- tspc.orig/src/lib/config.c	2008-12-04 22:36:40.396492901 +0800
++++ tspc/src/lib/config.c	2008-12-04 22:36:42.443493671 +0800
+@@ -270,7 +270,7 @@
+ int tspInitialize(int argc, char *argv[], tConf *Conf)
+ {
+   tConf CmdLine;
+-  char *Templ = "template";
++  char *Templ = "";
+ 
+   Conf->tsp_dir      = NULL;
+   Conf->server       = "";

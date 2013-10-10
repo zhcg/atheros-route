@@ -1,0 +1,169 @@
+# NLS support for the sysstat package.
+# Copyright (C) 1999 Free Software Foundation, Inc.
+# Sébastien GODARD <sebastien.godard@wanadoo.fr>, 1999.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: sysstat 1.1\n"
+"PO-Revision-Date: 1999-11-07 23:42\n"
+"Last-Translator: Birko Bergt <Birko.Bergt@intrastore.cdc.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+
+#: mpstat.c:62
+msgid "sysstat version %s\n"
+"(C) Sebastien Godard\n"
+"Usage: %s [ options... ] [ <interval> [ <count> ] ]\n"
+"Options are:\n"
+"[ -P { <cpu> | ALL } ] [ -V ]\n"
+msgstr "sysstat version %s\n"
+"(C) Sebastien Godard\n"
+"Aufruf: %s [ optionen... ] [ <intervall> [ <anzahl> ] ]\n"
+"mögliche Optionen:\n"
+"[ -P { <cpu> | ALL } ] [ -V ]\n"
+
+#: iostat.c:73
+msgid "sysstat version %s\n"
+"(C) Sebastien Godard\n"
+"Usage: %s [ options... ] [ <interval> [ <count> ] ]\n"
+"Options are:\n"
+"[ -c | -d ] [ -k | -m ] [ -t ] [ -V ] [ -x ]\n"
+"[ <device> [ ... ] | ALL ] [ -p [ <device> | ALL ] ]\n"
+msgstr "sysstat version %s\n"
+"(C) Sebastien Godard\n"
+"Aufruf: %s [ optionen... ] [ <intervall> [ <anzahl> ] ]\n"
+"mögliche Optionen:\n"
+"[ -c | -d ] [ -k | -m ] [ -t ] [ -V ] [ -x ]\n"
+"[ <device> [ ... ] | ALL ] [ -p [ <device> | ALL ] ]\n"
+
+#: iostat.c:555
+msgid "Time: %s\n"
+msgstr "Zeit: %s\n"
+
+#: iostat.c
+msgid "-x and -p options are mutually exclusive\n"
+msgstr "Die Optionen -x und -p schließen sich gegenseitig aus\n"
+
+#: sar.c:91
+msgid "sysstat version %s\n"
+"(C) Sebastien Godard\n"
+"Usage: %s [ options... ] [ <interval> [ <count> ] ]\n"
+"Options are:\n"
+"[ -A ] [ -b ] [ -B ] [ -c ] [ -d ] [ -i <interval> ] [ -p ] [ -q ]\n"
+"[ -r ] [ -R ] [ -t ] [ -u ] [ -v ] [ -V ] [ -w ] [ -W ] [ -y ]\n"
+"[ -I { <irq> | SUM | ALL | XALL } ] [ -P { <cpu> | ALL } ]\n"
+"[ -n { DEV | EDEV | NFS | NFSD | SOCK | FULL } ]\n"
+"[ -x { <pid> | SELF | ALL } ] [ -X { <pid> | SELF | ALL } ]\n"
+"[ -o [ <filename> ] | -f [ <filename> ] ]\n"
+"[ -s [ <hh:mm:ss> ] ] [ -e [ <hh:mm:ss> ] ]\n"
+msgstr "sysstat version %s\n"
+"(C) Sebastien Godard\n"
+"Aufruf: %s [ optionen... ] [ <intervall> [ <anzahl> ] ]\n"
+"mögliche Optionen:\n"
+"[ -A ] [ -b ] [ -B ] [ -c ] [ -d ] [ -i <intervall> ] [ -p ] [ -q ]\n"
+"[ -r ] [ -R ] [ -t ] [ -u ] [ -v ] [ -V ] [ -w ] [ -W ] [ -y ]\n"
+"[ -I { <irq> | SUM | ALL | XALL } ] [ -P { <cpu> | ALL } ]\n"
+"[ -n { DEV | EDEV | NFS | NFSD | SOCK | FULL } ]\n"
+"[ -x { <pid> | SELF | ALL } ] [ -X { <pid> | SELF | ALL } ]\n"
+"[ -o [ <dateiname> ] | -f [ <dateiname> ] ]\n"
+"[ -s [ <hh:mm:ss> ] ] [ -e [ <hh:mm:ss> ] ]\n"
+
+#: sar.c:184
+msgid "Not an SMP machine...\n"
+msgstr "Keine SMP-Maschine...\n"
+
+#: sar.c:194
+msgid "Not that many processors!\n"
+msgstr "Nicht so viel Prozessoren!\n"
+
+#: sar.c:284
+msgid "Error while reading system activity file: %s\n"
+msgstr "Fehler beim lesen der Systemaktivitätendatei: %s\n"
+
+#: sar.c:288
+msgid "End of system activity file unexpected\n"
+msgstr "Unerwartetes Ende der Systemaktivitätendatei\n"
+
+#: sar.c:402
+msgid "Cannot open %s: %s\n"
+msgstr "Kann nicht öffnen %s: %s\n"
+
+#: sar.c:521
+msgid "Invalid system activity file: %s (%#x)\n"
+msgstr "Ungültige Systemaktivitätendatei: %s (%#x)\n"
+
+#:
+msgid "Invalid data format\n"
+msgstr "ungültiges Datenformat\n"
+
+#: sar.c:
+msgid "Average:"
+msgstr "Durchschn.:"
+
+#: sar.c:568
+msgid "Requested activities not available in file\n"
+msgstr "Angeforderte Aktivität ist nicht verfügbar\n"
+
+#: sar.c:797
+msgid "Cannot write system activity file header: %s\n"
+msgstr "Kann den Kopf der Systemaktivitätendatei nicht schreiben: %s\n"
+
+#: sar.c:970
+msgid "Cannot write data to system activity file: %s\n"
+msgstr "Kann keine Daten in die Systemaktivitätendatei schreiben: %s\n"
+
+#: sar.c:1074
+msgid "Please give a smaller interval value\n"
+msgstr "Bitte einen kleineren Wert für Intervall angeben\n"
+
+#: sar.c:1419
+msgid "Not reading from a system activity file (use -f option)\n"
+msgstr "Bitte -f Option zur Angabe der Systemaktivitätendatei verwenden\n"
+
+#: sar.c:1610
+msgid "-f and -o options are mutually exclusive\n"
+msgstr "Die Optionen -f und -o schließen sich gegenseitig aus\n"
+
+#: sar.c:1846
+msgid "Requested activities not available\n"
+msgstr "Die angeforderte Aktion ist nicht verfügbar.\n"
+
+#: sadc.c:74
+msgid "sysstat version %s\n"
+"(C) Sebastien Godard\n"
+"Usage: %s [ options... ] [ <interval> [ <count> ] ] [ <outfile> ]\n"
+"Options are:\n"
+"[ -d ] [ -F ] [ -I ] [ -V ]\n"
+msgstr "sysstat version %s\n"
+"(C) Sebastien Godard\n"
+"Aufruf: %s [ optionen... ] [ <intervall> [ <anzahl> ] ] [ <dateiname> ]\n"
+"mögliche Optionen:\n"
+"[ -d ] [ -F ] [ -I ] [ -V ]\n"
+
+#: sadc.c:614
+msgid "Cannot append data to that file\n"
+msgstr "An diese Datei können keine Daten angehangen werden.\n"
+
+#: common.c:91
+msgid "Cannot handle so many processors!\n"
+msgstr "Es sind zuviele Prozessoren vorhanden!\n"
+
+#: sadf.c:75
+msgid "sysstat version %s\n"
+"(C) Sebastien Godard\n"
+"Usage: %s [ options... ] [ <interval> [ <count> ] ] [ <datafile> ]\n"
+"Options are:\n"
+"[ -d | -H | -p | -x ] [ -t ] [ -V ]\n"
+"[ -P { <cpu> | ALL } ] [ -s [ <hh:mm:ss> ] ] [ -e [ <hh:mm:ss> ] ]\n"
+"[ -- <sar_options...> ]\n"
+msgstr "sysstat version %s\n"
+"(C) Sebastien Godard\n"
+"Aufruf: %s [ optionen... ] [ <intervall> [ <anzahl> ] ] [ <dateiname> ]\n"
+"mögliche Optionen:\n"
+"[ -d | -H | -p | -x ] [ -t ] [ -V ]\n"
+"[ -P { <cpu> | ALL } ] [ -s [ <hh:mm:ss> ] ] [ -e [ <hh:mm:ss> ] ]\n"
+"[ -- <sar_optionen...> ]\n"

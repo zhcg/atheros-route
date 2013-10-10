@@ -1,0 +1,13 @@
+TSPClient:  main: ----- TSP Client Version .* Initializing
+TSPClient:  main: tspc - Tunnel Server Protocol Client
+TSPClient:  main: Loading configuration file
+TSPClient:  main: Connecting to server
+TSPClient:  TryServer: Using \[.*\] as source IPv4 address\.
+TSPClient:  TryServer: Send request
+TSPClient:  TryServer: Request:
+TSPClient:  TryServer: <tunnel action="create"
+TSPClient:  ExtractPayload: Process response from server
+TSPClient:  ExtractPayload: Response: $
+TSPClient:  SetUpInterface: Executing configuration script\.
+TSPClient:  SetUpInterface:  $
+TSPClient:  main: Closing, exit status: 0

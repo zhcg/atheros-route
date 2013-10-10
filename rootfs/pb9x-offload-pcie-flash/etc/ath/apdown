@@ -1,0 +1,25 @@
+#!/bin/sh
+##
+## Compatability scripts for older versions
+##
+
+. /etc/ath/apcfg
+WPS_LED_OFF=1
+echo $WPS_LED_OFF  > /proc/simple_config/simple_config_led
+
+#Finally, unload all modules
+
+#killVAP all
+wsupp=`ps | grep atd_wsupp_bridge | cut -b 1-5`
+for i in $wsupp
+do
+kill $wsupp
+done
+sleep 1
+ifconfig ${VAP_NAME}0 down
+wlanconfig ${VAP_NAME}0 destroy
+
+sleep 3
+
+/etc/rc.d/rc.wlan down
+rm -f /tmp/.apup

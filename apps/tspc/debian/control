@@ -1,0 +1,22 @@
+Source: tspc
+Section: net
+Priority: optional
+Maintainer: Ubuntu MOTU Developers <ubuntu-motu@lists.ubuntu.com>
+XSBC-Original-Maintainer: Kanru Chen <koster@debian.org.tw>
+Build-Depends: debhelper (>= 7), quilt
+Homepage: http://www.hexago.com/
+Vcs-Git: git://git.debian.org/git/users/kanru-guest/tspc.git
+Vcs-Browser: http://git.debian.org/?p=users/kanru-guest/tspc.git;a=summary
+Standards-Version: 3.8.0
+
+Package: tspc
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, net-tools, iproute, lsb-base (>= 3.0-6)
+Recommends: radvd
+Description: client to configure an IPv6 tunnel to Hexago's migration broker
+ Connecting to the IPv6 Internet requires either a native connection or
+ the cooperation of a friendly server to provide you with a tunnel.
+ .
+ Tunnel Server Protocol Client (tspc), is a daemon to automate the setup 
+ and maintenance of an IPv6 tunnel. This client will connect to any 
+ migration broker which uses Hexago's implementation.

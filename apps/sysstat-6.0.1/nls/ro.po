@@ -1,0 +1,167 @@
+# NLS support for the sysstat package.
+# Copyright (C) 2003 Free Software Foundation, Inc.
+# Eugen Hoanca <eugenh@urban-grafx.ro>, 2003.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: sysstat 4.1.2\n"
+"PO-Revision-Date: 2003-03-12 10:21+0200\n"
+"Last-Translator: Eugen Hoanca <eugenh@urban-grafx.ro>\n"
+"Language-Team: Romanian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-2\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: mpstat.c:62
+msgid "sysstat version %s\n"
+"(C) Sebastien Godard\n"
+"Usage: %s [ options... ] [ <interval> [ <count> ] ]\n"
+"Options are:\n"
+"[ -P { <cpu> | ALL } ] [ -V ]\n"
+msgstr "sysstat versiunea %s\n"
+"(C) Sebastien Godard\n"
+"Utilizare: %s [ optiuni... ] [ <interval> [ <repetitii> ] ]\n"
+"Optiuni disponibile:\n"
+"[ -P { <cpu> | ALL } ] [ -V ]\n"
+
+#: iostat.c:73
+msgid "sysstat version %s\n"
+"(C) Sebastien Godard\n"
+"Usage: %s [ options... ] [ <interval> [ <count> ] ]\n"
+"Options are:\n"
+"[ -c | -d ] [ -k | -m ] [ -t ] [ -V ] [ -x ]\n"
+"[ <device> [ ... ] | ALL ] [ -p [ <device> | ALL ] ]\n"
+msgstr "sysstat versiunea %s\n"
+"(C) Sebastien Godard\n"
+"Utilizare: %s [ optiuni... ] [ <interval> [ <repetitii> ] ]\n"
+"Optiuni disponibile:\n"
+"[ -c | -d ] [ -k | -m ] [ -t ] [ -V ] [ -x ]\n"
+"[ <dispozitiv> [ ... ] | ALL ] [ -p [ <dispozitiv> | ALL ] ]\n"
+
+#: iostat.c:555
+msgid "Time: %s\n"
+msgstr "Ora:  %s\n"
+
+#: iostat.c
+msgid "-x and -p options are mutually exclusive\n"
+msgstr "Optiunile -x si -p se exclud reciproc\n"
+
+#: sar.c:91
+msgid "sysstat version %s\n"
+"(C) Sebastien Godard\n"
+"Usage: %s [ options... ] [ <interval> [ <count> ] ]\n"
+"Options are:\n"
+"[ -A ] [ -b ] [ -B ] [ -c ] [ -d ] [ -i <interval> ] [ -p ] [ -q ]\n"
+"[ -r ] [ -R ] [ -t ] [ -u ] [ -v ] [ -V ] [ -w ] [ -W ] [ -y ]\n"
+"[ -I { <irq> | SUM | ALL | XALL } ] [ -P { <cpu> | ALL } ]\n"
+"[ -n { DEV | EDEV | NFS | NFSD | SOCK | FULL } ]\n"
+"[ -x { <pid> | SELF | ALL } ] [ -X { <pid> | SELF | ALL } ]\n"
+"[ -o [ <filename> ] | -f [ <filename> ] ]\n"
+"[ -s [ <hh:mm:ss> ] ] [ -e [ <hh:mm:ss> ] ]\n"
+msgstr "sysstat versiunea %s\n"
+"(C) Sebastien Godard\n"
+"Utilizare: %s [ optiuni... ] [ <interval> [ <repetitii> ] ]\n"
+"Optiuni disponibile:\n"
+"[ -A ] [ -b ] [ -B ] [ -c ] [ -d ] [ -i <intervallo> ] [ -p ] [ -q ]\n"
+"[ -r ] [ -R ] [ -t ] [ -u ] [ -v ] [ -V ] [ -w ] [ -W ] [ -y ]\n"
+"[ -I { <irq> | SUM | ALL | XALL } ] [ -P { <cpu> | ALL } ]\n"
+"[ -n { DEV | EDEV | NFS | NFSD | SOCK | FULL } ]\n"
+"[ -x { <pid> | SELF | ALL } ] [ -X { <pid> | SELF | ALL } ]\n"
+"[ -o [ <file> ] | -f [ <file> ] ]\n"
+"[ -s [ <hh:mm:ss> ] ] [ -e [ <hh:mm:ss> ] ]\n"
+
+#: sar.c:184
+msgid "Not an SMP machine...\n"
+msgstr "Nu este sistem multiprocesor...\n"
+
+#: sar.c:194
+msgid "Not that many processors!\n"
+msgstr "Prea multe procesoare specificate!\n"
+
+#: sar.c:284
+msgid "Error while reading system activity file: %s\n"
+msgstr "A aparut o eroare la citirea fisierului de activitate al sistemului: %s\n"
+
+#: sar.c:288
+msgid "End of system activity file unexpected\n"
+msgstr "Sfarsit neasteptat al fisierului de activitate al sistemului\n"
+
+#: sar.c:402
+msgid "Cannot open %s: %s\n"
+msgstr "Nu se poate deschide %s: %s\n"
+
+#: sar.c:521
+msgid "Invalid system activity file: %s (%#x)\n"
+msgstr "Fisier de activitate a sistemului invalid: %s (%#x)\n"
+
+#:
+msgid "Invalid data format\n"
+msgstr "Format invalid de data\n"
+
+#: sar.c:
+msgid "Average:"
+msgstr "Media:"
+
+#: sar.c:568
+msgid "Requested activities not available in file\n"
+msgstr "Activitatile solicitate nu se regasesc in fisier\n"
+
+#: sar.c:797
+msgid "Cannot write system activity file header: %s\n"
+msgstr "Nu se poate scrie headerul fisierului de activitate sistem: %s\n"
+
+#: sar.c:970
+msgid "Cannot write data to system activity file: %s\n"
+msgstr "Nu se poate scrie in fisierul de activitate sistem: %s\n"
+
+#: sar.c:1074
+msgid "Please give a smaller interval value\n"
+msgstr "Specificati un interval mai mic\n"
+
+#: sar.c:1419
+msgid "Not reading from a system activity file (use -f option)\n"
+msgstr "Nu se citeste dintr-un fisier activitate sistem (utilizati -f)\n"
+
+#: sar.c:1610
+msgid "-f and -o options are mutually exclusive\n"
+msgstr "Optiunile -f si -o se exclud reciproc\n"
+
+#: sar.c:1846
+msgid "Requested activities not available\n"
+msgstr "Statistica solicitata nu este disponibila\n"
+
+#: sadc.c:74
+msgid "sysstat version %s\n"
+"(C) Sebastien Godard\n"
+"Usage: %s [ options... ] [ <interval> [ <count> ] ] [ <outfile> ]\n"
+"Options are:\n"
+"[ -d ] [ -F ] [ -I ] [ -V ]\n"
+msgstr "sysstat versiunea %s\n"
+"(C) Sebastien Godard\n"
+"Utilizare: %s [ optiuni... ] [ <interval> [ <repetitii> ] ] [ <fisier> ]\n"
+"Optiuni disponibile:\n"
+"[ -d ] [ -F ] [ -I ] [ -V ]\n"
+
+#: sadc.c:614
+msgid "Cannot append data to that file\n"
+msgstr "Nu se pot adauga date in acel fisier\n"
+
+#: common.c:91
+msgid "Cannot handle so many processors!\n"
+msgstr "Numar prea mare de procesoare!\n"
+
+#: sadf.c:75
+msgid "sysstat version %s\n"
+"(C) Sebastien Godard\n"
+"Usage: %s [ options... ] [ <interval> [ <count> ] ] [ <datafile> ]\n"
+"Options are:\n"
+"[ -d | -H | -p | -x ] [ -t ] [ -V ]\n"
+"[ -P { <cpu> | ALL } ] [ -s [ <hh:mm:ss> ] ] [ -e [ <hh:mm:ss> ] ]\n"
+"[ -- <sar_options...> ]\n"
+msgstr "sysstat versiunea %s\n"
+"(C) Sebastien Godard\n"
+"Utilizare: %s [ optiuni... ] [ <interval> [ <repetitii> ] ] [ <fisier> ]\n"
+"Optiuni disponibile:\n"
+"[ -d | -H | -p | -x ] [ -t ] [ -V ]\n"
+"[ -P { <cpu> | ALL } ] [ -s [ <hh:mm:ss> ] ] [ -e [ <hh:mm:ss> ] ]\n"
+"[ -- <sar_optiuni...> ]\n"

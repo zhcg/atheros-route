@@ -1,0 +1,88 @@
+# Set the toolchain path
+export TOOLCHAIN=gcc-3.4.4-2.16.1
+export TOOLPREFIX=mips-linux-uclibc-
+export TOOLARCH=build_mips_nofpu
+
+export KERNEL=mips-linux-2.6.15
+export KERNELVER=2.6.15
+export KERNELTARGET=vmlinux.bin
+export COMPRESSKERNEL=y
+export KERNELARCH=mips
+export TARGETFSSIZE=2818048
+export AP_TYPE=single
+
+export BUSYBOX=busybox-1.01
+export WIRELESSTOOLS=wireless_tools.28
+export WIRELESSTOOLSLIB=libiw.so.28
+
+export BUILD_WPA2=y
+#for station forwarding support
+export CONFIG_ETHERSTA=y
+
+#
+# UMAC build option
+#
+
+export BUILD_UMAC=1
+
+
+export BUS=PCI
+export TARGETARCH=mipsisa32-be-elf
+
+#
+# Select the support required for this board
+#
+
+export ATH_CAP_PHYERR_DIAG=1
+export AH_SUPPORT_AR5210=0
+export AH_SUPPORT_AR5212=0
+export AH_SUPPORT_5111=0
+export AH_SUPPORT_5112=0
+export AH_SUPPORT_2413=0
+export AH_SUPPORT_5111=0
+export AH_SUPPORT_5112=0
+export AH_SUPPORT_2413=0
+export AH_SUPPORT_5413=0
+export AH_SUPPORT_2316=0
+export AH_SUPPORT_2317=0
+export AH_SUPPORT_2425=0
+export AH_SUPPORT_AR5416=1
+export AP_SUPPORT_AR9300=0
+export ATH_SUPPORT_EDMA=0
+
+export ATH_CHAINMASK_SELECT=0
+export ATH_RXBUF=128
+export ATH_CAP_AMSDU=0
+export ATH_RB=0
+export ATH_CAP_PHYERR_DIAG=1
+export REMOVE_PKT_LOG=1
+
+export AR5416_G_MODE=1
+export AH_SUPPORT_HOWL=0
+export AH_SUPPORT_OWL=0
+export AH_DEBUG=1
+export AR5416_INT_MITIGATION=1
+export ATH_SUPPORT_DFS=0
+
+export AH_CAL_IN_FLASH=1
+export AH_CAL_RADIOS=1
+export AH_CAL_LOCATIONS=0xbfff1000
+export AH_WAR_52640=1
+
+#Support for WDS function without requiring the repeaters to
+#authenticate and associate. Used for interop with non Atheros based AP repeaters. 
+#Feature is implemented based on  the compilation constant ATH_WDS_INTEROP
+#Implementation changes in  CL#492745
+export ATH_WDS_INTEROP=0
+
+#Set the GPIO PIN for WPS LED
+export WPS_LED_GPIO_PIN=0
+export ATH_CONFIG_NVRAM=1
+export ATH_SUPPORT_IQUE=1
+export IEEE_MCAST_ENHANCEMENT=1
+export ATH_SUPPORT_SPECTRAL=0
+
+export ATH_EXT_AP=1
+export ATH_SUPPORT_VOWEXT=1
+export ATH_WPS_IE=1
+export ATH_SUPPORT_VLAN=1

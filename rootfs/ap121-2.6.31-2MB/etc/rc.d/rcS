@@ -1,0 +1,66 @@
+#!/bin/sh
+
+
+# This script runs when init it run during the boot process.
+
+export PATH=$PATH:/etc/ath
+
+# Mounts everything in the fstab
+
+# mount -a
+cfg mountall
+
+# Insert the ethernet module
+insmod /lib/modules/2.6.31/net/athrs_gmac.ko
+
+##
+## Bring up the network
+##
+
+cfg -e > /tmp/var.$$
+. /tmp/var.$$
+rm -f /tmp/var.$$
+
+cfg ifstate $WAN_IF up
+cfg ifstate $LAN_IF up
+
+/etc/rc.d/rc.network
+/etc/rc.d/rc.bridge
+
+#
+# Enable USB
+#
+#insmod /lib/modules/2.6.31/usb/usbcore.ko
+#insmod /lib/modules/2.6.31/usb/ehci-hcd.ko
+#insmod /lib/modules/2.6.31/usb/usb-storage.ko
+
+#
+# Untar the debug tools into /tmp/tools
+#
+
+#mkdir /tmp/tools
+#cd /tmp/tools
+#tar -xzvf /sbin/debug.tgz
+
+/usr/sbin/telnetd
+#/usr/sbin/httpd -h /usr/www/
+/bin/factoryreset /dev/freset
+
+# start the page cache/kmem cache cleanup timer in the kernel
+echo 1 > /proc/sys/vm/drop_caches
+
+# when processes uses page-cache more than 20% of system memory, 
+# lets force them to write
+echo 20 > /proc/sys/vm/dirty_ratio
+
+# when the dirty pages cross more than 5% of sys memory, 
+# kick in the pdflush
+echo 5 > /proc/sys/vm/dirty_background_ratio
+
+##
+## Determine if auto start of AP is required
+##
+
+if [ "${WLAN_ON_BOOT}" = "y" ]; then
+   cfg wlan up
+fi

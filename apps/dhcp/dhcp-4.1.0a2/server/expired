@@ -1,0 +1,149 @@
+bootp.c:		    (lease->pool->failover_peer != NULL)) {
+bootp.c:			peer = lease->pool->failover_peer;
+confpars.c:	if (pool->shared_network == NULL ||
+confpars.c:            !clone_group(&pool->group, pool->shared_network->group, MDL))
+confpars.c:                parse_lease_time (cfile, (TIME *)&pool->max_offer );
+confpars.c:                if(pool->max_offer > 253) {
+confpars.c:			        parse_warn (cfile, "pool-max-offer is larger than 253.");
+confpars.c:              //          pool->max_offer, pool->lease_count, pool->free_leases, pool->backup_leases);  
+confpars.c:				if (pool->valid_from || pool->valid_until) {
+confpars.c:					pool->valid_from = t;
+confpars.c:					pool->valid_until = t;
+confpars.c:	pool->subnet = NULL;
+confpars.c:	subnet_reference(&pool->subnet, subnet, MDL);
+confpars.c:	pool->shared_network = NULL;
+confpars.c:	shared_network_reference(&pool->shared_network, share, MDL);
+dhcp.c:    } else if(lease->pool->max_offer) {
+dhcp.c:        for(l = lease->pool->active; l; l = l->next) {
+dhcp.c:		log_error ("%s:****DEBUG****pool-max-offer is %d", __FUNCTION__, lease->pool->max_offer);
+dhcp.c:		log_error ("%s:****DEBUG****lease_count is %d", __FUNCTION__, lease->pool->lease_count);
+dhcp.c:		log_error ("%s:****DEBUG****free_leases is %d", __FUNCTION__, lease->pool->free_leases);
+dhcp.c:		log_error ("%s:****DEBUG****backup_leases is %d", __FUNCTION__, lease->pool->backup_leases);
+dhcp.c:		log_error ("%s:****DEBUG****pool-max-offer is %d", __FUNCTION__, lease->pool->max_offer);
+dhcp.c:		log_error ("%s:****DEBUG****lease_count is %d", __FUNCTION__, lease->pool->lease_count);
+dhcp.c:		log_error ("%s:****DEBUG****free_leases is %d", __FUNCTION__, lease->pool->free_leases);
+dhcp.c:		log_error ("%s:****DEBUG****backup_leases is %d", __FUNCTION__, lease->pool->backup_leases);
+dhcp.c:				count = lease->pool->lease_count;
+dhcp.c:				total = count - (lease->pool->free_leases +
+dhcp.c:						 lease->pool->backup_leases);
+dhcp.c:					  lease->pool->lease_count,
+dhcp.c:					  lease->pool->free_leases,
+dhcp.c:		if (lease->pool && lease->pool->valid_from && 
+dhcp.c:                    cur_time < lease->pool->valid_from) {
+dhcp.c:		if (lease->pool && lease->pool->valid_until) {
+dhcp.c:			if (cur_time >= lease->pool->valid_until) {
+dhcp.c:			remaining_time = lease->pool->valid_until - cur_time;
+dhcp.c:		for (pool = share->pools ; pool ; pool = pool->next) {
+dhcp.c:			dhcp_failover_state_t *peer = pool->failover_peer;
+dhcp.c:			    ((peer->i_am == primary && pool->backup_leases) ||
+dhcp.c:			     (peer->i_am == secondary && pool->free_leases))) {
+dhcp.c:		if (pool->failover_peer != NULL) {
+dhcp.c:			if (pool->failover_peer->i_am == primary) {
+dhcp.c:				candl = pool->free;
+dhcp.c:				if (pool->backup != NULL) {
+dhcp.c:					      pool->backup->ends)) &&
+dhcp.c:							    pool->backup)) {
+dhcp.c:						candl = pool->backup;
+dhcp.c:				candl = pool->backup;
+dhcp.c:				if (pool->free != NULL) {
+dhcp.c:					      pool->free->ends)) &&
+dhcp.c:							    pool->free)) {
+dhcp.c:						candl = pool->free;
+dhcp.c:			    (pool->abandoned != NULL) &&
+dhcp.c:			    lease_mine_to_reallocate(pool->abandoned))
+dhcp.c:				candl = pool->abandoned;
+dhcpleasequery.c:	if (iasubopt_hash_lookup(&iaaddr, pool->leases, &addr,
+dhcpv6.c:	if (((int)tmp_plen != pool->units) ||
+dhcpv6.c:		group = reply->lease->ipv6_pool->subnet->group;
+dhcpv6.c:				      reply->lease->ipv6_pool->subnet->group);
+dhcpv6.c:		if (pool->pool_type != D6O_IA_NA)
+dhcpv6.c:	group = reply->lease->ipv6_pool->subnet->group;
+dhcpv6.c:		if (pool->pool_type != D6O_IA_PD)
+failover.c:	peer = pool->failover_peer;
+failover.c:	if(pool->free && pool->free->ends < cur_time)
+failover.c:		est1 = cur_time - pool->free->ends;
+failover.c:	if(pool->backup && pool->backup->ends < cur_time)
+failover.c:		est2 = cur_time - pool->backup->ends;
+failover.c:		return "pool-request";
+failover.c:		return "pool-response";
+failover.c:	state = lp->pool->failover_peer;
+failover.c:	    (peer = lease->pool->failover_peer)) {
+mdb6.c:		switch (pool->pool_type) {
+mdb6.c:			build_address6(&tmp, &pool->start_addr,
+mdb6.c:				       pool->bits, &ds);
+mdb6.c:			build_temporary6(&tmp, &pool->start_addr, &ds);
+mdb6.c:		    (iasubopt_hash_lookup(&test_iaaddr, pool->leases,
+mdb6.c:	if (iasubopt_hash_lookup(&test_iasubopt, pool->leases,
+mdb6.c:			isc_heap_delete(pool->active_timeouts,
+mdb6.c:			pool->num_active--;
+mdb6.c:			isc_heap_delete(pool->inactive_timeouts,
+mdb6.c:			pool->num_inactive--;
+mdb6.c:		iasubopt_hash_delete(pool->leases, &test_iasubopt->addr, 
+mdb6.c:		iasubopt_hash_add(pool->leases, &tmp_iasubopt->addr, 
+mdb6.c:		insert_result = isc_heap_insert(pool->active_timeouts,
+mdb6.c:			pool->num_active++;
+mdb6.c:		insert_result = isc_heap_insert(pool->inactive_timeouts,
+mdb6.c:			pool->num_inactive++;
+mdb6.c:		iasubopt_hash_delete(pool->leases, &lease->addr, 
+mdb6.c:	if (iasubopt_hash_lookup(&test_iaaddr, pool->leases, 
+mdb6.c:	insert_result = isc_heap_insert(pool->active_timeouts, lease);
+mdb6.c:       		iasubopt_hash_add(pool->leases, &lease->addr, 
+mdb6.c:		isc_heap_delete(pool->inactive_timeouts, old_heap_index);
+mdb6.c:		pool->num_active++;
+mdb6.c:		pool->num_inactive--;
+mdb6.c:		isc_heap_decreased(pool->active_timeouts, lease->heap_index);
+mdb6.c:	insert_result = isc_heap_insert(pool->inactive_timeouts, lease);
+mdb6.c:		if (pool->pool_type != D6O_IA_PD) {
+mdb6.c:		iasubopt_hash_delete(pool->leases, 
+mdb6.c:		isc_heap_delete(pool->active_timeouts, old_heap_index);
+mdb6.c:		pool->num_active--;
+mdb6.c:		pool->num_inactive++;
+mdb6.c:	if (pool->num_active > 0) {
+mdb6.c:				isc_heap_element(pool->active_timeouts, 1);
+mdb6.c:	isc_heap_decreased(pool->active_timeouts, lease->heap_index);
+mdb6.c:		build_prefix6(&tmp, &pool->start_addr,
+mdb6.c:			      pool->bits, pool->units, &ds);
+mdb6.c:		if (iasubopt_hash_lookup(&test_iapref, pool->leases,
+mdb6.c:	iapref->plen = (u_int8_t)pool->units;
+mdb6.c:	if ((int)plen != pool->units)
+mdb6.c:	if (iasubopt_hash_lookup(&test_iapref, pool->leases, 
+mdb6.c:		iasubopt_hash_add(pool->leases, &dummy_iasubopt->addr,
+mdb6.c:	while (pool->num_inactive > 0) {
+mdb6.c:				isc_heap_element(pool->inactive_timeouts, 1);
+mdb6.c:		isc_heap_delete(pool->inactive_timeouts, tmp->heap_index);
+mdb6.c:		pool->num_inactive--;
+mdb6.c:		if (pool->pool_type != D6O_IA_PD) {
+mdb6.c:	if (pool->num_active > 0) {
+mdb6.c:				isc_heap_element(pool->active_timeouts, 1);
+mdb6.c:	if (pool->num_inactive > 0) {
+mdb6.c:				isc_heap_element(pool->inactive_timeouts, 1);
+mdb6.c:	ipv6_network_portion(&tmp, addr, pool->bits);
+mdb6.c:	if (memcmp(&tmp, &pool->start_addr, sizeof(tmp)) == 0) {
+mdb6.c:	if (pool->num_active != 0) {
+mdb6.c:	if (pool->bits != 64) {
+mdb6.c:	inet_ntop(AF_INET6, &pool->start_addr, addr_buf, sizeof(addr_buf));
+mdb6.c:	if (strcmp(inet_ntop(AF_INET6, &pool->start_addr, addr_buf, 
+mdb6.c:	if (pool->num_inactive != 1) {
+mdb6.c:	if (pool->num_active != 1) {
+mdb6.c:	if (pool->num_active != 1) {
+mdb6.c:	if (pool->num_active != 0) {
+mdb6.c:	if (pool->num_active != 1) {
+mdb6.c:	if (pool->num_active != 0) {
+mdb6.c:	if (pool->num_active != 1) {
+mdb6.c:	if (pool->num_active != 1) {
+mdb6.c:		if (pool->num_active != (i / 10)) {
+mdb6.c:	if (pool->num_active != 9) {
+mdb6.c:		if (pool->num_active != (9 - (i / 10))) {
+mdb6.c:	if (pool->num_active != 0) {
+mdb.c:			comp->pool->free_leases--;
+mdb.c:			comp->pool->backup_leases--;
+mdb.c:	if (do_pool_check && comp->pool->failover_peer)
+mdb.c:	lptr[RESERVED_LEASES] = &pool->reserved;
+mdb.c:			lq = &comp->pool->reserved;
+mdb.c:			lq = &comp->pool->free;
+mdb.c:			comp->pool->free_leases++;
+mdb.c:		if (comp->pool->failover_peer &&
+mdb.c:		    comp->pool->failover_peer->me.state == partner_down)
+mdb.c:			lq = &comp->pool->reserved;
+mdb.c:			lq = &comp->pool->backup;
+mdb.c:			comp->pool->backup_leases++;

@@ -1,0 +1,101 @@
+Instructions on using these initramfs tools:
+-------------------------------------------------
+
+Building:
+----------------
+
+Modify kernel configuration such that:
+    CONFIG_INITRAMFS_SOURCE="../../../boot/initramfs/initramfs.config"
+The configuration file can be found in e.g.
+    linux/kernels/mips-linux-2.6.15/arch/mips/configs
+
+Be sure to build this directory "initramfs" BEFORE building kernel
+(build/Makefile should assure that).
+
+CAUTION: Current Atheros make procedure fails to properly rebuild
+the kernel object file containing the initramfs.
+If you change either this file or change inittrampoline, be SURE
+to cd to linux/kernels/<kernel>/usr and remove generated files
+before building; this may include the following:
+    initramfs_list
+    initramfs_data.cpio
+    initramfs_data.cpio.gz
+    initramfs_data.o
+
+Be sure to build it for the correct target
+(build/Makefile should assure that).
+
+Build with:
+    make BUILD_TYPE=initramfs BOARD_TYPE=........
+
+The result will be in images/$(BOARD_TYPE) :
+    $(BOARD_TYPE).cpio.lzma
+This is the compressed archive of all files from 
+    rootfs-$(BOARD_TYPE).optbuild 
+plus device files as specified in
+    build/scripts/$(BOARD_TYPE)/dev.txt
+
+
+Checking:
+---------------
+When inittrampoline is built for an embedded target, it should
+be relatively small... ensure this is the case!
+At this writing, it builds to 46232 bytes (uncompressed)...
+it compresses to less than 11000 w/ gzip (used by default kernel initramfs).
+It would be even smaller (less than 9000) were lzma used.
+
+You can also check the images/$(BOARD_TYPE)/$(BOARD_TYPE).cpio.lzma
+by the following command which will list it's contents:
+    lzcat images/$(BOARD_TYPE)/$(BOARD_TYPE).cpio.lzma | cpio -it --verbose
+
+
+Installation:
+-----------------
+Install the linux image in the usual way.
+Install the archive file in a suitable place, perhaps the place where
+the jffs2 file system might have gone.
+Example (using redboot, pb42fus target... DO NOT COPY THIS EXAMPLE):
+    load -r -v -b 0x80500000 pb42fus.cpio.lzma
+    fis create -b 0x80500000 -e 0x0 -l 0x600000 files
+    fis list
+
+The important thing is to note the address in flash where the archive
+ended up!
+You will need to modify the boot up script, e.g. for redboot
+(this is an EXAMPLE ONLY, DO NOT COPY):
+    fis load -d vmlinux
+    exec -c "console=ttyS0,115200 -A 0xbf140000"
+Be sure to replace 0xbf140000 with the address in flash where your
+archive is loaded.
+
+Execution:
+-----------------
+
+This can of course be automated using a bootup script.
+
+You will need to invoke linux with an option for inittrampoline.
+E.g. for redboot:
+    load -d vmlinux
+    exec -c "-A 0xXXXXXXXX"
+where XXXXXXXX >MUST< be replaced by the hex address of the program files
+archive in flash.
+
+
+Source of lzma decompression files:
+-------------------------------------
+Read: http://www.7-zip.org/sdk.html
+Download: http://downloads.sourceforge.net/sevenzip/lzma460.tar.bz2 
+
+
+Low Level Testing:
+-------------------------------------
+Can test decode and unarchive on host:
+Create an lzma cpio file e.g.:
+    cd build/rootfs.xxx.optbuild
+    find . | cpio -o  >/tmp/x.cpio
+    lzma /tmp/x.cpio
+And then in this directory:
+    gcc -Wall -Werror -o test2 test2.c
+    ./test2 /tmp/x.cpio
+
+

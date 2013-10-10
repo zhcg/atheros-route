@@ -1,0 +1,270 @@
+#General
+export BOARD_DIR=$(TOPDIR)/build/scripts/$(BOARD_TYPE)
+#Ethernet Driver
+export ENETDIR=$(TOPDIR)/linux/drivers/ethernet/
+
+#Boot Loader
+export BOOTLOADERDIR=$(TOPDIR)/boot/u-boot
+
+#USB Module
+export USBMODPATH=$(INSTALL_ROOT)/lib/modules/$(KERNELVER)/usb
+export USBDIR=${KERNELPATH}/drivers/usb
+
+#Filesystem
+export SQUASHFSLZMADIR=$(TOPDIR)/build/squashfs-lzma/squashfs4.0/squashfs-tools
+export SQUASHFSFILE=$(BOARD_TYPE)$(BUILD_CONFIG)-squashfs
+
+#OFFLOAD
+export OFFLOAD_STACK=$(TOPDIR)/offload_stack
+export OFFLOAD_BUILD=host/build/linux
+export BUSYBOX_CFG=$(TOPDIR)/apps/$(BUSYBOX)
+export TOOLCHAIN_CFG=$(TOPDIR)/build/$(TOOLCHAIN)
+export TOOLCHAIN_UCLIBC_CFG=$(TOPDIR)/build/$(TOOLCHAIN)/toolchain/uClibc
+export KERNEL_CFG=$(TOPDIR)/linux/kernels/$(KERNEL)/arch/mips/configs
+export ATHEROSPATH=$(TOPDIR)/drivers/wlan
+
+#Package
+PKG_DIR        ?= $(TOPDIR)/pkg
+PKG_SDK_INC    ?= $(TOPDIR)/build/scripts/$(BOARD_TYPE)/SDK.include
+PKG_SDK_EXC    ?= $(TOPDIR)/build/scripts/$(BOARD_TYPE)/SDK.exclude
+PKG_WLAN_INC   ?= $(TOPDIR)/build/scripts/$(BOARD_TYPE)/WLAN.include
+PKG_WLAN_EXC   ?= $(TOPDIR)/build/scripts/$(BOARD_TYPE)/WLAN.exclude
+
+
+WLAN_NAME   ?= wlan-sdk
+SDK_NAME    ?= bsp-sdk
+
+# Board specific config file sffix
+CFG_SFX=_cfg
+
+#
+# Makefile for PB9x Fusion build.  It has dependancies for both
+# the "common" build and the "jffs2" build.  This is unique for
+# each board type, and must be configured for each board.
+#
+
+# To enable library optimization (removing unused object code from
+# shared libraries) set BUILD_LIBRARYOPT to 'y' else 'n'
+BUILD_LIBRARYOPT := n
+
+target_list :=
+
+ifneq ($(shell cat ./.last_build),$(BOARD_TYPE))
+target_list += kernel_clean busybox_clean
+endif
+
+target_list +=  config_fix check_tftp rootfs_prep toolchain_build lzma_uimage \
+                kernel_info enet_build busybox_build athr-hostapd \
+                athr-wpa_supplicant sar usb_build cgi 
+
+clean_list :=  wireless_tools_clean offload_clean 
+
+ifeq ($(BUILD_HOSTAPD_P2P),y)
+target_list	+=	hostapd_p2p
+endif
+
+target_list	+=	offload_build wireless_tools_main 
+
+ifeq ($(OFFLOAD_LAN_BYPASS),1)
+target_list	+=	lanbyp_build
+clean_list += lanbyp_clean
+endif
+
+default: $(target_list) jffs2_build squashfs_build
+$(BOARD_TYPE)_clean: $(clean_list)
+
+
+config_fix:
+	echo $(BOARD_TYPE)>./.last_build    &&  				\
+	cp -f $(KERNEL_CFG)/$(PARENT_BOARD)_defconfig			\
+	$(KERNEL_CFG)/$(BOARD_TYPE)_defconfig
+	chmod +w $(KERNEL_CFG)/$(BOARD_TYPE)_defconfig
+	-cat $(KERNEL_CFG)/$(BOARD_TYPE)$(CFG_SFX) >> 			\
+	$(KERNEL_CFG)/$(BOARD_TYPE)_defconfig
+	
+	cp -f $(BUSYBOX_CFG)/defconfig-$(PARENT_BOARD)			\
+	$(BUSYBOX_CFG)/defconfig-$(BOARD_TYPE)
+	chmod +w $(BUSYBOX_CFG)/defconfig-$(BOARD_TYPE)
+	-cat $(BUSYBOX_CFG)/$(BOARD_TYPE)$(CFG_SFX) >> 			\
+	$(BUSYBOX_CFG)/defconfig-$(BOARD_TYPE)
+	
+	cp -f $(TOOLCHAIN_CFG)/$(PARENT_BOARD).config			\
+	$(TOOLCHAIN_CFG)/$(BOARD_TYPE).config
+	chmod +w $(TOOLCHAIN_CFG)/$(BOARD_TYPE).config
+	-cat $(TOOLCHAIN_CFG)/$(BOARD_TYPE)$(CFG_SFX) >> 		\
+	$(TOOLCHAIN_CFG)/$(BOARD_TYPE).config
+	
+	cp -f $(TOOLCHAIN_UCLIBC_CFG)/$(PARENT_BOARD).config 	    \
+	$(TOOLCHAIN_UCLIBC_CFG)/$(BOARD_TYPE).config
+
+config_fix_clean:
+	@rm -vf $(KERNEL_CFG)/$(BOARD_TYPE)_defconfig;
+	@rm -vf $(BUSYBOX_CFG)/defconfig-$(BOARD_TYPE);
+	@rm -vf $(TOOLCHAIN_CFG)/$(BOARD_TYPE).config;
+	@rm -vf $(TOOLCHAIN_UCLIBC_CFG)/$(BOARD_TYPE).config;
+
+
+#
+# Unique rules for the ag7240 PHY with the ar7240 (Python)  board
+#
+
+enet_build: 
+	cd $(ENETDIR) && rm -f *.o *.ko *.mod.*
+	$(MAKEARCH) -C $(KERNELPATH) SUBDIRS=$(ENETDIR) modules
+	test -d $(MODULEPATH) || mkdir -p $(MODULEPATH)
+	cp $(ENETDIR)/athrs_gmac.ko $(MODULEPATH)
+
+WIRELESSTOOLNAMES := athstats athstatsclear 80211stats athkey athchans athctrl\
+	athdebug 80211debug wlanconfig athcwm athampdutrc atrc \
+	pktlogconf pktlogdump radartool cgiMain
+
+wireless_tools_clean:
+	if test -n "$(WIRELESSTOOLS)"; then \
+	cd ../apps/$(WIRELESSTOOLS); make clean; \
+	cd $(TOPDIR)/drivers/wlan/os/linux/tools && make clean; \
+	fi
+
+wireless_tools_main:
+	@echo making wireless_tools 
+	if test -n "$(WIRELESSTOOLS)"; then \
+	cd ../apps/$(WIRELESSTOOLS); make clean; make; \
+	cp -f $(WIRELESSTOOLSLIB) $(INSTALL_ROOT)/lib; \
+	cp -f iwpriv $(INSTALL_ROOT)/sbin; \
+	cp -f iwconfig $(INSTALL_ROOT)/sbin; \
+	cp -f iwlist $(INSTALL_ROOT)/sbin; \
+	cd $(TOPDIR)/drivers/wlan/os/linux/tools && make clean; \
+	make wlanconfig BUILD_STATIC=$(BUILD_STATIC); \
+	cp -f wlanconfig $(INSTALL_ROOT)/sbin; \
+	fi
+
+usb_build: 
+	test -d $(USBMODPATH) || mkdir -p $(USBMODPATH)
+	cp -f $(USBDIR)/core/usbcore.ko ${USBMODPATH}
+	cp -f ${USBDIR}/host/ehci-hcd.ko ${USBMODPATH}
+
+uboot_Main:
+	@echo making uboot...
+	cd $(BOOTLOADERDIR) && make pb9x-2.6.31_config
+	cd $(BOOTLOADERDIR) && make clean && make
+	cp $(BOOTLOADERDIR)/u-boot.bin $(IMAGEPATH)
+
+lzma_build:
+	@echo making lzma.....
+	cd $(TOPDIR)/apps/lzma457/CPP/7zip/Compress/LZMA_Alone && \
+	make -f makefile.gcc clean && \
+	make -f makefile.gcc  && \
+	echo copying lzma... && \
+	cp -f lzma	$(TOPDIR)/build/util
+
+lzma_uimage: kernel_build lzma_build uboot_Main
+	@echo "Generating LZMA'ed kernel....."
+	cd $(KERNELPATH)/arch/$(KERNELARCH)/boot && \
+	$(TOPDIR)/build/util/lzma e $(KERNELTARGET) $(KERNELTARGET).lzma && \
+	cp $(KERNELTARGET).lzma $(TFTPPATH)/$(KTFILE).lzma && \
+	cp $(KERNELTARGET).lzma $(IMAGEPATH)/$(KTFILE).lzma;
+	echo Making uImage...
+	cd util && mkuImage.sh $(UBOOTDIR)/tools $(KERNELPATH) $(BUILD_CONFIG) lzma
+
+sqlzma_build:
+	cd $(SQUASHFSLZMADIR) && $(MAKE)
+
+squashfs_build: sqlzma_build image_root
+	@echo BEGIN make squashfs at `date`
+	cd $(SQUASHFSLZMADIR) && \
+	./mksquashfs $(IMAGE_ROOT) $(IMAGEPATH)/$(SQUASHFSFILE) \
+	-noappend -all-root -pf $(BOARD_DIR)/dev-squashfs.txt
+	cp $(IMAGEPATH)/$(SQUASHFSFILE) $(TFTPPATH)
+	@echo END make squashfs at `date`
+
+# Building hostapd
+hostapd_p2p:
+	@echo Making Hostapd p2p at `date`
+	if (test -e ../apps/hostap-p2p/hostapd) then \
+		cd ../apps/hostap-p2p/hostapd; 		\
+		cp -f defconfig .config; make clean; 	\
+		make CC=$(TOOLPREFIX)gcc AR=$(TOOLPREFIX)ar LD=$(TOOLPREFIX)ld; \
+		make DESTDIR=$(INSTALL_ROOT) BINDIR=/sbin LIBDIR=/lib install; \
+	fi
+
+
+##################################################################
+############### Offload Dev Build Framework ######################
+##################################################################
+
+acfg_build:
+	@echo "Building the ACFG Library ..."
+	cd $(OFFLOAD_STACK)/acfg/linux &&	\
+	$(MAKEARCH) TARGET=$(TARGETARCH) && \
+	$(MAKEARCH) DESTDIR=$(INSTALL_ROOT) TARGET=$(TARGETARCH) install
+	cp $(OFFLOAD_STACK)/acfg/linux/acfg_test_app/acfg_tool $(TFTPPATH)
+		
+acfg_clean:
+	@echo "Cleaning the ACFG Library ..."
+	cd $(OFFLOAD_STACK)/acfg/linux &&	\
+	$(MAKEARCH) TARGET=$(TARGETARCH) clean 
+
+offload_build: acfg_build
+	@echo "Building the Offload host ..."
+	cd $(OFFLOAD_STACK)/driver/$(OFFLOAD_BUILD)   &&	\
+	$(MAKEARCH) DESTDIR=$(INSTALL_ROOT) BUS=gmac flash && \
+	$(MAKEARCH) DESTDIR=$(INSTALL_ROOT) BUS=gmac install;
+	cd $(OFFLOAD_STACK)/wsupp_bridge/linux && \
+	$(MAKEARCH) CC=$(TOOLPREFIX)gcc DESTDIR=$(INSTALL_ROOT) hst_install
+	find $(OFFLOAD_STACK)/driver/$(OFFLOAD_BUILD) -name *.ko -exec cp -vf {} $(TFTPPATH) ';'
+	cp $(OFFLOAD_STACK)/wsupp_bridge/linux/atd_wsupp_bridge $(TFTPPATH)
+	
+	# Build wsupp_helper
+	cd $(OFFLOAD_STACK)/wsupp_helper/linux && \
+	$(MAKEARCH) CC=$(TOOLPREFIX)gcc DESTDIR=$(INSTALL_ROOT) hst_install
+	cp $(OFFLOAD_STACK)/wsupp_helper/linux/wsupp_helper $(TFTPPATH)
+	
+offload_clean: acfg_clean
+	@echo "Cleaning the ACFG Library ..."
+	cd $(OFFLOAD_STACK)/driver/$(OFFLOAD_BUILD) &&	\
+	$(MAKEARCH) TARGET=$(TARGETARCH) BUS=gmac flash_clean
+	
+	# Clean wsupp_helper
+	cd $(OFFLOAD_STACK)/wsupp_helper/linux && \
+	$(MAKEARCH) CC=$(TOOLPREFIX)gcc DESTDIR=$(INSTALL_ROOT) clean
+
+ath_tools: ath_tools_clean
+	@echo makeing ath tools;\
+    cd ../drivers/wlan/os/linux/tools;\
+    make ath_tools;
+
+ath_tools_clean:
+	@echo cleaning ath tools;\
+    cd ../drivers/wlan/os/linux/tools;\
+    make ath_tools_clean;
+
+cgi: ath_tools_clean
+	@echo makeing cgi;\
+    cd ../drivers/wlan/os/linux/tools;\
+    rm -rf cgiMain;\
+    make cgiMain;
+
+lanbyp_build:
+	@echo "Building the LANBypass Library and CLI ..."
+	cd $(OFFLOAD_STACK)/bypass/host/linux &&	\
+	$(MAKEARCH) CC=$(TOOLPREFIX)gcc DESTDIR=$(INSTALL_ROOT) all
+
+lanbyp_clean:
+	@echo "Cleaning the LANBypass Library ..."
+	cd $(OFFLOAD_STACK)/bypass/host/linux &&	\
+	$(MAKEARCH) clean
+
+
+##################################################################
+################### Package SDK Framework ########################
+##################################################################
+
+pkg_sdk: clean
+	mkdir -p $(PKG_DIR)
+	cd $(TOPDIR) &&	\
+	tar -czvf $(PKG_DIR)/$(SDK_NAME).tgz -T $(PKG_SDK_INC) -X $(PKG_SDK_EXC)
+
+pkg_wlan: $(BOARD_TYPE)_clean
+	mkdir -p $(PKG_DIR)
+	cd $(TOPDIR) &&	\
+	tar -czvf $(PKG_DIR)/$(WLAN_NAME).tgz -T $(PKG_WLAN_INC) -X $(PKG_WLAN_EXC)
+	

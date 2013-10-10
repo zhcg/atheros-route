@@ -1,0 +1,12 @@
+/lib/modules/2.6.13.2/net/ath_pci.ko: /lib/modules/2.6.13.2/net/ath_rate_atheros.ko /lib/modules/2.6.13.2/net/wlan.o /lib/modules/2.6.13.2/net/ath_hal.ko
+/lib/modules/2.6.13.2/net/ath_rate_atheros.ko:
+/lib/modules/2.6.13.2/net/wlan.ko:
+/lib/modules/2.6.13.2/net/atrcm.ko:
+/lib/modules/2.6.13.2/net/ath_hal.ko:
+/lib/modules/2.6.13.2/art/art.ko:
+/lib/modules/2.6.13.2/net/ath_pktlog.ko:
+/lib/modules/2.6.13.2/net/wlan_acl.ko:
+/lib/modules/2.6.13.2/net/wlan_ccmp.ko:
+/lib/modules/2.6.13.2/net/wlan_tkip.ko:
+/lib/modules/2.6.13.2/net/wlan_wep.ko:
+/lib/modules/2.6.13.2/net/wlan_xauth.ko:

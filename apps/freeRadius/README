@@ -1,0 +1,49 @@
+
+1) Unpack, configure, compile, install
+ 
+   ./configure --localstatedir=/var --sysconfdir=/etc
+   make
+   make install
+
+2) Edit gencert script to work
+   - extract gencert script from EAPTLS.pdf file
+   - copy gencert to somewhere on your path
+   - copy /usr/share/ssl/misc/CA.pl somewhere on your path
+
+3) Create in the /etc/raddb/cert directory
+   a file called xpextensions containing the following:
+   
+   [ xpclient_ext]
+   extendedKeyUsage = 1.3.6.1.5.5.7.3.2
+   [ xpserver_ext ]
+   extendedKeyUsage = 1.3.6.1.5.5.7.3.1
+
+4) Run gencert script
+
+5) Edit eap.conf radiusd.conf clients.conf proxy.conf
+
+   - radiusd.conf
+     - Change MS-CHAP to not proxy but use etc_smbpasswd
+     - Create /etc/samba/smbpasswd file
+
+   - eap.conf
+     - Change default eap type to use TLS
+     - Change private key passwd from 'whatever'
+     - uncomment cert file lines
+     - uncomment dh and random_file lines
+     - uncomment fragment_size and include_length lines
+     - uncomment peap configuration
+     - uncomment tls and ttls sections
+
+   - clients.conf
+     - change shared secret
+     - add any networks you want
+
+   - edit proxy.conf 
+     - Add a realm that is locally resolved.
+
+6) Create an /etc/init.d/radiusd file and use 
+   chkconfig to add it to load on reboot levels 2-5.
+
+
+

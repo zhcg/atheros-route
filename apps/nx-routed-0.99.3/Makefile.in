@@ -1,0 +1,38 @@
+# $Id: //depot/sw/releases/Aquila_9.2.0_U11/apps/nx-routed-0.99.3/Makefile.in#1 $
+@SET_MAKE@
+SUBDIRS = @SUBDIRS@
+INSTALL = @INSTALL@
+
+sbindir		= @sbindir@
+etcdir		= @etcdir@
+startupdir	= @startupdir@
+mandir		= @mandir@
+
+all: 
+	@for subdir in $(SUBDIRS); do				\
+		$(MAKE) -C $$subdir || exit 1;			\
+	done
+
+clean:
+	@for subdir in $(SUBDIRS); do				\
+		$(MAKE) -C $$subdir clean || exit 1;	\
+	done
+	@rm -f core
+	
+distclean:	clean
+	@rm -f config.cache config.status config.log src/config.h @OUTPUT_FILES@
+	@rm -rf @OUTPATH@
+
+install:
+	$(INSTALL) -o root -g root -m 700 @OUTPATH@/routed $(sbindir)/nx-routed;
+	$(INSTALL) -o root -g root -m 644 conf/routed.conf $(etcdir)/routed.conf;
+	$(INSTALL) -o root -g root -m 755 scripts/routed $(startupdir)/routed;
+	$(INSTALL) -o root -g root -m 644 routed.8 $(mandir)/man8/routed.8;
+	$(INSTALL) -o root -g root -m 644 routed.conf.5 $(mandir)/man5/routed.conf.5;
+
+uninstall:
+	rm -f $(sbindir)/routed;
+	rm -f $(etcdir)/routed.conf;
+	rm -f $(startupdir)/routed;
+	rm -f $(mandir)/man8/routed.8;
+	rm -f $(mandir)/man5/routed.conf.5;

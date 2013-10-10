@@ -1,0 +1,56 @@
+#!/bin/sh
+
+# This script runs when init it run during the boot process.
+# Mounts everything in the fstab
+
+mount -a
+mount -o remount +w /
+
+#
+# Mount the RAM filesystem to /tmp
+#
+
+mount -t ramfs -n none /tmp
+
+export PATH=$PATH:/etc/ath
+
+insmod /lib/modules/2.6.15/net/ag7100_mod.ko
+
+#
+# Need to enable USB interface
+#
+
+mount -t usbfs none /proc/bus/usb
+
+##
+## Get the default settings from apcfg
+##
+
+. /etc/ath/apcfg
+
+##
+## Bring up the network
+##
+
+ifconfig $WAN_IF up
+ifconfig $LAN_IF up
+/etc/rc.d/rc.network
+/etc/rc.d/rc.bridge
+brctl addif br0 eth0
+brctl addif br0 eth1
+#
+# Untar the debug tools into /tmp/tools
+#
+
+mkdir /tmp/tools
+cd /tmp/tools
+tar -xzvf /sbin/debug.tgz
+
+if [ "${WLAN_ON_BOOT}" = "y" ]; then
+    export PATH=$PATH:/tmp/tools
+    /etc/ath/apup
+fi
+
+/usr/sbin/telnetd
+/usr/sbin/httpd -h /usr/www/
+/bin/factoryreset /dev/freset

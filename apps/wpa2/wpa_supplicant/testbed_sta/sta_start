@@ -1,0 +1,86 @@
+#!/bin/bash
+
+set -x
+
+# check parameters
+if [ -z "$1" -o -z "$2" -o -z "$3" ]; then
+	echo "$0 [madwifi-interface] [ipaddress] [netmask] ([wired-interface] [ipaddress2] [netmask2])";
+	exit -1;
+fi
+
+# kill process if it is running
+kill_process()
+{
+	running_process=$(ps -A|grep ${1})
+	if [ -n "$running_process" ]; then
+		killall -s SIGTERM $running_process;
+		sleep 1;
+		return 0;
+	fi
+	return -1;
+}
+
+# set interface
+set_interface()
+{
+	ifconfig ${1} ${2} netmask ${3} up 2>/dev/null
+}
+
+# set local loopback
+lo=$(ifconfig|grep -i loopback|sed 's/[[:blank:]].*$//g')
+if [ -z $lo ]; then
+	ifup lo;
+fi
+
+# kill "wpa_supplicant" deamon if it is running
+main_daemon=wpa_supplicant
+kill_process $main_daemon
+
+# remove interface directory if it exists
+if [ -d /var/run/$main_daemon ]; then
+	rm -rf /var/run/$main_daemon
+fi
+
+# get index & current mode(0:sta, 1:ap, 53:monitor)
+index=$(echo $1|sed -ne "s:.*[^0-9*]::p")
+mode=$(iwpriv $1 get_uapsd 2>/dev/null|sed -ne "s:$1.*get_uapsd\:::p")
+
+# destroy madwifi-interface first
+if [ -z "$mode" ]; then
+	mode=-1
+elif [ $mode -ne 0 ]; then
+	wlanconfig $1 destroy >/dev/null;
+	sleep 1;
+fi
+
+# create madwifi-interface
+if [ $mode -ne 0 ]; then
+	res=$(wlanconfig $1 create wlandev wifi$index wlanmode sta nosbeacon)
+	if [ "$res" != "$1" ]; then
+		exit -1;
+	fi
+	sleep 1;
+fi
+iwpriv $1 wds 0
+
+# set wireless-mode to auto
+iwpriv $1 mode auto
+if [ $? -ne 0 ]; then
+	exit -1;
+fi
+sleep 1;
+
+# set IP address
+set_interface $1 $2 $3
+if [ $? -ne 0 ]; then
+	exit $?;
+#The following sets up wired interface (e.g. eth0)
+# which isn't necessarily what we want
+# and worse actually results in the failure of testbed_sta if no wired i.f.
+#hack -Ted# elif [ -n "$4" -a -n "$5" -a -n "$6" ]; then
+#hack -Ted# 	set_interface $4 $5 $6;
+#hack -Ted# 	exit $?;
+else
+	exit 0;
+fi
+

@@ -1,0 +1,6 @@
+tgt/build/toolchain/builds
+tgt/build/toolchain/tools
+tgt/build/magpie_1_0/sboot
+tgt/build/magpie_1_0/image/magpie_sboot
+tgt/build/k2_1_0/sboot
+tgt/build/k2_1_0/image/k2_sboot

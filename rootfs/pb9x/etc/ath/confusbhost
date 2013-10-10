@@ -1,0 +1,8 @@
+#!/bin/sh
+rmmod ar9130_udc
+rmmod g_audio
+OS_VER=`uname -r | sed s/-//`
+insmod /lib/modules/${OS_VER}/usb/usbcore.ko
+insmod /lib/modules/${OS_VER}/usb/ehci-hcd.ko
+insmod /lib/modules/${OS_VER}/usb/usb-storage.ko
+echo "Configured USB as host"

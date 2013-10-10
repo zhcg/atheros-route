@@ -1,0 +1,2 @@
+#!/bin/sh
+invoke-rc.d tspc restart

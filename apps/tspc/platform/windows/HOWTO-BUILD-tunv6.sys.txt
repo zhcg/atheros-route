@@ -1,0 +1,16 @@
+---------------------------
+HOWTO build tunv6.sys
+---------------------------
+
+0. Install Winddk  (ftp://build/pub/contrib/en_windows_server_2003_ddk.exe ) 
+
+1. Start the FreeBuild environnement, in start Menu->Dev kits->Windows DDK->Build Env->Windows server->Free Build env
+    * This shortcut  simply start a cmd.exe with the right environnement 
+      variables so it could easily be scripted.
+
+2. # cd tspc2/platform/windows/tap-win32-ipv6
+   # build -cef
+
+3. # cp i386/tunv6.sys and i386/tunv6.inf ../nsis-installer-code/tunv6 
+   and build the final package with nsis.
+

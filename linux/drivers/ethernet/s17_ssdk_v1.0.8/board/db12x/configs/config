@@ -1,0 +1,72 @@
+CPU=mips
+
+OS=linux
+
+OS_VER=2_6
+# OS subversion, 2.6.31 for WASP (db120)
+OS_SUB=31
+# GCC version, 3 or 4
+GCC_VER=4
+
+#For MIPS Linux2.6
+  #pb45
+  #TOOL_PATH=/disk/pb45/sw/build/gcc-3.4.4-2.16.1/build_mips_nofpu/bin
+  #SYS_PATH=/disk/pb45/sw/linux/kernels/mips-linux-2.6.15
+	
+  #ap81
+#  TOOL_PATH=/disk/ap81fus/sw/build/gcc-3.4.4-2.16.1/build_mips/bin
+#  SYS_PATH=/disk/ap81fus/sw/linux/kernels/mips-linux-2.6.15
+#  CPU_CFLAG=-Wstrict-prototypes -fomit-frame-pointer -G 0 -mno-abicalls -fno-strict-aliasing -O2 -fno-pic -pipe -mabi=32 -march=mips32r2 -DMODULE -mlong-calls -DEXPORT_SYMTAB
+
+#WASP
+TOOL_PATH=/home/jhung/WASP/9.2.999.28/build/gcc-4.3.3/build_mips/staging_dir/usr/bin
+SYS_PATH=/home/jhung/WASP/9.2.999.28/linux/kernels/mips-linux-2.6.31
+CPU_CFLAG=-Wstrict-prototypes -fomit-frame-pointer -G 0 -mno-abicalls -fno-strict-aliasing -O2 -fno-pic -pipe -mabi=32 -march=mips32r2 -DMODULE -mlong-calls -DEXPORT_SYMTAB
+
+
+#For MIPS Linux2.4
+  #TOOL_PATH=/home/perforce/kernel2.4/5.3.1.20/tools/gcc-3.3.3-2.4.25/toolchain_mips/bin
+  #SYS_PATH=/home/perforce/kernel2.4/5.3.1.20/src/kernels/mips-linux-2.4.25
+
+  #TOOLPREFIX=$(CPU)-$(OS)-
+  #CPU_CFLAG=-Wstrict-prototypes -Wundef -fomit-frame-pointer -G 0 -mno-abicalls -Wno-trigraphs -fno-strict-aliasing -fno-common -ffreestanding -O2 -fno-pic -pipe -mabi=32 -march=r4600 -Wa,-32 -Wa,-march=r4600 -Wa,--trap -DMODULE -mlong-calls -DEXPORT_SYMTAB
+
+
+KERNEL_MODE=TRUE
+
+#FAL=FALSE or not define FAL, FAL will not be included in SSDK
+FAL=FALSE
+
+#CHIP_TYPE can be defined as ATHENA, GARUDA, SHIVA, HORUS, ISIS and ALL_CHIP(ALL_CHIP means GARUDA, SHIVA, HORUS and ISIS)
+CHIP_TYPE=ISIS
+
+#UK_IF=FALSE or not define UK_IF, UK_IF will not be included in SSDK
+UK_IF=TRUE
+
+#API_LOCK=FALSE or not define API_LOCK, API_LOCK will not be included in SSDK
+API_LOCK=FALSE
+
+#ALL supported features:
+#ACL FDB IGMP LEAKY LED MIB MIRROR MISC PORTCONTROL PORTVLAN QOS RATE STP VLAN
+#IN_X=FALSE or not define IN_X, X will not be included in SSDK
+IN_ACL=TRUE
+IN_FDB=TRUE
+IN_IGMP=TRUE
+IN_LEAKY=TRUE
+IN_LED=TRUE
+IN_MIB=TRUE
+IN_MIRROR=TRUE
+IN_MISC=TRUE
+IN_PORTCONTROL=TRUE
+IN_PORTVLAN=TRUE
+IN_QOS=TRUE
+IN_RATE=TRUE
+IN_STP=TRUE
+IN_VLAN=TRUE
+IN_REDUCED_ACL=FALSE
+IN_COSMAP=TRUE
+IN_IP=TRUE
+IN_NAT=TRUE
+IN_TRUNK=TRUE
+IN_SEC=TRUE
+IN_NAT_HELPER=FALSE

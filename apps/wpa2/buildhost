@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+# buildhost -- this script allows compiling wpa2 software on a host
+#       linux machine for easier debugging.
+# Notes:
+#       Reccommended to do "make clean" first.
+#       Output files are installed in "install" subdirectory.
+
+# Make sure we are using the common environmental settings
+. ./pcenv.sh
+
+make "$@" 2>&1 | tee junk

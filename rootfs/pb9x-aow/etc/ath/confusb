@@ -1,0 +1,42 @@
+#!/bin/sh
+
+if [ $# -lt 1 ]; then
+    echo "confusb <host/device>"
+    exit
+fi    
+
+
+config_usb_host() {
+    rmmod ar9130_udc
+    rmmod g_audio
+    insmod /lib/modules/2.6.15/usb/usbcore.ko
+    insmod /lib/modules/2.6.15/usb/ehci-hcd.ko
+    insmod /lib/modules/2.6.15/usb/usb-storage.ko
+}
+
+
+config_usb_dev() {
+    rmmod usbcore
+    rmmod ehci-hcd
+    rmmod usb-storage
+    insmod /lib/modules/2.6.15/usb/ar9130_udc.ko
+    insmod /lib/modules/2.6.15/usb/g_audio.ko
+}
+
+
+USB_TYPE=$1
+
+config_usb() {
+
+    if [ ${USB_TYPE} == "host" ]; then
+        config_usb_host
+    elif [ ${USB_TYPE} == "device" ]; then
+        config_usb_dev
+    else
+        echo "confusb <host/device>"
+        exit
+    fi        
+
+}
+
+config_usb

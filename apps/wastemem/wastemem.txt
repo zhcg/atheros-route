@@ -1,0 +1,32 @@
+wastemem is a program that deliberately wastes the amount of memory specified
+as a command line argument.
+This is useful for development purposes, to reveal by a process of 
+experimentation how much memory is really available for use.
+
+Usage:  wastemem <nbytes> &
+
+The wastemem program is very small and doesn't use much file system space.
+However, there is already an alternative that does almost the same
+thing, which is to use /proc/sys/vm/min_free_kbytes  .
+When the kernel has less than "min_free_kbytes" free memory,
+user space programs needing more memory will be forced to sleep until
+and if the swap daemon can free up more memory so that the free
+memory is above this level.
+In our case, the only thing the swap daemon can do is to dismiss 
+readonly code pages (which can later be read back from e.g. a readonly
+filesystem), which is a relatively fast operation.
+So we need min_free_kbytes to be just large enough that the kernel
+itself (including drivers) can use free memory when it needs to
+(the kernel space is not limited by min_free_kbytes).
+But for testing, we can set min_free_kbytes much higher.
+To see the current value of min_free_kbytes:
+    cat /proc/sys/vm/min_free_kbytes
+To set a new value:
+    echo xxx >/proc/sys/vm/min_free_kbytes
+where xxx is the new value.
+You might try using gradually increasing values, which should
+result in the system becoming sluggish (due to excessive page swapping)
+and then failing entirely.
+
+-Ted Merrill
+

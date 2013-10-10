@@ -1,0 +1,5 @@
+#!/bin/sh
+OS_VER=`uname -r | sed s/-//`
+insmod /lib/modules/${OS_VER}/i2s/ar7240_i2s.ko
+apup
+echo "Installed wlan and i2s drivers"

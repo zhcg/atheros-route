@@ -1,0 +1,177 @@
+Configuration File System
+
+============================================================================
+Introduction
+============================================================================
+
+The configuration file system for hostapd has been greatly changed by
+Atheros.
+
+The central configuration file is a "topology file".
+It might look something like (example):
+
+# Example topology file
+# Any interfaces to be used but NOT bridged should be included in
+# phoney bridge "none"
+bridge none
+{
+}
+# A section for each bridge.
+# Bridge names should be br0, br1 ...
+bridge br0
+{
+    # If you want a static address assigned to bridge, use ipaddress
+    # and optionally ipmask
+    ipaddress 192.168.1.77
+    ipmask 255.255.0.0
+    # List all interfaces which are to be connected by the bridge
+    interface ath0
+    interface ath1
+    interface ath2
+    interface eth0
+}
+# Radio sections correspond with physical sections
+radio wifi0
+{
+    # All APs for a radio should be in one ap section for best use
+    # of hostapd...
+    ap 
+    {
+        config 80211g.ap_radio
+        # can have overrides here
+        # Each virtual AP has a different "bss" section
+        bss ath0
+        {
+            config company.ap_bss
+        }
+        bss ath1
+        {
+            config guest.ap_bss
+        }
+    }
+    # wpa_supplicant uses the "sta" parts, one per interface
+    sta ath1
+    {
+        bridge br0
+        driver madwifi
+        config config1.sta
+    }
+}
+radio wifi1
+{
+    ap
+    {
+        # In this example, wifi1 is an 80211a (5 GHz) radio
+        config 80211a.ap_radio
+        bss ath2
+        {
+            config company.ap_bss
+        }
+
+    }
+}
+
+Normally, hostapd will be run with a single topology file as an argument
+and will read the configuration files listed therein.
+
+See example configuration files in examples directory:
+examples/topology.conf -- main configuration file for hostapd and wpa_supplicant
+examples/80211g.ap_radio -- hostapd radio configuration file
+examples/config1.ap_bss  -- hostapd per-BSS configuration file
+examples/hostapd.eap_user -- required by hostapd for WPS
+examples/config1.sta     -- wpa_supplicant configuration file
+examples/open.ap_bss   -- hostapd per-BSS config (open access)
+examples/wep.ap_bss    -- hostapd per-BSS config (WEP access)
+examples/wpa2.ap_bss   -- hostapd per-BSS config (WPA/WPA2 access)
+
+Also obsolete files for reference ONLY:
+hostapd/hostapd.conf -- old format of hostapd config file.
+wpa_supplicant/wpa_supplicant.conf -- example wpa_supplicant config
+        file for networks (but is missing required wps parameters)
+
+
+============================================================================
+Topology File -- Lex and Syntax
+============================================================================
+
+The topology file is a line oriented ascii file.
+Whitespace at beginning of any line is always ignored.
+Lines then beginning with a sharp (#) are ignored as being comments,
+as are empty lines.
+Lines beginning with a known (alphanumeric) label, separated by
+whitespace from optional arguments, are self-contained except that
+lines then beginning with a brace demark a section, which belongs
+to the previous labelled line.
+Braces are not recognized as special unless at begin of line
+(except may be preceded by whitespace); sections may contain
+other sections.
+Unknown lines are ignored, as are any sections which are specifically
+preceded by a known labelled line.
+
+Labels recognized by hostapd within the main context:
+radio <name> -- introduces a following section which describes parameters
+    to use for the named radio. <name> must be wifi<X> where X is a digit,
+    for Atheros use, and is used as the "base device".
+
+Labels recognized by hostapd within the radio context:
+config <filepath> -- a configuration file to read to give values to
+    per-radio parameters.
+    The same actual file can be used for several radios (see override below)
+    so that changes to the actual file can affect all.
+override <tag>=<value> -- override a specific per-radio parameter.
+    Leading and trailing whitespace of <value> is stripped, after which
+    <value> may not be empty, but may contain whitespace inside.
+bss <interface> -- introduces a following section which describes the
+    per-BSS parameters used by interface <interface>.
+    <interface> should be ath<X> for Atheros devices, where <X> is a digit.
+    The given <interface> name is used as the initial value for the interface
+    name parameter.
+
+Labels recognized by hostapd within the BSS context:
+config <filepath> -- a configuration file to read to give values to
+    per-bss parameters.
+    NOTE: Only the first such configuration file is remembered for
+    use in automated rewriting of configuration file.
+    It is probably best to use only a single such file per BSS.
+    The same actual file can be used for several BSSs (see override below)
+    so that changes to the actual file can affect all.
+override <tag>=<value> -- override a specific per-bss parameter.
+    Leading and trailing whitespace of <value> is stripped, after which
+    <value> may not be empty, but may contain whitespace inside.
+
+Labels recognized by wpa_supplicant within the sta context:
+(Note that the interface name must be given on the "sta" line).
+bridge <bridge> -- bridge interface name
+driver <driver> -- internal wpa_supplicant driver name
+config <filepath> --  a configuration file to read to give values of
+    per-interface parameters.
+    NOTE: is used for automatic rewrite of config file.
+(... more...)
+
+
+============================================================================
+hostapd and wpa_supplicant configuration files -- Lex and Syntax
+============================================================================
+
+The per-radio and per-BSS configuration files of hostapd
+are line oriented ascii files.
+Whitespace at beginning of any line is always ignored.
+Lines then beginning with a sharp (#) are ignored as being comments,
+as are empty lines.
+Otherwise, all lines must be of the form <tag>=<value> .
+The <tag> identifies a specific parameter and is alphanumeric.
+Leading and trailing whitespace is stripped off of <value>, which 
+may contain embedded whitespace.
+In some cases, <value> may begin and end with double quotes,
+which is however not handled in a general way but depends upon the specific
+parameter to be set.
+
+The per-interface configuration files of wpa_supplicant are similar to
+those of hostapd, but also include sections between braces.
+
+For more information on supported <tag>s and acceptable <value>s,
+see sample configuration files and source code.
+
+
+
+

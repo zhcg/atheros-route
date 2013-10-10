@@ -1,0 +1,54 @@
+一、配置
+
+配置NAT:
+iptables -A POSTROUTING -t nat -s 192.168.1.0/24 -o ppp0 -j MASQUERADE
+echo "1" > /proc/sys/net/ipv4/ip_forward
+
+内核模式配置：
+
+配置PPPOE-PROXY:
+/usr/local/sbin/pppoe-server -I 'eth0,eth1'  -L 192.168.1.200 -R 192.168.1.201 -N 4 -k -d -A &
+
+配置pppoe-client:
+pppoe-connect &
+/usr/bin/setsid /usr/local/sbin/pppd plugin rp-pppoe.so eth0 noipdefault noauth default-asyncmap usepeerdns defaultroute hide-password nodetach  mtu 1492 mru 1492 \
+noaccomp nodeflate nopcomp novj novjccomp user test password test lcp-echo-interval 20 lcp-echo-failure 3   debug(调试打印)
+我们只需配置user test password test
+
+用户模式配置：
+配置PPPOE-PROXY:
+./pppoe-server -I 'eth0,eth1'  -L 192.168.1.200 -R 192.168.1.201 -N 4  -d -A &
+
+配置pppoe-client:
+pppoe-connect &
+/usr/bin/setsid pppd pty '/usr/local/sbin/pppoe -p /var/run/pppoe.conf-pppoe.pid.pppoe -I eth0 -T 80 -U  -m 1412   ' noipdefault noauth default-asyncmap usepeerdns defaultroute hide-password nodetach  mtu 1492 mru 1492 \
+noaccomp nodeflate nopcomp novj novjccomp user test password test lcp-echo-interval 20 lcp-echo-failure 3   debug(调试打印)
+我们只需配置user test password test。
+
+二编译与安装
+(1)编译：
+解包，进入主目录:
+make configure prefix=/ CC=gcc
+
+make all
+(2)安装：
+make install
+
+
+三运行环境要求
+(1)内核模式
+内核需支持ppp设备,pppoe,ppp_generic,ppp_async,ppp_deflate(现在对于ppp压缩没有做)。
+(2)用户模式
+除pppoe外其他跟内核模式一样。
+
+
+
+
+
+
+
+
+
+
+
+

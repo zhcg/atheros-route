@@ -1,0 +1,108 @@
+.\"
+.\" This source code copyright (c) Hexago Inc. 2002-2004.
+.\"
+.\" This program is free software; you can redistribute it and/or modify it 
+.\" under the terms of the GNU General Public License (GPL) Version 2, 
+.\" June 1991 as published by the Free  Software Foundation.
+.\"
+.\" This program is distributed in the hope that it will be useful, 
+.\" but WITHOUT ANY WARRANTY;  without even the implied warranty of 
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+.\" See the GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License 
+.\" along with this program; see the file GPL_LICENSE.txt. If not, write 
+.\" to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+.\" MA 02111-1307 USA
+.\"
+.\" tspc.8,v 1.5 2004/07/07 19:50:43 smitra Exp
+.\"
+.Dd July, 2004
+.Dt TSPC 8
+.Os TSP Client
+.Sh NAME
+.Nm tspc
+.Nd tunnel setup protocol client
+.Sh SYNOPSIS
+.Nm tspc
+.Op Fl h
+.Op Fl ?\&
+.Nm tspc
+.Op Fl v
+.Op Fl f Ar config_file
+.Op Fl i Ar interface_name
+.Op Fl u Ar interface_name
+.Op Fl s Ar interface_name
+.Op Fl r Ar retry delay
+.Sh DESCRIPTION
+.Nm tspc
+provides a mean to configure a tunnel obtained from a tunnel server which is
+compliant to the tunnel setup protocol (TSP).
+.Nm tspc
+will connect to a tunnel server and request a tunnel according to the
+specifications inside the configuration file.  As a background process, it will then monitor the state of the tunnel.  In the event of a timeout, tspc will reestablish a new tunnel.
+.Pp
+.Nm tspc
+currently supports two types of tunnels:  
+.Pp
+.Bl -tag -width 
+.It Sy - v6v4 (IPv6 over IPv4)
+Supported on FreeBSD, NetBSD, OpenBSD, Linux, Windows, Solaris, Darwin.
+.Pp
+.It Sy - v6udpv4 (IPv6 over UDP over IPv4)
+Supported on FreeBSD, Linux and Windows.
+.Pp
+.Sh ARGUMENTS
+The following options are available:
+.Bl -tag -width indent
+.It Fl h 
+Display a short usage summary and quit.
+.Pp
+.It Fl v
+Verbose level is set according to the number of v's on the 
+command line.
+.br
+-v, -vv, -vvv are valid.
+.Pp
+.It Fl f Ar configuration_file
+Specifies a different configuration file.  
+.br
+Default is /installdir/bin/tspc.conf. 
+.Pp
+.It Fl s Ar interface_name
+Overrides 
+.Nm client_v4 
+in 
+.Xr tspc.conf 5 
+.Pp
+.It Fl i Ar interface_name
+Overrides 
+.Nm if_tunnel_v6v4 
+in 
+.Xr tspc.conf 5 
+.Pp
+.It Fl u Ar interface_name
+Overrides 
+.Nm if_tunnel_v6udpv4 
+in 
+.Xr tspc.conf 5 
+.Pp
+.Sh DIAGNOSTICS
+If verbose mode is on, messages will be sent to tspc.log and syslog.
+.Sh SEE ALSO
+.Xr tspc.conf 5
+.br
+http://www.hexago.com
+.Sh ACKNOWLEDGMENT
+This software uses code taken from other organisations as :
+.Bl -tag -width indent
+.It - Ar "RSA data security for md5."
+.It - Ar "The Apache Software Foundation for Base64 encoding and decoding."
+.It - Ar "OpenVPN by James Yohan"
+.Sh AUTHORS
+Hexago Inc.
+.br
+http://www.hexago.com
+.br
+mailto://support@hexago.com
+.br

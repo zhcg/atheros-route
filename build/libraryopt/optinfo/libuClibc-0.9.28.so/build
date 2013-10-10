@@ -1,0 +1,126 @@
+#!/bin/sh
+#
+# build -- rebuild shared object
+#
+# Usage (per libopt documentation!):
+# cd <directory where build script is>
+# ./build <archdir> <archprefix> <dest> <strip> <object>...
+# where:
+# <archdir> is e.g. $(TOPDIR)/libopt.temp (working temp directory)
+# <archprefix> is the prefix of filenames for tools such as xxx-nm (prefix xxx-)
+# <dest> is file to write
+# <strip> is "strip" or "nostrip" to indicate whether to strip output
+# <object>... is list of object files to link together.
+
+# What should this library be known as to ld.so ?
+# This much match how the libraries are built...
+
+soname=libc.so.0
+striparg=-s   # -s to strip 
+
+# ------------------------------------------------------------------
+
+# Which object files from C library are REQUIRED? I know at least that
+# __uClibc_main.oS  is required.
+# I'm going to take a guess that all .oS files are required...
+# not a big harm if not, since there are only for of them.
+# I'm also assuming that the "non-required" files are all *.os files...
+# prebuild and build must match in this assumption.
+
+
+# ------------------------------------------------------------------
+
+# As originally built: /trees/ted/ted5/build/gcc-3.4.4-2.16.1/build_mips//bin/mips-linux-uclibc-ld -EB -shared --warn-common --warn-once -z combreloc -z relro -z now -z defs -s  -init __uClibc_init -soname=libc.so.0 -o lib/libuClibc-0.9.28.so  --whole-archive libc/libc_so.a --no-whole-archive ./lib/interp.os ./lib/ld-uClibc.so.0 ./lib/uclibc_nonshared.a /trees/ted/ted5/build/gcc-3.4.4-2.16.1/build_mips/bin/../lib/gcc/mips-linux-uclibc/3.4.4/libgcc.a 
+# -s is for stripping
+
+# ------------------------------------------------------------------
+
+
+archdir=${1:?'Missing archdir'}
+archprefix=${2:?'Missing archprefix'}
+dest=${3:?'Missing dest'}
+strip=${4:?'Missing strip'}
+shift 4
+# Remove *.oS from input file list to avoid duplication
+files=''
+while [ -n "$1" ]
+do
+    case "$1" in 
+        *.oS) :
+	;;
+	*) files="$files $1"
+	;;
+    esac
+    shift
+done
+
+destname=`basename $dest`
+
+set -ex
+
+if [ -f $dest ]
+then
+    #debug# mv $dest $dest.bak
+    rm -f $dest
+fi
+
+
+# UGH UGH this is so fragile...
+
+pwd	# debug
+
+$archdir/bin/$archprefix'ld' 	\
+	-EB			\
+        -shared              	\
+	--warn-common		\
+	--warn-once		\
+	-z combreloc		\
+	-z relro     		\
+	-z now			\
+        -init __uClibc_init 	\
+	-soname $soname  	\
+        $striparg               \
+        -L $archdir/lib   	\
+        -o $dest  		\
+        --whole-archive  	\
+	*.oS			\
+        $files 			\
+        --no-whole-archive  	\
+	required/interp.os		\
+	required/ld-uClibc.so.0		\
+	required/uclibc_nonshared.a	\
+	required/libgcc.a
+echo Built $dest ok
+
+
+exit
+#---------- comment out the exit to use the following
+
+
+# TEMPORARY: See if we can create the original .so
+echo Building reference $dest.ref to see if same as $dest.bak
+$archdir/bin/$archprefix'ld' 	\
+	-EB			\
+        -shared              	\
+	--warn-common		\
+	--warn-once		\
+	-z combreloc		\
+	-z relro     		\
+	-z now			\
+        -init __uClibc_init 	\
+	-soname $soname  	\
+        $striparg               \
+        -L $archdir/lib   	\
+        -o $dest.ref  		\
+        --whole-archive  	\
+        __uClibc_main.oS        \
+        required/libc_so.a	\
+        --no-whole-archive  	\
+	required/interp.os		\
+	required/ld-uClibc.so.0		\
+	required/uclibc_nonshared.a	\
+	required/libgcc.a
+echo Built $dest.ref ok
+
+
+

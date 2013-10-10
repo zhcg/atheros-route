@@ -1,0 +1,8 @@
+tspc (2.1.1-7) unstable; urgency=low
+
+  The config file /etc/tsp/tspc.conf has been moved to /etc/tspc.conf, please
+  update your configuration.
+
+  Setup files were put under /etc/tsp has been moved to /usr/lib/tspc.
+
+ -- Kanru Chen <koster@debian.org.tw>  Thu, 04 Dec 2008 20:21:49 +0800

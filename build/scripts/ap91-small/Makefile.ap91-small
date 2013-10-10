@@ -1,0 +1,131 @@
+export HAL=$(TOPDIR)/drivers/wlan/hal
+export ENETDIR=$(TOPDIR)/linux/drivers/net/ag7240/
+export ATH_TOOL_DIR=$(TOPDIR)/drivers/wlan/os/linux/tools/
+export ATH_DFS=$(TOPDIR)/drivers/wlan/lmac/dfs
+export BOOTLOADERDIR=$(TOPDIR)/boot/u-boot
+export ATHEROSPATH=$(TOPDIR)/drivers/wlan
+
+#
+# Makefile for AP91 small build.  It has dependancies for both
+# the "common" build and the "jffs2" build.  This is unique for
+# each board type, and must be configured for each board.
+#
+# To enable library optimization (removing unused object code from
+# shared libraries) set BUILD_LIBRARYOPT to 'y' else 'n'
+BUILD_LIBRARYOPT := n
+
+targetList:= check_tftp rootfs_prep toolchain_build lzma_uimage \
+             kernel_info uboot_Main enet_build busybox_build wpa2 \
+             art_mod sar cgi
+
+ifeq ($(strip ${ATH_SUPPORT_SPECTRAL}),1)
+targetList += spectral_app_build
+endif
+
+ifeq ($(BUILD_CONFIG), _routing)
+targetList += iptables_build
+endif
+
+targetList += driver_build $(BUILD_TYPE)_build 
+
+default: ${targetList}
+
+iptables_build:
+	@echo making iptables
+	cd ../apps/iptables/iptables-1.3.6 && \
+	$(MAKE) clean KERNEL_DIR=$(KERNELPATH) && \
+	$(MAKE) KERNEL_DIR=$(KERNELPATH) NO_SHARED_LIBS=1 DO_IPV6=0 && \
+	$(TOOLPREFIX)strip -s iptables && \
+	cp iptables $(INSTALL_ROOT)/sbin/iptables
+
+#
+# Unique rules for the ag7240 PHY with the ar7240 (Python)  board
+#
+
+enet_build: kernel_build
+	cd $(ENETDIR) && rm -f *.o *.ko *.mod.*
+	$(MAKEARCH) -C $(KERNELPATH) SUBDIRS=$(ENETDIR) modules
+	test -d $(MODULEPATH) || mkdir -p $(MODULEPATH)
+	cp $(ENETDIR)/ag7240_mod.ko $(MODULEPATH)
+
+eth_diag:
+	@echo making Ethernet diagnostic tools;\
+	cd ../linux/drivers/net/ag7240/tools/;\
+	make install;
+
+# WIRELESSTOOLNAMES must agree with wlan/linux/tools/Makefile
+WIRELESSTOOLNAMES := athstats athstatsclear 80211stats athkey athchans athctrl\
+	athdebug 80211debug wlanconfig athcwm athampdutrc atrc \
+	pktlogconf pktlogdump radartool cgiMain
+wireless_tools_main:
+	@echo making wireless_tools
+	if test -n "$(WIRELESSTOOLS)"; then \
+        cd ../apps/$(WIRELESSTOOLS); make clean; make; \
+        cp -f $(WIRELESSTOOLSLIB) $(INSTALL_ROOT)/lib; \
+        cp -f iwpriv $(INSTALL_ROOT)/sbin; \
+        cp -f iwconfig $(INSTALL_ROOT)/sbin; \
+        cp -f iwlist $(INSTALL_ROOT)/sbin; \
+        cd $(TOPDIR)/drivers/wlan/os/linux/tools && make clean; \
+        make wlanconfig BUILD_STATIC=$(BUILD_STATIC); \
+        cp -f wlanconfig $(INSTALL_ROOT)/sbin; \
+        fi
+
+ath_tools: ath_tools_clean
+	@echo makeing ath tools;\
+	cd ../drivers/wlan/os/linux/tools;\
+	make ath_tools;
+
+ath_tools_clean:
+	@echo cleaning ath tools;\
+	cd ../drivers/wlan/os/linux/tools;\
+	make ath_tools_clean;
+
+cgi: ath_tools_clean
+	@echo makeing cgi;\
+	cd ../drivers/wlan/os/linux/tools;\
+	rm -rf cgiMain;\
+	make cgiMain;
+
+art_mod:
+	@echo Making ART Module
+	cd ../apps/art && make -f makefile.soc.linux.mips clean && \
+	make -f makefile.soc.linux.mips python 
+	cp ../apps/art/modules/art.ko $(MODULEPATH)/art.ko
+
+main_hal_build: 
+	@echo making hal
+	if test -n "$(TARGETARCH)"; then \
+	cd $(HAL)/linux && make TARGET=$(TARGETARCH) clean &&  \
+	make TARGET=$(TARGETARCH) && make TARGET=$(TARGETARCH) release; \
+	fi
+
+driver_build: main_hal_build wireless_tools_main ath_tools
+	@echo making umac
+	cd $(TOPDIR)/drivers/wlan/os/linux && \
+	$(MAKEARCH) TARGET=$(TARGETARCH) clean \
+	&& $(MAKEARCH) TARGET=$(TARGETARCH) && \
+	$(MAKEARCH) DESTDIR=$(INSTALLROOT) TARGET=$(TARGETARCH) install
+	$(MAKE) $(BUILD_TYPE)_build
+
+uboot_Main:
+	@echo making uboot...
+	cd $(BOOTLOADERDIR) && make ap91_config
+	cd $(BOOTLOADERDIR) && make clean && make
+	cp $(BOOTLOADERDIR)/u-boot.bin $(IMAGEPATH)
+
+lzma_build:
+	@echo making lzma.....
+	cd $(TOPDIR)/apps/lzma457/CPP/7zip/Compress/LZMA_Alone && \
+	make -f makefile.gcc clean && \
+	make -f makefile.gcc  && \
+	echo copying lzma... && \
+	cp -f lzma	$(TOPDIR)/build/util
+
+lzma_uimage: kernel_build lzma_build uboot_Main
+	@echo "Generating LZMA'ed kernel....."
+	cd $(KERNELPATH)/arch/$(KERNELARCH)/boot && \
+	$(TOPDIR)/build/util/lzma e $(KERNELTARGET) $(KERNELTARGET).lzma && \
+	cp $(KERNELTARGET).lzma $(TFTPPATH)/$(KTFILE).lzma && \
+	cp $(KERNELTARGET).lzma $(IMAGEPATH)/$(KTFILE).lzma;
+	echo Making uImage...
+	cd util && mkuImage.sh $(UBOOTDIR)/tools $(KERNELPATH) $(BUILD_CONFIG) lzma

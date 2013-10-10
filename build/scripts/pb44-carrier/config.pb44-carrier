@@ -1,0 +1,161 @@
+# Set the toolchain path
+export TOOLCHAIN=gcc-3.4.4-2.16.1
+export TOOLPREFIX=mips-linux-uclibc-
+export TOOLARCH=build_mips
+
+export KERNEL=mips-linux-2.6.15
+export KERNELVER=2.6.15
+export KERNELTARGET=vmlinux.bin
+export COMPRESSKERNEL=y
+export KERNELARCH=mips
+
+export BUSYBOX=busybox-1.01
+export WIRELESSTOOLS=wireless_tools.28
+export WIRELESSTOOLSLIB=libiw.so.28
+
+#for station forwarding support
+export CONFIG_ETHERSTA=y
+
+#
+# UMAC build option
+#
+
+export BUILD_UMAC=1
+
+
+export BUS=PCI
+export TARGETARCH=mipsisa32-be-elf
+
+#
+# Set a large file size image to take advantage of the 8 MB part by default
+#
+
+export TARGETFSSIZE=0x600000
+export AP_TYPE=dual
+
+#
+# Select the support required for this board
+#
+
+export AH_SUPPORT_AR5210=0
+export AH_SUPPORT_AR5211=0
+export AH_SUPPORT_AR5212=1
+export AH_SUPPORT_AR5416=1
+export AH_SUPPORT_5111=1
+export AH_SUPPORT_5112=1
+export AH_SUPPORT_2413=1
+export AH_SUPPORT_5413=1
+export AH_SUPPORT_2316=1
+export AH_SUPPORT_2317=1
+export AH_SUPPORT_2425=1
+export AH_SUPPORT_2133=1  
+
+export AH_SUPPORT_AR9300=0
+#
+# Environmental variables used to configure the HAL/ATH layers at compile time
+#
+
+export ATH_CAP_PHYERR_DIAG=1
+export AR5416_G_MODE=1
+export AH_SUPPORT_HOWL=0
+export AH_SUPPORT_OWL=1
+
+# By default compressed u-boot will be compiled
+export COMPRESSED_UBOOT=1
+
+
+#enable radio measurement support for voice enterprise
+export UMAC_SUPPORT_RRM=1
+#enable wireless network management support for voice enterprise
+export UMAC_SUPPORT_WNM=1
+#enable WMM admission control support for voice enterprise
+export UMAC_SUPPORT_ADMCTL=1
+
+
+# UMAC build option
+export BUILD_UMAC=1
+
+#Standard features
+export ATH_SUPPORT_DFS=1
+export ATH_SUPPORT_UAPSD=1
+export ATH_CAP_AMSDU=1
+export ATH_RB=1
+export ATH_SUPPORT_EDMA=0
+export ATH_SUPPORT_POWER=1
+export DBG=0
+
+#WPS IE
+export ATH_WPS_IE=1
+
+#Debugging 
+export ATH_CAP_PHYERR_DIAG=1
+export AH_DEBUG=0
+export AH_REGREAD_DEBUG=1
+export REMOVE_PKT_LOG=1
+
+#Performance
+export AR5416_INT_MITIGATION=1
+
+#Oprofile for profiling
+ifeq ($(BUILD_PROFILING),y)
+export BUILD_OPROFILE=y
+export OPROFILE_ROOT=$(TOPDIR)/apps/profiling/oprofile
+export OPROFILE_LIBS=$(OPROFILE_ROOT)/libs
+export OPROFILE_UTILS=$(OPROFILE_ROOT)/utils
+export OPROFILE_INCLUDES=$(OPROFILE_ROOT)/includes
+else
+export BUILD_OPROFILE=n
+endif
+ifeq ($(BUILD_PROFILING),y)
+BUILD_LIBRARYOPT := n
+else
+BUILD_LIBRARYOPT := y
+endif
+
+#WAPI
+export ATH_SUPPORT_WAPI=1
+
+#Spectral scan 
+export ATH_SUPPORT_SPECTRAL=1
+
+#Adhoc mode 
+export ATH_SUPPORT_IBSS_HT=1
+export ATH_SUPPORT_IBSS_WMM=1
+export ATH_SUPPORT_IBSS_NETLINK_NOTIFICATION=1
+export ATH_SUPPORT_IBSS_PRIVATE_SECURITY=1
+
+#CFEND (used on pre-Osprey chips only)
+export ATH_SUPPORT_CFEND=1
+export ATH_SUPPORT_DESCFAST=1
+
+#Quick Station Kickout
+export ATH_SUPPORT_QUICK_KICKOUT=1
+
+#Extender AP support ( 3 address WDS )
+export ATH_EXT_AP=1
+
+#Video over Wireless
+export VOW_TIDSCHED=1
+export VOW_LOGLATENCY=1
+export ATH_SUPPORT_VOWEXT=1
+export ATH_VOW_EXT_STATS=1
+export UMAC_SUPPORT_RPTPLACEMENT=1
+export ATH_RXBUF_RECYCLE=1
+export ATH_SUPPORT_IQUE=1
+export ATH_SUPPORT_IQUE_EXT=1
+export IEEE_MCAST_ENHANCEMENT=1
+
+#NAWDS
+export UMAC_SUPPORT_NAWDS=1
+
+#Station forwarding 
+export CONFIG_ETHERSTA=y
+
+#802.11z TDLS support
+export ATH_SUPPORT_TDLS=1
+
+#802.1q VLAN support
+export ATH_SUPPORT_VLAN=1
+
+#Use athr-hostapd
+export BUILD_ATHR_HOSTAP=1

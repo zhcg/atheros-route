@@ -1,0 +1,37 @@
+#!/bin/sh
+#
+# Usage: 
+#    cd $(TOPDIR)/libopt.temp/....../optinfo/<libname>
+#    ./ prebuild <indextool> 
+#
+# NOTE: when executed as part of build procedure,
+# the temporary directory we run in has been created
+# (named after the shared object file we create!)
+# and a copy of this script and the build script made 
+# therein, as well as a symlink "required" made to a 
+# directory that contains (or links) to required library files.
+
+# You can cut and paste this entire file except we need
+# the name of the archive library file from which 
+# we can get the objects to rebuild the shared library:
+
+afile=required/libcrypt.a
+#this also seems to work just as well:# afile=required/libc.a
+
+#----------------------------------------
+
+cwd=`pwd`
+sobject=`basename $cwd`
+echo library optimizer prebuild in $cwd
+indextool=${1:?'Missing parameter'}
+
+# Create 'path' file that tells libopt the target path
+echo /lib/$sobject >path
+
+set -ex
+# unpack component object files
+ar x $afile
+
+$indextool $sobject *.o? >index
+
+echo Did prebuild of $sobject ok

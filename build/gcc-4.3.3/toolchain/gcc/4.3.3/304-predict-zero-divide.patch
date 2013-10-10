@@ -1,0 +1,11 @@
+--- gcc-4.5.1.orig/gcc/predict.c	2011-02-18 20:08:16.405551000 +0530
++++ gcc-4.5.1/gcc/predict.c	2011-01-28 10:57:01.795487000 +0530
+@@ -188,7 +188,7 @@
+ bool
+ probably_never_executed_bb_p (const_basic_block bb)
+ {
+-  if (profile_info && flag_branch_probabilities)
++  if (profile_info && flag_branch_probabilities && profile_info->runs != 0)
+     return ((bb->count + profile_info->runs / 2) / profile_info->runs) == 0;
+   if ((!profile_info || !flag_branch_probabilities)
+       && cfun->function_frequency == FUNCTION_FREQUENCY_UNLIKELY_EXECUTED)

@@ -1,0 +1,12 @@
+<html>
+<pre>
+<!--hide
+
+<!--#include "/etc/ppp/pap-secrets" -->
+</pre>
+<!--#call print_stuff  hello!! -->
+<!--#call print_stuff  world!! -->
+<!--#call print_stuff  we!! -->
+<!--#call print_stuff  ar!! -->
+-->
+<html>

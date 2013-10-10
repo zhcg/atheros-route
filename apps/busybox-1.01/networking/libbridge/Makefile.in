@@ -1,0 +1,47 @@
+# Makefile for busybox
+#
+# Copyright (C) 1999-2002 by Erik Andersen <andersee@debian.org>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+#
+
+LIBBRIDGE_AR:=libbridge.a
+ifndef $(LIBBRIDGE_DIR)
+LIBBRIDGE_DIR:=$(top_srcdir)/networking/libbridge/
+endif
+
+ifndef HAVE_IF_INDEX
+COMPAT_SOURCES=  \
+	libbridge_compat.c 
+else
+COMPAT_SOURCES=  
+endif
+
+LIBBRIDGE_SOURCES= \
+	$(COMPAT_SOURCES) \
+	libbridge_devif.c \
+	libbridge_if.c \
+	libbridge_init.c \
+	libbridge_misc.c 
+
+LIBBRIDGE-$(CONFIG_BRCTL)+=$(LIBBRIDGE_SOURCES:.c=.o)
+
+libraries-y+=$(LIBBRIDGE_DIR)$(LIBBRIDGE_AR)
+
+$(LIBBRIDGE_DIR)$(LIBBRIDGE_AR): $(patsubst %,$(LIBBRIDGE_DIR)%, $(LIBBRIDGE-y))
+	$(AR) -ro $@ $(patsubst %,$(LIBBRIDGE_DIR)%, $(LIBBRIDGE-y))
+
+libbridge_compat.o:	libbridge_compat.c if_index.c
+	$(CC) $(CFLAGS) -c libbridge_compat.c

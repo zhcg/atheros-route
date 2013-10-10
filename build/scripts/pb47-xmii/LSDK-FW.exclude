@@ -1,0 +1,6 @@
+drivers/wlan/firmware/tgt/build/k2_1_0
+drivers/wlan/firmware/tgt/build/magpie_1_0
+drivers/wlan/firmware/tgt/build/magpie_1_1/sboot
+drivers/wlan/firmware/tgt/build/k2_xplorer
+drivers/wlan/firmware/tgt/build/magpie_xplorer
+drivers/wlan/firmware/tgt/build/single_cpu

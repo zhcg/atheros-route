@@ -1,0 +1,24 @@
+Only output errors to syslog
+
+--- tspc-2.1.1.orig/src/lib/log.c
++++ tspc-2.1.1/src/lib/log.c
+@@ -193,6 +193,9 @@
+     fflush(Logfp);
+   }
+ 
++  /* only syslog errors */
++  if (ErrorLevel>ELError) return 0;
++
+   snprintf(str, sizeof str,  " %s: %s", FunctionName, fmt);  
+ 
+   SYSLOG(prio[ErrorLevel], str);
+@@ -231,6 +234,9 @@
+     fflush(Logfp);
+   }
+ 
++  /* only syslog errors */
++  if (ErrorLevel>ELError) return 0;
++
+   snprintf(str, sizeof str, "%s : %s", FunctionName, Format);  
+ 
+   SYSLOG(prio[ErrorLevel], str);

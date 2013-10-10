@@ -1,0 +1,41 @@
+Modifications for Atheros PB44 wireless router:
+
+rp-pppoe-3.8/src/pppoe-server.c
+	138c138
+	< static char *pppoptfile = NULL;
+	---
+	> static char *pppoptfile = "/etc/ppp/pppoe-server-options";
+
+ppp-2.4.4/pppd/ipcp.c
+	1994,1995c1994,1995
+	<     char *argv[8];
+	<     return;
+	---
+	>     char *argv[10];  // 8+2
+	>     //return;
+	1998a1999,2002
+	>     pid_t pid;
+	>     pid = getpid();
+	>     char strPID[33];
+	>     sprintf(strPID,"%d", pid);
+	2006,2007c2010,2013
+	<     argv[6] = ipparam;
+	<     argv[7] = NULL;
+	---
+	>     argv[6] = user;
+	>     argv[7] = strPID;
+	>     argv[8] = ipparam;
+	>     argv[9] = NULL;
+
+ppp-2.4.4/pppd/main.c
+	69c69
+	< #define RCSID	"$Id: //depot/sw/src3/apps/pppoe/ppp-2.4.4/pppd/main.c#4 $"
+	---
+	> #define RCSID	"$Id: //depot/sw/branches/ctcsrc/apps/pppoe/ppp-2.4.4/pppd/main.c#1 $"
+	367c367
+	<      /*
+	---
+	>     
+	371d370
+	<         */
+

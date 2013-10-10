@@ -1,0 +1,57 @@
+
+;-------------------------------------------------------------------------------------------;
+; Restart MIPS
+res
+sys.down
+sys.cpu MIPS24K
+sys.jtagclock 10Mhz
+sys.up
+
+;-------------------------------------------------------------------------------------------;
+; Initialize all the CP0 registers in MIPS
+PER.S CP0:0x00 %LONG 0
+PER.S CP0:0x01 %LONG 0
+PER.S CP0:0x02 %LONG 0
+PER.S CP0:0x03 %LONG 0
+PER.S CP0:0x04 %LONG 0
+PER.S CP0:0x05 %LONG 0
+PER.S CP0:0x06 %LONG 0
+PER.S CP0:0x07 %LONG 0
+PER.S CP0:0x08 %LONG 0
+PER.S CP0:0x09 %LONG 0
+PER.S CP0:0x0a %LONG 0
+PER.S CP0:0x0b %LONG 0
+PER.S CP0:0x0c %LONG 0
+PER.S CP0:0x0d %LONG 0                  ; Clear Cause register
+PER.S CP0:0x0e %LONG 0
+PER.S CP0:0x0f %LONG 0
+PER.S CP0:0x10 %LONG 0
+PER.S CP0:0x11 %LONG 0
+PER.S CP0:0x12 %LONG 0
+PER.S CP0:0x13 %LONG 0
+PER.S CP0:0x14 %LONG 0
+PER.S CP0:0x15 %LONG 0
+PER.S CP0:0x16 %LONG 0
+PER.S CP0:0x17 %LONG 0
+PER.S CP0:0x18 %LONG 0
+PER.S CP0:0x19 %LONG 0
+PER.S CP0:0x1a %LONG 0
+PER.S CP0:0x1b %LONG 0
+PER.S CP0:0x1c %LONG 0
+
+;-------------------------------------------------------------------------------------------;
+
+; Load image
+; ELF format
+; DATA.LOAD.Elf .\hornet_romboot.elf /gnu
+DATA.LOAD.Binary .\rom.bin 0xbfc00000
+DATA.LOAD.Elf .\hornet_romboot.elf /nocode /gnu
+
+Register.set pc 0xbfc00000
+;break.set main
+;break.set USB_set_address
+;break.set direct_send
+break 0xa0010000
+go
+
+

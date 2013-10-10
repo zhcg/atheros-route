@@ -1,0 +1,399 @@
+Modifications for Atheros PB44 wireless router:
+
+Index: common/conflex.c
+===================================================================
+RCS file: /var/lib/cvsd/cvsroot/ctcsrc/apps/dhcp/dhcp-4.1.0a2/common/conflex.c,v
+retrieving revision 1.3
+diff -r1.3 conflex.c
+1093,1096d1092
+< #ifdef ATHEROS_EXTEND
+<         if (!strcasecmp (atom + 1, "ax-offer"))
+<             return MAX_OFFER;
+< #endif            
+Index: includes/dhcpd.h
+===================================================================
+RCS file: /var/lib/cvsd/cvsroot/ctcsrc/apps/dhcp/dhcp-4.1.0a2/includes/dhcpd.h,v
+retrieving revision 1.5
+diff -r1.5 dhcpd.h
+780,790d779
+< #ifndef ATHEROS_EXTEND
+<     #define ATHEROS_EXTEND
+< #endif
+< 
+< #ifdef ATHEROS_EXTEND
+< struct lease_list {
+<     struct lease *lptr;
+<     struct lease_list *next;    
+< };
+< #endif
+< 
+815,818d803
+< #ifdef ATHEROS_EXTEND
+<     int max_offer;      /* max limit of offer */
+<     struct lease_list *lease_permit_list;    /* lease list which permited to enter internet */
+< #endif    
+852,854d836
+< #ifdef ATHEROS_EXTEND
+<     int max_offer;      /* max count of terminal which can enter internet*/
+< #endif    
+Index: includes/dhctoken.h
+===================================================================
+RCS file: /var/lib/cvsd/cvsroot/ctcsrc/apps/dhcp/dhcp-4.1.0a2/includes/dhctoken.h,v
+retrieving revision 1.2
+diff -r1.2 dhctoken.h
+35,38d34
+< #ifndef ATHEROS_EXTEND
+<     #define ATHEROS_EXTEND
+< #endif
+< 
+359,362c355
+< 	FIXED_PREFIX6 = 658,
+< #ifdef ATHEROS_EXTEND
+<     MAX_OFFER = 659
+< #endif        
+---
+> 	FIXED_PREFIX6 = 658
+Index: server/confpars.c
+===================================================================
+RCS file: /var/lib/cvsd/cvsroot/ctcsrc/apps/dhcp/dhcp-4.1.0a2/server/confpars.c,v
+retrieving revision 1.6
+diff -r1.6 confpars.c
+611c611
+< 		} else {
+---
+> 		} else 
+613d612
+<         }    
+799,814d797
+<   
+< #ifdef ATHEROS_EXTEND
+<           case MAX_OFFER:
+<         if(type != SUBNET_DECL || subnets == NULL) {
+< 			parse_warn (cfile, "%s:max-offer expecting.", __FUNCTION__);
+< 			skip_to_semi (cfile);
+<             return -1;
+<         }
+<         token = next_token (&val, (unsigned *)0, cfile);
+<         parse_lease_time (cfile, (TIME *)&group->subnet->max_offer );
+< 
+<         if(group->subnet->max_offer > 253) {
+< 			    parse_warn (cfile, "max-offer is larger than 253.");
+<         }
+<         break;
+< #endif        
+1537,1552d1519
+< #ifdef ATHEROS_EXTEND
+<                 case MAX_OFFER:
+<             if(group->subnet != NULL && group->subnet->max_offer == 0) {
+<                 token = next_token (&val, (unsigned *)0, cfile);
+<                 parse_lease_time (cfile, (TIME *)&pool->max_offer );
+< 
+<                 pool->lease_permit_list = NULL;
+< 
+<                 if(pool->max_offer > 253) {
+< 			        parse_warn (cfile, "pool->max-offer is larger than 253.");
+<                 }
+<             } else {
+< 				skip_to_semi (cfile);
+<             }        
+<             break;
+< #endif            
+Index: server/dhcp.c
+===================================================================
+RCS file: /var/lib/cvsd/cvsroot/ctcsrc/apps/dhcp/dhcp-4.1.0a2/server/dhcp.c,v
+retrieving revision 1.15
+diff -r1.15 dhcp.c
+261,537d260
+< #ifdef ATHEROS_EXTEND
+< #undef ATHEROS_DEBUG
+< extern int arp_query(char *d_ipaddr, char *iface);
+< 
+< /*
+<  * update ip list in /tmp/iplist.ifname
+<  *
+<  * */
+< int update_iplist(struct lease *lease)
+< {
+<         FILE *fd;
+<         char cmd_string[64];
+<         char pathname[64];
+<         struct pool *pptr = NULL;
+<         struct lease_list *llist = NULL;
+< 
+< #ifdef ATHEROS_DEBUG
+<     log_info("update_iplist()");
+< #endif    
+<         if(lease == NULL || lease->subnet == NULL ||
+<                 lease->subnet->interface == NULL ||
+<                 lease->subnet->interface->name == NULL)
+<         return -1;    
+< 
+<         sprintf(pathname, "/tmp/iplist.%s", lease->subnet->interface->name);
+<         if((fd = fopen(pathname, "w")) < 0)
+<                 return -1;
+<         
+<         for(pptr = lease->subnet->shared_network->pools; pptr; pptr = pptr->next) {
+<             for(llist = pptr->lease_permit_list; llist; llist = llist->next) {
+<                 if(llist->lptr) {
+<                     bzero(cmd_string, sizeof cmd_string);
+<                     sprintf(cmd_string, "@%u.%u.%u.%u\n",
+<                         llist->lptr->ip_addr.iabuf[0],
+<                         llist->lptr->ip_addr.iabuf[1],
+<                         llist->lptr->ip_addr.iabuf[2],
+<                         llist->lptr->ip_addr.iabuf[3]);    
+<                     printf("%s\n", cmd_string);
+<                     fwrite(cmd_string, strlen(cmd_string), 1, fd);
+<                 }   
+<             }
+<         }
+<         fclose(fd);
+<         return 0;
+< }    
+< 
+< /*
+<  *  removed lease which in permition list and release it.
+<  * */
+< void removed_lease_permit_list(struct lease *lease)
+< {
+<     struct lease_list *temp = (struct lease_list *)0;
+<     struct lease_list *llist = NULL;
+<     
+< #ifdef ATHEROS_DEBUG
+<     log_info("removed_lease_permit_list()");
+< #endif    
+<     /*
+<      * fixed segmentation fault
+<      * */
+<     if(lease == NULL || lease->pool == NULL)
+<         return ;
+<     llist = (struct lease_list *)lease->pool->lease_permit_list;
+< 
+<     for(temp = llist; llist; llist = llist->next ) {
+<         if(llist->lptr == lease) {
+<             /* remove it from permit_list */
+<             if(temp == llist){
+<                 lease->pool->lease_permit_list = llist->next;
+<              } else {
+<                 temp->next = llist->next;
+<             }
+<             free(llist);
+<             break;
+<         }    
+<         temp = llist;
+<     }
+< 
+<    update_iplist(lease);
+< }    
+< 
+< /* 
+<  * add lease to pool->lease_permit_list
+<  *
+<  * */
+< int add_lease_permit_list(struct lease *lease)
+< {
+<     struct lease_list *leasel = (struct lease_list *)0;
+<     struct lease_list *temp = NULL;
+<     struct lease_list *llist = (struct lease_list *)0;
+< 
+< #ifdef ATHEROS_DEBUG
+<     log_info("add_lease_permit_list()");
+< #endif    
+<     if(lease == NULL || lease->pool == NULL)
+<         return -1;
+<     llist = (struct lease_list *)lease->pool->lease_permit_list;
+<     /* if the lease already in current permit list, then return */
+<     for(temp = llist; llist; llist = llist->next) {
+<         if(llist->lptr == lease) {
+< #ifdef ATHEROS_DEBUG
+<             log_info("the lease is already in the list.");  
+< #endif        
+<             goto out;
+<         }     
+<         temp = llist;
+<     }
+< 
+<     if((leasel = (struct lease_list *)malloc(sizeof leasel)) == NULL) {
+< #ifdef ATHEROS_DEBUG
+<         log_fatal("Memory expired.");  
+< #endif        
+<         return -1;   
+<     }
+<     
+< #ifdef ATHEROS_DEBUG
+<             log_info("creat new list node for lease.");  
+< #endif        
+<     leasel->next = NULL;
+<     leasel->lptr = lease;
+< 
+<     if(lease->pool->lease_permit_list == NULL)
+<         lease->pool->lease_permit_list = leasel;
+<     else
+<         temp->next = leasel;    
+<    update_iplist(lease);
+< out:    
+<     return 0;
+< }    
+< 
+< void pool_ip_manage(struct lease *lease)
+< {
+<     int full = 0;
+<     int permit = 0;
+<     struct pool *p = (struct pool *)0;
+< 
+<     /*
+<      *  make sure pointed is save,avoid segmentation fault
+<      * */
+<     if(lease == NULL || lease->pool == NULL ||
+<             lease->subnet == NULL ||
+<             lease->subnet->interface == NULL || 
+<             lease->subnet->interface->name == NULL ||
+<             lease->subnet->shared_network == NULL ||
+<             lease->subnet->shared_network->pools == NULL) {
+< #ifdef ATHEROS_DEBUG
+<             log_info("The lease is not in subnet,maybe it is a fixed address\n");
+< #endif        
+<             goto out;
+<     }    
+< 
+< #ifdef ATHEROS_DEBUG
+<     log_info("lease->subnet->interface->name is %s\n",
+<             lease->subnet->interface->name);
+< #endif        
+< 
+<     if(lease->subnet->max_offer) {
+<         int offers = 0;
+<         /* calculate total leases consume */
+<         for(p = lease->subnet->shared_network->pools; p; p = p->next) {
+<             offers += p->lease_count - p->free_leases - p->backup_leases;
+<         }
+< 
+<         if(offers > lease->subnet->max_offer)
+<             full = 1;
+< #ifdef ATHEROS_DEBUG
+<         log_info("total offers is %d, full is %d, max_offer is %d", offers, full, lease->subnet->max_offer);  
+< #endif        
+<     } else if(lease->pool->max_offer) {
+<         p = lease->pool;
+<         if(p->lease_count - p->free_leases - p->backup_leases > p->max_offer)
+<             full = 1;
+<     } else {
+<             if(add_lease_permit_list(lease) < 0) {
+< #ifdef ATHEROS_DEBUG
+<                 log_fatal("add_lease_permit_list failed.");  
+< #endif        
+<                 goto out;
+<             }    
+<     }    
+< 
+<     /* the count of lease reach max,then  
+<      * try find a inactive client x, disable x enter internet,  
+<      * else disable current client enter internet
+<      */
+<     if(full) {
+<         int flag = 0;
+<         char d_ipaddr[20];
+<         struct lease_list *llist = (struct lease_list *)lease->pool->lease_permit_list;
+<         struct lease_list *temp = (struct lease_list *)0;
+< #ifdef ATHEROS_DEBUG
+<         log_info("ip source expired.");  
+< #endif        
+< 
+<         for( temp = llist; llist; ) {
+<             bzero(d_ipaddr, sizeof d_ipaddr);
+<             sprintf(d_ipaddr, "%u.%u.%u.%u", 
+<                     llist->lptr->ip_addr.iabuf[0],
+<                     llist->lptr->ip_addr.iabuf[1],
+<                     llist->lptr->ip_addr.iabuf[2],
+<                     llist->lptr->ip_addr.iabuf[3]);    
+< 
+<             flag = 0;
+<             if((llist->lptr != lease) && (arp_query(d_ipaddr, lease->subnet->interface->name) != 0)) {   /* current ip is decline */
+< #ifdef ATHEROS_DEBUG
+<                 log_info("Client:%u.%u.%u.%u has declined." , 
+<                     llist->lptr->ip_addr.iabuf[0],
+<                     llist->lptr->ip_addr.iabuf[1],
+<                     llist->lptr->ip_addr.iabuf[2],
+<                     llist->lptr->ip_addr.iabuf[3]);    
+< #endif        
+<                /* release lease which is decline  */
+<                 llist->lptr->on_release = NULL;
+<                 release_lease(llist->lptr, (struct packet *)0);
+<                 
+< 	            if (llist->lptr)
+< 		            lease_dereference (&llist->lptr, MDL);
+< 
+<                 /* and remove it from permit_list */
+<                 if(temp == llist){
+<                     lease->pool->lease_permit_list = llist->next;
+<                     free(llist);
+<                     llist = lease->pool->lease_permit_list;
+<                     flag = 1;
+<                 } else {
+<                     temp->next = llist->next;
+<                     free(llist);
+<                     llist = temp;
+<                 }    
+<                 permit = 1;
+<             }
+<             temp = llist;
+< 
+<             if(!flag)
+<                 llist = llist->next;
+<         }
+< 
+<         for(llist = lease->pool->lease_permit_list; llist; llist = llist->next) {
+<             if(llist->lptr == lease) {
+< #ifdef ATHEROS_DEBUG
+<                 log_info("but lease is already in permit list.");  
+< #endif        
+<                 goto out;
+<             }
+<         }
+< 
+<         if(permit) {
+<         /* add lease to pool->lease_permit_list */
+<             if(add_lease_permit_list(lease) < 0) {
+< #ifdef ATHEROS_DEBUG
+<                 log_fatal("add_lease_permit_list failed.");  
+< #endif        
+<                 goto out;
+<             }    
+<         }
+<     } else {
+<         /* add lease to pool->lease_permit_list */
+<         if(add_lease_permit_list(lease) < 0) {
+< #ifdef ATHEROS_DEBUG
+<             log_fatal("add_lease_permit_list failed.");  
+< #endif        
+<             goto out;
+<         }    
+< #ifdef ATHEROS_DEBUG
+<                 log_info("Add lient:%u.%u.%u.%u to permit list." , 
+<                     lease->ip_addr.iabuf[0],
+<                     lease->ip_addr.iabuf[1],
+<                     lease->ip_addr.iabuf[2],
+<                     lease->ip_addr.iabuf[3]);    
+< #endif
+<     }
+< 
+< out:
+<     return;
+< }    
+< #endif
+< 
+939,941d661
+< #ifdef ATHEROS_EXTEND
+<         pool_ip_manage(lease);
+< #endif    
+1078,1080d797
+< #ifdef ATHEROS_EXTEND
+<     removed_lease_permit_list(lease);
+< #endif    
+4180a3898
+> 
+748a749
+> #if 0
+756c757
+<  
+---
+> #endif 

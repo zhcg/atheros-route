@@ -1,0 +1,34 @@
+#!/bin/sh
+        IF=`iwconfig | grep ath | cut -b 1-8`
+        
+        echo 
+        echo "bridge none" > /tmp/topology.conf
+        echo "{" >> /tmp/topology.conf
+            for intf in ${IF}
+            do
+                echo -e "\tinterface ${intf}\n" >> /tmp/topology.conf
+            done
+        echo "}" >> /tmp/topology.conf
+
+
+        echo "radio wifi0" >> /tmp/topology.conf
+        echo "{" >> /tmp/topology.conf
+
+            echo -e "\tap" >> /tmp/topology.conf
+            echo -e "\t{" >> /tmp/topology.conf
+#BSS Section : only write security enabled BSS
+            for intf in ${IF}
+            do
+                echo  /tmp/sup${intf}
+                if [ -f  /tmp/sup${intf} ]; then
+                    echo -e "\t\tbss ${intf}\n" >> /tmp/topology.conf
+                    echo -e "\t\t{" >> /tmp/topology.conf
+                    echo -e "\t\tconfig /tmp/sup${intf}\n" >> /tmp/topology.conf
+                    echo -e "\t\t}" >> /tmp/topology.conf
+                fi
+            done
+            echo -e "\t}" >> /tmp/topology.conf
+
+        echo "}" >> /tmp/topology.conf
+
+

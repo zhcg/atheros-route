@@ -1,0 +1,523 @@
+Index: net80211/ieee80211_ioctl.h
+===================================================================
+--- net80211/ieee80211_ioctl.h	(revision 1)
++++ net80211/ieee80211_ioctl.h	(revision 2)
+@@ -281,6 +281,9 @@
+ 	u_int8_t	wpa_macaddr[IEEE80211_ADDR_LEN];
+ 	u_int8_t	wpa_ie[IEEE80211_MAX_OPT_IE];
+ 	u_int8_t	rsn_ie[IEEE80211_MAX_OPT_IE];
++#ifdef ATH_WPS_IE
++	u_int8_t	wps_ie[IEEE80211_MAX_OPT_IE];
++#endif /* ATH_WPS_IE */
+ };
+ 
+ /*
+Index: net80211/ieee80211_node.c
+===================================================================
+--- net80211/ieee80211_node.c	(revision 1)
++++ net80211/ieee80211_node.c	(revision 2)
+@@ -680,6 +680,10 @@
+ 		ieee80211_saveie(&ni->ni_wme_ie, se->se_wme_ie);
+ 	if (se->se_ath_ie != NULL)
+ 		ieee80211_saveath(ni, se->se_ath_ie);
++#ifdef ATH_WPS_IE
++	if (se->se_wps_ie != NULL)
++		ieee80211_saveie(&ni->ni_wps_ie, se->se_wps_ie);
++#endif /* ATH_WPS_IE */
+ 
+ 	vap->iv_dtim_period = se->se_dtimperiod;
+ 	vap->iv_dtim_count = 0;
+@@ -831,6 +835,10 @@
+ 		FREE(ni->ni_wme_ie, M_DEVBUF);
+ 	if (ni->ni_ath_ie != NULL)
+ 		FREE(ni->ni_ath_ie, M_DEVBUF);
++#ifdef ATH_WPS_IE
++	if (ni->ni_wps_ie != NULL)
++		FREE(ni->ni_wps_ie, M_DEVBUF);
++#endif /* ATH_WPS_IE */
+ 	IEEE80211_NODE_SAVEQ_DESTROY(ni);
+ 	FREE(ni, M_80211_NODE);
+ }
+@@ -1231,6 +1239,10 @@
+ 			ieee80211_saveie(&ni->ni_rsn_ie, sp->rsn);
+ 		if (sp->ath != NULL)
+ 			ieee80211_saveath(ni, sp->ath);
++#ifdef ATH_WPS_IE
++		if (sp->wps != NULL)
++			ieee80211_saveie(&ni->ni_wps_ie, sp->wps);
++#endif /* ATH_WPS_IE */
+ 
+ 		/* NB: must be after ni_chan is setup */
+ 		ieee80211_setup_rates(ni, sp->rates, sp->xrates, IEEE80211_F_DOSORT);
+Index: net80211/ieee80211.h
+===================================================================
+--- net80211/ieee80211.h	(revision 1)
++++ net80211/ieee80211.h	(revision 2)
+@@ -792,6 +792,11 @@
+ #define	WME_AC_VI	2		/* video */
+ #define	WME_AC_VO	3		/* voice */
+ 
++#ifdef ATH_WPS_IE
++#define	WPS_OUI			0xf25000
++#define	WPS_OUI_TYPE		0x04
++#endif /* ATH_WPS_IE */
++
+ /*
+  * AUTH management packets
+  *
+Index: net80211/ieee80211_scan.h
+===================================================================
+--- net80211/ieee80211_scan.h	(revision 1)
++++ net80211/ieee80211_scan.h	(revision 2)
+@@ -143,6 +143,9 @@
+ 	u_int8_t *rsn;
+ 	u_int8_t *wme;
+ 	u_int8_t *ath;
++#ifdef ATH_WPS_IE
++	u_int8_t *wps;
++#endif /* ATH_WPS_IE */
+ };
+ 
+ /*
+@@ -174,6 +177,9 @@
+ 	u_int8_t *se_wme_ie;		/* captured WME ie */
+ 	u_int8_t *se_ath_ie;		/* captured Atheros ie */
+ 	u_int se_age;			/* age of entry (0 on create) */
++#ifdef ATH_WPS_IE
++	u_int8_t *se_wps_ie;		/* captured WPS ie */
++#endif /* ATH_WPS_IE */
+ };
+ 
+ /*
+Index: net80211/ieee80211_node.h
+===================================================================
+--- net80211/ieee80211_node.h	(revision 1)
++++ net80211/ieee80211_node.h	(revision 2)
+@@ -170,6 +170,9 @@
+ 	u_int8_t ni_uapsd_maxsp; 		/* maxsp from flags above */
+ 	u_int16_t ni_uapsd_trigseq[WME_NUM_AC]; 	/* trigger suppression on retry */
+ 	__le16 ni_pschangeseq;
++#ifdef ATH_WPS_IE
++	u_int8_t *ni_wps_ie;			/* captured WPS ie */
++#endif /* ATH_WPS_IE */
+ };
+ MALLOC_DECLARE(M_80211_NODE);
+ 
+Index: net80211/ieee80211_scan_sta.c
+===================================================================
+--- net80211/ieee80211_scan_sta.c	(revision 1)
++++ net80211/ieee80211_scan_sta.c	(revision 2)
+@@ -275,6 +275,9 @@
+ 	saveie(&ise->se_wpa_ie, sp->wpa);
+ 	saveie(&ise->se_rsn_ie, sp->rsn);
+ 	saveie(&ise->se_ath_ie, sp->ath);
++#ifdef ATH_WPS_IE
++	saveie(&ise->se_wps_ie, sp->wps);
++#endif /* ATH_WPS_IE */
+ 
+ 	/* clear failure count after STA_FAIL_AGE passes */
+ 	if (se->se_fails && (jiffies - se->se_lastfail) > STA_FAILS_AGE*HZ) {
+Index: net80211/ieee80211_wireless.c
+===================================================================
+--- net80211/ieee80211_wireless.c	(revision 1)
++++ net80211/ieee80211_wireless.c	(revision 2)
+@@ -1595,6 +1595,9 @@
+ #ifndef IWEVGENIE
+ 	static const char rsn_leader[] = "rsn_ie=";
+ 	static const char wpa_leader[] = "wpa_ie=";
++#ifdef ATH_WPS_IE
++	static const char wps_leader[] = "wps_ie=";
++#endif /* ATH_WPS_IE */
+ #endif
+ #endif
+ 	struct iw_event iwe;
+@@ -1824,6 +1827,33 @@
+ 			  return E2BIG;
+ 		}
+ 	}
++#ifdef ATH_WPS_IE
++	if (se->se_wps_ie != NULL) {
++	  last_ev = current_ev;
++#ifdef IWEVGENIE
++		memset(&iwe, 0, sizeof(iwe));
++		if ((se->se_wps_ie[1] + 2) > MAX_IE_LENGTH)
++			return E2BIG;
++		memcpy(buf, se->se_wps_ie, se->se_wps_ie[1] + 2);
++		iwe.cmd = IWEVGENIE;
++		iwe.u.data.length = se->se_wps_ie[1] + 2;
++#else	
++		memset(&iwe, 0, sizeof(iwe));
++		iwe.cmd = IWEVCUSTOM;
++		iwe.u.data.length = encode_ie(buf, sizeof(buf),
++			se->se_wps_ie, se->se_wps_ie[1] + 2,
++			wps_leader, sizeof(wps_leader) - 1);
++#endif
++		if (iwe.u.data.length != 0) {
++			current_ev = iwe_stream_add_point(current_ev, end_buf,
++				&iwe, buf);
++			
++			/* We ran out of space in the buffer */
++			if (last_ev == current_ev)
++			  return E2BIG;
++		}
++	}
++#endif /* ATH_WPS_IE */
+ #endif /* WIRELESS_EXT > 14 */
+ 	req->current_ev = current_ev;
+ 
+@@ -3758,6 +3788,10 @@
+ 	if (ni == NULL)
+ 		return -EINVAL;		/* XXX */
+ 	memset(wpaie.wpa_ie, 0, sizeof(wpaie.wpa_ie));
++#ifdef ATH_WPS_IE
++	memset(wpaie.rsn_ie, 0, sizeof(wpaie.rsn_ie));
++	memset(wpaie.wps_ie, 0, sizeof(wpaie.wps_ie));
++#endif /* ATH_WPS_IE */
+ 	if (ni->ni_wpa_ie != NULL) {
+ 		int ielen = ni->ni_wpa_ie[1] + 2;
+ 		if (ielen > sizeof(wpaie.wpa_ie))
+@@ -3770,6 +3804,14 @@
+ 			ielen = sizeof(wpaie.rsn_ie);
+ 		memcpy(wpaie.rsn_ie, ni->ni_rsn_ie, ielen);
+ 	}
++#ifdef ATH_WPS_IE
++	if (ni->ni_wps_ie != NULL) {
++		int ielen = ni->ni_wps_ie[1] + 2;
++		if (ielen > sizeof(wpaie.wps_ie))
++			ielen = sizeof(wpaie.wps_ie);
++		memcpy(wpaie.wps_ie, ni->ni_wps_ie, ielen);
++	}
++#endif /* ATH_WPS_IE */
+ 	ieee80211_free_node(ni);
+ 	return (copy_to_user(iwr->u.data.pointer, &wpaie, sizeof(wpaie)) ?
+ 		-EFAULT : 0);
+@@ -3818,6 +3860,10 @@
+ 		*ielen += 2 + se->se_wme_ie[1];
+ 	if (se->se_ath_ie != NULL)
+ 		*ielen += 2 + se->se_ath_ie[1];
++#ifdef ATH_WPS_IE
++	if (se->se_wps_ie != NULL)
++		*ielen += 2 + se->se_wps_ie[1];
++#endif /* ATH_WPS_IE */
+ 	return roundup(sizeof(struct ieee80211req_scan_result) +
+ 		se->se_ssid[1] + *ielen, sizeof(u_int32_t));
+ }
+@@ -3886,6 +3932,12 @@
+ 		memcpy(cp, se->se_ath_ie, 2 + se->se_ath_ie[1]);
+ 		cp += 2 + se->se_ath_ie[1];
+ 	}
++#ifdef ATH_WPS_IE
++	if (se->se_wps_ie != NULL) {
++		memcpy(cp, se->se_wps_ie, 2 + se->se_wps_ie[1]);
++		cp += 2 + se->se_wps_ie[1];
++	}
++#endif /* ATH_WPS_IE */
+ 
+ 	req->space -= len;
+ 	req->sr = (struct ieee80211req_scan_result *)(((u_int8_t *)sr) + len);
+@@ -3946,6 +3998,10 @@
+ 		*ielen += 2+ni->ni_wme_ie[1];
+ 	if (ni->ni_ath_ie != NULL)
+ 		*ielen += 2+ni->ni_ath_ie[1];
++#ifdef ATH_WPS_IE
++	if (ni->ni_wps_ie != NULL)
++		*ielen += 2+ni->ni_wps_ie[1];
++#endif /* ATH_WPS_IE */
+ 	return roundup(sizeof(struct ieee80211req_sta_info) + *ielen,
+ 		      sizeof(u_int32_t));
+ }
+@@ -4046,6 +4102,12 @@
+ 		memcpy(cp, ni->ni_ath_ie, 2 + ni->ni_ath_ie[1]);
+ 		cp += 2 + ni->ni_ath_ie[1];
+ 	}
++#ifdef ATH_WPS_IE
++	if (ni->ni_wps_ie != NULL) {
++		memcpy(cp, ni->ni_wps_ie, 2 + ni->ni_wps_ie[1]);
++		cp += 2 + ni->ni_wps_ie[1];
++	}
++#endif /* ATH_WPS_IE */
+ 
+ 	req->si = (struct ieee80211req_sta_info *)(((u_int8_t *)si) + len);
+ 	req->space -= len;
+Index: net80211/ieee80211_input.c
+===================================================================
+--- net80211/ieee80211_input.c	(revision 1)
++++ net80211/ieee80211_input.c	(revision 2)
+@@ -1136,8 +1136,13 @@
+ 		}
+ 		if (skb1 != NULL) {
+ 			skb1->dev = dev;
++#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,22))
+ 			skb1->mac.raw = skb1->data;
+ 			skb1->nh.raw = skb1->data + sizeof(struct ether_header);
++#else
++			skb1->mac_header = skb1->data;
++			skb1->network_header = skb1->data + sizeof(struct ether_header);
++#endif
+ 			skb1->protocol = __constant_htons(ETH_P_802_2);
+ 			/* XXX insert vlan tag before queue it? */
+ 			dev_queue_xmit(skb1);
+@@ -1739,6 +1744,14 @@
+ 	return frm[1] > 3 && LE_READ_4(frm+2) == ((ATH_OUI_TYPE<<24)|ATH_OUI);
+ }
+ 
++#ifdef ATH_WPS_IE
++static __inline int
++iswpsoui(const u_int8_t *frm)
++{
++	return frm[1] > 3 && LE_READ_4(frm+2) == ((WPS_OUI_TYPE<<24)|WPS_OUI);
++}
++#endif /* ATH_WPS_IE */
++
+ /*
+  * Convert a WPA cipher selector OUI to an internal
+  * cipher algorithm.  Where appropriate we also
+@@ -2259,7 +2272,11 @@
+ 		if (skb1 == NULL)
+ 			return;
+ 		skb1->dev = dev;
++#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,22))
+ 		skb1->mac.raw = skb1->data;
++#else
++		skb1->mac_header = skb1->data;
++#endif
+ 		skb1->ip_summed = CHECKSUM_NONE;
+ 		skb1->pkt_type = PACKET_OTHERHOST;
+ 		skb1->protocol = __constant_htons(0x0019);  /* ETH_P_80211_RAW */
+@@ -2534,7 +2551,11 @@
+ 	
+ 	skb->dev = dev;
+ 	skb->protocol = eth_type_trans(skb, dev);
++#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,22))
+ 	skb->mac.raw = skb->data;
++#else
++	skb->mac_header = skb->data;
++#endif
+ 	ieee80211_deliver_data(ni, skb);
+ 	return;
+ }
+@@ -2577,6 +2598,9 @@
+ 	u_int8_t rate;
+ 	int reassoc, resp, allocbs;
+ 	u_int8_t qosinfo;
++#ifdef ATH_WPS_IE
++	u_int8_t *wps;
++#endif /* ATH_WPS_IE */
+ 
+ 	wh = (struct ieee80211_frame *) skb->data;
+ 	frm = (u_int8_t *)&wh[1];
+@@ -2695,6 +2719,10 @@
+ 					scan.wme = frm;
+ 				else if (isatherosoui(frm))
+ 					scan.ath = frm;
++#ifdef ATH_WPS_IE
++				else if (iswpsoui(frm))
++					scan.wps = frm;
++#endif /* ATH_WPS_IE */
+ 				break;
+ 			case IEEE80211_ELEMID_CHANSWITCHANN:
+ 				if (ic->ic_flags & IEEE80211_F_DOTH)
+@@ -2898,6 +2926,10 @@
+ 					ieee80211_saveie(&ni->ni_rsn_ie, scan.rsn);
+ 				if (scan.ath != NULL)
+ 					ieee80211_saveath(ni, scan.ath);
++#ifdef ATH_WPS_IE
++				if (scan.wps != NULL)
++					ieee80211_saveie(&ni->ni_wps_ie, scan.wps);
++#endif /* ATH_WPS_IE */
+ 
+ 				/* NB: must be after ni_chan is setup */
+ 				ieee80211_setup_rates(ni, scan.rates,
+@@ -2940,6 +2972,9 @@
+                  *      [tlv] Atheros Advanced Capabilities
+ 		 */
+ 		ssid = rates = xrates = ath = NULL;
++#ifdef ATH_WPS_IE
++		wps = NULL;
++#endif /* ATH_WPS_IE */
+ 		while (frm < efrm) {
+ 			IEEE80211_VERIFY_LENGTH(efrm - frm, frm[1]);
+ 			switch (*frm) {
+@@ -2956,6 +2991,11 @@
+ 				if (isatherosoui(frm))
+ 					ath = frm;
+ 				/* XXX Atheros OUI support */
++#ifdef ATH_WPS_IE
++				else if (iswpsoui(frm))
++					wps = frm;
++				/* WPS OUI support */
++#endif /* ATH_WPS_IE */
+ 				break;
+ 			}
+ 			frm += frm[1] + 2;
+@@ -3016,6 +3056,13 @@
+ 			ieee80211_free_node(ni);
+ 		} else if (ath != NULL)
+ 			ieee80211_saveath(ni, ath);
++#ifdef ATH_WPS_IE
++		if (wps != NULL) {
++			IEEE80211_NOTE_MAC(vap, IEEE80211_MSG_INPUT, wh->i_addr2,
++				"%s length=%d", "get wps-ie in probe req", wps[1]);
++			ieee80211_saveie(&ni->ni_wps_ie, wps);
++		}
++#endif /* ATH_WPS_IE */
+ 		break;
+ 
+ 	case IEEE80211_FC0_SUBTYPE_AUTH: {
+@@ -3145,6 +3192,9 @@
+ 		if (reassoc)
+ 			frm += 6;	/* ignore current AP info */
+ 		ssid = rates = xrates = wpa = rsn = wme = ath = NULL;
++#ifdef ATH_WPS_IE
++		wps = NULL;
++#endif /* ATH_WPS_IE */
+ 		while (frm < efrm) {
+ 			IEEE80211_VERIFY_LENGTH(efrm - frm, frm[1]);
+ 			switch (*frm) {
+@@ -3184,6 +3234,10 @@
+ 					wme = frm;
+ 				else if (isatherosoui(frm))
+ 					ath = frm;
++#ifdef ATH_WPS_IE
++				else if (iswpsoui(frm))
++					wps = frm;
++#endif /* ATH_WPS_IE */
+ 				break;
+ 			}
+ 			frm += frm[1] + 2;
+@@ -3368,6 +3422,22 @@
+ 			ni->ni_ath_ie = NULL;
+ 			ni->ni_ath_flags = 0;
+ 		}
++#ifdef ATH_WPS_IE
++		if (wps != NULL) {
++			/*
++			 * Record WPS parameters for station, mark
++			 * node as using WPS and record information element
++			 * for applications that require it.
++			 */
++			ieee80211_saveie(&ni->ni_wps_ie, wps);
++		} else if (ni->ni_wps_ie != NULL) {
++			/*
++			 * Flush any state from a previous association.
++			 */
++			FREE(ni->ni_wps_ie, M_DEVBUF);
++			ni->ni_wps_ie = NULL;
++		}
++#endif /* ATH_WPS_IE */
+ 
+ 		/* Send TGf L2UF frame on behalf of newly associated station */
+ 		ieee80211_deliver_l2uf(ni);
+@@ -3713,14 +3783,22 @@
+ {
+ 	struct ethhdr *eth;
+ 	
++#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,22))
+ 	skb->mac.raw=skb->data;
++#else
++	skb->mac_header=skb->data;
++#endif
+ 	skb_pull(skb, ETH_HLEN);
+ 	/*
+ 	 * NB: mac.ethernet is replaced in 2.6.9 by eth_hdr but
+ 	 *     since that's an inline and not a define there's
+ 	 *     no easy way to do this cleanly.
+ 	 */
++#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,22))
+ 	eth = (struct ethhdr *)skb->mac.raw;
++#else
++	eth = (struct ethhdr *)skb->mac_header;
++#endif
+ 	
+ 	if (*eth->h_dest & 1)
+ 		if (memcmp(eth->h_dest, dev->broadcast, ETH_ALEN) == 0)
+Index: net80211/ieee80211_monitor.c
+===================================================================
+--- net80211/ieee80211_monitor.c	(revision 1)
++++ net80211/ieee80211_monitor.c	(revision 2)
+@@ -373,7 +373,11 @@
+ 		if (vap->iv_monitor_txf_len && tx) {
+ 			/* truncate transmit feedback packets */
+ 			skb_trim(skb1, vap->iv_monitor_txf_len);
++#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,22))
+ 			skb1->nh.raw = skb1->data;
++#else
++			skb1->network_header = skb1->data;
++#endif
+ 		}
+ 		switch (vap->iv_dev->type) {
+ 		case ARPHRD_IEEE80211:
+@@ -555,7 +559,11 @@
+ 				skb_trim(skb1, skb1->len - IEEE80211_CRC_LEN);
+ 			}
+ 			skb1->dev = dev; /* NB: deliver to wlanX */
++#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,22))
+ 			skb1->mac.raw = skb1->data;
++#else
++			skb1->mac_header = skb1->data;
++#endif
+ 			skb1->ip_summed = CHECKSUM_NONE;
+ 			skb1->pkt_type = pkttype;
+ 			skb1->protocol = __constant_htons(0x0019); /* ETH_P_80211_RAW */
+Index: Makefile.inc
+===================================================================
+--- Makefile.inc	(revision 1)
++++ Makefile.inc	(revision 2)
+@@ -201,3 +201,7 @@
+ 
+ # expose these settings to make-release.bash
+ export RELEASE_TMP RELEASE_STORE
++
++#ifdef CONFIG_ATH_WPS_IE
++EXTRA_CFLAGS += -DATH_WPS_IE
++#endif
+Index: ath/if_ath_ahb.c
+===================================================================
+--- ath/if_ath_ahb.c	(revision 1)
++++ ath/if_ath_ahb.c	(revision 2)
+@@ -34,6 +34,20 @@
+ #include "if_ath_ahb.h"
+ #include "ah_soc.h"
+ 
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,22))
++/* Reffer to linux/interrupt.h */
++/*
++ * Migration helpers. Scheduled for removal in 1/2007
++ * Do not use for new code !
++ */
++#ifdef IRQF_SHARED
++#ifdef SA_SHIRQ
++#undef SA_SHIRQ
++#endif /* SA_SHIRQ */
++#define SA_SHIRQ IRQF_SHARED
++#endif /* IRQF_SHARED */
++#endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,22)) */
++
+ struct ath_ahb_softc {
+ 	struct ath_softc	aps_sc;
+ #ifdef CONFIG_PM
+Index: ath/if_ath_pci.c
+===================================================================
+--- ath/if_ath_pci.c	(revision 1)
++++ ath/if_ath_pci.c	(revision 2)
+@@ -73,6 +73,20 @@
+ #error Atheros PCI version requires at least Linux kernel version 2.4.0
+ #endif /* kernel < 2.4.0 */
+ 
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,22))
++/* Reffer to linux/interrupt.h */
++/*
++ * Migration helpers. Scheduled for removal in 1/2007
++ * Do not use for new code !
++ */
++#ifdef IRQF_SHARED
++#ifdef SA_SHIRQ
++#undef SA_SHIRQ
++#endif /* SA_SHIRQ */
++#define SA_SHIRQ IRQF_SHARED
++#endif /* IRQF_SHARED */
++#endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,22)) */
++
+ struct ath_pci_softc {
+ 	struct ath_softc	aps_sc;
+ #ifdef CONFIG_PM

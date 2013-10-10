@@ -1,0 +1,145 @@
+<HTML><HEAD>
+<LINK REL="stylesheet" href="../styleSheet.css" type="text/css">
+</head><body>
+<FORM METHOD=POST>
+<input type="hidden" name="INDEX" value=~~INDEX~>
+<p class="headind"><INPUT TYPE="SUBMIT" NAME="UPDATE" VALUE="Update">
+&nbsp;&nbsp;<INPUT TYPE="SUBMIT" NAME="COMMIT" VALUE="Save">
+&nbsp;&nbsp;<INPUT TYPE="SUBMIT" NAME="RebootButton" VALUE="Reboot">
+&nbsp;&nbsp;<INPUT TYPE="SUBMIT" NAME="StartButton" VALUE="Start">
+&nbsp;&nbsp;<INPUT TYPE="SUBMIT" NAME="StopButton" VALUE="Stop"></p>
+<p class="topnavg">Virtual AP/Station Configuration for VAP ~~INDEX~</p>
+<table>
+<tr><td><a class="header">ESSID String
+<td><INPUT type="text" id="AP_SSID~#~" name="AP_SSID~#~"
+           class="text2" size="35" maxlength="32"
+           value="~~AP_SSID#~">
+
+<tr><td><a class="header">VLAN ID
+<td><INPUT type="text" id="AP_VLAN~#~" name="AP_VLAN~#~"
+           class="text2" size="8" maxlength="5"
+           value="~~AP_VLAN#~">
+<td><a class="header">VLAN Bridge
+<td><INPUT type="text" id="AP_BRNAME~#~" name="AP_BRNAME~#~"
+           class="text2" size="8" maxlength="5"
+           value="~~AP_BRNAME#~">
+<tr><td><a class="header">VAP Mode
+<td class="headind" colspan=3 >
+<INPUT TYPE="radio" name="AP_MODE~#~" ~cAP_MODE#:ap~ value=ap>Access Point&nbsp;
+<INPUT TYPE="radio" name="AP_MODE~#~" ~cAP_MODE#:sta~ value=sta>Station&nbsp;
+<INPUT TYPE="radio" name="AP_MODE~#~" ~cAP_MODE#:ap-wds~ value=ap-wds>WDS Access Point&nbsp;
+<INPUT TYPE="radio" name="AP_MODE~#~" ~cAP_MODE#:sta-wds~ value=sta-wds>WDS Station<br>
+<tr><td><td class="headind">Root AP Mac Address
+<td colspan=2><INPUT type="text" id="ROOTAP_MAC~#~" name="ROOTAP_MAC~#~"
+           class="text2" size="35" maxlength="32"
+           value="~~ROOTAP_MAC#~">
+
+</table>
+<p class="topnavg">Security Settings</p>
+<table>
+<tr><td class="header" align="TOP"><INPUT TYPE="radio" name="AP_SECMODE~#~" ~cAP_SECMODE#:None~ value=None>Open</td>
+<td class="headerBLK" colspan=2><hr> No Security Applied
+<tr><td>
+<tr><td class="header" align="TOP">
+<INPUT TYPE="radio" name="AP_SECMODE~#~" ~cAP_SECMODE#:WEP~ value=WEP>WEP</td>
+<td class="headerBLK" colspan=2><hr>Simple WEP Security (64 or 128 bit hardware key)
+<tr><td><td class="headind"> MODE:
+<td class="headind">
+<INPUT TYPE="radio" name="AP_WEP_MODE" ~cAP_WEP_MODE:1~ value=1>Open
+<INPUT TYPE="radio" name="AP_WEP_MODE" ~cAP_WEP_MODE:2~ value=2>Shared
+<INPUT TYPE="radio" name="AP_WEP_MODE" ~cAP_WEP_MODE:4~ value=4>Auto
+<tr><td><td class="headind">Key 1
+<td class="headind"><INPUT type="text" id="WEPKEY_1" name="WEPKEY_1" class="text2" size="30"
+maxlength="32" value="~~WEPKEY_1~">
+<INPUT TYPE="radio" name="AP_PRIMARY_KEY" ~cAP_PRIMARY_KEY:1~ value=1> Primary Key
+<tr><td><td class="headind">Key 2
+<td class="headind"><INPUT type="text" id="WEPKEY_2" name="WEPKEY_2" class="text2" size="30"
+maxlength="32" value="~~WEPKEY_2~">
+<INPUT TYPE="radio" name="AP_PRIMARY_KEY" ~cAP_PRIMARY_KEY:2~ value=2> Primary Key
+<tr><td><td class="headind">Key 3
+<td class="headind"><INPUT type="text" id="WEPKEY_3" name="WEPKEY_3" class="text2" size="30"
+maxlength="32" value="~~WEPKEY_3~">
+<INPUT TYPE="radio" name="AP_PRIMARY_KEY" ~cAP_PRIMARY_KEY:3~ value=3> Primary Key
+<tr><td><td class="headind">Key 4
+<td class="headind"><INPUT type="text" id="WEPKEY_4" name="WEPKEY_4" class="text2" size="30"
+maxlength="32" value="~~WEPKEY_4~">
+<INPUT TYPE="radio" name="AP_PRIMARY_KEY" ~cAP_PRIMARY_KEY:4~ value=4> Primary Key
+
+<tr><td class="header" align="TOP"><INPUT TYPE="radio" name="AP_SECMODE~#~" ~cAP_SECMODE#:WPA~ value=WPA>
+WPA</td>
+<td class="headerBLK" colspan=2><hr>Enhanced Security for Personal/Enterprise
+<tr><td><td class="headind"> MODE:
+<td class="headind">
+<INPUT TYPE="radio" name="AP_WPA~#~" ~cAP_WPA#:0~ value=0>802.1x&nbsp;
+<INPUT TYPE="radio" name="AP_WPA~#~" ~cAP_WPA#:1~ value=1>WPA&nbsp;
+<INPUT TYPE="radio" name="AP_WPA~#~" ~cAP_WPA#:2~ value=2>WPA 2&nbsp;
+<INPUT TYPE="radio" name="AP_WPA~#~" ~cAP_WPA#:3~ value=3>Auto&nbsp;
+<tr><td><td class="headind"> CYPHER:
+<td class="headind">
+<INPUT TYPE="radio" name="AP_CYPHER~#~" ~cAP_CYPHER#:TKIP~ value="TKIP">TKIP
+<INPUT TYPE="radio" name="AP_CYPHER~#~" ~cAP_CYPHER#:CCMP~ value="CCMP">CCMP
+<INPUT TYPE="radio" name="AP_CYPHER~#~" ~cAP_CYPHER#:TKIP CCMP~ value="TKIP CCMP">Auto&nbsp;
+<tr><td><td class="headind">WPA Rekey Int:<td class="headind"><INPUT type="text" id="AP_WPA_GROUP_REKEY~#~"
+               name="AP_WPA_GROUP_REKEY~#~" class="text2" size="18" maxlength="16" value="~~AP_WPA_GROUP_REKEY#~">
+&nbsp;&nbsp;WPA Master Rekey: <INPUT type="text" id="AP_WPA_GMK_REKEY~#~"
+               name="AP_WPA_GMK_REKEY~#~" class="text2" size="18" maxlength="16" value="~~AP_WPA_GMK_REKEY#~">
+<tr><td><td class="headind">WEP Rekey Int:<td class="headind"><INPUT type="text" id="AP_WEP_REKEY~#~"
+               name="AP_WEP_REKEY~#~" class="text2" size="18" maxlength="16" value="~~AP_WEP_REKEY#~"> (802.1x mode Only)
+<tr><td class="headerBLK" colspan=3>&nbsp;&nbsp;&nbsp;&nbsp; <INPUT TYPE="radio" name="AP_SECFILE~#~" ~cAP_SECFILE#:PSK~ value="PSK">Personal Shared Key
+<tr><td><td class="headind">
+PSK KEY<td> <INPUT type="text" id="PSK_KEY~#~" name="PSK_KEY~#~"
+               class="text2" size="70" maxlength="64"
+               value="~~PSK_KEY#~">
+
+<tr><td class="headerBLK" colspan=3>
+&nbsp;&nbsp;&nbsp;&nbsp;<INPUT TYPE="radio" name="AP_SECFILE~#~" ~cAP_SECFILE#:EAP~ value="EAP">Enterprise/RADIUS support
+<tr><td><td class="headind">RSN Preauth<td class="headind">
+<INPUT TYPE="radio" name="AP_RSN_ENA_PREAUTH~#~" ~cAP_RSN_ENA_PREAUTH#:0~ value="0">Disable
+<INPUT TYPE="radio" name="AP_RSN_ENA_PREAUTH~#~" ~cAP_RSN_ENA_PREAUTH#:1~ value="1">Enable
+&nbsp;&nbsp;Interface: <INPUT type="text" id="AP_WPA_PREAUTH_IF~#~" name="AP_WPA_PREAUTH_IF~#~"
+               class="text2" size="18" maxlength="16" value="~~AP_WPA_PREAUTH_IF#~">
+<tr><td><td class="headind">EAP Reauth Period:<td class="headind"><INPUT type="text" id="AP_EAP_REAUTH_PER~#~"
+               name="AP_EAP_REAUTH_PER~#~" class="text2" size="18" maxlength="16" value="~~AP_EAP_REAUTH_PER#~">
+<tr><td><td class="headind"> Auth Server:<td class="headind"><INPUT type="text" id="AP_AUTH_SERVER~#~"
+               name="AP_AUTH_SERVER~#~" class="text2" size="18" maxlength="16" value="~~AP_AUTH_SERVER#~">
+&nbsp;&nbsp;&nbsp;&nbsp; Port: <INPUT type="text" id="AP_AUTH_PORT~#~" name="AP_AUTH_PORT~#~"
+               class="text2" size="10" maxlength="6" value="~~AP_AUTH_PORT#~">
+<tr><td><td class="headind"> Shared Secret:<td><INPUT type="text" id="AP_AUTH_SECRET~#~" 
+               name="AP_AUTH_SECRET~#~" class="text2" size="66" maxlength="64" 
+               value="~~AP_AUTH_SECRET#~">
+</table>
+
+<p class="topnavg">WiFi Protected Setup
+<table>
+<tr><td class="header" align="TOP">
+<INPUT TYPE="radio" name="WPS_ENABLE~#~" ~cWPS_ENABLE#:1~ value=1>Enable
+<INPUT TYPE="radio" name="WPS_ENABLE~#~" ~cWPS_ENABLE#:0~ value=0>Disable
+</td>
+<td class="headerBLK" colspan=2><hr>
+<tr><td><td>
+<table>
+<tr><td class="headerBLK" colspan=2> WiFi Protected Setup
+<table>
+<tr><td><td class="headind">VAP TIE<td><INPUT type="text" id="WPS_VAP_TIE~#~"  
+               name="WPS_VAP_TIE~#~" class="text2" size="32" maxlength="32" 
+               value="~~WPS_VAP_TIE#~">
+<tr><td><td class="headind"> AP PIN:<td><INPUT type="text" id="WSC_PIN" 
+               name="WSC_PIN" class="text2" size="15" maxlength="12" 
+               value="~~WSC_PIN:12345670~">
+<tr><td><td class="headind">Device Name:<td><INPUT type="text" id="WSC_NAME" 
+               name="WSC_NAME" class="text2" size="32" maxlength="32" 
+               value="~~WSC_NAME:AtherosAp~">
+</table>
+<td class="headerBLK" colspan=2>Enrollee configuration
+<table>
+<tr><td><td class="headind">Enrollee's PIN:
+<td><input type="text" id="AP_ENROLLEE" name="AP_ENROLLEE" class="text2" size="15" maxlength="15" value="~~AP_ENROLLEE~">
+&nbsp;&nbsp;<input TYPE="SUBMIT" NAME="StartPINMethod" VALUE="StartPINMethod">
+<tr><td><td class="headind">Soft Push Button:
+<td calss="headind"><input type="SUBMIT" NAME="StartPBC" value="StartPBC" >
+<tr><td>&nbsp;
+</table>
+</table>
+</table>
+</body>
+</html>

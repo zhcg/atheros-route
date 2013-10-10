@@ -1,0 +1,38 @@
+
+#rp_rmfiles=pppoe-sniff pppdump pppoe-relay pppstats pppoe-stop pppoe-status pppoe-start pppoe-discovery
+#ppp_rmfiles=chat pppdump pppoe-discovery pppstats
+CROSS_1=$(subst -gcc,,$(CC))
+CROSS_=$(subst gcc,,$(CROSS_1))
+CROSS=$(if $(CROSS_),$(CROSS_),)
+all: ppp rp-pppoe
+
+
+ppp:
+	cd ppp-2.4.4 ;make  all
+
+rp-pppoe:
+	cd rp-pppoe-3.8/src/ ;make
+
+configure: ppp_conf rp-pppoe_conf
+ppp_conf:
+	cd ppp-2.4.4 ;./configure  --prefix=$(prefix) CC=$(CC)
+rp-pppoe_conf:
+	cd rp-pppoe-3.8/src/ ;./configure --prefix=$(prefix)/usr --host=$(CROSS) CC=$(CC) 
+
+
+install: ppp_ins rp-pppoe_ins
+
+ppp_ins:
+	cd ppp-2.4.4 ;make install
+
+rp-pppoe_ins:
+	cd rp-pppoe-3.8/src/ ;make install
+
+
+clean: ppp_clean rp-pppoe_clean
+
+ppp_clean:
+	cd ppp-2.4.4 ;make clean
+
+rp-pppoe_clean:
+	cd rp-pppoe-3.8/src ; make clean

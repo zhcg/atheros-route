@@ -1,0 +1,124 @@
+================== Changes for pb42-carrier target ================
+
+
+In addition to adding apps/wpa2 directory, two changes (supplied by Arun)
+are needed for the driver, and some Makefile changes are needed.
+The Makefile changes don't actually do a "make" in "wpa2", instead
+they require that a make be already done in wpa2 and then the install
+directory is used.
+To do the make in wpa2:
+-- cd apps/wpa2
+-- create the following "buildmips" file
+-- run: sh buildmips
+    (Note: from subdirectory, you can run e.g.: sh ../buildmips install )
+
+
+#!/bin/sh
+# buildmips
+WPA2=`dirname $0`
+TOP=`cd $WPA2/../../ && pwd`
+export CC=$TOP/build/gcc-3.4.4-2.16.1/build_mips/bin/mips-linux-uclibc-gcc
+export AR=$TOP/build/gcc-3.4.4-2.16.1/build_mips/bin/mips-linux-uclibc-ar
+export LD=$TOP/build/gcc-3.4.4-2.16.1/build_mips/bin/mips-linux-uclibc-ld
+export COPTS=-D__MIPSEL__
+make "$@" 2>&1 | tee junk
+
+
+
+
+p4 diff ieee80211_ioctl.h
+==== //depot/sw/carriersrc/mainline/src/madwifi/madwifi/net80211/ieee80211_ioctl.h#9 - /a/atheros/perforce/ted4/wlan/madwifi/madwifi/net80211/ieee80211_ioctl.h ====
+282a283,288
+>       /* == SK 20080201 ==
+>        * - hostapd 0.5.9 and WPS support
+>        * --> RSN and WPS IE added
+>        */
+>       u_int8_t        rsn_ie[IEEE80211_MAX_OPT_IE];
+>       u_int8_t        wps_ie[IEEE80211_MAX_OPT_IE];
+
+
+
+p4 diff ieee80211_wireless.c
+==== //depot/sw/carriersrc/mainline/src/madwifi/madwifi/net80211/ieee80211_wireless.c#24 - /a/atheros/perforce/ted4/wlan/madwifi/madwifi/net80211/ieee80211_wireless.c ====
+36c36
+<  * $Id: //depot/sw/carriersrc/mainline/src/madwifi/madwifi/net80211/ieee80211_wireless.c#24 $
+---
+>  * $Id$
+4230a4231,4235
+>     /* == SK 20080201 ==
+>      * - hostapd 0.5.9 and WPS support
+>      */
+>     memset(wpaie.rsn_ie, 0, sizeof(wpaie.rsn_ie));
+>     memset(wpaie.wps_ie, 0, sizeof(wpaie.wps_ie));
+4236a4242,4255
+>     /* == SK 20080201 ==
+>      * - hostapd 0.5.9 and WPS support
+>      * --> Copy RSN IE from WPA IE field of the node
+>      *     since this driver version stores it in the
+>      *     same place
+>      * --> WPS IE is not copied so far because it is
+>      *     not essential for WPS support in hostapd
+>      */
+>     if (ni->ni_wpa_ie != NULL) {
+>       int ielen = ni->ni_wpa_ie[1] + 2;
+>       if (ielen > sizeof(wpaie.rsn_ie))
+>           ielen = sizeof(wpaie.rsn_ie);
+>       memcpy(wpaie.rsn_ie, ni->ni_wpa_ie, ielen);
+>     }
+
+
+
+
+
+
+p4 diff Makefile
+==== //depot/sw/src3/build/Makefile#41 - /a/atheros/perforce/ted4/build/Makefile ====
+150a151,154
+> ############ FIX #####################
+> wpa2: rootfs_prep ## and of course: ../apps/wpa2/install
+>       if [ -d ../apps/wpa2/install ] ; then cp -a ../apps/wpa2/install $(INSTALL_ROOT)/wpa2 ; fi
+>
+
+
+
+
+p4 diff pb42-carrier.config
+==== //depot/sw/src3/build/gcc-3.4.4-2.16.1/pb42-carrier.config#3 - /a/atheros/perforce/ted4/build/gcc-3.4.4-2.16.1/pb42-carrier.config ====
+229c229
+< #BR2_PACKAGE_GDB=n
+---
+> BR2_PACKAGE_GDB=n
+231c231
+< #BR2_PACKAGE_GDB_SERVER=y
+---
+> BR2_PACKAGE_GDB_SERVER=y
+233c233
+< #BR2_PACKAGE_GDB_HOST=y
+---
+> BR2_PACKAGE_GDB_HOST=y
+235c235
+< #BR2_GDB_VERSION="6.4"
+---
+> BR2_GDB_VERSION="6.4"
+
+
+
+
+p4 diff Makefile.pb42-carrier
+==== //depot/sw/src3/build/scripts/pb42-carrier/Makefile.pb42-carrier#21 - /a/atheros/perforce/ted4/build/scripts/pb42-carrier/Makefile.pb42-carrier ====
+30,32c30,36
+< common_build: check_tftp rootfs_prep toolchain_build kernel_build \
+<       kernel_info redboot_carrier enet_build busybox_build wsc \
+<       wpa_supplicant sar wps_enrollee art-$(word 1, $(subst -, ,$(BOARD_TYPE)))-dual
+---
+> #should be# common_build: check_tftp rootfs_prep toolchain_build kernel_build \
+> #should be#   kernel_info redboot_carrier enet_build busybox_build wsc \
+> #should be#   wpa_supplicant sar wps_enrollee art-$(word 1, $(subst -, ,$(BOARD_TYPE)))-dual
+>
+> common_build: check_tftp rootfs_prep wpa2 toolchain_build kernel_build \
+>       kernel_info redboot_carrier enet_build busybox_build \
+>       sar
+
+
+
+

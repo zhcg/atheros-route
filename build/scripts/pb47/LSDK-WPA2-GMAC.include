@@ -1,0 +1,5 @@
+apps/wpa2_adf/common
+apps/wpa2_adf/hostapd
+apps/wpa2_adf/wpa_supplicant
+apps/wpa2_adf/wsc
+apps/wpa2_adf/wpatalk

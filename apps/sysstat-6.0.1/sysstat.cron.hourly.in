@@ -1,0 +1,3 @@
+#!/bin/sh
+# Run system activity accounting tool every 10 minutes
+SA_LIB_DIR/sa1 -d 600 6 &

@@ -1,0 +1,4 @@
+bin/tspc usr/sbin/
+bin/tspc.conf etc/tsp/
+template/checktunnel.sh usr/lib/tspc/
+template/linux.sh usr/lib/tspc/

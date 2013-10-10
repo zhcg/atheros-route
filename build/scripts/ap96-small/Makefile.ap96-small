@@ -1,0 +1,119 @@
+
+export HAL=$(TOPDIR)/drivers/wlan/hal
+export ENETDIR=$(TOPDIR)/linux/drivers/net/ag7100/
+export ATH_TOOL_DIR=$(TOPDIR)/drivers/wlan/os/linux/tools/
+export ATH_DFS=$(TOPDIR)/drivers/wlan/lmac/dfs
+export BOOTLOADERDIR=$(TOPDIR)/boot/u-boot
+export ATHEROSPATH=$(TOPDIR)/drivers/wlan
+
+#
+# This is the specific makefile for the ap96 board.  It has dependancies for both
+# the "common" build and the "jffs2" build.  This is unique for each board type, and
+# must be configured for each board.
+#
+
+# To enable library optimization (removing unused object code from
+# shared libraries) set BUILD_LIBRARYOPT to 'y' else 'n'
+BUILD_LIBRARYOPT := y
+
+ifeq ($(BUILD_ATHR_HOSTAP),1)
+targetList:= check_tftp rootfs_prep toolchain_build uimage kernel_info uboot_Main \
+             enet_build busybox_build athr-hostapd athr-wpa_supplicant art_mod sar cgi
+else
+targetList:= check_tftp rootfs_prep toolchain_build uimage kernel_info uboot_Main \
+             enet_build busybox_build wpa2 art_mod sar cgi
+endif
+
+ifeq ($(strip ${ATH_SUPPORT_SPECTRAL}),1)
+targetList += spectral_app_build
+endif
+
+ifeq ($(BUILD_CONFIG), _routing)
+targetList += iptables_build
+endif
+
+targetList += driver_build $(BUILD_TYPE)_build 
+
+default: ${targetList}
+
+
+#
+# Unique rules for the ag7100 PHY with the ar7100 (Hydra)  board
+#
+
+enet_build: kernel_build
+	cd $(ENETDIR) && rm -f *.o *.ko *.mod.*
+	$(MAKEARCH) -C $(KERNELPATH) SUBDIRS=$(ENETDIR) modules
+	test -d $(MODULEPATH) || mkdir -p $(MODULEPATH)
+	cp $(ENETDIR)/ag7100_mod.ko $(MODULEPATH)
+
+iptables_build:
+	@echo making iptables
+	cd ../apps/iptables/iptables-1.3.6 && \
+	$(MAKE) clean && \
+	$(MAKE) KERNEL_DIR=$(KERNELPATH) && \
+	$(TOOLPREFIX)strip iptables && \
+	cp iptables $(INSTALL_ROOT)/sbin/iptables 
+
+# WIRELESSTOOLNAMES must agree with wlan/os/linux/tools/Makefile
+
+
+WIRELESSTOOLNAMES := athstats athstatsclear 80211stats athkey athchans athctrl\
+	athdebug 80211debug wlanconfig athcwm athampdutrc atrc \
+	pktlogconf pktlogdump radartool cgiMain
+wireless_tools_main:
+	@echo making wireless_tools
+	if test -n "$(WIRELESSTOOLS)"; then \
+	cd ../apps/$(WIRELESSTOOLS); make clean; make; \
+	cp -f $(WIRELESSTOOLSLIB) $(INSTALL_ROOT)/lib; \
+	cp -f iwpriv $(INSTALL_ROOT)/sbin; \
+	cp -f iwconfig $(INSTALL_ROOT)/sbin; \
+	cp -f iwlist $(INSTALL_ROOT)/sbin; \
+	cd $(TOPDIR)/drivers/wlan/os/linux/tools && make clean; \
+	make wlanconfig BUILD_STATIC=$(BUILD_STATIC); \
+	cp -f wlanconfig $(INSTALL_ROOT)/sbin; \
+	fi
+
+ath_tools: ath_tools_clean
+	@echo makeing ath tools;\
+	cd ../drivers/wlan/os/linux/tools;\
+	make ath_tools;
+
+ath_tools_clean:
+	@echo cleaning ath tools;\
+	cd ../drivers/wlan/os/linux/tools;\
+	make ath_tools_clean;
+
+cgi: ath_tools_clean
+	@echo makeing cgi;\
+	cd ../drivers/wlan/os/linux/tools;\
+	rm -rf cgiMain;\
+	make cgiMain;
+
+art_mod:
+	@echo Making ART Module
+	cd ../apps/art && make -f makefile.soc.linux.mips clean && \
+	make -f makefile.soc.linux.mips hydra
+	cp ../apps/art/modules/art.ko $(MODULEPATH)/art.ko
+
+main_hal_build: 
+	@echo making mainline hal
+	if test -n "$(TARGETARCH)"; then \
+	cd $(HAL)/linux && make TARGET=$(TARGETARCH) clean &&  \
+	make TARGET=$(TARGETARCH) && make TARGET=$(TARGETARCH) release; \
+	fi
+
+driver_build: main_hal_build wireless_tools_main ath_tools
+	@echo making umac mainline
+	cd $(TOPDIR)/drivers/wlan/os/linux && \
+	$(MAKEARCH) TARGET=$(TARGETARCH) clean \
+	&& $(MAKEARCH) TARGET=$(TARGETARCH) && \
+	$(MAKEARCH) DESTDIR=$(INSTALLROOT) TARGET=$(TARGETARCH) install
+	$(MAKE) $(BUILD_TYPE)_build
+
+uboot_Main:
+	@echo making uboot...
+	cd $(BOOTLOADERDIR) && make ap96_config
+	cd $(BOOTLOADERDIR) && make clean && make
+	cp $(BOOTLOADERDIR)/u-boot.bin $(IMAGEPATH)
+

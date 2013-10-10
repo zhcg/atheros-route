@@ -1,0 +1,69 @@
+#!/bin/sh
+
+# This script runs when init it run during the boot process.
+# Mounts everything in the fstab
+
+mount -a
+mount -o remount +w /
+
+#
+# Mount the RAM filesystem to /tmp
+#
+
+mount -t ramfs -n none /tmp
+
+export PATH=$PATH:/etc/ath
+##
+## Export the current system configuration
+##
+
+. /etc/ath/apcfg
+
+##
+## Bring up the network
+##
+insmod /lib/modules/2.6.15/net/flowmac_mod.ko
+insmod /lib/modules/2.6.15/net/ag7240_mod.ko eth0_flow_control=${ETH_FLOW_CONTROL0:=0} eth1_flow_control=${ETH_FLOW_CONTROL1:=0} flowmac_on=${LAN_WLAN_FLOWCONTROL:=0}
+insmod /lib/modules/2.6.15/i2s/ar7240_i2s.ko
+
+ifconfig $WAN_IF up
+ifconfig $LAN_IF up
+/etc/rc.d/rc.network
+/etc/rc.d/rc.bridge
+
+#
+# Enable USB
+#
+hci=o	# for python
+grep virian /proc/cmdline > /dev/null 2>&1
+[ $? -eq 0 ] && hci=e	# for virian
+
+# insmod /lib/modules/2.6.15/usb/usbcore.ko
+# insmod /lib/modules/2.6.15/usb/${hci}hci-hcd.ko
+# insmod /lib/modules/2.6.15/usb/usb-storage.ko
+confusbdev
+#
+# Untar the debug tools into /tmp/tools
+#
+
+mkdir /tmp/tools
+cd /tmp/tools
+tar -xzvf /sbin/debug.tgz
+export PATH=$PATH:/tmp/tools
+
+/usr/sbin/telnetd
+/usr/sbin/httpd -h /usr/www/
+/bin/factoryreset /dev/freset
+
+# start the page cache/kmem cache cleanup timer in the kernel
+echo 1 > /proc/sys/vm/drop-cache
+
+##
+## Determine if auto start of AP is required
+##
+
+if [ "${WLAN_ON_BOOT}" = "y" ]; then
+    /etc/ath/apup
+fi
+
+

@@ -1,0 +1,4 @@
+#!/bin/sh
+# if this script gets called, we assume that the machine has lost
+# IPv4 connectivity so shut down IPv6, too
+invoke-rc.d tspc stop

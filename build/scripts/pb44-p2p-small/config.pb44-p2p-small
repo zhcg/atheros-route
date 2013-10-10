@@ -1,0 +1,115 @@
+# Set the toolchain path
+export TOOLCHAIN=gcc-3.4.4-2.16.1
+export TOOLPREFIX=mips-linux-uclibc-
+export TOOLARCH=build_mips
+
+export KERNEL=mips-linux-2.6.15
+export KERNELVER=2.6.15
+export KERNELTARGET=vmlinux.bin
+export COMPRESSKERNEL=y
+export KERNELARCH=mips
+
+export BUSYBOX=busybox-1.01
+export WIRELESSTOOLS=wireless_tools.28
+export WIRELESSTOOLSLIB=libiw.so.28
+
+#
+# Enable the "new" hostapd
+#
+
+#export BUILD_WPA2=y
+#for station forwarding support
+export CONFIG_ETHERSTA=y
+
+#
+# UMAC build option
+#
+
+export BUILD_UMAC=1
+
+export BUS=PCI
+export TARGETARCH=mipsisa32-be-elf
+
+#
+# Set a large file size image to take advantage of the 8 MB part by default
+#
+
+export TARGETFSSIZE=0x600000
+export AP_TYPE=dual
+
+#
+# Select the support required for this board
+#
+
+export AH_SUPPORT_AR5210=0
+export AH_SUPPORT_AR5211=0
+export AH_SUPPORT_AR5212=1
+export AH_SUPPORT_AR5416=1
+export AH_SUPPORT_5111=1
+export AH_SUPPORT_5112=1
+export AH_SUPPORT_2413=1
+export AH_SUPPORT_5413=1
+export AH_SUPPORT_2316=1
+export AH_SUPPORT_2317=1
+export AH_SUPPORT_2425=1
+export AH_SUPPORT_2133=1  
+
+export AH_SUPPORT_AR9300=0
+#
+# Environmental variables used to configure the HAL/ATH layers at compile time
+#
+
+export ATH_CAP_PHYERR_DIAG=1
+export AR5416_G_MODE=1
+export AH_SUPPORT_HOWL=0
+export AH_SUPPORT_OWL=1
+export AH_DEBUG=1
+export REMOVE_PKT_LOG=1
+export AR5416_INT_MITIGATION=1
+export ATH_SUPPORT_DFS=1
+export ATH_SUPPORT_IQUE=0
+export IEEE_MCAST_ENHANCEMENT=1
+export ATH_WPS_IE=1
+export ATH_FORCE_BIAS=1
+
+#
+# Spectral scan enable
+#
+export ATH_SUPPORT_SPECTRAL=0
+# video over wireless, featuer and debug flags
+#   ATH_SUPPORT_VOWEXT - All vow feature enable/disable
+#   ATH_VOW_EXT_STATS  - Extended stats for capdumpts and graph plotter utilities 
+export ATH_SUPPORT_VOWEXT=0
+export ATH_VOW_EXT_STATS=0
+
+#extended AP support ( 3 address WDS )
+export ATH_EXT_AP=1
+export ATH_CAP_AMSDU=0
+export ATH_SUPPORT_UAPSD=1
+
+# 802.1q vlan support for wlan driver
+export ATH_SUPPORT_VLAN=1
+export UMAC_SUPPORT_RPTPLACEMENT=0
+export UMAC_SUPPORT_VAP_PAUSE=1
+export ATH_SUPPORT_DESCFAST=1
+export UMAC_SUPPORT_P2P_GO_POWERSAVE=1
+export UMAC_SUPPORT_STA_POWERSAVE=1
+
+# P2P 
+export ATHEROS_LINUX_P2P_DRIVER=1
+export ATH_SUPPORT_P2P=1
+export ATH_SUPPORT_VAP_PAUSE=1
+export ATH_GEN_TIMER=1
+export ATH_SUPPORT_TSF_TIMER=1
+export ATH_SUPPORT_P2P_GO_POWERSAVE=1
+export UMAC_SUPPORT_P2P=1
+export UMAC_SUPPORT_IE_UTILS=1
+export UMAC_SUPPORT_TSF_TIMER=1
+export UMAC_SUPPORT_RESMGR_SM=1
+export UMAC_SUPPORT_RESMGR=1
+export UMAC_SUPPORT_RESMGR_OC_SCHED=1
+export ATH_BEACON_DEFERRED_PROC=1
+# Register Read/Write tools
+export DEBUG_TOOLS=1
+export ATH_VAP_PAUSE_SUPPORT=1
+

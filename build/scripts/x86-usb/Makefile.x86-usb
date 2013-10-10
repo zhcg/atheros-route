@@ -1,0 +1,219 @@
+# Makefile for x86 USB build
+
+export TOOLPREFIX=
+export KERNEL=`uname -r`
+export BUILD_X86=y
+export AH_DEBUG=1
+export ATH_DEFINE_ENDIAN=1
+export ENDIAN=AH_LITTLE_ENDIAN
+export NO_SIMPLE_CONFIG=1
+export KERNELARCH=i386
+export MAKEARCH=$(MAKE) ARCH=$(KERNELARCH) CROSS_COMPILE=$(TOOLPREFIX)
+
+export TOPDIR=$(PWD)/..
+export KERNELPATH=/lib/modules/$(KERNEL)/build
+
+#export INSTALL_ROOT=$(TOPDIR)/rootfs
+
+export MODULEPATH=$(INSTALL_ROOT)/lib/modules/net
+export HOST_11N_INSTALL_PATH=$(MODULEPATH)/11n
+
+export HAL=$(TOPDIR)/drivers/wlan/hal
+export ATH_TOOL_DIR=$(TOPDIR)/drivers/wlan/os/linux/tools/
+export ATH_DFS=$(TOPDIR)/drivers/wlan/common/lmac/dfs
+
+export BUSYBOX=busybox-1.01
+export WIRELESSTOOLS=wireless_tools.28
+export WIRELESSTOOLSLIB=libiw.so.28
+
+
+#export WLAN_11N_DIR=wlan
+#export WLAN_DIR=$(WLAN_11N_DIR)
+#export WLAN_BUILD_DIR=$(TOPDIR)/$(WLAN_DIR)/build/linux
+
+#
+# Enable the "new" hostapd
+#
+
+export BUILD_WPA2=y
+
+ifeq ($(BUILD_WPA2),y)
+export ATHEROSPATH=$(TOPDIR)/drivers/wlan
+#for station forwarding support
+export CONFIG_ETHERSTA=y
+endif
+
+#
+# UMAC build option
+#
+
+export BUILD_UMAC=1
+
+export BUS=USB
+export ATH_SUPPORT_HTC=1
+export ATH_SUPPORT_VLAN=1
+export MADWIFITARGET=i386-elf
+export FUSIONTARGET=i386-elf
+
+#
+# Set a large file size image to take advantage of the 8 MB part by default
+#
+
+export AP_TYPE=dual
+
+#
+# Select the support required for this board
+#
+
+export AH_SUPPORT_AR5210=0
+export AH_SUPPORT_AR5211=0
+export AH_SUPPORT_AR5212=0
+export AH_SUPPORT_AR5416=1
+export AH_SUPPORT_5111=0
+export AH_SUPPORT_5112=0
+export AH_SUPPORT_2413=0
+export AH_SUPPORT_5413=0
+export AH_SUPPORT_2316=0
+export AH_SUPPORT_2317=0
+export AH_SUPPORT_2425=0
+#export AH_SUPPORT_2133=0
+export AH_SUPPORT_SOWL=0
+export AH_SUPPORT_AR9300=0
+
+#
+# Environmental variables used to configure the HAL/ATH layers at compile time
+#
+
+export ATH_CAP_PHYERR_DIAG=1
+export AR5416_G_MODE=1
+
+export AR9100=0
+
+
+export AH_SUPPORT_HOWL=0
+export AH_SUPPORT_OWL=1
+export AH_DEBUG=1
+export REMOVE_PKT_LOG=1
+export AR5416_INT_MITIGATION=1
+
+export ATH_SUPPORT_DFS=0
+export ATH_SUPPORT_IQUE=0
+export ATH_CHAINMASK_SELECT=0
+export ATH_SUPPORT_UAPSD=0
+export ATH_CAP_AMSDU=0
+export IEEE_MCAST_ENHANCEMENT=0
+
+# No S/W based crypto support
+export ATH_NO_SW_CRYPTO=0
+
+# Disable spectral module
+export ATH_SUPPORT_SPECTRAL=0
+
+ifeq ($(BUILD_WPA2),y)
+export ATH_WPS_IE=1
+else
+export ATH_WPS_IE=0
+endif
+
+targetList:= fusion_build x86_wpa2
+default: ${targetList}
+
+ifndef AP_TYPE
+# The INSTALL_ROOT is similar but not exactly what appears on the
+# target filesystem; it is copied and converted into IMAGE_ROOT
+# which is space-optimized:
+x86_rootfs_prep:	# this is prep of the INSTALL_ROOT, not the final fs directory
+	@echo Begin rootfs_prep $(INSTALL_ROOT)
+	#cp -R rootfs/common/* $(INSTALL_ROOT)
+	#cp -Rf rootfs/kirkwood/* $(INSTALL_ROOT)
+	#chmod 755 $(INSTALL_ROOT)/etc/rc.d/*
+	#chmod 755 $(INSTALL_ROOT)/etc/ath/*
+	#chmod 755 $(INSTALL_ROOT)/etc/ath/default/*
+	@echo End rootfs_prep $(INSTALL_ROOT)
+
+else
+#
+# For the retail AP designs, a new common area is used that contains the
+# web interface and supporting files.  Also provides a common fusion based
+# filesystem.
+#
+
+x86_rootfs_prep:
+	@echo Begin rootfs_prep $(INSTALL_ROOT)
+	#cp -R rootfs/cgiCommon/* $(INSTALL_ROOT)
+	#cp -rf rootfs/cgiCommon/etc/ath.$(AP_TYPE)/* $(INSTALL_ROOT)/etc/ath
+	#rm -rf $(INSTALL_ROOT)/etc/ath.single $(INSTALL_ROOT)/etc/ath.dual
+	#cp -rf rootfs/cgiCommon/usr/www.$(AP_TYPE)/* $(INSTALL_ROOT)/usr/www
+	#rm -rf $(INSTALL_ROOT)/usr/www.single
+	#rm -rf $(INSTALL_ROOT)/usr/www.dual
+	#cp -Rf rootfs/kirkwood/* $(INSTALL_ROOT)
+	#chmod 755 $(INSTALL_ROOT)/etc/rc.d/*
+	#chmod 755 $(INSTALL_ROOT)/etc/ath/*
+	@echo End rootfs_prep $(INSTALL_ROOT)
+endif	
+
+x86_wpa2: x86_wpa2_clean
+	@echo Making wpa2 at `date`
+	cd $(TOPDIR)/apps/wpa2 && $(MAKE) 	\
+		CC=$(TOOLPREFIX)gcc AR=$(TOOLPREFIX)ar LD=$(TOOLPREFIX)ld
+	@echo End Making wpa2 at `date`
+
+x86_wpa2_clean:
+	cd $(TOPDIR)/apps/wpa2 && $(MAKE) clean
+clean: x86_wpa2_clean
+
+ath_tools_fus_clean:
+	@echo cleaning ath tools;\
+	cd $(TOPDIR)/drivers/wlan/os/linux/tools;\
+	make ath_tools_clean;
+
+
+ifneq ($(strip ${BUILD_UMAC}),0)
+fusion_build: fusion_hal_build wireless_tools_fus ath_tools_fus
+	@echo making umac fusion
+	cd $(TOPDIR)/drivers/wlan/os/linux && \
+	$(MAKEARCH) TARGET=$(FUSIONTARGET) clean \
+	&& $(MAKEARCH) TARGET=$(FUSIONTARGET) && \
+	$(MAKEARCH) DESTDIR=$(INSTALLROOT) TARGET=$(FUSIONTARGET) install
+else
+fusion_build: fusion_hal_build wireless_tools_fus ath_tools_fus
+	@echo making fusion
+	cd $(TOPDIR)/drivers/wlan/linux && \
+	$(MAKEARCH) TARGET=$(FUSIONTARGET) clean \
+	&& $(MAKEARCH) TARGET=$(FUSIONTARGET) && \
+	$(MAKEARCH) DESTDIR=$(INSTALLROOT) TARGET=$(FUSIONTARGET) install
+endif
+
+fusion_hal_build: 
+	@echo making FUSION hal
+	if test -n "$(FUSIONTARGET)"; then \
+	cd $(HAL)/linux && make TARGET=$(FUSIONTARGET) clean &&  \
+	make TARGET=$(FUSIONTARGET) && make TARGET=$(FUSIONTARGET) release; \
+	fi
+	
+	@echo create folder sbin lib
+	rm -rf  $(TOPDIR)/rootfs/sbin
+	rm -rf 	$(TOPDIR)/rootfs/lib
+	rm -rf 	$(TOPDIR)/rootfs/bin
+	mkdir   $(TOPDIR)/rootfs/sbin
+	mkdir	$(TOPDIR)/rootfs/lib
+	mkdir 	$(TOPDIR)/rootfs/bin
+
+wireless_tools_fus:
+	@echo making wireless_tools
+	if test -n "$(WIRELESSTOOLS)"; then \
+	cd $(TOPDIR)/apps/$(WIRELESSTOOLS); make clean; make; \
+	cp -f $(WIRELESSTOOLSLIB) $(INSTALL_ROOT)/lib; \
+	cp -f iwpriv $(INSTALL_ROOT)/sbin; \
+	cp -f iwconfig $(INSTALL_ROOT)/sbin; \
+	cp -f iwlist $(INSTALL_ROOT)/sbin; \
+	cd $(TOPDIR)/drivers/wlan/os/linux/tools && make clean; \
+	make wlanconfig BUILD_STATIC=$(BUILD_STATIC); \
+	cp -f wlanconfig $(INSTALL_ROOT)/sbin; \
+	fi
+	
+	
+ath_tools_fus: ath_tools_fus_clean
+	@echo makeing ath tools;\
+	cd $(TOPDIR)/drivers/wlan/os/linux/tools;\
+	make ath_tools;

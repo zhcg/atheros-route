@@ -1,0 +1,16 @@
+# variables_environ,v 1.3 2004/02/05 20:29:13 blanchet Exp
+
+Environment variables used by scripts
+
+TSP_TUNNEL_MODE :             eg : v6v4
+TSP_HOST_TYPE :               eg : HOST or ROUTER
+TSP_TUNNEL_INTERFACE :        eg : gif0
+TSP_CLIENT_ADDRESS_IPV4 :     eg : 192.168.1.1
+TSP_SERVER_ADDRESS_IPV4 :     eg : 192.168.1.100
+TSP_CLIENT_ADDRESS_IPV6 :     eg : 3ffe:b00:b000:0000::1
+TSP_SERVER_ADDRESS_IPV6 :     eg : 3ffe:b00:b000:0000::0
+TSP_TUNNEL_PREFIXLEN :        eg : 64
+TSP_HOME_INTERFACE :          eg : fxp0
+TSP_PREFIX :                  eg : 3ffe:0b00:b001::
+TSP_PREFIXLEN :               eg : 48
+TSP_VERBOSE:                  eg : 0,1,2 (0=no,1=some,2=more debug messages)

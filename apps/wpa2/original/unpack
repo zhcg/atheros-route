@@ -1,0 +1,74 @@
+THIS IS OUT OF DATE -- FOR HISTORICAL REFERENCE ONLY
+
+#!/bin/sh
+#
+# unpack -- unpack sony/saice WPS software and apply patches
+
+SOURCES="
+original/hostapd-0.5.8-sony_r5.7.patch
+original/hostapd-0.5.8.tar.gz
+original/madwifi-0.9.3.1.tar.gz
+original/madwifi-0.9.3.1-WPS_1.0.patch
+original/NFCKernelDriver-1.0.3.tar.gz
+original/NFCTokenRW-1.1.1.tar.gz
+original/openssl-0.9.8g.tar.gz
+original/wpa_supplicant-0.5.8-sony_r5.7.patch
+original/WpsNfcLibrary-1.1.1.tar.gz
+original/libupnp-1.3.1.tar.gz
+"
+
+
+echo Checking that all files are present...
+files_are_missing=n
+for file in $SOURCES
+do
+    if [ ! -f "$file" ]
+    then
+        echo Missing file $file
+        files_are_missing=y
+    fi
+done
+if [ $files_are_missing = y ]
+then
+    echo Aborting due to missing files.
+    exit 1
+fi
+
+
+set -ex
+
+# SKIP installing NFC kernel driver
+
+echo Installing openssl...
+rm -rf openssl-0.9.8g
+tar xzvf original/openssl-0.9.8g.tar.gz
+
+echo Installing libupnp...
+rm -rf libupnp-1.3.1
+tar xzvf original/libupnp-1.3.1.tar.gz
+
+echo Installing madwifi...
+rm -rf madwifi-0.9.3.1
+tar xzvf original/madwifi-0.9.3.1.tar.gz
+(cd madwifi-0.9.3.1 && 
+    patch -p0 < ../original/madwifi-0.9.3.1-WPS_1.0.patch &&
+    true) || exit 1
+
+echo Installing NFC library...
+tar xzvf original/WpsNfcLibrary-1.1.1.tar.gz
+
+echo Installing wpa_supplicant...
+rm -rf wpa_supplicant-0.5.8
+tar xzvf original/wpa_supplicant-0.5.8.tar.gz
+(cd wpa_supplicant-0.5.8 &&
+    patch -p0 < ../original/wpa_supplicant-0.5.8-sony_r5.7.patch
+    true) || exit 1
+
+echo Installing hostapd...
+rm -rf hostapd-0.5.8
+tar xzvf original/hostapd-0.5.8.tar.gz
+(cd hostapd-0.5.8 &&
+    patch -p0 < ../original/hostapd-0.5.8-sony_r5.7.patch &&
+    true) || exit 1
+
+echo DONE

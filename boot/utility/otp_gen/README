@@ -1,0 +1,12 @@
+--------------------------------------
+   Utility for Hornet OTP generate
+--------------------------------------:
+
+1. add_checksum 
+ -> is to calculate 4 byte checksum from file 1 to file2
+ -> Usage: calc_otp_checksum filename file_add_checksum
+
+
+2. otp_gen is to generate OTP in Hornet's requirement
+Usage: otp_gen usb_phy_bias mdio_phy_addr otp.usb.binary 0x64 > otp.hex
+

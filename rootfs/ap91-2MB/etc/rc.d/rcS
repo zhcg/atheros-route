@@ -1,0 +1,55 @@
+#!/bin/sh
+
+
+# This script runs when init it run during the boot process.
+
+export PATH=$PATH:/etc/ath
+
+# Mounts everything in the fstab
+
+# mount -a
+cfg mountall
+
+# Insert the ethernet module
+insmod /lib/modules/2.6.15/net/ag7240_mod.ko
+
+##
+## Bring up the network
+##
+
+cfg -e > /tmp/var.$$
+. /tmp/var.$$
+rm -f /tmp/var.$$
+
+cfg ifstate $WAN_IF up
+cfg ifstate $LAN_IF up
+
+/etc/rc.d/rc.network
+/etc/rc.d/rc.bridge
+
+if [ "${WLAN_ON_BOOT}" = "y" ]; then
+    #/etc/ath/apup
+	cfg wlan up
+fi
+
+#
+# Enable USB
+#
+#insmod /lib/modules/2.6.15/usb/usbcore.ko
+#insmod /lib/modules/2.6.15/usb/ohci-hcd.ko
+#insmod /lib/modules/2.6.15/usb/usb-storage.ko
+
+#
+# Untar the debug tools into /tmp/tools
+#
+
+#mkdir /tmp/tools
+#cd /tmp/tools
+#tar -xzvf /sbin/debug.tgz
+
+/usr/sbin/telnetd
+#/usr/sbin/httpd -h /usr/www/
+/bin/factoryreset /dev/freset
+
+# start the page cache/kmem cache cleanup timer in the kernel
+# echo 1 > /proc/sys/vm/drop-cache

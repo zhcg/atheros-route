@@ -1,0 +1,91 @@
+Fix manpage formats.
+Index: tspc/man/man5/tspc.conf.5
+===================================================================
+--- tspc.orig/man/man5/tspc.conf.5	2008-12-03 09:19:54.187056999 +0800
++++ tspc/man/man5/tspc.conf.5	2008-12-03 09:22:19.879057263 +0800
+@@ -17,7 +17,6 @@
+ .\"
+ .\" tspc.conf.5,v 1.6 2004/07/07 19:54:18 smitra Exp
+ .\"
+-.Th Tunnel Setup Protocol client: File formats manual
+ .Dd April, 2001
+ .Dt TSPC.CONF 5
+ .Os BSD 4.2
+@@ -89,8 +88,6 @@
+ passwd=your_password
+ .Pp
+ Leave empty if userid=anonymous
+-
+-
+ .It Sy server
+ Name and port number of the tunnel server. This variable is used to specify the
+ TSP server to be queried. An IPv4 address or FQDN (Fully Qualify Domain Name)
+@@ -103,8 +100,6 @@
+ server=192.168.1.1:3653
+ .Pp
+ This variable is MANDATORY
+-
+-
+ .It Sy template
+ This parameter is used to tell which configuration template must be used to
+ configure the tunnel. The configuration template is a script file, located in
+@@ -118,8 +113,6 @@
+ template=linux
+ .Pp
+ This variable is MANDATORY.
+-
+-
+ .It Sy retry_delay
+ The retry_delay option is used to set the number of seconds to sleep before
+ retrying tunnel request to tsp server after request failure. It will 
+@@ -141,7 +134,6 @@
+ and will offer to the TSP client the correct tunnel mode.  
+ .Pp
+ Default: v6anyv4
+-
+ .It Sy if_tunnel_v6v4
+ Logical interface name that will be used for the configured tunnel (IPv6 over
+ IPv4). The syntax is:
+@@ -155,7 +147,6 @@
+ Under Windows: 2
+ .Pp
+ This variable is MANDATORY.
+-
+ .It Sy if_tunnel_v6udpv4
+ Logical interface name that will be used for v6udpv4 tunnels (IPv6 over
+ UDPv4). The syntax is:
+@@ -168,7 +159,6 @@
+ .Pp
+ Under Windows: tunv6
+ .Pp
+-
+ .It Sy proxy_client
+ proxy_client indicates that this client acts as a TSP proxy for
+ some remote client tunnel endpoint machine. It is set to "yes" 
+Index: tspc/man/man8/tspc.8
+===================================================================
+--- tspc.orig/man/man8/tspc.8	2008-12-03 09:19:46.664056224 +0800
++++ tspc/man/man8/tspc.8	2008-12-03 09:19:57.705057557 +0800
+@@ -52,6 +52,7 @@
+ .It Sy - v6udpv4 (IPv6 over UDP over IPv4)
+ Supported on FreeBSD, Linux and Windows.
+ .Pp
++.El
+ .Sh ARGUMENTS
+ The following options are available:
+ .Bl -tag -width indent
+@@ -93,12 +94,14 @@
+ .Xr tspc.conf 5
+ .br
+ http://www.hexago.com
++.El
+ .Sh ACKNOWLEDGMENT
+ This software uses code taken from other organisations as :
+ .Bl -tag -width indent
+ .It - Ar "RSA data security for md5."
+ .It - Ar "The Apache Software Foundation for Base64 encoding and decoding."
+ .It - Ar "OpenVPN by James Yohan"
++.El
+ .Sh AUTHORS
+ Hexago Inc.
+ .br

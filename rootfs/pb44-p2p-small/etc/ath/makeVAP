@@ -1,0 +1,261 @@
+#!/bin/sh
+####################################################################
+## makeVAP
+##
+## This script is used to create AP or Station instances (VAPs).  It
+## will NOT actually join the bridge or do any RF configuration.
+##
+## The form of the command is
+##
+## makeVAP ifname <Mode> <ESSID> RF <beaconint>
+##
+## Where
+##     ifname:  Something like ath or wlan or p2p
+##     Mode:    Either ap, ap-wds, sta, or sta-wds
+##              (access point or station)
+##     ESSID:   ESSID String
+##     RF:      If the RF command is included, the script will
+##              include all RF and hardware level configuration
+##              commands.  These should be sent only once.
+## beaconint:   This is the beacon interval desired for this VAP.  Note
+##              that this is system wide, and will override the current
+##              beacon interval for ALL vaps.  You MUST also include the
+##              RF command for this option.
+##
+## Examples:
+##   Access Point with RF
+##      makeVAP ap OpenAP RF
+##   Access Point with RF, beacon interval of 400 ms
+##      makeVAP ap OpenAP RF 400
+##   Access Point w/o RF
+##      makeVAP ap NormAP
+##   WDS Root AP
+##      makeVAP ap-wds RootAP RF
+##   WDS Repeater (two commands)
+##      makeVAP sta-wds RPTR RF
+##      makeVAP ap-wds RPTR
+##
+###################################################################
+
+. /etc/ath/apcfg
+
+if [ "${1}" = "" ]; then
+    echo "makeVAP usage"
+    echo "makeVAP ifname mode essid RF beaconint"
+    echo
+    echo "ifname: [wlan | ath | p2p ]"
+    echo "mode: [ap | ap-wds | sta | sta-wds ]"
+    echo "essid: up to 32 character ESSID string"
+    echo "RF: Include RF commands"
+    echo "beaconint: Beacon interval, milliseconds"
+    echo
+    exit
+fi
+
+MODE=`echo $2 | cut -f 1 -d '-'`
+WDS=`echo $2 | cut -f 2 -d '-'`
+
+IFNUM=`echo $4 | cut -f 1 -d ':'`
+RF=`echo $4 | cut -f 2 -d ':'`
+PRI_CH=`echo $4 | cut -f 3 -d ':'`
+SEC_CH=`echo $4 | cut -f 4 -d ':'`
+
+if [ "${IFNUM}" != "0" -a "${IFNUM}" != "1" ]; then
+    IFNUM=0
+fi
+
+IFNAME=$1
+ESSID=$3
+BEACONINT=$5
+
+echo "makeVAP " $IFNAME $MODE $WDS $ESSID $IFNUM $RF $PRI_CH $SEC_CH $BEACONINT
+
+##
+## First, let's see if we have the modules loaded.  If not, call the
+## rc.wlan script to load them
+##
+
+MODLIST=`lsmod | grep ath_hal`
+
+if [ "${MODLIST}" = "" ]; then
+    /etc/rc.d/rc.wlan up
+else
+    echo "Modules already loaded"
+fi
+
+echo Creating ${MODE} for ${ESSID} on ${IFNUM}
+
+##
+## Create the instance
+##
+
+if [ "${MODE}" = "sta" ]; then
+    echo wlanconfig ${IFNAME} create wlandev wifi$IFNUM wlanmode ${MODE} nosbeacon
+    APNAME=`wlanconfig ${IFNAME} create wlandev wifi$IFNUM wlanmode ${MODE} nosbeacon`
+    APMODE="mode managed"
+else
+    echo wlanconfig ${IFNAME} create wlandev wifi$IFNUM wlanmode ${MODE}
+    APNAME=`wlanconfig ${IFNAME} create wlandev wifi$IFNUM wlanmode ${MODE}`
+    APMODE="mode master"
+fi
+
+echo Added ${APNAME} ${APMODE}
+
+##
+## Enable WDS if selected
+##
+
+if [ "${WDS}" = "wds" ]; then
+    iwpriv ${APNAME} wds 1
+fi
+
+##
+## Disable Background Scan
+##
+
+iwpriv ${APNAME} bgscan 0
+
+##
+# set debug mode output
+##
+
+DEBUGMODE=0x100
+echo $DEBUGMODE > /proc/sys/net/${APNAME}/debug
+
+##
+## Determine the operating mode and frequency
+##
+
+if [ $PRI_CH = 11na ]; then
+    CHMODE=11na
+    FREQ=""
+elif [ $PRI_CH = 11ng ]; then
+    CHMODE=11ng
+    FREQ=""
+elif [ $PRI_CH -gt 14 ]; then
+    CHMODE=11na
+    FREQ="freq $PRI_CH"
+else
+    CHMODE=11ng
+    FREQ="freq $PRI_CH"
+fi
+
+
+#####################################################################
+## Check for RF command. If so, set the RF parameters, else do the
+## simple cofiguration.
+##
+
+if [ "${RF}" = "RF" ]; then
+
+    #
+    # 11n configuration section
+    # increase queue length
+    #
+
+    ifconfig ${APNAME} txqueuelen $TXQUEUELEN
+    ifconfig wifi$IFNUM txqueuelen $TXQUEUELEN
+
+    # turn on halfgi
+    iwpriv ${APNAME} shortgi $SHORTGI
+
+    iwpriv ${APNAME} mode $CHMODE
+
+    if [ $CHMODE = 11ng ]; then
+        echo 1 > /proc/sys/dev/ath/hal/forceBiasAuto
+    fi
+
+    #
+    # Channel Width Mode
+    # cwmmode 0 is static 20; cwmmode 1 is dyn 2040; cwmmode 2 is static 40
+    #
+    
+    if [ $CHMODE = 11ng ]; then
+        iwpriv ${APNAME} cwmmode 0
+    else
+        iwpriv ${APNAME} cwmmode $CWMMODE
+    fi
+
+    #
+    # Extension Channel
+    # set extension channel below control channel
+    #
+
+    iwpriv ${APNAME} extoffset $SEC_CH
+
+    # set extension channel offset to 20Mhz (25Mhz not supported yet)
+
+    iwpriv ${APNAME} extprotspac 0
+
+    #
+    # Set Aggregation State
+    #
+
+    iwpriv ${APNAME} ampdu $AMPDU
+
+    # set ampdu limit
+
+    iwpriv ${APNAME} ampdulimit $AMPDULIMIT
+    
+    #
+    # set SSID and frequency
+    #
+
+    iwconfig ${APNAME} essid ${ESSID} ${APMODE} ${FREQ}
+
+    #
+    # If rate control is not auto, set the manual settings
+    #
+    
+    if [ "${RATECTL}" != "auto" ]; then
+        iwpriv ${APNAME} set11NRates $MANRATE
+        iwpriv ${APNAME} set11NRetries $MANRETRIES
+    fi
+
+    #
+    # Set the chain masks
+    #
+
+    iwpriv ${APNAME} tx_chainmask $TX_CHAINMASK
+    iwpriv ${APNAME} rx_chainmask $RX_CHAINMASK
+
+    #
+    # An extra IE is provided for Intel interop
+    #
+
+    echo 1 > /proc/sys/dev/ath/htdupieenable
+
+    #
+    # This is where extra commands are executed.
+    #
+
+    $AP_EXTRA
+
+else
+    ####
+    # set SSID only
+    ###
+
+    iwpriv ${APNAME} mode ${CHMODE}
+    iwconfig ${APNAME} essid ${ESSID} ${APMODE} ${FREQ}
+
+fi
+
+##
+## Check for multiple VAPs.  If the VAP name is ath2 we assume we want the
+## beacon interval to be 400 ms
+##
+
+if [ "${BEACONINT}" != "" ]; then
+    #
+    # Beacon interval was specified
+    #
+
+    iwpriv ${APNAME} bintval ${BEACONINT}
+fi
+
+##
+## Script Complete
+##
+
+echo Created ${APNAME} mode ${MODE} for ${ESSID}

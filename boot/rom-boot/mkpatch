@@ -1,0 +1,143 @@
+#
+# script to create patch file for otp rom-patch
+#
+
+fn=testpatch
+lz=$fn.bin
+op=$fn.pch		# Default o/p file name
+ho=$fn.txt		# hexdump output
+tf=$fn.tmp		# temp/intermediate file
+zs=0			# Compression signature
+
+e=`readelf -h $fn | grep 'Entry point address' | sed 's/.*0x//g'`
+l=${OTP_PATCH_LINK_ADDR}	# load address
+
+hs=16			# header size: entry, load addr, fw size, checksum
+db=0			# debug
+
+usage()
+{
+	cmd=`basename $0`
+
+	cat << EOF
+
+Usage: $cmd [ options ]
+
+	Options:				Default value
+	-----------------------------------------------------
+		-c	add lzma signature
+		-d	debug
+		-e	entry point		$e (uncached)
+		-f	patch file		$fn
+		-h	help
+		-l	load address		$l (   ''   )
+		-o	output file		$op
+
+	Note:	Entry point and load address will be assumed as hex.
+		Donot prefix '0x'
+
+EOF
+	exit 1
+}
+
+prep_file()
+{
+	len=`ls -l $1 | awk '{print $5}'`
+	tl=$len
+	pad=$((4 - (len % 4)))
+	[ $pad -eq 4 ] && pad=0
+	len=$((len + pad))
+	len=`printf "%04x" $len | sed 's/../\\\\x&/g'`
+	tl=`printf "%04x" $tl | sed 's/../\\\\x&/g'`
+	zs=`printf "%04x" $zs | sed 's/../\\\\x&/g'`
+
+	cat $1 > $1.tmp
+	if [ $? -ne 0 ]; then
+		echo "Cannot create temp file $1.tmp"
+		exit 1
+	fi
+
+	while [ $pad -gt 0 ];
+	do
+		printf "\xff"
+		pad=$((pad - 1))
+	done >> $1.tmp
+
+	ep=`echo $2 | cut -c5-8 | sed 's/../\\\\x&/g'`
+	la=`echo $3 | cut -c5-8 | sed 's/../\\\\x&/g'`
+	cs=`../utility/bin/checksum $1.tmp swap | sed 's/../\\\\x&/g'`
+	# struct patch_hdr {
+	# 	u16	_flag;    /* LZ */
+	# 	u16	_len;
+	# 	u32	_cksum;
+	# 	u16	_ld_addr;
+	# 	u16	_exec_addr;
+	# 	u16	_tmp_addr;
+	# 	u16	_tmp_len;
+	# }
+
+	printf $zs		>> $op	# 'LZ' see romp_api.h
+	printf $len		>> $op
+	printf $cs		>> $op
+	printf $la		>> $op
+	printf $ep		>> $op
+	printf \\x20\\x00	>> $op
+	printf \\x00\\x00	>> $op
+
+	cat $1.tmp >> $op
+	rm $1.tmp
+}
+
+#
+# Parse command line options
+#
+while [ $# -gt 0 ]; #{
+do
+	case $1 in #{
+		"-c")	zs=4c5a;	shift;;
+
+		"-d")	db=1;		shift;;
+		"-h")	usage;;
+
+		"-f")	fn=$2;	shift; shift;;
+
+		"-e")	e=$2;	shift; shift;;
+		"-l")	l=$2;
+			echo ======= Link Addr = $l =======
+			shift; shift;;
+
+		"-o")	op=$2;	shift; shift;;
+
+		*) usage;;
+	esac #}
+done #}
+
+if [ $db -ne 0 ]; then
+	set -x
+fi
+
+#
+# Validate
+#
+
+if [ ! -f $fn ]; then
+	echo "$fn: file not present"
+	exit 1
+fi
+
+> $op	# blank out the output file
+if [ $? -ne 0 ]; then
+	echo "Cannot create $op"
+	exit 1
+fi
+
+#
+# Create the files
+#
+prep_file $lz $e $l
+
+if [ $db -ne 0 ]; then
+	set +x
+fi
+
+hexdump -C -v $op > $ho

@@ -1,0 +1,23 @@
+use getaddrinfo
+
+--- tspc-2.1.1.orig/src/lib/config.c
++++ tspc-2.1.1/src/lib/config.c
+@@ -474,14 +474,17 @@
+   if(IsPresent(Conf->dns_server)) {
+      char *Server;
+      char *dns = strdup(Conf->dns_server);
++     struct addrinfo *contact;
+      if (eq(Conf->host_type, "host")) {
+        Display(1,ELError, "tspVerifyConfig", "DNS delegation is not supported for host_type=host");
+        status = 1;
+      }
+      for(Server = strtok(dns, ":");Server; Server = strtok(NULL, ":")) {
+-        if(gethostbyname(Server) == NULL) {
++        if(getaddrinfo(Server, "domain", 0, &contact)!=0) {
+            Display(1,ELError, "tspVerifyConfig", "DNS server name %s is not resolving.", Server);
+            status = 1;
++        } else {
++           freeaddrinfo(contact);
+         }
+      }
+      free(dns);

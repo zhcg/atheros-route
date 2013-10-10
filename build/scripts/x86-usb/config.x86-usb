@@ -1,0 +1,9 @@
+#Dummy config file
+export TOOLCHAIN=NA
+export TOOLARCH=NA
+export KERNEL=NA
+export KERNELVER=NA
+export KERNELTARGET=NA
+export KERNELARCH=NA
+export BUSYBOX=NA
+

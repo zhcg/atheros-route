@@ -1,0 +1,169 @@
+# Set the toolchain path
+export TOOLCHAIN=gcc-4.3.3
+export UBOOT_GCC_4_3_3_EXTRA_CFLAGS=-fPIC
+export TOOLPREFIX=mips-linux-uclibc-
+export TOOLARCH=build_mips/staging_dir/usr
+
+export KERNEL=mips-linux-2.6.31
+export KERNELVER=2.6.31
+export KERNELTARGET=vmlinux.bin
+export COMPRESSKERNEL=y
+export KERNELARCH=mips
+export TARGETFSSIZE=2818048
+export AP_TYPE=single
+
+export BUSYBOX=busybox-1.01
+export WIRELESSTOOLS=wireless_tools.29
+export WIRELESSTOOLSLIB=libiw.so.29
+
+export BUILD_WPA2=y
+#for station forwarding support
+export CONFIG_ETHERSTA=y
+
+#
+# UMAC build option
+#
+
+export BUILD_UMAC=1
+export UMAC_SUPPORT_AP_POWERSAVE=1
+export UMAC_SUPPORT_STA_POWERSAVE=0
+export UMAC_SUPPORT_POWERSAVE_QUEUE=1
+export UMAC_SUPPORT_CCMP_SW_CRYPTO=1
+export UMAC_SUPPORT_TKIP_SW_CRYPTO=0
+export UMAC_SUPPORT_RESMGR_SM=0
+export UMAC_SUPPORT_RESMGR=0
+export UMAC_SUPPORT_RIJNDAEL=1
+export UMAC_SUPPORT_ACS=1
+export UMAC_SUPPORT_WDS=1
+export UMAC_SUPPORT_STAFWD=1
+export UMAC_SUPPORT_DFS=0
+export UMAC_SUPPORT_ACL=1
+export UMAC_SUPPORT_TX_FRAG=1
+export UMAC_SUPPORT_RPTPLACEMENT=0
+export UMAC_SUPPORT_IBSS=0
+
+export BUS=PCI
+export TARGETARCH=mipsisa32-be-elf
+
+#
+# Select the support required for this board
+#
+
+export ATH_CAP_PHYERR_DIAG=1
+export AH_SUPPORT_AR5210=0
+export AH_SUPPORT_AR5212=0
+export AH_SUPPORT_5111=0
+export AH_SUPPORT_5112=0
+export AH_SUPPORT_2413=0
+export AH_SUPPORT_5111=0
+export AH_SUPPORT_5112=0
+export AH_SUPPORT_2413=0
+export AH_SUPPORT_5413=0
+export AH_SUPPORT_2316=0
+export AH_SUPPORT_2317=0
+export AH_SUPPORT_2425=0
+export AH_SUPPORT_AR5416=1
+export AH_SUPPORT_AR9300=0
+export AH_SUPPORT_KITE_ANY=1
+export AH_SUPPORT_KITE_10=1
+export AH_SUPPORT_KITE_12=1
+export AH_SUPPORT_MERLIN_20=0
+export AH_SUPPORT_MERLIN_ANY=0
+export AH_SUPPORT_KIWI_10=0
+export AH_SUPPORT_KIWI_ANY=0
+export AH_SUPPORT_KIWI_11=0
+export AH_SUPPORT_K2=0
+export AH_SUPPORT_EEPROM_DEF=0
+export AH_SUPPORT_EEPROM_4K=1
+export AH_SUPPORT_EEPROM_AR9287=0
+export AH_SUPPORT_SOWL=0
+
+
+export ATH_CHAINMASK_SELECT=0
+export ATH_RXBUF=128
+export ATH_TXBUF=256
+export ATH_CAP_AMSDU=0
+export ATH_RB=0
+export BUILD_WPA2=y
+export BUILD_ADF_NET=0
+export BUILD_ADF_DEFER_PVT=0
+export BUILD_ADF_IRQ_PVT=0
+export ATH_SUPPORT_WIRESHARK=0
+export ATH_SUPPORT_TxBF=0
+
+export AR5416_G_MODE=1
+export AH_SUPPORT_HOWL=0
+export AH_SUPPORT_OWL=0
+export AH_DEBUG=1
+export AR5416_INT_MITIGATION=1
+export ATH_SUPPORT_DFS=0
+
+export ATH_SUPPORT_LED=1
+export GPIO_PIN_FUNC_0=1
+export GPIO_PIN_FUNC_1=7
+export GPIO_PIN_FUNC_2=7
+export AH_CAL_IN_FLASH=1
+export AH_CAL_RADIOS=1
+export AH_CAL_LOCATIONS=0xbfff1000
+export AH_WAR_52640=1
+
+#Support for WDS function without requiring the repeaters to
+#authenticate and associate. Used for interop with non Atheros based AP repeaters. 
+#Feature is implemented based on  the compilation constant ATH_WDS_INTEROP
+#Implementation changes in  CL#492745
+export ATH_WDS_INTEROP=0
+#Set the GPIO PIN for WPS LED
+export WPS_LED_GPIO_PIN=1
+
+# By default compressed u-boot will be compiled
+export COMPRESSED_UBOOT=1
+
+export ATH_SINGLE_CFG=1
+
+# Build combined wlan driver
+export ATH_WLAN_COMBINE=1
+
+# No 5G support
+export ATH_NO_5G_SUPPORT=1
+
+# No S/W based crypto support
+export ATH_NO_SW_CRYPTO=1
+
+# By default optimization will be enabled for 2MB flash
+export BUILD_OPTIMIZED=y
+
+# Added for separate NVRAM partition
+export ATH_CONFIG_NVRAM=1
+
+# added for hostapd size optimiziation
+export CONFIG_NO_STDOUT_DEBUG=y
+export ATH_SUPPORT_IQUE=0
+export IEEE_MCAST_ENHANCEMENT=1
+
+export ATH_SUPPORT_SPECTRAL=0
+
+export ATH_EXT_AP=1
+export ATH_SUPPORT_VOWEXT=0
+export ATH_SUPPORT_EDMA=0
+export ATH_SUPPORT_GREEN_AP=0
+export ATH_TX_BUF_FLOW_CNTL=1
+#export ATH_SUPPORT_UAPSD=0
+#export ATH_SUPPORT_VLAN=0
+
+#Added to build with hostapd-0.7.1 version
+
+export BUILD_HOSTAPD_071=1
+
+#Added to build with hostapd-0.7.2 version
+#Enable to support hostapd 0.7.2 , before that disable BUILD_HOSTAPD_071
+
+#export BUILD_HOSTAPD_072=1
+
+# Disable IBSS support
+export ATH_SUPPORT_IBSS_NETLINK_NOTIFICATION=0
+
+#ATH_DEBUG is disabled for 2x8
+export ATH_DEBUG=0
+
+# added for unwanted files removal
+export INSTALL_BLACKLIST="etc/ath/apcfg etc/ath/apup etc/ath/apdown etc/ath/makeVAP etc/ath/activateVAP etc/ath/killVAP usr/bin/gdbserver sbin/iw* sbin/apstart lib/libiw* lib/libthread_* sbin/athst* sbin/wpa_supplicant sbin/wpa_cli /usr/*.html"

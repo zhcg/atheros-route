@@ -1,0 +1,182 @@
+
+export HAL=$(TOPDIR)/drivers/wlan/hal
+export ENETDIR=$(TOPDIR)/linux/drivers/net/ag7100_pb47-xmii-2.6.31/
+export ATH_TOOL_DIR=$(TOPDIR)/drivers/wlan/os/linux/tools/
+export ATH_DFS=$(TOPDIR)/drivers/wlan/lmac/dfs
+export ATHEROSPATH=$(TOPDIR)/drivers/wlan
+export UBOOTDIR=$(TOPDIR)/boot/u-boot
+
+#USB Module
+export USBMODPATH=$(INSTALL_ROOT)/lib/modules/$(KERNELVER)/usb
+export USBDIR=${KERNELPATH}/drivers/usb
+
+#OFFLOAD
+export OFFLOAD_STACK=$(TOPDIR)/offload_stack
+export OFFLOAD_BUILD=host/build/linux
+
+export BUSYBOX_CFG=$(TOPDIR)/apps/$(BUSYBOX)
+export TOOLCHAIN_CFG=$(TOPDIR)/build/$(TOOLCHAIN)
+export TOOLCHAIN_UCLIBC_CFG=$(TOPDIR)/build/$(TOOLCHAIN)/toolchain/uClibc
+export KERNEL_CFG=$(TOPDIR)/linux/kernels/$(KERNEL)/arch/mips/configs
+
+
+#
+# This is the specific makefile for the pb44 board.  It has dependancies for both
+# the "common" build and the "jffs2" build.  This is unique for each board type, and
+# must be configured for each board.
+#
+
+# To enable library optimization (removing unused object code from
+# shared libraries) set BUILD_LIBRARYOPT to 'y' else 'n'
+BUILD_LIBRARYOPT := n
+
+
+
+targetList:= check_tftp rootfs_prep toolchain_build uimage \
+             kernel_info uboot_fusion enet_build busybox_build \
+             athr-hostapd sar cgi
+
+
+ifeq ($(strip ${ATH_SUPPORT_SPECTRAL}),1)
+targetList += spectral_app_build
+endif
+
+ifeq ($(BUILD_CONFIG), _routing)
+targetList += iptables_build
+endif
+
+ifeq ($(BUILD_HOSTAPD_P2P),y)
+target_list	+=	hostapd_p2p
+endif
+
+targetList  += offload_build wireless_tools_main $(BUILD_TYPE)_build 
+
+cleanList   := offload_clean
+#targetList  += usb_build $(BUILD_TYPE)_build 
+
+default: ${targetList}
+
+HIF = gmac
+
+
+#
+# Unique rules for the ag7100 PHY with the ar7100 (Hydra)  board
+#
+
+uboot_fusion:
+	@echo making uboot...
+	cd $(UBOOTDIR) && make pb47_config
+	cd $(UBOOTDIR) && make clean && make
+	cp $(UBOOTDIR)/u-boot.bin $(IMAGEPATH)
+
+
+enet_build: kernel_build
+	@echo making ag7100 ethernet...
+	cd $(ENETDIR) && rm -f *.o *.ko *.mod.* && make -f Makefile.inc enet_config.h
+	$(MAKEARCH) -C $(KERNELPATH) SUBDIRS=$(ENETDIR) modules
+	test -d $(MODULEPATH) || mkdir -p $(MODULEPATH)
+	cp $(ENETDIR)/ag7100_mod.ko $(MODULEPATH)
+
+iptables_build:
+	@echo making iptables
+	cd ../apps/iptables/iptables-1.3.6 && \
+	$(MAKE) clean && \
+	$(MAKE) KERNEL_DIR=$(KERNELPATH) && \
+	$(TOOLPREFIX)strip iptables && \
+	cp iptables $(INSTALL_ROOT)/sbin/iptables 
+
+WIRELESSTOOLNAMES := athstats athstatsclear athkey athchans athctrl\
+	athdebug wlanconfig athcwm athampdutrc atrc \
+	pktlogconf pktlogdump radartool cgiMain
+
+wireless_tools_main:
+	@echo making wireless_tools
+	if test -n "$(WIRELESSTOOLS)"; then \
+	cd ../apps/$(WIRELESSTOOLS); make clean; make; \
+	cp -f $(WIRELESSTOOLSLIB) $(INSTALL_ROOT)/lib; \
+	cp -f iwpriv $(INSTALL_ROOT)/sbin; \
+	cp -f iwconfig $(INSTALL_ROOT)/sbin; \
+	cp -f iwlist $(INSTALL_ROOT)/sbin; \
+	cd $(TOPDIR)/drivers/wlan/os/linux/tools && make clean; \
+	make wlanconfig BUILD_STATIC=$(BUILD_STATIC); \
+	cp -f wlanconfig $(INSTALL_ROOT)/sbin; \
+	fi
+
+wireless_tools_clean:
+	@echo cleaning wireless_tools
+	if test -n "$(WIRELESSTOOLS)"; then \
+	cd ../apps/$(WIRELESSTOOLS); make clean;    \
+	cd $(TOPDIR)/drivers/wlan/os/linux/tools && make clean; \
+	fi
+
+ath_tools: ath_tools_clean
+	@echo makeing ath tools;\
+	cd ../drivers/wlan/os/linux/tools;\
+	make ath_tools;
+
+ath_tools_clean:
+	@echo cleaning ath tools;\
+	cd ../drivers/wlan/os/linux/tools;\
+	make ath_tools_clean;
+
+cgi: ath_tools_clean
+	@echo makeing cgi;\
+	cd ../drivers/wlan/os/linux/tools;\
+	rm -rf cgiMain;\
+	make cgiMain;
+
+art_mod:
+	@echo Making ART Module
+	cd ../apps/art && make -f makefile.soc.linux.mips clean && \
+	make -f makefile.soc.linux.mips hydra
+	cp ../apps/art/modules/art.ko $(MODULEPATH)/art.ko
+
+usb_build:
+	test -d $(USBMODPATH) || mkdir -p $(USBMODPATH)
+	cp -f $(USBDIR)/core/usbcore.ko ${USBMODPATH}
+	cp -f ${USBDIR}/host/ehci-hcd.ko ${USBMODPATH}
+
+# Building hostapd
+hostapd_p2p:
+	@echo Making Hostapd p2p at `date`
+	if (test -e ../apps/hostap-p2p/hostapd) then \
+		cd ../apps/hostap-p2p/hostapd; 		\
+		cp -f defconfig .config; make clean; 	\
+		make CC=$(TOOLPREFIX)gcc AR=$(TOOLPREFIX)ar LD=$(TOOLPREFIX)ld; \
+		make DESTDIR=$(INSTALL_ROOT) BINDIR=/sbin LIBDIR=/lib install; \
+	fi
+
+
+##################################################################
+############### Offload Dev Build Framework ######################
+##################################################################
+
+acfg_build:
+	@echo "Building the ACFG Library ..."
+	cd $(OFFLOAD_STACK)/acfg/linux &&	\
+	$(MAKEARCH) TARGET=$(TARGETARCH) && \
+	$(MAKEARCH) DESTDIR=$(INSTALL_ROOT) TARGET=$(TARGETARCH) install
+	cp $(OFFLOAD_STACK)/acfg/linux/acfg_test_app/acfg_tool $(TFTPPATH)
+		
+acfg_clean:
+	@echo "Cleaning the ACFG Library ..."
+	cd $(OFFLOAD_STACK)/acfg/linux &&	\
+	$(MAKEARCH) TARGET=$(TARGETARCH) clean 
+
+offload_build: acfg_build
+	@echo "Building the Offload host ..."
+	cd $(OFFLOAD_STACK)/driver/$(OFFLOAD_BUILD)  &&	\
+	$(MAKEARCH) TARGET=$(TARGETARCH) BUS=$(HIF) && \
+	$(MAKEARCH) DESTDIR=$(INSTALL_ROOT) TARGET=$(TARGETARCH) \
+    BUS=${HIF} install && \
+    cp -vf `cat modules.order|sed -e 's/kernel\///g'` $(TFTPPATH)/;
+	cd $(OFFLOAD_STACK)/wsupp_bridge/linux && \
+	$(MAKEARCH) CC=$(TOOLPREFIX)gcc DESTDIR=$(INSTALL_ROOT) hst_install
+	find $(OFFLOAD_STACK)/driver/$(OFFLOAD_BUILD) -name *.ko -exec cp -vf {} $(TFTPPATH) ';'
+	cp $(OFFLOAD_STACK)/wsupp_bridge/linux/atd_wsupp_bridge $(TFTPPATH)
+
+offload_clean: acfg_clean
+	@echo "Cleaning the ACFG Library ..."
+	cd $(OFFLOAD_STACK)/driver/$(OFFLOAD_BUILD)  &&	\
+	$(MAKEARCH) TARGET=$(TARGETARCH) BUS=$(HIF) clean
+

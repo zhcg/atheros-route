@@ -1,0 +1,29 @@
+
+This is NX-ROUTED INSTALL
+	Copyright (C) 2002 Valery Kholodkov
+	Copyright (C) 2002 Andy Pershin
+	Copyright (C) 2002 Antony Kholodkov	
+
+The version of this program is 0.99 and it is a Beta Release
+
+NX-ROUTED is routing information daemon with support of RIP-2 routing protocol,
+according to RFC 2453. RIP-2 is Interior Gateway Protocol used for automatic
+route aquisition and routing table maintaince in corporate computer networks. 
+Running standalone NX-ROUTED listens for incoming routing table updates from
+directly connected links and sends periodical updates to another links. It
+also announces a list of networks and routes specified by system administator.
+
+Quick setup:
+
+./configure
+make
+make install
+
+On RedHat:
+
+chkconfig --add routed
+
+Configure ./conf/routed.conf as decribed in README
+
+Run /etc/rc.d/init.d/routed start as root or reboot your system
+

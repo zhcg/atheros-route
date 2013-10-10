@@ -1,0 +1,57 @@
+#!/usr/bin/make -f
+
+DEB_HOST_ARCH_OS := $(shell dpkg-architecture -qDEB_HOST_ARCH_OS)
+
+include /usr/share/quilt/quilt.make
+
+build: build-stamp
+build-stamp: $(QUILT_STAMPFN)
+	dh_testdir
+
+	$(MAKE) target=$(DEB_HOST_ARCH_OS)
+
+	touch build-stamp
+
+clean: clean-patched unpatch
+clean-patched: $(QUILT_STAMPFN)
+	dh_testdir
+	dh_testroot
+
+	$(MAKE) clean target=$(DEB_HOST_ARCH_OS)
+	rm -rf bin
+	dh_clean
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_prep
+	dh_installdirs
+
+	$(MAKE) install target=$(DEB_HOST_ARCH_OS) installdir=$(CURDIR)/debian/tmp
+
+binary-arch: install
+	dh_testdir
+	dh_testroot
+	dh_install
+	dh_installdebconf
+	dh_installdocs
+	dh_installexamples -XMakefile
+	dh_installinit -r -- start 41 S . stop 35 0 6 .
+	dh_installman
+	dh_installchangelogs 
+	dh_installppp --name=0tspc
+	dh_installifupdown
+	dh_installlogcheck
+	dh_strip
+	dh_compress
+	dh_fixperms -Xtspc.conf
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary-indep: install
+
+binary: binary-arch binary-indep
+.PHONY: build clean binary-indep binary-arch binary install

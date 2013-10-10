@@ -1,0 +1,201 @@
+Extensions found: IPv4:recent IPv6:ah IPv6:esp IPv6:frag IPv6:ipv6header IPv6:hbh IPv6:dst IPv6:rt
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -DIPT_LIB_DIR=\"/usr/local/lib/iptables\" -c -o iptables.o iptables.c
+iptables.c: In function `string_to_number_ll':
+iptables.c:911: warning: implicit declaration of function `strtoull'
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_ah_init -c -o extensions/libipt_ah.o extensions/libipt_ah.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_connlimit_init -c -o extensions/libipt_connlimit.o extensions/libipt_connlimit.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_connmark_init -c -o extensions/libipt_connmark.o extensions/libipt_connmark.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_conntrack_init -c -o extensions/libipt_conntrack.o extensions/libipt_conntrack.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_dscp_init -c -o extensions/libipt_dscp.o extensions/libipt_dscp.c
+extensions/libipt_dscp_helper.c:69: warning: `dscp_to_name' defined but not used
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_ecn_init -c -o extensions/libipt_ecn.o extensions/libipt_ecn.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_esp_init -c -o extensions/libipt_esp.o extensions/libipt_esp.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_helper_init -c -o extensions/libipt_helper.o extensions/libipt_helper.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_icmp_init -c -o extensions/libipt_icmp.o extensions/libipt_icmp.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_iprange_init -c -o extensions/libipt_iprange.o extensions/libipt_iprange.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_length_init -c -o extensions/libipt_length.o extensions/libipt_length.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_limit_init -c -o extensions/libipt_limit.o extensions/libipt_limit.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_mac_init -c -o extensions/libipt_mac.o extensions/libipt_mac.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_mark_init -c -o extensions/libipt_mark.o extensions/libipt_mark.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_multiport_init -c -o extensions/libipt_multiport.o extensions/libipt_multiport.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_owner_init -c -o extensions/libipt_owner.o extensions/libipt_owner.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_physdev_init -c -o extensions/libipt_physdev.o extensions/libipt_physdev.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_pkttype_init -c -o extensions/libipt_pkttype.o extensions/libipt_pkttype.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_realm_init -c -o extensions/libipt_realm.o extensions/libipt_realm.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_rpc_init -c -o extensions/libipt_rpc.o extensions/libipt_rpc.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_sctp_init -c -o extensions/libipt_sctp.o extensions/libipt_sctp.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_standard_init -c -o extensions/libipt_standard.o extensions/libipt_standard.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_state_init -c -o extensions/libipt_state.o extensions/libipt_state.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_tcp_init -c -o extensions/libipt_tcp.o extensions/libipt_tcp.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_tcpmss_init -c -o extensions/libipt_tcpmss.o extensions/libipt_tcpmss.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_tos_init -c -o extensions/libipt_tos.o extensions/libipt_tos.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_ttl_init -c -o extensions/libipt_ttl.o extensions/libipt_ttl.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_udp_init -c -o extensions/libipt_udp.o extensions/libipt_udp.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_unclean_init -c -o extensions/libipt_unclean.o extensions/libipt_unclean.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_CLASSIFY_init -c -o extensions/libipt_CLASSIFY.o extensions/libipt_CLASSIFY.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_CONNMARK_init -c -o extensions/libipt_CONNMARK.o extensions/libipt_CONNMARK.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_DNAT_init -c -o extensions/libipt_DNAT.o extensions/libipt_DNAT.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_DSCP_init -c -o extensions/libipt_DSCP.o extensions/libipt_DSCP.c
+extensions/libipt_dscp_helper.c:69: warning: `dscp_to_name' defined but not used
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_ECN_init -c -o extensions/libipt_ECN.o extensions/libipt_ECN.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_LOG_init -c -o extensions/libipt_LOG.o extensions/libipt_LOG.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_MARK_init -c -o extensions/libipt_MARK.o extensions/libipt_MARK.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_MASQUERADE_init -c -o extensions/libipt_MASQUERADE.o extensions/libipt_MASQUERADE.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_MIRROR_init -c -o extensions/libipt_MIRROR.o extensions/libipt_MIRROR.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_NETMAP_init -c -o extensions/libipt_NETMAP.o extensions/libipt_NETMAP.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_NOTRACK_init -c -o extensions/libipt_NOTRACK.o extensions/libipt_NOTRACK.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_REDIRECT_init -c -o extensions/libipt_REDIRECT.o extensions/libipt_REDIRECT.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_REJECT_init -c -o extensions/libipt_REJECT.o extensions/libipt_REJECT.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_SAME_init -c -o extensions/libipt_SAME.o extensions/libipt_SAME.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_SNAT_init -c -o extensions/libipt_SNAT.o extensions/libipt_SNAT.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_TARPIT_init -c -o extensions/libipt_TARPIT.o extensions/libipt_TARPIT.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_TCPMSS_init -c -o extensions/libipt_TCPMSS.o extensions/libipt_TCPMSS.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_TOS_init -c -o extensions/libipt_TOS.o extensions/libipt_TOS.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_TRACE_init -c -o extensions/libipt_TRACE.o extensions/libipt_TRACE.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_TTL_init -c -o extensions/libipt_TTL.o extensions/libipt_TTL.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_ULOG_init -c -o extensions/libipt_ULOG.o extensions/libipt_ULOG.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ipt_recent_init -c -o extensions/libipt_recent.o extensions/libipt_recent.c
+echo "" > extensions/initext.c
+for i in ipt_ah ipt_connlimit ipt_connmark ipt_conntrack ipt_dscp ipt_ecn ipt_esp ipt_helper ipt_icmp ipt_iprange ipt_length ipt_limit ipt_mac ipt_mark ipt_multiport ipt_owner ipt_physdev ipt_pkttype ipt_realm ipt_rpc ipt_sctp ipt_standard ipt_state ipt_tcp ipt_tcpmss ipt_tos ipt_ttl ipt_udp ipt_unclean ipt_CLASSIFY ipt_CONNMARK ipt_DNAT ipt_DSCP ipt_ECN ipt_LOG ipt_MARK ipt_MASQUERADE ipt_MIRROR ipt_NETMAP ipt_NOTRACK ipt_REDIRECT ipt_REJECT ipt_SAME ipt_SNAT ipt_TARPIT ipt_TCPMSS ipt_TOS ipt_TRACE ipt_TTL ipt_ULOG ipt_recent; do \
+	echo "extern void ${i}_init(void);" >> extensions/initext.c; \
+done
+echo "void init_extensions(void) {" >> extensions/initext.c
+for i in ipt_ah ipt_connlimit ipt_connmark ipt_conntrack ipt_dscp ipt_ecn ipt_esp ipt_helper ipt_icmp ipt_iprange ipt_length ipt_limit ipt_mac ipt_mark ipt_multiport ipt_owner ipt_physdev ipt_pkttype ipt_realm ipt_rpc ipt_sctp ipt_standard ipt_state ipt_tcp ipt_tcpmss ipt_tos ipt_ttl ipt_udp ipt_unclean ipt_CLASSIFY ipt_CONNMARK ipt_DNAT ipt_DSCP ipt_ECN ipt_LOG ipt_MARK ipt_MASQUERADE ipt_MIRROR ipt_NETMAP ipt_NOTRACK ipt_REDIRECT ipt_REJECT ipt_SAME ipt_SNAT ipt_TARPIT ipt_TCPMSS ipt_TOS ipt_TRACE ipt_TTL ipt_ULOG ipt_recent; do \
+	echo "	${i}_init();" >> extensions/initext.c; \
+done
+echo "}" >> extensions/initext.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1   -c -o extensions/initext.o extensions/initext.c
+rm -f extensions/libext.a; ar crv extensions/libext.a extensions/libipt_ah.o extensions/libipt_connlimit.o extensions/libipt_connmark.o extensions/libipt_conntrack.o extensions/libipt_dscp.o extensions/libipt_ecn.o extensions/libipt_esp.o extensions/libipt_helper.o extensions/libipt_icmp.o extensions/libipt_iprange.o extensions/libipt_length.o extensions/libipt_limit.o extensions/libipt_mac.o extensions/libipt_mark.o extensions/libipt_multiport.o extensions/libipt_owner.o extensions/libipt_physdev.o extensions/libipt_pkttype.o extensions/libipt_realm.o extensions/libipt_rpc.o extensions/libipt_sctp.o extensions/libipt_standard.o extensions/libipt_state.o extensions/libipt_tcp.o extensions/libipt_tcpmss.o extensions/libipt_tos.o extensions/libipt_ttl.o extensions/libipt_udp.o extensions/libipt_unclean.o extensions/libipt_CLASSIFY.o extensions/libipt_CONNMARK.o extensions/libipt_DNAT.o extensions/libipt_DSCP.o extensions/libipt_ECN.o extensions/libipt_LOG.o extensions/libipt_MARK.o extensions/libipt_MASQUERADE.o extensions/libipt_MIRROR.o extensions/libipt_NETMAP.o extensions/libipt_NOTRACK.o extensions/libipt_REDIRECT.o extensions/libipt_REJECT.o extensions/libipt_SAME.o extensions/libipt_SNAT.o extensions/libipt_TARPIT.o extensions/libipt_TCPMSS.o extensions/libipt_TOS.o extensions/libipt_TRACE.o extensions/libipt_TTL.o extensions/libipt_ULOG.o extensions/libipt_recent.o extensions/initext.o
+a - extensions/libipt_ah.o
+a - extensions/libipt_connlimit.o
+a - extensions/libipt_connmark.o
+a - extensions/libipt_conntrack.o
+a - extensions/libipt_dscp.o
+a - extensions/libipt_ecn.o
+a - extensions/libipt_esp.o
+a - extensions/libipt_helper.o
+a - extensions/libipt_icmp.o
+a - extensions/libipt_iprange.o
+a - extensions/libipt_length.o
+a - extensions/libipt_limit.o
+a - extensions/libipt_mac.o
+a - extensions/libipt_mark.o
+a - extensions/libipt_multiport.o
+a - extensions/libipt_owner.o
+a - extensions/libipt_physdev.o
+a - extensions/libipt_pkttype.o
+a - extensions/libipt_realm.o
+a - extensions/libipt_rpc.o
+a - extensions/libipt_sctp.o
+a - extensions/libipt_standard.o
+a - extensions/libipt_state.o
+a - extensions/libipt_tcp.o
+a - extensions/libipt_tcpmss.o
+a - extensions/libipt_tos.o
+a - extensions/libipt_ttl.o
+a - extensions/libipt_udp.o
+a - extensions/libipt_unclean.o
+a - extensions/libipt_CLASSIFY.o
+a - extensions/libipt_CONNMARK.o
+a - extensions/libipt_DNAT.o
+a - extensions/libipt_DSCP.o
+a - extensions/libipt_ECN.o
+a - extensions/libipt_LOG.o
+a - extensions/libipt_MARK.o
+a - extensions/libipt_MASQUERADE.o
+a - extensions/libipt_MIRROR.o
+a - extensions/libipt_NETMAP.o
+a - extensions/libipt_NOTRACK.o
+a - extensions/libipt_REDIRECT.o
+a - extensions/libipt_REJECT.o
+a - extensions/libipt_SAME.o
+a - extensions/libipt_SNAT.o
+a - extensions/libipt_TARPIT.o
+a - extensions/libipt_TCPMSS.o
+a - extensions/libipt_TOS.o
+a - extensions/libipt_TRACE.o
+a - extensions/libipt_TTL.o
+a - extensions/libipt_ULOG.o
+a - extensions/libipt_recent.o
+a - extensions/initext.o
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1   -c -o libiptc/libip4tc.o libiptc/libip4tc.c
+ar rv libiptc/libiptc.a libiptc/libip4tc.o
+a - libiptc/libip4tc.o
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1   -c -o libiptc/libip6tc.o libiptc/libip6tc.c
+ar rv libiptc/libiptc.a libiptc/libip6tc.o
+a - libiptc/libip6tc.o
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -DIPT_LIB_DIR=\"/usr/local/lib/iptables\" -static -o iptables iptables-standalone.c iptables.o extensions/libext.a libiptc/libiptc.a 
+sed -e '/@MATCH@/ r extensions/libipt_matches.man' -e '/@TARGET@/ r extensions/libipt_targets.man' iptables.8.in >iptables.8
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -DIPT_LIB_DIR=\"/usr/local/lib/iptables\" -static -o iptables-save iptables-save.c iptables.o extensions/libext.a libiptc/libiptc.a 
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -DIPT_LIB_DIR=\"/usr/local/lib/iptables\" -static -o iptables-restore iptables-restore.c iptables.o extensions/libext.a libiptc/libiptc.a 
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -DIP6T_LIB_DIR=\"/usr/local/lib/iptables\" -c -o ip6tables.o ip6tables.c
+ip6tables.c: In function `string_to_number_ll':
+ip6tables.c:911: warning: implicit declaration of function `strtoull'
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ip6t_eui64_init -c -o extensions/libip6t_eui64.o extensions/libip6t_eui64.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ip6t_hl_init -c -o extensions/libip6t_hl.o extensions/libip6t_hl.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ip6t_icmpv6_init -c -o extensions/libip6t_icmpv6.o extensions/libip6t_icmpv6.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ip6t_length_init -c -o extensions/libip6t_length.o extensions/libip6t_length.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ip6t_limit_init -c -o extensions/libip6t_limit.o extensions/libip6t_limit.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ip6t_mac_init -c -o extensions/libip6t_mac.o extensions/libip6t_mac.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ip6t_mark_init -c -o extensions/libip6t_mark.o extensions/libip6t_mark.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ip6t_multiport_init -c -o extensions/libip6t_multiport.o extensions/libip6t_multiport.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ip6t_owner_init -c -o extensions/libip6t_owner.o extensions/libip6t_owner.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ip6t_standard_init -c -o extensions/libip6t_standard.o extensions/libip6t_standard.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ip6t_tcp_init -c -o extensions/libip6t_tcp.o extensions/libip6t_tcp.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ip6t_udp_init -c -o extensions/libip6t_udp.o extensions/libip6t_udp.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ip6t_HL_init -c -o extensions/libip6t_HL.o extensions/libip6t_HL.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ip6t_LOG_init -c -o extensions/libip6t_LOG.o extensions/libip6t_LOG.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ip6t_MARK_init -c -o extensions/libip6t_MARK.o extensions/libip6t_MARK.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ip6t_TRACE_init -c -o extensions/libip6t_TRACE.o extensions/libip6t_TRACE.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ip6t_ah_init -c -o extensions/libip6t_ah.o extensions/libip6t_ah.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ip6t_esp_init -c -o extensions/libip6t_esp.o extensions/libip6t_esp.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ip6t_frag_init -c -o extensions/libip6t_frag.o extensions/libip6t_frag.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ip6t_ipv6header_init -c -o extensions/libip6t_ipv6header.o extensions/libip6t_ipv6header.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ip6t_hbh_init -c -o extensions/libip6t_hbh.o extensions/libip6t_hbh.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ip6t_dst_init -c -o extensions/libip6t_dst.o extensions/libip6t_dst.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -D_INIT=ip6t_rt_init -c -o extensions/libip6t_rt.o extensions/libip6t_rt.c
+echo "" > extensions/initext6.c
+for i in ip6t_eui64 ip6t_hl ip6t_icmpv6 ip6t_length ip6t_limit ip6t_mac ip6t_mark ip6t_multiport ip6t_owner ip6t_standard ip6t_tcp ip6t_udp ip6t_HL ip6t_LOG ip6t_MARK ip6t_TRACE ip6t_ah ip6t_esp ip6t_frag ip6t_ipv6header ip6t_hbh ip6t_dst ip6t_rt; do \
+	echo "extern void ${i}_init(void);" >> extensions/initext6.c; \
+done
+echo "void init_extensions(void) {" >> extensions/initext6.c
+for i in ip6t_eui64 ip6t_hl ip6t_icmpv6 ip6t_length ip6t_limit ip6t_mac ip6t_mark ip6t_multiport ip6t_owner ip6t_standard ip6t_tcp ip6t_udp ip6t_HL ip6t_LOG ip6t_MARK ip6t_TRACE ip6t_ah ip6t_esp ip6t_frag ip6t_ipv6header ip6t_hbh ip6t_dst ip6t_rt; do \
+	echo "	${i}_init();" >> extensions/initext6.c; \
+done
+echo "}" >> extensions/initext6.c
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1   -c -o extensions/initext6.o extensions/initext6.c
+rm -f extensions/libext6.a; ar crv extensions/libext6.a extensions/libip6t_eui64.o extensions/libip6t_hl.o extensions/libip6t_icmpv6.o extensions/libip6t_length.o extensions/libip6t_limit.o extensions/libip6t_mac.o extensions/libip6t_mark.o extensions/libip6t_multiport.o extensions/libip6t_owner.o extensions/libip6t_standard.o extensions/libip6t_tcp.o extensions/libip6t_udp.o extensions/libip6t_HL.o extensions/libip6t_LOG.o extensions/libip6t_MARK.o extensions/libip6t_TRACE.o extensions/libip6t_ah.o extensions/libip6t_esp.o extensions/libip6t_frag.o extensions/libip6t_ipv6header.o extensions/libip6t_hbh.o extensions/libip6t_dst.o extensions/libip6t_rt.o extensions/initext6.o
+a - extensions/libip6t_eui64.o
+a - extensions/libip6t_hl.o
+a - extensions/libip6t_icmpv6.o
+a - extensions/libip6t_length.o
+a - extensions/libip6t_limit.o
+a - extensions/libip6t_mac.o
+a - extensions/libip6t_mark.o
+a - extensions/libip6t_multiport.o
+a - extensions/libip6t_owner.o
+a - extensions/libip6t_standard.o
+a - extensions/libip6t_tcp.o
+a - extensions/libip6t_udp.o
+a - extensions/libip6t_HL.o
+a - extensions/libip6t_LOG.o
+a - extensions/libip6t_MARK.o
+a - extensions/libip6t_TRACE.o
+a - extensions/libip6t_ah.o
+a - extensions/libip6t_esp.o
+a - extensions/libip6t_frag.o
+a - extensions/libip6t_ipv6header.o
+a - extensions/libip6t_hbh.o
+a - extensions/libip6t_dst.o
+a - extensions/libip6t_rt.o
+a - extensions/initext6.o
+mips-linux-gcc -O2 -Wall -Wunused -I/home/apatti/source/depot/depot/linuxsrc/src/kernels/mips-linux-2.4.25/include -Iinclude/ -DIPTABLES_VERSION=\"1.2.11\"  -DNO_SHARED_LIBS=1 -DIP6T_LIB_DIR=\"/usr/local/lib/iptables\" -static -o ip6tables ip6tables-standalone.c ip6tables.o extensions/libext6.a libiptc/libiptc.a 
+ip6tables.o(.text+0x1178): In function `parse_hostnetworkmask':
+: undefined reference to `in6addr_any'
+ip6tables.o(.text+0x3208): In function `print_firewall':
+: undefined reference to `in6addr_any'
+ip6tables.o(.text+0x32b0): In function `print_firewall':
+: undefined reference to `in6addr_any'
+collect2: ld returned 1 exit status
+make: *** [ip6tables] Error 1
+rm libiptc/libip6tc.o libiptc/libip4tc.o

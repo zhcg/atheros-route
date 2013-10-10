@@ -1,0 +1,25 @@
+Building Athplay
+----------------
+'athplay' is not built/included by default.
+Makefile.[platform] needs to be modified for the athplay to be built and included as part of fs.
+To build - just add "athplay_tools_fus" to 'Makefile.[platform]'
+
+Playing
+-------
+Prerequisite: Refer to README of "../../linux/drivers/i2s/"
+
+$ athplay [-r] <file>
+
+e.g.,
+
+To Play:
+$ athplay test.wav
+
+To Record:
+$ athplay -r rec.wav
+
+To Pause/Resume:
+$ kill -s 16/17 <pid> [16/17 - Pause/Resume]
+
+Note: If testing for Pause/Resume, do not run into loop.
+

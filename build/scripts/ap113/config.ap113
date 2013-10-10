@@ -1,0 +1,132 @@
+# Set the toolchain path
+export TOOLCHAIN=gcc-4.3.3
+export UBOOT_GCC_4_3_3_EXTRA_CFLAGS=-fPIC
+export TOOLPREFIX=mips-linux-uclibc-
+export TOOLARCH=build_mips/staging_dir/usr
+
+export KERNEL=mips-linux-2.6.31
+export KERNELVER=2.6.31
+export KERNELTARGET=vmlinux.bin
+export COMPRESSKERNEL=y
+export KERNELARCH=mips
+
+export COMPRESSED_UBOOT=1
+export FLASH_SIZE=4
+
+ifeq ($(FLASH_SIZE),8)
+export TARGETFSSIZE=5242880
+else
+ifeq ($(COMPRESSED_UBOOT),1)
+export TARGETFSSIZE=3080192
+else
+export TARGETFSSIZE=2818048
+endif
+endif
+export AP_TYPE=single
+
+export BUSYBOX=busybox-1.01
+export WIRELESSTOOLS=wireless_tools.29
+export WIRELESSTOOLSLIB=libiw.so.29
+
+#for station forwarding support
+export CONFIG_ETHERSTA=y
+
+#
+# UMAC build option
+#
+
+export BUILD_UMAC=1
+
+
+export BUS=PCI
+export TARGETARCH=mipsisa32-be-elf
+
+#
+# Select the support required for this board
+#
+
+export AH_SUPPORT_AR5210=0
+export AH_SUPPORT_AR5212=0
+export AH_SUPPORT_5111=0
+export AH_SUPPORT_5112=0
+export AH_SUPPORT_2413=0
+export AH_SUPPORT_5112=0
+export AH_SUPPORT_2413=0
+export AH_SUPPORT_5413=0
+export AH_SUPPORT_2316=0
+export AH_SUPPORT_2317=0
+export AH_SUPPORT_2425=0
+export AH_SUPPORT_AR5416=1
+
+export AH_SUPPORT_2133=0
+export AH_SUPPORT_SOWL=0      # 9160,9161 support
+export AH_SUPPORT_KIWI_10=0   # 9287 version 1.0 support
+export AH_SUPPORT_KIWI_11=0   # 9287 version 1.1 and beyond support
+export AH_SUPPORT_HORNET=0    # 9330 support
+export ATH_DEBUG=1
+
+#
+# Environmental variables used to configure the HAL/ATH layers at compile time
+#
+
+export ATH_CAP_PHYERR_DIAG=1
+
+export AR5416_G_MODE=0
+export AH_SUPPORT_HOWL=0
+export AH_SUPPORT_OWL=1
+export AH_DEBUG=0
+export AR5416_INT_MITIGATION=0
+export ATH_SUPPORT_DFS=1
+export ATH_SUPPORT_IQUE=1
+export IEEE_MCAST_ENHANCEMENT=1
+export ATH_SUPPORT_VOWEXT=1
+export ATH_VOW_EXT_STATS=1
+export ATH_SUPPORT_TxBF=1
+export ATH_SUPPORT_5G_EACS=1
+
+export ATH_HW_TXQ_STUCK_WAR=1
+
+export ATH_SUPPORT_VOW_DCS=0
+export ATH_WPS_IE=1
+export ATH_SUPPORT_VLAN=1
+export ATH_EXT_AP=1
+export ATH_SUPPORT_LED=1
+export GPIO_PIN_FUNC_0=10
+export GPIO_PIN_FUNC_1=0
+export GPIO_PIN_FUNC_2=7
+export AP_USB_LED_GPIO=0
+export ATH_SUPPORT_QUICK_KICKOUT=1
+
+
+export ATH_SUPPORT_FLOWMAC_MODULE=1
+ifeq ($(ATH_SUPPORT_FLOWMAC_MODULE), 1)
+export CONFIG_FLOWMAC_MODULE=1
+else
+export CONFIG_FLOWMAC_MODULE=0
+endif
+ifeq ($(BUILD_CONFIG),_i2ssmb)
+export BUILD_SAMBA=y
+export BUILD_OPTIMIZED=y
+export INSTALL_BLACKLIST="usr/bin/gdb* sbin/802* sbin/apst* sbin/ath* sbin/ifr* sbin/iwe* sbin/iwsp* sbin/iwli* sbin/radar* sbin/iwge* sbin/pktl* usr/local/bin/* usr/local/sbin/nmb*"
+endif
+export CONFIG_MIPS_24K_KERNEL_OPTIMIZATION=1
+#Set the GPIO PIN for WPS LED                                  
+export WPS_LED_GPIO_PIN=11
+
+#enable Adhoc mode support Sagem Mesh Network
+export ATH_SUPPORT_IBSS_HT=0
+export ATH_SUPPORT_IBSS_WMM=0
+export ATH_SUPPORT_IBSS_NETLINK_NOTIFICATION=0
+export ATH_SUPPORT_IBSS_PRIVATE_SECURITY=0
+export ATH_SUPPORT_IBSS_ACS=0
+export UMAC_SUPPORT_INTERNALANTENNA=1
+export UMAC_SUPPORT_SMARTANTENNA=0
+
+#Use athr-hostapd
+export BUILD_ATHR_HOSTAP=1
+
+#Increasing Tx Buffers for VOW - So, please make sure that ATH_SUPPORT_VOWEXT is enabled before this
+ifeq ($(ATH_SUPPORT_VOWEXT), 1)
+export ATH_TXBUF=1536
+endif
+

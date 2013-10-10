@@ -1,0 +1,10 @@
+When configured as router, tspc used to generate an own radvd.conf
+config file and to restart radvd with this configfile.
+This is bad when the user already specified a radvd configuration.
+
+Therefor, radvd handling in Debian's tspc is disabled.
+Please create your own router advertisement configuration in /etc/radvd.conf
+and everything is fine :)
+
+--
+Martin Waitz

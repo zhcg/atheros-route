@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--DTD v1.0 for sysstat-->
+<!ELEMENT boot EMPTY>
+<!ATTLIST boot
+	date CDATA #REQUIRED
+	time CDATA #REQUIRED
+>
+<!ELEMENT buffers (#PCDATA)>
+<!ELEMENT bufpg (#PCDATA)>
+<!ELEMENT cached (#PCDATA)>
+<!ELEMENT campg (#PCDATA)>
+<!ELEMENT context-switch EMPTY>
+<!ATTLIST context-switch
+	per CDATA #REQUIRED
+	cswch CDATA #REQUIRED
+>
+<!ELEMENT cpu EMPTY>
+<!ATTLIST cpu
+	number CDATA #REQUIRED
+	user CDATA #REQUIRED
+	nice CDATA #REQUIRED
+	system CDATA #REQUIRED
+	iowait CDATA #REQUIRED
+	idle CDATA #REQUIRED
+>
+<!ELEMENT cpu-load (cpu+)>
+<!ELEMENT dentunusd (#PCDATA)>
+<!ELEMENT disk (disk-device+)>
+<!ATTLIST disk
+	per CDATA #REQUIRED
+>
+<!ELEMENT disk-device EMPTY>
+<!ATTLIST disk-device
+	dev CDATA #REQUIRED
+	tps CDATA #REQUIRED
+	rd_sec CDATA #REQUIRED
+	wr_sec CDATA #REQUIRED
+	avgrq-sz CDATA #REQUIRED
+	avgqu-sz CDATA #REQUIRED
+	await CDATA #REQUIRED
+	svctm CDATA #REQUIRED
+	util-percent CDATA #REQUIRED
+>
+<!ELEMENT dquot-sz (#PCDATA)>
+<!ELEMENT dquot-sz-percent (#PCDATA)>
+<!ELEMENT file-sz (#PCDATA)>
+<!ELEMENT frmpg (#PCDATA)>
+<!ELEMENT host (sysname, release, statistics, restarts)>
+<!ATTLIST host
+	nodename CDATA #REQUIRED
+>
+<!ELEMENT inode-sz (#PCDATA)>
+<!ELEMENT int-global (irq+)>
+<!ATTLIST int-global
+	per CDATA #REQUIRED
+>
+<!ELEMENT int-proc (irqcpu+)>
+<!ATTLIST int-proc
+	per CDATA #REQUIRED
+>
+<!ELEMENT interrupts (int-global, int-proc)>
+<!ELEMENT io (tps, io-reads, io-writes)>
+<!ATTLIST io
+	per CDATA #REQUIRED
+>
+<!ELEMENT io-reads EMPTY>
+<!ATTLIST io-reads
+	rtps CDATA #REQUIRED
+	bread CDATA #REQUIRED
+>
+<!ELEMENT io-writes EMPTY>
+<!ATTLIST io-writes
+	wtps CDATA #REQUIRED
+	bwrtn CDATA #REQUIRED
+>
+<!ELEMENT irq EMPTY>
+<!ATTLIST irq
+	intr CDATA #REQUIRED
+	value CDATA #REQUIRED
+>
+<!ELEMENT irqcpu EMPTY>
+<!ATTLIST irqcpu
+	cpu CDATA #REQUIRED
+	intr CDATA #REQUIRED
+	value CDATA #REQUIRED
+>
+<!ELEMENT kernel (dentunusd, file-sz, inode-sz, super-sz, super-sz-percent, dquot-sz, dquot-sz-percent, rtsig-sz, rtsig-sz-percent)>
+<!ATTLIST kernel
+	per CDATA #REQUIRED
+>
+<!ELEMENT memfree (#PCDATA)>
+<!ELEMENT memory (memfree, memused, memused-percent, swpfree, swpused, swpused-percent, swpcad, buffers, cached, frmpg, bufpg, campg)>
+<!ATTLIST memory
+	per CDATA #REQUIRED
+	unit CDATA #REQUIRED
+>
+<!ELEMENT memused (#PCDATA)>
+<!ELEMENT memused-percent (#PCDATA)>
+<!ELEMENT net-device (net-dev, net-edev)>
+<!ATTLIST net-device
+	iface CDATA #REQUIRED
+>
+<!ELEMENT network (net-device+, net-nfs, net-nfsd, net-sock)>
+<!ATTLIST network
+	per CDATA #REQUIRED
+>
+<!ELEMENT paging EMPTY>
+<!ATTLIST paging
+	per CDATA #REQUIRED
+	pgpgin CDATA #REQUIRED
+	pgpgout CDATA #REQUIRED
+	fault CDATA #REQUIRED
+	majflt CDATA #REQUIRED
+>
+<!ELEMENT processes EMPTY>
+<!ATTLIST processes
+	per CDATA #REQUIRED
+	proc CDATA #REQUIRED
+>
+<!ELEMENT queue EMPTY>
+<!ATTLIST queue
+	runq-sz CDATA #REQUIRED
+	plist-sz CDATA #REQUIRED
+	ldavg-1 CDATA #REQUIRED
+	ldavg-5 CDATA #REQUIRED
+	ldavg-15 CDATA #REQUIRED
+>
+<!ELEMENT restarts (boot+)>
+<!ELEMENT net-dev EMPTY>
+<!ATTLIST net-dev
+	rxpck CDATA #REQUIRED
+	txpck CDATA #REQUIRED
+	rxbyt CDATA #REQUIRED
+	txbyt CDATA #REQUIRED
+	rxcmp CDATA #REQUIRED
+	txcmp CDATA #REQUIRED
+	rxmcst CDATA #REQUIRED
+>
+<!ELEMENT release (#PCDATA)>
+<!ELEMENT rtsig-sz (#PCDATA)>
+<!ELEMENT rtsig-sz-percent (#PCDATA)>
+<!ELEMENT serial (tty+)>
+<!ATTLIST serial
+	per CDATA #REQUIRED
+>
+<!ELEMENT net-sock EMPTY>
+<!ATTLIST net-sock
+	totsck CDATA #REQUIRED
+	tcpsck CDATA #REQUIRED
+	udpsck CDATA #REQUIRED
+	rawsck CDATA #REQUIRED
+	ip-frag CDATA #REQUIRED
+>
+<!ELEMENT statistics (timestamp+)>
+<!ELEMENT super-sz (#PCDATA)>
+<!ELEMENT super-sz-percent (#PCDATA)>
+<!ELEMENT swap-pages EMPTY>
+<!ATTLIST swap-pages
+	per CDATA #REQUIRED
+	pswpin CDATA #REQUIRED
+	pswpout CDATA #REQUIRED
+>
+<!ELEMENT swpcad (#PCDATA)>
+<!ELEMENT swpfree (#PCDATA)>
+<!ELEMENT swpused (#PCDATA)>
+<!ELEMENT swpused-percent (#PCDATA)>
+<!ELEMENT sysdata-version (#PCDATA)>
+<!ELEMENT sysname (#PCDATA)>
+<!ELEMENT sysstat (sysdata-version, host)>
+<!ELEMENT timestamp (processes, context-switch, cpu-load, interrupts, swap-pages, io, disk, serial, network, paging, memory, kernel, queue)>
+<!ATTLIST timestamp
+	date CDATA #REQUIRED
+	time CDATA #REQUIRED
+	interval CDATA #REQUIRED
+>
+<!ELEMENT tps (#PCDATA)>
+<!ELEMENT net-edev EMPTY>
+<!ATTLIST net-edev
+	rxerr CDATA #REQUIRED
+	txerr CDATA #REQUIRED
+	coll CDATA #REQUIRED
+	rxdrop CDATA #REQUIRED
+	txdrop CDATA #REQUIRED
+	txcarr CDATA #REQUIRED
+	rxfram CDATA #REQUIRED
+	rxfifo CDATA #REQUIRED
+	txfifo CDATA #REQUIRED
+>
+<!ELEMENT tty EMPTY>
+<!ATTLIST tty
+	line CDATA #REQUIRED
+	rcvin CDATA #REQUIRED
+	xmtin CDATA #REQUIRED
+	framerr CDATA #REQUIRED
+	prtyerr CDATA #REQUIRED
+	brk CDATA #REQUIRED
+	ovrun CDATA #REQUIRED
+>

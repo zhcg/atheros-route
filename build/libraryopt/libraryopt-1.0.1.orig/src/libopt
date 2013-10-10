@@ -1,0 +1,663 @@
+#!/usr/bin/env python
+
+#
+#  FILE:  libopt
+#
+#  DESCRIPTION:
+#    Rebuilds supported libraries with only object files providing
+#    symbols required by binaries in a specified file tree.
+#
+#  AUTHOR:  MontaVista Software, Inc. <source@mvista.com>
+#
+#  Copyright 2000-2001 MontaVista Software Inc.
+#
+#  This program is free software; you can redistribute  it and/or modify it
+#  under  the terms of  the GNU General  Public License as published by the
+#  Free Software Foundation;  either version 2 of the  License, or (at your
+#  option) any later version.
+#
+#  THIS  SOFTWARE  IS PROVIDED   ``AS  IS'' AND   ANY  EXPRESS OR IMPLIED
+#  WARRANTIES,   INCLUDING, BUT NOT  LIMITED  TO, THE IMPLIED WARRANTIES OF
+#  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN
+#  NO  EVENT  SHALL   THE AUTHOR  BE    LIABLE FOR ANY   DIRECT, INDIRECT,
+#  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+#  NOT LIMITED   TO, PROCUREMENT OF  SUBSTITUTE GOODS  OR SERVICES; LOSS OF
+#  USE, DATA,  OR PROFITS; OR  BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+#  ANY THEORY OF LIABILITY, WHETHER IN  CONTRACT, STRICT LIABILITY, OR TORT
+#  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+#  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+#  You should have received a copy of the  GNU General Public License along
+#  with this program; if not, write  to the Free Software Foundation, Inc.,
+#  675 Mass Ave, Cambridge, MA 02139, USA.
+#
+
+#
+#  Usage:  libopt [ -s ] [ -d <desttree> ] <srctree>
+#	-s		strip optimized libraries
+#	-d <desttree>	specifies the base of the file hierarchy where
+#			optimized libraries will be placed; if not
+#			specified, <srctree> will be used
+#	<srctree>	the base of the file hierarchy representing the
+#			file system environment that should be optimized
+#
+
+import sys
+from sys import argv, exit, stderr
+import os
+from os import environ, R_OK, popen
+import os.path
+from string import join, rfind, split
+from getopt import getopt
+import re
+
+
+optdebug = 0
+
+
+class RelocatableSymbol:
+    def __init__(self, type, symbol):
+	fields = split(symbol, '@')
+	if len(fields) == 3:
+	    self.version = fields[2]
+	    self.default = 1
+	elif len(fields) == 2:
+	    self.version = fields[1]
+	    self.default = 0
+	else:
+	    assert len(fields) == 1
+	    self.version = None
+	    self.default = 1
+	self.name = fields[0]
+
+
+class RelocatableObject:
+    def __init__(self, name, linkalways=0):
+	self.name = name
+	self.required = []
+	self.symbols = []
+	self.undefined = []
+	self.linked = 0
+	self.linkalways = linkalways
+
+    def add_required(self, required):
+	self.required.append(required)
+
+    def add_symbol(self, symbol):
+	self.symbols.append(symbol)
+
+    def add_undefined(self, symbol):
+	self.undefined.append(symbol)
+
+    def Link(self, library, libobjects):
+	if self.linked:
+	    return
+	self.linked = 1
+
+	for objectname in self.required:
+	    object = libobjects.get(objectname)
+	    if object == None:
+		stderr.write('Cannot find needed object "%s"\n' % objectname)
+	    else:
+		object.Link(library, libobjects)
+	for symbol in self.symbols:
+	    library.AddSymbol(symbol)
+	for symbol in self.undefined:
+	    library.AddUndefined(symbol)
+
+	if not self.linkalways:
+	    library.AddObject(self.name)
+
+
+class LibraryOptimizer:
+    def __init__(self, path):
+	self.path = path
+	self.objects = {}
+	self.symbols = {}
+	self.required = []
+
+	index = open(os.path.join(path, 'index'))
+	for line in index.readlines():
+	    fields = split(line)
+	    if len(fields) == 0:
+		continue
+
+	    if fields[0] == 'O':
+		object = RelocatableObject(fields[1])
+		self.objects[fields[1]] = object
+	    elif fields[0] == 'R':
+		object = RelocatableObject(fields[1], 1)
+		self.objects[fields[1]] = object
+		self.required.append(object)
+	    elif fields[0] == 'I':
+		object.add_required(fields[1])
+	    elif fields[0] in ('D', 'W', 'C'):
+		symbol = RelocatableSymbol(fields[0], fields[1])
+		object.add_symbol(symbol)
+
+		if symbol.version != None:
+		    self.symbols['%s@%s' % (symbol.name, symbol.version)] = object
+		if symbol.default or (self.symbols.get(symbol.name) == None):
+		    self.symbols[symbol.name] = object
+	    else:
+		assert fields[0] == 'U'
+		symbol = RelocatableSymbol(fields[0], fields[1])
+		object.add_undefined(symbol)
+
+    def build(self, dest, objects):
+	cwd = os.getcwd()
+	os.chdir(self.path)
+
+	# Make dest use an absolute path
+	dest = os.path.normpath(os.path.join(cwd, dest))
+
+	# Run library build program
+	command = '%s/build %s %s %s %s %s' % \
+	    (self.path, archdir, archprefix, dest, strip, join(objects))
+	os.system(command)
+
+	# Return to original directory
+	os.chdir(cwd)
+
+    def FindSymbol(self, library, symbol):
+	if optdebug:
+	    print 'FindSymbol', library.path, symbol.name
+	if symbol.version != None:
+	    object = self.symbols.get('%s@%s' % (symbol.name, symbol.version))
+	elif symbol.default:
+	    object = self.symbols.get(symbol.name)
+	else:
+	    object = None
+
+	if object == None:
+	    return 0
+
+	object.Link(library, self.objects)
+	return 1
+
+    def linkreqs(self, library):
+	for object in self.required:
+	    object.Link(library, self.objects)
+
+
+class OptimizerSet:
+    def __init__(self):
+	self.available = {}
+	self.initialized = {}
+
+	if os.path.isdir(optdir):
+	    for name in os.listdir(optdir):
+		libdir = os.path.join(optdir, name)
+		if not os.path.isdir(libdir):
+		    continue
+
+		libpathname = os.path.join(libdir, 'path')
+		if not os.access(libpathname, R_OK):
+		    continue
+
+		try:
+		    libpathfile = open(libpathname)
+		except:
+		    stderr.write('Cannot open "%s"\n' % libpathname)
+		    continue
+
+		try:
+		    libpath = libpathfile.read()
+		except:
+		    libpathfile.close()
+		    stderr.write('Cannot read "%s"\n' % libpathname)
+		    continue
+
+		if libpath[-1:] == '\n':
+		    libpath = libpath[:-1]
+		self.available[libpath] = libdir
+
+    def get(self, path):
+	optlib = self.initialized.get(path)
+	if optlib != None:
+	    return optlib
+
+	libdir = self.available.get(path)
+	if libdir == None:
+	    return None
+
+	optlib = LibraryOptimizer(libdir)
+	if optlib != None:
+	    self.initialized[path] = optlib
+
+	return optlib
+
+
+class DynamicAlias:
+    def __init__(self, target):
+	self.alias = 1
+	self.referenced = 0
+	self.target = target
+
+    def Resolve(self, symbol):
+	self.referenced = 1
+	target = libraries.get(self.target)
+	if target == None:
+	    stderr.write('Cannot locate symlink target "%s"\n' % self.target)
+	    return 0
+	else:
+	    return target.Resolve(symbol)
+
+    def Real(self):
+	target = libraries.get(self.target)
+	if target == None:
+	    stderr.write('Cannot locate symlink target "%s"\n' % self.target)
+	    return None
+	else:
+	    return target.Real()
+
+
+def DynamicExpression():
+    addr = '[0-9a-fA-F]+'
+    flags = ' [^l](?P<weak>.)...D(?P<function>.) '
+    section = '(?P<section>[^\t]*)\t'
+    version = ' +(?P<version>[^ ]*) +'
+    name = '(?P<name>[^ \n]+)\n?$'
+    return addr + flags + section + addr + version + name
+
+dynamic_re = re.compile(DynamicExpression())
+
+class DynamicSymbol:
+    def __init__(self, line):
+	self.valid = 0
+
+	match = dynamic_re.match(line)
+	if match == None:
+	    return
+
+	section = match.group('section')
+
+	weak = (match.group('weak') == 'w')
+	undefined = (section == '*UND*')
+	if weak and undefined:
+	    return
+
+	common = (section == '*CMN*')
+
+	if undefined:
+	    self.type = 'U'
+	elif weak:
+	    self.type = 'W'
+	elif common:
+	    self.type = 'C'
+	else:
+	    self.type = 'G'
+
+	self.name = match.group('name')
+	self.version = match.group('version')
+	self.default = 1
+	self.function = (match.group('function') == 'F')
+
+	if (self.version == 'Base') or (self.version == ''):
+	    self.version = None
+	elif self.version[0] == '(':
+	    self.version = self.version[1:-1]
+	    assert self.version != 'Base'
+	    self.default = 0
+
+	self.valid = 1
+
+
+class DynamicLibrary:
+    def __init__(self, path, targetpath):
+	self.targetpath = targetpath
+	self.alias = 0
+	self.referenced = 0
+
+	if optdebug:
+	    self.path = path
+
+	self.symbols = {}
+	self.undefined = {}
+	self.needed = []
+	self.objects = []
+	self.rpath = ['/usr/lib', '/lib']
+
+	#Get NEEDED libraries
+	dump = popen('%sobjdump -p %s' % (toolprefix, path))
+	for line in dump.readlines():
+	    tokens = split(line)
+	    if len(tokens) > 1:
+		if tokens[0] == 'NEEDED':
+		    self.needed.append(tokens[1])
+		elif tokens[0] == 'RPATH':
+		    rpath = re.sub('\$ORIGIN', os.path.dirname(targetpath), tokens[1])
+		    self.rpath = split(rpath, ':') + self.rpath
+	if dump.close() != None:
+	    exit('Error processing file "%s"' % path)
+
+	self.optimizer = optimizers.get(targetpath)
+	if self.optimizer != None:
+	    self.optimizer.linkreqs(self)
+	else:
+	    dump = popen('%sobjdump -T %s' % (toolprefix, path))
+
+	    for line in dump.readlines():
+		symbol = DynamicSymbol(line)
+		if not symbol.valid:
+		    continue
+
+		if symbol.type == 'U':
+		    self.AddUndefined(symbol)
+		else:
+		    self.AddSymbol(symbol)
+
+		    # Temporarily treat all data objects as undefined
+		    # This will handle copy relocation entries
+		    if not symbol.function:
+			self.AddUndefined(symbol)
+
+	    if dump.close() != None:
+		exit('Error processing file "%s"' % path)
+
+    def Resolve(self, symbol):
+	self.referenced = 1
+	if optdebug:
+	    print 'Resolve', self.path, symbol.name, symbol.version, self.optimizer
+	if symbol.version != None:
+	    match = self.symbols.get(symbol.name + '@' + symbol.version)
+	elif symbol.default:
+	    match = self.symbols.get(symbol.name)
+	else:
+	    match = None
+
+	if match == None and self.optimizer != None:
+	    return self.optimizer.FindSymbol(self, symbol)
+
+	return (match != None)
+
+    def AddSymbol(self, symbol):
+	if symbol.version != None:
+	    self.symbols['%s@%s' % (symbol.name, symbol.version)] = symbol
+	if symbol.default or (self.symbols.get(symbol.name) == None):
+	    self.symbols[symbol.name] = symbol
+
+    def AddUndefined(self, symbol):
+	if symbol.version != None:
+	    self.undefined['%s@%s' % (symbol.name, symbol.version)] = symbol
+	elif symbol.default:
+	    self.undefined[symbol.name] = symbol
+
+    def AddObject(self, name):
+	self.objects.append(name)
+
+    def OrderDependencies(self, list):
+	needed = self.needed[:]
+	needed.reverse()
+	index = len(list)
+	for soname in needed:
+	    if soname[0] == '/':
+		library = libraries.get(soname)
+	    else:
+		library = None
+		for pathname in self.rpath:
+		    library = libraries.get(os.path.join(pathname, soname))
+		    if library != None:
+			break
+
+	    if library == None:
+		if not (soname in missinglibs):
+		    stderr.write('Cannot find library "%s"\n' % soname)
+		    missinglibs.append(soname)
+	    else:
+		library = library.Real()
+		if library != None:
+		    if library in list:
+			index = list.index(library)
+		    else:
+			list.insert(index, library)
+	if not self in list:
+	    list.insert(index, self)
+
+    def ResolveAll(self):
+	for symbol in self.undefined.values():
+	    for soname in self.needed:
+		if soname[0] == '/':
+		    library = libraries.get(soname)
+		else:
+		    library = None
+		    for pathname in self.rpath:
+			library = libraries.get(os.path.join(pathname, soname))
+			if library != None:
+			    break
+
+		if library == None:
+		    if not (soname in missinglibs):
+			stderr.write('Cannot find library "%s"\n' % soname)
+			missinglibs.append(soname)
+		elif library.Resolve(symbol):
+		    # Don't break for data objects (temp fix for copy reloc)
+		    if (self.optimizer != None) or (symbol.function):
+			break
+
+    def generate(self):
+	if self.optimizer != None:
+	    dest = os.path.normpath(os.path.join(destdir, self.targetpath[1:]))
+	    dir = os.path.dirname(dest)
+	    if not os.path.isdir(dir):
+		try:
+		    os.makedirs(dir)
+		except:
+		    stderr.write('Cannot create directory "%s"\n' % dir)
+		    return
+	    self.optimizer.build(dest, self.objects)
+
+    def Real(self):
+	return self
+
+
+class Executable:
+    def __init__(self, path):
+	self.undefined = []
+	self.needed = []
+	self.rpath = ['/usr/lib', '/lib']
+
+	#Get NEEDED libraries
+	dump = popen('%sobjdump -p %s' % (toolprefix, path))
+	for line in dump.readlines():
+	    tokens = split(line)
+	    if len(tokens) > 1:
+		if tokens[0] == 'NEEDED':
+		    self.needed.append(tokens[1])
+	if dump.close() != None:
+	    exit('Error processing file "%s"' % path)
+
+	if len(self.needed) > 0:
+	    # Dynamic executable; process dynamic symbols
+	    dump = popen('%sobjdump -T %s' % (toolprefix, path))
+
+	    for line in dump.readlines():
+		symbol = DynamicSymbol(line)
+		if symbol.valid:
+		    if symbol.type == 'U':
+			self.undefined.append(symbol)
+		    # Temporarily treat all data objects as undefined
+		    # This will handle copy relocation entries
+		    elif not symbol.function:
+			self.undefined.append(symbol)
+
+	    if dump.close() != None:
+		exit('Error processing file "%s"' % path)
+
+    def ResolveAll(self):
+	for symbol in self.undefined:
+	    for soname in self.needed:
+		if soname[0] == '/':
+		    library = libraries.get(soname)
+		else:
+		    library = None
+		    for pathname in self.rpath:
+			library = libraries.get(os.path.join(pathname, soname))
+			if library != None:
+			    break
+
+		if library == None:
+		    if not (soname in missinglibs):
+			stderr.write('Cannot find library "%s"\n' % soname)
+			missinglibs.append(soname)
+		elif library.Resolve(symbol):
+		    # Don't break for data objects (temp fix for copy reloc)
+		    if symbol.function:
+			break
+
+
+def ELFType(path):
+    try:
+	file = open(path)
+    except:
+	if ignore_errs:
+	    stderr.write('Cannot open file "%s"\n' % path)
+	    return None
+	else:
+	    exit('Cannot open file "%s"\n' % path)
+
+    try:
+	header = file.read(18)
+    except:
+	file.close()
+	return None
+    else:
+	file.close()
+
+    if header[:4] != "\x7f" "ELF":
+	return None
+
+    ei_data = ord(header[5])
+    if ei_data == 1:
+	#LSB encoding
+	type = ord(header[16]) + (ord(header[17]) * 256)
+    elif ei_data == 2:
+	#MSB encoding
+	type = ord(header[17]) + (ord(header[16]) * 256)
+    else:
+	#unknown encoding
+	return None
+
+    if type == 2:
+	#ET_EXEC
+	return 'E'
+    elif type == 3:
+	#ET_DYN
+	return 'D'
+    else:
+	#ignore anything else
+	return None
+
+
+def CheckObjects(basepath, dirname, names):
+    def targetpath(basepath, path):
+	if path[:len(basepath)] == basepath:
+	    return path[len(basepath):]
+	else:
+	    return '/' + path
+
+    for name in names:
+	fullpath = os.path.normpath(os.path.join(dirname, name))
+
+	if not os.path.isfile(fullpath):
+	    continue
+
+	type = ELFType(fullpath)
+	if type == None:
+	    continue
+
+	if os.path.islink(fullpath):
+	    #alias
+	    if type != 'D':
+		continue
+	    base = os.path.dirname(fullpath)
+	    link = os.readlink(fullpath)
+	    realpath = os.path.normpath(os.path.join(base, link))
+	    libraries[targetpath(basepath, fullpath)] = \
+		DynamicAlias(targetpath(basepath, realpath))
+	elif type == 'E':
+	    executables.append(fullpath)
+	else:
+	    assert type == 'D'
+	    tpath = targetpath(basepath, fullpath)
+	    libraries[tpath] = DynamicLibrary(fullpath, tpath)
+
+
+class UsageException(Exception):
+    pass
+
+
+#
+# MAIN
+#
+
+strip = 'nostrip'
+ignore_errs = 0
+destdir = None
+srcdir = None
+
+args = argv[1:]
+
+try:
+    while len(args) > 0:
+	options, args = getopt(args, 'sid:')
+
+	for option in options:
+	    if option[0] == '-s':
+		strip = 'strip'
+	    elif option[0] == '-i':
+		ignore_errs = 1
+	    elif option[0] == '-d':
+		if destdir != None:
+		    raise UsageException
+		destdir = os.path.normpath(option[1])
+		if not os.path.isdir(destdir):
+		    exit('Invalid destination directory "%s"' % destdir)
+
+	if len(args) > 0:
+	    if srcdir != None:
+		raise UsageException
+	    srcdir = os.path.normpath(args[0])
+	    if not os.path.isdir(srcdir):
+		exit('Invalid source directory "%s"' % srcdir)
+	    args = args[1:]
+
+    if srcdir == None:
+	raise UsageException
+except UsageException:
+    exit('Usage:  %s [-s] [ -d <destdir> ] <srcdir>' % argv[0])
+
+if destdir == None:
+    destdir = srcdir
+
+end = rfind(argv[0], 'libopt')
+if (end == -1) or (end != (len(argv[0]) - len('libopt'))):
+    exit('Cannot locate architecture tools')
+else:
+    toolprefix = argv[0][:end]
+
+archprefix = os.path.basename(toolprefix)
+archdir = os.path.dirname(os.path.dirname(toolprefix))
+optdir = os.path.join(archdir, 'target', 'usr', 'lib', 'optinfo')
+
+optimizers = OptimizerSet()
+executables = []
+libraries = {}
+missinglibs = []
+
+os.path.walk(srcdir, CheckObjects, srcdir)
+
+for file in executables:
+    object = Executable(file)
+    object.ResolveAll()
+
+liblist = []
+for library in libraries.values():
+    if not library.alias:
+	library.OrderDependencies(liblist)
+
+for library in liblist:
+    library.ResolveAll()
+
+for library in liblist:
+    library.generate()

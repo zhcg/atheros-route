@@ -1,0 +1,13 @@
+/.cvsignore/1.1/Sat Nov 22 13:05:01 2003//
+D/bsd_tcpip////
+D/common////
+D/drivers////
+D/ftpclient////
+D/httpd////
+D/ipsec////
+D/lwip_tcpip////
+D/ns////
+D/ppp////
+D/sntp////
+D/tcpip////
+D/vnc_server////

@@ -1,0 +1,103 @@
+<ui version="4.0" >
+ <class>SelectMethod</class>
+ <widget class="QWidget" name="SelectMethod" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>548</width>
+    <height>320</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string/>
+  </property>
+  <widget class="QLabel" name="label" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>521</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font" >
+    <font>
+     <pointsize>14</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text" >
+    <string>Select Method</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="gridLayout" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>50</y>
+     <width>531</width>
+     <height>110</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" >
+    <property name="margin" >
+     <number>0</number>
+    </property>
+    <property name="spacing" >
+     <number>12</number>
+    </property>
+    <item row="0" column="0" >
+     <widget class="QPushButton" name="pbNfc" >
+      <property name="text" >
+       <string>NFC Config Token</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0" >
+     <widget class="QPushButton" name="pbPbc" >
+      <property name="text" >
+       <string>Push-Button</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1" >
+     <widget class="QLabel" name="lblPbc" >
+      <property name="text" >
+       <string>Get configuration with Push-Button method</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" >
+     <widget class="QPushButton" name="pbPin" >
+      <property name="text" >
+       <string>PIN</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1" >
+     <widget class="QLabel" name="lblNfc" >
+      <property name="text" >
+       <string>Get configuration with NFC Config Token</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1" >
+     <widget class="QLabel" name="lblPin" >
+      <property name="text" >
+       <string>Get configuration with PIN method</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <tabstops>
+  <tabstop>pbNfc</tabstop>
+  <tabstop>pbPin</tabstop>
+  <tabstop>pbPbc</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,3 @@
+::sysinit:/etc/rc.d/rcS
+::respawn:/bin/sh -
+::shutdown:/bin/cfg wlan down

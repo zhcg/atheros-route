@@ -1,0 +1,108 @@
+# Set the toolchain path
+export TOOLCHAIN=gcc-4.3.3
+export UBOOT_GCC_4_3_3_EXTRA_CFLAGS=-fPIC
+export TOOLPREFIX=mips-linux-uclibc-
+export TOOLARCH=build_mips/staging_dir/usr
+
+export KERNEL=mips-linux-2.6.31
+export KERNELVER=2.6.31
+export KERNELTARGET=vmlinux.bin
+export COMPRESSKERNEL=y
+export KERNELARCH=mips
+export TARGETFSSIZE=2818048
+export AP_TYPE=single
+
+export BUSYBOX=busybox-1.01
+export WIRELESSTOOLS=wireless_tools.29
+export WIRELESSTOOLSLIB=libiw.so.29
+
+export BUILD_WPA2=y
+ifeq ($(BUILD_WPA2),y)
+export MADWIFIPATH=$(TOPDIR)/wlan/linux
+export MADWIFIINC=$(TOPDIR)/wlan
+#for station forwarding support
+export CONFIG_ETHERSTA=y
+endif
+
+#
+# UMAC build option
+#
+
+export BUILD_UMAC=1
+
+export BUS=PCI
+export TARGETARCH=mipsisa32-be-elf
+
+# Set Phy Err Diagnostics (Radar detection) to be enabled for AP builds
+export ATH_CAP_PHYERR_DIAG=1
+export ATH_SUPPORT_IQUE=1
+export AR5416_G_MODE=1
+export AR9100=0
+export AH_DEBUG=1
+
+export AH_SUPPORT_AR5212=0
+export AH_SUPPORT_5111=0
+export AH_SUPPORT_5112=0
+export AH_SUPPORT_2413=0
+export AH_SUPPORT_5111=0
+export AH_SUPPORT_5112=0
+export AH_SUPPORT_2413=0
+export AH_SUPPORT_5413=0
+export AH_SUPPORT_2316=0
+export AH_SUPPORT_2317=0
+export AH_SUPPORT_2425=0
+export AH_SUPPORT_SOWL=0
+
+export ATH_SUPPORT_DFS=0
+export ATH_SUPPORT_IQUE=1
+export ATH_CHAINMASK_SELECT=0
+export ATH_CAP_AMSDU=0
+export IEEE80211_MCAST_ENHANCEMENT=1
+export ATH_RB=0
+export ATH_SUPPORT_DFS=0
+export ATH_SUPPORT_TxBF=1
+
+ifeq ($(BUILD_WPA2),y)
+export ATH_WPS_IE=1
+export MADWIFIPATH=$(TOPDIR)/wlan/linux
+export MADWIFIINC=$(TOPDIR)/wlan
+else
+export ATH_WPS_IE=0
+endif
+
+export ATH_SUPPORT_LED=1
+export GPIO_PIN_FUNC_0=1
+export GPIO_PIN_FUNC_1=0
+export GPIO_PIN_FUNC_2=7
+export AP_USB_LED_GPIO=0
+export AP_READY_LED_GPIO=1
+export AH_CAL_IN_FLASH=1
+export AH_CAL_RADIOS=1
+export AH_CAL_LOCATIONS=0Xbf7f0000
+export AH_WAR_52640=1
+
+
+
+ifeq ($(BUILD_CONFIG),_samba)
+export BUILD_SAMBA=y
+export BUILD_OPTIMIZED=y
+export INSTALL_BLACKLIST="usr/bin/gdb* sbin/802* sbin/apst* sbin/ath* sbin/ifr* sbin/iwe* sbin/iwsp* sbin/iwli* sbin/radar* sbin/iwge* sbin/pktl* usr/local/bin/* usr/local/sbin/nmb*" 
+endif
+
+
+
+
+
+export ATH_CONFIG_NVRAM=1
+export ATH_EXT_AP=1
+export CONFIG_MIPS_24K_KERNEL_OPTIMIZATION=1
+#Set the GPIO PIN for WPS LED                                  
+export WPS_LED_GPIO_PIN=11
+
+# Support PAPRD
+export ATH_SUPPORT_PAPRD=1
+
+export ATH_SUPPORT_QUICK_KICKOUT=1
+
+#Use athr-hostapd
+export BUILD_ATHR_HOSTAP=1

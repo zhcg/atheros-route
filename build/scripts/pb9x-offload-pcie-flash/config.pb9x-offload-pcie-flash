@@ -1,0 +1,39 @@
+# Configs that need to be declared before 
+# including parent board configs.
+
+
+
+# Include driver config file of parent board.
+# We assume BOARD_TYPE for offload targets is PARENT_BOARD-xxx... 
+# The string before the first '-' is used as name of parent board.
+# Change this if necessary.
+#PARENT_CFG=$(shell echo $(BOARD_TYPE) | cut -d - -f 1)
+PARENT_BOARD=pb9x-2.6.31
+export PARENT_BOARD
+include scripts/$(PARENT_BOARD)/config.$(PARENT_BOARD)
+
+
+
+# Configs that override parent board 
+# configs or are specific to offload.
+export COMPRESSED_UBOOT=0
+
+ifeq ($(FLASH_SIZE),8)
+export TARGETFSSIZE=5242880
+else
+export TARGETFSSIZE=2818048
+endif
+
+#export BUILD_WPA_SUPPLICANT_ATHR=y
+export BUILD_HOSTAPD_P2P=n
+#for station forwarding support
+export CONFIG_ETHERSTA=n
+export BUILD_TYPE=jffs2
+
+export AH_DEBUG=1
+
+export INSTALL_BLACKLIST="sbin/wpa_supplicant usr/bin/gdb* sbin/802* sbin/apst* sbin/ath* sbin/ifr* sbin/iwe* sbin/iwsp* sbin/radar* sbin/iwge* sbin/pktl* usr/local/bin/* usr/local/sbin/nmb*"
+
+export CONFIG_MIPS_24K_KERNEL_OPTIMIZATION=1
+export HIF=pcie
+

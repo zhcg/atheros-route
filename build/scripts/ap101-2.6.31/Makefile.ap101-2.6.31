@@ -1,0 +1,202 @@
+export HAL=$(TOPDIR)/drivers/wlan/hal
+export ENETDIR=$(TOPDIR)/linux/drivers/ethernet/
+export ATH_TOOL_DIR=$(TOPDIR)/drivers/wlan/os/linux/tools/
+export ATH_DFS=$(TOPDIR)/drivers/wlan/lmac/dfs
+export BOOTLOADERDIR=$(TOPDIR)/boot/u-boot
+export ATHEROSPATH=$(TOPDIR)/drivers/wlan
+export I2SDIR=$(TOPDIR)/linux/drivers/i2s/
+export USBMODPATH=$(INSTALL_ROOT)/lib/modules/$(KERNELVER)/usb
+export I2SMODPATH=$(INSTALL_ROOT)/lib/modules/$(KERNELVER)/i2s
+export USBDIR=${KERNELPATH}/drivers/usb
+export SQUASHFSLZMADIR=$(TOPDIR)/build/squashfs-lzma
+export SQUASHFSFILE=$(BOARD_TYPE)$(BUILD_CONFIG)-squashfs
+
+#
+# Makefile for AP101-2.6.31 Fusion build.  It has dependancies for both
+# the "common" build and the "jffs2" build.  This is unique for
+# each board type, and must be configured for each board.
+#
+
+# To enable library optimization (removing unused object code from
+# shared libraries) set BUILD_LIBRARYOPT to 'y' else 'n'
+BUILD_LIBRARYOPT := n
+
+ifeq ($(BUILD_CONFIG), _routing)
+ap101-2.6.31_build: common_mainline iptables_build driver_build $(BUILD_TYPE)_build
+else
+ap101-2.6.31_build: common_mainline driver_build $(BUILD_TYPE)_build
+endif
+
+common_mainline: check_tftp rootfs_prep toolchain_build lzma_uimage  \
+	kernel_info uboot_Main enet_build usb_build busybox_build  wpa2 \
+	art_mod sar cgi samba_build 
+
+iptables_build:
+	@echo making iptables
+	cd ../apps/iptables/iptables-1.3.6 && \
+	$(MAKE) clean KERNEL_DIR=$(KERNELPATH) && \
+	$(MAKE) KERNEL_DIR=$(KERNELPATH) NO_SHARED_LIBS=1 DO_IPV6=0 && \
+	$(TOOLPREFIX)strip -s iptables && \
+	cp iptables $(INSTALL_ROOT)/sbin/iptables
+
+samba_build:
+ifeq ($(BUILD_SAMBA), y)
+	@echo Building samba ver 3.0.24.....
+	cd ../apps/samba-3.0.24/source; \
+	make CC=$(TOOLPREFIX)gcc AR=$(TOOLPREFIX)ar LD=$(TOOLPREFIX)ld ; \
+	mkdir $(INSTALL_ROOT)/usr/local; \
+	make CC=$(TOOLPREFIX)gcc AR=$(TOOLPREFIX)ar LD=$(TOOLPREFIX)ld STRIP=$(STRIP) install prefix=$(INSTALL_ROOT)/usr/local;
+	cp $(TOOLPATH)/lib/libresolv.so.0 $(INSTALL_ROOT)/lib
+else
+	@echo Use BUILD_SAMBA=y flag with make command for building samba.....
+endif
+
+#
+# Unique rules for the ag7240 PHY with the ar7240 (Python)  board
+#
+
+enet_build: kernel_build
+	cd $(ENETDIR) && rm -f *.o *.ko *.mod.*
+	$(MAKEARCH) -C $(KERNELPATH) SUBDIRS=$(ENETDIR) modules
+	test -d $(MODULEPATH) || mkdir -p $(MODULEPATH)
+	cp $(ENETDIR)/athrs_gmac.ko $(MODULEPATH)
+
+eth_diag:
+	@echo making Ethernet diagnostic tools;\
+        cd ../linux/drivers/net/ag7240/tools/;\
+        make install;
+
+i2s_build: kernel_build
+	cd $(I2SDIR) && rm -f *.o *.ko *.mod.*
+	$(MAKEARCH) -C $(KERNELPATH) SUBDIRS=$(I2SDIR) modules
+	test -d $(I2SMODPATH) || mkdir -p $(I2SMODPATH)
+	cp $(I2SDIR)/ar7240_i2s.ko $(I2SMODPATH)
+
+athplay_tools_fus:
+	@echo making athplay_tools 
+	cd ../apps/athplay; make clean; make; \
+	$(STRIP) athplay; \
+	cp -f athplay $(INSTALL_ROOT)/bin;
+
+# WIRELESSTOOLNAMES must agree with wlan/linux/tools/Makefile
+WIRELESSTOOLNAMES := athstats athstatsclear 80211stats athkey athchans athctrl\
+	athdebug 80211debug wlanconfig athcwm athampdutrc atrc \
+	pktlogconf pktlogdump radartool cgiMain
+wireless_tools_main:
+	@echo making wireless_tools
+	if test -n "$(WIRELESSTOOLS)"; then \
+	cd ../apps/$(WIRELESSTOOLS); make clean; make; \
+	$(STRIP) $(WIRELESSTOOLSLIB); \
+	$(STRIP) iwpriv;  \
+	$(STRIP) iwconfig; \
+	$(STRIP) iwlist; \
+	cp -f $(WIRELESSTOOLSLIB) $(INSTALL_ROOT)/lib; \
+	cp -f iwpriv $(INSTALL_ROOT)/sbin; \
+	cp -f iwconfig $(INSTALL_ROOT)/sbin; \
+	cp -f iwlist $(INSTALL_ROOT)/sbin; \
+	cd $(TOPDIR)/drivers/wlan/os/linux/tools && make clean; \
+	make wlanconfig BUILD_STATIC=$(BUILD_STATIC); \
+	$(STRIP) wlanconfig; \
+	cp -f wlanconfig $(INSTALL_ROOT)/sbin; \
+	fi
+
+ath_tools: ath_tools_clean
+	@echo makeing ath tools;\
+	cd ../drivers/wlan/os/linux/tools;\
+	make ath_tools;
+
+ath_tools_clean:
+	@echo cleaning ath tools;\
+	cd ../drivers/wlan/os/linux/tools;\
+	make ath_tools_clean;
+
+cgi: ath_tools_clean
+	@echo makeing cgi;\
+	cd ../drivers/wlan/os/linux/tools;\
+	rm -rf cgiMain;\
+	make cgiMain;
+
+art_mod:
+	@echo Making ART Module
+	cd ../apps/art && make -f makefile.soc.linux.mips clean && \
+	make -f makefile.soc.linux.mips python 
+	cp ../apps/art/modules/art.ko $(MODULEPATH)/art.ko
+
+main_hal_build: 
+	@echo making mainline hal
+	if test -n "$(TARGETARCH)"; then \
+	cd $(HAL)/linux && make TARGET=$(TARGETARCH) clean &&  \
+	make TARGET=$(TARGETARCH) && make TARGET=$(TARGETARCH) release; \
+	fi
+
+driver_build: main_hal_build wireless_tools_main ath_tools
+	@echo making umac mainline
+	cd $(TOPDIR)/drivers/wlan/os/linux && \
+	$(MAKEARCH) TARGET=$(TARGETARCH) clean \
+	&& $(MAKEARCH) TARGET=$(TARGETARCH) && \
+	$(MAKEARCH) DESTDIR=$(INSTALLROOT) TARGET=$(TARGETARCH) install
+	$(MAKE) $(BUILD_TYPE)_build
+
+uboot_Main:
+	@echo making uboot...
+	cd $(BOOTLOADERDIR) && make ap101-2.6.31_config
+	cd $(BOOTLOADERDIR) && make clean && make
+	cp $(BOOTLOADERDIR)/u-boot.bin $(IMAGEPATH)
+
+usb_build: kernel_build
+	test -d $(USBMODPATH) || mkdir -p $(USBMODPATH)
+	cp -f $(USBDIR)/core/usbcore.ko ${USBMODPATH}
+	cp -f ${USBDIR}/host/ehci-hcd.ko ${USBMODPATH}
+	cp -f ${USBDIR}/host/ohci-hcd.ko ${USBMODPATH}
+	cp -f ${USBDIR}/storage/usb-storage.ko ${USBMODPATH}
+
+lzma_build:
+	@echo making lzma.....
+	cd $(TOPDIR)/apps/lzma457/CPP/7zip/Compress/LZMA_Alone && \
+	make -f makefile.gcc clean && \
+	make -f makefile.gcc  && \
+	echo copying lzma... && \
+	cp -f lzma	$(TOPDIR)/build/util
+
+lzma_uimage: kernel_build lzma_build uboot_Main
+	@echo "Generating LZMA'ed kernel....."
+	cd $(KERNELPATH)/arch/$(KERNELARCH)/boot && \
+	$(TOPDIR)/build/util/lzma e $(KERNELTARGET) $(KERNELTARGET).lzma && \
+	cp $(KERNELTARGET).lzma $(TFTPPATH)/$(KTFILE).lzma && \
+	cp $(KERNELTARGET).lzma $(IMAGEPATH)/$(KTFILE).lzma;
+	echo Making uImage...
+	cd util && mkuImage.sh $(UBOOTDIR)/tools $(KERNELPATH) $(BUILD_CONFIG) lzma
+
+sqlzma_build:
+	cd $(SQUASHFSLZMADIR) && \
+	$(MAKE)
+
+sqlzma_clean:
+	cd $(SQUASHFSLZMADIR) && \
+	$(MAKE) clean
+
+# squashfs build
+# Unfortunately mksquashfs doesn't natively support lzma compression;
+# we have a version of it that does (beneath build directory).
+# Also it doesn't create device files from "dev.txt" file as mkjffs2 does;
+# we have hacked our version of mksquashfs so that a plain file named
+# +{b|c}dev+<major>_<minor>_<name> is turned into the appropriate device
+# file on the output.
+squashfs_build: sqlzma_build image_root
+	@echo BEGIN make squashfs at `date`
+	cd $(IMAGE_ROOT) && mkdir -p ./dev -m 715
+	cd $(IMAGE_ROOT) && mkdir -p ./sys -m 715
+	cd $(IMAGE_ROOT) && ln -s /tmp/mnt ./mnt
+	cd $(IMAGE_ROOT) && \
+	cat $(TOPDIR)/build/scripts/$(BOARD_TYPE)/dev.txt | \
+	sed -e '/^\/dev\//!d' -e 's/.*\///' | \
+	awk '{print "./dev/+"$$2"dev+"$$6"_"$$7"_"$$1}' | \
+	xargs touch
+	echo $(BOARD_TYPE)/`date +%F-%H:%M` >$(IMAGE_ROOT)/version
+	$(TOPDIR)/build/util/mksquashfs $(IMAGE_ROOT) $(IMAGEPATH)/$(SQUASHFSFILE) -noappend -be -all-root -devfile-hack -b 65536 -always-use-fragments
+###	sudo $(TOPDIR)/build/scripts/$(BOARD_TYPE)/makedev.sh
+###	$(TOPDIR)/build/util/mksquashfs $(IMAGE_ROOT) $(IMAGEPATH)/$(SQUASHFSFILE) -noappend -be -all-root
+###	sudo chmod 777 $(IMAGEPATH)/$(SQUASHFSFILE)
+	chmod 644 $(IMAGEPATH)/$(SQUASHFSFILE)
+	cp $(IMAGEPATH)/$(SQUASHFSFILE) $(TFTPPATH)
+	@echo END make squashfs at `date`

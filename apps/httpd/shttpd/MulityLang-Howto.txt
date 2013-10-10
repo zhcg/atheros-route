@@ -1,0 +1,165 @@
+The document decribe international web pages realization, usage and other
+realative information. Designed by bowenguo, 2009-07-10. Any question,
+please contact with me as soon.
+
+Base on our architecture(shttpd + cgic) of router, we decide realize
+international web pages by resource file. Basic flow as follows:
+
+First, browser request specified page, and shttpd will parse the page
+file and then replace the string by pre-defined ssi functions from
+resource file.
+
+The resource file format and comments:
+********** language.res(defined currently) **********
+
+## This file store different language info, such as chinese, english
+## ...
+## char # denote comments line, char [] denote section name
+## by bowenguo, 2009-07-08
+
+
+########################################################################################
+[FILENAME] = 'wlcfg.shtml'
+altSsid1 = 'Please setup SSID and then set advanted options.'
+altSsid2 = 'SSID SSID can not be null.'
+altSsid3 = ' can not exceed 32 characters.'
+altSsid4 = 'SSID contains illegal characters, please input again!'
+
+cfmNgChg1 = 'Please reboot router to active changes after save'
+
+htmlWlTitle1 = 'Wireless Configuration -- Basic'
+
+htmlWlContent1 = 'This page will config the basic property of WLAN,
+including enable / forbid WLAN,search hidden SSIDs from the scan of
+the work station, s\
+et SSID.'
+htmlWlContent2 = 'click the button "Save/Apply",The basic
+configuration of wireless will active'
+
+htmlWlEnable1 = 'Enable Wireless'
+htmlWlCancel = 'Cancel Broadcast'
+htmlWlInfo1 = 'Notice: Radio Power decrease from 1 to 5'
+htmlWlMode = 'Mode:'
+htmlWlChannel = 'Channel:'
+htmlWlCurChan = 'Current Channel: '
+htmlWlRate = 'Rate:'
+htmlWlRadioExt = 'Channel Extension Mode:'
+htmlWlExtMode1 = 'Mode 20MHZ'
+htmlWlExtMode2 = 'Mode 20/40MHZ'
+htmlWlExtMode3 = 'Mode 40MHZ'
+htmlWlMultiRate = 'Multicast:'
+htmlWlRadioPower = 'Radio Power:'
+htmlWlSave = 'Save/Apply'
+htmlWlAdvance = 'Advance'
+
+
+########################################################################################
+[FILENAME] = 'wlsecurity.shtml'
+altWsStat = 'Because wireless is disabled currently, cannot apply this
+change.'
+altWsPre1 = 'WPA Pre-shared Key should have 8 to 63 ASCII chars or 64
+Decimal digits.'
+altWsPre2 = 'WPA Pre-shared Key should have 8 to 63 ASCII chars or 64
+Decimal digits.'
+altWsNulKey = 'Can not input null key.'
+altWsWep1 = ' is invalid. please input 13 ASCII chars as 128 bits of
+WEP key.'
+altWsWep2 = ' is invalid. please input 5 ASCII chars as 64 bits of WEP
+key.'
+
+htmlWsTitle1 = 'WLAN Configuration -- Security'
+
+htmlWsContent1 = 'The page configurate security attribute of Wlan,
+including Authentication way, Data encryption way, Wirless network
+authentication key an\
+d the length of it. '
+
+htmlWsSsid = 'Select SSID:'
+htmlWsCert = 'Wlan authentication way:'
+htmlWsMode1 = 'open'
+htmlWsPrekey = 'WPA pre-share key:'
+htmlWsHyperLink = 'click here to display'
+htmlWsWpaEnc = 'WPA Encryption:'
+htmlWsWpaLen = 'Key Length:'
+htmlWsKeyIdx = 'Current key index:'
+htmlWsKeyVal = 'Wlan key'
+htmlWsNote = '128 bits of key require 13 ASCII chars, and 64 bits of
+key require 5 ASCII chars'
+htmlWsBack = 'Back'
+htmlWsSave = 'Save/Apply'
+
+
+As we known, shtml page has two type information, one is dynamic
+information, such as alert information and confirmation information,
+prefix is defined 'alt'(for example, 'altWsStat') and 'cfm'(like
+'cfmNgChg1'); the other is static information, for example, html
+title, label name, prefix is defined 'html'(like 'htmlWsSsid').
+
+Every shtml page information is separated by section ([FILENAME]), and
+line begin with '#' is as comments line.
+
+Realization Detail as follows:
+
+When shttpd initialize, it will parse language.res, create a msgidx_t
+array:
+typedef struct msgidx_struct{
+    char filename[BUFFLEN/16];  /* filename length: LINE_LEN/16 - 1 */
+    unsigned int idxbegin;      /* index begin filename */
+    unsigned int idxend;        /* index end file name */
+}msgidx_t;
+
+filename records [FILENAME], such as 'wlcfg.shtml', idxbegin records
+[FILENAME] begin position, and idxend records [FILENAME] end
+position in language.res. The function named shttpdext_create_index
+which called shttpd initialization.
+
+And string replacement realization by ssi function, which named
+ssi_get_language. It realize to search [FILENAME] in msgidx_t array,
+then open language.res file, fseek to specified position in resource
+file, and output string to shtml page, then return to browser for
+display. 
+
+ssi_get_language is embeded in shtml pages. It accept two type
+parameters. One style likes this:
+<!--#call get_language wlcfg.shtml -->
+
+Output as follows(to English):
+var altSsid1 = 'Please setup SSID and then set advanted options.';
+var altSsid2 = 'SSID SSID can not be null.';
+var altSsid3 = ' can not exceed 32 characters.';
+var altSsid4 = 'SSID contains illegal characters, please input
+again!';
+
+var cfmNgChg1 = 'Please reboot router to active changes after save';
+
+var htmlWlTitle1 = 'Wireless Configuration -- Basic';
+
+var htmlWlContent1 = 'This page will config the basic property of
+WLAN, including enable / forbid WLAN,search hidden SSIDs from the scan
+of the work station, set SSID.';
+var htmlWlContent2 = 'click the button "Save/Apply",The basic
+configuration of wireless will active';
+
+var htmlWlEnable1 = 'Enable Wireless';
+var htmlWlCancel = 'Cancel Broadcast';
+var htmlWlInfo1 = 'Notice: Radio Power decrease from 1 to 5';
+var htmlWlMode = 'Mode:';
+var htmlWlChannel = 'Channel:';
+var htmlWlCurChan = 'Current Channel: ';
+var htmlWlRate = 'Rate:';
+var htmlWlRadioExt = 'Channel Extension Mode:';
+var htmlWlExtMode1 = 'Mode 20MHZ';
+var htmlWlExtMode2 = 'Mode 20/40MHZ';
+var htmlWlExtMode3 = 'Mode 40MHZ';
+var htmlWlMultiRate = 'Multicast:';
+var htmlWlRadioPower = 'Radio Power:';
+var htmlWlSave = 'Save/Apply';
+var htmlWlAdvance = 'Advance';
+
+The other style likes:
+<!--#call get_language wlcfg.shtml labWlTitle1-->
+
+Which output(to English):
+Wireless Configuration -- Basic
+
+That is basic introduce to international web pages. Thanks!

@@ -1,0 +1,34 @@
+# Configs that need to be declared before 
+# including parent board configs.
+#export BUILD_WPA2=y
+
+
+
+# Include driver config file of parent board.
+# We assume BOARD_TYPE for offload targets is PARENT_BOARD-xxx... 
+# The string before the first '-' is used as name of parent board.
+# Change this if necessary.
+PARENT_BOARD=$(shell echo $(BOARD_TYPE) | cut -d - -f 1)
+export PARENT_BOARD
+include scripts/$(PARENT_BOARD)/config.$(PARENT_BOARD)
+
+
+
+# Configs that override parent board 
+# configs or are specific to offload.
+export HOST_OFFLOAD=1
+export LEGACY_WPA2=1
+export ETH_CONFIG=_s17
+export ETH_CONFIG2=
+export ATH_GMAC_SUPPORT_DUAL_PHY=0
+export ATH_SUPPORT_VLAN=0
+export BUILD_EXT=
+
+
+# added for unwanted files removal
+export INSTALL_BLACKLIST="etc/ath/apcfg etc/ath/apup etc/ath/apdown etc/ath/makeVAP etc/ath/activateVAP etc/ath/killVAP sbin/wpa_supplicant usr/bin/gdbserver sbin/apstart lib/libthread_* sbin/athst* man/*"
+
+export RADIUS_OFFLOAD=y
+
+#export AH_CAL_LOCATIONS_PCI=0xbfff1000
+#export EXTRAVERSION=-9999.4

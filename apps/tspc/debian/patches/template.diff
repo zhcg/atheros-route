@@ -1,0 +1,80 @@
+sane initscript template
+
+Index: tspc-2.1.1/template/linux.sh
+===================================================================
+--- tspc-2.1.1.orig/template/linux.sh	2004-10-07 00:31:32.000000000 +0200
++++ tspc-2.1.1/template/linux.sh	2004-11-07 22:31:48.000000000 +0100
+@@ -135,9 +135,7 @@
+    # 
+    # Default route  
+    Display 1 "Adding default route"
+-   ExecNoCheck $route -A inet6 del ::/0 2>/dev/null # delete old default route
+    ExecNoCheck $route -A inet6 del 2000::/3 2>/dev/null  # delete old gw route
+-   Exec $route -A inet6 add ::/0 dev $TSP_TUNNEL_INTERFACE
+    Exec $route -A inet6 add 2000::/3 dev $TSP_TUNNEL_INTERFACE
+ fi
+ 
+@@ -147,9 +145,10 @@
+    Display 1 "Kernel setup"
+    if [ X"${TSP_PREFIXLEN}" != X"64" ]; then
+       #Better way on linux to avoid loop with the remaining /48?
+-      $route -A inet6 add $TSP_PREFIX::/$TSP_PREFIXLEN dev $TSP_HOME_INTERFACE 2>/dev/null
++      ExecNoCheck $route -A inet6 del $TSP_PREFIX::/$TSP_PREFIXLEN dev $TSP_HOME_INTERFACE 2>/dev/null
++      Exec $route -A inet6 add $TSP_PREFIX::/$TSP_PREFIXLEN dev $TSP_HOME_INTERFACE
+    fi
+-   Exec $sysctl -w net.ipv6.conf.all.forwarding=1 # ipv6_forwarding enabled
++   Exec $sysctl -q -w net.ipv6.conf.all.forwarding=1 # ipv6_forwarding enabled
+    Display 1 "Adding prefix to $TSP_HOME_INTERFACE"
+    OLDADDR=`$ifconfig $TSP_HOME_INTERFACE | grep "inet6.* $PREF" | sed -e "s/^.*inet6 addr: //" -e "s/ Scope.*\$//"`
+    if [ ! -z $OLDADDR ]; then
+@@ -157,28 +156,28 @@
+       Exec $ifconfig $TSP_HOME_INTERFACE inet6 del $OLDADDR
+    fi
+    Exec $ifconfig $TSP_HOME_INTERFACE add $TSP_PREFIX::1/64
+-   # Router advertisement configuration 
+-   Display 1 "Create new $rtadvdconfigfile"
+-   echo "##### rtadvd.conf made by TSP ####" > "$rtadvdconfigfile"
+-   echo "interface $TSP_HOME_INTERFACE" >> "$rtadvdconfigfile"
+-   echo "{" >> "$rtadvdconfigfile"
+-   echo " AdvSendAdvert on;" >> "$rtadvdconfigfile"
+-   echo " prefix $TSP_PREFIX::/64" >> "$rtadvdconfigfile"
+-   echo " {" >> "$rtadvdconfigfile"
+-   echo " AdvOnLink on;" >> "$rtadvdconfigfile"
+-   echo " AdvAutonomous on;" >> "$rtadvdconfigfile"
+-   echo " };" >> "$rtadvdconfigfile"
+-   echo "};" >> "$rtadvdconfigfile"
+-   echo "" >> "$rtadvdconfigfile"
+-   /etc/init.d/radvd stop
+-   if [ -f $rtadvdconfigfile ]; then
+-      KillProcess $rtadvdconfigfile
+-      Exec $rtadvd -u radvd -C $rtadvdconfigfile
+-      Display 1 "Starting radvd: $rtadvd -u radvd -C $rtadvdconfigfile"
+-   else
+-      echo "Error : file $rtadvdconfigfile not found"
+-      exit 1
+-   fi
++#   # Router advertisement configuration 
++#   Display 1 "Create new $rtadvdconfigfile"
++#   echo "##### rtadvd.conf made by TSP ####" > "$rtadvdconfigfile"
++#   echo "interface $TSP_HOME_INTERFACE" >> "$rtadvdconfigfile"
++#   echo "{" >> "$rtadvdconfigfile"
++#   echo " AdvSendAdvert on;" >> "$rtadvdconfigfile"
++#   echo " prefix $TSP_PREFIX::/64" >> "$rtadvdconfigfile"
++#   echo " {" >> "$rtadvdconfigfile"
++#   echo " AdvOnLink on;" >> "$rtadvdconfigfile"
++#   echo " AdvAutonomous on;" >> "$rtadvdconfigfile"
++#   echo " };" >> "$rtadvdconfigfile"
++#   echo "};" >> "$rtadvdconfigfile"
++#   echo "" >> "$rtadvdconfigfile"
++#   /etc/init.d/radvd stop
++#   if [ -f $rtadvdconfigfile ]; then
++#      KillProcess $rtadvdconfigfile
++#      Exec $rtadvd -u radvd -C $rtadvdconfigfile
++#      Display 1 "Starting radvd: $rtadvd -u radvd -C $rtadvdconfigfile"
++#   else
++#      echo "Error : file $rtadvdconfigfile not found"
++#      exit 1
++#   fi
+ fi
+ 
+ Display 1 "--- End of configuration script. ---"

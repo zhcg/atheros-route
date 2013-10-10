@@ -1,0 +1,7 @@
+template.diff
+syslog.diff
+silence.diff
+makefile-cflags.diff
+getaddrinfo.diff
+config.diff
+manpages.diff

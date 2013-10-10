@@ -1,0 +1,10 @@
+
+ * Implement partial updates
+ * Implement multicast announces
+ * Implement unicast requests and responses
+ * Implement Access Control Lists
+ * Implement RIP-2 authentication
+ * Implement smart route aggregation
+ * RIP-1 backward compatibility
+ * Support for other IGP's? Ex: RTMP?
+ * Implement WanFLEX-style config

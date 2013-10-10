@@ -1,0 +1,208 @@
+    Proposed Plan for using InitRamFS
+    Ted Merrill
+    Nov. 2008
+    ====================================================================
+
+    What is InitRamFS:
+    ----------------------------------
+
+    Initramfs is a technique (not a file system).
+    The related file system is known as "rootfs" which is basicly "tmpfs",
+    which is psuedo-filesystem which is really only a thin layer over
+    the Linux file buffering system... essentially it is file buffering
+    without an actual file system underneath.
+    Initramfs is the technique of decompressing a compressed archive file
+    into rootfs (the linux file buffers in RAM).
+
+    Initramfs is a required feature of the linux kernel, and at least
+    a minimal initramfs archive file is always compiled into the kernel.
+    (This does occupy flash space but the RAM it uses is reclaimed by
+    the linux kernel for other uses).
+    The kernel configuration allows for specifying the source of the
+    archive file (more below).
+
+
+    Motivation for using InitRamFS:
+    ----------------------------------
+
+    ASSUMING that larger RAM costs about the same as smaller RAM, 
+    whereas FLASH memory is "precious", we can save flash at the expense
+    of using more ram.
+    The initramfs approach can help conserve ram because:
+    -- it eliminates the need for a flash file system such as squashfs
+    -- it will compress better than squashfs, due to the absence of
+        blocking requirements (squashfs+lzma does well with large block
+        sizes, but this implies large ram use).
+
+    Additional possible advantages of the initramfs approach:
+    -- Keeping all of the files in RAM is good in that there will be no
+        possible issues with paging latency.
+    -- All files are writeable (although not across reboots!) which 
+        simplifies software in various ways. To do this with squashfs
+        would require the additional component "unionfs".
+
+    [Both squashfs and initramfs do not provide a non-volatile storage
+    solution, which is a subject beyond the scope of this memo.]
+
+    The additional RAM required, compared with using a flash filesystem,
+    will be approx. equal to the uncompressed size of the files 
+    minus the "working set" of file buffers that would anyway be needed 
+    to keep parts of the files in RAM for use.
+
+    For a small AP, the extra RAM requirement will probably cause 16MB to be
+    insufficient, leading to 32MB requirement.
+    It is believed that 32MB will not cost more than 16MB for either
+    DDR1 or DDR2 but this has not been confirmed yet.
+
+    For the CTC requirements, 32MB may have been tight anyway but this
+    would definitely put it over the edge to using 64MB.
+    According to reliable price research, 64MB of DDR2 RAM costs about $1.10
+    vs. $1.05 for 32MB ... the difference could well go away next year.
+    Unfortunately, the CTC product may need to use Hydra which does not
+    support DDR2 ... we are awaiting price research.
+
+
+    About the Kernel Initramfs Implementation
+    ------------------------------------------------
+
+    The kernel initramfs implementation allows only that the archive
+    be a gzip-compressed cpio format archive.
+    It includes it's own private gzip decompressor that is not reused
+    elsewhere in the kernel.
+    A more optimal implementation might be to not compress at all,
+    thus saving the decompresser code.
+    The entire kernel is to be lzma compressed (in our plan), so there
+    may be no need for an inner compression.
+    However, it is highly desireable, at least at this stage of development,
+    to avoid kernel modifications, so we will probably want to stick with
+    the gzip-compressed cpio archive method, but using just a very
+    small archive which will trampoline to a larger archive (see below).
+
+    The initramfs archive is translated into data that is compiled into
+    the kernel.  According to one reading of the GPL, it would be 
+    required provide source code for the archive.  Trampolining to
+    a larger archive avoids this possible issue.
+
+    Fortunately, the kernel provides a number of choices for determining
+    what will be inside of the archive.
+    No kernel source code change is needed for this, it is only necessary
+    to make a minor change to the kernel config file.
+    Thus we easily provide the kernel initramfs archive that we want.
+
+    After the kernel decompresses the initramfs archive into rootfs, 
+    it checks to see if an executable /init exists, and if so then 
+    it makes this the leading "init" process... if not it searches through
+    filesystems it knows about to run e.g. /sbin/init as the leading
+    process.  This means that we can provide /init in the kernel initramfs
+    archive to do trampolining.
+
+
+    Initramfs Trampoline
+    -----------------------------------------------
+
+    Due to the reasons discussed above, an initial implementation of
+    our plan would use a trampoline method as follows.
+    The kernel initramfs archive would consist primarly of a single
+    "/init" program, which could be released under any license.
+    The /init program would do the following:
+    -- Locate the product archive (see below).
+    -- Lzma-decompress the product archive and write the decompressed
+        files to rootfs.
+    -- Exec the traditional /sbin/init (a link to busybox).
+    The /init program can be deleted from rootfs after it is no longer
+    in use.
+
+
+    Plan Variant A: Self-Decompressing Blob, With Self-Contained Index
+    ------------------------------------------------------------------------
+
+    In this variant of the plan, the boot program (if any; the boot
+    program could be combined into the blob) jumps to e.g. the beginning
+    of the "blob" which contains code that uncompresses the kernel and
+    launches it.
+    The blob contains:
+    -- initial jump around a header
+    -- header identifying content of blob, offsets of components
+        therein, etc.
+    -- kernel decompresser code
+    -- lzma-compressed linux kernel
+    -- lzma-compressed product file archive
+
+    The linux kernel contains the /init trampoline discussed above;
+    /init finds the product file archive by finding the blob at a fixed
+    address in flash (or ?) and looking in the blob header to find 
+    the offset of the product file archive.
+    The blob might also be found by looking at e.g. 64KB boundaries
+    in flash until a signature is found (e.g. magic number at a specific
+    offset in the blob); the reduces the problem of locating the blob
+    to that of locating the flash (e.g. by hardcoded address).
+
+    Among other advantages of this plan variant are the fact that 
+    no modifications to boot program etc. are needed to accomodate
+    differences in sizes of kernel and program archives etc.,
+    so long as the total blob size is constrained.
+    Nor does the boot program need to know about the particular
+    compression used.
+    It might also be possible to eliminate having a separate boot program.
+
+
+    Plan Variant B: External Index, External Decompresser
+    ----------------------------------------------------
+
+    In this variant of the plan, the boot program knows about 
+    separate flash memory "slots" for kernel and for product file archive.
+    There is thus no "blob", instead the boot program can separately
+    address:
+    -- lzma-compressed kernel
+    -- product file archive
+    In this variant, the boot program can be used to separate download
+    the kernel and program archive.
+    The boot program decompresses and executes the kernel.
+    The /init program must either be compiled with the location
+    of the program archive, or must know how to read e.g. partition table.
+
+    None of the advantages discussed for plan variant A exist for variant B.
+    The flash partitioning layout must be modified to accomodate changes
+    in apportionment between kernel and files, and flash is wasted due
+    to rounding up to whole flash blocks (which itself is dependent
+    upon the type of flash).
+    This plan's main advantages are that it might work better with some
+    existing boot programs, and it avoids rewriting some code necessary
+    for booting a kernel that is found in existing boot programs.
+    It is thus best as a first developmental step.
+
+
+    Discussion of Compression Ratios
+    -----------------------------------------------------------
+    Large files should see better compression ratios due to reduced
+    affect of overhead.
+
+    A possibly representative access point build was chosen as an example.
+    The build directory is reported by "du" to be 5840 blocks == 5980160
+    bytes, but the size when put into a tar archive is 5171200; the difference
+    is due to wasted portions of file system blocks.
+    When compressed with lzma, with no options, the compressed tar file
+    size is 1345517 (interestingly, using --best option resulted in a
+    slightly large file).
+    This is a compression ratio of 5171200/1345517 == 3.84 .
+
+
+    Development Steps
+    ----------------------------------------------------------
+
+    (1) Replace default initramfs archive with one with a "hello world"
+        /init program which just prints out "hello world".
+        This demonstrates that the ability to control the initramfs
+        archive and to have the /init program executed.
+    (2) Replace "hello world" /init program with one that lzma decompresses
+        from a fixed address (in flash) and exec's /sbin/init if possible.
+        Testing requires placing a file system image into a lzma'd file
+        and using e.g. redboot commands to place that in the required
+        location in flash.
+        [Steps (1) and (2) can be combined in the same code for /init].
+        The software should work normally but of course all file modifications
+        are lost on reboot.
+    (3) For CTC support, add back an (empty) jffs2 file system.
+    (4) Switch to variant A discussed above for maximal savings,
+        including lzma compression of kernel.
+

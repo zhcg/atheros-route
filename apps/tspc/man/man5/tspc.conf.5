@@ -1,0 +1,249 @@
+.\"
+.\" This source code copyright (c) Hexago Inc. 2002-2004.
+.\"
+.\" This program is free software; you can redistribute it and/or modify it 
+.\" under the terms of the GNU General Public License (GPL) Version 2, 
+.\" June 1991 as published by the Free  Software Foundation.
+.\"
+.\" This program is distributed in the hope that it will be useful, 
+.\" but WITHOUT ANY WARRANTY;  without even the implied warranty of 
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+.\" See the GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License 
+.\" along with this program; see the file GPL_LICENSE.txt. If not, write 
+.\" to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+.\" MA 02111-1307 USA
+.\"
+.\" tspc.conf.5,v 1.6 2004/07/07 19:54:18 smitra Exp
+.\"
+.Th Tunnel Setup Protocol client: File formats manual
+.Dd April, 2001
+.Dt TSPC.CONF 5
+.Os BSD 4.2
+.Sh NAME
+.Nm tspc
+.Nd tspc configuration file
+.Sh SYNOPSIS
+.Nm tspc.conf
+.Sh DESCRIPTION
+The
+.Xr tspc 8
+is a client program which enables a host to query a tunnel server to establish
+a tunnel between the host and the server. The tspc configuration file contains
+information that is read by 
+.Xr tspc 8
+for specific information about the server and the tunnel to be established.
+.Pp
+This file is designed to be human readable and may be edited by any text
+editor. The file consists of tokens and values, which are separated by the
+equal sign. Each "Token=Value" pair must be on their own line.
+.Pp
+The different configuration options are:
+.Bl -tag -width 
+.It Sy tsp_dir
+The current directory where tspc programs and templates are located. This
+variable might look something like this:
+.Pp
+tsp_dir=/usr/local/tsp
+.Pp
+This variable is MANDATORY.
+.It Sy auth_method
+Authentication method: auth_method=any|digest-md5|anonymous|plain
+.Pp
+.Pa any 
+is the preferred one. The most secure mechanism common to the client 
+and the broker will be used.  
+.Pp
+.Pa digest-md5 
+sends the username in clear, but not the password.  
+.Pp
+.Pa plain 
+sends both username and password in clear.  
+.Pp
+.Pa anonymous
+sends no username and no password.
+.Pp
+Default: any
+.It Sy client_v4
+IPv4 address of the client tunnel endpoint. If the host has more than one
+IPv4 address, it is recommended to manually set this variable with its local
+IPv4 address as value. If set to auto, it chooses the source ip used when
+communicating with the server. This variable might look something like this:
+.Pp
+client_v4=a.b.c.d
+.Pp
+client_v4=auto
+.Pp
+Default: any
+.It Sy userid
+The userid is used for authentication to the server. By default tspc uses
+anonymous as the userid. The TSP protocol allows both anonymous and
+authenticated tunnel setup. Look at the server policies for supported modes and
+related services and for procedures to register your user name. The syntax is:
+.Pp
+userid=anonymous|user_name
+.Pp
+This variable is MANDATORY.
+.It Sy passwd
+passwd=your_password
+.Pp
+Leave empty if userid=anonymous
+
+
+.It Sy server
+Name and port number of the tunnel server. This variable is used to specify the
+TSP server to be queried. An IPv4 address or FQDN (Fully Qualify Domain Name)
+can be used. The port number is optional. Default TSP port is 3653.
+.Pp
+server=host[:port]
+.Pp
+server=broker.freenet6.net
+.Pp
+server=192.168.1.1:3653
+.Pp
+This variable is MANDATORY
+
+
+.It Sy template
+This parameter is used to tell which configuration template must be used to
+configure the tunnel. The configuration template is a script file, located in
+the template directory of the package, that contains the system commands to be
+executed for tunnel setup. The parameters are passed to the script file as
+environment variables. Normally the template parameter is set when the package
+is built for the specific operating system. Look in the template directory to
+see which ones are available. The template name must be the file name without
+the .sh or .bat suffix.
+.Pp 
+template=linux
+.Pp
+This variable is MANDATORY.
+
+
+.It Sy retry_delay
+The retry_delay option is used to set the number of seconds to sleep before
+retrying tunnel request to tsp server after request failure. It will 
+retry until success. Set it to 0 if you don't want to retry.
+.Pp
+Default: 30
+.It Sy tunnel_mode
+Tunnel encapsulation mode:
+.Pp
+tunnel_mode can take the following values
+.Pp
+"v6v4"  request an IPv6 in IPv4 tunnel
+.Pp
+"v6udpv4" request an IPv6 in UDP in IPv4 tunnel (for clients behind a NAT)
+This type of tunnel is supported under Linux, FreeBSD and Windows.
+.Pp
+"v6anyv4"   Let the broker choose the tunnel mode appropriate for my client
+with v6anyv4, the broker will discover if the client is behind a NAT or not
+and will offer to the TSP client the correct tunnel mode.  
+.Pp
+Default: v6anyv4
+
+.It Sy if_tunnel_v6v4
+Logical interface name that will be used for the configured tunnel (IPv6 over
+IPv4). The syntax is:
+.Pp
+if_tunnel_v6v4=name
+.Pp
+Under *BSD: gif0
+.Pp
+Under Linux: sit0
+.Pp
+Under Windows: 2
+.Pp
+This variable is MANDATORY.
+
+.It Sy if_tunnel_v6udpv4
+Logical interface name that will be used for v6udpv4 tunnels (IPv6 over
+UDPv4). The syntax is:
+.Pp
+if_tunnel_v6udpv4=name
+.Pp
+Under FreeBSD: tun1
+.Pp
+Under Linux: tun
+.Pp
+Under Windows: tunv6
+.Pp
+
+.It Sy proxy_client
+proxy_client indicates that this client acts as a TSP proxy for
+some remote client tunnel endpoint machine. It is set to "yes" 
+if the machine running the tsp client requests a tunnel for another machine.
+(e.g: cisco template).  This must be used with a static IPv4 address in 
+client_v4 variable.
+.Pp
+NOTE: proxy_client=yes is incompatible with tunnel_mode=v6udpv4
+.Pp
+Default: no
+.Pp
+.It Sy keepalive 
+keepalive indicates that this client will send keepalives to keep the
+tunnel active and detect inactive tunnel (if no response from
+server). When a tunnel is detected inactive, the TSP client
+automatically reconnects to the server.
+keepalive_interval is a suggestion from the TSP client to the broker
+for the interval between two keepalive messages. The broker
+may impose a different interval value to the client if the interval
+value is too low.
+.Pp
+keepalive=yes
+.Pp
+Default: yes
+.Pp
+.It Sy keepalive_interval
+.Pp
+keepalive_interval=30
+.Pp
+Default: 30
+.Pp
+.It Sy host_type
+In order to configure the machine as a router, a prefix must be requested
+and an interface must be specified.  The prefix will be advertised
+on that interface.
+.Pp
+host_type=host|router
+.Pp
+Default: host
+.Pp
+.It Sy prefixlen
+prefixlen specifies the required prefix length for the TSP client
+network. Valid values are 64 or 48. 64 is for one link. 48 is for
+a whole enterprise network (65K links).
+.Pp
+Default: 48
+.Pp
+.It Sy if_prefix
+if_prefix is the name of the OS interface that will be configured
+with the first /64 of the received prefix from the broker and the
+router advertisement daemon is started to advertise that prefix
+on the if_prefix interface.
+.Pp
+.It Sy dns_server
+This parameter is used to specify the DNS servers that should be used for
+reverse DNS delagation of the prefix allocated. Syntax is:
+.Pp
+dns_server=fqdn[:fqdn]...
+.Pp
+For example, to use ns1.nowhere.net and ns1.nowhere.net as authoritative NS
+servers for reverse DNS of the prefix, this line would be used in tspc.conf:
+.Pp
+dns_server=ns1.nowhere.net:ns2.nowhere.net
+.Pp
+Never use an IP address as a DNS server name.
+.Pp
+.El
+.Sh FILES
+.Bl -tag -width /install/dir/bin/tspc.conf -compact
+.It Pa /install/dir/bin/tspc.conf
+.It Pa /install/dir/bin/tspc.conf.sample
+.El
+.Sh SEE ALSO
+.Xr tcpc 8 ,
+.Rs
+Hexago Web site: http://www.hexago.com
+.Re
+.\".Sh HISTORY

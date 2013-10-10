@@ -1,0 +1,126 @@
+#
+# A script to concatenate 1st stage vmlinux and
+# ramdisk. Linux is padded up as specified in
+# the kernel command line argument. Ramdisk is
+# appended to it.
+#
+
+an=vmlrd		# Default array name
+
+f1=vmlinux.bin		# Linux
+f2=db12x-ramdisk.gz	# RAM Disk
+
+kba=0x80002000		# Kernel Base Address
+
+db=0			# debug
+bc=			# build config
+
+usage()
+{
+	cmd=`basename $0`
+
+	cat << EOF
+
+Usage: $cmd [ options ]
+
+	Options:				Default value
+	-----------------------------------------------------
+		-1	vmlinux.bin file	$f1
+		-2	ramdisk file		$f2
+		-b	build config
+		-d	debug
+		-k	Kernel Base Address	$kba
+		-h	help
+		-o	output array		$an
+
+	Note:	Entry point and load address will be assumed as hex.
+		Donot prefix '0x'
+
+EOF
+	exit 1
+}
+
+#
+# Parse command line options
+#
+while [ $# -gt 0 ]; #{
+do
+	case $1 in #{
+		"-1")	f1=$2;	shift; shift;;
+		"-2")	f2=$2;	shift; shift;;
+
+		"-b")	bc=$2;
+			f1=vmlinux${bc}.bin		# Linux
+			shift; shift;;
+
+		"-d")	db=1;	shift;;
+		"-h")	usage;;
+
+		"-k")	kba=$2;	shift; shift;;
+
+		"-o")	an=$2;	shift; shift;;
+
+		*) usage;;
+	esac #}
+done #}
+
+if [ $db -ne 0 ]; then
+	set -x
+fi
+
+fn=$an.c		# Default o/p file name
+tf=.$an.tmp		# temp/intermediate file
+
+#
+# Validate
+#
+if [ ! -f $f1 ]; then
+	echo "First f/w file not present"
+	exit 1
+fi
+
+if [ ! -f $f2 ]; then
+	echo "Second f/w file not present"
+	exit 1
+fi
+
+cat $f1 > $tf	# Start creating o/p file
+if [ $? -ne 0 ]; then
+	echo "Cannot create $tf"
+	exit 1
+fi
+
+# Compute pad size
+vs=`ls -l $f1 | awk '{print $5}'`	# vmlinux size
+rs=`ls -l $f2 | awk '{print $5}'`	# ram disk image size
+rs=`printf "%-7d" $rs`
+# RAM disk start address from kernel
+rd=`strings $f1 | grep rd_start= | sed 's/^.*rd_start=//' | sed 's/ .*//'`
+# pad size
+ps=$((rd - kba - vs))
+
+echo "Padding $ps bytes"
+
+# Generate pad bytes
+dd if=/dev/zero of=$tf.tmp bs=$ps count=1 > /dev/null
+
+cat $tf.tmp >> $tf
+
+cat $f2 >> $tf
+#update rd_size
+sed -i "s/rd_size=XXXXXXX/rd_size=$rs/" $tf
+
+#
+# This script would be invoked from images/<board>
+# directory. refer to bin2hex appropriately
+#
+../../boot/utility/bin/bin2hex $tf $fn 0 0 $an
+
+cat vmlinux${bc}.info | sed 's/:/ =/' | sed 's/^/unsigned long '$an'_/' | sed 's/$/;/' >> $fn
+
+mv -f $tf ${an}.bin
+rm -f $tf.tmp
+
+if [ $db -ne 0 ]; then
+	set +x
+fi

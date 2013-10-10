@@ -1,0 +1,29 @@
+#!/bin/sh
+#
+# buildmips -- this script allows compiling wpa2 software without
+#       having to invoke the entire build chain
+#       It is necessary to have the cross compiler built;
+#       the driver "madwifi" source code must be installed but need
+#       not be built.
+# Notes:
+#       Reccommended to do "make clean" first.
+#       Output files are installed in "install" subdirectory.
+
+# Set BUILD_WPA2_DBUG to y to build static linked, unoptimized executables
+# most suitable for debugging.
+export BUILD_WPA2_DEBUG=n
+MADWIFIPATH=`find ../../wlan -name ieee80211.h | sed -e 's/\net80211\/ieee80211.h//'`
+echo FOUND MADWIFIPATH $MADWIFIPATH
+export MADWIFIPATH=`cd $MADWIFIPATH && pwd`
+
+WPA2=`dirname $0`
+TOP=`cd $WPA2/../../ && pwd`
+CROSS_PATH=$TOP/build/gcc-3.4.4-2.16.1/build_mips/bin
+CROSS_PREFIX=$CROSS_PATH/mips-linux-uclibc
+export PATH="$CROSS_PATH:$PATH"
+
+export CC=$CROSS_PREFIX-gcc
+export AR=$CROSS_PREFIX-ar
+export LD=$CROSS_PREFIX-ld
+export COPTS=-D__MIPSEL__
+make "$@" 2>&1 | tee junk

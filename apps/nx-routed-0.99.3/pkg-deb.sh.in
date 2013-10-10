@@ -1,0 +1,45 @@
+#! /bin/sh
+
+INSTALL="@INSTALL@"
+
+# check files
+if [ ! -e pkg-deb.tgz ]
+then
+    echo "Cant find pkg-deb.tgz"
+    exit 1
+fi
+
+# make stuff
+make all
+if [ $? != 0 ]
+then
+    echo "Make fail? Did you do configure?"
+exit 1
+fi
+# create dir
+if [ -d pkg ]
+then
+    rm -rf pkg
+fi
+mkdir pkg
+# install files
+tar -xzf pkg-deb.tgz -C pkg
+
+
+${INSTALL} -o root -g root -m 700 bin/routed pkg/usr/local/sbin/nx-routed
+${INSTALL} -o root -g root -m 644 conf/routed.conf pkg/etc/routed.conf
+${INSTALL} -o root -g root -m 644 routed.8 pkg/usr/share/man/man8/nx-routed.8
+${INSTALL} -o root -g root -m 644 routed.conf.5 pkg/usr/share/man/man5/routed.conf.5
+
+${INSTALL} -o root -g root -m 644 ChangesLog pkg/usr/share/doc/nx-routed-0.99/ChangesLog
+${INSTALL} -o root -g root -m 644 INSTALL pkg/usr/share/doc/nx-routed-0.99/INSTALL
+${INSTALL} -o root -g root -m 644 LICENSE pkg/usr/share/doc/nx-routed-0.99/LICENSE
+${INSTALL} -o root -g root -m 644 README pkg/usr/share/doc/nx-routed-0.99/README
+${INSTALL} -o root -g root -m 644 TODO pkg/usr/share/doc/nx-routed-0.99/TODO
+${INSTALL} -o root -g root -m 644 doc/rfc2453.html pkg/usr/share/doc/nx-routed-0.99/rfc2453.html
+
+#find pack -type d | xargs chmod 755
+dpkg-deb --build pkg
+mv pkg.deb pkg/nx-routed_0.99-1_i386.deb
+
+echo "nx-routed_0.99-1_i386.deb should be in pkg directory q:)"

@@ -1,0 +1,3 @@
+#!/bin/sh
+
+pppd pty 'pppoe -I br0 -T 80 -U -m 1412' noipdefault noauth default-asyncmap defaultroute hide-password nodetach usepeerdns mtu 1492 mru 1492 noaccomp nopcomp novj novjccomp user ad54401502 lcp-echo-interval 20 lcp-echo-failure 3 debug &

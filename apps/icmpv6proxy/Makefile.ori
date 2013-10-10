@@ -1,0 +1,57 @@
+# Makefile for igmpproxy -- 
+# Version 0.1 beta2 from:
+# http://sourceforge.net/projects/igmpproxy
+# with minor modifications.
+
+# Shared Makefile stuff, place at BEGINNING of this Makefile
+# Makefile.defs needs GWTOP defined!
+GWTOP = ../../..
+include $(GWTOP)/Makefile.defs
+
+# What we build by default:
+ALL = igmpproxy
+
+# For every C file to be compiled, place it's object file in the OBJS list
+# (as required by Makefile.rules).
+OBJS = igmpmain.o igmpsnooping.o config.o confread.o request.o udpsock.o mcgroup.o rttable.o \
+	   igmp.o ifvc.o callout.o kern.o syslog.o lib.o mroute-api.o fdbtable.o switch-api.o
+
+# Needed libraries (note: .mk files not present during clean!)
+-include $(GWINCLUDE)/libath.mk
+
+# RULES ---------------------------------------------------------------
+
+CFLAGS += -D_GNU_SOURCE
+
+# Making default targets:
+all: build.h local install
+	@echo All done in `pwd`
+
+build.h	:  
+	echo '#define BUILD "' `date +%y%m%d` '"' >build.h
+
+local: $(ALL)
+	@echo Made outputs in `pwd`
+
+# Making our program:
+igmpproxy : $(OBJS) $(LIBS)
+	$(CC) $(CFLAGS) -g -o $@ $(OBJS) $(LIBS)
+	@echo Build $@ successufully...
+
+# Doing installation (see comments at top of this file)
+install: local
+	cp -a -f igmpproxy $(INSTALL_ROOT)/sbin
+	@echo Installed outputs from `pwd`
+
+# Remove all generated files
+clean: default_clean rm_build_h	# from Makefile.rules
+
+rm_build_h:
+	-rm build.h
+
+# END --------------------------------------------------------------------
+
+# Shared Makefile stuff, place at END of this Makefile
+include $(GWTOP)/Makefile.rules
+
+

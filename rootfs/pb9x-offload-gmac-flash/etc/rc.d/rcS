@@ -1,0 +1,63 @@
+#!/bin/sh
+
+# This script runs when init it run during the boot process.
+# Mounts everything in the fstab
+
+mount -a
+mount -o remount +w /
+
+#
+# Mount the RAM filesystem to /tmp
+#
+
+mount -t ramfs -n none /tmp
+
+export PATH=$PATH:/etc/ath
+
+insmod /lib/modules/2.6.31/net/athrs_gmac.ko
+
+
+##
+## Export the current system configuration
+##
+#. /etc/ath/stacfg
+export WAN_IF=eth0
+export LAN_IF=eth1
+
+##
+## Bring up the network
+##
+
+ifconfig $WAN_IF up
+ifconfig $LAN_IF up
+
+# enable jumbo frame support for size 2048
+ethreg -i $WAN_IF -j 1
+ethreg -i $WAN_IF -s 2048
+
+/etc/rc.d/rc.network
+/etc/rc.d/rc.bridge
+
+#
+# Enable USB
+#
+
+insmod /lib/modules/2.6.31/usb/usbcore.ko
+insmod /lib/modules/2.6.31/usb/ehci-hcd.ko
+
+#
+# Untar the debug tools into /tmp/tools
+#
+
+mkdir /tmp/tools
+cd /tmp/tools
+tar -xzvf /sbin/debug.tgz
+export PATH=$PATH:/tmp/tools
+
+/usr/sbin/telnetd
+/bin/factoryreset /dev/freset
+/usr/sbin/httpd -h /usr/www/
+
+# start the page cache/kmem cache cleanup timer in the kernel
+# echo 1 > /proc/sys/vm/drop_caches
+

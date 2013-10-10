@@ -1,0 +1,66 @@
+#!/bin/sh
+#
+# routed	Start the routed daemon.
+
+# chkconfig: - 50 50
+# description: Start the routed daemon.
+#
+# processname: @sbindir@/nx-routed
+# config: @etcdir@/routed.conf
+# pidfile: /var/run/routed
+#
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; version 2 dated June, 1991.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program;  if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave., Cambridge, MA 02139, USA.
+#
+
+sbindir=@sbindir@
+rundir=/var/run/routed
+
+ROUTED=$sbindir/nx-routed
+DESC="routed"
+NAME=nx-routed
+
+ARGS=""
+
+. /etc/rc.d/init.d/functions
+
+test -f $ROUTED || exit 0
+
+case "$1" in
+  start)
+	echo -n "Starting $DESC:"
+	echo -n " radiusd"
+	daemon $ROUTED
+	echo "."
+	;;
+  stop)
+	[ -z "$2" ] && echo -n "Stopping $DESC: "
+	killproc $ROUTED
+	[ -z "$2" ] && echo "routed."
+	;;
+  reload|force-reload)
+	echo "Reloading $DESC configuration files."
+	killproc -1 $ROUTED
+	;;
+  restart)
+	sh $0 stop quiet
+	sleep 3
+	sh $0 start
+	;;
+  *)
+        echo "Usage: /etc/init.d/$NAME {start|stop|reload|restart}"
+        exit 1
+esac
+
+exit 0

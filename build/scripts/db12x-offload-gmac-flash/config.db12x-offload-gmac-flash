@@ -1,0 +1,68 @@
+# Configs that need to be declared before 
+# including parent board configs.
+
+
+# Include driver config file of parent board.
+# We assume BOARD_TYPE for offload targets is PARENT_BOARD-xxx... 
+# The string before the first '-' is used as name of parent board.
+# Change this if necessary.
+#PARENT_BOARD=$(shell echo $(BOARD_TYPE) | cut -d - -f 1)
+PARENT_BOARD=db12x-clean
+export PARENT_BOARD
+include scripts/$(PARENT_BOARD)/config.$(PARENT_BOARD)
+
+
+
+# Configs that override parent board 
+# configs or are specific to offload.
+export HOST_OFFLOAD=1
+export ENET_JUMBO_SUP=1
+export ETH_CONFIG=_s17
+export ETH_CONFIG2=
+export ATH_GMAC_SUPPORT_DUAL_PHY=0
+export ATH_SUPPORT_VLAN=0
+export ATH_SUPPORT_GREEN_AP=1
+export BUILD_EXT=
+
+export LEGACY_WPA2=1
+
+# added for unwanted files removal
+export INSTALL_BLACKLIST="etc/ath/apcfg etc/ath/apup etc/ath/apdown etc/ath/makeVAP etc/ath/activateVAP etc/ath/killVAP sbin/wpa_supplicant usr/bin/gdbserver sbin/apstart lib/libthread_* man/*"
+
+
+ifeq ($(BUILD_CONFIG),_mi124)
+export COMPRESSED_UBOOT=0
+export TARGETFSSIZE=2818048
+export BUILD_OPTIMIZED=
+export BUILD_ATHR_HOSTAP=0
+export ETH_CONFIG=_f1e
+export ATH_GMAC0_RX_CNT=300
+export ATH_GMAC1_RX_CNT=84
+endif
+
+export OFFLOAD_LAN_BYPASS=1
+export OFFLOAD_APPBR=1
+
+export ATH_SUPPORT_VOWEXT=1
+export ATH_VOW_EXT_STATS=1
+#Increasing Tx Buffers for VOW - So, please make sure that ATH_SUPPORT_VOWEXT is enabled before this
+ifeq ($(ATH_SUPPORT_VOWEXT), 1)
+
+ifeq ($(BUILD_CONFIG),_mi124)
+export ATH_GMAC0_RX_CNT=300
+export ATH_GMAC1_RX_CNT=84
+export ATH_GMAC0_TX_CNT=228
+export ATH_GMAC1_TX_CNT=28
+endif
+
+export ATH_TXBUF=1800
+
+#Temporary workaround for Tx Underruns occuring in case of DB120+CUS191 hardware-EV 89969. To be removed later.  
+export WAR_TX_UNDERRUN=1
+
+# for VoW debugging
+#export ETHDEBUG=1
+#export UMAC_SUPPORT_VI_DBG=1
+
+endif
+

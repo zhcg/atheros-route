@@ -1,0 +1,19 @@
+/abort.cxx/1.1/Thu Apr 10 18:08:36 2003//
+/buffer.cxx/1.13/Sat Jan 18 04:18:27 2003//
+/delete.cxx/1.7/Thu May 23 23:05:51 2002//
+/diag.cxx/1.17/Mon Jul 12 22:02:24 2004//
+/dummyxxmain.cxx/1.6/Thu May 23 23:05:51 2002//
+/eprintf.c/1.4/Thu May 23 23:05:51 2002//
+/fancy.cxx/1.12/Sat Jan 18 04:18:27 2003//
+/memcpy.c/1.6/Thu May 23 23:05:52 2002//
+/memset.c/1.6/Thu May 23 23:05:52 2002//
+/null.cxx/1.11/Sat Jan 18 04:18:27 2003//
+/pkgstart.cxx/1.7/Thu May 23 23:05:52 2002//
+/prestart.cxx/1.5/Thu May 23 23:05:52 2002//
+/pure.cxx/1.1/Thu Mar 27 17:49:46 2003//
+/simple.cxx/1.12/Sat Jan 18 04:18:27 2003//
+/startup.cxx/1.6/Thu May 23 23:05:53 2002//
+/strlen.cxx/1.1/Thu Apr 10 18:08:36 2003//
+/tcdiag.cxx/1.13/Mon Jan  5 21:58:24 2004//
+/userstart.cxx/1.5/Thu May 23 23:05:53 2002//
+D

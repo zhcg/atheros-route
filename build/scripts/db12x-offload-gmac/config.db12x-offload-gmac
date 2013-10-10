@@ -1,0 +1,58 @@
+# Configs that need to be declared before 
+# including parent board configs.
+
+
+# Include driver config file of parent board.
+# We assume BOARD_TYPE for offload targets is PARENT_BOARD-xxx... 
+# The string before the first '-' is used as name of parent board.
+# Change this if necessary.
+#PARENT_BOARD=$(shell echo $(BOARD_TYPE) | cut -d - -f 1)
+PARENT_BOARD=db12x-clean
+export PARENT_BOARD
+include scripts/$(PARENT_BOARD)/config.$(PARENT_BOARD)
+
+
+
+# Configs that override parent board 
+# configs or are specific to offload.
+export HOST_OFFLOAD=1
+export TARGETFSSIZE=2818048
+#export ENET_JUMBO_SUP=1
+export LEGACY_WPA2=1
+export ATH_SUPPORT_VLAN=0
+export BUILD_EXT=
+export AP_USB_LED_GPIO=
+
+export ROMBOOTDRV_SUPPORT_GMAC_FWD=1
+export ROMBOOTDRV_SUPPORT_GMAC_1000M=1
+
+# added for unwanted files removal
+export INSTALL_BLACKLIST="etc/ath/apcfg etc/ath/apup etc/ath/apdown etc/ath/makeVAP etc/ath/activateVAP etc/ath/killVAP sbin/wpa_supplicant usr/bin/gdbserver sbin/apstart lib/libthread_* sbin/athst* man/*"
+
+export BUILD_OPTIMIZED=y
+#export ATH_LOW_POWER_ENABLE=1
+export AH_CAL_IN_FLASH_PCI=0
+export AH_CAL_LOCATIONS_PCI=0xbfff1000
+export AH_CAL_IN_FLASH_AHB=1
+#export AH_CAL_LOCATIONS_AHB=0xbfff0000
+
+# define if Calibration data to be in send from Host
+export AH_CAL_IN_DRAM_FROM_HOST=0
+export AH_CAL_IN_DRAM_AHB=0
+export AH_CAL_LOCATIONS_DRAM_AHB=0x83ff8000
+export AH_CAL_IN_DRAM_PCI=0
+export AH_CAL_LOCATIONS_DRAM_PCI=0x83ffc000
+
+# Ethernet defines
+export ETH_CONFIG=_vir
+export ATH_VIR_PHY_DELAY=1
+export ATH_VIR_PHY_CFG=0x8a000000
+
+# Fragment Support for GMAC
+export GMAC_FRAGMENT_SUPPORT=1
+
+export CONFIG_I2S=0
+export ATH_WASP_I2S=0
+
+export OFFLOAD_LAN_BYPASS=1
+export OFFLOAD_APPBR=1

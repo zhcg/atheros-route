@@ -1,0 +1,133 @@
+<ui version="4.0" >
+ <class>SelectMode</class>
+ <widget class="QWidget" name="SelectMode" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>548</width>
+    <height>319</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string/>
+  </property>
+  <widget class="QWidget" name="gridLayout" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>50</y>
+     <width>531</width>
+     <height>190</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" >
+    <property name="margin" >
+     <number>0</number>
+    </property>
+    <property name="spacing" >
+     <number>12</number>
+    </property>
+    <item row="1" column="1" >
+     <widget class="QLabel" name="lblRegAp" >
+      <property name="text" >
+       <string>Register Access Point (AP) mode</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1" >
+     <widget class="QLabel" name="lblGetConfig" >
+      <property name="text" >
+       <string>Get configuration mode</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0" >
+     <widget class="QPushButton" name="pbGetConfig" >
+      <property name="text" >
+       <string>&amp;Get Configuration</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0" >
+     <widget class="QPushButton" name="pbRegSta" >
+      <property name="text" >
+       <string>Register Another &amp;Station</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1" >
+     <widget class="QLabel" name="lblConfigAp" >
+      <property name="text" >
+       <string>Configure Access Point (AP) mode</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" >
+     <widget class="QPushButton" name="pbRegAp" >
+      <property name="text" >
+       <string>Register &amp;Access Point</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1" >
+     <widget class="QLabel" name="lblRegSta" >
+      <property name="text" >
+       <string>Register Another Station (STA) mode</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0" >
+     <widget class="QPushButton" name="pbConfigAp" >
+      <property name="text" >
+       <string>&amp;Configure Access Point</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0" >
+     <widget class="QPushButton" name="pbSetConfig" >
+      <property name="text" >
+       <string>Set configuration &amp;manually</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="1" >
+     <widget class="QLabel" name="lblSetConfig" >
+      <property name="text" >
+       <string>Set configuration manually mode</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QLabel" name="label" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>521</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font" >
+    <font>
+     <pointsize>14</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text" >
+    <string>Select Mode</string>
+   </property>
+  </widget>
+ </widget>
+ <tabstops>
+  <tabstop>pbConfigAp</tabstop>
+  <tabstop>pbRegAp</tabstop>
+  <tabstop>pbRegSta</tabstop>
+  <tabstop>pbGetConfig</tabstop>
+  <tabstop>pbSetConfig</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

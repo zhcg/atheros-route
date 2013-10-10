@@ -1,0 +1,92 @@
+<style type="text/css">
+
+/*Credits: Dynamic Drive CSS Library */
+/*URL: http://www.dynamicdrive.com/style/ */
+
+#maintab{
+padding: 3px 0;
+margin-left: 0;
+margin-bottom: 0;
+font: bold 12px Verdana;
+list-style-type: none;
+}
+
+#maintab li{
+display: inline;
+margin: 0;
+}
+
+#maintab li a{
+text-decoration: none;
+padding: 3px 7px;
+margin-right: 3px;
+border: 1px solid #778;
+color: black;
+background: white;
+}
+
+#maintab li a:hover{
+color: navy;
+background: #EFFADC;
+}
+
+#maintab li.selected a{ /*selected main tab style */
+background-color: #EFFADC;
+border-color: navy;
+}
+
+#tabcontent{ /*2nd level content wrapper*/
+border: 1px solid #778;
+background-color: #EFFADC;
+height: 100% /*IE7 beta2 fix*/
+}
+
+#tabcontent ul{
+padding: 0;
+margin: 0;
+list-style-type: none;
+display: none;
+}
+
+#tabcontent ul li{
+display: inline;
+}
+
+#tabcontent ul.selected{ /*selected 2nd level content*/
+display: block;
+}
+
+#tabcontent ul li a{
+border-right: 1px solid #778;
+color: navy;
+padding: 2px 5px;
+display: block;
+float: left;
+text-decoration: none;
+}
+
+
+#tabcontent ul li a:hover{
+background-color: #D3F1A0;
+color: blue;
+}
+
+.clearfix:after{ /*Clear floats hack: http://positioniseverything.net/easyclearing.html*/
+content: "."; 
+display: block; 
+height: 0; 
+clear: both; 
+visibility: hidden;
+}
+
+.clearfix{
+display: inline-table;
+}
+
+/* Hides from IE-mac \*/
+* html .clearfix {height: 1%;}
+.clearfix {display: block;}
+/* End hide from IE-mac */
+
+
+</style>

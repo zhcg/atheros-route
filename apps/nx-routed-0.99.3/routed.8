@@ -1,0 +1,46 @@
+.\" Lalalala
+.\" Asdf
+.\"
+.TH NX-ROUTED 8 "SEPTEMBER 2003" Linux "User Manual"
+.SH NAME
+nx-routed \- Nexus routing daemon
+.SH SYNOPSIS
+.B nx-routed [-d] [-l
+.I debug-level
+.B ] [-u
+.I link-update-time
+.B ] [-p]
+.SH DESCRIPION
+.B nx-routed
+is routing information daemon with support of RIP-2 routing
+protocol, according to RFC 2453. RIP-2 is Interior Gateway Protocol used
+for automatic route aquisition and routing table maintaince in corporate
+computer networks. Running standalone
+.B nx-routed
+listens for incoming routing
+table updates from direcly connected links and sends periodical updates to
+other links. It also announces a list of networks and routes specified by
+system administator.
+.SH OPTIONS
+.IP -d
+Dont fork
+.IP "-l debug-level"
+Debug level
+.IP "-u link-update-time"
+Time interval for link update
+.IP -p
+Print debug also to
+.SM STDOUT.
+.SH FILES
+.I /etc/routed.conf
+.SH SIGNALS
+Signal
+.B SIGUSR1
+makes
+.B nx-routed
+rescan what interfaces are up.
+.SH SEE ALSO
+.BR routed.conf (5)
+.SH AUTHOR
+Valery Kholodkov <valery@penza.com.ru>
+Golden Line Communications Company

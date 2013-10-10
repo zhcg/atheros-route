@@ -1,0 +1,64 @@
+<HTML><HEAD>
+<LINK REL="stylesheet" href="../styleSheet.css" type="text/css">
+</head><body>
+<FORM METHOD=POST>
+<p class="headind"><INPUT TYPE="SUBMIT" NAME="UPDATE" VALUE="Update">
+&nbsp;&nbsp;<INPUT TYPE="SUBMIT" NAME="COMMIT" VALUE="Save">
+&nbsp;&nbsp;<INPUT TYPE="SUBMIT" NAME="RebootButton" VALUE="Reboot">
+&nbsp;&nbsp;<INPUT TYPE="SUBMIT" NAME="StartButton" VALUE="Start">
+&nbsp;&nbsp;<INPUT TYPE="SUBMIT" NAME="StopButton" VALUE="Stop">
+&nbsp;&nbsp;<INPUT TYPE="SUBMIT" NAME="FactoryResetButton" VALUE="FactoryReset"></p>
+<p class="topnavg">Basic AP Configuration</p>
+<table>
+<tr><td colspan=2><a class="header">Bridge Mode:&nbsp;</a><a class="headind">
+<INPUT type="radio" name="WAN_MODE" ~cWAN_MODE:bridged~ value=bridged> Bridged&nbsp;
+<INPUT type="radio" name="WAN_MODE" ~cWAN_MODE:dhcp~ value=dhcp>    DHCP&nbsp;
+<tr><td colspan=2><a class="header">Startup Mode:</a><a class="headind">
+<select name="AP_STARTMODE">
+<option ~sAP_STARTMODE:standard~ value=standard>Standard</option>
+<option ~sAP_STARTMODE:rootap~ value=rootap>RootAP</option>
+<option ~sAP_STARTMODE:repeater~ value=repeater>Repeater</option>
+<option ~sAP_STARTMODE:client~ value=client>Client</option>
+<option ~sAP_STARTMODE:multi~ value=multi>Multi</option>
+<option ~sAP_STARTMODE:multivlan~ value=multivlan>Multi VLAN</option>
+<option ~sAP_STARTMODE:extap~ value=extap>Extender AP</option>
+<option ~sAP_STARTMODE:extsta~ value=extsta>Extender Sta</option>
+</select><tr><td align="top">
+<table>
+<tr><td colspan=2><a class=topnavg>Local IP settings
+<tr><td><a class="header">Local IP Addr
+<td><INPUT type="text" id="AP_IPADDR" name="AP_IPADDR"
+           class="text2" size="20" maxlength="16"
+           value="~~AP_IPADDR~">
+<tr><td><a class="header">Local Netmask 
+<td><INPUT type="text" id="AP_NETMASK" name="AP_NETMASK"
+           class="text2" size="20" maxlength="16"
+           value="~~AP_NETMASK~">
+<tr><td><a class="header">Gateway IP
+<td><INPUT type="text" id="IPGW" name="IPGW"
+           class="text2" size="20" maxlength="16"
+           value="~~IPGW~">
+</table>
+<td align=top>
+<table>
+<tr><td colspan=2><a class=topnavg>WAN IP settings
+<tr><td><a class="header">WAN IP Addr
+<td><INPUT type="text" id="WAN_IPADDR" name="WAN_IPADDR"
+           class="text2" size="20" maxlength="16"
+           value="~~WAN_IPADDR~">
+<tr><td><a class="header">Local Netmask 
+<td><INPUT type="text" id="WAN_NETMASK" name="WAN_NETMASK"
+           class="text2" size="20" maxlength="16"
+           value="~WAN_NETMASK~">
+<tr><td><a class="header">Primary DNS
+<td><INPUT type="text" id="PRIDNS" name="PRIDNS"
+           class="text2" size="20" maxlength="16"
+           value="~~PRIDNS~">
+<tr><td><a class="header">Secondary DNS
+<td><INPUT type="text" id="SECDNS" name="SECDNS"
+           class="text2" size="20" maxlength="16"
+           value="~~SECDNS~">
+</table>
+
+</table>
+</body></html>

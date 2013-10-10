@@ -1,0 +1,286 @@
+export HAL=$(TOPDIR)/drivers/wlan/hal
+export ENETDIR=$(TOPDIR)/linux/drivers/ethernet/
+export ATH_TOOL_DIR=$(TOPDIR)/drivers/wlan/os/linux/tools/
+export ATH_DFS=$(TOPDIR)/drivers/wlan/lmac/dfs
+export ATHEROSPATH=$(TOPDIR)/drivers/wlan
+export PPTPMODPATH=$(INSTALL_ROOT)/lib/modules/$(KERNELVER)/net
+export PPTPDIR=${KERNELPATH}/drivers/net/
+export NATMODPATH=$(INSTALL_ROOT)/lib/modules/$(KERNELVER)/net
+export NATDIR=${KERNELPATH}/net/ipv4/netfilter
+export BOOTLOADERDIR=$(TOPDIR)/boot/u-boot
+export SQUASHFSLZMADIR=$(TOPDIR)/build/squashfs-lzma
+export SQUASHFSFILE=$(BOARD_TYPE)$(BUILD_CONFIG)-squashfs
+export TOOLCHAINDIR=$(TOPDIR)/build/$(TOOLCHAIN)
+export TOOLCHAINBUILDDIR=$(TOOLCHAINDIR)/toolchain_$(TOOLARCH)
+export TOOLCHAINBINDIR=$(TOOLCHAINDIR)/$(TOOLARCH)
+export BUILD_DIR=$(TOPDIR)/build
+export USBDIR=${KERNELPATH}/drivers/usb
+export USBMODPATH=$(INSTALL_ROOT)/lib/modules/$(KERNELVER)/usb
+
+#
+# Makefile for ap121-2.6.31 Newma build.  It has dependancies for both
+# the "common" build and the "jffs2" build.  This is unique for
+# each board type, and must be configured for each board.
+#
+
+# To enable library optimization (removing unused object code from
+# shared libraries) set BUILD_LIBRARYOPT to 'y' else 'n'
+BUILD_LIBRARYOPT := n
+
+ifeq ($(BUILD_CONFIG), _routing)
+ap121-2.6.31_build: common_mainline iptables_build wlan_driver_build\
+				nat_build $(BUILD_TYPE)_build
+else
+ap121-2.6.31_build: common_mainline wlan_driver_build $(BUILD_TYPE)_build
+endif
+
+ifeq ($(BUILD_ATHR_HOSTAP),1)
+common_mainline: common_build athr-hostapd athr-wpa_supplicant 
+else
+ifeq ($(BUILD_HOSTAPD_071),1) ###########################################
+common_mainline: common_build hostapd7.1 wpa_supplicant7.1
+else ####################################################################
+ifeq ($(BUILD_HOSTAPD_072),1) ###########################################
+common_mainline: common_build hostapd7.2 wpa_supplicant7.2
+else ####################################################################
+ifeq ($(BUILD_WPA2),y) ##################################################
+common_mainline: common_build wpa2
+else ################################################################
+common_mainline:	common_build wsc_fus fus_supplicant
+endif
+endif
+endif
+endif
+
+common_build:	check_tftp rootfs_prep toolchain_build lzma_uimage \
+		kernel_info enet_build usb_build busybox_build art_mod sar cgi
+
+iptables_build:
+	@echo making iptables
+	cd $(TOPDIR)/apps/iptables/iptables-1.4.5-qos && \
+	$(MAKE) clean KERNEL_DIR=$(KERNELPATH) && \
+	$(MAKE) KERNEL_DIR=$(KERNELPATH) NO_SHARED_LIBS=1 DO_IPV6=0 && \
+	cp -f iptables $(INSTALL_ROOT)/sbin/iptables
+#	cp extensions/*.so $(INSTALL_ROOT)/lib
+
+#
+# Unique rules for the ag7240 PHY with the ar7240 (Python)  board
+#
+
+enet_build:
+	cd $(ENETDIR) && rm -f *.o *.ko *.mod.*
+	$(MAKEARCH) -C $(KERNELPATH) SUBDIRS=$(ENETDIR) modules
+	test -d $(MODULEPATH) || mkdir -p $(MODULEPATH)
+	cp $(ENETDIR)/athrs_gmac.ko $(MODULEPATH)
+
+eth_diag:
+	@echo making Ethernet diagnostic tools;\
+	cd ../linux/drivers/net/ag7240/tools/;\
+	make install;
+
+wireless_tools_main:
+	@echo making wireless_tools 
+	if test -n "$(WIRELESSTOOLS)"; then \
+	cd $(TOPDIR)/apps/$(WIRELESSTOOLS); make clean; make BUILD_STATIC=y; \
+	fi
+ifneq ($(BUILD_CONFIG), _routing) 
+	cd $(TOPDIR)/drivers/wlan/os/linux/tools && \
+	make clean && \
+	make wlanconfig BUILD_STATIC=y && \
+	cp -f wlanconfig $(INSTALL_ROOT)/sbin; \
+	cd $(TOPDIR)/apps/$(WIRELESSTOOLS) && \
+	cp -f iwconfig $(INSTALL_ROOT)/sbin && \
+	cp -f iwlist $(INSTALL_ROOT)/sbin && \
+	cp -f iwpriv $(INSTALL_ROOT)/sbin
+#	cp -f iwspy $(INSTALL_ROOT)/sbin && \
+#	cp -f ifrename $(INSTALL_ROOT)/sbin && \
+#	cp -f iwevent $(INSTALL_ROOT)/sbin;
+endif
+#	make wlanconfig BUILD_STATIC=$(BUILD_STATIC); \
+#	$(STRIP) $(WIRELESSTOOLSLIB); \
+#	$(STRIP) iwpriv;  \
+#	$(STRIP) iwconfig; \
+#	$(STRIP) iwlist; \
+#	cp -f $(WIRELESSTOOLSLIB) $(INSTALL_ROOT)/lib; \
+#	cp -f iwpriv $(INSTALL_ROOT)/sbin; \
+#	cp -f iwconfig $(INSTALL_ROOT)/sbin; \
+#	cp -f iwlist $(INSTALL_ROOT)/sbin; \
+#	$(STRIP) wlanconfig; \
+#	cp -f wlanconfig $(INSTALL_ROOT)/sbin; \
+
+ath_tools_clean:
+	@echo cleaning ath tools;\
+	cd $(ATH_TOOL_DIR) && \
+	make ath_tools_clean;
+
+ath_tools_main: ath_tools_clean 
+	@echo makeing ath tools;
+	cd $(ATH_TOOL_DIR) && \
+	make ath_tools;
+
+cgi: ath_tools_clean
+	@echo Making cgi;\
+	cd $(ATH_TOOL_DIR) && \
+	rm -rf cgiMain && \
+	make cgiMain;
+
+
+#	cd $(TOPDIR)/wlan/linux/tools && make clean \
+#	&&  make BUILD_STATIC=$(BUILD_STATIC) &&  $(STRIP) wlanconfig && \
+#	cp -f wlanconfig $(INSTALL_ROOT)/sbin && \
+#	$(STRIP) athstats athstatsclr athdebug 80211stats 80211debug athkey athampdutrc athcwm atrc pktlogconf pktlogdump radartool && \
+#	tar -czvf $(INSTALL_ROOT)/sbin/debug.tgz athstats athstatsclr athdebug 80211stats 80211debug athkey athampdutrc athcwm atrc pktlogconf pktlogdump radartool; \
+
+hostapd_fus: openssl
+	if ( test -e ../apps/wpa/hostapd-0.4.8 ) then \
+	cd ../apps/wpa/hostapd-0.4.8; cp -f defconfig.fus .config; make clean; make; \
+	make PREFIX=$(INSTALL_ROOT)/sbin CONFIG_PATH=$(INSTALL_ROOT)/etc/ath DEFAULT_CFG=$(INSTALL_ROOT)/etc/ath/default install; \
+	fi
+
+wsc_fus: hostapd_fus
+	if (test -e ../apps/wpa/wsc/src/linux ) then \
+	chmod -R 755 ../apps/wpa/wsc/src/lunux; \
+	cd ../apps/wpa/wsc/src/linux; make clean; \
+	make PREFIX=$(INSTALL_ROOT)/sbin CONFIG_PATH=$(INSTALL_ROOT)/etc/ath DEFAULT_CFG=$(INSTALL_ROOT)/etc/ath/default install; \
+	fi
+
+fus_supplicant:
+	if (test -e ../apps/wpa/wpa_supplicant-0.5.5 ) then \
+	cd ../apps/wpa/wpa_supplicant-0.5.5; cp -f defconfig.fus .config; make clean; \
+    make; make PREFIX=$(INSTALL_ROOT)/sbin install; \
+	fi
+
+art_mod:
+	@echo Making ART Module
+	cd ../apps/art && make -f makefile.soc.linux.mips clean && \
+	make -f makefile.soc.linux.mips hornet
+
+hal_build_main:
+	@echo making Mainline hal
+	if test -n "$(TARGETARCH)"; then \
+	cd $(HAL)/linux && make TARGET=$(TARGETARCH) clean &&  \
+	make TARGET=$(TARGETARCH) && make TARGET=$(TARGETARCH) release; \
+	fi
+
+wlan_driver_build: 	hal_build_main wireless_tools_main ath_tools_main
+					@echo making umac mainline
+					cd $(TOPDIR)/drivers/wlan/os/linux && \
+					$(MAKEARCH) TARGET=$(TARGETARCH) clean \
+					&& $(MAKEARCH) TARGET=$(TARGETARCH) && \
+					$(MAKEARCH) DESTDIR=$(INSTALLROOT) TARGET=$(TARGETARCH) install
+
+usb_build:
+	test -d $(USBMODPATH) || mkdir -p $(USBMODPATH)
+#	cp -f $(USBDIR)/core/usbcore.ko ${USBMODPATH}
+	cp -f ${USBDIR}/host/ehci-hcd.ko ${USBMODPATH}
+	cp -f ${USBDIR}/storage/usb-storage.ko ${USBMODPATH}
+
+pptp_build:
+	test -d $(PPTPMODPATH) || mkdir -p $(PPTPMODPATH)
+	cp -f $(PPTPDIR)/pptp.ko ${PPTPMODPATH}
+	cp -f $(PPTPDIR)/pppoe.ko ${PPTPMODPATH}
+	cp -f $(PPTPDIR)/pppox.ko ${PPTPMODPATH}
+	cp -f $(PPTPDIR)/ppp_generic.ko ${PPTPMODPATH}
+	cp -f $(PPTPDIR)/pptp.ko ${PPTPMODPATH}
+	cp -f $(PPTPDIR)/slhc.ko ${PPTPMODPATH}
+
+nat_build:
+	test -d $(NATMODPATH) || mkdir -p $(NATMODPATH)
+#	cp -f $(NATDIR)/ip_nat_sip.ko ${NATMODPATH}
+#	cp -f $(NATDIR)/ip_conntrack_sip.ko ${NATMODPATH}
+
+uboot_fusion:
+	@echo making uboot...
+	cd $(BOOTLOADERDIR) && make ap121-2.6.31_config
+	cd $(BOOTLOADERDIR) && make clean && make
+	cp $(BOOTLOADERDIR)/u-boot.bin $(IMAGEPATH)
+
+sqlzma_build:
+	cd $(SQUASHFSLZMADIR) && \
+	$(MAKE)
+
+sqlzma_clean:
+	cd $(SQUASHFSLZMADIR) && \
+	$(MAKE) clean
+
+lzma_uimage: kernel_build sqlzma_build uboot
+	@echo "Generating LZMA'ed kernel....."
+	cd $(KERNELPATH)/arch/$(KERNELARCH)/boot && \
+	$(TOPDIR)/build/util/lzma e $(KERNELTARGET) $(KERNELTARGET).lzma && \
+	cp $(KERNELTARGET).lzma $(TFTPPATH)/$(KTFILE).lzma && \
+	cp $(KERNELTARGET).lzma $(IMAGEPATH)/$(KTFILE).lzma;
+	echo Making uImage...
+	cd util && mkuImage.sh $(UBOOTDIR)/tools $(KERNELPATH) $(BUILD_CONFIG) lzma
+
+# squashfs build
+# mksquashfs version 4.0 supports creating device files
+# from "dev.txt" file as mkjffs2 does;
+$(TOPDIR)/build/util/mksquashfs4.0:
+	@echo ======= Compiling $@ ========
+	@cd $(TOPDIR)/build/squashfs-lzma/squashfs4.0/squashfs-tools/; make
+	@echo ======= Copying $@ ========
+	@cp squashfs-lzma/squashfs4.0/squashfs-tools/mksquashfs util/mksquashfs4.0
+
+squashfs_build: image_root $(TOPDIR)/build/util/mksquashfs4.0
+	@echo BEGIN make squashfs at `date`
+	cd $(IMAGE_ROOT) && mkdir -p ./dev -m 715
+	cd $(IMAGE_ROOT) && mkdir -p ./sys -m 715
+	cd $(IMAGE_ROOT) && ln -s /tmp/mnt ./mnt
+	@echo Not creating hacked device files,
+	@echo mksquashfs 4.0 supports dev.txt
+	rm -f $(IMAGE_ROOT)/sbin/iwspy
+	rm -f $(IMAGE_ROOT)/sbin/iwevent
+	rm -f $(IMAGE_ROOT)/sbin/iwgetid
+	rm -f $(IMAGE_ROOT)/sbin/ifrename
+	rm -f $(IMAGE_ROOT)/sbin/pktlogconf
+	rm -f $(IMAGE_ROOT)/sbin/pktlogdump
+	rm -f $(IMAGE_ROOT)/lib/modules/2.6.31/net/ath_pktlog.ko
+	rm -f $(IMAGE_ROOT)/usr/www/*.html
+	echo $(BOARD_TYPE)/`date +%F-%H:%M` >$(IMAGE_ROOT)/version
+	$(TOPDIR)/build/util/mksquashfs4.0 $(IMAGE_ROOT) \
+		$(IMAGEPATH)/$(SQUASHFSFILE) -noappend -b 16384 -all-root \
+		-pf $(TOPDIR)/build/scripts/$(BOARD_TYPE)/dev.txt
+###	sudo $(TOPDIR)/build/scripts/$(BOARD_TYPE)/makedev.sh
+###	$(TOPDIR)/build/util/mksquashfs $(IMAGE_ROOT) $(IMAGEPATH)/$(SQUASHFSFILE) -noappend -be -all-root
+###	sudo chmod 777 $(IMAGEPATH)/$(SQUASHFSFILE)
+	chmod 644 $(IMAGEPATH)/$(SQUASHFSFILE)
+	cp $(IMAGEPATH)/$(SQUASHFSFILE) $(TFTPPATH)
+	@echo END make squashfs at `date`
+
+toolchain_clean:
+	@echo BEGIN cleaning toolchain......
+	cd $(TOOLCHAINDIR) && \
+	rm -rf $(TOOLCHAINBUILDDIR) && \
+	rm -rf $(TOOLCHAINBINDIR)
+
+hostapd7.1:
+	@echo Making hostapd7.1  at `date`
+	if ( test -e ../apps/hostap-0.7.1/hostapd ) then \
+        cd ../apps/hostap-0.7.1/hostapd; cp -f atheros_config .config; make clean; make CC=$(TOOLPREFIX)gcc AR=$(TOOLPREFIX)ar LD=$(TOOLPREFIX)ld; \
+        make PREFIX=$(INSTALL_ROOT)/sbin CONFIG_PATH=$(INSTALL_ROOT)/etc/ath DEFAULT_CFG=$(INSTALL_ROOT)/etc/ath/default install; \
+        fi
+	cp ../rootfs/cgiCommon/etc/ath/hostapd0.7.0_conf/* $(INSTALL_ROOT)/etc/ath
+
+hostapd7.2: rootfs_prep
+	@echo Making hostapd7.2  at `date`
+	if ( test -e ../apps/hostap-0.7.2/hostapd ) then \
+        cd ../apps/hostap-0.7.2/hostapd; cp -f atheros_config .config; make clean; make CC=$(TOOLPREFIX)gcc AR=$(TOOLPREFIX)ar LD=$(TOOLPREFIX)ld; \
+        make PREFIX=$(INSTALL_ROOT)/sbin CONFIG_PATH=$(INSTALL_ROOT)/etc/ath DEFAULT_CFG=$(INSTALL_ROOT)/etc/ath/default install; \
+        fi
+
+	cp ../rootfs/cgiCommon/etc/ath/hostapd0.7.0_conf/* $(INSTALL_ROOT)/etc/ath
+
+wpa_supplicant7.1: rootfs_prep
+	@echo Making wpa_supplicant7.1 at `date`
+	if ( test -e ../apps/hostap-0.7.1/wpa_supplicant ) then \
+        cd ../apps/hostap-0.7.1/wpa_supplicant; cp -f atheros_config .config; make clean; make CC=$(TOOLPREFIX)gcc AR=$(TOOLPREFIX)ar LD=$(TOOLPREFIX)ld; \
+	make PREFIX=$(INSTALL_ROOT)/sbin CONFIG_PATH=$(INSTALL_ROOT)/etc/ath DEFAULT_CFG=$(INSTALL_ROOT)/etc/ath/default install; \
+        fi
+
+wpa_supplicant7.2: rootfs_prep
+	@echo Making wpa_supplicant7.2 at `date`
+	if ( test -e ../apps/hostap-0.7.2/wpa_supplicant ) then \
+        cd ../apps/hostap-0.7.2/wpa_supplicant; cp -f atheros_config .config; make clean; make CC=$(TOOLPREFIX)gcc AR=$(TOOLPREFIX)ar LD=$(TOOLPREFIX)ld; \
+	make PREFIX=$(INSTALL_ROOT)/sbin CONFIG_PATH=$(INSTALL_ROOT)/etc/ath DEFAULT_CFG=$(INSTALL_ROOT)/etc/ath/default install; \
+        fi
+

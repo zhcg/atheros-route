@@ -1,0 +1,76 @@
+#!/bin/sh
+
+# This script runs when init it run during the boot process.
+# Mounts everything in the fstab
+
+mount -a
+mount -o remount +w /
+
+#
+# Mount the RAM filesystem to /tmp
+#
+
+mount -t ramfs -n none /tmp
+
+export PATH=$PATH:/etc/ath
+KVER=`uname -r | cut -f 1 -d '-'`
+MODULE_PATH=/lib/modules/$KVER/net
+
+insmod $MODULE_PATH/athrs_gmac.ko
+
+##
+## Put the names of the interfaces in the environmental variables
+## (They can be board unique)
+##
+
+export WAN_IF=eth0
+export LAN_IF=eth1
+
+ifconfig $WAN_IF up
+ifconfig $LAN_IF up
+#/etc/rc.d/rc.network
+#/etc/rc.d/rc.bridge
+#. /etc/ath/apcfg
+
+#if [ "${WLAN_ON_BOOT}" = "y" ]; then
+#    /etc/ath/apup
+#fi
+
+#
+# Enable USB
+#
+#insmod /lib/modules/2.6.31/usb/usbcore.ko
+#insmod /lib/modules/2.6.31/usb/ehci-hcd.ko
+#insmod /lib/modules/2.6.31/usb/usb-storage.ko
+
+#insmod /lib/modules/2.6.31/usb/ar9130_udc.ko
+insmod $MODULE_PATH/hif_gmac.ko
+insmod $MODULE_PATH/atd.ko
+
+sleep 1
+
+/etc/rc.d/rc.wlan up
+
+#
+# Untar the debug tools into /tmp/tools
+#
+
+mkdir /tmp/tools
+cd /tmp/tools
+tar -xzvf /sbin/debug.tgz
+
+/usr/sbin/telnetd
+# /usr/sbin/httpd -h /usr/www/
+/bin/factoryreset /dev/freset
+
+# start the page cache/kmem cache cleanup timer in the kernel
+# echo 1 > /proc/sys/vm/drop-cache
+
+# when processes uses page-cache more than 30% of system memory,
+# lets force them to write
+# echo 20 > /proc/sys/vm/dirty_ratio
+
+# when the dirty pages cross more than 5% of sys memory,
+# kick in the pdflush
+# echo 5 > /proc/sys/vm/dirty_background_ratio
+

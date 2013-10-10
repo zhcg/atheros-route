@@ -1,0 +1,65 @@
+22-Jul-2000:
+	Allow appending to an existing log file, as long as it's in
+	  the log directory. Also some cosmetic fixes. (Dennis Reichel,
+	  dennis@reichel.net)
+
+	Also a bit of other cleanup and sanity checking.
+  
+5-Jan-2000:
+	Bug fix (mishandling of fork return codes). (Bill Nottingham,
+	  notting@redhat.com)
+	Also correct getopt handling. (Noticed by Dirk von Suchodoletz,
+	  dirk@goe.net)
+
+14-Dec-1999:
+	netkit-routed-0.16 is released.
+
+12-Dec-1999:
+	Apply backlogged 64-bit bug fix. (Dr. Graeme Wilford, 
+	  G.Wilford@ee.surrey.ac.uk)
+	Old doc fixes from Debian. (Peter Tobias, tobias@et-inf.fho-emden.de)
+
+1-Aug-1999:
+	Complete y2k and y2038 audit.
+
+1-Aug-1999:
+	Code cleanup.
+
+31-Jul-1999:
+	Redid makefiles/config stuff for new confgen version.
+
+19-May-1998:
+	Rearranged security fix; basically you can only log to
+	  /var/log/routed/*. Make this directory if you want it to log
+	  anything.
+
+8-May-1998:
+	Added a security 'feature' to routed that prevents it writing any
+	  file as root and instead uses user nobody instead (defined in
+	  defs.h) routed will write to syslog to tell you what fun files
+	  it's trying to create.
+
+22-Sep-1997:
+	Reorganized dirs so ripquery isn't hiding under routed.
+
+12-Jun-1997:
+	netkit-routed-0.10 released.
+
+19-May-1997:
+	glibc fixes from Red Hat.
+
+05-Apr-1997:
+	Added configure script to generate MCONFIG.
+	glibc fixes from HJ Lu.
+	makefile and ripquery fixes. (Peter Tobias, tobias@et-inf.fho-emden.de)
+
+08-Mar-1997: 
+	Split from full NetKit package. 
+	Generated this change log from NetKit's.
+
+29-Dec-1996
+	NetKit-0.09 released.
+	Hardened programs against DNS h_length spoofing attacks.
+	Use inet_aton() everywhere instead of inet_addr().
+	Added this routed to NetKit package.
+

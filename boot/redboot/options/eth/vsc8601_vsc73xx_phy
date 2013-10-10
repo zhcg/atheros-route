@@ -1,0 +1,4 @@
+cdl_option CYGNUM_USE_ENET_PHY {
+    user_value    {AR7100_VSC8601_VSC73XX_ENET_PHY}
+};
+

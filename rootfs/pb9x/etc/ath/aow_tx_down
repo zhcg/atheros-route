@@ -1,0 +1,5 @@
+#!/bin/sh
+rmmod ar9130_udc
+rmmod g_audio
+apdown
+echo "Uninstalled wlan and usb drivers"

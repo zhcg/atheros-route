@@ -1,0 +1,245 @@
+tspc (2.1.1-8ubuntu2) jaunty; urgency=low
+
+  * Fix crash on 64-bit architectures when client_v4 option
+    is not "auto" (LP: #323288)
+
+ -- Philippe Gauthier <philippe.gauthier@deuxpi.ca>  Tue, 03 Mar 2009 22:12:34 -0500
+
+tspc (2.1.1-8ubuntu1) jaunty; urgency=low
+
+  * Merge from Debian unstable, remaining changes (LP: #305124):
+    - Make sure ipv6 module is loaded.
+
+ -- Ø£Ø­Ù…Ø¯ Ø§Ù„Ù…Ø­Ù…ÙˆØ¯ÙŠ (Ahmed El-Mahmoudy) <aelmahmoudy@users.sourceforge.net>  Thu, 06 Dec 2008 14:09:28 +0200
+
+tspc (2.1.1-8) unstable; urgency=low
+
+  * [2532fe6] Move setup scripts to /usr/lib/tspc.
+
+ -- Kanru Chen <koster@debian.org.tw>  Thu, 04 Dec 2008 22:42:29 +0800
+
+tspc (2.1.1-7) unstable; urgency=low
+
+  * [7231ba9] New maintainer. (Closes: #503494)
+  * [673c11f] Rewrite init script. (Closes: #292905, #295156, #431656)
+  * [0ff3c55] Use raw debhelper for packaging.
+  * [2399af7] Use quilt to maintain patches.
+  * [9d33c35] Add patch manpages.diff.
+  * [a97b99e] Install template files to doc/examples/
+              (Closes: #293072, #437135)
+  * [f5af521] Add Homepage field.
+  * [59532a0] Add Vcs-Git field.
+  * [5d10405] Add Vcs-Browser field.
+  * [85a5e45] Add README.source.
+  * [5cc803b] Standards-Version: 3.8.0
+  * [260ade3] Add ifupdown script. (Closes: #500803)
+  * [3c3ab78] Clarify copyright information.
+
+ -- Kanru Chen <koster@debian.org.tw>  Wed, 03 Dec 2008 21:07:36 +0800
+
+tspc (2.1.1-6.1ubuntu1) intrepid; urgency=low
+
+  * Merge from debian unstable, remaining changes (LP: #239196):
+    - Make sure ipv6 module is loaded.
+    - debian/control: Update maintainer fields according to debian-
+      maintainer-field spec.
+
+ -- Nathan Handler <nathan.handler@gmail.com>  Wed, 11 Jun 2008 09:53:20 -0500
+
+tspc (2.1.1-6.1) unstable; urgency=low
+
+  * Non-maintainer upload to fix RC bug.
+  * Add LSB dependency header to init.d scripts (Closes: #467540).
+
+ -- Petter Reinholdtsen <pere@debian.org>  Mon, 31 Mar 2008 00:17:51 +0200
+
+tspc (2.1.1-6ubuntu2) gutsy; urgency=low
+
+  * debian/control: Update maintainer fields according to debian-
+    maintainer-field spec.
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Wed, 15 Aug 2007 08:10:37 +0000
+
+tspc (2.1.1-6ubuntu1) dapper; urgency=low
+
+  * Make sure ipv6 module is loaded.
+  (Closes Ubuntu: #19559)
+
+ -- Fabio M. Di Nitto <fabbione@ubuntu.com>  Fri, 31 Mar 2006 09:04:35 +0200
+
+tspc (2.1.1-6) unstable; urgency=high
+
+  * Don't install crap all over the filesystem (Closes: #336980)
+
+ -- Anand Kumria <wildfire@progsoc.org>  Wed,  2 Nov 2005 12:39:45 +1100
+
+tspc (2.1.1-5) unstable; urgency=low
+
+  * New maintainer (Closes: #335095)
+  * Cleanup debconf dependancies (Closes: #332124)
+  * Fixup source file location in copyright
+  * Remove freenet6 transition package, thus removing the use of debconf
+    and the need for translation -- thanks though to all the translators
+    (Closes: #331598, #332333, #308750)
+  * Ackownledge NMU (Closes: #304431)
+  * Apply patches so that unpacked Debian source is sane rather than doing
+    so at build time
+
+ -- Anand Kumria <wildfire@progsoc.org>  Sat, 29 Oct 2005 15:05:16 +1000
+
+tspc (2.1.1-4.1) unstable; urgency=high
+
+  * Non-maintainer upload.
+  * Fix build with sudo. Closes: #304431.
+  * Urgency is high because this upload fixes a release critical bug.
+
+ -- Lars Wirzenius <liw@iki.fi>  Tue, 19 Apr 2005 13:28:00 +0300
+
+tspc (2.1.1-4) unstable; urgency=low
+
+  * Add French and German translation for debconf template
+    (by Christian Perrier and myself) (Closes: #291342)
+
+ -- Martin Waitz <tali@debian.org>  Sat, 22 Jan 2005 13:23:19 +0100
+
+tspc (2.1.1-3) unstable; urgency=low
+
+  * Don't confuse debconf with output to stdout (Closes: #288488)
+  * Better note about wrong permissions (Closes: #288071)
+
+ -- Martin Waitz <tali@debian.org>  Tue,  4 Jan 2005 21:07:23 +0100
+
+tspc (2.1.1-2) unstable; urgency=low
+
+  * debian/freenet6.{preinst,postrm}: fix small glitches noted by
+    Jonathan Bastien-Filiatrault and Martin Zobel-Helas.
+
+ -- Martin Waitz <tali@debian.org>  Wed, 22 Dec 2004 22:00:14 +0100
+
+tspc (2.1.1-1) experimental; urgency=low
+
+  * New upstream release (Closes: #274864, #270480)
+    - has a daemon mode to renew tunnel (Closes: #113325)
+    - creates 2000/3 route (Closes: #280029)
+  * use po-debconf (thanks Martin Quinson) (Closes: #271947)
+  * use CDBS and quilt for packaging
+  * Acknowlege NMU, thanks Martin -- CAN-2004-0563 (Closes: #254709)
+
+ -- Martin Waitz <tali@debian.org>  Tue,  5 Oct 2004 23:56:32 +0200
+
+freenet6 (1.0-2.2) unstable; urgency=high
+
+  * NMU
+  * modified postinst to only display debconf notice when password is not empty
+
+ -- Martin Zobel-Helas <mhelas@helas.net>  Wed,  8 Sep 2004 15:23:28 +0200
+
+freenet6 (1.0-2.1) unstable; urgency=high
+
+  * NMU
+  * fix permission of file /etc/freenet6/tspc.conf (Closes: #254709)
+  * added debconf-note about world-readable passwords
+
+ -- Martin Zobel-Helas <mhelas@helas.net>  Wed,  8 Sep 2004 09:46:08 +0200
+
+freenet6 (1.0-2) unstable; urgency=low
+
+  * fix check in initscript, thanks Nelson Castillo (Closes: #221886)
+  * only send errors to system log.
+    that way we should get rid of multiline syslog entries (Closes: #214962)
+  * fix merge error in linux template
+
+ -- Martin Waitz <tali@debian.org>  Sun,  8 Feb 2004 01:44:54 +0100
+
+freenet6 (1.0-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Martin Waitz <tali@debian.org>  Thu,  9 Oct 2003 21:56:41 +0200
+
+freenet6 (0.9.9-2) unstable; urgency=low
+
+  * use debhelper v4
+    - use dh_installppp (Closes: #212833)
+    - use dh_installlogcheck
+  * clean up debian/{dirs,rules}
+
+ -- Martin Waitz <tali@debian.org>  Wed,  1 Oct 2003 23:07:38 +0200
+
+freenet6 (0.9.9-1) unstable; urgency=low
+
+  * New upstream release (Closes: #178917)
+    - uses new server by default (Closes: #200156)
+  * earlier setup on ip-up (Closes: #182038)
+  * Standards-Version 3.6.1.0
+
+ -- Martin Waitz <tali@debian.org>  Wed,  3 Sep 2003 23:27:17 +0200
+
+freenet6 (0.9.6-2) unstable; urgency=low
+
+  * Accept IPv6 DNS Servers for reverse lookups.
+    Thanks to David Fries. Closes: #151487
+  * Includes logcheck ignore file from Elmar Hoffmann,
+    Closes: #131857
+  * add ppp ip-down script stopping freenet6
+
+ -- Martin Waitz <tali@debian.org>  Tue,  2 Jul 2002 23:38:16 +0200
+
+freenet6 (0.9.6-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Martin Waitz <tali@debian.org>  Tue, 19 Mar 2002 13:00:09 +0100
+
+freenet6 (0.9.5-3) unstable; urgency=low
+
+  * debian/init.d: adjust for new location of config files
+
+ -- Martin Waitz <tali@debian.org>  Wed, 23 Jan 2002 11:43:11 +0100
+
+freenet6 (0.9.5-2) unstable; urgency=low
+
+  * debian/rules: move configuration files to /etc/freenet6, Closes: #126302
+  * debian/rules: manually create empty dirs to workaround cvs
+  * debian/control: reformat
+
+ -- Martin Waitz <tali@debian.org>  Sun,  6 Jan 2002 02:16:16 +0100
+
+freenet6 (0.9.5-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Martin Waitz <tali@debian.org>  Fri,  9 Nov 2001 12:04:52 +0100
+
+freenet6 (0.9.3-2) unstable; urgency=low
+
+  * disable radvd handling, it only causes problems, Closes: #116407
+  * document this fact in README.Debian
+  * redirect sysctl output to /dev/null
+  * debian/control: suggest radvd
+
+ -- Martin Waitz <tali@debian.org>  Thu, 25 Oct 2001 11:07:33 +0200
+
+freenet6 (0.9.3-1) unstable; urgency=low
+
+  * New upstream release
+    - fixes for PPC, Closes: #115770
+  * add a 2000::/3 route when configured for routing
+  * don't provide user when running radvd
+    i'm still not happy with the current radvd handling,
+    see Bug#116237,116251
+
+ -- Martin Waitz <tali@debian.org>  Fri, 19 Oct 2001 15:42:31 +0200
+
+freenet6 (0.9.2-2) unstable; urgency=low
+
+  * change function definitions to work with /bin/sh!=bash, Closes: #115530
+
+ -- Martin Waitz <tali@debian.org>  Sun, 14 Oct 2001 16:05:01 +0200
+
+freenet6 (0.9.2-1) unstable; urgency=low
+
+  * Initial Release, Closes: #112556
+
+ -- Martin Waitz <tali@debian.org>  Sat, 15 Sep 2001 13:26:56 +0200
+

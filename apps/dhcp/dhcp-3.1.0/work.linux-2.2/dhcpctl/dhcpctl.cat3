@@ -1,0 +1,270 @@
+DHCPCTL(3)               BSD Library Functions Manual               DHCPCTL(3)
+
+NNAAMMEE
+     ddhhccppccttll__iinniittiiaalliizzee - dhcpctl library initialization.
+
+SSYYNNOOPPSSIISS
+     ##iinncclluuddee <<ddhhccppccttll//ddhhccppccttll..hh>>
+
+     _d_h_c_p_c_t_l___s_t_a_t_u_s
+     ddhhccppccttll__iinniittiiaalliizzee(_v_o_i_d);
+
+     _d_h_c_p_c_t_l___s_t_a_t_u_s
+     ddhhccppccttll__ccoonnnneecctt(_d_h_c_p_c_t_l___h_a_n_d_l_e _*_c_x_n, _c_o_n_s_t _c_h_a_r _*_h_o_s_t, _i_n_t _p_o_r_t,
+             _d_h_c_p_c_t_l___h_a_n_d_l_e _a_u_t_h);
+
+     _d_h_c_p_c_t_l___s_t_a_t_u_s
+     ddhhccppccttll__wwaaiitt__ffoorr__ccoommpplleettiioonn(_d_h_c_p_c_t_l___h_a_n_d_l_e _o_b_j_e_c_t,
+             _d_h_c_p_c_t_l___s_t_a_t_u_s _*_s_t_a_t_u_s);
+
+     _d_h_c_p_c_t_l___s_t_a_t_u_s
+     ddhhccppccttll__ggeett__vvaalluuee(_d_h_c_p_c_t_l___d_a_t_a___s_t_r_i_n_g _*_v_a_l_u_e, _d_h_c_p_c_t_l___h_a_n_d_l_e _o_b_j_e_c_t,
+             _c_o_n_s_t _c_h_a_r _*_n_a_m_e);
+
+     _d_h_c_p_c_t_l___s_t_a_t_u_s
+     ddhhccppccttll__ggeett__bboooolleeaann(_i_n_t _*_v_a_l_u_e, _d_h_c_p_c_t_l___h_a_n_d_l_e _o_b_j_e_c_t, _c_o_n_s_t _c_h_a_r _*_n_a_m_e);
+
+     _d_h_c_p_c_t_l___s_t_a_t_u_s
+     ddhhccppccttll__sseett__vvaalluuee(_d_h_c_p_c_t_l___h_a_n_d_l_e _o_b_j_e_c_t, _d_h_c_p_c_t_l___d_a_t_a___s_t_r_i_n_g _v_a_l_u_e,
+             _c_o_n_s_t _c_h_a_r _*_n_a_m_e);
+
+     _d_h_c_p_c_t_l___s_t_a_t_u_s
+     ddhhccppccttll__sseett__ssttrriinngg__vvaalluuee(_d_h_c_p_c_t_l___h_a_n_d_l_e _o_b_j_e_c_t, _c_o_n_s_t _c_h_a_r _*_v_a_l_u_e,
+             _c_o_n_s_t _c_h_a_r _*_n_a_m_e);
+
+     _d_h_c_p_c_t_l___s_t_a_t_u_s
+     ddhhccppccttll__sseett__bboooolleeaann__vvaalluuee(_d_h_c_p_c_t_l___h_a_n_d_l_e _o_b_j_e_c_t, _i_n_t _v_a_l_u_e,
+             _c_o_n_s_t _c_h_a_r _*_n_a_m_e);
+
+     _d_h_c_p_c_t_l___s_t_a_t_u_s
+     ddhhccppccttll__sseett__iinntt__vvaalluuee(_d_h_c_p_c_t_l___h_a_n_d_l_e _o_b_j_e_c_t, _i_n_t _v_a_l_u_e,
+             _c_o_n_s_t _c_h_a_r _*_n_a_m_e);
+
+     _d_h_c_p_c_t_l___s_t_a_t_u_s
+     ddhhccppccttll__oobbjjeecctt__uuppddaattee(_d_h_c_p_c_t_l___h_a_n_d_l_e _c_o_n_n_e_c_t_i_o_n, _d_h_c_p_c_t_l___h_a_n_d_l_e _o_b_j_e_c_t);
+
+     _d_h_c_p_c_t_l___s_t_a_t_u_s
+     ddhhccppccttll__oobbjjeecctt__rreeffrreesshh(_d_h_c_p_c_t_l___h_a_n_d_l_e _c_o_n_n_e_c_t_i_o_n, _d_h_c_p_c_t_l___h_a_n_d_l_e _o_b_j_e_c_t);
+
+     _d_h_c_p_c_t_l___s_t_a_t_u_s
+     ddhhccppccttll__oobbjjeecctt__rreemmoovvee(_d_h_c_p_c_t_l___h_a_n_d_l_e _c_o_n_n_e_c_t_i_o_n, _d_h_c_p_c_t_l___h_a_n_d_l_e _o_b_j_e_c_t);
+
+     _d_h_c_p_c_t_l___s_t_a_t_u_s
+     ddhhccppccttll__sseett__ccaallllbbaacckk(_d_h_c_p_c_t_l___h_a_n_d_l_e _o_b_j_e_c_t, _v_o_i_d _*_d_a_t_a,
+             _v_o_i_d _(_*_f_u_n_c_t_i_o_n_) _(_d_h_c_p_c_t_l___h_a_n_d_l_e_, _d_h_c_p_c_t_l___s_t_a_t_u_s_, _v_o_i_d _*_));
+
+     _d_h_c_p_c_t_l___s_t_a_t_u_s
+     ddhhccppccttll__nneeww__aauutthheennttiiccaattoorr(_d_h_c_p_c_t_l___h_a_n_d_l_e _*_o_b_j_e_c_t, _c_o_n_s_t _c_h_a_r _*_n_a_m_e,
+             _c_o_n_s_t _c_h_a_r _*_a_l_g_o_r_i_t_h_m, _c_o_n_s_t _c_h_a_r _*_s_e_c_r_e_t, _u_n_s_i_g_n_e_d _s_e_c_r_e_t___l_e_n);
+
+     _d_h_c_p_c_t_l___s_t_a_t_u_s
+     ddhhccppccttll__nneeww__oobbjjeecctt(_d_h_c_p_c_t_l___h_a_n_d_l_e _*_o_b_j_e_c_t, _d_h_c_p_c_t_l___h_a_n_d_l_e _c_o_n_n_e_c_t_i_o_n,
+             _c_o_n_s_t _c_h_a_r _*_o_b_j_e_c_t___t_y_p_e);
+
+     _d_h_c_p_c_t_l___s_t_a_t_u_s
+     ddhhccppccttll__ooppeenn__oobbjjeecctt(_d_h_c_p_c_t_l___h_a_n_d_l_e _o_b_j_e_c_t, _d_h_c_p_c_t_l___h_a_n_d_l_e _c_o_n_n_e_c_t_i_o_n,
+             _i_n_t _f_l_a_g_s);
+
+     _i_s_c___r_e_s_u_l_t___t
+     oommaappii__ddaattaa__ssttrriinngg__nneeww(_d_h_c_p_c_t_l___d_a_t_a___s_t_r_i_n_g, _*_d_a_t_a, _u_n_s_i_g_n_e_d, _i_n_t, _l_e_n_g_t_h,
+             _c_o_n_s_t, _c_h_a_r, _*_f_i_l_e_n_a_m_e_,, _i_n_t, _l_i_n_e_n_o);
+
+     _i_s_c___r_e_s_u_l_t___t
+     ddhhccppccttll__ddaattaa__ssttrriinngg__ddeerreeffeerreennccee(_d_h_c_p_c_t_l___d_a_t_a___s_t_r_i_n_g _*, _c_o_n_s_t _c_h_a_r _*,
+             _i_n_t);
+
+DDEESSCCRRIIPPTTIIOONN
+     The dhcpctl set of functions provide an API that can be used to communi-
+     cate with and manipulate a running ISC DHCP server. All functions return
+     a value of isc_result_t.  The return values reflects the result of opera-
+     tions to local data structures. If an operation fails on the server for
+     any reason, then the error result will be returned through the second
+     parameter of the ddhhccppccttll__wwaaiitt__ffoorr__ccoommpplleettiioonn() call.
+
+     ddhhccppccttll__iinniittiiaalliizzee() sets up the data structures the library needs to do
+     its work. This function must be called once before any other.
+
+     ddhhccppccttll__ccoonnnneecctt() opens a connection to the DHCP server at the given host
+     and port. If an authenticator has been created for the connection, then
+     it is given as the 4th argument. On a successful return the address
+     pointed at by the first argument will have a new connection object
+     assigned to it.
+
+     For example:
+
+           s = dhcpctl_connect(&cxn, "127.0.0.1", 7911, NULL);
+
+     connects to the DHCP server on the localhost via port 7911 (the standard
+     OMAPI port). No authentication is used for the connection.
+
+     ddhhccppccttll__wwaaiitt__ffoorr__ccoommpplleettiioonn() flushes a pending message to the server and
+     waits for the response. The result of the request as processed on the
+     server is returned via the second parameter.
+
+           s = dhcpctl_wait_for_completion(cxn, &wv);
+           if (s != ISC_R_SUCCESS)
+                   local_failure(s);
+           else if (wv != ISC_R_SUCCESS)
+                   server_failure(wc);
+
+     The call to ddhhccppccttll__wwaaiitt__ffoorr__ccoommpplleettiioonn() won’t return until the remote
+     message processing completes or the connection to the server is lost.
+
+     ddhhccppccttll__ggeett__vvaalluuee() extracts a value of an attribute from the handle. The
+     value can be of any length and is treated as a sequence of bytes.  The
+     handle must have been created first with ddhhccppccttll__nneeww__oobbjjeecctt() and opened
+     with ddhhccppccttll__ooppeenn__oobbjjeecctt().  The value is returned via the parameter
+     named “value”.  The last parameter is the name of attribute to retrieve.
+
+           dhcpctl_data_string value = NULL;
+           dhcpctl_handle lease;
+           time_t thetime;
+
+           s = dhcpctl_get_value (&value, lease, "ends");
+           assert(s == ISC_R_SUCCESS && value->len == sizeof(thetime));
+           memcpy(&thetime, value->value, value->len);
+
+     ddhhccppccttll__ggeett__bboooolleeaann() extracts a boolean valued attribute from the object
+     handle.
+
+     The ddhhccppccttll__sseett__vvaalluuee(), ddhhccppccttll__sseett__ssttrriinngg__vvaalluuee(),
+     ddhhccppccttll__sseett__bboooolleeaann__vvaalluuee(), and ddhhccppccttll__sseett__iinntt__vvaalluuee() functions all
+     set a value on the object handle.
+
+     ddhhccppccttll__oobbjjeecctt__uuppddaattee() function queues a request for all the changes
+     made to the object handle be be sent to the remote for processing. The
+     changes made to the atributes on the handle will be applied to remote
+     object if permitted.
+
+     ddhhccppccttll__oobbjjeecctt__rreeffrreesshh() queues up a request for a fresh copy of all the
+     attribute values to be sent from the remote to refresh the values in the
+     local object handle.
+
+     ddhhccppccttll__oobbjjeecctt__rreemmoovvee() queues a request for the removal on the server of
+     the object referenced by the handle.
+
+     The ddhhccppccttll__sseett__ccaallllbbaacckk() function sets up a user-defined function to be
+     called when an event completes on the given object handle. This is needed
+     for asynchronous handling of events, versus the synchronous handling
+     given by ddhhccppccttll__wwaaiitt__ffoorr__ccoommpplleettiioonn().  When the function is called the
+     first parameter is the object the event arrived for, the second is the
+     status of the message that was processed, the third is the same value as
+     the second parameter given to ddhhccppccttll__sseett__ccaallllbbaacckk().
+
+     The ddhhccppccttll__nneeww__aauutthheennttiiccaattoorr() creates a new authenticator object to be
+     used for signing the messages that cross over the network. The “name”,
+     “algorithm”, and “secret” values must all match what the server uses and
+     are defined in its configuration file. The created object is returned
+     through the first parameter and must be used as the 4th parameter to
+     ddhhccppccttll__ccoonnnneecctt().  Note that the ’secret’ value must not be base64
+     encoded, which is different from how the value appears in the dhcpd.conf
+     file.
+
+     ddhhccppccttll__nneeww__oobbjjeecctt() creates a local handle for an object on the the
+     server. The “object_type” parameter is the ascii name of the type of
+     object being accessed. e.g.  "lease".  This function only sets up local
+     data structures, it does not queue any messages to be sent to the remote
+     side, ddhhccppccttll__ooppeenn__oobbjjeecctt() does that.
+
+     ddhhccppccttll__ooppeenn__oobbjjeecctt() builds and queues the request to the remote side.
+     This function is used with handle created via ddhhccppccttll__nneeww__oobbjjeecctt().  The
+     flags argument is a bit mask with the following values available for set-
+     ting:
+
+           DHCPCTL_CREATE
+               if the object does not exist then the remote will create it
+
+           DHCPCTL_UPDATE
+               update the object on the remote side using the attributes
+               already set in the handle.
+
+           DHCPCTL_EXCL
+               return and error if the object exists and DHCPCTL_CREATE was
+               also specified
+
+     The oommaappii__ddaattaa__ssttrriinngg__nneeww() function allocates a new _d_h_c_p_c_t_l___d_a_t_a___s_t_r_i_n_g
+     object. The data string will be large enough to hold “length” bytes of
+     data. The “file” and “lineno” arguments are the source file location the
+     call is made from, typically by using the __FILE__ and __LINE__ macros or
+     the MDL macro defined in
+
+     ddhhccppccttll__ddaattaa__ssttrriinngg__ddeerreeffeerreennccee() deallocates a data string created by
+     oommaappii__ddaattaa__ssttrriinngg__nneeww().  The memory for the object won’t be freed until
+     the last reference is released.
+
+EEXXAAMMPPLLEESS
+     The following program will connect to the DHCP server running on the
+     local host and will get the details of the existing lease for IP address
+     10.0.0.101. It will then print out the time the lease is due to expire.
+     Note that most error checking has been ommitted for brevity.
+
+           #include <stdarg.h>
+           #include <sys/time.h>
+           #include <sys/socket.h>
+           #include <stdio.h>
+           #include <netinet/in.h>
+
+           #include <isc/result.h>
+           #include <dhcpctl/dhcpctl.h>
+
+           int main (int argc, char **argv) {
+                   dhcpctl_data_string ipaddrstring = NULL;
+                   dhcpctl_data_string value = NULL;
+                   dhcpctl_handle connection = NULL;
+                   dhcpctl_handle lease = NULL;
+                   isc_result_t waitstatus;
+                   struct in_addr convaddr;
+                   time_t thetime;
+
+                   dhcpctl_initialize ();
+
+                   dhcpctl_connect (&connection, "127.0.0.1",
+                                    7911, 0);
+
+                   dhcpctl_new_object (&lease, connection,
+                                       "lease");
+
+                   memset (&ipaddrstring, 0, sizeof
+                           ipaddrstring);
+
+                   inet_pton(AF_INET, "10.0.0.101",
+                             &convaddr);
+
+                   omapi_data_string_new (&ipaddrstring,
+                                          4, MDL);
+                   memcpy(ipaddrstring->value, &convaddr.s_addr, 4);
+
+                   dhcpctl_set_value (lease, ipaddrstring,
+                                      "ip-address");
+
+                   dhcpctl_open_object (lease, connection, 0);
+
+                   dhcpctl_wait_for_completion (lease,
+                                                &waitstatus);
+                   if (waitstatus != ISC_R_SUCCESS) {
+                           /* server not authoritative */
+                           exit (0);
+                   }
+
+                   dhcpctl_data_string_dereference(&ipaddrstring,
+                                                   MDL);
+
+                   dhcpctl_get_value (&value, lease, "ends");
+
+                   memcpy(&thetime, value->value, value->len);
+
+                   dhcpctl_data_string_dereference(&value, MDL);
+
+                   fprintf (stdout, "ending time is %s",
+                            ctime(&thetime));
+           }
+
+SSEEEE AALLSSOO
+     omapi(3), omshell(3), dhcpd(8), dhclient(8), dhcpd.conf(5),
+     dhclient.conf(5).
+
+AAUUTTHHOORR
+     _d_h_c_p_c_t_l was written by Ted Lemon of Nominum, Inc.  This preliminary docu-
+     mentation was written by James Brister of Nominum, Inc.
+
+DHCP 3                           Nov 15, 2000                           DHCP 3

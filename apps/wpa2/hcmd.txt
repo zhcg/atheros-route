@@ -1,0 +1,115 @@
+Commands accepted by hostapd via remote control:
+==================================================
+
+Most useful commands:
+----------------------------
+
+STATUS -- shows some status information
+SETBSS [-nosave] <tag>=<value>   -- set per-bss config parameter 
+        into the running program and then into the config file.
+        (The bss selected depends upon which ctrl interface you talk to!).
+        Note RECONFIGURE may be needed to take full effect! depending
+        upon whether affect propogation has been properly coded.
+        (With -nosave, nothing is saved to file; affect is only temporary
+        or may not occur if affect propogation has not been properly coded).
+        For a full list, see examples/ap_bss_example.conf .
+SETRADIO [-nosave] <tag>=<value>   -- set per-radio config parameter 
+        into the running program and then into the config file.
+        (The radio selected depends upon which ctrl interface you talk to!).
+        Note RECONFIGURE may be needed to take full effect! depending
+        upon whether affect propogation has been properly coded.
+        (With -nosave, nothing is saved to file; affect is only temporary
+        or may not occur if affect propogation has not been properly coded).
+        For a full list, see examples/ap_example_80211g.conf
+RECONFIGURE   -- restart hostapd (same process id!), re-reading config files
+        in the process. This may be necessary to get hostapd to properly
+        recognize changes to configuration parameters.
+        The restart is delayed by a few seconds, and results in disruption
+        of all activities including wpatalk connections.
+CONFIGSTOP -- stop any ongoing WPS operation
+CONFIGME [pin=<pin>] [upnp={0|1}] [ssid=<ssid>] [bssid=<bssid>] (more...)
+        Configure us from available WPS source; if successful, rew-writes
+        the per-bss config file (a RECONFIGURE may be needed after this).
+        See below for options.
+CONFIGTHEM [pin=<pin>] [upnp={0|1}] [ssid=<ssid>] [bssid=<bssid>] (more...)
+        Allow configuration of next requesting enrollee; no affect on
+        our configuration.
+        See below for options.
+CONFIGIE [-nosave] [-norestart] <filepath>
+        The raw WPS settings information elements from the given file are
+        used to modify the current configuration including (unless prevented
+        by -nosave) saving to configuration file and (unless prevented by
+        -nosave or -norestart) restarting hostapd to properly use the new
+        configuration.
+        This can be used to transfer a new configuration from wpa_supplicant
+        to hostapd for e.g. repeater case.
+configme ....     -- lower case command name causes wpatalk to wait until done
+configthem ....   -- lower case command name causes wpatalk to wait until done
+QUIT -- terminate hostapd
+
+/* CONFIGME [<tag>=<value>]...
+ * Tags are:
+ * pin=<digits>         -- specify password
+ * NOT IMPLEMENTED: ssid=<text>          -- restrict search to given SSID
+ * NOT IMPLEMENTED: ssid="<text>["]
+ * NOT IMPLEMENTED: ssid=0x<hex>
+ * NOT IMPLEMENTED: bssid=<hex>:<hex>:<hex>:<hex>:<hex>:<hex>  -- restrict search to given BSSID
+ * nosave[={0|1}]       -- empty or 1 to do NOT save result back to config file
+ * timeout=<seconds>    -- specify session timeout
+ *                      (-1 for no timeout, 0 for default)
+ *
+ * If no PIN given, push button mode is assumed.
+ * If nosave is not given, configuration is saved back to file,
+ * but if it is given without a value then it is one (NOT saved).
+ * ssid and/or bssid can be give as a filter,
+ * after which there must be one PB-ready AP for PB mode;
+ * for PIN mode there can be either one PIN-ready AP or else one
+ * WPS-capable AP or else one open AP.
+ *
+ * NOTE: some registars (e.g. Windows Vista) just won't
+ * configure (or even show) the access point UNLESS it
+ * is marked as unconfigured (wps_state) which should be done by
+ * modifying the per-bss config file (e.g. SETBSS wps_configured=0)
+ * followed by restarting hostapd (e.g. RECONFIGURE).
+ */
+
+/* CONFIGTHEM [<tag>=<value>]...
+ * Tags are:
+ * pin=<digits>         -- specify password
+ * NOT IMPLEMENTED: ssid=<text>          -- restrict search to given SSID
+ * NOT IMPLEMENTED: ssid="<text>["]
+ * NOT IMPLEMENTED: ssid=0x<hex>
+ * NOT IMPLEMENTED: bssid=<hex>:<hex>:<hex>:<hex>:<hex>:<hex>  -- restrict search to given BSSID
+ * timeout=<seconds>    -- specify session timeout 
+ *                      (-1 for no timeout, 0 for default)
+ *
+ * If no PIN given, push button mode is assumed.
+ * ssid and/or bssid can be give as a filter,
+ * after which there must be one PB-ready AP for PB mode;
+ * for PIN mode there can be either one PIN-ready AP or else one
+ * WPS-capable AP or else one open AP.
+ */
+
+
+------------------- Miscellaneous ------------------------------
+
+Original hostapd commands:
+PING		-- replies with "PONG\n" (like unix ping command)
+        Note that this is used for a keepalive for control programs.
+MIB 		-- reply with mib information (unimplemented?)
+STA-FIRST 	-- reply with mib information (unimplemented?)
+STA xxxxx	-- ? mib info ?
+STA-NEXT xxxxxx	-- ? 
+ATTACH          -- ? messages will now be sent to invoker of this command
+DETACH          -- ? undo ATTACH
+LEVEL <number>  -- change monitoring level (see ATTACH)
+NEW_STA xxxx    -- ?
+
+Added by SONY #ifdef EAP_WPS and #ifdef WPS_OPT_NFC (thus, not supported):
+CANCEL_NFC_COMMAND
+READ_PASSWORD_TOKEN
+WRITE_PASSWORD_TOKEN
+READ_CONFIG_TOKEN
+WRITE_CONFIG_TOKEN
+
+

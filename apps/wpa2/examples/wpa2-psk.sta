@@ -1,0 +1,11 @@
+ap_scan=2
+network={
+	ssid="example_wpa2psk"
+	scan_ssid=1
+	proto=WPA2
+	key_mgmt=WPA-PSK
+	#pairwise=TKIP CCMP
+	pairwise=CCMP
+	psk="passphrase"
+}
+

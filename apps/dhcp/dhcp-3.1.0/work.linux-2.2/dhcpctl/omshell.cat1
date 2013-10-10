@@ -1,0 +1,296 @@
+omshell(1)                                                          omshell(1)
+
+
+
+NNAAMMEE
+       omshell - OMAPI Command Shell
+
+SSYYNNOOPPSSIISS
+       oommsshheellll
+
+DDEESSCCRRIIPPTTIIOONN
+       The  OMAPI  Command Shell, omshell, provides an interactive way to con-
+       nect to, query, and possibly change, the ISC DHCP  Server’s  state  via
+       OMAPI,  the  Object Management API.  By using OMAPI and omshell, you do
+       not have to stop, make changes, and then restart the DHCP  server,  but
+       can  make the changes while the server is running.   Omshell provides a
+       way of accessing OMAPI.
+
+       OMAPI is simply a communications mechanism that allows you  to  manipu-
+       late  objects.    In order to actually _u_s_e omshell, you _m_u_s_t understand
+       what objects are available and how  to  use  them.   Documentation  for
+       OMAPI  objects  can  be  found in the documentation for the server that
+       provides them - for example,  in  the  ddhhccppdd((11))  manual  page  and  the
+       ddhhcclliieenntt((11)) manual page.
+
+CCOONNTTRRIIBBUUTTIIOONNSS
+       This  software  is free software.  At various times its development has
+       been underwritten by various organizations, including the ISC and Vixie
+       Enterprises.  The development of 3.0 has been funded almost entirely by
+       Nominum, Inc.
+
+       At this point development is being shepherded by Ted Lemon, and  hosted
+       by the ISC, but the future of this project depends on you.  If you have
+       features you want, please consider implementing them.
+
+LLOOCCAALL AANNDD RREEMMOOTTEE OOBBJJEECCTTSS
+       Throughout this document, there are  references  to  local  and  remote
+       objects.   Local  objects are ones created in omshell with the nneeww com-
+       mand.  Remote objects are ones on the server: leases, hosts, and groups
+       that the DHCP server knows about.  Local and remote objects are associ-
+       ated together to enable viewing and modification of object  attributes.
+       Also, new remote objects can be created to match local objects.
+
+OOPPEENNIINNGG AA CCOONNNNEECCTTIIOONN
+       omshell  is  started  from  the command line.  Once omshell is started,
+       there are several commands that can be issued:
+
+       sseerrvveerr _a_d_d_r_e_s_s
+            where address is the IP address of the DHCP server to connect  to.
+            If  this is not specified, the default server is 127.0.0.1 (local-
+            host).
+
+       ppoorrtt _n_u_m_b_e_r
+            where number is the port that OMAPI listens on.  By default,  this
+            is 7911.
+
+       kkeeyy _n_a_m_e _s_e_c_r_e_t
+            This  specifies  the  TSIG  key  to  use to authenticate the OMAPI
+            transactions.  _n_a_m_e is the name of a  key  defined  in  _d_h_c_p_d_._c_o_n_f
+            with the oommaappii--kkeeyy statement.  The _s_e_c_r_e_t is the secret key gener-
+            ated from ddnnsssseecc--kkeeyyggeenn or another key generation program.
+
+       ccoonnnneecctt
+            This starts the OMAPI connection to the server as specified by the
+            _s_e_r_v_e_r statement.
+
+CCRREEAATTIINNGG LLOOCCAALL OOBBJJEECCTTSS
+       Any  object  defined in OMAPI can be created, queried, and/or modified.
+       The object types  available  to  OMAPI  are  defined  in  ddhhccppdd((88))  and
+       ddhhcclliieenntt((88)).   When  using  omshell, objects are first defined locally,
+       manipulated as desired, and then  associated  with  an  object  on  the
+       server.   Only  one  object  can be manipulated at a time.  To create a
+       local object, use
+
+       nneeww _o_b_j_e_c_t_-_t_y_p_e
+            _o_b_j_e_c_t_-_t_y_p_e is one of group, host, or lease.
+
+       At this point, you now have an object that you can set  properties  on.
+       For example, if a new lease object was created with _n_e_w _l_e_a_s_e, any of a
+       lease’s attributes can be set as follows:
+
+       sseett _a_t_t_r_i_b_u_t_e_-_n_a_m_e _= _v_a_l_u_e
+            AAttttrriibbuuttee names are defined in ddhhccppdd((88)) and  ddhhcclliieenntt((88)).   Values
+            should  be  quoted  if  they are strings.  So, to set a lease’s IP
+            address, you would do the following:
+             sseett iipp--aaddddrreessss == 119922..116688..44..5500
+
+AASSSSOOCCIIAATTIINNGG LLOOCCAALL AANNDD RREEMMOOTTEE OOBBJJEECCTTSS
+       At this point, you can query the  server  for  information  about  this
+       lease, by
+
+       ooppeenn
+
+       Now,  the  local lease object you created and set the IP address for is
+       associated with the corresponding lease object on the DHCP server.  All
+       of  the  lease  attributes  from  the  DHCP  server  are  now  also the
+       attributes on the local object, and will be shown in omshell.
+
+VVIIEEWWIINNGG AA RREEMMOOTTEE OOBBJJEECCTT
+       To query a lease of address 192.168.4.50, and find out its  attributes,
+       after connecting to the server, take the following steps:
+
+       nneeww lleeaassee
+
+       This creates a new local lease object.
+
+       sseett iipp--aaddddrreessss == 119922..116688..44..5500
+
+       This sets the _l_o_c_a_l object’s IP address to be 192.168.4.50
+
+       ooppeenn
+
+       Now,  if  a  lease  with  that  IP address exists, you will see all the
+       information the DHCP server has about that particular lease.  Any  data
+       that  isn’t readily printable text will show up in colon-separated hex-
+       adecimal values.  In this example, output back from the server for  the
+       entire transaction might look like this:
+
+       > new "lease"
+       obj: lease
+       > set ip-address = 192.168.4.50
+       obj: lease
+       ip-address = c0:a8:04:32
+       > open
+       obj: lease
+       ip-address = c0:a8:04:32
+       state = 00:00:00:02
+       dhcp-client-identifier = 01:00:10:a4:b2:36:2c
+       client-hostname = "wendelina"
+       subnet = 00:00:00:06
+       pool = 00:00:00:07
+       hardware-address = 00:10:a4:b2:36:2c
+       hardware-type = 00:00:00:01
+       ends = dc:d9:0d:3b
+       starts = 5c:9f:04:3b
+       tstp = 00:00:00:00
+       tsfp = 00:00:00:00
+       cltt = 00:00:00:00
+
+       As  you  can see here, the IP address is represented in hexadecimal, as
+       are the starting and ending times of the lease.
+
+MMOODDIIFFYYIINNGG AA RREEMMOOTTEE OOBBJJEECCTT
+       Attributes of remote objects are updated by using the  sseett  command  as
+       before,  and  then issuing an uuppddaattee command.  The sseett command sets the
+       attributes on the current local object, and the uuppddaattee  command  pushes
+       those changes out to the server.
+
+       Continuing with the previous example, if a sseett cclliieenntt--hhoossttnnaammee == ""ssoommee--
+       tthhiinngg--eellssee"" was issued, followed by an uuppddaattee command, the output would
+       look about like this:
+
+       > set client-hostname = "something-else"
+       obj: lease
+       ip-address = c0:a8:04:32
+       state = 00:00:00:02
+       dhcp-client-identifier = 01:00:10:a4:b2:36:2c
+       client-hostname = "something-else"
+       subnet = 00:00:00:06
+       pool = 00:00:00:07
+       hardware-address = 00:10:a4:b2:36:2c
+       hardware-type = 00:00:00:01
+       ends = dc:d9:0d:3b
+       starts = 5c:9f:04:3b
+       tstp = 00:00:00:00
+       tsfp = 00:00:00:00
+       cltt = 00:00:00:00
+       > update
+       obj: lease
+       ip-address = c0:a8:04:32
+       state = 00:00:00:02
+       dhcp-client-identifier = 01:00:10:a4:b2:36:2c
+       client-hostname = "something-else"
+       subnet = 00:00:00:06
+       pool = 00:00:00:07
+       hardware-address = 00:10:a4:b2:36:2c
+       hardware-type = 00:00:00:01
+       ends = dc:d9:0d:3b
+       starts = 5c:9f:04:3b
+       tstp = 00:00:00:00
+       tsfp = 00:00:00:00
+       cltt = 00:00:00:00
+
+NNEEWW RREEMMOOTTEE OOBBJJEECCTTSS
+       New  remote  objects  are  created  much  in the same way that existing
+       server objects are modified.  Create a local object using nneeww, set  the
+       attributes  as you’d wish them to be, and then create the remote object
+       with the same properties by using
+
+       ccrreeaattee
+
+       Now a new object exists on the DHCP server which matches the properties
+       that  you  gave your local object.  Objects created via OMAPI are saved
+       into the dhcpd.leases file.
+
+       For example, if a new host with the IP address of 192.168.4.40 needs to
+       be created it would be done as follows:
+
+       > new host
+       obj: host
+       > set name = "some-host"
+       obj: host
+       name = "some-host"
+       > set hardware-address = 00:80:c7:84:b1:94
+       obj: host
+       name = "some-host"
+       hardware-address = 00:80:c7:84:b1:94
+       > set hardware-type = 1
+       obj: host
+       name = "some-host"
+       hardware-address = 00:80:c7:84:b1:94
+       hardware-type = 1
+       > set ip-address = 192.168.4.40
+       obj: host
+       name = "some-host"
+       hardware-address = 00:80:c7:84:b1:94
+       hardware-type = 1
+       ip-address = c0:a8:04:28
+       > create
+       obj: host
+       name = "some-host"
+       hardware-address = 00:80:c7:84:b1:94
+       hardware-type = 00:00:00:01
+       ip-address = c0:a8:04:28
+       >
+
+       Your dhcpd.leases file would then have an entry like this in it:
+
+       host some-host {
+         dynamic;
+         hardware ethernet 00:80:c7:84:b1:94;
+         fixed-address 192.168.4.40;
+       }
+
+       The  _d_y_n_a_m_i_c_;  line is to denote that this host entry did not come from
+       dhcpd.conf, but was created dynamically via OMAPI.
+
+RREESSEETTTTIINNGG AATTTTRRIIBBUUTTEESS
+       If you want to remove an attribute from an object, you can do this with
+       the uunnsseett command.   Once you have unset an attribute, you must use the
+       uuppddaattee command to update the remote object.  So,  if  the  host  "some-
+       host"  from the previous example will not have a static IP address any-
+       more, the commands in omshell would look like this:
+
+       obj: host
+       name = "some-host"
+       hardware-address = 00:80:c7:84:b1:94
+       hardware-type = 00:00:00:01
+       ip-address = c0:a8:04:28
+       > unset ip-address
+       obj: host
+       name = "some-host"
+       hardware-address = 00:80:c7:84:b1:94
+       hardware-type = 00:00:00:01
+       ip-address = <null>
+       >
+
+RREEFFRREESSHHIINNGG OOBBJJEECCTTSS
+       A local object may be refreshed with the current remote object  proper-
+       ties  using the rreeffrreesshh command.  This is useful for object that change
+       periodically, like leases, to see if  they  have  been  updated.   This
+       isn’t particularly useful for hosts.
+
+DDEELLEETTIINNGG OOBBJJEECCTTSS
+       Any  remote  object that can be created can also be destroyed.  This is
+       done by creating a new local object,  setting  attributes,  associating
+       the  local and remote object using ooppeenn, and then using the rreemmoovvee com-
+       mand.  If the host "some-host" from before was created in  error,  this
+       could be corrected as follows:
+
+       obj: host
+       name = "some-host"
+       hardware-address = 00:80:c7:84:b1:94
+       hardware-type = 00:00:00:01
+       ip-address = c0:a8:04:28
+       > remove
+       obj: <null>
+       >
+
+HHEELLPP
+       The  hheellpp  command  will  print  out  all  of the commands available in
+       omshell, with some syntax pointers.
+
+SSEEEE AALLSSOO
+       dhcpctl(3),    omapi(3),    dhcpd(8),    dhclient(8),    dhcpd.conf(5),
+       dhclient.conf(5).
+
+AAUUTTHHOORR
+       oommsshheellll  was  written  by Ted Lemon of Nominum, Inc.  Information about
+       Nominum can be found at hhttttpp::////wwwwww..nnoommiinnuumm..ccoomm..  This preliminary docu-
+       mentation  was  written  by Wendy Verschoor of Nominum, Inc., while she
+       was testing omshell.
+
+
+
+                                                                    omshell(1)

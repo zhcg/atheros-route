@@ -1,0 +1,7 @@
+#!/bin/sh
+rmmod g_ether
+rmmod ar9130_udc
+insmod /lib/modules/$(uname -r | cut -f 1 -d '-')/usb/usbcore.ko
+insmod /lib/modules/$(uname -r | cut -f 1 -d '-')/usb/ehci-hcd.ko
+insmod /lib/modules/$(uname -r | cut -f 1 -d '-')/usb/usb-storage.ko
+echo "Configured USB as host"

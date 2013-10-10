@@ -1,0 +1,193 @@
+
+export HAL=$(TOPDIR)/drivers/wlan/hal
+export ENETDIR=$(TOPDIR)/linux/drivers/net/ag7100_pb47-xmii/
+export ATH_TOOL_DIR=$(TOPDIR)/drivers/wlan/os/linux/tools/
+export ATH_DFS=$(TOPDIR)/drivers/wlan/lmac/dfs
+export ATHEROSPATH=$(TOPDIR)/drivers/wlan
+export UBOOTDIR=$(TOPDIR)/boot/u-boot
+
+export BUSYBOX_CFG=$(TOPDIR)/apps/$(BUSYBOX)
+export TOOLCHAIN_CFG=$(TOPDIR)/build/$(TOOLCHAIN)
+export TOOLCHAIN_UCLIBC_CFG=$(TOPDIR)/build/$(TOOLCHAIN)/toolchain/uClibc
+export KERNEL_CFG=$(TOPDIR)/linux/kernels/$(KERNEL)/arch/mips/configs
+#
+# This is the specific makefile for the pb44 board.  It has dependancies for both
+# the "common" build and the "jffs2" build.  This is unique for each board type, and
+# must be configured for each board.
+#
+
+# To enable library optimization (removing unused object code from
+# shared libraries) set BUILD_LIBRARYOPT to 'y' else 'n'
+BUILD_LIBRARYOPT := y
+
+
+
+targetList:= config_fix check_tftp rootfs_prep toolchain_build uimage \
+             kernel_info uboot_fusion enet_build busybox_build wpa2 art_mod sar cgi
+
+
+ifeq ($(strip ${ATH_SUPPORT_SPECTRAL}),1)
+targetList += spectral_app_build
+endif
+
+ifeq ($(BUILD_CONFIG), _routing)
+targetList += iptables_build
+endif
+
+targetList  += config_fix
+
+ifeq ($(strip ${BUILD_XMII_FW}),y)
+targetList  += firmware_build firmware_mdio_build 
+cleanList   += firmware_mdio_clean firmware_clean
+endif
+
+targetList  += driver_build $(BUILD_TYPE)_build 
+
+cleanList   := config_clean driver_clean
+
+default: ${targetList}
+pb47-xmii_clean: ${cleanList}
+
+#
+# Unique rules for the ag7100 PHY with the ar7100 (Hydra)  board
+#
+PARENT_BOARD=pb47
+
+
+config_fix:
+	cp -f $(BUSYBOX_CFG)/defconfig-$(PARENT_BOARD) $(BUSYBOX_CFG)/defconfig-$(BOARD_TYPE) && \
+	cp -f $(TOOLCHAIN_CFG)/$(PARENT_BOARD).config $(TOOLCHAIN_CFG)/$(BOARD_TYPE).config && \
+	cp -f $(TOOLCHAIN_UCLIBC_CFG)/$(PARENT_BOARD).config $(TOOLCHAIN_UCLIBC_CFG)/$(BOARD_TYPE).config && \
+	cp -f $(KERNEL_CFG)/$(PARENT_BOARD)_defconfig $(KERNEL_CFG)/$(BOARD_TYPE)_defconfig;
+
+config_fix_clean:
+	@rm -vf $(KERNEL_CFG)/$(BOARD_TYPE)_defconfig;
+	@rm -vf $(BUSYBOX_CFG)/defconfig-$(BOARD_TYPE);
+	@rm -vf $(TOOLCHAIN_CFG)/$(BOARD_TYPE).config;
+	@rm -vf $(TOOLCHAIN_UCLIBC_CFG)/$(BOARD_TYPE).config;
+
+uboot_fusion:
+	@echo making uboot...
+	cd $(UBOOTDIR) && make pb47_config
+	cd $(UBOOTDIR) && make clean && make
+	cp $(UBOOTDIR)/u-boot.bin $(IMAGEPATH)
+
+enet_build: kernel_build
+	cd $(ENETDIR) && rm -f *.o *.ko *.mod.*
+	$(MAKEARCH) -C $(KERNELPATH) SUBDIRS=$(ENETDIR) modules
+	test -d $(MODULEPATH) || mkdir -p $(MODULEPATH)
+	cp $(ENETDIR)/ag7100_mod.ko $(MODULEPATH)
+
+iptables_build:
+	@echo making iptables
+	cd ../apps/iptables/iptables-1.3.6 && \
+	$(MAKE) clean && \
+	$(MAKE) KERNEL_DIR=$(KERNELPATH) && \
+	$(TOOLPREFIX)strip iptables && \
+	cp iptables $(INSTALL_ROOT)/sbin/iptables 
+
+WIRELESSTOOLNAMES := athstats athstatsclear athkey athchans athctrl\
+	athdebug wlanconfig athcwm athampdutrc atrc \
+	pktlogconf pktlogdump radartool
+
+wireless_tools_main:
+	@echo making wireless_tools
+	if test -n "$(WIRELESSTOOLS)"; then \
+	cd ../apps/$(WIRELESSTOOLS); make clean; make; \
+	cp -f $(WIRELESSTOOLSLIB) $(INSTALL_ROOT)/lib; \
+	cp -f iwpriv $(INSTALL_ROOT)/sbin; \
+	cp -f iwconfig $(INSTALL_ROOT)/sbin; \
+	cp -f iwlist $(INSTALL_ROOT)/sbin; \
+	cd $(TOPDIR)/drivers/wlan/os/linux/tools && make clean; \
+	make wlanconfig BUILD_STATIC=$(BUILD_STATIC); \
+	cp -f wlanconfig $(INSTALL_ROOT)/sbin; \
+	fi
+
+wireless_tools_clean:
+	@echo cleaning wireless_tools
+	if test -n "$(WIRELESSTOOLS)"; then \
+	cd ../apps/$(WIRELESSTOOLS); make clean;    \
+	cd $(TOPDIR)/drivers/wlan/os/linux/tools && make clean; \
+	fi
+
+ath_tools: ath_tools_clean
+	@echo makeing ath tools;\
+	cd ../drivers/wlan/os/linux/tools;\
+	make ath_tools;
+
+ath_tools_clean:
+	@echo cleaning ath tools;\
+	cd ../drivers/wlan/os/linux/tools;\
+	make ath_tools_clean;
+
+cgi: ath_tools_clean
+	@echo makeing cgi;\
+	cd ../drivers/wlan/os/linux/tools;\
+	rm -rf cgiMain;\
+	make cgiMain;
+
+art_mod:
+	@echo Making ART Module
+	cd ../apps/art && make -f makefile.soc.linux.mips clean && \
+	make -f makefile.soc.linux.mips hydra
+	cp ../apps/art/modules/art.ko $(MODULEPATH)/art.ko
+
+main_hal_build: 
+	@echo making newma hal
+	if test -n "$(TARGETARCH)"; then \
+	cd $(HAL)/linux && make TARGET=$(TARGETARCH) clean &&  \
+	make TARGET=$(TARGETARCH) && make TARGET=$(TARGETARCH) release; \
+	fi
+
+main_hal_clean: 
+	@echo cleaning newma hal
+	if test -n "$(TARGETARCH)"; then \
+	cd $(HAL)/linux && make TARGET=$(TARGETARCH) clean; \
+	fi
+
+driver_build: main_hal_build wireless_tools_main ath_tools
+	@echo making umac newma
+	cd $(TOPDIR)/drivers/wlan/os/linux && \
+	$(MAKEARCH) TARGET=$(TARGETARCH) clean \
+	&& $(MAKEARCH) TARGET=$(TARGETARCH) && \
+	$(MAKEARCH) DESTDIR=$(INSTALLROOT) TARGET=$(TARGETARCH) install
+	$(MAKE) $(BUILD_TYPE)_build
+
+driver_clean: main_hal_clean wireless_tools_clean ath_tools_clean
+	@echo clean umac newma
+	cd $(TOPDIR)/drivers/wlan/os/linux && \
+	rm -rvf src/*.o &&	\
+	rm  -rvf src/.*.cmd &&	\
+	$(MAKEARCH) TARGET=$(TARGETARCH) clean 
+
+firmware_mdio_build:
+	@echo making magpie firmware
+	cd $(TOPDIR)/$(FW_PATH)/build/$(FW_ROM)/image/$(FW_GMAC_RAM) &&	\
+	. ./$(SRC_GMAC_MDIO) &&	\
+	make && make build &&	\
+	cp -fv fwu_magpie_gmac_mdio.c $(TOPDIR)/$(FWU_GMAC_PATH)/$(FWU_GMAC_MDIO).c
+
+firmware_mdio_clean:
+	@echo cleaning $(FW) firmware
+	cd $(TOPDIR)/$(FW_PATH)/build/$(FW_ROM)/image/$(FW_GMAC_RAM) &&	\
+	. ./$(SRC_GMAC_MDIO) &&	\
+	make clean && make dep
+
+firmware_build: 
+	@echo making magpie firmware
+	cd $(TOPDIR)/$(FW_PATH)/build/$(FW_ROM)/image/$(FW_RAM) &&	\
+	. ./$(SRC_GMAC) &&	\
+	make MAGPIE_IF=gmac && make MAGPIE_IF=gmac build &&	\
+	cp -fv fwu.c $(TOPDIR)/$(FWU_GMAC_PATH)/$(FWU_GMAC).c
+
+firmware_clean: 
+	@echo cleaning $(FW) firmware
+	cd $(TOPDIR)/$(FW_PATH)/build/$(FW_ROM)/image/$(FW_RAM) &&	\
+	. ./$(SRC_GMAC) &&	\
+	make MAGPIE_IF=gmac clean && make MAGPIE_IF=gmac dep
+
+
+
+
+
+

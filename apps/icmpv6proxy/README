@@ -1,0 +1,20 @@
+IGMPproxy is a simple mulitcast router for Linux
+that only uses the IGMP protocol.
+
+This software is released under the GNU GPL license v2.
+
+Download from:
+http://sourceforge.net/project/downloading.php?group_id=146332&use_mirror=jaist&filename=igmpproxy-src-0.1-beta2.tar.gz&49356864
+
+
+Installation
+------------
+Chdir to the 'src' folder.
+
+To install type:
+
+make
+make install
+
+
+

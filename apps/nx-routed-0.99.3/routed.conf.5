@@ -1,0 +1,131 @@
+.\" Lalalala
+.\" Asdf
+.\"
+.TH ROUTED.CONF 5 "SEPTEMBER 2003" Linux "User Manual"
+.SH NAME
+routed.conf \- Nexus routing daemon configuration file
+.SH DESCRIPION
+.B nx-routed
+is controlled by configuration file 
+.I router.conf
+which could be placed in current directory or in
+.I /etc
+Format of configuration file is following:
+.nf
+
+[general]
+router=<name of routing protocol, currently "rip2">
+links=<list of physical links>
+virtuallinks=<list of virtual links>
+
+[<protocol sections>]
+<protocol attributes>
+
+[<link sections>]
+<link attributes>
+
+[<virtual link sections>]
+<virtual link attributes>
+
+.fi
+Section "general" describes general behavior of NX-ROUTED daemon. Supported
+attributes are:
+
+.IP router
+Specifies routing protocol to be used. Only RIP-2 is now
+supported, so "rip2" should be specified.
+.IP links
+Specifies a list of direcly connected links to use. Every
+link corresponds to single IP interface, but not every
+interface should have a corresponding link. Links are used
+to tell NX-ROUTED where to send updates and what routes
+to announce. Links could be named randomly, e.g. "caffe",
+"net1", "marketing", "servers" are acceptable.
+.IP virtuallinks
+Specifies a list of virtual links, which are not connected
+direcly, but routes to them are known. For example, dialup
+address pool could stand as virtual link.
+			
+Description of particular link (physical or virtual) is given in corresponding
+configuration file section. This section must have the same name as the link
+itself. The list of attributes for physical link is following:
+
+.IP protocol
+Specifies which protocol to use for that link. Currently only
+"rip2" value should be used.
+.IP interface
+Specifies the name of network interface on which particular
+link is based. Example: eth0, eth1, tun1, ie1
+.IP cost
+Specifies the approximate cost of forwarding packets
+through link. In most cases this value should be 1.
+Maximum value is 15. Reachability of links controlled
+automaticaly by inserting reject routes to avoid loops.
+.IP announcethis
+Specifies whether to send announces OF THIS link or not.
+.IP announceto
+Specifies whether to send announces TO THIS link or not.
+This is useful to avoid routing loops.
+.IP announcedef
+Specifies whether to announce default route (0.0.0.0/0)
+TO THIS link or not.
+
+To announce random destination you should use virtual links. Virtual links
+counted as not connected directly to host machine, but to which routes
+are known. For example, you don't want to declare every PPP connection as
+physical link, because they going up and down very frequently, causing much
+routing information traffic. Instead you can declare whole set of PPP links
+as virtual, that would stand as a single big route. The list of attributes
+for virtual link is following:
+.IP protocol
+Specifies which protocol to use for that link. Currently only
+"rip2" value could be used.
+.IP network
+Specifies destination network in Address/Prefix notation.
+Examples are 192.168.1.0/28, 172.16.44.64/27
+.IP cost
+Specifies the approximate cost of forwarding packets
+through that link. In most cases this value should be 1.
+Maximum value is 16 which is infinity (unreachable).
+.IP announcethis
+Specifies whether to send announces OF this link or not.
+.SH EXAMPLE
+Here an example of config.
+.RS
+.nf
+
+[general]
+router=rip2
+links=eth0, eth1, tun0
+virtuallinks=dialup
+
+[eth0]
+protocol=rip2
+interface=eth0
+cost=2
+announcethis=yes
+announceto=yes
+
+[eth1]
+protocol=rip2
+interface=eth1
+cost=1
+announcethis=yes
+announceto=yes
+
+[tun0]
+protocol=rip2
+interface=tun0
+cost=2
+announcethis=yes
+announceto=no
+
+[dialup]
+protocol=rip2
+network=192.168.1.64/28
+cost=1
+
+.fi
+.RE
+.SH SEE ALSO
+.SH AUTHOR

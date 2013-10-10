@@ -1,0 +1,91 @@
+
+Commands accepted by wpa_supplicant via remote control (e.g. wcmd program):
+(See also wpa_supplicant/doc/ctrl_iface.doxygen)
+
+Added by Atheros (see also README.txt):
+CONFIGSTOP -- stop any ongoing WPS operation
+CONFIGME [clean] [pin=<pin>] [upnp={0|1}] [ssid=<ssid>] [bssid=<bssid>] (more...)
+CONFIGTHEM [nwid=<id>] [pin=<pin>] [upnp={0|1}] [ssid=<ssid>] [bssid=<bssid>] (more...)
+SAVECONF fffff  -- rename file fffff to currently used hostap.conf filename
+
+Original hostapd commands plus Sony additions:
+PING		-- replies with "PONG\n" (like unix ping command)
+MIB 		-- reply with mib information ?
+STATUS		-- reply with status information
+PMKSA
+SET <field> <value>
+	Supported values of <field>:
+	EAPOL::heldPeriod
+	EAPOL::authPeriod
+	EAPOL::startPeriod
+	EAPOL::maxStart
+	dot11RSNAConfigPMKLifetime
+	dot11RSNAConfigPMKReauthThreshold
+	dot11RSNAConfigSATimeout
+LOGON
+LOGOFF
+REASSOCIATE    -- force reassociation
+PREAUTH
+STKSTART xxx
+CTRL-RSP-xxxxxxx xxxxxxxx
+RECONFIGURE    -- re-read configuration file
+TERMINATE      -- make wpa_supplicant quit
+QUIT           -- make wpa_supplicant quit
+BSSID xxxxxxx
+LIST_NETWORKS  -- reply with list of network configurations
+DISCONNECT     -- force disassociation
+SCAN           -- start new scanning
+SCAN_RESULTS   -- reply with current (usually old) scan results
+SELECT_NETWORK {any|<netid>} --
+	selecting "any" enables all disabled networks and forces reassociation
+	selecting by number (netid) enables selected network config,
+		disables all others, and forces reassociation
+ENABLE_NETWORK <netid> -- enable given network config and force reassoc.
+ADD_NETWORK    -- allocate new network struct and reply w/ it's id
+REMOVE_NETWORK {<netid>|all} -- remove given network configuration (or all)
+SET_NETWORK <netid> <field> <value> -- 
+	in given network configuration, set field to value.
+	Any field that is valid in a "network" portion of a config file
+	can be used.
+GET_NETWORK <netid> <field> -- reply w/ value of <field> for given network
+	configuration (but excluding passwords/keys for security reasons)
+SAVE_CONFIG    -- write changes to config file
+GET_CAPABILITY <field> -- reply with wpa_supplicant compile-time capability
+	<field> may be one of:
+		pairwise
+		group
+		key_mgmt
+		proto
+		auth_alg
+AP_SCAN <type> -- set type of scanning to be done
+		(see wpa_supplicant source code file: wpa_supplicant.conf)
+		0= driver takes care of scanning and AP selection
+		1= wpa_supplicant initiates scanning and AP selection
+		2= wpa_supplicant cycles through network configs
+INTERFACES     -- reply with network devices (interfaces) that are in use
+%OBSOLETE% WPS_SET_REGMODE {0|1|2|3} -- set WPS registration mode
+%OBSOLETE% 		????????????????????????
+%OBSOLETE% 		0= WPS_REGMODE_NONE = we are enrollee
+%OBSOLETE% 		1= WPS_REGMODE_CONFIGURE_AP = we are registrar, configuring AP
+%OBSOLETE% 		2= WPS_REGMODE_REGISTER_AP = we are registrar, registering APs
+%OBSOLETE% 		3= WPS_REGMODE_REGISTER_STA =  we are registrar, registering STAs
+%OBSOLETE% WPS_SET_CONFIGURATION <netid> -- set current wps configuration to copy 
+%OBSOLETE%         of parameters from given "network"
+%OBSOLETE% #WAS# WPS_PBC_ENABLED {0|1} -- 1 = enable WPS push button mode
+%OBSOLETE% WPS_SET_PASSWORD <pin> -- enable WPS PIN mode, setting the PIN
+%OBSOLETE%             Use <pin>==00000000 for push button mode
+%OBSOLETE% WPS_CLEAR_PASSWORD -- disable WPS PIN mode.
+%OBSOLETE% UPNP_ENABLED {0|1} -- [dis]enable UPNP
+UPNP_SET_IF <ifname>  -- set interface to do UPNP on ????
+WPS_SET_UPNP_DEVICE <name> -- set device for UPNP ???????
+UPNP_REFRESH    -- ?
+GET_UPNP_SCAN_RESULTS -- ?
+SEND_UPNP_GETDEVINFO -- ?
+SET_UPNP_SEL_REG
+CANCEL_NFC_COMMAND
+READ_PASSWORD_TOKEN
+WRITE_PASSWORD_TOKEN xxxxxx
+READ_CONFIG_TOKEN xxxxxxxxx
+WRITE_CONFIG_TOKEN xxxxxxxxxx
+
+

@@ -1,0 +1,94 @@
+#!/bin/sh
+#
+# generic/build -- rebuild shared object
+#    Use for "application" shared object libraries that:
+#    -- are installed in target /lib directory.
+#    -- have a corresponding .a file also installed in target /lib
+#               (but removed in the optimization process).
+#    -- are named with simple ".so" extension
+#    -- the .a file is named same except with ".a" instead of ".so" at end.
+#    -- have no special build needs.
+#    
+#    The .so files may depend upon other application .so files.
+#
+#
+# Usage (per libopt documentation!):
+# cd <directory where build script is>
+# ./build <archdir> <archprefix> <dest> <strip> <object>...
+# where:
+# <archdir> is e.g. $(TOPDIR)/libopt.temp (working temp directory)
+# <archprefix> is the prefix of filenames for tools such as xxx-nm (prefix xxx-)
+# <dest> is file to write
+# <strip> is "strip" or "nostrip" to indicate whether to strip output
+# <object>... is list of object files to link together.
+
+# What should this library be known as to ld.so ?
+# This much match how the libraries are built...
+
+striparg=-s   # -s to strip 
+
+# ----------------------------------------------------------------
+
+set -ex
+
+echo Executing $0 $@
+
+archdir=${1:?'Missing archdir'}
+archprefix=${2:?'Missing archprefix'}
+dest=${3:?'Missing dest'}
+strip=${4:?'Missing strip'}
+shift 4
+
+destname=`basename $dest`
+
+soname=$destname
+
+if [ -f $dest ]
+then
+    #debug# mv $dest $dest.bak
+    rm -f $dest
+fi
+
+if [ $# = 0 ]
+then
+    echo Creating empty output, because no input files for $dest
+    # The problem is that programs/libraries are already linked expecting
+    # to find the shared object library, even if it isn't really used.
+    # A valid shared object library must exist, but gcc won't create one
+    # without at least one source object... ok if it is empty...
+    ofiles=empty.c
+    echo >empty.c
+else
+    ofiles="$@"
+fi
+
+# fix up prebuild so that we don't see these .so files twice
+# (the pre-build populated the apps directory with symlinks to
+# application .so files).
+rm -f apps/libuClibc-*.so
+# Hack! libpthread dependency screws things up?
+####maybe### rm -f apps/libpthread*
+
+# Only reference shared objects that were originally needed
+needed=
+for file in `cat needed`
+do
+    if [ -f "apps/$file" ]
+    then
+        needed="$needed apps/$file"
+    fi
+done
+
+# Build the new .so file in the same way that it had originally
+#       been built; presumeably the following:
+$archdir/bin/$archprefix'gcc' -shared -o $dest $ofiles $needed
+if [ "$strip" = strip ]
+then
+    $archdir/bin/$archprefix'strip' $dest 
+fi
+
+echo Built $dest OK.
+
+exit 0
+
+

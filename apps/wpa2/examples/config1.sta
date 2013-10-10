@@ -1,0 +1,134 @@
+##### wpa_supplicant runtime configuration file .
+##### NOTE that this does NOT contain a network configuration.
+##### Typically you will use WPS to obtain a network configuration
+##### from an access point or registrar.
+
+ctrl_interface=/var/run/wpa_supplicant
+update_config=1
+
+# wps_property : WPS configuration
+wps_property={
+        # wps_disable: set to 1 to disable use of WPS entirely
+        wps_disable=0
+        # wps_upnp_disable: set to 1 to disable use of UPnP with WPS
+        wps_upnp_disable=0
+
+	# version : version of WPS (must be 0x10 for now)
+	# 1.0 : 0x10
+	# 1.1 : 0x11
+	version=0x10
+
+	# uuid : this interface's UUID
+	# Must define 16 bytes with 32 hex chars (no hyphens!).
+        # If omitted, this is automatically computed based on mac address,
+        # which is usually a much better idea.
+	# uuid=000102030405060708090a0b0c0d0e0f
+
+	# auth_type_flags : capabilities of network authentication
+	# Open    : 0x0001
+	# WPAPSK  : 0x0002
+	# Shared  : 0x0004
+	# WPA     : 0x0008
+	# WPA2    : 0x0010
+	# WPA2PSK : 0x0020
+	auth_type_flags=0x0022
+
+	# encr_type_flags : capabilities of network encryption
+	# None : 0x0001
+	# WEP  : 0x0002
+	# TKIP : 0x0004
+	# AES  : 0x0008
+	encr_type_flags=0x000c
+
+	# conn_type_flags : capabilities of connection
+	# ESS  : 0x01
+	# IBSS : 0x02
+	conn_type_flags=0x01
+
+	# config_methods : supported configuration methods
+	# USBA                 : 0x0001
+	# Ethernet             : 0x0002
+	# Label                : 0x0004
+	# Display              : 0x0008
+	# External NFC Token   : 0x0010
+	# Integrated NFC Token : 0x0020
+	# NFC Interface        : 0x0040
+	# Push Button          : 0x0080
+	# Keypad               : 0x0100
+	config_methods=0x0082
+
+	# wps_state : Wi-Fi Protected Setup State
+	# Not congigurad : 0x01
+	# Configured     : 0x02
+	# Reserved       : 0x00, 0x03 - 0xFF
+	wps_state=0x01
+
+	# rf_bands : supported RF bands
+	# 2.4GHz : 0x01
+	# 5.0GHz : 0x02
+	rf_bands=0x01
+
+	# manufacturer : the name of manufacturer
+	# the length of manufacturer must be less than 64 bytes
+	manufacturer="Atheros"
+
+	# model_name : the name of model
+	# the length of model_name must be less than 32 bytes
+	model_name="WPS_SUPPLICANT_STATION"
+
+	# model_number : model number
+	# the length of model_number must be less than 32 bytes
+	model_number="01234567"
+
+	# serial_number : serial number
+	# the length of serial_number must be less than 32 bytes
+	serial_number="01234567"
+
+	# dev_category : device category
+	# dev_sub_category : device sub category
+	# category                    / sub category
+	# Computer               : 1  / PC                      : 1
+	#                             / Server                  : 2
+	#                             / Mddia Center            : 3
+	# Input Device           : 2  / do not set
+	# Printers, Scanners,
+	# Faxes and Copiers      : 3  / Printer                 : 1
+	#                             / Scanner                 : 2
+	# Camera                 : 4  / Digital Still Camera    : 1
+	# Storage                : 5  / NAS                     : 1
+	# Network Infrastructure : 6  / AP                      : 1
+	#                             / Router                  : 2
+	#                             / Switch                  : 3
+	# Displays               : 7  / Television              : 1
+	#                             / Electronc Picture Frame : 2
+	# Multimedia Devices     : 8  / DAR                     : 1
+	#                             / PVR                     : 2
+	#                             / MCX                     : 3
+	# Gaming Devices         : 9  / Xbox                    : 1
+	#                             / Xbox360                 : 2
+	#                             / Playstation             : 3
+	# Telephone              : 10 / Windows Moble           : 1
+	dev_category=1
+	dev_sub_category=1
+
+	# dev_oui : device OUI
+	# the length of dev_oui must be 4 bytes (hex)
+	dev_oui=0050f204
+
+	# dev_name : device name
+	# the length of dev_name must be less than 32 bytes (hex)
+	dev_name="AtherosPC"
+
+	# dev_name : os_version
+	# for futures
+	os_version=0x00000001
+
+        # newsettings_command : optional sharing mechanism.
+        # If set (and not empty), the given command will be executed
+        # (in the background) whenever a WPS settings are received 
+        # (e.g. from M8 message).
+        # The command is passed an argument which is a file that has
+        # been written containing the raw WPS settings information elements.
+        #
+        #newsettings_command="repeater_pass_configuration"
+}

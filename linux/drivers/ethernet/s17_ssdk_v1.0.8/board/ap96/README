@@ -1,0 +1,16 @@
+1. in order to support nat feature for kernel, please replace
+LSDK\src\linux\kernels\mips-linux-2.6.15\arch\mips\configs\ap96_defconfig
+with \board\configs\ap96_defconfig before you build kernel.
+
+2. for switch driver, please refer to \board\ap96\ag7100
+
+3. for hw nat demo configuration file, please refer to \board\ap96\configs\case_config_napt
+( please check the mac address like below with your router mac address 
+  #add router mac
+  ssdk_sh ip intfentry add 0 0 0x1ff 00-03-7F-12-25-9D yes yes)
+
+4. before apply the configuration file, please copy \board\ap96\apps\* to your target board 
+   directory of "/sbin"
+
+3. For any other nat applications(ftp etc), please insmod respective nat helper support before HW NAT applies.
+ (Such as \board\ap96\depend\ip_conntrack_ftp.ko and ip_nat_ftp.ko for ftp application) 
