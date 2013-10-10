@@ -63,7 +63,7 @@ export-objs	:=
 list-multi	:=
 KMODSUF		:= ko
 else
-KMODSUF		:= o
+KMODSUF		:= ko
 endif
 
 ifeq ($(KERNELPATH),)
