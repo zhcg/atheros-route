@@ -177,7 +177,7 @@ endif
 # specified above.  These contain all platform specific configuration items.
 #
 
-export TOPDIR=$(PWD)/..
+export TOPDIR=$(shell pwd)/..
 export INSTALL_ROOT=$(TOPDIR)/rootfs-$(BOARD_TYPE)$(BUILD_CONFIG)$(BUILD_EXT)$(NAND).build
 $(shell mkdir -p $(INSTALL_ROOT))
 $(shell mkdir -p $(INSTALL_ROOT)/sbin)
