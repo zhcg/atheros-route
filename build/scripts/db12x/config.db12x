@@ -26,6 +26,8 @@ export TARGETFSSIZE=2818048
 endif #}
 endif #}
 
+export FLASH_SIZE=16
+
 export CONFIG_MIPS_74K_KERNEL_OPTIMIZATION=1
 #export CONFIG_EMULATION=1
 

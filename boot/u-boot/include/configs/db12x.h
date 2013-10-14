@@ -175,11 +175,11 @@
 #else
 #	define ATH_U_FILE		u-boot.bin
 #	define ATH_F_FILE		db12x${bc}-jffs2
-#	define ATH_F_LEN		0x630000
+#	define ATH_F_LEN		0xe30000
 #	define ATH_F_ADDR		0x9f050000
 #	define ATH_K_FILE		vmlinux${bc}.lzma.uImage
-#	define ATH_K_ADDR		0x9f680000
-#	define MTDPARTS_DEFAULT		"mtdparts=ath-nor0:256k(u-boot),64k(u-boot-env),6336k(rootfs),1408k(uImage),64k(mib0),64k(ART)"
+#	define ATH_K_ADDR		0x9fe80000
+#	define MTDPARTS_DEFAULT		"mtdparts=ath-nor0:256k(u-boot),64k(u-boot-env),14528k(rootfs),1408k(uImage),64k(mib0),64k(ART)"
 #endif /*CONFIG_MI124*/
 
 #ifndef ATH_ROOT_DEV
@@ -308,7 +308,7 @@
 #ifndef CONFIG_ATH_NAND_SUPPORT
 #	define CFG_ENV_ADDR		0x9f040000
 #	if (FLASH_SIZE == 16)
-#		define CONFIG_BOOTCOMMAND "bootm 0x9f550000"
+#		define CONFIG_BOOTCOMMAND "bootm 0x9fe80000"
 #	else  /* FLASH_SIZE == 16 */
 #		ifdef COMPRESSED_UBOOT
 #			if (FLASH_SIZE == 4)
