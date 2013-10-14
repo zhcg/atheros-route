@@ -57,7 +57,8 @@
 #
 
 ifndef BOARD_TYPE
-$(error "You have to define Board Type to use this Makefile")
+#$(error "You have to define Board Type to use this Makefile")
+export BOARD_TYPE=db12x
 endif
 
 ifndef BUILD_TYPE
