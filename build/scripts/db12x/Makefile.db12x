@@ -97,7 +97,7 @@ else
 ifeq ($(strip ${ATH_SUPPORT_SPECTRAL}),1)
 db12x_build: common_mainline driver_build usb_build pci_build spectral_app_build $(BUILD_TYPE)_build art_mod
 else
-db12x_build: common_mainline driver_build usb_build pci_build $(i2s_mod) $(fs_build) art_mod
+db12x_build: common_mainline driver_build usb_build pci_build art_mod $(i2s_mod) $(fs_build) 
 #db12x_build: common_mainline i2s_build athplay_tools_fus usb_build $(fs_build)
 #db12x_build: common_mainline slic_build slic_app i2s_build athplay_tools_fus $(fs_build)
 #db12x_build: common_mainline gateway_build slic_build slic_app $(fs_build)
@@ -278,6 +278,8 @@ art_mod:
 	cd ../apps/art && make -f makefile.soc.linux.mips clean && \
 	make -f makefile.soc.linux.mips wasp
 	cp ../apps/art/modules/art.ko $(MODULEPATH)/art-wasp.ko
+	cp ../apps/art/modules/nart.out $(INSTALL_ROOT)/bin/nart.out
+	cp ../apps/art/modules/start-art.sh $(INSTALL_ROOT)/bin/start-art.sh
 
 main_hal_build:
 	@echo making hal
