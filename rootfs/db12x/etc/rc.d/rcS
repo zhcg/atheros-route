@@ -114,3 +114,8 @@ route add default gw ${IPGW}
 echo "nameserver ${PRIDNS}" >> /etc/resolv.conf
 echo "nameserver ${SECDNS}" >> /etc/resolv.conf
 
+##
+## dhcp
+##
+/etc/rc.d/rc.udhcpd
+/usr/sbin/udhcpd /etc/udhcpd.conf
