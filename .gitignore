@@ -1084,3 +1084,4 @@ linux/kernels/mips-linux-2.6.31/vmlinux.info
 rootfs-db12x.build/
 rootfs-db12x.optbuild/
 tftpboot/
+modules/

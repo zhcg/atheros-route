@@ -104,3 +104,13 @@ echo 5 > /proc/sys/vm/dirty_background_ratio
 if [ "${WLAN_ON_BOOT}" = "y" ]; then
     /etc/ath/apup
 fi
+
+##
+## nat settings 
+##
+/etc/rc.d/rc.modules
+/etc/nat_vlan.sh
+route add default gw ${IPGW}
+echo "nameserver ${PRIDNS}" >> /etc/resolv.conf
+echo "nameserver ${SECDNS}" >> /etc/resolv.conf
+

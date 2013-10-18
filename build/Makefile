@@ -258,6 +258,29 @@ WIRELESSTOOLNAMES :=
 endif
 
 
+
+#
+# kernel modules ,add modules by user [luodp 20131018]
+#
+
+export BOARD_KERNEL_MODULES = netfilter 
+
+KERNEL_MODULE_PATH=$(TOPDIR)/modules/$(BOARD_TYPE)$(BUILD_CONFIG)$(BUILD_EXT)/
+kernel_modules: kernel_modules_prep $(BOARD_KERNEL_MODULES) kernel_modules_install
+
+kernel_modules_prep:
+	test -d $(KERNEL_MODULE_PATH) || mkdir -p $(KERNEL_MODULE_PATH)
+kernel_modules_install:
+	mkdir -p $(INSTALL_ROOT)/lib/modules/$(KERNELVER)/kernel/
+	cp -Rf $(KERNEL_MODULE_PATH)/*.ko $(INSTALL_ROOT)/lib/modules/$(KERNELVER)/kernel/
+
+netfilter:
+	$(MAKEARCH) -C $(KERNELPATH) SUBDIRS=net/netfilter modules
+	$(MAKEARCH) -C $(KERNELPATH) SUBDIRS=net/ipv4/netfilter modules
+	cp $(KERNELPATH)/net/ipv4/netfilter/*.ko $(KERNEL_MODULE_PATH)
+	cp $(KERNELPATH)/net/netfilter/*.ko $(KERNEL_MODULE_PATH)		
+	
+	
 #
 # Common targts
 #
