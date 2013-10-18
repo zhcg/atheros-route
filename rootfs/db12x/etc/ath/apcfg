@@ -26,17 +26,17 @@ rm /tmp/vars.$$
 ##
 ###################################################################################
 
-cfg -a AP_IPADDR=${AP_IPADDR:="192.168.1.2"}
+cfg -a AP_IPADDR=${AP_IPADDR:="192.168.1.1"}
 cfg -a AP_NETMASK=${AP_NETMASK:="255.255.255.0"}
-cfg -a WAN_MODE=${WAN_MODE:="bridged"}
-cfg -a WAN_IPADDR=${WAN_IPADDR:="192.168.2.1"}
-cfg -a WAN_NETMASK=${WAN_NETMASK:="255.255.255.0"}
+cfg -a WAN_MODE=${WAN_MODE:="dhcp"}
+#cfg -a WAN_IPADDR=${WAN_IPADDR:="192.168.2.1"}
+#cfg -a WAN_NETMASK=${WAN_NETMASK:="255.255.255.0"}
 
 #
 # Indicate if you want the WLAN to be activated on boot up.
 #
 
-cfg -a WLAN_ON_BOOT=${WLAN_ON_BOOT:="n"}
+cfg -a WLAN_ON_BOOT=${WLAN_ON_BOOT:="y"}
 
 #
 # AP Start Mode

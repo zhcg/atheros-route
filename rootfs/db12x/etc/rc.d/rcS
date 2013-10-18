@@ -110,10 +110,20 @@ fi
 ##
 /etc/rc.d/rc.modules
 /etc/nat_vlan.sh
-route add default gw ${IPGW}
-echo "nameserver ${PRIDNS}" >> /etc/resolv.conf
-echo "nameserver ${SECDNS}" >> /etc/resolv.conf
-
+if [ "${IPGW}" != "" ]
+then
+	route add default gw ${IPGW}
+fi
+if [ "${PRIDNS}" != "" ]
+then
+	echo "nameserver ${PRIDNS}" > /etc/resolv.conf
+else
+	echo "nameserver 8.8.8.8" > /etc/resolv.conf
+fi
+if [ "${SECDNS}" != "" ]
+then
+	echo "nameserver ${SECDNS}" >> /etc/resolv.conf
+fi
 ##
 ## dhcp
 ##
