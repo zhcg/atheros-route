@@ -13,7 +13,10 @@
 #include <stdlib.h>
 #include <getopt.h>
 #include <xtables.h>
-#include "../../../../linux/net-2.6.31/netfilter_ipv4/ipt_NATTYPE.h"
+//#include "../../../../linux/net-2.6.31/netfilter_ipv4/ipt_NATTYPE.h"
+#include "ipt_NATTYPE.h"
+
+
 
 /* Function which prints out usage message. */
 static void
