@@ -9,7 +9,8 @@
 .deps
 .dirstamp
 .libs
-
+*.d
+.makefirst
 
 /extensions/GNUmakefile
 /extensions/matches?.man
