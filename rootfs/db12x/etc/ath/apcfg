@@ -51,7 +51,7 @@ cfg -a WLAN_ON_BOOT=${WLAN_ON_BOOT:="y"}
 #
 #
 
-cfg -a AP_STARTMODE=${AP_STARTMODE:="standard"}
+cfg -a AP_STARTMODE=${AP_STARTMODE:="dual"}
 cfg -a AP_RADIO_ID=${AP_RADIO_ID:=0}
 cfg -a AP_RADIO_ID_2=${AP_RADIO_ID_2:=1}
 export NUMRADIO_AHB=1
