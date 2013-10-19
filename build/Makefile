@@ -248,6 +248,7 @@ LDADR=`readelf -a vmlinux|grep "\[ 1\]"|cut -d" " -f 26`
 #
 
 include scripts/$(BOARD_TYPE)/Makefile.$(BOARD_TYPE)
+include scripts/$(BOARD_TYPE)/Makefile.16M
 
 ifndef WIRELESSTOOLNAMES
 $(warning "Should specify WIRELESSTOOLNAMES value")

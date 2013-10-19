@@ -1,0 +1,106 @@
+############################################################################
+# Make db12x-jffs2  u-boot.bin   vmlinux.lzma.uImage to one image 
+# add by luodp
+############################################################################
+
+#
+# Partition Information
+#
+
+#
+#256k(u-boot),64k(u-boot-env),14528k(rootfs),1408k(uImage),64k(mib0),64k(ART)
+#6 MTD partitions
+#0x000000000000-0x000000040000 : "u-boot"
+#0x000000040000-0x000000050000 : "u-boot-env"
+#0x000000050000-0x000000e80000 : "rootfs"
+#0x000000e80000-0x000000fe0000 : "uImage"
+#0x000000fe0000-0x000000ff0000 : "mib0"
+#0x000000ff0000-0x000001000000 : "ART"
+#
+
+#
+# Image Information
+#
+
+#Image_DIR = $(TOPDIR)/images/$(BOARD_TYPE)$(BUILD_CONFIG)$(BUILD_EXT)/
+Image_DIR = ./../images/db12x/
+UBOOT_IMAGE_NAME = u-boot.bin
+UBOOT_SIZE = 0x40000
+
+UBOOT_ENV_SIZE = 0x10000
+
+KERNEL_IMAGE_NAME = vmlinux.lzma.uImage
+KERNEL_SIZE = 0x160000
+
+ROOTFS_IMAGE_NAME = db12x-jffs2
+ROOTFS_SIZE = 0xe30000
+
+LEFT_SIZE = 0x20000
+
+#
+# OneImage Information
+#
+
+PACKED_SIZE = 16M
+PACKED_IMAGE = one.img
+
+makeoneimage: check_img
+
+	@echo "Begin Packed Image Size"
+
+# Copy Uboot 
+	@cp $(Image_DIR)/$(UBOOT_IMAGE_NAME) $(Image_DIR)/$(PACKED_IMAGE)
+
+# Finish Uboot and U-boot-Env Padding
+	@SIZE=`wc -c $(Image_DIR)/$(UBOOT_IMAGE_NAME) | awk '{ print $$1 }'` ; \
+	UBOOT_PART_SIZE=`printf "%d" $(UBOOT_SIZE)` ; \
+	UBOOT_ENV_PART_SIZE=`printf "%d" $(UBOOT_ENV_SIZE)` ; \
+	PAD=`expr $$UBOOT_PART_SIZE - $$SIZE + $$UBOOT_ENV_PART_SIZE` ; \
+	dd if=/dev/zero count=1 bs=$$PAD 2> /dev/null | \
+	tr \\000 \\377 >> $(Image_DIR)/$(PACKED_IMAGE)
+
+# Copy Rootfs
+	@cat $(Image_DIR)/$(ROOTFS_IMAGE_NAME) >> $(Image_DIR)/$(PACKED_IMAGE)
+
+# Finish Rootfs Padding
+	@SIZE=`wc -c $(Image_DIR)/$(ROOTFS_IMAGE_NAME) | awk '{ print $$1 }'` ; \
+	ROOTFS_PART_SIZE=`printf "%d" $(ROOTFS_SIZE)` ; \
+	PAD=`expr $$ROOTFS_PART_SIZE - $$SIZE` ; \
+	dd if=/dev/zero count=1 bs=$$PAD 2> /dev/null | \
+	tr \\000 \\377 >> $(Image_DIR)/$(PACKED_IMAGE)
+	
+# Copy Kernel
+	@cat $(Image_DIR)/$(KERNEL_IMAGE_NAME) >> $(Image_DIR)/$(PACKED_IMAGE)
+
+# Finish Kernel and mib0 and ART Padding
+	@SIZE=`wc -c $(Image_DIR)/$(KERNEL_IMAGE_NAME) | awk '{ print $$1 }'` ; \
+	KERNEL_PART_SIZE=`printf "%d" $(KERNEL_SIZE)` ; \
+	LEFT_PART_SIZE=`printf "%d" $(LEFT_SIZE)` ; \
+	PAD=`expr $$KERNEL_PART_SIZE - $$SIZE + $$LEFT_PART_SIZE` ; \
+	dd if=/dev/zero count=1 bs=$$PAD 2> /dev/null | \
+	tr \\000 \\377 >> $(Image_DIR)/$(PACKED_IMAGE)
+
+	@echo "End Packed Image Size "
+
+
+check_img:
+	@if [ ! -f $(Image_DIR)/$(UBOOT_IMAGE_NAME) ]; then \
+	echo "" ; \
+	echo "Please copy \"$(UBOOT_IMAGE_NAME)\" to $(Image_DIR) "; \
+	echo "" ; \
+	exit 1; \
+	fi 
+
+	@if [ ! -f $(Image_DIR)/$(KERNEL_IMAGE_NAME) ]; then \
+	echo "" ; \
+	echo "Please copy \"$(KERNEL_IMAGE_NAME)\" to $(Image_DIR)"; \
+	echo "" ; \
+	exit 1; \
+	fi
+		
+	@if [ ! -f $(Image_DIR)/$(ROOTFS_IMAGE_NAME) ]; then \
+	echo "" ; \
+	echo "Please copy \"$(ROOTFS_IMAGE_NAME)\" to $(Image_DIR)"; \
+	echo "" ; \
+	exit 1; \
+	fi
