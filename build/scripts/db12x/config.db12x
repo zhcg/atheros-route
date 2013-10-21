@@ -131,7 +131,7 @@ export MADWIFITARGET=mipsisa32-be-elf
 export FUSIONTARGET=mipsisa32-be-elf
 export TARGETARCH=mipsisa32-be-elf
 
-#export CONFIG_I2S=1
+export CONFIG_I2S=1
 
 ifeq ($(CONFIG_I2S),1)
 export ATH_WASP_I2S=1

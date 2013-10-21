@@ -1085,3 +1085,17 @@ rootfs-db12x.build/
 rootfs-db12x.optbuild/
 tftpboot/
 modules/
+apps/busybox-1.01/scripts/config/mconf
+apps/iptables/iptables-1.4.5-qos/extensions/initext.c
+apps/athplay/athplay
+apps/athplay/i2sconf
+linux/drivers/i2s/.ath_i2s.ko.cmd
+linux/drivers/i2s/.ath_i2s.mod.o.cmd
+linux/drivers/i2s/.ath_i2s.o.cmd
+linux/drivers/i2s/.tmp_versions/
+linux/drivers/i2s/Module.symvers
+linux/drivers/i2s/ath_i2s.ko
+linux/drivers/i2s/ath_i2s.mod.c
+linux/drivers/i2s/ath_i2s.mod.o
+linux/drivers/i2s/ath_i2s.o
+linux/drivers/i2s/modules.order
