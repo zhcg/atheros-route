@@ -1,0 +1,1 @@
+cmd_/home/luodongping/9344_git/9344/build/../linux/drivers/stm32/ath_spi_stm32.ko := mips-linux-uclibc-ld -r  -m elf32btsmip  --build-id -o /home/luodongping/9344_git/9344/build/../linux/drivers/stm32/ath_spi_stm32.ko /home/luodongping/9344_git/9344/build/../linux/drivers/stm32/ath_spi_stm32.o /home/luodongping/9344_git/9344/build/../linux/drivers/stm32/ath_spi_stm32.mod.o

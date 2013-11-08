@@ -129,3 +129,20 @@ fi
 ##
 /etc/rc.d/rc.udhcpd
 /usr/sbin/udhcpd /etc/udhcpd.conf
+##
+## add si3000 and spi node
+##
+if [ -c /dev/spiS0 ]
+then
+	echo "/dev/spiS0 node exist"
+else
+	mknod /dev/spiS0 c 217 0
+fi
+if [ -c /dev/pcm0 ]
+then
+	echo "/dev/pcm0 node exist"
+else
+	mknod /dev/pcm0 c 252 0
+fi
+insmod /lib/modules/2.6.31/si3000/ath_si3000.ko
+insmod /lib/modules/2.6.31/stm32/ath_spi_stm32.ko

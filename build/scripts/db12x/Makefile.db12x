@@ -9,6 +9,10 @@ export I2SDIR=$(TOPDIR)/linux/drivers/i2s
 export I2SMODPATH=$(INSTALL_ROOT)/lib/modules/$(KERNELVER)/i2s
 export SLICDIR=$(TOPDIR)/linux/drivers/slic
 export SLICMODPATH=$(INSTALL_ROOT)/lib/modules/$(KERNELVER)/slic
+export SI3000DIR=$(TOPDIR)/linux/drivers/si3000
+export SI3000MODPATH=$(INSTALL_ROOT)/lib/modules/$(KERNELVER)/si3000
+export STM32DIR=$(TOPDIR)/linux/drivers/stm32
+export STM32MODPATH=$(INSTALL_ROOT)/lib/modules/$(KERNELVER)/stm32
 export USBMODPATH=$(INSTALL_ROOT)/lib/modules/$(KERNELVER)/usb
 export USBDIR=${KERNELPATH}/drivers/usb
 export PCIDIR=${KERNELPATH}/drivers/pci
@@ -97,7 +101,7 @@ else
 ifeq ($(strip ${ATH_SUPPORT_SPECTRAL}),1)
 db12x_build: common_mainline driver_build usb_build pci_build spectral_app_build $(BUILD_TYPE)_build art_mod
 else
-db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) $(fs_build) makeoneimage 
+db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si3000_build si3000_app stm32_build stm32_app $(fs_build) makeoneimage 
 #db12x_build: common_mainline i2s_build athplay_tools_fus usb_build $(fs_build)
 #db12x_build: common_mainline slic_build slic_app i2s_build athplay_tools_fus $(fs_build)
 #db12x_build: common_mainline gateway_build slic_build slic_app $(fs_build)
@@ -226,6 +230,19 @@ slic_build: kernel_build
 	test -d $(SLICMODPATH) || mkdir -p $(SLICMODPATH)
 	cp $(SLICDIR)/ath_slic.ko $(SLICMODPATH)
 
+stm32_build: kernel_build
+	cd $(STM32DIR) && rm -f *.o *.ko *.mod.*
+	$(MAKEARCH) -C $(KERNELPATH) SUBDIRS=$(STM32DIR) modules
+	test -d $(STM32MODPATH) || mkdir -p $(STM32MODPATH)
+	cp $(STM32DIR)/ath_spi_stm32.ko $(STM32MODPATH)	
+
+si3000_build: kernel_build
+	cd $(SI3000DIR) && rm -f *.o *.ko *.mod.*
+	$(MAKEARCH) -C $(KERNELPATH) SUBDIRS=$(SI3000DIR) modules
+	test -d $(STM32MODPATH) || mkdir -p $(SI3000MODPATH)
+	cp $(SI3000DIR)/ath_si3000.ko $(SI3000MODPATH)	
+		
+
 athplay_tools_fus:
 	@echo making athplay_tools
 	cd ../apps/athplay; make clean; make; \
@@ -237,6 +254,22 @@ slic_app:
 	cd ../apps/slicapp; make clean; make; \
 	$(STRIP) slicapp; \
 	cp -f slicapp $(INSTALL_ROOT)/bin;
+	
+stm32_app:
+	@echo making stm32 application
+	cd ../apps/stm32app; make clean; make; \
+	$(STRIP) stm32app; \
+	cp -f stm32app $(INSTALL_ROOT)/bin;
+	
+si3000_app:
+	@echo making si3000 application
+	cd ../apps/si3000app; make clean; make; \
+	$(STRIP) pcmtest_send; \
+	$(STRIP) pcmtest_rece; \
+	$(STRIP) pcmtest_ioctl; \
+	cp -f pcmtest_send $(INSTALL_ROOT)/bin; \
+	cp -f pcmtest_rece $(INSTALL_ROOT)/bin;  \
+	cp -f pcmtest_ioctl $(INSTALL_ROOT)/bin;
 
 WIRELESSTOOLNAMES := athstats athstatsclear 80211stats athkey athchans athctrl\
 	athdebug 80211debug wlanconfig athcwm athampdutrc atrc \
