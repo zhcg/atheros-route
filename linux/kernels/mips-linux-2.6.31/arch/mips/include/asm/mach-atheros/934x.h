@@ -394,6 +394,45 @@ void ar7240_pci_irq_init(int irq_base); /* ??? */
 #define ATH_GPIO_IN_ENABLE1_I2SEXT_MCLK(x)		((0xff&x)<<24)
 #define ATH_GPIO_IN_ENABLE0_UART_SIN(x)			((0xff&x)<< 8)
 #define ATH_GPIO_IN_ENABLE0_SPI_DATA_IN(x)		(0xff&x)
+#define ATH_GPIO_IN_ENABLE1_I2SEXT_MCLK_MASK            ((0xff)<<24)
+
+// 32'h18040048 (GPIO_IN_ENABLE1)
+#define GPIO_IN_ENABLE1_I2SEXT_MCLK_MSB                              31
+#define GPIO_IN_ENABLE1_I2SEXT_MCLK_LSB                              24
+#define GPIO_IN_ENABLE1_I2SEXT_MCLK_MASK                             0xff000000
+#define GPIO_IN_ENABLE1_I2SEXT_MCLK_GET(x)                           (((x) & GPIO_IN_ENABLE1_I2SEXT_MCLK_MASK) >> GPIO_IN_ENABLE1_I2SEXT_MCLK_LSB)
+#define GPIO_IN_ENABLE1_I2SEXT_MCLK_SET(x)                           (((x) << GPIO_IN_ENABLE1_I2SEXT_MCLK_LSB) & GPIO_IN_ENABLE1_I2SEXT_MCLK_MASK)
+#define GPIO_IN_ENABLE1_I2SEXT_MCLK_RESET                            0x0 // 0
+#define GPIO_IN_ENABLE1_I2SEXTCLK_MSB                                23
+#define GPIO_IN_ENABLE1_I2SEXTCLK_LSB                                16
+#define GPIO_IN_ENABLE1_I2SEXTCLK_MASK                               0x00ff0000
+#define GPIO_IN_ENABLE1_I2SEXTCLK_GET(x)                             (((x) & GPIO_IN_ENABLE1_I2SEXTCLK_MASK) >> GPIO_IN_ENABLE1_I2SEXTCLK_LSB)
+#define GPIO_IN_ENABLE1_I2SEXTCLK_SET(x)                             (((x) << GPIO_IN_ENABLE1_I2SEXTCLK_LSB) & GPIO_IN_ENABLE1_I2SEXTCLK_MASK)
+#define GPIO_IN_ENABLE1_I2SEXTCLK_RESET                              0x0 // 0
+#define GPIO_IN_ENABLE1_I2S0__MIC_SD_MSB                             15
+#define GPIO_IN_ENABLE1_I2S0__MIC_SD_LSB                             8
+#define GPIO_IN_ENABLE1_I2S0__MIC_SD_MASK                            0x0000ff00
+#define GPIO_IN_ENABLE1_I2S0__MIC_SD_GET(x)                          (((x) & GPIO_IN_ENABLE1_I2S0__MIC_SD_MASK) >> GPIO_IN_ENABLE1_I2S0__MIC_SD_LSB)
+#define GPIO_IN_ENABLE1_I2S0__MIC_SD_SET(x)                          (((x) << GPIO_IN_ENABLE1_I2S0__MIC_SD_LSB) & GPIO_IN_ENABLE1_I2S0__MIC_SD_MASK)
+#define GPIO_IN_ENABLE1_I2S0__MIC_SD_RESET                           0x0 // 0
+#define GPIO_IN_ENABLE1_I2S0__WS_MSB                                 7
+#define GPIO_IN_ENABLE1_I2S0__WS_LSB                                 0
+#define GPIO_IN_ENABLE1_I2S0__WS_MASK                                0x000000ff
+#define GPIO_IN_ENABLE1_I2S0__WS_GET(x)                              (((x) & GPIO_IN_ENABLE1_I2S0__WS_MASK) >> GPIO_IN_ENABLE1_I2S0__WS_LSB)
+#define GPIO_IN_ENABLE1_I2S0__WS_SET(x)                              (((x) << GPIO_IN_ENABLE1_I2S0__WS_LSB) & GPIO_IN_ENABLE1_I2S0__WS_MASK)
+#define GPIO_IN_ENABLE1_I2S0__WS_RESET                               0x0 // 0
+#define GPIO_IN_ENABLE1_ADDRESS                                      0x18040048
+#define GPIO_IN_ENABLE1_OFFSET                                       0x0048
+
+/* Added only to avoid build breaks for db12x when the code in is_qca955x() is compiled. Do not use these
+for WASP -- START */
+#define GPIO_IN_ENABLE2_SLICEXT_MCLK_MSB                             0
+#define GPIO_IN_ENABLE2_SLICEXT_MCLK_LSB                             0
+#define GPIO_IN_ENABLE2_SLICEXT_MCLK_MASK                            0
+#define GPIO_IN_ENABLE2_SLICEXT_MCLK_GET(x)                          0
+#define GPIO_IN_ENABLE2_SLICEXT_MCLK_SET(x)                          0
+#define GPIO_IN_ENABLE2_SLICEXT_MCLK_RESET                           0 
+/* END */
 
 #define GPIO_OUT_FUNCTION0_ENABLE_GPIO_3_MSB                         31
 #define GPIO_OUT_FUNCTION0_ENABLE_GPIO_3_LSB                         24
@@ -545,6 +584,15 @@ void ar7240_pci_irq_init(int irq_base); /* ??? */
 #define GPIO_IN_ENABLE9_UART1_TD_GET(x)                              (((x) & GPIO_IN_ENABLE9_UART1_TD_MASK) >> GPIO_IN_ENABLE9_UART1_TD_LSB)
 #define GPIO_IN_ENABLE9_UART1_TD_SET(x)                              (((x) << GPIO_IN_ENABLE9_UART1_TD_LSB) & GPIO_IN_ENABLE9_UART1_TD_MASK)
 #define GPIO_IN_ENABLE9_UART1_TD_RESET                               0x0 // 0
+
+#define GPIO_IN_ENABLE4_SLIC_DATA_IN_LSB                             0
+#define GPIO_IN_ENABLE4_SLIC_DATA_IN_MASK                            0x000000ff
+#define GPIO_IN_ENABLE4_SLIC_DATA_IN_GET(x)                          (((x) & GPIO_IN_ENABLE4_SLIC_DATA_IN_MASK) >> GPIO_IN_ENABLE4_SLIC_DATA_IN_LSB)
+#define GPIO_IN_ENABLE4_SLIC_DATA_IN_SET(x)                          (((x) << GPIO_IN_ENABLE4_SLIC_DATA_IN_LSB) & GPIO_IN_ENABLE4_SLIC_DATA_IN_MASK)
+#define GPIO_IN_ENABLE4_SLIC_PCM_FS_IN_LSB                           8
+#define GPIO_IN_ENABLE4_SLIC_PCM_FS_IN_MASK                          0x0000ff00
+#define GPIO_IN_ENABLE4_SLIC_PCM_FS_IN_GET(x)                        (((x) & GPIO_IN_ENABLE4_SLIC_DATA_IN_MASK) >> GPIO_IN_ENABLE4_SLIC_DATA_IN_LSB)
+#define GPIO_IN_ENABLE4_SLIC_PCM_FS_IN_SET(x)                        (((x) << GPIO_IN_ENABLE4_SLIC_PCM_FS_IN_LSB) & GPIO_IN_ENABLE4_SLIC_PCM_FS_IN_MASK)
 
 #define UART1_REG_ADDRESS                                            0x18500000
 
@@ -757,6 +805,19 @@ void ar7240_pci_irq_init(int irq_base); /* ??? */
 #define ATH_MBOX_DMA_POLICY_TX_QUANTUM          (1<< 3)
 #define ATH_MBOX_DMA_POLICY_TX_FIFO_THRESH(x)   ((0xff&x)<< 4)
 
+/* Added only to avoid build breaks for db12x when the code in is_qca955x() is compiled. Do not use these
+for WASP -- START */
+#define MBOX_DMA_POLICY_TXD_16BIT_SWAP_SET(x)   0
+#define MBOX_DMA_POLICY_RXD_16BIT_SWAP_SET(x)   0
+#define MBOX_DMA_POLICY_TXD_END_SWAP_SET(x)     0
+#define MBOX_DMA_POLICY_RXD_END_SWAP_SET(x)     0
+/* END */
+#define ATH_MBOX_SLIC_RX_DMA_COMPLETE		(1 << 6)
+#define ATH_MBOX_SLIC_TX_DMA_COMPLETE		(1 << 4)
+#define ATH_MBOX_SLIC_TX_NOT_EMPTY		(1 << 1)
+#define ATH_MBOX_SLIC_RX_UNDERFLOW          	(1 << 2)
+#define ATH_MBOX_SLIC_RX_NOT_FULL           	(1 << 0)
+#define ATH_MBOX_SLIC_TX_OVERFLOW               (1 << 3)
 #define ATH_MBOX_RX_DMA_COMPLETE                (1 << 10)
 #define ATH_MBOX_TX_DMA_EOM_COMPLETE            (1 << 8)
 #define ATH_MBOX_TX_DMA_COMPLETE                (1 << 6)
@@ -836,6 +897,17 @@ void ar7240_pci_irq_init(int irq_base); /* ??? */
 #define ATH_SLIC_CTRL_CLK_EN				(1<<3)
 #define ATH_SLIC_CTRL_MASTER				(1<<2)
 #define ATH_SLIC_CTRL_EN				(1<<1)
+
+/* Added only to avoid build breaks for db12x when the code in is_qca955x() is compiled. Do not use these
+for WASP -- START */
+// 32'h180a9008 (SLIC_CTRL)
+#define SLIC_CTRL_PLL_SOURCE_SEL_MSB                    0
+#define SLIC_CTRL_PLL_SOURCE_SEL_LSB                    0
+#define SLIC_CTRL_PLL_SOURCE_SEL_MASK                   0
+#define SLIC_CTRL_PLL_SOURCE_SEL_GET(x)                 0
+#define SLIC_CTRL_PLL_SOURCE_SEL_SET(x)                 0
+#define SLIC_CTRL_PLL_SOURCE_SEL_RESET                  0
+/*END */
 #define ATH_SLIC_TX_SLOTS1_EN(x)			(x)
 #define ATH_SLIC_TX_SLOTS2_EN(x)			(x)
 #define ATH_SLIC_RX_SLOTS1_EN(x)			(x)
@@ -1703,6 +1775,10 @@ void ar7240_pci_irq_init(int irq_base); /* ??? */
 // reset value (ignore bits undefined at reset)
 #define SWITCH_CLOCK_SPARE_RESET                                     0x00000531
 
+/* Added only to avoid build breaks for db12x when the code in is_qca955x() is compiled. Do not use this
+for WASP -- START */
+#define SLIC_PCM_DIV_ADDRESS                                         0
+#define ATH_SLIC_CTRL_SLAVE                                          (0<<2)
 // 32'h0028 (CURRENT_PCIE_PLL_DITHER)
 #define CURRENT_PCIE_PLL_DITHER_INT_MSB                              20
 #define CURRENT_PCIE_PLL_DITHER_INT_LSB                              15
