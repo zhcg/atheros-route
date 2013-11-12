@@ -31,7 +31,10 @@
 
 int spidrv_major =  217;
 //int spich = 0;
-static char dev_id[] = "atheros_AP";
+static char dev_id[] = "stm32";
+
+static atomic_t ath_fr_status = ATOMIC_INIT(0);
+static wait_queue_head_t ath_fr_wq;
 
 #define NUMBER 2054
 //GPIO0 for cs1,GPIO1 for spi irq
@@ -339,7 +342,7 @@ int ath_spi_stm32_gpio_init(void)
 	//set GPIO as interrupt
 	//edge triggered
 	rddata = ath_reg_rd(ATH_GPIO_INT_TYPE);
-	rddata &= ~(1 << STM32_INT_GPIO);
+	rddata |= (1 << STM32_INT_GPIO);
 	ath_reg_wr(ATH_GPIO_INT_TYPE, rddata);
 	
 	//failing edge
@@ -445,12 +448,21 @@ static u8 spi_read(void)
 	return (ath_reg_rd(ATH_SPI_RD_STATUS) & 0xff);
 }
 
+int get_gpio_val(int gpio)
+{
+	return ((1 << gpio) & (ath_reg_rd(ATH_GPIO_IN)));
+}
 
 u8 spi_stm32_read8(unsigned short sid, unsigned char cid, unsigned char reg)
 {
 	unsigned char value;
+	
+	//wait_event_interruptible(ath_fr_wq, !(get_gpio_val(STM32_INT_GPIO)));
 	//unsigned char regCtrl = CNUM_TO_CID_QUAD(cid)|0x60;
 	ath_flash_spi_down();
+	ath_reg_wr_nf(ATH_SPI_WRITE, ATH_SPI_CS_DIS);
+	ath_reg_wr_nf(ATH_SPI_CLOCK, 0x2af);
+	//udelay(5);
 	ath_spi_enable();
 	//spi_chip_select(ENABLE);
 	//spi_write(regCtrl);
@@ -460,23 +472,25 @@ u8 spi_stm32_read8(unsigned short sid, unsigned char cid, unsigned char reg)
 	//spi_chip_select(DISABLE);
 	spi_chip_select(ENABLE);
 	value = spi_read();
-	udelay(5);
+	//udelay(5);
 	printk("%x ",value);
 	spi_chip_select(DISABLE);	
 	ath_spi_done();
+	ath_reg_wr_nf(ATH_SPI_WRITE, ATH_SPI_CS_DIS);
+	ath_reg_wr_nf(ATH_SPI_CLOCK, 0x243);
+	//udelay(5);
 	ath_flash_spi_up();	
 	return value;
 }
 
 void spi_stm32_write8(unsigned short sid, unsigned char cid, unsigned char reg, unsigned char value)
 { 
-	unsigned int rddata;
 	//unsigned char regCtrl = CNUM_TO_CID_QUAD(cid)|0x20;
-	//udelay(800);
+	
 	ath_flash_spi_down();
-	ath_reg_wr(ATH_SPI_WRITE, ATH_SPI_CS_DIS);
-	ath_reg_wr(ATH_SPI_CLOCK, 0xaf);
-	udelay(5);
+	ath_reg_wr_nf(ATH_SPI_WRITE, ATH_SPI_CS_DIS);
+	ath_reg_wr_nf(ATH_SPI_CLOCK, 0x2af);
+	//udelay(5);
 	ath_spi_enable();
 	//spi_chip_select(ENABLE);
 	//spi_write(regCtrl);
@@ -486,12 +500,13 @@ void spi_stm32_write8(unsigned short sid, unsigned char cid, unsigned char reg, 
 	//spi_chip_select(DISABLE);
 	spi_chip_select(ENABLE);
 	spi_write(value);
-	udelay(5);
-	printk("2004-");
+	//udelay(5);
+	//printk("2014-");
 	spi_chip_select(DISABLE);
 	ath_spi_done();
 	ath_reg_wr_nf(ATH_SPI_WRITE, ATH_SPI_CS_DIS);
-	ath_reg_wr_nf(ATH_SPI_CLOCK, 0x43);
+	ath_reg_wr_nf(ATH_SPI_CLOCK, 0x243);
+	//udelay(5);
 	ath_flash_spi_up();
 }
 
@@ -525,6 +540,8 @@ void spi_stm32_write16(int sid, unsigned char cid, unsigned char reg, unsigned s
 	spi_chip_select(DISABLE);
 }
 
+
+
 static irqreturn_t rxtx_irq_handler(int irq, void *irqaction)
 {
 	int i = 0;
@@ -535,23 +552,21 @@ static irqreturn_t rxtx_irq_handler(int irq, void *irqaction)
 	u8  data = 0;
 	u16 length = 0;
 
-	//u32 gpio_int	= le32_to_cpu(*(volatile u32 *)(RALINK_REG_PIOINT));
-	//u32 gpio_edge	= le32_to_cpu(*(volatile u32 *)(RALINK_REG_PIOEDGE));
-	//u32 gpio_fena	= le32_to_cpu(*(volatile u32 *)(RALINK_REG_PIOFENA));
-	//u32 gpio_data   = le32_to_cpu(*(volatile u32 *)(RALINK_REG_PIODATA));
-	
 	//TODO LED
-	
-	//unsigned int int_status;
-	//int_status = ath_reg_rd(ATH_MBOX_SLIC_INT_STATUS);
 
-	/* gpio O interrupt */
-	//if( gpio_int & (1 << 0) )
-	//{
-	//	if(gpio_fena & (1 << 0) && (!(gpio_edge & (1 << 0))))	//falling
-	//	{
-			//[TODO]disable_irq(ATH_GPIO_IRQn(STM32_INT_GPIO));
-			printk("GPIO 0 FALLING!\n");
+	//if (atomic_read(&ath_fr_status)) {
+		
+			printk("do int!\n");
+			
+			if (get_gpio_val(STM32_INT_GPIO)) {
+				printk("INT Hight!\n");
+				return IRQ_HANDLED;
+			}
+			printk("INT FALLING!\n");
+			atomic_dec(&ath_fr_status);
+			disable_irq(ATH_GPIO_IRQn(STM32_INT_GPIO));			
+		    //wake_up(&ath_fr_wq);
+			
 			msb_head = spi_stm32_read8(0,0,0);
 			lsb_head = spi_stm32_read8(0,0,0);
 			write_buf(msb_head);			//write the  MSB effective data to circle buffer
@@ -567,13 +582,13 @@ static irqreturn_t rxtx_irq_handler(int irq, void *irqaction)
 				data = spi_stm32_read8(0,0,0);
 				write_buf(data);			//write the effective data to circle buffer
 			}
-			//[TODO]local_irq_enable();
-		//}
-		/* clear int */
-	//	*(volatile u32 *)(RALINK_REG_PIOINT)  = cpu_to_le32((1 << 0));
-	//	*(volatile u32 *)(RALINK_REG_PIOEDGE) = cpu_to_le32((1 << 0));
+			
+			//printk("[luodp] INT_MASK %x \n",ath_reg_rd(ATH_GPIO_INT_MASK));
+			//printk("[luodp] INT_Pending %x \n",ath_reg_rd(ATH_GPIO_INT_PENDING));
+			enable_irq(ATH_GPIO_IRQn(STM32_INT_GPIO));
+
+			/* clear int */
 	//}
-	
 	return IRQ_HANDLED;
 }
 
@@ -586,12 +601,13 @@ void rxtx_request_irq(void)
 	//TODO LED int
 
 	//MSG("start request irq!\n");
-	ret = request_irq(ATH_GPIO_IRQn(STM32_INT_GPIO), rxtx_irq_handler, IRQF_SHARED , "Atheros_AP", dev_id);
+	ret = request_irq(ATH_GPIO_IRQn(STM32_INT_GPIO), rxtx_irq_handler, IRQF_TRIGGER_FALLING | IRQF_SHARED , "stm32", dev_id); //IRQF_SHARED IRQF_TRIGGER_FALLING
 	if(ret)
 	{
 		printk("SPI: GPIO_IRQ %d is not free.\n", STM32_INT_GPIO);
 		return ;
 	}
+	//init_waitqueue_head(&ath_fr_wq);
 }
 
 
@@ -631,7 +647,7 @@ static int __init ath_spi_stm32_init(void)
 static void __exit ath_spi_stm32_exit(void)
 {
 	printk("ath_spi_stm32_exit\n");
-	
+	free_irq(ATH_GPIO_IRQn(STM32_INT_GPIO), dev_id);
 #ifdef  CONFIG_DEVFS_FS
 	devfs_unregister_chrdev(spidrv_major, SPI_DEV_NAME);
 	devfs_unregister(devfs_handle);

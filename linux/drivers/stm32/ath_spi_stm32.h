@@ -2,7 +2,7 @@
 #define _ATH_SPI_SI3217x_H
 
 
-#define SPI_DEV_NAME	"spiS1"
+#define SPI_DEV_NAME	"spiS0"
 #define SPI_SI_REG_READ		1
 #define SPI_SI_REG_WRITE	2
 #define SPI_SI_RAM_READ		3
