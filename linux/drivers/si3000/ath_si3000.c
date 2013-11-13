@@ -26,7 +26,7 @@
 #include <linux/byteorder/generic.h>
 
 #include "atheros.h"
-#include "ath_slic.h"		/* local definitions */
+#include "ath_si3000.h"		/* local definitions */
 
 
 
