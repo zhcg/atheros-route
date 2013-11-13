@@ -26,7 +26,7 @@
 #include <linux/byteorder/generic.h>
 
 #include "atheros.h"
-#include "ath_si3000.h"		/* local definitions */
+#include "ath_slic.h"		/* local definitions */
 
 
 
@@ -73,6 +73,7 @@ typedef struct si3000_reg {
 	uint16_t Primary;
 	uint8_t addr;
 	uint8_t data;
+	//uint16_t no_use;
 } si3000_reg_t;
 
 void ath_slic_clk(unsigned long frac, unsigned long pll)
@@ -272,20 +273,33 @@ int si3000_init(void){
 		{0xffff,0x03,0x00},
 		{0xffff,0x04,0x13},
 		{0xffff,0x04,0x13},
-		{0xffff,0x01,0x0a},
-		{0xffff,0x01,0x0a},
+#if 0
+		{0xffff,0x01,0x10},
+		{0xffff,0x01,0x10},
 		//{0xffff,0x02,0x00},
 		//{0xffff,0x02,0x00},
-		{0xffff,0x05,0xcf},
-		{0xffff,0x05,0xcf},
-		{0xffff,0x06,0x7a},
-		{0xffff,0x06,0x7a},
-		{0xffff,0x07,0x5c},
-		{0xffff,0x07,0x5c},
-		{0xffff,0x08,0x00},
-		{0xffff,0x08,0x00},
-		{0xffff,0x09,0x00},
-		{0xffff,0x09,0x00}};
+		{0xffff,0x05,0x7b},
+		{0xffff,0x05,0x7b},
+		{0xffff,0x06,0x78},
+		{0xffff,0x06,0x78},
+		{0xffff,0x07,0x6f},
+		{0xffff,0x07,0x6f},
+#else
+		{0xffff,0x01,0x1a},
+		{0xffff,0x01,0x1a},
+		//{0xffff,0x02,0x00},
+		//{0xffff,0x02,0x00},
+		{0xffff,0x05,0xd3},
+		{0xffff,0x05,0xd3},
+		{0xffff,0x06,0x7f},
+		{0xffff,0x06,0x7f},
+		{0xffff,0x07,0x60},
+		{0xffff,0x07,0x60},
+		//{0xffff,0x08,0x00},
+		//{0xffff,0x08,0x00},
+		{0xffff,0x09,0x06},
+		{0xffff,0x09,0x06}};
+#endif
 
 	retval = si3000_reg_write((char *)si3000_reg_init_data, sizeof(si3000_reg_init_data));
 	return retval;
@@ -480,6 +494,16 @@ int ath_slic_open(struct inode *inode, struct file *filp)
 	ath_slic_softc_t *sc = &sc_buf_var;
 	int opened = 0;
 
+/*
+        //si3000_init();
+        si3000_reset(1);
+        mdelay(1);
+        si3000_reset(0);
+        si3000_init();
+	mdelay(10);
+*/
+
+
 	if ((filp->f_mode & FMODE_READ) && (sc->ropened)) {
 		printk("%s, %d SLIC Rx busy\n", __func__, __LINE__);
 		return -EBUSY;
@@ -491,14 +515,11 @@ int ath_slic_open(struct inode *inode, struct file *filp)
 
 	opened = (sc->ropened | sc->popened);
 
-	if (filp->f_mode & FMODE_READ) {
 		sc->ropened = 1;
 		sc->rpause = 0;
 		memset(sc->sc_rmall_buf, 0x5a, (NUM_DESC*ath_slic_buf_size));
-	} else {
 		sc->popened = 1;
 		sc->ppause = 0;
-	}
 
 	return (0);
 
@@ -691,45 +712,60 @@ int ath_slic_close(struct inode *inode, struct file *filp)
 {
 	int j, own, mode;
 
+printk("si3000 release \n");
 	ath_slic_softc_t *sc = &sc_buf_var;
-	slic_dma_buf_t *dmabuf;
-	ath_mbox_dma_desc *desc;
+	slic_dma_buf_t *dmabuf_r;
+	slic_dma_buf_t *dmabuf_p;
+	ath_mbox_dma_desc *desc_r;
+	ath_mbox_dma_desc *desc_p;
 
 	if (filp->f_mode & FMODE_READ) {
-		dmabuf = &sc->sc_rbuf;
-		own = sc->rpause;
 		mode = 1;
 	} else {
-		dmabuf = &sc->sc_pbuf;
-		own = sc->ppause;
 		mode = 0;
 	}
+	dmabuf_r = &sc->sc_rbuf;
+	dmabuf_p = &sc->sc_pbuf;
+	own = sc->ppause|sc->rpause;
 
-	desc = dmabuf->db_desc;
+	desc_r = dmabuf_r->db_desc;
+	desc_p = dmabuf_p->db_desc;
 	if (own) {
 		for (j = 0; j < NUM_DESC; j++) {
-			desc[j].OWN = 0;
+			desc_r[j].OWN = 0;
+			desc_p[j].OWN = 0;
 		}
-		ath_slic_dma_resume(mode);
+		ath_slic_dma_resume(0);
+		ath_slic_dma_resume(1);
 	} else { 
 		/* Wait for MBOX to give up the descriptor */
-		for (j = 0; j < NUM_DESC; j++) {
-			while (desc[j].OWN) {
-				schedule_timeout_interruptible(HZ);
+		if(mode)
+		{
+			for (j = 0; j < NUM_DESC; j++) {
+				while (desc_r[j].OWN) {
+					schedule_timeout_interruptible(HZ);
 
+				}
+			}
+		}
+		else
+		{
+			for (j = 0; j < NUM_DESC; j++) {
+				while (desc_p[j].OWN) {
+					schedule_timeout_interruptible(HZ);
+
+				}
 			}
 		}
 	}
 
-	dmabuf->tail = 0;
+	dmabuf_r->tail = 0;
+	dmabuf_p->tail = 0;
 
-	if (filp->f_mode & FMODE_READ) {
-		sc->ropened = 0;
-		sc->rpause = 0;
-	} else {
-		sc->popened = 0;
-		sc->ppause = 0;
-	}
+	sc->ropened = 0;
+	sc->rpause = 0;
+	sc->popened = 0;
+	sc->ppause = 0;
 
 	if (is_ar934x()) {
 		if (ath_slic_slave) {
