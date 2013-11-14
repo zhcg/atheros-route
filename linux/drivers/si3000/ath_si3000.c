@@ -721,7 +721,9 @@ printk("si3000 release \n");
 	ath_mbox_dma_desc *desc_r;
 	ath_mbox_dma_desc *desc_p;
 
-	if (filp->f_mode & FMODE_READ) {
+	if ((filp->f_mode & FMODE_READ)&&(filp->f_mode & FMODE_WRITE)) {
+		mode = 2;
+	} else if (filp->f_mode & FMODE_READ){
 		mode = 1;
 	} else {
 		mode = 0;
@@ -741,7 +743,7 @@ printk("si3000 release \n");
 		ath_slic_dma_resume(1);
 	} else { 
 		/* Wait for MBOX to give up the descriptor */
-		if(mode)
+		if((mode == 1) || (mode == 2))
 		{
 			for (j = 0; j < NUM_DESC; j++) {
 				while (desc_r[j].OWN) {
@@ -750,7 +752,7 @@ printk("si3000 release \n");
 				}
 			}
 		}
-		else
+		if((mode == 0) || (mode == 2))
 		{
 			for (j = 0; j < NUM_DESC; j++) {
 				while (desc_p[j].OWN) {
