@@ -146,3 +146,6 @@ else
 fi
 insmod /lib/modules/2.6.31/si3000/ath_si3000.ko
 insmod /lib/modules/2.6.31/stm32/ath_spi_stm32.ko
+
+mkdir -p /var/terminal_init/log
+
