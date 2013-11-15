@@ -250,17 +250,17 @@ int si3000_reset(int status)
 {
 	unsigned int rddata;
 
-	ath_reg_rmw_clear(ATH_GPIO_OE, 1<<15);
+	ath_reg_rmw_clear(ATH_GPIO_OE, 1<<19);
 
-	rddata = ath_reg_rd(ATH_GPIO_OUT_FUNCTION3);
+	rddata = ath_reg_rd(ATH_GPIO_OUT_FUNCTION4);
 	rddata = rddata & 0xffffff;
-	rddata = rddata | ATH_GPIO_OUT_FUNCTION3_ENABLE_GPIO_15(0x00);
-	ath_reg_wr(ATH_GPIO_OUT_FUNCTION3, rddata);
+	//rddata = rddata | ATH_GPIO_OUT_FUNCTION4_ENABLE_GPIO_19(0x00);
+	ath_reg_wr(ATH_GPIO_OUT_FUNCTION4, rddata);
 
 	if (status) {
-		ath_reg_rmw_clear(ATH_GPIO_OUT, 1<<15);
+		ath_reg_rmw_clear(ATH_GPIO_OUT, 1<<19);
 	} else  {
-		ath_reg_rmw_set(ATH_GPIO_OUT, 1<<15);
+		ath_reg_rmw_set(ATH_GPIO_OUT, 1<<19);
 	}
 	return 0;
 }
@@ -298,10 +298,12 @@ int si3000_init(void){
 		//{0xffff,0x08,0x00},
 		//{0xffff,0x08,0x00},
 		{0xffff,0x09,0x06},
-		{0xffff,0x09,0x06}};
+		{0xffff,0x09,0x06}
 #endif
-
+};
 	retval = si3000_reg_write((char *)si3000_reg_init_data, sizeof(si3000_reg_init_data));
+	mdelay(10);
+	ath_reg_rmw_set(RST_RESET_ADDRESS, RST_RESET_SLIC_RESET_SET(1));
 	return retval;
 }
 
@@ -719,7 +721,9 @@ printk("si3000 release \n");
 	ath_mbox_dma_desc *desc_r;
 	ath_mbox_dma_desc *desc_p;
 
-	if (filp->f_mode & FMODE_READ) {
+	if ((filp->f_mode & FMODE_READ)&&(filp->f_mode & FMODE_WRITE)) {
+		mode = 2;
+	} else if (filp->f_mode & FMODE_READ){
 		mode = 1;
 	} else {
 		mode = 0;
@@ -739,7 +743,7 @@ printk("si3000 release \n");
 		ath_slic_dma_resume(1);
 	} else { 
 		/* Wait for MBOX to give up the descriptor */
-		if(mode)
+		if((mode == 1) || (mode == 2))
 		{
 			for (j = 0; j < NUM_DESC; j++) {
 				while (desc_r[j].OWN) {
@@ -748,7 +752,7 @@ printk("si3000 release \n");
 				}
 			}
 		}
-		else
+		if((mode == 0) || (mode == 2))
 		{
 			for (j = 0; j < NUM_DESC; j++) {
 				while (desc_p[j].OWN) {
@@ -853,10 +857,10 @@ irqreturn_t ath_slic_intr(int irq, void *dev_id)
 	}
 
 	if (int_status & ATH_MBOX_SLIC_RX_UNDERFLOW) {
-		printk("ath_slic: Underflow Encountered....\n");
+		//printk("ath_slic: Underflow Encountered....\n");
 	}
 	if (int_status & ATH_MBOX_SLIC_TX_OVERFLOW) {
-		printk("ath_slic: Overflow Encountered....\n");
+		//printk("ath_slic: Overflow Encountered....\n");
 	}
 
 	/* Ack the interrupts */
@@ -945,10 +949,10 @@ void ath_slic_link_on(void)
 	ath_reg_wr(ATH_GPIO_IN_ENABLE4, rddata);
 
 	rddata = ath_reg_rd(ATH_GPIO_OUT_FUNCTION3);
-	rddata &= 0xff; //yaomoon
+	rddata &= 0xff00; //
 	rddata |= (ATH_GPIO_OUT_FUNCTION3_ENABLE_GPIO_12(0x4) |
-			ATH_GPIO_OUT_FUNCTION3_ENABLE_GPIO_13(0x6) |
-			ATH_GPIO_OUT_FUNCTION3_ENABLE_GPIO_14(0x5));
+			ATH_GPIO_OUT_FUNCTION3_ENABLE_GPIO_14(0x6) |
+			ATH_GPIO_OUT_FUNCTION3_ENABLE_GPIO_15(0x5));
 
 	ath_reg_wr(ATH_GPIO_OUT_FUNCTION3, rddata);
 
@@ -956,7 +960,7 @@ void ath_slic_link_on(void)
 
 	rddata = ath_reg_rd(ATH_GPIO_OE);
 	rddata = rddata | ATH_GPIO_OE_EN(0x800);//GPIO11=SLIC_DATA_IN
-	rddata = rddata & 0xffff8fff;//GPIO12=SLIC_DATA_OUT GPIO13=SLIC_PCM_CLK GPIO14=SLIC_PCM_FS 
+	rddata = rddata & 0xffff2fff;//GPIO12=SLIC_DATA_OUT GPIO13=SLIC_PCM_CLK GPIO14=SLIC_PCM_FS 
 	ath_reg_wr(ATH_GPIO_OE, rddata);
 
 	//ath_reg_rmw_set(RST_RESET_ADDRESS, RST_RESET_SLIC_RESET_SET(1));

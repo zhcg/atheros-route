@@ -37,9 +37,9 @@ static atomic_t ath_fr_status = ATOMIC_INIT(0);
 static wait_queue_head_t ath_fr_wq;
 
 #define NUMBER 2054
-//GPIO0 for cs1,GPIO1 for spi irq
-#define STM32_CS_GPIO   0
-#define STM32_INT_GPIO  1 
+//GPIO4 for cs1,GPIO3 for spi irq
+#define STM32_CS_GPIO   17
+#define STM32_INT_GPIO  3 
 
 u8 spi_stm32_read8(unsigned short sid, unsigned char cid, unsigned char reg);
 void spi_stm32_write8(unsigned short sid, unsigned char cid, unsigned char reg, unsigned char value);
@@ -323,15 +323,15 @@ int ath_spi_stm32_gpio_init(void)
 	ath_reg_rmw_set(ATH_GPIO_FUNCTIONS,
 			   ATH_GPIO_FUNCTION_JTAG_DISABLE);
 		
-	//2.TODO set GPIO0 output and cs1	
+	//2.TODO set GPIO17 output and cs1	
 			   
 	ath_reg_rmw_clear(ATH_GPIO_OE, 1 << STM32_CS_GPIO);
-	rddata = ath_reg_rd(ATH_GPIO_OUT_FUNCTION0);
-	rddata &= 0xffffff00;
-	rddata = rddata | ATH_GPIO_OUT_FUNCTION0_ENABLE_GPIO_0(0x07);
-	ath_reg_wr(ATH_GPIO_OUT_FUNCTION0, rddata);
+	rddata = ath_reg_rd(ATH_GPIO_OUT_FUNCTION4);
+	rddata &= 0xffff00ff;
+	rddata = rddata | ((0x07)<<8);
+	ath_reg_wr(ATH_GPIO_OUT_FUNCTION4, rddata);
 
-	//3.set GPIO1 for input and interrupt 
+	//3.set GPIO3 for input and interrupt 
 	
 	//set GPIO as input
 	
