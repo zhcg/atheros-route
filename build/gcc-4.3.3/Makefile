@@ -430,8 +430,13 @@ install:
 	### of using them and thus don't want to link against them!
 	# rm -f $(BUILD_DIR)/lib/*stdc++*.so*
 	############## end hack
+	$(STRIP) $(STAGING_DIR)/usr/mips-linux-uclibc/lib/libstdc++.so.6.0.10 
 	cp -P $(STAGING_DIR)/lib/*so* $(PREFIX)/lib
 	cp -P $(STAGING_DIR)/usr/mips-linux-uclibc/lib/libgcc* $(PREFIX)/lib
+	cp -P $(STAGING_DIR)/usr/mips-linux-uclibc/lib/libstdc++.so.6.0.10  $(PREFIX)/lib
+	cp -P $(STAGING_DIR)/usr/mips-linux-uclibc/lib/libstdc++.so.6  $(PREFIX)/lib
+	cp -P $(STAGING_DIR)/usr/mips-linux-uclibc/lib/libstdc++.so  $(PREFIX)/lib
+	echo $(STRIP)
 
 else # ifeq ($(BR2_HAVE_DOT_CONFIG),y)
 

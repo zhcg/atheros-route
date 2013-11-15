@@ -1,0 +1,5 @@
+# ATTENTION! This does not handle 'depends', just 'select'! 
+# See package/config/util.c write_make_deps()
+#
+install_libstdcpp: $(BASE_TARGETS) largefile gcc_cross_cxx
+rootfs_ext2: $(BASE_TARGETS) host_fakeroot

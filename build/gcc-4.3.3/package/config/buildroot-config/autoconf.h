@@ -1,6 +1,6 @@
 /*
  * Automatically generated C config: don't edit
- * Wed Oct 14 03:50:45 2009
+ * Fri Nov 15 11:43:42 2013
  */
 #define BR2_DEBIAN_MIRROR "http://ftp.debian.org"
 #define BR2_COPYTO ""
@@ -17,6 +17,7 @@
 #define BR2_TOPDIR_PREFIX ""
 #define BR2_EXT_UCLIBC_VERSION_0_9_30_1 1
 #define BR2_TOPDIR_SUFFIX ""
+#define BR2_GCC_CROSS_CXX 1
 #define BR2_AT91_PATCH_MIRROR "http://maxim.org.za/AT91RM9200/2.6/"
 #define BR2_GCC_VERSION_4_3_3 1
 #define BR2_EXT_UCLIBC_VERSION_0_9_28_3 1
@@ -27,6 +28,7 @@
 #define BR2_TARGET_ROOTFS_EXT2_NONE 1
 #define BR2_PROJECT "uclibc"
 #define BR2_MIPS_OABI32 1
+#define BR2_INSTALL_LIBSTDCPP 1
 #define BR2_GCC_TARGET_ABI "32"
 #define BR2_ARCH "mips"
 #define BR2_UCLIBC_VERSION_0_9_30 1
@@ -73,6 +75,7 @@
 #define BR2_TARGET_ROOTFS_EXT2_INODES 0
 #define BR2_ATMEL_MIRROR "ftp://www.at91.com/pub/buildroot/"
 #define BR2_ENDIAN "BIG"
+#define BR2_INET_IPV6 1
 #define BR2_TOOLCHAIN_BUILDROOT 1
 #define BR2_PACKAGE_GDB_HOST 1
 #define BR2_BANNER "Welcome to Buildroot"
@@ -83,8 +86,8 @@
 #define BR2_RECENT 1
 #define BR2_TARGET_ROOTFS_EXT2_COPYTO ""
 #define BR2_JLEVEL 1
-#define BR2_UCLIBC_CONFIG "toolchain/uClibc/uClibc-0.9.30.config"
-#define BR2_TARGET_OPTIMIZATION "-Os -pipe -funit-at-a-time -mips32r2 -mtune=mips23r2"
+#define BR2_UCLIBC_CONFIG "toolchain/uClibc/uClibc.config"
+#define BR2_TARGET_OPTIMIZATION "-Os -pipe -funit-at-a-time -march=74kc -mtune=74kc"
 #define BR2_PACKAGE_SSTRIP_HOST 1
 #define BR2_DL_DIR "$(BASE_DIR)/dl"
 #define BR2_KERNEL_none 1
