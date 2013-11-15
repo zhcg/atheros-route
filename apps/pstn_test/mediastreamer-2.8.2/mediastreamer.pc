@@ -1,0 +1,11 @@
+# This is a comment
+prefix=/home/chenchunsheng/20131113/9344/apps/pstn_test/mediastreamer-2.8.2/../phone
+exec_prefix=${prefix}
+includedir=${prefix}/include
+
+Name: mediastreamer 
+Description: A mediastreaming library for telephony applications
+Requires: ortp
+Version: 2.8.2
+Libs: -L${exec_prefix}/lib -lmediastreamer
+Cflags: -I${prefix}/include 

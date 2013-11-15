@@ -1,0 +1,685 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"na",
+				"name"
+			],
+			[
+				"LOG",
+				"LOG_INFO"
+			],
+			[
+				"cli",
+				"client_fd,i"
+			],
+			[
+				"E",
+				"EAGAIN"
+			],
+			[
+				"alre",
+				"already_incoming	int"
+			],
+			[
+				"O_",
+				"O_NONBLOCK"
+			],
+			[
+				"rin",
+				"ring_stop"
+			],
+			[
+				"net",
+				"netWrite"
+			],
+			[
+				"LO",
+				"LOG_INFO"
+			],
+			[
+				"b",
+				"break"
+			],
+			[
+				"or",
+				"orig"
+			],
+			[
+				"tv",
+				"tv_usec"
+			],
+			[
+				"ph",
+				"phone_ring_mutex"
+			],
+			[
+				"PLO",
+				"PLOG"
+			],
+			[
+				"mem",
+				"memset(void *__s, int __c, size_t __n)	void *"
+			],
+			[
+				"de",
+				"define"
+			],
+			[
+				"UN",
+				"UNDEFINED	handaer::PhoneProxy::PstnCommand"
+			],
+			[
+				"DI",
+				"DIALING	handaer::PhoneProxy::PstnCommand"
+			],
+			[
+				"o",
+				"onHook()	int"
+			],
+			[
+				"client",
+				"client_ip"
+			],
+			[
+				"for",
+				"forv	Vector For Loop"
+			],
+			[
+				"ring_",
+				"ring_on"
+			],
+			[
+				"sl",
+				"sleep(unsigned int __seconds)	unsigned int"
+			],
+			[
+				"be",
+				"before"
+			],
+			[
+				"P",
+				"PLOG"
+			],
+			[
+				"dia",
+				"dialUp"
+			],
+			[
+				"char",
+				"charAt"
+			],
+			[
+				"S",
+				"String"
+			],
+			[
+				"pu",
+				"public"
+			],
+			[
+				"println",
+				"println(String)	void"
+			],
+			[
+				"pr",
+				"println(char)	void"
+			],
+			[
+				"d",
+				"delete"
+			],
+			[
+				"by",
+				"bytes_left"
+			],
+			[
+				"LOG_",
+				"LOG_ERROR"
+			],
+			[
+				"PL",
+				"PLOG(level, format, ...)	macro"
+			],
+			[
+				"perr",
+				"perror(char *__s)	void"
+			],
+			[
+				"std",
+				"std::string"
+			],
+			[
+				"ma",
+				"main	main()"
+			],
+			[
+				"str",
+				"string"
+			],
+			[
+				"inc",
+				"include"
+			],
+			[
+				"in",
+				"include"
+			],
+			[
+				"pass",
+				"passwd_in	char[]"
+			],
+			[
+				"s",
+				"sizeof"
+			],
+			[
+				"strcmp",
+				"strcmp(const char *__s1, const char *__s2)	int"
+			],
+			[
+				"_go",
+				"_going_critSect	CriticalSectionWrapper&"
+			],
+			[
+				"ch",
+				"chenchunsheng"
+			],
+			[
+				"HEA",
+				"HEARTBEAT	handaer::PhoneProxy::PstnCommand"
+			],
+			[
+				"_cli",
+				"_cli_req	cli_request_t"
+			],
+			[
+				"phoneR",
+				"phoneRingStop()	void"
+			],
+			[
+				"OTH",
+				"OTHER_OFFHOOK	handaer::PhoneProxy::PstnCmdIncomingEnum"
+			],
+			[
+				"OTHER",
+				"OTHER_OFFHOOK"
+			],
+			[
+				"phone_",
+				"phone_proxy_fd"
+			],
+			[
+				"write",
+				"write(int __fd, void *__buf, size_t __n)	ssize_t"
+			],
+			[
+				"wri",
+				"write(_CharT *__s, streamsize __n)	basic_ostream<_CharT, _Traits> &"
+			],
+			[
+				"retu",
+				"returnOtherOffhook"
+			],
+			[
+				"Ph",
+				"PhoneControlService"
+			],
+			[
+				"oth",
+				"other_offhook	const char[]"
+			],
+			[
+				"memc",
+				"memcpy(void *__dest, const void *__src, size_t __n)	void *"
+			],
+			[
+				"cli_",
+				"cli_info_t"
+			],
+			[
+				"stopA",
+				"stopAudio(cli_info_t *p_ci, int payload)	bool"
+			],
+			[
+				"startA",
+				"startAudio(cli_info_t *p_ci, int payload)	bool"
+			],
+			[
+				"printf",
+				"printf(char *__format, ...)	int"
+			],
+			[
+				"audio_stream_start_full",
+				"audio_stream_start_full(AudioStream *stream, RtpProfile *profile, char *remip, int remport, int rem_rtcp_port, int payload, int jitt_comp, char *infile, char *outfile, MSSndCard *playcard, MSSndCard *captcard, bool_t use_ec)	int"
+			],
+			[
+				"HE",
+				"HEARTBEAT"
+			],
+			[
+				"__pthread_cre",
+				"__gthrw_pthread_create(pthread_t *, const pthread_attr_t *, void *(*)(void *), void *)	int"
+			],
+			[
+				"epoll",
+				"epoll_ctl(int __epfd, int __op, int __fd, struct epoll_event *__event)	int"
+			],
+			[
+				"bind",
+				"bind(int, const struct sockaddr *__my_addr, socklen_t __addrlen)	int"
+			],
+			[
+				"socket",
+				"socket(int __family, int __type, int __protocol)	int"
+			],
+			[
+				"pthread",
+				"pthread_create"
+			],
+			[
+				"cou",
+				"cout	ostream"
+			],
+			[
+				"print",
+				"printf(const char *__format, ...)	int"
+			],
+			[
+				"medi",
+				"mediastream_begin"
+			],
+			[
+				"me",
+				"mediastream_begin"
+			],
+			[
+				"phoneP",
+				"phoneProxyExit"
+			],
+			[
+				"parse",
+				"parseClient"
+			],
+			[
+				"dis",
+				"dispatchClientId"
+			],
+			[
+				"list",
+				"listenOnServerSocket"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 375.0,
+		"selected_items":
+		[
+			[
+				"",
+				"程序包控制: 列出文件包"
+			],
+			[
+				"sni",
+				"Snippet: #include <…>"
+			],
+			[
+				"s",
+				"Set Syntax: C"
+			]
+		],
+		"width": 378.0
+	},
+	"console":
+	{
+		"height": 148.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/E/opengl_source_code/opengl编程指南第七版源码/opengl编程指南第七版源码/unproject.c",
+		"/E/opengl_source_code/opengl编程指南第七版源码/opengl编程指南第七版源码/robot.c",
+		"/E/opengl_source_code/opengl编程指南第七版源码/opengl编程指南第七版源码/clip.c",
+		"/E/opengl_source_code/opengl编程指南第七版源码/opengl编程指南第七版源码/planet.c",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/pstn_serv_handaer/phone_proxy.cc",
+		"/C/Documents and Settings/Administrator/桌面/pad转子机，电话断开服务.log",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/pstn_serv_handaer/phone_proxy.h",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/pstn_serv_handaer/phone_readline.cc",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/pstn_serv_handaer/phone_control_service.cc",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/mediastreamer-2.8.2/src/audiostream.c",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/pstn_serv_handaer/phone_mediastream.c",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/mediastreamer-2.8.2/include/mediastreamer2/mediastream.h",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/mediastreamer-2.8.2/include/mediastreamer2/bitratecontrol.h",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/mediastreamer-2.8.2/src/bitratecontrol.c",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/mediastreamer-2.8.2/src/bitratedriver.c",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/mediastreamer-2.8.2/src/qosanalyzer.c",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/mediastreamer-2.8.2/src/videostream.c",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/pstn_serv_handaer/system_wrapper/phone_critical_section_posix.cc",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/pstn_serv_handaer/system_wrapper/phone_critical_section.cc",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/pstn_serv_handaer/system_wrapper/phone_critical_section_wrapper.h",
+		"/E/opengl_source_code/opengl编程指南第七版源码/opengl编程指南第七版源码/model.c",
+		"/E/opengl_source_code/opengl编程指南第七版源码/opengl编程指南第七版源码/cube.c",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/mediastreamer-2.8.2/src/msticker.c",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/mediastreamer-2.8.2/src/mscommon.c",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/mediastreamer-2.8.2/include/mediastreamer2/mscommon.h",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/mediastreamer-2.8.2/src/msfileplayer.c",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/pstn_serv_handaer/phone_control_service.h",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/pstn_serv_handaer/phone_control_base.cc",
+		"/D/Program Files/Sublime Text/Data/Packages/SFTP/Default (Windows).sublime-keymap",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/mediastreamer-2.8.2/sftp-config.json",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/mediastreamer-2.8.2/tests/mediastream.c",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/ortp-0.20.0/src/rtpsession.c",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/mediastreamer-2.8.2/src/msrtp.c",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/ortp-0.20.0/src/rtpsession_inet.c",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/ortp-0.20.0/include/ortp/rtpsession.h",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/ortp-0.20.0/src/port.c",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/ortp-0.20.0/ortp-config.h",
+		"/C/Documents and Settings/Administrator/Local Settings/Temp/pad与子机对讲时，pad端有盲音影响通话.log",
+		"/C/Documents and Settings/Administrator/Local Settings/Temp/pad转子机，电话断开服务.log",
+		"/C/Documents and Settings/Administrator/桌面/log_30193150.log",
+		"/C/Documents and Settings/Administrator/Local Settings/Temp/log_15171502_来电显示为未知.log",
+		"/C/Documents and Settings/Administrator/Local Settings/Temp/log_未注册，ID=0-1.log",
+		"/C/Documents and Settings/Administrator/Local Settings/Temp/log_未注册，ID=0.log",
+		"/C/Documents and Settings/Administrator/Local Settings/Temp/log_15110609_pad接通后，子机振铃.log",
+		"/E/opengl_source_code/opengl编程指南第七版源码/opengl编程指南第七版源码/Makefile.win",
+		"/E/opengl_source_code/opengl编程指南第七版源码/opengl编程指南第七版源码/varray.c",
+		"/E/opengl_source_code/opengl编程指南第七版源码/opengl编程指南第七版源码/polys.c",
+		"/E/opengl_source_code/opengl编程指南第七版源码/opengl编程指南第七版源码/lines.c",
+		"/E/360云盘/VM share/网络/Client_tcp/triangle/triangle/triangle.cpp.dump.cpp",
+		"/E/360云盘/VM share/网络/Client_tcp/triangle/triangle/triangle.cpp",
+		"/E/opengl_source_code/opengl编程指南第七版源码/opengl编程指南第七版源码/double.c",
+		"/C/Documents and Settings/Administrator/桌面/gm8142.c",
+		"/D/linux-2.6.28.6-xxx/linux-2.6.28.6/sound/soc/codecs/wm9713.c",
+		"/D/Program Files/Sublime Text/Data/Packages/SublimeClang/SublimeClang.sublime-settings",
+		"/C/Documents and Settings/Administrator/桌面/PSTN new protocol.txt.dump.txt",
+		"/D/linux-2.6.28.6-xxx/linux-2.6.28.6/sound/soc/s3c64xx/s3c64xx-ac97.c.dump.c",
+		"/D/linux-2.6.28.6-xxx/linux-2.6.28.6/sound/soc/s3c64xx/s3c64xx-ac97.c",
+		"/D/linux-2.6.28.6-xxx/linux-2.6.28.6/sound/soc/s3c64xx/s3c-pcm.c",
+		"/D/linux-2.6.28.6-xxx/linux-2.6.28.6/sound/soc/s3c64xx/smdk64xx_wm9713.c",
+		"/C/Documents and Settings/Administrator/桌面/PSTN new protocol.txt",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/linux-2.6.21.x/drivers/char/ralink_spi_stm32.c.dump.c",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/linux-2.6.21.x/drivers/char/ralink_spi_stm32.c",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/linux-2.6.21.x/drivers/mtd/ralink/ralink_spi.c",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/linux-2.6.21.x/drivers/mtd/ralink/ralink_spi.h",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/mediastreamer-2.8.2/include/mediastreamer2/msfileplayer.h",
+		"/C/Documents and Settings/Administrator/桌面/log_16180749.log",
+		"/C/Documents and Settings/Administrator/桌面/log_16143545_座机呼叫终端，pad接听，子机仍振铃，pad震动，座机仍呼叫状态.log",
+		"/C/Documents and Settings/Administrator/桌面/pstn-base.log",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/pstn_serv_handaer/phone_control_base.h",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/pstn_serv_handaer/reserve/tester.cc",
+		"/C/Documents and Settings/Administrator/桌面/log1.log",
+		"/E/360云盘/VM share/USB驱动/软件使用说明greenxf.com.txt.dump.txt",
+		"/E/360云盘/VM share/USB驱动/软件使用说明greenxf.com.txt",
+		"/C/Documents and Settings/Administrator/Local Settings/Temp/HZ$D.758.3397/HZ$D.758.3398/FACS中文版(仅图片教程)/说明.txt.dump.txt",
+		"/C/Documents and Settings/Administrator/Local Settings/Temp/HZ$D.758.3397/HZ$D.758.3398/FACS中文版(仅图片教程)/说明.txt",
+		"/C/Documents and Settings/Administrator/Local Settings/Temp/HZ$D.514.2964/HZ$D.514.2965/F1B_Pad_PSTN测试程序/ReadMe.txt.dump.txt",
+		"/C/Documents and Settings/Administrator/Local Settings/Temp/HZ$D.514.2964/HZ$D.514.2965/F1B_Pad_PSTN测试程序/ReadMe.txt",
+		"/C/Documents and Settings/Administrator/桌面/log_26103309.log",
+		"/C/Documents and Settings/Administrator/桌面/GM8142.C",
+		"/C/Documents and Settings/Administrator/桌面/GM8142.C.dump.C",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/pstn_serv_handaer/reserve/tester.cc.dump.cc",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/pstn_serv_handaer/phone_control_base.cc.dump.cc",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/pstn_serv_handaer/sftp-config.json",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/ortp-0.20.0/src/payloadtype.c",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/ortp-0.20.0/include/ortp/ortp.h",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/mediastreamer-2.8.2/src/oss.c",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/ortp-0.20.0/src/ortp.c",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/pstn_serv_handaer/phone_control_base.cc.dump",
+		"/C/Documents and Settings/Administrator/桌面/PSTN new protocol.txt.dump",
+		"/C/Documents and Settings/Administrator/桌面/Reference/Readme.txt.dump",
+		"/C/Documents and Settings/Administrator/桌面/Reference/Readme.txt",
+		"/E/goagent-b7a3a8f0553d/local/proxy.ini",
+		"/E/TDDOWNLOAD/RFC2046.txt.dump",
+		"/E/TDDOWNLOAD/RFC2046.txt",
+		"/D/Demo.java",
+		"/D/Program Files/Sublime Text/Data/Packages/SublimeJava/SublimeJava.sublime-settings",
+		"/D/Program Files/Sublime Text/Data/Packages/Display-Functions/Default (Windows).sublime-keymap",
+		"/D/Program Files/Sublime Text/Data/Packages/Display-Functions/String.txt",
+		"/D/Program Files/Sublime Text/Data/Packages/Display-Functions/README.markdown",
+		"/D/Program Files/Sublime Text/Data/Packages/Display-Functions/Object.txt",
+		"/D/Program Files/Sublime Text/Data/Packages/SublimeJava/Default.sublime-keymap",
+		"/C/Program Files/Java/jdk1.6.0_33/src/java/lang/String.java",
+		"/C/Program Files/Java/jdk1.6.0_33/src/java/lang/System.java",
+		"/D/Program Files/Sublime Text/Data/Packages/SublimeJava/SublimeJava.sublime-commands",
+		"/C/Program Files/Java/jdk1.6.0_33/bin/runJava.bat",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/linphone-android/src/org/linphone/Contact.java",
+		"/D/Program Files/Sublime Text/Data/Packages/Package Control/Package Control.sublime-settings",
+		"/D/Program Files/Sublime Text/Data/Packages/Default/Default (Windows).sublime-keymap",
+		"/D/Program Files/Sublime Text/Data/Packages/Java/JavaC.sublime-build",
+		"/D/Program Files/Sublime Text/Data/Packages/Default/Preferences.sublime-settings",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/cocos2d-x/curl-7.32.0/docs/examples/rtsp.c",
+		"/E/TDDOWNLOAD/HTTP权威指南完整版.txt.dump",
+		"/E/TDDOWNLOAD/HTTP权威指南完整版.txt",
+		"/C/Documents and Settings/Administrator/桌面/log_2.log.dump",
+		"/C/Documents and Settings/Administrator/桌面/log_2.log",
+		"/C/Documents and Settings/Administrator/Local Settings/Temp/HZ$D.727.2115/HZ$D.727.2116/CocosBuilder.app/Contents/Frameworks/MGSFragaria.framework/Headers/MGSFragariaPreferences.h",
+		"/C/Documents and Settings/Administrator/Application Data/NetSarang/Xftp/Temporary/phone_proxy [2].cc",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/cocos2d-x/curl-7.32.0/winbuild/BUILD.WINDOWS.txt",
+		"/C/Documents and Settings/Administrator/Local Settings/Temp/HZ$D.894.105/HZ$D.894.106/curl-7.32.0/src/macos/MACINSTALL.TXT",
+		"/C/Documents and Settings/Administrator/桌面/test.cc",
+		"/E/360云盘/VM share/cocos-2d-x/android and cocos2d-x.txt.dump",
+		"/E/360云盘/VM share/cocos-2d-x/android and cocos2d-x.txt",
+		"/D/Program Files/Sublime Text/Data/Packages/CTags/CTags.sublime-settings",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/mediastreamer-2.8.2/src/msfilter.c",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/ortp-0.20.0/include/ortp/port.h",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/mediastreamer-2.8.2/include/mediastreamer2/msfilter.h",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/mediastreamer-2.8.2/src/mssndcard.c",
+		"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/mediastreamer-2.8.2/yyy.h"
+	],
+	"find":
+	{
+		"height": 36.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"use_rc",
+			"ms_bitrate_controller_destroy",
+			"use_rc",
+			"phone_in_use",
+			"ci_transout",
+			"_phone_critSect",
+			"phoneUnLock",
+			"phoneLock",
+			"_phone_critSect",
+			"netWrite",
+			"_trans_critSect",
+			"netWrite",
+			"_phone_critSect",
+			"netWrite",
+			"destroyClient",
+			"_phone_critSect",
+			"destroyClient",
+			"_phone_critSect",
+			"_going_critSect",
+			"_incom_critSect",
+			"_going_critSect",
+			"destroyClient",
+			"close",
+			"_phone_critSect",
+			"queryOnlineInfo",
+			"set_socket_sizes",
+			"rtp_session_set_sockets",
+			"timer_counter",
+			"already_incoming",
+			"HdPhone_EintPin",
+			"s3c6410_wm9713_HPDET_irq",
+			"phone_ring_mutex",
+			"_phone_critSect",
+			"phone_ring_mutex",
+			"phoneRingStop",
+			"r_control_critSect",
+			"w_control_critSect",
+			"ring_count",
+			"player_open",
+			"phone_ring_mutex",
+			"r_control_critSect",
+			"_spi_critSect",
+			"phone_ring_mutex",
+			"read_wav_header",
+			"pause_time",
+			"loop_after",
+			"MS_FILE_PLAYER_LOOP",
+			"phoneRingStart",
+			"MS_FILE_PLAYER_START",
+			"phone_proxy_fd",
+			"parseClient",
+			"OTHER_OFFHOOK",
+			"rl_key",
+			"netReadLine",
+			"readline",
+			"client_ip",
+			"client_fd",
+			"readLine",
+			"nvram",
+			"_phone_critSect",
+			"phone_in_use",
+			"using_phone",
+			"nvram_bufget",
+			"nvram_bufset",
+			"nvram_set",
+			"nvram_bufget",
+			"EPOLL_TIMEOUT_MS",
+			"set_timeout",
+			"OTHER_OFFHOOK",
+			"listenOnServerSocket",
+			"phoneProxyInit",
+			"PhoneProxy"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 36.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.clang":
+	{
+		"height": 116.0
+	},
+	"output.clang_static_analyzer":
+	{
+		"height": 0.0
+	},
+	"output.exec":
+	{
+		"height": 116.0
+	},
+	"output.sftp":
+	{
+		"height": 116.0
+	},
+	"replace":
+	{
+		"height": 0.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"",
+				"phone_proxy.h"
+			],
+			[
+				"ph",
+				"phone_proxy.cc"
+			],
+			[
+				"phone_proxy.h",
+				"phone_proxy.h"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"selected_items":
+		[
+			[
+				"",
+				"/D/Yunio_sync/Yunio/my_download_sourcecode/PSTN/F1B-BASE-PSTN/trunk/webrtc/voice_engine/test/phone_service.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 224.0,
+	"status_bar_visible": true
+}

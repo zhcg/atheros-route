@@ -1,0 +1,1222 @@
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_PROGRAM_VERSION	5.8	//
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+LIB_LIB_DIR	Makefile	/^LIB_LIB_DIR = $(TOPDIR_PHONE)\/lib\/lib$/;"	m	language:Make
+NVRAM_INCLUDE_DIR	Makefile	/^NVRAM_INCLUDE_DIR = $(TOPDIR_PHONE)\/lib\/libnvram$/;"	m	language:Make
+OBJS	Makefile	/^OBJS := $(patsubst %.c,%.o,$(patsubst %.cc,%.o,$(SOURCES)))$/;"	m	language:Make
+SOURCES	Makefile	/^SOURCES := $(wildcard *.c *.cc)$/;"	m	language:Make
+SPI_INCLUDE_DIR	Makefile	/^SPI_INCLUDE_DIR = $(TOPDIR_PHONE)\/lib\/lib_of_terminal_init$/;"	m	language:Make
+SUBDIR	Makefile	/^SUBDIR = system_wrapper$/;"	m	language:Make
+SUBOBJ	Makefile	/^SUBOBJ := $(patsubst %.c,%.o,$(patsubst %.cc,%.o,$(SUBSOURCES)))$/;"	m	language:Make
+SUBSOURCES	Makefile	/^SUBSOURCES := $(wildcard $(SUBDIR)\/*.c $(SUBDIR)\/*.cc)$/;"	m	language:Make
+TARGET	Makefile	/^TARGET = phone_serv_handaer_19200$/;"	m	language:Make
+TOPDIR_PHONE	Makefile	/^TOPDIR_PHONE = ..\/..\/..$/;"	m	language:Make
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+CC	include.mk	/^CC = mipsel-linux-gcc$/;"	m	language:Make
+CFLAGS	include.mk	/^CFLAGS = -Wall -O -g$/;"	m	language:Make
+CXX	include.mk	/^CXX = mipsel-linux-g++$/;"	m	language:Make
+DEFS_Debug	include.mk	/^DEFS_Debug := \\$/;"	m	language:Make
+LDFLAGS	include.mk	/^LDFLAGS = -L\/phone_mipsel\/lib  -logg -lspeexdsp -lspeex -lortp -lmediastreamer  -pthread$/;"	m	language:Make
+PhoneControlBase	phone_control_base.cc	/^PhoneControlBase::PhoneControlBase()$/;"	f	language:C++	class:handaer::PhoneControlBase	signature:()
+closeDevice	phone_control_base.cc	/^int PhoneControlBase::closeDevice(void){$/;"	f	language:C++	class:handaer::PhoneControlBase	signature:(void)
+handaer	phone_control_base.cc	/^namespace handaer{$/;"	n	language:C++	file:
+openDevice	phone_control_base.cc	/^int PhoneControlBase::openDevice(void){$/;"	f	language:C++	class:handaer::PhoneControlBase	signature:(void)
+readAll	phone_control_base.cc	/^ssize_t PhoneControlBase::readAll(char *buf, size_t len){$/;"	f	language:C++	class:handaer::PhoneControlBase	signature:(char *buf, size_t len)
+readLine	phone_control_base.cc	/^ssize_t PhoneControlBase::readLine(char *buf, size_t len){$/;"	f	language:C++	class:handaer::PhoneControlBase	signature:(char *buf, size_t len)
+readOnce	phone_control_base.cc	/^ssize_t PhoneControlBase::readOnce(char *buf, size_t len){$/;"	f	language:C++	class:handaer::PhoneControlBase	signature:(char *buf, size_t len)
+serialConfig	phone_control_base.cc	/^int PhoneControlBase::serialConfig(speed_t baudrate){$/;"	f	language:C++	class:handaer::PhoneControlBase	signature:(speed_t baudrate)
+setDeviceName	phone_control_base.cc	/^int PhoneControlBase::setDeviceName(const char *dev_name){$/;"	f	language:C++	class:handaer::PhoneControlBase	signature:(const char *dev_name)
+setReadTimeOutMs	phone_control_base.cc	/^int PhoneControlBase::setReadTimeOutMs(int time_out_ms_){$/;"	f	language:C++	class:handaer::PhoneControlBase	signature:(int time_out_ms_)
+sumArray	phone_control_base.cc	/^unsigned char PhoneControlBase::sumArray(const  char  *arr, int len){$/;"	f	language:C++	class:handaer::PhoneControlBase	signature:(const char *arr, int len)
+sumArrayXOR	phone_control_base.cc	/^unsigned char PhoneControlBase::sumArrayXOR(const  char  *arr, int len){$/;"	f	language:C++	class:handaer::PhoneControlBase	signature:(const char *arr, int len)
+writeDevice	phone_control_base.cc	/^ssize_t PhoneControlBase::writeDevice(const  char *buf, size_t len\/*unused*\/){$/;"	f	language:C++	class:handaer::PhoneControlBase	signature:(const char *buf, size_t len )
+writeDeviceXor	phone_control_base.cc	/^ssize_t PhoneControlBase::writeDeviceXor(const char *buf, size_t len){$/;"	f	language:C++	class:handaer::PhoneControlBase	signature:(const char *buf, size_t len)
+~PhoneControlBase	phone_control_base.cc	/^PhoneControlBase::~PhoneControlBase(){$/;"	f	language:C++	class:handaer::PhoneControlBase	signature:()
+PhoneControlBase	phone_control_base.h	/^		PhoneControlBase();$/;"	p	language:C++	class:handaer::PhoneControlBase	signature:()
+PhoneControlBase	phone_control_base.h	/^class PhoneControlBase{$/;"	c	language:C++	namespace:handaer
+WBUF_SZ	phone_control_base.h	/^		enum {WBUF_SZ = 128};$/;"	e	language:C++	enum:handaer::PhoneControlBase::__anon1
+_PHONE_CONTROL_BASE_H_	phone_control_base.h	19;"	d	language:C++
+closeDevice	phone_control_base.h	/^		int closeDevice(void);$/;"	p	language:C++	class:handaer::PhoneControlBase	signature:(void)
+device_name	phone_control_base.h	/^		char device_name[16];$/;"	m	language:C++	class:handaer::PhoneControlBase
+handaer	phone_control_base.h	/^namespace handaer{$/;"	n	language:C++
+msg	phone_control_base.h	/^		char * msg;$/;"	m	language:C++	class:handaer::PhoneControlBase
+msg_len	phone_control_base.h	/^		int msg_len;$/;"	m	language:C++	class:handaer::PhoneControlBase
+openDevice	phone_control_base.h	/^		int openDevice(void);$/;"	p	language:C++	class:handaer::PhoneControlBase	signature:(void)
+r_control_critSect	phone_control_base.h	/^		CriticalSectionWrapper& r_control_critSect;$/;"	m	language:C++	class:handaer::PhoneControlBase
+readAll	phone_control_base.h	/^		ssize_t readAll(char *buf, size_t len);$/;"	p	language:C++	class:handaer::PhoneControlBase	signature:(char *buf, size_t len)
+readLine	phone_control_base.h	/^		ssize_t readLine(char *buf, size_t len);$/;"	p	language:C++	class:handaer::PhoneControlBase	signature:(char *buf, size_t len)
+readOnce	phone_control_base.h	/^		ssize_t readOnce(char *buf, size_t len);$/;"	p	language:C++	class:handaer::PhoneControlBase	signature:(char *buf, size_t len)
+serialConfig	phone_control_base.h	/^		int serialConfig(speed_t baudrate);$/;"	p	language:C++	class:handaer::PhoneControlBase	signature:(speed_t baudrate)
+serial_fd	phone_control_base.h	/^		int serial_fd;$/;"	m	language:C++	class:handaer::PhoneControlBase
+setDeviceName	phone_control_base.h	/^		int setDeviceName(const char *dev_name);$/;"	p	language:C++	class:handaer::PhoneControlBase	signature:(const char *dev_name)
+setReadTimeOutMs	phone_control_base.h	/^		int setReadTimeOutMs(int time_out_ms_);$/;"	p	language:C++	class:handaer::PhoneControlBase	signature:(int time_out_ms_)
+sumArray	phone_control_base.h	/^		unsigned char sumArray(const  char  *arr, int len); $/;"	p	language:C++	class:handaer::PhoneControlBase	signature:(const char *arr, int len)
+sumArrayXOR	phone_control_base.h	/^		unsigned char sumArrayXOR(const  char  *arr, int len); $/;"	p	language:C++	class:handaer::PhoneControlBase	signature:(const char *arr, int len)
+time_out_ms	phone_control_base.h	/^		int time_out_ms;$/;"	m	language:C++	class:handaer::PhoneControlBase
+w_control_critSect	phone_control_base.h	/^		CriticalSectionWrapper& w_control_critSect;$/;"	m	language:C++	class:handaer::PhoneControlBase
+writeDevice	phone_control_base.h	/^		ssize_t writeDevice(const char *buf, size_t len);$/;"	p	language:C++	class:handaer::PhoneControlBase	signature:(const char *buf, size_t len)
+writeDeviceXor	phone_control_base.h	/^		ssize_t writeDeviceXor(const char *buf, size_t len);$/;"	p	language:C++	class:handaer::PhoneControlBase	signature:(const char *buf, size_t len)
+~PhoneControlBase	phone_control_base.h	/^		~PhoneControlBase();$/;"	p	language:C++	class:handaer::PhoneControlBase	signature:()
+PhoneControlService	phone_control_service.cc	/^PhoneControlService::PhoneControlService()$/;"	f	language:C++	class:handaer::PhoneControlService	signature:()
+PhoneControlServiceRunning	phone_control_service.cc	/^bool PhoneControlService::PhoneControlServiceRunning() const{$/;"	f	language:C++	class:handaer::PhoneControlService	signature:() const
+PhoneControlServiceThreadFunc	phone_control_service.cc	/^bool PhoneControlService::PhoneControlServiceThreadFunc(void* pThis){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:(void* pThis)
+PhoneControlServiceThreadProcess	phone_control_service.cc	/^bool PhoneControlService::PhoneControlServiceThreadProcess(){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:()
+PhoneIncomingRunning	phone_control_service.cc	/^bool PhoneControlService::PhoneIncomingRunning() const{$/;"	f	language:C++	class:handaer::PhoneControlService	signature:() const
+PhoneIncomingThreadFunc	phone_control_service.cc	/^bool PhoneControlService::PhoneIncomingThreadFunc(void* pThis){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:(void* pThis)
+PhoneIncomingThreadProcess	phone_control_service.cc	/^bool PhoneControlService::PhoneIncomingThreadProcess(){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:()
+StartPhoneControlService	phone_control_service.cc	/^int32_t PhoneControlService::StartPhoneControlService(){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:()
+StartPhoneIncoming	phone_control_service.cc	/^int32_t PhoneControlService::StartPhoneIncoming(){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:()
+StopPhoneControlService	phone_control_service.cc	/^int32_t PhoneControlService::StopPhoneControlService(){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:()
+StopPhoneIncoming	phone_control_service.cc	/^int32_t PhoneControlService::StopPhoneIncoming(){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:()
+connectIntoIdle	phone_control_service.cc	/^int PhoneControlService::connectIntoIdle(void){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:(void)
+dialUp	phone_control_service.cc	/^int PhoneControlService::dialUp(const  char *num, int num_len){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:(const char *num, int num_len)
+dtmf_incoming	phone_control_service.cc	/^static const char dtmf_incoming[4] = {0xa5, 0x5a, 0x04, 0x00};$/;"	m	language:C++	namespace:handaer	file:
+flash	phone_control_service.cc	/^int PhoneControlService::flash(void){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:(void)
+fsk_incoming	phone_control_service.cc	/^static const char fsk_incoming[4] = {0xa5, 0x5a, 0x05, 0x00};$/;"	m	language:C++	namespace:handaer	file:
+getIncomingNumber	phone_control_service.cc	/^bool PhoneControlService::getIncomingNumber(char *num, int *num_len){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:(char *num, int *num_len)
+handaer	phone_control_service.cc	/^namespace handaer{$/;"	n	language:C++	file:
+handlePhoneProxyEvent	phone_control_service.cc	/^int PhoneControlService::handlePhoneProxyEvent(void *msg, int msg_len){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:(void *msg, int msg_len)
+handleSerialEvent	phone_control_service.cc	/^int PhoneControlService::handleSerialEvent(void *msg, int msg_len){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:(void *msg, int msg_len)
+mute	phone_control_service.cc	/^int PhoneControlService::mute(bool yes_no){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:(bool yes_no)
+netReadLine	phone_control_service.cc	/^ssize_t PhoneControlService::netReadLine(int fd,void *buffer,size_t maxlen, int i){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:(int fd,void *buffer,size_t maxlen, int i)
+offHook	phone_control_service.cc	/^int PhoneControlService::offHook(void){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:(void)
+onHook	phone_control_service.cc	/^int PhoneControlService::onHook(void){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:(void)
+other_offhook	phone_control_service.cc	/^static const char other_offhook[4] = {0xaa, 0x03, 0x54, 0x54};$/;"	m	language:C++	namespace:handaer	file:
+parsePhoneProxyEvent	phone_control_service.cc	/^int PhoneControlService::parsePhoneProxyEvent(char* msg, int msg_len_wanted){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:(char* msg, int msg_len_wanted)
+parseSerialEvent	phone_control_service.cc	/^int PhoneControlService::parseSerialEvent(char* msg, int msg_len_wanted){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:(char* msg, int msg_len_wanted)
+phoneControlServiceExit	phone_control_service.cc	/^bool PhoneControlService::phoneControlServiceExit(){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:()
+phoneControlServiceInit	phone_control_service.cc	/^bool PhoneControlService::phoneControlServiceInit(){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:()
+phone_proxy_fd	phone_control_service.cc	/^int PhoneControlService::phone_proxy_fd = -1;$/;"	m	language:C++	class:handaer::PhoneControlService	file:
+resetFdsetAndTimeout	phone_control_service.cc	/^bool PhoneControlService::resetFdsetAndTimeout(){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:()
+returnBusyLine	phone_control_service.cc	/^int PhoneControlService::returnBusyLine(void *msg, int msg_len){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:(void *msg, int msg_len)
+returnIncomingNumber	phone_control_service.cc	/^int PhoneControlService::returnIncomingNumber(void *tel_num, int tel_num_len){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:(void *tel_num, int tel_num_len)
+returnOtherOffhook	phone_control_service.cc	/^int PhoneControlService::returnOtherOffhook(){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:()
+returnRingOff	phone_control_service.cc	/^int PhoneControlService::returnRingOff(void *msg, int msg_len){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:(void *msg, int msg_len)
+returnRingOn	phone_control_service.cc	/^int PhoneControlService::returnRingOn(void *msg, int msg_len){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:(void *msg, int msg_len)
+ring_msg	phone_control_service.cc	/^static const char ring_msg[6] = { 0xa5, 0x5a, 0x03, 0x00, 0x03, 0x00};$/;"	m	language:C++	namespace:handaer	file:
+sendDtmf	phone_control_service.cc	/^int PhoneControlService::sendDtmf(const  char dtmf){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:(const char dtmf)
+setDtmfNumber	phone_control_service.cc	/^bool PhoneControlService::setDtmfNumber(unsigned char num){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:(unsigned char num)
+setGoingNumber	phone_control_service.cc	/^bool PhoneControlService::setGoingNumber(char *num, int num_len){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:(char *num, int num_len)
+setMute	phone_control_service.cc	/^bool PhoneControlService::setMute(bool yes_no){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:(bool yes_no)
+setPhoneProxyFd	phone_control_service.cc	/^bool PhoneControlService::setPhoneProxyFd(int fd){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:(int fd)
+~PhoneControlService	phone_control_service.cc	/^PhoneControlService::~PhoneControlService(){$/;"	f	language:C++	class:handaer::PhoneControlService	signature:()
+BUSYLINE	phone_control_service.h	/^					BUSYLINE,$/;"	e	language:C++	enum:handaer::PhoneControlService::PhoneControlType
+CLEARINCOMING	phone_control_service.h	/^					CLEARINCOMING,$/;"	e	language:C++	enum:handaer::PhoneControlService::PhoneControlType
+DEFAULT	phone_control_service.h	/^					DEFAULT,$/;"	e	language:C++	enum:handaer::PhoneControlService::PhoneControlType
+DIALING	phone_control_service.h	/^					DIALING,$/;"	e	language:C++	enum:handaer::PhoneControlService::PhoneControlType
+DTMFSEND	phone_control_service.h	/^					DTMFSEND,$/;"	e	language:C++	enum:handaer::PhoneControlService::PhoneControlType
+FLASH	phone_control_service.h	/^					FLASH,$/;"	e	language:C++	enum:handaer::PhoneControlService::PhoneControlType
+INCOMING_NUM	phone_control_service.h	/^					INCOMING_NUM,$/;"	e	language:C++	enum:handaer::PhoneControlService::PhoneControlType
+MAX_NUM_LEN	phone_control_service.h	/^			MAX_NUM_LEN = 73,$/;"	e	language:C++	enum:handaer::PhoneControlService::__anon2
+MUTE	phone_control_service.h	/^					MUTE,$/;"	e	language:C++	enum:handaer::PhoneControlService::PhoneControlType
+OFFHOOK	phone_control_service.h	/^					OFFHOOK,$/;"	e	language:C++	enum:handaer::PhoneControlService::PhoneControlType
+ONHOOK	phone_control_service.h	/^					ONHOOK,$/;"	e	language:C++	enum:handaer::PhoneControlService::PhoneControlType
+OTHER_OFFHOOK	phone_control_service.h	/^					OTHER_OFFHOOK,$/;"	e	language:C++	enum:handaer::PhoneControlService::PhoneControlType
+PhoneControlBase	phone_control_service.h	/^class PhoneControlBase;$/;"	x	language:C++
+PhoneControlService	phone_control_service.h	/^		PhoneControlService();$/;"	p	language:C++	class:handaer::PhoneControlService	signature:()
+PhoneControlService	phone_control_service.h	/^class PhoneControlService: public PhoneControlBase{$/;"	c	language:C++	namespace:handaer
+PhoneControlServiceRunning	phone_control_service.h	/^	    virtual bool PhoneControlServiceRunning() const;$/;"	p	language:C++	class:handaer::PhoneControlService	signature:() const
+PhoneControlServiceThreadFunc	phone_control_service.h	/^		static bool PhoneControlServiceThreadFunc(void*);		$/;"	p	language:C++	class:handaer::PhoneControlService	signature:(void*)
+PhoneControlServiceThreadProcess	phone_control_service.h	/^		bool PhoneControlServiceThreadProcess();$/;"	p	language:C++	class:handaer::PhoneControlService	signature:()
+PhoneControlType	phone_control_service.h	/^		typedef enum PhoneControlType{$/;"	g	language:C++	class:handaer::PhoneControlService
+PhoneControlTypeEnum	phone_control_service.h	/^				}PhoneControlTypeEnum;$/;"	t	language:C++	class:handaer::PhoneControlService	typeref:enum:handaer::PhoneControlService::PhoneControlType
+PhoneIncomingRunning	phone_control_service.h	/^	    virtual bool PhoneIncomingRunning() const;$/;"	p	language:C++	class:handaer::PhoneControlService	signature:() const
+PhoneIncomingThreadFunc	phone_control_service.h	/^		static bool PhoneIncomingThreadFunc(void*);		$/;"	p	language:C++	class:handaer::PhoneControlService	signature:(void*)
+PhoneIncomingThreadProcess	phone_control_service.h	/^		bool PhoneIncomingThreadProcess();$/;"	p	language:C++	class:handaer::PhoneControlService	signature:()
+RINGOFF	phone_control_service.h	/^					RINGOFF,$/;"	e	language:C++	enum:handaer::PhoneControlService::PhoneControlType
+RINGON	phone_control_service.h	/^					RINGON,$/;"	e	language:C++	enum:handaer::PhoneControlService::PhoneControlType
+SERIAL_BUF_LEN	phone_control_service.h	/^			SERIAL_BUF_LEN = 128,$/;"	e	language:C++	enum:handaer::PhoneControlService::__anon2
+StartPhoneControlService	phone_control_service.h	/^	    virtual int32_t StartPhoneControlService();$/;"	p	language:C++	class:handaer::PhoneControlService	signature:()
+StartPhoneIncoming	phone_control_service.h	/^	    virtual int32_t StartPhoneIncoming();$/;"	p	language:C++	class:handaer::PhoneControlService	signature:()
+StopPhoneControlService	phone_control_service.h	/^	    virtual int32_t StopPhoneControlService();$/;"	p	language:C++	class:handaer::PhoneControlService	signature:()
+StopPhoneIncoming	phone_control_service.h	/^	    virtual int32_t StopPhoneIncoming();$/;"	p	language:C++	class:handaer::PhoneControlService	signature:()
+TIMEOUT_US	phone_control_service.h	/^			TIMEOUT_US = (30 * 1000), \/\/30 ms$/;"	e	language:C++	enum:handaer::PhoneControlService::__anon2
+ThreadPhoneControlServiceId	phone_control_service.h	/^		uint32_t ThreadPhoneControlServiceId;$/;"	m	language:C++	class:handaer::PhoneControlService
+ThreadPhoneIncomingId	phone_control_service.h	/^		uint32_t ThreadPhoneIncomingId;$/;"	m	language:C++	class:handaer::PhoneControlService
+_PHONE_CONTROL_SERVICE_H_	phone_control_service.h	19;"	d	language:C++
+_ptrThreadPhoneControlService	phone_control_service.h	/^		ThreadWrapper* _ptrThreadPhoneControlService;$/;"	m	language:C++	class:handaer::PhoneControlService
+_ptrThreadPhoneIncoming	phone_control_service.h	/^		ThreadWrapper* _ptrThreadPhoneIncoming;$/;"	m	language:C++	class:handaer::PhoneControlService
+connectIntoIdle	phone_control_service.h	/^		int connectIntoIdle(void);$/;"	p	language:C++	class:handaer::PhoneControlService	signature:(void)
+dialUp	phone_control_service.h	/^		int dialUp(const  char *num, int num_len);$/;"	p	language:C++	class:handaer::PhoneControlService	signature:(const char *num, int num_len)
+dtmf	phone_control_service.h	/^		char dtmf;$/;"	m	language:C++	class:handaer::PhoneControlService
+event_type_client	phone_control_service.h	/^		PhoneControlTypeEnum event_type_client;$/;"	m	language:C++	class:handaer::PhoneControlService
+event_type_serial	phone_control_service.h	/^		PhoneControlTypeEnum event_type_serial;$/;"	m	language:C++	class:handaer::PhoneControlService
+fdR	phone_control_service.h	/^		fd_set fdR;	$/;"	m	language:C++	class:handaer::PhoneControlService
+flash	phone_control_service.h	/^		int flash(void);$/;"	p	language:C++	class:handaer::PhoneControlService	signature:(void)
+getIncomingNumber	phone_control_service.h	/^		bool getIncomingNumber(char *num, int *num_len);$/;"	p	language:C++	class:handaer::PhoneControlService	signature:(char *num, int *num_len)
+going_number	phone_control_service.h	/^		char going_number[MAX_NUM_LEN];$/;"	m	language:C++	class:handaer::PhoneControlService
+going_son_number	phone_control_service.h	/^		char going_son_number;$/;"	m	language:C++	class:handaer::PhoneControlService
+handaer	phone_control_service.h	/^namespace handaer{$/;"	n	language:C++
+handlePhoneProxyEvent	phone_control_service.h	/^		int handlePhoneProxyEvent(void *msg, int msg_len);		$/;"	p	language:C++	class:handaer::PhoneControlService	signature:(void *msg, int msg_len)
+handleSerialEvent	phone_control_service.h	/^		int handleSerialEvent(void *msg, int msg_len);$/;"	p	language:C++	class:handaer::PhoneControlService	signature:(void *msg, int msg_len)
+incoming_number	phone_control_service.h	/^		char incoming_number[MAX_NUM_LEN];$/;"	m	language:C++	class:handaer::PhoneControlService
+incoming_son_number	phone_control_service.h	/^		char incoming_son_number;$/;"	m	language:C++	class:handaer::PhoneControlService
+max	phone_control_service.h	/^		int max(int a, int b) { return (a > b ? a : b); }$/;"	f	language:C++	class:handaer::PhoneControlService	signature:(int a, int b)
+mute	phone_control_service.h	/^		int mute(bool yes_no);$/;"	p	language:C++	class:handaer::PhoneControlService	signature:(bool yes_no)
+mute_ok	phone_control_service.h	/^		bool mute_ok;$/;"	m	language:C++	class:handaer::PhoneControlService
+netReadLine	phone_control_service.h	/^		ssize_t netReadLine(int fd,void *buffer,size_t maxlen, int i);$/;"	p	language:C++	class:handaer::PhoneControlService	signature:(int fd,void *buffer,size_t maxlen, int i)
+offHook	phone_control_service.h	/^		int offHook(void);$/;"	p	language:C++	class:handaer::PhoneControlService	signature:(void)
+onHook	phone_control_service.h	/^		int onHook(void);$/;"	p	language:C++	class:handaer::PhoneControlService	signature:(void)
+parsePhoneProxyEvent	phone_control_service.h	/^		int parsePhoneProxyEvent(char* msg, int msg_len_wanted);$/;"	p	language:C++	class:handaer::PhoneControlService	signature:(char* msg, int msg_len_wanted)
+parseSerialEvent	phone_control_service.h	/^		int parseSerialEvent(char* msg, int msg_len_wanted);$/;"	p	language:C++	class:handaer::PhoneControlService	signature:(char* msg, int msg_len_wanted)
+phoneControlServiceExit	phone_control_service.h	/^		bool phoneControlServiceExit();$/;"	p	language:C++	class:handaer::PhoneControlService	signature:()
+phoneControlServiceInit	phone_control_service.h	/^		bool phoneControlServiceInit();$/;"	p	language:C++	class:handaer::PhoneControlService	signature:()
+phoneControlServiceRunning	phone_control_service.h	/^		bool phoneControlServiceRunning;$/;"	m	language:C++	class:handaer::PhoneControlService
+phoneIncomingRunning	phone_control_service.h	/^		bool phoneIncomingRunning;$/;"	m	language:C++	class:handaer::PhoneControlService
+phone_proxy_fd	phone_control_service.h	/^		static int phone_proxy_fd;$/;"	m	language:C++	class:handaer::PhoneControlService
+readline	phone_control_service.h	/^extern ssize_t readline(int fd, void *vptr, size_t maxlen, int index);$/;"	p	language:C++	namespace:handaer	signature:(int fd, void *vptr, size_t maxlen, int index)
+resetFdsetAndTimeout	phone_control_service.h	/^		bool resetFdsetAndTimeout();$/;"	p	language:C++	class:handaer::PhoneControlService	signature:()
+returnBusyLine	phone_control_service.h	/^		int returnBusyLine(void *msg, int msg_len);$/;"	p	language:C++	class:handaer::PhoneControlService	signature:(void *msg, int msg_len)
+returnIncomingNumber	phone_control_service.h	/^		int returnIncomingNumber(void *tel_num, int tel_num_len);$/;"	p	language:C++	class:handaer::PhoneControlService	signature:(void *tel_num, int tel_num_len)
+returnOtherOffhook	phone_control_service.h	/^		int returnOtherOffhook();		$/;"	p	language:C++	class:handaer::PhoneControlService	signature:()
+returnRingOff	phone_control_service.h	/^		int returnRingOff(void *msg, int msg_len);$/;"	p	language:C++	class:handaer::PhoneControlService	signature:(void *msg, int msg_len)
+returnRingOn	phone_control_service.h	/^		int returnRingOn(void *msg, int msg_len);$/;"	p	language:C++	class:handaer::PhoneControlService	signature:(void *msg, int msg_len)
+sendDtmf	phone_control_service.h	/^		int sendDtmf(const  char dtmf);$/;"	p	language:C++	class:handaer::PhoneControlService	signature:(const char dtmf)
+setDtmfNumber	phone_control_service.h	/^		bool setDtmfNumber(unsigned char num);$/;"	p	language:C++	class:handaer::PhoneControlService	signature:(unsigned char num)
+setGoingNumber	phone_control_service.h	/^		bool setGoingNumber(char *num, int num_len);$/;"	p	language:C++	class:handaer::PhoneControlService	signature:(char *num, int num_len)
+setMute	phone_control_service.h	/^		bool setMute(bool yes_no);$/;"	p	language:C++	class:handaer::PhoneControlService	signature:(bool yes_no)
+setPhoneProxyFd	phone_control_service.h	/^		static bool setPhoneProxyFd(int fd);$/;"	p	language:C++	class:handaer::PhoneControlService	signature:(int fd)
+tv	phone_control_service.h	/^		struct timeval tv;$/;"	m	language:C++	class:handaer::PhoneControlService	typeref:struct:handaer::PhoneControlService::timeval
+~PhoneControlService	phone_control_service.h	/^		~PhoneControlService();$/;"	p	language:C++	class:handaer::PhoneControlService	signature:()
+LOG_CRIT	phone_log.h	8;"	d	language:C++
+LOG_DEBUG	phone_log.h	4;"	d	language:C++
+LOG_ERROR	phone_log.h	6;"	d	language:C++
+LOG_INFO	phone_log.h	7;"	d	language:C++
+LOG_TRACE	phone_log.h	5;"	d	language:C++
+PDEBUG	phone_log.h	18;"	d	language:C++
+PDEBUG	phone_log.h	20;"	d	language:C++
+PLOG	phone_log.h	10;"	d	language:C++
+JNI_OnLoad	phone_mediastream.c	/^JNIEXPORT jint JNICALL  JNI_OnLoad(JavaVM *ajvm, void *reserved)$/;"	f	language:C	signature:(JavaVM *ajvm, void *reserved)
+Java_org_linphone_mediastream_MediastreamerActivity_changeCamera	phone_mediastream.c	/^JNIEXPORT void JNICALL Java_org_linphone_mediastream_MediastreamerActivity_changeCamera$/;"	f	language:C	signature:(JNIEnv *env, jobject obj, jint camId, jint _args)
+Java_org_linphone_mediastream_MediastreamerActivity_clear	phone_mediastream.c	/^JNIEXPORT void JNICALL Java_org_linphone_mediastream_MediastreamerActivity_clear$/;"	f	language:C	signature:(JNIEnv *env, jobject obj, jint args)
+Java_org_linphone_mediastream_MediastreamerActivity_initDefaultArgs	phone_mediastream.c	/^JNIEXPORT jint JNICALL Java_org_linphone_mediastream_MediastreamerActivity_initDefaultArgs$/;"	f	language:C	signature:(JNIEnv *env, jobject obj)
+Java_org_linphone_mediastream_MediastreamerActivity_parseArgs	phone_mediastream.c	/^JNIEXPORT jboolean JNICALL Java_org_linphone_mediastream_MediastreamerActivity_parseArgs$/;"	f	language:C	signature:(JNIEnv *env, jobject obj, jint jargc, jobjectArray jargv, jint args)
+Java_org_linphone_mediastream_MediastreamerActivity_runLoop	phone_mediastream.c	/^JNIEXPORT void JNICALL Java_org_linphone_mediastream_MediastreamerActivity_runLoop$/;"	f	language:C	signature:(JNIEnv *env, jobject obj, jint args)
+Java_org_linphone_mediastream_MediastreamerActivity_setDeviceRotation	phone_mediastream.c	/^JNIEXPORT void JNICALL Java_org_linphone_mediastream_MediastreamerActivity_setDeviceRotation$/;"	f	language:C	signature:(JNIEnv *env, jobject thiz, jint rotation, jint _args)
+Java_org_linphone_mediastream_MediastreamerActivity_setVideoPreviewWindowId	phone_mediastream.c	/^JNIEXPORT void JNICALL Java_org_linphone_mediastream_MediastreamerActivity_setVideoPreviewWindowId$/;"	f	language:C	signature:(JNIEnv *env, jobject obj, jobject id, jint _args)
+Java_org_linphone_mediastream_MediastreamerActivity_setVideoWindowId	phone_mediastream.c	/^JNIEXPORT void JNICALL Java_org_linphone_mediastream_MediastreamerActivity_setVideoWindowId$/;"	f	language:C	signature:(JNIEnv *env, jobject obj, jobject id, jint _args)
+Java_org_linphone_mediastream_MediastreamerActivity_setupMediaStreams	phone_mediastream.c	/^JNIEXPORT void JNICALL Java_org_linphone_mediastream_MediastreamerActivity_setupMediaStreams$/;"	f	language:C	signature:(JNIEnv *env, jobject obj, jint args)
+Java_org_linphone_mediastream_MediastreamerActivity_stopMediaStream	phone_mediastream.c	/^JNIEXPORT jint JNICALL Java_org_linphone_mediastream_MediastreamerActivity_stopMediaStream$/;"	f	language:C	signature:(JNIEnv *env, jobject obj)
+clear_mediastreams	phone_mediastream.c	/^void clear_mediastreams(MediastreamDatas* args) {$/;"	f	language:C	signature:(MediastreamDatas* args)
+clear_mediastreams	phone_mediastream.c	/^void clear_mediastreams(MediastreamDatas* args);$/;"	p	language:C	file:	signature:(MediastreamDatas* args)
+cond	phone_mediastream.c	/^static int cond=1;$/;"	v	language:C	file:
+create_custom_payload_type	phone_mediastream.c	/^static PayloadType* create_custom_payload_type(const char *type, const char *subtype, const char *rate, int number);$/;"	p	language:C	file:	signature:(const char *type, const char *subtype, const char *rate, int number)
+create_custom_payload_type	phone_mediastream.c	/^static PayloadType* create_custom_payload_type(const char *type, const char *subtype, const char *rate, int number){$/;"	f	language:C	file:	signature:(const char *type, const char *subtype, const char *rate, int number)
+display_items	phone_mediastream.c	/^static void display_items(void *user_data, uint32_t csrc, rtcp_sdes_type_t t, const char *content, uint8_t content_len);$/;"	p	language:C	file:	signature:(void *user_data, uint32_t csrc, rtcp_sdes_type_t t, const char *content, uint8_t content_len)
+display_items	phone_mediastream.c	/^static void display_items(void *user_data, uint32_t csrc, rtcp_sdes_type_t t, const char *content, uint8_t content_len){$/;"	f	language:C	file:	signature:(void *user_data, uint32_t csrc, rtcp_sdes_type_t t, const char *content, uint8_t content_len)
+init_default_args	phone_mediastream.c	/^MediastreamDatas* init_default_args() {$/;"	f	language:C
+init_default_args	phone_mediastream.c	/^MediastreamDatas* init_default_args();$/;"	p	language:C	file:
+main	phone_mediastream.c	/^int main(int argc, char * argv[])$/;"	f	language:C	signature:(int argc, char * argv[])
+mediastream_begin	phone_mediastream.c	/^int mediastream_begin(MediastreamDatas* args){$/;"	f	language:C	signature:(MediastreamDatas* args)
+mediastream_end	phone_mediastream.c	/^int mediastream_end(MediastreamDatas* args){$/;"	f	language:C	signature:(MediastreamDatas* args)
+mediastream_init	phone_mediastream.c	/^MediastreamDatas* mediastream_init(int argc, char * argv[]){$/;"	f	language:C	signature:(int argc, char * argv[])
+mediastream_uninit	phone_mediastream.c	/^int mediastream_uninit(MediastreamDatas* args){$/;"	f	language:C	signature:(MediastreamDatas* args)
+parse_addr	phone_mediastream.c	/^static bool_t parse_addr(const char *addr, char *ip, int len, int *port)$/;"	f	language:C	file:	signature:(const char *addr, char *ip, int len, int *port)
+parse_addr	phone_mediastream.c	/^static bool_t parse_addr(const char *addr, char *ip, int len, int *port);$/;"	p	language:C	file:	signature:(const char *addr, char *ip, int len, int *port)
+parse_args	phone_mediastream.c	/^bool_t parse_args(int argc, char** argv, MediastreamDatas* out) {$/;"	f	language:C	signature:(int argc, char** argv, MediastreamDatas* out)
+parse_args	phone_mediastream.c	/^bool_t parse_args(int argc, char** argv, MediastreamDatas* out);$/;"	p	language:C	file:	signature:(int argc, char** argv, MediastreamDatas* out)
+parse_custom_payload	phone_mediastream.c	/^static PayloadType* parse_custom_payload(const char *name);$/;"	p	language:C	file:	signature:(const char *name)
+parse_custom_payload	phone_mediastream.c	/^static PayloadType* parse_custom_payload(const char *name){$/;"	f	language:C	file:	signature:(const char *name)
+parse_events	phone_mediastream.c	/^static void parse_events(RtpSession *session, OrtpEvQueue *q);$/;"	p	language:C	file:	signature:(RtpSession *session, OrtpEvQueue *q)
+parse_events	phone_mediastream.c	/^static void parse_events(RtpSession *session, OrtpEvQueue *q){$/;"	f	language:C	file:	signature:(RtpSession *session, OrtpEvQueue *q)
+parse_rtcp	phone_mediastream.c	/^static void parse_rtcp(mblk_t *m);$/;"	p	language:C	file:	signature:(mblk_t *m)
+parse_rtcp	phone_mediastream.c	/^static void parse_rtcp(mblk_t *m){$/;"	f	language:C	file:	signature:(mblk_t *m)
+parse_window_ids	phone_mediastream.c	/^static bool_t parse_window_ids(const char *ids, int* video_id, int* preview_id)$/;"	f	language:C	file:	signature:(const char *ids, int* video_id, int* preview_id)
+parse_window_ids	phone_mediastream.c	/^static bool_t parse_window_ids(const char *ids, int* video_id, int* preview_id);$/;"	p	language:C	file:	signature:(const char *ids, int* video_id, int* preview_id)
+run_interactive_loop	phone_mediastream.c	/^void run_interactive_loop(MediastreamDatas* args) {$/;"	f	language:C	signature:(MediastreamDatas* args)
+run_interactive_loop	phone_mediastream.c	/^void run_interactive_loop(MediastreamDatas* args);$/;"	p	language:C	file:	signature:(MediastreamDatas* args)
+run_non_interactive_loop	phone_mediastream.c	/^void run_non_interactive_loop(MediastreamDatas* args) {$/;"	f	language:C	signature:(MediastreamDatas* args)
+run_non_interactive_loop	phone_mediastream.c	/^void run_non_interactive_loop(MediastreamDatas* args);$/;"	p	language:C	file:	signature:(MediastreamDatas* args)
+setup_media_streams	phone_mediastream.c	/^void setup_media_streams(MediastreamDatas* args) {$/;"	f	language:C	signature:(MediastreamDatas* args)
+setup_media_streams	phone_mediastream.c	/^void setup_media_streams(MediastreamDatas* args);$/;"	p	language:C	file:	signature:(MediastreamDatas* args)
+stop_handler	phone_mediastream.c	/^static void stop_handler(int signum)$/;"	f	language:C	file:	signature:(int signum)
+stop_handler	phone_mediastream.c	/^static void stop_handler(int signum);$/;"	p	language:C	file:	signature:(int signum)
+usage	phone_mediastream.c	/^const char *usage="mediastream --local <port> --remote <ip:port> \\n"$/;"	v	language:C
+MediastreamDatas	phone_mediastream.h	/^} MediastreamDatas;$/;"	t	language:C++	typeref:struct:_MediastreamDatas
+_MediastreamDatas	phone_mediastream.h	/^typedef struct _MediastreamDatas {$/;"	s	language:C++
+_PHONE_MEDIASTREAM_H_	phone_mediastream.h	2;"	d	language:C++
+agc	phone_mediastream.h	/^	bool_t agc;$/;"	m	language:C++	struct:_MediastreamDatas
+audio	phone_mediastream.h	/^	AudioStream *audio;	$/;"	m	language:C++	struct:_MediastreamDatas
+audio_running	phone_mediastream.h	/^	int audio_running;$/;"	m	language:C++	struct:_MediastreamDatas
+bitrate	phone_mediastream.h	/^	int bitrate;$/;"	m	language:C++	struct:_MediastreamDatas
+camera	phone_mediastream.h	/^	char * camera;$/;"	m	language:C++	struct:_MediastreamDatas
+capture_card	phone_mediastream.h	/^	char * capture_card;$/;"	m	language:C++	struct:_MediastreamDatas
+custom_pt	phone_mediastream.h	/^	PayloadType *custom_pt;$/;"	m	language:C++	struct:_MediastreamDatas
+device_rotation	phone_mediastream.h	/^	int device_rotation;$/;"	m	language:C++	struct:_MediastreamDatas
+ec	phone_mediastream.h	/^	bool_t ec;$/;"	m	language:C++	struct:_MediastreamDatas
+ec_delay_ms	phone_mediastream.h	/^	int ec_len_ms, ec_delay_ms, ec_framesize;$/;"	m	language:C++	struct:_MediastreamDatas
+ec_framesize	phone_mediastream.h	/^	int ec_len_ms, ec_delay_ms, ec_framesize;$/;"	m	language:C++	struct:_MediastreamDatas
+ec_len_ms	phone_mediastream.h	/^	int ec_len_ms, ec_delay_ms, ec_framesize;$/;"	m	language:C++	struct:_MediastreamDatas
+el	phone_mediastream.h	/^	bool_t el;$/;"	m	language:C++	struct:_MediastreamDatas
+el_force	phone_mediastream.h	/^	float el_force;$/;"	m	language:C++	struct:_MediastreamDatas
+el_speed	phone_mediastream.h	/^	float el_speed;$/;"	m	language:C++	struct:_MediastreamDatas
+el_sustain	phone_mediastream.h	/^	int el_sustain;$/;"	m	language:C++	struct:_MediastreamDatas
+el_thres	phone_mediastream.h	/^	float el_thres;$/;"	m	language:C++	struct:_MediastreamDatas
+el_transmit_thres	phone_mediastream.h	/^	float el_transmit_thres;$/;"	m	language:C++	struct:_MediastreamDatas
+enable_srtp	phone_mediastream.h	/^	bool_t enable_srtp;$/;"	m	language:C++	struct:_MediastreamDatas
+eq	phone_mediastream.h	/^	bool_t eq;$/;"	m	language:C++	struct:_MediastreamDatas
+fmtp	phone_mediastream.h	/^	char *fmtp;$/;"	m	language:C++	struct:_MediastreamDatas
+infile	phone_mediastream.h	/^	char *infile,*outfile;$/;"	m	language:C++	struct:_MediastreamDatas
+ip	phone_mediastream.h	/^	char ip[64];$/;"	m	language:C++	struct:_MediastreamDatas
+is_verbose	phone_mediastream.h	/^	bool_t is_verbose;$/;"	m	language:C++	struct:_MediastreamDatas
+jitter	phone_mediastream.h	/^	int jitter;$/;"	m	language:C++	struct:_MediastreamDatas
+libmssilk_init	phone_mediastream.h	/^extern void libmssilk_init();$/;"	p	language:C++	signature:()
+libmsx264_init	phone_mediastream.h	/^extern void libmsx264_init();$/;"	p	language:C++	signature:()
+localport	phone_mediastream.h	/^	int localport,remoteport,payload;$/;"	m	language:C++	struct:_MediastreamDatas
+mediastream_begin	phone_mediastream.h	/^extern int mediastream_begin(MediastreamDatas* args);$/;"	p	language:C++	signature:(MediastreamDatas* args)
+mediastream_end	phone_mediastream.h	/^extern int mediastream_end(MediastreamDatas* args);$/;"	p	language:C++	signature:(MediastreamDatas* args)
+mediastream_init	phone_mediastream.h	/^extern MediastreamDatas* mediastream_init(int argc, char * argv[]);$/;"	p	language:C++	signature:(int argc, char * argv[])
+mediastream_uninit	phone_mediastream.h	/^extern int mediastream_uninit(MediastreamDatas* args);$/;"	p	language:C++	signature:(MediastreamDatas* args)
+ms_set_video_stream	phone_mediastream.h	/^extern void ms_set_video_stream(VideoStream* video);$/;"	p	language:C++	signature:(VideoStream* video)
+netsim_bw	phone_mediastream.h	/^	int netsim_bw;$/;"	m	language:C++	struct:_MediastreamDatas
+ng_floorgain	phone_mediastream.h	/^	float ng_floorgain;$/;"	m	language:C++	struct:_MediastreamDatas
+ng_threshold	phone_mediastream.h	/^	float ng_threshold;$/;"	m	language:C++	struct:_MediastreamDatas
+outfile	phone_mediastream.h	/^	char *infile,*outfile;$/;"	m	language:C++	struct:_MediastreamDatas
+pad	phone_mediastream.h	/^	bool_t pad[3];$/;"	m	language:C++	struct:_MediastreamDatas
+payload	phone_mediastream.h	/^	int localport,remoteport,payload;$/;"	m	language:C++	struct:_MediastreamDatas
+playback_card	phone_mediastream.h	/^	char * playback_card;$/;"	m	language:C++	struct:_MediastreamDatas
+preview_window_id	phone_mediastream.h	/^	int preview_window_id;$/;"	m	language:C++	struct:_MediastreamDatas
+profile	phone_mediastream.h	/^	RtpProfile *profile;$/;"	m	language:C++	struct:_MediastreamDatas
+pt	phone_mediastream.h	/^	PayloadType *pt;$/;"	m	language:C++	struct:_MediastreamDatas
+q	phone_mediastream.h	/^	OrtpEvQueue *q;$/;"	m	language:C++	struct:_MediastreamDatas
+remoteport	phone_mediastream.h	/^	int localport,remoteport,payload;$/;"	m	language:C++	struct:_MediastreamDatas
+session	phone_mediastream.h	/^	RtpSession *session;$/;"	m	language:C++	struct:_MediastreamDatas
+srtp_local_master_key	phone_mediastream.h	/^	char* srtp_local_master_key;$/;"	m	language:C++	struct:_MediastreamDatas
+srtp_remote_master_key	phone_mediastream.h	/^	char* srtp_remote_master_key;$/;"	m	language:C++	struct:_MediastreamDatas
+stat_cond	phone_mediastream.h	/^	int stat_cond;$/;"	m	language:C++	struct:_MediastreamDatas
+stat_tid	phone_mediastream.h	/^	pthread_t stat_tid;$/;"	m	language:C++	struct:_MediastreamDatas
+two_windows	phone_mediastream.h	/^	bool_t two_windows;$/;"	m	language:C++	struct:_MediastreamDatas
+use_ng	phone_mediastream.h	/^	bool_t use_ng;$/;"	m	language:C++	struct:_MediastreamDatas
+use_rc	phone_mediastream.h	/^	bool_t use_rc;$/;"	m	language:C++	struct:_MediastreamDatas
+video	phone_mediastream.h	/^	VideoStream *video;$/;"	m	language:C++	struct:_MediastreamDatas
+video_window_id	phone_mediastream.h	/^	int video_window_id;$/;"	m	language:C++	struct:_MediastreamDatas
+vs	phone_mediastream.h	/^	MSVideoSize vs;$/;"	m	language:C++	struct:_MediastreamDatas
+zrtp_secrets	phone_mediastream.h	/^	char * zrtp_secrets;$/;"	m	language:C++	struct:_MediastreamDatas
+PHONETIMER_INTERVAL	phone_posixtimer.c	30;"	d	language:C	file:
+cur	phone_posixtimer.c	/^static struct timeval orig, cur;$/;"	v	language:C	typeref:struct:	file:
+orig	phone_posixtimer.c	/^static struct timeval orig, cur;$/;"	v	language:C	typeref:struct:timeval	file:
+phone_timer	phone_posixtimer.c	/^RtpTimer phone_timer = {	0,$/;"	v	language:C
+phone_timer_do	phone_posixtimer.c	/^void phone_timer_do()$/;"	f	language:C
+phone_timer_init	phone_posixtimer.c	/^void phone_timer_init()$/;"	f	language:C
+phone_timer_time	phone_posixtimer.c	/^static unsigned int phone_timer_time = 0;		\/*in milisecond *\/$/;"	v	language:C	file:
+phone_timer_uninit	phone_posixtimer.c	/^void phone_timer_uninit()$/;"	f	language:C
+PhoneProxy	phone_proxy.cc	/^PhoneProxy::PhoneProxy()$/;"	f	language:C++	class:handaer::PhoneProxy	signature:()
+_going_critSect	phone_proxy.cc	/^static CriticalSectionWrapper& _going_critSect = $/;"	m	language:C++	namespace:handaer	file:
+_incom_critSect	phone_proxy.cc	/^static CriticalSectionWrapper& _incom_critSect = $/;"	m	language:C++	namespace:handaer	file:
+_spi_critSect	phone_proxy.cc	/^CriticalSectionWrapper& _spi_critSect = $/;"	m	language:C++	namespace:handaer	file:
+_trans_critSect	phone_proxy.cc	/^static CriticalSectionWrapper& _trans_critSect = $/;"	m	language:C++	namespace:handaer	file:
+accepting_loop	phone_proxy.cc	/^int PhoneProxy::accepting_loop(bool yes_no){	$/;"	f	language:C++	class:handaer::PhoneProxy	signature:(bool yes_no)
+audio_argc	phone_proxy.cc	/^static int audio_argc = 9+9+6;$/;"	m	language:C++	namespace:handaer	file:
+audio_argv	phone_proxy.cc	/^static const char * audio_argv[] = {	$/;"	m	language:C++	namespace:handaer	file:
+deleteClientTimer	phone_proxy.cc	/^int PhoneProxy::deleteClientTimer(cli_info_t* cli_info, TimerTypeEnum _timer_type) {$/;"	f	language:C++	class:handaer::PhoneProxy	signature:(cli_info_t* cli_info, TimerTypeEnum _timer_type)
+destroyClient	phone_proxy.cc	/^int PhoneProxy::destroyClient(cli_info_t *pci){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:(cli_info_t *pci)
+dispatchClientId	phone_proxy.cc	/^int PhoneProxy::dispatchClientId(cli_info_t *cci){	$/;"	f	language:C++	class:handaer::PhoneProxy	signature:(cli_info_t *cci)
+getCmdtypeFromString	phone_proxy.cc	/^PhoneProxy::PstnCmdEnum PhoneProxy::getCmdtypeFromString(char *cmd_str){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:(char *cmd_str)
+get_current_format_time	phone_proxy.cc	/^void PhoneProxy::get_current_format_time(char * tstr) {$/;"	f	language:C++	class:handaer::PhoneProxy	signature:(char * tstr)
+handaer	phone_proxy.cc	/^namespace handaer{$/;"	n	language:C++	file:
+handleClient	phone_proxy.cc	/^int PhoneProxy::handleClient(cli_info_t *ci_){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:(cli_info_t *ci_)
+handlePhoneControlServiceEvent	phone_proxy.cc	/^int PhoneProxy::handlePhoneControlServiceEvent(){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:()
+heartBeatingThreadFunc	phone_proxy.cc	/^bool PhoneProxy::heartBeatingThreadFunc(void* pThis){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:(void* pThis)
+heartBeatingThreadProcess	phone_proxy.cc	/^bool PhoneProxy::heartBeatingThreadProcess(){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:()
+heartBeatingisRunning	phone_proxy.cc	/^bool PhoneProxy::heartBeatingisRunning() const{$/;"	f	language:C++	class:handaer::PhoneProxy	signature:() const
+listenOnServerSocket	phone_proxy.cc	/^int PhoneProxy::listenOnServerSocket(int port){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:(int port)
+my_accept	phone_proxy.cc	/^int PhoneProxy::my_accept(struct sockaddr *addr, socklen_t *addrlen){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:(struct sockaddr *addr, socklen_t *addrlen)
+netRead	phone_proxy.cc	/^int PhoneProxy::netRead(int fd,void *buffer,int length){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:(int fd,void *buffer,int length)
+netReadLine	phone_proxy.cc	/^ssize_t PhoneProxy::netReadLine(int fd,void *buffer,size_t maxlen, int i){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:(int fd,void *buffer,size_t maxlen, int i)
+netWrite	phone_proxy.cc	/^int PhoneProxy::netWrite(int fd,const void *buffer,int length){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:(int fd,const void *buffer,int length)
+notify	phone_proxy.cc	/^void PhoneProxy::notify( int signum ){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:( int signum )
+parseClient	phone_proxy.cc	/^int PhoneProxy::parseClient(cli_info_t *ci_ , int i){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:(cli_info_t *ci_ , int i)
+parsePhoneControlServiceEvent	phone_proxy.cc	/^int PhoneProxy::parsePhoneControlServiceEvent(){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:()
+phoneProxyExit	phone_proxy.cc	/^bool PhoneProxy::phoneProxyExit(){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:()
+phoneProxyInit	phone_proxy.cc	/^bool PhoneProxy::phoneProxyInit(int port){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:(int port)
+phoneProxyThreadFunc	phone_proxy.cc	/^bool PhoneProxy::phoneProxyThreadFunc(void* pThis){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:(void* pThis)
+phoneProxyThreadProcess	phone_proxy.cc	/^bool PhoneProxy::phoneProxyThreadProcess(){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:()
+phoneProxyisRunning	phone_proxy.cc	/^bool PhoneProxy::phoneProxyisRunning() const{$/;"	f	language:C++	class:handaer::PhoneProxy	signature:() const
+phoneRingStart	phone_proxy.cc	/^void PhoneProxy::phoneRingStart(){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:()
+phoneRingStop	phone_proxy.cc	/^void PhoneProxy::phoneRingStop(){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:()
+phone_ring_volume	phone_proxy.cc	/^extern int phone_ring_volume;$/;"	x	language:C++
+queryOnlineInfo	phone_proxy.cc	/^int PhoneProxy::queryOnlineInfo(char *h1){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:(char *h1)
+recycleClient	phone_proxy.cc	/^int PhoneProxy::recycleClient(void *arg, void *pThis){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:(void *arg, void *pThis)
+resendIncoming	phone_proxy.cc	/^int PhoneProxy::resendIncoming(void *arg, void *pThis){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:(void *arg, void *pThis)
+resetFdsetAndTimeout	phone_proxy.cc	/^bool PhoneProxy::resetFdsetAndTimeout(){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:()
+resetTimerInfo	phone_proxy.cc	/^bool PhoneProxy::resetTimerInfo(){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:()
+ring_count	phone_proxy.cc	/^static int ring_count = 0;$/;"	m	language:C++	namespace:handaer	file:
+ring_should_finish	phone_proxy.cc	/^static bool ring_should_finish  = false;$/;"	m	language:C++	namespace:handaer	file:
+setClientTimer	phone_proxy.cc	/^int PhoneProxy::setClientTimer(cli_info_t* cli_info, int interval, $/;"	f	language:C++	class:handaer::PhoneProxy	signature:(cli_info_t* cli_info, int interval, timer_process_cbfn_t timer_proc, void *arg, void* pThis, TimerTypeEnum _timer_type)
+setDND	phone_proxy.cc	/^void PhoneProxy::setDND(bool yes_no){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:(bool yes_no)
+setNoiseGateThreshold	phone_proxy.cc	/^void PhoneProxy::setNoiseGateThreshold(const char *_ng_thres){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:(const char *_ng_thres)
+startAudio	phone_proxy.cc	/^bool PhoneProxy::startAudio(cli_info_t *p_ci, int payload){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:(cli_info_t *p_ci, int payload)
+startHeartBeating	phone_proxy.cc	/^int32_t PhoneProxy::startHeartBeating(){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:()
+startPhoneProxy	phone_proxy.cc	/^int32_t PhoneProxy::startPhoneProxy(){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:()
+stopAudio	phone_proxy.cc	/^bool PhoneProxy::stopAudio(cli_info_t *p_ci, int payload){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:(cli_info_t *p_ci, int payload)
+stopHeartBeating	phone_proxy.cc	/^int32_t PhoneProxy::stopHeartBeating(){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:()
+stopPhoneProxy	phone_proxy.cc	/^int32_t PhoneProxy::stopPhoneProxy(){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:()
+timeout_talkback	phone_proxy.cc	/^static int timeout_talkback = 0;$/;"	m	language:C++	namespace:handaer	file:
+timeout_trans	phone_proxy.cc	/^static int timeout_trans = 0;$/;"	m	language:C++	namespace:handaer	file:
+timer_count	phone_proxy.cc	/^static int timer_count = 0;$/;"	m	language:C++	namespace:handaer	file:
+timer_count_talkback	phone_proxy.cc	/^static int timer_count_talkback = 0;$/;"	m	language:C++	namespace:handaer	file:
+timer_count_trans	phone_proxy.cc	/^static int timer_count_trans = 0;$/;"	m	language:C++	namespace:handaer	file:
+timer_info_g	phone_proxy.cc	/^PhoneProxy::timer_info_t PhoneProxy::timer_info_g[PhoneProxy::CLIENT_NUM*2];$/;"	m	language:C++	class:handaer::PhoneProxy	file:
+total_receive	phone_proxy.cc	/^extern volatile int total_receive ;$/;"	x	language:C++
+xxx	phone_proxy.cc	/^static void xxx(int x){$/;"	f	language:C++	namespace:handaer	signature:(int x)
+~PhoneProxy	phone_proxy.cc	/^PhoneProxy::~PhoneProxy(){$/;"	f	language:C++	class:handaer::PhoneProxy	signature:()
+BACK_LOG	phone_proxy.h	/^			BACK_LOG = 10,$/;"	e	language:C++	enum:handaer::PhoneProxy::__anon3
+BUSYLINE	phone_proxy.h	/^			BUSYLINE,$/;"	e	language:C++	enum:handaer::PhoneProxy::__anon4
+CLIENT_NUM	phone_proxy.h	/^			CLIENT_NUM = 4,$/;"	e	language:C++	enum:handaer::PhoneProxy::__anon3
+DEFAULT	phone_proxy.h	/^			DEFAULT,$/;"	e	language:C++	enum:handaer::PhoneProxy::PstnCommand
+DEFAULT_INCOMING	phone_proxy.h	/^			DEFAULT_INCOMING,$/;"	e	language:C++	enum:handaer::PhoneProxy::__anon4
+DIALING	phone_proxy.h	/^			DIALING,	$/;"	e	language:C++	enum:handaer::PhoneProxy::PstnCommand
+DTMF_SEND	phone_proxy.h	/^			DTMF_SEND,$/;"	e	language:C++	enum:handaer::PhoneProxy::PstnCommand
+EPOLL_TIMEOUT_MS	phone_proxy.h	/^			EPOLL_TIMEOUT_MS = 30,$/;"	e	language:C++	enum:handaer::PhoneProxy::__anon3
+FLASH	phone_proxy.h	/^			FLASH,$/;"	e	language:C++	enum:handaer::PhoneProxy::PstnCommand
+HEARTBEAT	phone_proxy.h	/^			HEARTBEAT,$/;"	e	language:C++	enum:handaer::PhoneProxy::PstnCommand
+INCOMING_NUM	phone_proxy.h	/^			INCOMING_NUM,$/;"	e	language:C++	enum:handaer::PhoneProxy::__anon4
+INCOMING_OK	phone_proxy.h	/^			INCOMING_OK,$/;"	e	language:C++	enum:handaer::PhoneProxy::PstnCommand
+LOCAL_AUDIO_PORT	phone_proxy.h	/^			LOCAL_AUDIO_PORT = 44444,$/;"	e	language:C++	enum:handaer::PhoneProxy::__anon3
+LOGIN	phone_proxy.h	/^			LOGIN,$/;"	e	language:C++	enum:handaer::PhoneProxy::PstnCommand
+LOGOUTALL	phone_proxy.h	/^			LOGOUTALL,$/;"	e	language:C++	enum:handaer::PhoneProxy::PstnCommand
+LOG_OUT	phone_proxy.h	/^			LOG_OUT,			$/;"	e	language:C++	enum:handaer::PhoneProxy::PstnCommand
+MAX_EVENTS	phone_proxy.h	/^			MAX_EVENTS = 5,$/;"	e	language:C++	enum:handaer::PhoneProxy::__anon3
+MAX_LEN_PCLI	phone_proxy.h	/^			MAX_LEN_PCLI = 512,$/;"	e	language:C++	enum:handaer::PhoneProxy::__anon3
+MAX_NUM_LEN_	phone_proxy.h	/^			MAX_NUM_LEN_ = 64,$/;"	e	language:C++	enum:handaer::PhoneProxy::__anon3
+MUTE	phone_proxy.h	/^			MUTE,$/;"	e	language:C++	enum:handaer::PhoneProxy::PstnCommand
+OFFHOOK	phone_proxy.h	/^			OFFHOOK,			$/;"	e	language:C++	enum:handaer::PhoneProxy::PstnCommand
+ONHOOK	phone_proxy.h	/^			ONHOOK,		$/;"	e	language:C++	enum:handaer::PhoneProxy::PstnCommand
+OPTION_INTERVAL	phone_proxy.h	/^			OPTION_INTERVAL = 5,$/;"	e	language:C++	enum:handaer::PhoneProxy::__anon3
+OTHER_OFFHOOK	phone_proxy.h	/^			OTHER_OFFHOOK,$/;"	e	language:C++	enum:handaer::PhoneProxy::__anon4
+PASSWD_LEN	phone_proxy.h	/^			PASSWD_LEN = 16,$/;"	e	language:C++	enum:handaer::PhoneProxy::__anon3
+PAYLOAD_PCMU	phone_proxy.h	/^			PAYLOAD_PCMU = 0,$/;"	e	language:C++	enum:handaer::PhoneProxy::__anon3
+PhoneProxy	phone_proxy.h	/^		PhoneProxy();$/;"	p	language:C++	class:handaer::PhoneProxy	signature:()
+PhoneProxy	phone_proxy.h	/^class PhoneProxy{$/;"	c	language:C++	namespace:handaer
+PstnCmdEnum	phone_proxy.h	/^		typedef enum PstnCommand PstnCmdEnum;$/;"	t	language:C++	class:handaer::PhoneProxy	typeref:enum:handaer::PhoneProxy::PstnCommand
+PstnCmdIncomingEnum	phone_proxy.h	/^		}PstnCmdIncomingEnum;$/;"	t	language:C++	class:handaer::PhoneProxy	typeref:enum:handaer::PhoneProxy::__anon4
+PstnCommand	phone_proxy.h	/^		enum PstnCommand {$/;"	g	language:C++	class:handaer::PhoneProxy
+QUERY	phone_proxy.h	/^			QUERY,$/;"	e	language:C++	enum:handaer::PhoneProxy::PstnCommand
+REMOTE_AUDIO_PORT	phone_proxy.h	/^			REMOTE_AUDIO_PORT = 55556,$/;"	e	language:C++	enum:handaer::PhoneProxy::__anon3
+RINGOFF	phone_proxy.h	/^			RINGOFF,$/;"	e	language:C++	enum:handaer::PhoneProxy::__anon4
+RINGON	phone_proxy.h	/^			RINGON,$/;"	e	language:C++	enum:handaer::PhoneProxy::__anon4
+RING_INTERVAL	phone_proxy.h	/^			RING_INTERVAL = 2000,$/;"	e	language:C++	enum:handaer::PhoneProxy::__anon3
+SERVER_PORT	phone_proxy.h	/^			SERVER_PORT = 63290,$/;"	e	language:C++	enum:handaer::PhoneProxy::__anon3
+SWITCHBACK	phone_proxy.h	/^			SWITCHBACK,$/;"	e	language:C++	enum:handaer::PhoneProxy::PstnCommand
+SWITCHOFFHOOK	phone_proxy.h	/^			SWITCHOFFHOOK,$/;"	e	language:C++	enum:handaer::PhoneProxy::PstnCommand
+SWITCHONHOOK	phone_proxy.h	/^			SWITCHONHOOK,$/;"	e	language:C++	enum:handaer::PhoneProxy::PstnCommand
+SWITCHTOSONMACHINE	phone_proxy.h	/^			SWITCHTOSONMACHINE,$/;"	e	language:C++	enum:handaer::PhoneProxy::PstnCommand
+TALKBACKDIALING	phone_proxy.h	/^			TALKBACKDIALING,$/;"	e	language:C++	enum:handaer::PhoneProxy::PstnCommand
+TALKBACKOFFHOOK	phone_proxy.h	/^			TALKBACKOFFHOOK,$/;"	e	language:C++	enum:handaer::PhoneProxy::PstnCommand
+TALKBACKONHOOK	phone_proxy.h	/^			TALKBACKONHOOK,$/;"	e	language:C++	enum:handaer::PhoneProxy::PstnCommand
+TIMEOUT_INCOMING	phone_proxy.h	/^			TIMEOUT_INCOMING = 5,$/;"	e	language:C++	enum:handaer::PhoneProxy::__anon3
+TIMEOUT_TRANS	phone_proxy.h	/^			TIMEOUT_TRANS = 60,$/;"	e	language:C++	enum:handaer::PhoneProxy::__anon3
+TIMER_HEARTBEAT	phone_proxy.h	/^			TIMER_HEARTBEAT = 0 ,$/;"	e	language:C++	enum:handaer::PhoneProxy::timer_type
+TIMER_INCOMING	phone_proxy.h	/^			TIMER_INCOMING,$/;"	e	language:C++	enum:handaer::PhoneProxy::timer_type
+TIMER_SEC	phone_proxy.h	/^			TIMER_SEC = 1,$/;"	e	language:C++	enum:handaer::PhoneProxy::__anon3
+TimerTypeEnum	phone_proxy.h	/^		}TimerTypeEnum;$/;"	t	language:C++	class:handaer::PhoneProxy	typeref:enum:handaer::PhoneProxy::timer_type
+UNDEFINED	phone_proxy.h	/^			UNDEFINED = -1,$/;"	e	language:C++	enum:handaer::PhoneProxy::PstnCommand
+USERNAME_LEN	phone_proxy.h	/^			USERNAME_LEN = 19,$/;"	e	language:C++	enum:handaer::PhoneProxy::__anon3
+_PHONE_PROXY_H_	phone_proxy.h	19;"	d	language:C++
+_cli_req	phone_proxy.h	/^		cli_request_t _cli_req;$/;"	m	language:C++	class:handaer::PhoneProxy
+_heartBeatingThreadId	phone_proxy.h	/^		uint32_t _heartBeatingThreadId;	$/;"	m	language:C++	class:handaer::PhoneProxy
+_heartBeatingisRunning	phone_proxy.h	/^		bool _heartBeatingisRunning;$/;"	m	language:C++	class:handaer::PhoneProxy
+_ms_datas	phone_proxy.h	/^			MediastreamDatas* _ms_datas;$/;"	m	language:C++	struct:handaer::PhoneProxy::__anon6
+_phoneProxyRunning	phone_proxy.h	/^		bool _phoneProxyRunning;$/;"	m	language:C++	class:handaer::PhoneProxy
+_phoneProxyThreadId	phone_proxy.h	/^		uint32_t _phoneProxyThreadId;	$/;"	m	language:C++	class:handaer::PhoneProxy
+_phone_control_service_event	phone_proxy.h	/^		PstnCmdIncomingEnum _phone_control_service_event;$/;"	m	language:C++	class:handaer::PhoneProxy
+_phone_critSect	phone_proxy.h	/^		CriticalSectionWrapper& _phone_critSect;$/;"	m	language:C++	class:handaer::PhoneProxy
+_ptrThreadHeartBeating	phone_proxy.h	/^		ThreadWrapper* _ptrThreadHeartBeating;$/;"	m	language:C++	class:handaer::PhoneProxy
+_ptrThreadPhoneProxy	phone_proxy.h	/^		ThreadWrapper* _ptrThreadPhoneProxy;$/;"	m	language:C++	class:handaer::PhoneProxy
+_timer_info	phone_proxy.h	/^		typedef struct _timer_info {$/;"	s	language:C++	class:handaer::PhoneProxy
+accepting_loop	phone_proxy.h	/^		int accepting_loop(bool yes_no);$/;"	p	language:C++	class:handaer::PhoneProxy	signature:(bool yes_no)
+arg	phone_proxy.h	/^			char arg[MAX_NUM_LEN_+1]; \/\/arg$/;"	m	language:C++	struct:handaer::PhoneProxy::__anon5
+arglen	phone_proxy.h	/^			int arglen; \/\/arg_len$/;"	m	language:C++	struct:handaer::PhoneProxy::__anon5
+ci	phone_proxy.h	/^		cli_info_t ci[CLIENT_NUM];	$/;"	m	language:C++	class:handaer::PhoneProxy
+ci_talkback_into	phone_proxy.h	/^		cli_info_t * ci_talkback_into;$/;"	m	language:C++	class:handaer::PhoneProxy
+ci_talkback_out	phone_proxy.h	/^		cli_info_t * ci_talkback_out;$/;"	m	language:C++	class:handaer::PhoneProxy
+ci_transinto	phone_proxy.h	/^		cli_info_t * ci_transinto;$/;"	m	language:C++	class:handaer::PhoneProxy
+ci_transout	phone_proxy.h	/^		cli_info_t * ci_transout;$/;"	m	language:C++	class:handaer::PhoneProxy
+cli_info_t	phone_proxy.h	/^		}cli_info_t;$/;"	t	language:C++	class:handaer::PhoneProxy	typeref:struct:handaer::PhoneProxy::__anon6
+cli_request_t	phone_proxy.h	/^		}cli_request_t; \/\/client cmd message$/;"	t	language:C++	class:handaer::PhoneProxy	typeref:struct:handaer::PhoneProxy::__anon5
+client_fd	phone_proxy.h	/^			int client_fd; \/\/ PAD(0), Handset(1~3)$/;"	m	language:C++	struct:handaer::PhoneProxy::__anon6
+client_ip	phone_proxy.h	/^			char client_ip[PASSWD_LEN];$/;"	m	language:C++	struct:handaer::PhoneProxy::__anon6
+client_ip_using	phone_proxy.h	/^		char client_ip_using[PASSWD_LEN];$/;"	m	language:C++	class:handaer::PhoneProxy
+cmd	phone_proxy.h	/^			PstnCmdEnum cmd; \/\/cmd$/;"	m	language:C++	struct:handaer::PhoneProxy::__anon5
+deleteClientTimer	phone_proxy.h	/^		int deleteClientTimer(cli_info_t* cli_info, TimerTypeEnum _timer_type);$/;"	p	language:C++	class:handaer::PhoneProxy	signature:(cli_info_t* cli_info, TimerTypeEnum _timer_type)
+destroyClient	phone_proxy.h	/^		int destroyClient(cli_info_t *pci);$/;"	p	language:C++	class:handaer::PhoneProxy	signature:(cli_info_t *pci)
+dispatchClientId	phone_proxy.h	/^		int dispatchClientId(cli_info_t *ci);$/;"	p	language:C++	class:handaer::PhoneProxy	signature:(cli_info_t *ci)
+dnd	phone_proxy.h	/^		bool dnd;\/\/do not disturb$/;"	m	language:C++	class:handaer::PhoneProxy
+elapse	phone_proxy.h	/^			int elapse;    \/\/ 0~interval  $/;"	m	language:C++	struct:handaer::PhoneProxy::_timer_info
+epollfd	phone_proxy.h	/^		int epollfd;$/;"	m	language:C++	class:handaer::PhoneProxy
+exit_threshold	phone_proxy.h	/^			int exit_threshold;$/;"	m	language:C++	struct:handaer::PhoneProxy::__anon6
+fd	phone_proxy.h	/^			int fd;$/;"	m	language:C++	struct:handaer::PhoneProxy::__anon5
+fdR	phone_proxy.h	/^		fd_set fdR;	$/;"	m	language:C++	class:handaer::PhoneProxy
+getCmdtypeFromString	phone_proxy.h	/^		PstnCmdEnum getCmdtypeFromString(char *cmd_str);$/;"	p	language:C++	class:handaer::PhoneProxy	signature:(char *cmd_str)
+get_current_format_time	phone_proxy.h	/^		static void get_current_format_time(char * tstr);$/;"	p	language:C++	class:handaer::PhoneProxy	signature:(char * tstr)
+handaer	phone_proxy.h	/^namespace handaer{$/;"	n	language:C++
+handleClient	phone_proxy.h	/^		int handleClient(cli_info_t *ci_);$/;"	p	language:C++	class:handaer::PhoneProxy	signature:(cli_info_t *ci_)
+handlePhoneControlServiceEvent	phone_proxy.h	/^		int handlePhoneControlServiceEvent();$/;"	p	language:C++	class:handaer::PhoneProxy	signature:()
+has_incom_ok	phone_proxy.h	/^			bool has_incom_ok;$/;"	m	language:C++	struct:handaer::PhoneProxy::__anon6
+head	phone_proxy.h	/^			char head[6]; \/\/head$/;"	m	language:C++	struct:handaer::PhoneProxy::__anon5
+heartBeatingThreadFunc	phone_proxy.h	/^		static bool heartBeatingThreadFunc(void*);		$/;"	p	language:C++	class:handaer::PhoneProxy	signature:(void*)
+heartBeatingThreadProcess	phone_proxy.h	/^		bool heartBeatingThreadProcess();$/;"	p	language:C++	class:handaer::PhoneProxy	signature:()
+heartBeatingisRunning	phone_proxy.h	/^	    virtual bool heartBeatingisRunning() const;$/;"	p	language:C++	class:handaer::PhoneProxy	signature:() const
+id	phone_proxy.h	/^			char id; \/\/ client_id$/;"	m	language:C++	struct:handaer::PhoneProxy::__anon5
+id	phone_proxy.h	/^			char id;$/;"	m	language:C++	struct:handaer::PhoneProxy::__anon6
+in_use	phone_proxy.h	/^			int in_use;	 \/\/ on or off  $/;"	m	language:C++	struct:handaer::PhoneProxy::_timer_info
+incoming_call	phone_proxy.h	/^		bool incoming_call;$/;"	m	language:C++	class:handaer::PhoneProxy
+incoming_response	phone_proxy.h	/^		char incoming_response[MAX_LEN_PCLI];$/;"	m	language:C++	class:handaer::PhoneProxy
+interval	phone_proxy.h	/^			int interval;$/;"	m	language:C++	struct:handaer::PhoneProxy::_timer_info
+length	phone_proxy.h	/^			int length; \/\/length$/;"	m	language:C++	struct:handaer::PhoneProxy::__anon5
+listenOnServerSocket	phone_proxy.h	/^		int listenOnServerSocket(int port);$/;"	p	language:C++	class:handaer::PhoneProxy	signature:(int port)
+max	phone_proxy.h	/^		int max(int a, int b) { return (a > b ? a : b); }$/;"	f	language:C++	class:handaer::PhoneProxy	signature:(int a, int b)
+maxfd	phone_proxy.h	/^		int maxfd;$/;"	m	language:C++	class:handaer::PhoneProxy
+my_accept	phone_proxy.h	/^		int my_accept(struct sockaddr *addr, socklen_t *addrlen);$/;"	p	language:C++	class:handaer::PhoneProxy	signature:(struct sockaddr *addr, socklen_t *addrlen)
+netRead	phone_proxy.h	/^		int netRead(int fd,void *buffer,int length);$/;"	p	language:C++	class:handaer::PhoneProxy	signature:(int fd,void *buffer,int length)
+netReadLine	phone_proxy.h	/^		ssize_t netReadLine(int fd,void *buffer,size_t maxlen, int i);$/;"	p	language:C++	class:handaer::PhoneProxy	signature:(int fd,void *buffer,size_t maxlen, int i)
+netWrite	phone_proxy.h	/^		int netWrite(int fd,const void *buffer,int length);$/;"	p	language:C++	class:handaer::PhoneProxy	signature:(int fd,const void *buffer,int length)
+notify	phone_proxy.h	/^		static void notify( int signum );$/;"	p	language:C++	class:handaer::PhoneProxy	signature:( int signum )
+old_timer_counter	phone_proxy.h	/^			int old_timer_counter;$/;"	m	language:C++	struct:handaer::PhoneProxy::__anon6
+parseClient	phone_proxy.h	/^		int parseClient(cli_info_t *ci_ , int i);$/;"	p	language:C++	class:handaer::PhoneProxy	signature:(cli_info_t *ci_ , int i)
+parsePhoneControlServiceEvent	phone_proxy.h	/^		int parsePhoneControlServiceEvent(); 		$/;"	p	language:C++	class:handaer::PhoneProxy	signature:()
+passwd_in_flash	phone_proxy.h	/^		char passwd_in_flash[PASSWD_LEN];$/;"	m	language:C++	class:handaer::PhoneProxy
+password	phone_proxy.h	/^			char password[PASSWD_LEN];$/;"	m	language:C++	struct:handaer::PhoneProxy::__anon5
+password	phone_proxy.h	/^			char password[PASSWD_LEN];$/;"	m	language:C++	struct:handaer::PhoneProxy::__anon6
+payload_type	phone_proxy.h	/^		int payload_type;$/;"	m	language:C++	class:handaer::PhoneProxy
+pcs	phone_proxy.h	/^		PhoneControlService *pcs;$/;"	m	language:C++	class:handaer::PhoneProxy
+phoneLock	phone_proxy.h	/^		void phoneLock() { _phone_critSect.Enter(); };$/;"	f	language:C++	class:handaer::PhoneProxy	signature:()
+phoneProxyExit	phone_proxy.h	/^		bool phoneProxyExit();$/;"	p	language:C++	class:handaer::PhoneProxy	signature:()
+phoneProxyInit	phone_proxy.h	/^		bool phoneProxyInit(int port);$/;"	p	language:C++	class:handaer::PhoneProxy	signature:(int port)
+phoneProxyThreadFunc	phone_proxy.h	/^		static bool phoneProxyThreadFunc(void*);		$/;"	p	language:C++	class:handaer::PhoneProxy	signature:(void*)
+phoneProxyThreadProcess	phone_proxy.h	/^		bool phoneProxyThreadProcess();$/;"	p	language:C++	class:handaer::PhoneProxy	signature:()
+phoneProxyisRunning	phone_proxy.h	/^	    virtual bool phoneProxyisRunning() const;$/;"	p	language:C++	class:handaer::PhoneProxy	signature:() const
+phoneRingStart	phone_proxy.h	/^		void phoneRingStart();$/;"	p	language:C++	class:handaer::PhoneProxy	signature:()
+phoneRingStop	phone_proxy.h	/^		void phoneRingStop();$/;"	p	language:C++	class:handaer::PhoneProxy	signature:()
+phoneUnLock	phone_proxy.h	/^		void phoneUnLock() { _phone_critSect.Leave(); };$/;"	f	language:C++	class:handaer::PhoneProxy	signature:()
+phone_in_use	phone_proxy.h	/^		volatile bool phone_in_use;$/;"	m	language:C++	class:handaer::PhoneProxy
+phone_name_id	phone_proxy.h	/^		char phone_name_id[CLIENT_NUM][USERNAME_LEN] ;$/;"	m	language:C++	class:handaer::PhoneProxy
+phone_proxy_fd	phone_proxy.h	/^		int phone_proxy_fd[2]; \/\/ 0 -- self, 1 -- PhoneControlService$/;"	m	language:C++	class:handaer::PhoneProxy
+queryOnlineInfo	phone_proxy.h	/^		int queryOnlineInfo(char *h1);$/;"	p	language:C++	class:handaer::PhoneProxy	signature:(char *h1)
+readline	phone_proxy.h	/^extern ssize_t readline(int fd, void *vptr, size_t maxlen, int index);$/;"	p	language:C++	namespace:handaer	signature:(int fd, void *vptr, size_t maxlen, int index)
+recycleClient	phone_proxy.h	/^		static int recycleClient(void *arg, void *pThis);$/;"	p	language:C++	class:handaer::PhoneProxy	signature:(void *arg, void *pThis)
+registerd	phone_proxy.h	/^			bool registerd;$/;"	m	language:C++	struct:handaer::PhoneProxy::__anon6
+resendIncoming	phone_proxy.h	/^		static int resendIncoming(void *arg, void *pThis);$/;"	p	language:C++	class:handaer::PhoneProxy	signature:(void *arg, void *pThis)
+resetFdsetAndTimeout	phone_proxy.h	/^		bool resetFdsetAndTimeout();$/;"	p	language:C++	class:handaer::PhoneProxy	signature:()
+resetTimerInfo	phone_proxy.h	/^		static bool resetTimerInfo();$/;"	p	language:C++	class:handaer::PhoneProxy	signature:()
+ringing	phone_proxy.h	/^		bool ringing;$/;"	m	language:C++	class:handaer::PhoneProxy
+rs	phone_proxy.h	/^		RingStream *rs;$/;"	m	language:C++	class:handaer::PhoneProxy
+serv_listen_sockfd	phone_proxy.h	/^		int serv_listen_sockfd;$/;"	m	language:C++	class:handaer::PhoneProxy
+server_port	phone_proxy.h	/^		int server_port;$/;"	m	language:C++	class:handaer::PhoneProxy
+setClientTimer	phone_proxy.h	/^		int setClientTimer(cli_info_t* cli_info, int interval, $/;"	p	language:C++	class:handaer::PhoneProxy	signature:(cli_info_t* cli_info, int interval, timer_process_cbfn_t timer_proc, void *arg, void* pThis, TimerTypeEnum _timer_type)
+setDND	phone_proxy.h	/^		void setDND(bool yes_no);$/;"	p	language:C++	class:handaer::PhoneProxy	signature:(bool yes_no)
+setNoiseGateThreshold	phone_proxy.h	/^		void setNoiseGateThreshold(const char *_ng_thres);$/;"	p	language:C++	class:handaer::PhoneProxy	signature:(const char *_ng_thres)
+startAudio	phone_proxy.h	/^		bool startAudio(cli_info_t *p_ci, int payload);$/;"	p	language:C++	class:handaer::PhoneProxy	signature:(cli_info_t *p_ci, int payload)
+startHeartBeating	phone_proxy.h	/^		virtual int32_t startHeartBeating();$/;"	p	language:C++	class:handaer::PhoneProxy	signature:()
+startPhoneProxy	phone_proxy.h	/^	    virtual int32_t startPhoneProxy();$/;"	p	language:C++	class:handaer::PhoneProxy	signature:()
+stopAudio	phone_proxy.h	/^		bool stopAudio(cli_info_t *p_ci, int payload);$/;"	p	language:C++	class:handaer::PhoneProxy	signature:(cli_info_t *p_ci, int payload)
+stopHeartBeating	phone_proxy.h	/^	    virtual int32_t stopHeartBeating();$/;"	p	language:C++	class:handaer::PhoneProxy	signature:()
+stopPhoneProxy	phone_proxy.h	/^	    virtual int32_t stopPhoneProxy();$/;"	p	language:C++	class:handaer::PhoneProxy	signature:()
+this_obj	phone_proxy.h	/^			void * this_obj;$/;"	m	language:C++	struct:handaer::PhoneProxy::_timer_info
+ti	phone_proxy.h	/^			timer_info_t * ti[2];$/;"	m	language:C++	struct:handaer::PhoneProxy::__anon6
+timer	phone_proxy.h	/^		PhoneTimerWrapper *timer;$/;"	m	language:C++	class:handaer::PhoneProxy
+timer_counter	phone_proxy.h	/^			int timer_counter;$/;"	m	language:C++	struct:handaer::PhoneProxy::__anon6
+timer_func_cb	phone_proxy.h	/^			timer_process_cbfn_t  timer_func_cb;$/;"	m	language:C++	struct:handaer::PhoneProxy::_timer_info
+timer_func_cb_data	phone_proxy.h	/^			void * timer_func_cb_data;$/;"	m	language:C++	struct:handaer::PhoneProxy::_timer_info
+timer_info_g	phone_proxy.h	/^		static timer_info_t timer_info_g[CLIENT_NUM*2];$/;"	m	language:C++	class:handaer::PhoneProxy
+timer_info_t	phone_proxy.h	/^		}timer_info_t;$/;"	t	language:C++	class:handaer::PhoneProxy	typeref:struct:handaer::PhoneProxy::_timer_info
+timer_process_cbfn_t	phone_proxy.h	/^		typedef int (*timer_process_cbfn_t)(void * ,void *);$/;"	t	language:C++	class:handaer::PhoneProxy
+timer_setting	phone_proxy.h	/^			bool timer_setting;$/;"	m	language:C++	struct:handaer::PhoneProxy::__anon6
+timer_type	phone_proxy.h	/^		typedef enum timer_type{$/;"	g	language:C++	class:handaer::PhoneProxy
+tv	phone_proxy.h	/^		struct timeval tv;$/;"	m	language:C++	class:handaer::PhoneProxy	typeref:struct:handaer::PhoneProxy::timeval
+user_name_len	phone_proxy.h	/^			int user_name_len;$/;"	m	language:C++	struct:handaer::PhoneProxy::__anon5
+username	phone_proxy.h	/^			char username[USERNAME_LEN];$/;"	m	language:C++	struct:handaer::PhoneProxy::__anon5
+username	phone_proxy.h	/^			char username[USERNAME_LEN];$/;"	m	language:C++	struct:handaer::PhoneProxy::__anon6
+username_in_flash	phone_proxy.h	/^		char username_in_flash[CLIENT_NUM][USERNAME_LEN];$/;"	m	language:C++	class:handaer::PhoneProxy
+username_is_null	phone_proxy.h	/^		bool username_is_null[CLIENT_NUM];$/;"	m	language:C++	class:handaer::PhoneProxy
+using_phone	phone_proxy.h	/^			volatile bool using_phone;$/;"	m	language:C++	struct:handaer::PhoneProxy::__anon6
+~PhoneProxy	phone_proxy.h	/^		~PhoneProxy();$/;"	p	language:C++	class:handaer::PhoneProxy	signature:()
+Calloc	phone_readline.cc	/^static void * Calloc(size_t n, size_t size) {$/;"	f	language:C++	namespace:handaer	signature:(size_t n, size_t size)
+MAXLINE	phone_readline.cc	32;"	d	language:C++	file:
+RL_KEY_NUM	phone_readline.cc	14;"	d	language:C++	file:
+Rline	phone_readline.cc	/^} Rline;$/;"	t	language:C++	namespace:handaer	typeref:struct:handaer::__anon7	file:
+handaer	phone_readline.cc	/^namespace handaer{$/;"	n	language:C++	file:
+my_read	phone_readline.cc	/^static ssize_t my_read(Rline *tsd, int fd, char *ptr) {$/;"	f	language:C++	namespace:handaer	signature:(Rline *tsd, int fd, char *ptr)
+readline	phone_readline.cc	/^ssize_t readline(int fd, void *vptr, size_t maxlen, int index) {$/;"	f	language:C++	namespace:handaer	signature:(int fd, void *vptr, size_t maxlen, int index)
+readline_destructor	phone_readline.cc	/^static void readline_destructor(void *ptr) {$/;"	f	language:C++	namespace:handaer	signature:(void *ptr)
+readline_once	phone_readline.cc	/^static void readline_once(void) {$/;"	f	language:C++	namespace:handaer	signature:(void)
+rl_buf	phone_readline.cc	/^  char	 rl_buf[MAXLINE];$/;"	m	language:C++	struct:handaer::__anon7	file:
+rl_bufptr	phone_readline.cc	/^  char	*rl_bufptr;			\/* initialize to rl_buf *\/$/;"	m	language:C++	struct:handaer::__anon7	file:
+rl_cnt	phone_readline.cc	/^  int	 rl_cnt;			\/* initialize to 0 *\/$/;"	m	language:C++	struct:handaer::__anon7	file:
+rl_key	phone_readline.cc	/^static pthread_key_t	rl_key[RL_KEY_NUM];$/;"	m	language:C++	namespace:handaer	file:
+rl_once	phone_readline.cc	/^static pthread_once_t	rl_once = PTHREAD_ONCE_INIT;$/;"	m	language:C++	namespace:handaer	file:
+phone_timer_set_interval	phone_rtptimer.c	/^void phone_timer_set_interval(RtpTimer *timer, struct timeval *interval)$/;"	f	language:C	signature:(RtpTimer *timer, struct timeval *interval)
+RTP_TIMER_RUNNING	phone_rtptimer.h	30;"	d	language:C++
+RTP_TIMER_STOPPED	phone_rtptimer.h	31;"	d	language:C++
+RtpTimer	phone_rtptimer.h	/^typedef struct _RtpTimer RtpTimer;$/;"	t	language:C++	typeref:struct:_RtpTimer
+RtpTimerFunc	phone_rtptimer.h	/^typedef void (*RtpTimerFunc)(void);$/;"	t	language:C++
+_PHONE_RTPTIMER_H_	phone_rtptimer.h	21;"	d	language:C++
+_RtpTimer	phone_rtptimer.h	/^struct _RtpTimer$/;"	s	language:C++
+interval	phone_rtptimer.h	/^	struct timeval interval;$/;"	m	language:C++	struct:_RtpTimer	typeref:struct:_RtpTimer::timeval
+phone_timer	phone_rtptimer.h	/^extern RtpTimer phone_timer;$/;"	x	language:C++
+phone_timer_set_interval	phone_rtptimer.h	/^void phone_timer_set_interval(RtpTimer *timer, struct timeval *interval);$/;"	p	language:C++	signature:(RtpTimer *timer, struct timeval *interval)
+state	phone_rtptimer.h	/^	int state;$/;"	m	language:C++	struct:_RtpTimer
+timer_do	phone_rtptimer.h	/^	RtpTimerFunc timer_do;$/;"	m	language:C++	struct:_RtpTimer
+timer_init	phone_rtptimer.h	/^	RtpTimerFunc timer_init;$/;"	m	language:C++	struct:_RtpTimer
+timer_uninit	phone_rtptimer.h	/^	RtpTimerFunc timer_uninit;$/;"	m	language:C++	struct:_RtpTimer
+main	phone_serv_handaer.cc	/^int main(int argc, char *argv[]){$/;"	f	language:C++	signature:(int argc, char *argv[])
+NUMBER	phone_spi_to_uart.h	15;"	d	language:C++
+SPI_NAME	phone_spi_to_uart.h	12;"	d	language:C++
+_PHONE_SPI_TO_UART_H_	phone_spi_to_uart.h	2;"	d	language:C++
+fd	phone_spi_to_uart.h	/^int fd;				\/* open file fd *\/$/;"	v	language:C++
+main	phone_spi_to_uart.h	/^int main(int argc, char* argv[])$/;"	f	language:C++	signature:(int argc, char* argv[])
+out_data1	phone_spi_to_uart.h	/^unsigned char out_data1[NUMBER];$/;"	v	language:C++
+out_data2	phone_spi_to_uart.h	/^unsigned char out_data2[NUMBER];$/;"	v	language:C++
+out_data3	phone_spi_to_uart.h	/^unsigned char out_data3[NUMBER];$/;"	v	language:C++
+print_recv	phone_spi_to_uart.h	/^void print_recv(void)$/;"	f	language:C++	signature:(void)
+read_data	phone_spi_to_uart.h	/^int read_data(void)$/;"	f	language:C++	signature:(void)
+send_data	phone_spi_to_uart.h	/^int send_data(int num, unsigned char *data, int count)$/;"	f	language:C++	signature:(int num, unsigned char *data, int count)
+uart1_count	phone_spi_to_uart.h	/^static int uart1_count;$/;"	v	language:C++
+uart2_count	phone_spi_to_uart.h	/^static int uart2_count;$/;"	v	language:C++
+uart3_count	phone_spi_to_uart.h	/^static int uart3_count;$/;"	v	language:C++
+Create	phone_timer.cc	/^PhoneTimerWrapper * PhoneTimer::Create(){$/;"	f	language:C++	class:handaer::PhoneTimer	signature:()
+PhoneTimer	phone_timer.cc	/^PhoneTimer::PhoneTimer(int sec,int usec){				$/;"	f	language:C++	class:handaer::PhoneTimer	signature:(int sec,int usec)
+cancel	phone_timer.cc	/^bool PhoneTimer::cancel(){$/;"	f	language:C++	class:handaer::PhoneTimer	signature:()
+handaer	phone_timer.cc	/^namespace handaer{$/;"	n	language:C++	file:
+reset	phone_timer.cc	/^bool PhoneTimer::reset(){				 $/;"	f	language:C++	class:handaer::PhoneTimer	signature:()
+setHandler	phone_timer.cc	/^void PhoneTimer::setHandler(ProcessHandler handler){				$/;"	f	language:C++	class:handaer::PhoneTimer	signature:(ProcessHandler handler)
+setTimer	phone_timer.cc	/^void PhoneTimer::setTimer(int sec,int usec){				$/;"	f	language:C++	class:handaer::PhoneTimer	signature:(int sec,int usec)
+wait	phone_timer.cc	/^void PhoneTimer::wait( long timeout_ms ){				 $/;"	f	language:C++	class:handaer::PhoneTimer	signature:( long timeout_ms )
+~PhoneTimer	phone_timer.cc	/^PhoneTimer::~PhoneTimer(){$/;"	f	language:C++	class:handaer::PhoneTimer	signature:()
+Create	phone_timer.h	/^		static PhoneTimerWrapper * Create();		$/;"	p	language:C++	class:handaer::PhoneTimer	signature:()
+INTERVAL_SEC	phone_timer.h	/^			INTERVAL_SEC = 1,$/;"	e	language:C++	enum:handaer::PhoneTimer::__anon8
+PhoneTimer	phone_timer.h	/^		PhoneTimer(int sec,int usec);$/;"	p	language:C++	class:handaer::PhoneTimer	signature:(int sec,int usec)
+PhoneTimer	phone_timer.h	/^class PhoneTimer : public PhoneTimerWrapper {$/;"	c	language:C++	namespace:handaer
+TIMETICK_MS	phone_timer.h	/^			TIMETICK_MS = (10 * 1000),$/;"	e	language:C++	enum:handaer::PhoneTimer::__anon8
+_PHONE_TIMER_H_	phone_timer.h	19;"	d	language:C++
+_act	phone_timer.h	/^		struct sigaction  _act; 	   $/;"	m	language:C++	class:handaer::PhoneTimer	typeref:struct:handaer::PhoneTimer::sigaction
+_oldact	phone_timer.h	/^		struct sigaction  _oldact;		  $/;"	m	language:C++	class:handaer::PhoneTimer	typeref:struct:handaer::PhoneTimer::sigaction
+_tim_ticks	phone_timer.h	/^		struct itimerval  _tim_ticks;$/;"	m	language:C++	class:handaer::PhoneTimer	typeref:struct:handaer::PhoneTimer::itimerval
+cancel	phone_timer.h	/^		virtual bool cancel();$/;"	p	language:C++	class:handaer::PhoneTimer	signature:()
+handaer	phone_timer.h	/^namespace handaer{$/;"	n	language:C++
+reset	phone_timer.h	/^		virtual bool reset();$/;"	p	language:C++	class:handaer::PhoneTimer	signature:()
+setHandler	phone_timer.h	/^		virtual void setHandler(ProcessHandler handler);	$/;"	p	language:C++	class:handaer::PhoneTimer	signature:(ProcessHandler handler)
+setTimer	phone_timer.h	/^		virtual void setTimer(int sec,int usec);	$/;"	p	language:C++	class:handaer::PhoneTimer	signature:(int sec,int usec)
+wait	phone_timer.h	/^		void wait( long timeout_ms );$/;"	p	language:C++	class:handaer::PhoneTimer	signature:( long timeout_ms )
+~PhoneTimer	phone_timer.h	/^		~PhoneTimer();$/;"	p	language:C++	class:handaer::PhoneTimer	signature:()
+Create	phone_timer_posix.cc	/^PhoneTimerWrapper * PhoneTimerPosix::Create(){$/;"	f	language:C++	class:handaer::PhoneTimerPosix	signature:()
+PhoneTimerPosix	phone_timer_posix.cc	/^PhoneTimerPosix::PhoneTimerPosix(int sec, int usec)$/;"	f	language:C++	class:handaer::PhoneTimerPosix	signature:(int sec, int usec)
+cancel	phone_timer_posix.cc	/^bool PhoneTimerPosix::cancel(){$/;"	f	language:C++	class:handaer::PhoneTimerPosix	signature:()
+handaer	phone_timer_posix.cc	/^namespace handaer {$/;"	n	language:C++	file:
+phoneTimerThreadFunc	phone_timer_posix.cc	/^bool PhoneTimerPosix::phoneTimerThreadFunc(void* pThis){$/;"	f	language:C++	class:handaer::PhoneTimerPosix	signature:(void* pThis)
+phoneTimerThreadProcess	phone_timer_posix.cc	/^bool PhoneTimerPosix::phoneTimerThreadProcess(){$/;"	f	language:C++	class:handaer::PhoneTimerPosix	signature:()
+phoneTimerisRunning	phone_timer_posix.cc	/^bool PhoneTimerPosix::phoneTimerisRunning() const{$/;"	f	language:C++	class:handaer::PhoneTimerPosix	signature:() const
+reset	phone_timer_posix.cc	/^bool PhoneTimerPosix::reset(){				 $/;"	f	language:C++	class:handaer::PhoneTimerPosix	signature:()
+setHandler	phone_timer_posix.cc	/^void PhoneTimerPosix::setHandler(ProcessHandler handler){				$/;"	f	language:C++	class:handaer::PhoneTimerPosix	signature:(ProcessHandler handler)
+setTimer	phone_timer_posix.cc	/^void PhoneTimerPosix::setTimer(int sec,int usec){				$/;"	f	language:C++	class:handaer::PhoneTimerPosix	signature:(int sec,int usec)
+startPhoneTimer	phone_timer_posix.cc	/^int32_t PhoneTimerPosix::startPhoneTimer(){$/;"	f	language:C++	class:handaer::PhoneTimerPosix	signature:()
+stopPhoneTimer	phone_timer_posix.cc	/^int32_t PhoneTimerPosix::stopPhoneTimer(){$/;"	f	language:C++	class:handaer::PhoneTimerPosix	signature:()
+~PhoneTimerPosix	phone_timer_posix.cc	/^PhoneTimerPosix::~PhoneTimerPosix(){$/;"	f	language:C++	class:handaer::PhoneTimerPosix	signature:()
+Create	phone_timer_posix.h	/^		static PhoneTimerWrapper * Create();		$/;"	p	language:C++	class:handaer::PhoneTimerPosix	signature:()
+INTERVAL_SEC	phone_timer_posix.h	/^			INTERVAL_SEC = 1,$/;"	e	language:C++	enum:handaer::PhoneTimerPosix::__anon9
+PhoneTimerPosix	phone_timer_posix.h	/^		PhoneTimerPosix(int sec,int usec);$/;"	p	language:C++	class:handaer::PhoneTimerPosix	signature:(int sec,int usec)
+PhoneTimerPosix	phone_timer_posix.h	/^class PhoneTimerPosix : public PhoneTimerWrapper {$/;"	c	language:C++	namespace:handaer
+TIMETICK_MS	phone_timer_posix.h	/^			TIMETICK_MS = (10 * 1000),$/;"	e	language:C++	enum:handaer::PhoneTimerPosix::__anon9
+_PHONE_TIMER_POSIX_H_	phone_timer_posix.h	12;"	d	language:C++
+_phoneTimerRunning	phone_timer_posix.h	/^		bool _phoneTimerRunning;$/;"	m	language:C++	class:handaer::PhoneTimerPosix
+_phoneTimerThreadId	phone_timer_posix.h	/^		uint32_t _phoneTimerThreadId;	$/;"	m	language:C++	class:handaer::PhoneTimerPosix
+_ptrThreadPhoneTimer	phone_timer_posix.h	/^		ThreadWrapper* _ptrThreadPhoneTimer;$/;"	m	language:C++	class:handaer::PhoneTimerPosix
+cancel	phone_timer_posix.h	/^		virtual bool cancel();$/;"	p	language:C++	class:handaer::PhoneTimerPosix	signature:()
+first	phone_timer_posix.h	/^		bool first;$/;"	m	language:C++	class:handaer::PhoneTimerPosix
+handaer	phone_timer_posix.h	/^namespace handaer{$/;"	n	language:C++
+phd_func	phone_timer_posix.h	/^		ProcessHandler phd_func;$/;"	m	language:C++	class:handaer::PhoneTimerPosix
+phoneTimerThreadFunc	phone_timer_posix.h	/^		static bool phoneTimerThreadFunc(void*);		$/;"	p	language:C++	class:handaer::PhoneTimerPosix	signature:(void*)
+phoneTimerThreadProcess	phone_timer_posix.h	/^		bool phoneTimerThreadProcess();$/;"	p	language:C++	class:handaer::PhoneTimerPosix	signature:()
+phoneTimerisRunning	phone_timer_posix.h	/^	    virtual bool phoneTimerisRunning() const;$/;"	p	language:C++	class:handaer::PhoneTimerPosix	signature:() const
+ptimer	phone_timer_posix.h	/^		RtpTimer * ptimer;$/;"	m	language:C++	class:handaer::PhoneTimerPosix
+reset	phone_timer_posix.h	/^		virtual bool reset();$/;"	p	language:C++	class:handaer::PhoneTimerPosix	signature:()
+setHandler	phone_timer_posix.h	/^		virtual void setHandler(ProcessHandler handler);	$/;"	p	language:C++	class:handaer::PhoneTimerPosix	signature:(ProcessHandler handler)
+setTimer	phone_timer_posix.h	/^		virtual void setTimer(int sec,int usec);	$/;"	p	language:C++	class:handaer::PhoneTimerPosix	signature:(int sec,int usec)
+startPhoneTimer	phone_timer_posix.h	/^	    virtual int32_t startPhoneTimer();$/;"	p	language:C++	class:handaer::PhoneTimerPosix	signature:()
+stopPhoneTimer	phone_timer_posix.h	/^	    virtual int32_t stopPhoneTimer();$/;"	p	language:C++	class:handaer::PhoneTimerPosix	signature:()
+~PhoneTimerPosix	phone_timer_posix.h	/^		~PhoneTimerPosix();$/;"	p	language:C++	class:handaer::PhoneTimerPosix	signature:()
+CreatePhoneTimerWrapper	phone_timer_wrapper.cc	/^PhoneTimerWrapper* PhoneTimerWrapper::CreatePhoneTimerWrapper() {  $/;"	f	language:C++	class:handaer::PhoneTimerWrapper	signature:()
+handaer	phone_timer_wrapper.cc	/^namespace handaer {$/;"	n	language:C++	file:
+CreatePhoneTimerWrapper	phone_timer_wrapper.h	/^	static PhoneTimerWrapper* CreatePhoneTimerWrapper();$/;"	p	language:C++	class:handaer::PhoneTimerWrapper	signature:()
+PhoneTimerWrapper	phone_timer_wrapper.h	/^class PhoneTimerWrapper {$/;"	c	language:C++	namespace:handaer
+ProcessHandler	phone_timer_wrapper.h	/^typedef void(*ProcessHandler)(int);$/;"	t	language:C++	namespace:handaer
+_PHONE_TIMER_WRAPPER_H_	phone_timer_wrapper.h	12;"	d	language:C++
+cancel	phone_timer_wrapper.h	/^	virtual bool cancel() = 0;	$/;"	p	language:C++	class:handaer::PhoneTimerWrapper	signature:()
+handaer	phone_timer_wrapper.h	/^namespace handaer {$/;"	n	language:C++
+reset	phone_timer_wrapper.h	/^	virtual bool reset() = 0;$/;"	p	language:C++	class:handaer::PhoneTimerWrapper	signature:()
+setHandler	phone_timer_wrapper.h	/^	virtual void setHandler(ProcessHandler handler) = 0; $/;"	p	language:C++	class:handaer::PhoneTimerWrapper	signature:(ProcessHandler handler)
+setTimer	phone_timer_wrapper.h	/^	virtual void setTimer(int sec,int usec) = 0;$/;"	p	language:C++	class:handaer::PhoneTimerWrapper	signature:(int sec,int usec)
+~PhoneTimerWrapper	phone_timer_wrapper.h	/^	virtual ~PhoneTimerWrapper() {};$/;"	f	language:C++	class:handaer::PhoneTimerWrapper	signature:()
+call_cnt	reserve/phone_multi_timer.cc	/^timer_handle_t  hdl[3], call_cnt = 0;$/;"	v	language:C++
+del_a_timer	reserve/phone_multi_timer.cc	/^int del_a_timer(timer_handle_t handle) {$/;"	f	language:C++	namespace:handaer	signature:(timer_handle_t handle)
+destroy_multi_timer	reserve/phone_multi_timer.cc	/^int destroy_multi_timer(void) {$/;"	f	language:C++	namespace:handaer	signature:(void)
+get_current_format_time	reserve/phone_multi_timer.cc	/^static void get_current_format_time(char * tstr) {$/;"	f	language:C++	file:	signature:(char * tstr)
+handaer	reserve/phone_multi_timer.cc	/^namespace handaer {$/;"	n	language:C++	file:
+hdl	reserve/phone_multi_timer.cc	/^timer_handle_t  hdl[3], call_cnt = 0;$/;"	v	language:C++
+init_multi_timer	reserve/phone_multi_timer.cc	/^int init_multi_timer(void) {$/;"	f	language:C++	namespace:handaer	signature:(void)
+main	reserve/phone_multi_timer.cc	/^int main(void) {$/;"	f	language:C++	signature:(void)
+set_a_timer	reserve/phone_multi_timer.cc	/^timer_handle_t set_a_timer(int interval, timer_process_cbfn_t timer_proc, $/;"	f	language:C++	namespace:handaer	signature:(int interval, timer_process_cbfn_t timer_proc, void *arg, int arg_len)
+sig_func	reserve/phone_multi_timer.cc	/^static void sig_func(int signo) {$/;"	f	language:C++	namespace:handaer	signature:(int signo)
+sig_func	reserve/phone_multi_timer.cc	/^static void sig_func(int signo);$/;"	p	language:C++	namespace:handaer	file:	signature:(int signo)
+timer_manage	reserve/phone_multi_timer.cc	/^static _timer_manage_t  timer_manage;$/;"	m	language:C++	namespace:handaer	file:
+timer_proc1	reserve/phone_multi_timer.cc	/^int timer_proc1(void * arg, int len) {$/;"	f	language:C++	signature:(void * arg, int len)
+timer_proc2	reserve/phone_multi_timer.cc	/^int timer_proc2(void * arg, int len) {$/;"	f	language:C++	signature:(void * arg, int len)
+timer_proc3	reserve/phone_multi_timer.cc	/^int timer_proc3(void * arg, int len) {$/;"	f	language:C++	signature:(void * arg, int len)
+INVALID_TIMER_HANDLE	reserve/phone_multi_timer.h	37;"	d	language:C++
+MAX_FUNC_ARG_LEN	reserve/phone_multi_timer.h	35;"	d	language:C++
+MAX_TIMER_CNT	reserve/phone_multi_timer.h	30;"	d	language:C++
+MUL_TIMER_INITIAL_SEC	reserve/phone_multi_timer.h	32;"	d	language:C++
+TIMER_INTERVAL_SEC	reserve/phone_multi_timer.h	33;"	d	language:C++
+_PHONE_MULTI_TIMER_H_	reserve/phone_multi_timer.h	23;"	d	language:C++
+_timer_info	reserve/phone_multi_timer.h	/^	struct _timer_info {$/;"	s	language:C++	struct:handaer::_timer_manage
+_timer_manage	reserve/phone_multi_timer.h	/^typedef struct _timer_manage {$/;"	s	language:C++	namespace:handaer
+_timer_manage_t	reserve/phone_multi_timer.h	/^} _timer_manage_t;$/;"	t	language:C++	namespace:handaer	typeref:struct:handaer::_timer_manage
+arg_len	reserve/phone_multi_timer.h	/^		int arg_len;$/;"	m	language:C++	struct:handaer::_timer_manage::_timer_info
+del_a_timer	reserve/phone_multi_timer.h	/^int del_a_timer(timer_handle_t  handle);$/;"	p	language:C++	namespace:handaer	signature:(timer_handle_t handle)
+destroy_multi_timer	reserve/phone_multi_timer.h	/^int destroy_multi_timer(void);$/;"	p	language:C++	namespace:handaer	signature:(void)
+elapse	reserve/phone_multi_timer.h	/^		int elapse;    \/\/ 0~interval  $/;"	m	language:C++	struct:handaer::_timer_manage::_timer_info
+func_arg	reserve/phone_multi_timer.h	/^		char func_arg[MAX_FUNC_ARG_LEN];$/;"	m	language:C++	struct:handaer::_timer_manage::_timer_info
+handaer	reserve/phone_multi_timer.h	/^namespace handaer{$/;"	n	language:C++
+init_multi_timer	reserve/phone_multi_timer.h	/^int init_multi_timer(void);$/;"	p	language:C++	namespace:handaer	signature:(void)
+interval	reserve/phone_multi_timer.h	/^		int interval;$/;"	m	language:C++	struct:handaer::_timer_manage::_timer_info
+new_sigfunc	reserve/phone_multi_timer.h	/^	sig_cbfn_t new_sigfunc;$/;"	m	language:C++	struct:handaer::_timer_manage
+old_sigfunc	reserve/phone_multi_timer.h	/^	sig_cbfn_t old_sigfunc;$/;"	m	language:C++	struct:handaer::_timer_manage
+ovalue	reserve/phone_multi_timer.h	/^	struct itimerval value, ovalue;$/;"	m	language:C++	struct:handaer::_timer_manage	typeref:struct:handaer::_timer_manage::
+set_a_timer	reserve/phone_multi_timer.h	/^timer_handle_t set_a_timer(int interval, timer_process_cbfn_t timer_proc, $/;"	p	language:C++	namespace:handaer	signature:(int interval, timer_process_cbfn_t timer_proc, void *arg, int arg_len)
+sig_cbfn_t	reserve/phone_multi_timer.h	/^typedef void (*sig_cbfn_t)(int);$/;"	t	language:C++	namespace:handaer
+state	reserve/phone_multi_timer.h	/^		int state;     \/\/ on or off  $/;"	m	language:C++	struct:handaer::_timer_manage::_timer_info
+timer_handle_t	reserve/phone_multi_timer.h	/^typedef int timer_handle_t;$/;"	t	language:C++	namespace:handaer
+timer_info	reserve/phone_multi_timer.h	/^	}timer_info[MAX_TIMER_CNT];$/;"	m	language:C++	struct:handaer::_timer_manage	typeref:struct:handaer::_timer_manage::_timer_info
+timer_proc	reserve/phone_multi_timer.h	/^		timer_process_cbfn_t  timer_proc;$/;"	m	language:C++	struct:handaer::_timer_manage::_timer_info
+timer_process_cbfn_t	reserve/phone_multi_timer.h	/^typedef int (*timer_process_cbfn_t)(void *, int);$/;"	t	language:C++	namespace:handaer
+value	reserve/phone_multi_timer.h	/^	struct itimerval value, ovalue;$/;"	m	language:C++	struct:handaer::_timer_manage	typeref:struct:handaer::_timer_manage::itimerval
+ThreadWrapper_Tester_StartThread	reserve/tester.cc	/^static void ThreadWrapper_Tester_StartThread()$/;"	f	language:C++	file:	signature:()
+ThreadWrapper_Tester_StopThread	reserve/tester.cc	/^static void ThreadWrapper_Tester_StopThread()$/;"	f	language:C++	file:	signature:()
+VoEThreadFun	reserve/tester.cc	/^static bool VoEThreadFun(ThreadObj param)$/;"	f	language:C++	file:	signature:(ThreadObj param)
+cmd_main	reserve/tester.cc	/^extern int cmd_main();$/;"	p	language:C++	file:	signature:()
+g_ptrThread	reserve/tester.cc	/^ThreadWrapper* g_ptrThread;$/;"	v	language:C++
+main	reserve/tester.cc	/^int main()$/;"	f	language:C++	signature:()
+UNIX_DOMAIN_SERVER	stub/phone_stub.c	15;"	d	language:C	file:
+main	stub/phone_stub.c	/^int main()$/;"	f	language:C
+pipe_process	stub/phone_stub.c	/^int pipe_process()$/;"	f	language:C
+UNIX_DOMAIN_CLIENT	stub/phone_test_client.c	6;"	d	language:C	file:
+main	stub/phone_test_client.c	/^int main(void)$/;"	f	language:C	signature:(void)
+UNIX_DOMAIN_SERVER	stub/phone_test_server.c	12;"	d	language:C	file:
+main	stub/phone_test_server.c	/^int main()$/;"	f	language:C
+pipe_process	stub/phone_test_server.c	/^int pipe_process()$/;"	f	language:C
+SOURCES	system_wrapper/Makefile	/^SOURCES = $(wildcard *.c *.cc)$/;"	m	language:Make
+TOPDIR_PHONE	system_wrapper/Makefile	/^TOPDIR_PHONE = ..\/$/;"	m	language:Make
+AecmModes	system_wrapper/phone_common_types.h	/^enum AecmModes                 \/\/ mode of AECM$/;"	g	language:C++	namespace:webrtc
+AgcConfig	system_wrapper/phone_common_types.h	/^} AgcConfig;                  \/\/ AGC configuration parameters$/;"	t	language:C++	namespace:webrtc	typeref:struct:webrtc::__anon14
+AgcModes	system_wrapper/phone_common_types.h	/^enum AgcModes                  \/\/ type of Automatic Gain Control$/;"	g	language:C++	namespace:webrtc
+AmrMode	system_wrapper/phone_common_types.h	/^enum AmrMode$/;"	g	language:C++	namespace:webrtc
+AudioLayers	system_wrapper/phone_common_types.h	/^enum AudioLayers$/;"	g	language:C++	namespace:webrtc
+CodecInst	system_wrapper/phone_common_types.h	/^struct CodecInst$/;"	s	language:C++	namespace:webrtc
+EcModes	system_wrapper/phone_common_types.h	/^enum EcModes                   \/\/ type of Echo Control$/;"	g	language:C++	namespace:webrtc
+EchoStatistics	system_wrapper/phone_common_types.h	/^} EchoStatistics;$/;"	t	language:C++	namespace:webrtc	typeref:struct:webrtc::__anon13
+Encryption	system_wrapper/phone_common_types.h	/^    Encryption() {}$/;"	f	language:C++	class:webrtc::Encryption	signature:()
+Encryption	system_wrapper/phone_common_types.h	/^class Encryption$/;"	c	language:C++	namespace:webrtc
+FileFormats	system_wrapper/phone_common_types.h	/^enum FileFormats$/;"	g	language:C++	namespace:webrtc
+FrameType	system_wrapper/phone_common_types.h	/^enum FrameType$/;"	g	language:C++	namespace:webrtc
+Generic	system_wrapper/phone_common_types.h	/^    VideoCodecGeneric   Generic;$/;"	m	language:C++	union:webrtc::VideoCodecUnion
+InStream	system_wrapper/phone_common_types.h	/^    InStream() {}$/;"	f	language:C++	class:webrtc::InStream	signature:()
+InStream	system_wrapper/phone_common_types.h	/^class InStream$/;"	c	language:C++	namespace:webrtc
+LevelStatistics	system_wrapper/phone_common_types.h	/^} LevelStatistics;$/;"	t	language:C++	namespace:webrtc	typeref:struct:webrtc::__anon12
+NULL	system_wrapper/phone_common_types.h	48;"	d	language:C++
+NetEqModes	system_wrapper/phone_common_types.h	/^enum NetEqModes             \/\/ NetEQ playout configurations$/;"	g	language:C++	namespace:webrtc
+NetworkStatistics	system_wrapper/phone_common_types.h	/^struct NetworkStatistics           \/\/ NETEQ statistics$/;"	s	language:C++	namespace:webrtc
+NsModes	system_wrapper/phone_common_types.h	/^enum NsModes    \/\/ type of Noise Suppression$/;"	g	language:C++	namespace:webrtc
+OnHoldModes	system_wrapper/phone_common_types.h	/^enum OnHoldModes            \/\/ On Hold direction$/;"	g	language:C++	namespace:webrtc
+OutStream	system_wrapper/phone_common_types.h	/^    OutStream() {}$/;"	f	language:C++	class:webrtc::OutStream	signature:()
+OutStream	system_wrapper/phone_common_types.h	/^class OutStream$/;"	c	language:C++	namespace:webrtc
+OverUseDetectorOptions	system_wrapper/phone_common_types.h	/^  OverUseDetectorOptions()$/;"	f	language:C++	struct:webrtc::OverUseDetectorOptions	signature:()
+OverUseDetectorOptions	system_wrapper/phone_common_types.h	/^struct OverUseDetectorOptions {$/;"	s	language:C++	namespace:webrtc
+PayloadFrequencies	system_wrapper/phone_common_types.h	/^enum PayloadFrequencies$/;"	g	language:C++	namespace:webrtc
+Print	system_wrapper/phone_common_types.h	/^  virtual void Print(TraceLevel level, const char* message, int length) = 0;$/;"	p	language:C++	class:webrtc::TraceCallback	signature:(TraceLevel level, const char* message, int length)
+ProcessingTypes	system_wrapper/phone_common_types.h	/^enum ProcessingTypes$/;"	g	language:C++	namespace:webrtc
+RTPDirections	system_wrapper/phone_common_types.h	/^enum RTPDirections$/;"	g	language:C++	namespace:webrtc
+RTP_PAYLOAD_NAME_SIZE	system_wrapper/phone_common_types.h	51;"	d	language:C++
+RawVideoType	system_wrapper/phone_common_types.h	/^enum RawVideoType$/;"	g	language:C++	namespace:webrtc
+Read	system_wrapper/phone_common_types.h	/^    virtual int Read(void *buf,int len) = 0;$/;"	p	language:C++	class:webrtc::InStream	signature:(void *buf,int len)
+Rewind	system_wrapper/phone_common_types.h	/^    virtual int Rewind() {return -1;}$/;"	f	language:C++	class:webrtc::InStream	signature:()
+Rewind	system_wrapper/phone_common_types.h	/^    virtual int Rewind() {return -1;}$/;"	f	language:C++	class:webrtc::OutStream	signature:()
+SendPacket	system_wrapper/phone_common_types.h	/^    virtual int SendPacket(int channel, const void *data, int len) = 0;$/;"	p	language:C++	class:webrtc::Transport	signature:(int channel, const void *data, int len)
+SendRTCPPacket	system_wrapper/phone_common_types.h	/^    virtual int SendRTCPPacket(int channel, const void *data, int len) = 0;$/;"	p	language:C++	class:webrtc::Transport	signature:(int channel, const void *data, int len)
+SimulcastStream	system_wrapper/phone_common_types.h	/^struct SimulcastStream$/;"	s	language:C++	namespace:webrtc
+StatVal	system_wrapper/phone_common_types.h	/^} StatVal;$/;"	t	language:C++	namespace:webrtc	typeref:struct:webrtc::__anon11
+StereoChannel	system_wrapper/phone_common_types.h	/^enum StereoChannel$/;"	g	language:C++	namespace:webrtc
+TraceCallback	system_wrapper/phone_common_types.h	/^  TraceCallback() {}$/;"	f	language:C++	class:webrtc::TraceCallback	signature:()
+TraceCallback	system_wrapper/phone_common_types.h	/^class TraceCallback {$/;"	c	language:C++	namespace:webrtc
+TraceLevel	system_wrapper/phone_common_types.h	/^enum TraceLevel$/;"	g	language:C++	namespace:webrtc
+TraceModule	system_wrapper/phone_common_types.h	/^enum TraceModule$/;"	g	language:C++	namespace:webrtc
+Transport	system_wrapper/phone_common_types.h	/^    Transport() {}$/;"	f	language:C++	class:webrtc::Transport	signature:()
+Transport	system_wrapper/phone_common_types.h	/^class Transport$/;"	c	language:C++	namespace:webrtc
+VP8	system_wrapper/phone_common_types.h	/^    VideoCodecVP8       VP8;$/;"	m	language:C++	union:webrtc::VideoCodecUnion
+VP8ResilienceMode	system_wrapper/phone_common_types.h	/^enum VP8ResilienceMode {$/;"	g	language:C++	namespace:webrtc
+VadModes	system_wrapper/phone_common_types.h	/^enum VadModes                 \/\/ degree of bandwidth reduction$/;"	g	language:C++	namespace:webrtc
+VideoCodec	system_wrapper/phone_common_types.h	/^struct VideoCodec$/;"	s	language:C++	namespace:webrtc
+VideoCodecComplexity	system_wrapper/phone_common_types.h	/^enum VideoCodecComplexity$/;"	g	language:C++	namespace:webrtc
+VideoCodecGeneric	system_wrapper/phone_common_types.h	/^struct VideoCodecGeneric$/;"	s	language:C++	namespace:webrtc
+VideoCodecMode	system_wrapper/phone_common_types.h	/^enum VideoCodecMode {$/;"	g	language:C++	namespace:webrtc
+VideoCodecProfile	system_wrapper/phone_common_types.h	/^enum VideoCodecProfile$/;"	g	language:C++	namespace:webrtc
+VideoCodecType	system_wrapper/phone_common_types.h	/^enum VideoCodecType$/;"	g	language:C++	namespace:webrtc
+VideoCodecUnion	system_wrapper/phone_common_types.h	/^union VideoCodecUnion$/;"	u	language:C++	namespace:webrtc
+VideoCodecVP8	system_wrapper/phone_common_types.h	/^struct VideoCodecVP8$/;"	s	language:C++	namespace:webrtc
+WEBRTC_COMMON_TYPES_H	system_wrapper/phone_common_types.h	12;"	d	language:C++
+WEBRTC_DLLEXPORT	system_wrapper/phone_common_types.h	40;"	d	language:C++
+WEBRTC_DLLEXPORT	system_wrapper/phone_common_types.h	42;"	d	language:C++
+WEBRTC_DLLEXPORT	system_wrapper/phone_common_types.h	44;"	d	language:C++
+Write	system_wrapper/phone_common_types.h	/^    virtual bool Write(const void *buf,int len) = 0;$/;"	p	language:C++	class:webrtc::OutStream	signature:(const void *buf,int len)
+a_nlp	system_wrapper/phone_common_types.h	/^    StatVal a_nlp;$/;"	m	language:C++	struct:webrtc::__anon13
+addedSamples	system_wrapper/phone_common_types.h	/^    int addedSamples;$/;"	m	language:C++	struct:webrtc::NetworkStatistics
+automaticResizeOn	system_wrapper/phone_common_types.h	/^    bool                 automaticResizeOn;$/;"	m	language:C++	struct:webrtc::VideoCodecVP8
+average	system_wrapper/phone_common_types.h	/^    int average;          \/\/ average$/;"	m	language:C++	struct:webrtc::__anon11
+channels	system_wrapper/phone_common_types.h	/^    int channels;$/;"	m	language:C++	struct:webrtc::CodecInst
+clockDriftPPM	system_wrapper/phone_common_types.h	/^    int32_t clockDriftPPM;$/;"	m	language:C++	struct:webrtc::NetworkStatistics
+codecSpecific	system_wrapper/phone_common_types.h	/^    VideoCodecUnion     codecSpecific;$/;"	m	language:C++	struct:webrtc::VideoCodec
+codecType	system_wrapper/phone_common_types.h	/^    VideoCodecType      codecType;$/;"	m	language:C++	struct:webrtc::VideoCodec
+complexity	system_wrapper/phone_common_types.h	/^    VideoCodecComplexity complexity;$/;"	m	language:C++	struct:webrtc::VideoCodecVP8
+currentAccelerateRate	system_wrapper/phone_common_types.h	/^    WebRtc_UWord16 currentAccelerateRate;$/;"	m	language:C++	struct:webrtc::NetworkStatistics
+currentBufferSize	system_wrapper/phone_common_types.h	/^    WebRtc_UWord16 currentBufferSize;$/;"	m	language:C++	struct:webrtc::NetworkStatistics
+currentDiscardRate	system_wrapper/phone_common_types.h	/^    WebRtc_UWord16 currentDiscardRate;$/;"	m	language:C++	struct:webrtc::NetworkStatistics
+currentExpandRate	system_wrapper/phone_common_types.h	/^    WebRtc_UWord16 currentExpandRate;$/;"	m	language:C++	struct:webrtc::NetworkStatistics
+currentPacketLossRate	system_wrapper/phone_common_types.h	/^    WebRtc_UWord16 currentPacketLossRate;$/;"	m	language:C++	struct:webrtc::NetworkStatistics
+currentPreemptiveRate	system_wrapper/phone_common_types.h	/^    WebRtc_UWord16 currentPreemptiveRate;$/;"	m	language:C++	struct:webrtc::NetworkStatistics
+decrypt	system_wrapper/phone_common_types.h	/^    virtual void decrypt($/;"	p	language:C++	class:webrtc::Encryption	signature:( int channel, unsigned char* in_data, unsigned char* out_data, int bytes_in, int* bytes_out)
+decrypt_rtcp	system_wrapper/phone_common_types.h	/^    virtual void decrypt_rtcp($/;"	p	language:C++	class:webrtc::Encryption	signature:( int channel, unsigned char* in_data, unsigned char* out_data, int bytes_in, int* bytes_out)
+denoisingOn	system_wrapper/phone_common_types.h	/^    bool                 denoisingOn;$/;"	m	language:C++	struct:webrtc::VideoCodecVP8
+digitalCompressionGaindB	system_wrapper/phone_common_types.h	/^    unsigned short digitalCompressionGaindB;$/;"	m	language:C++	struct:webrtc::__anon14
+encrypt	system_wrapper/phone_common_types.h	/^    virtual void encrypt($/;"	p	language:C++	class:webrtc::Encryption	signature:( int channel, unsigned char* in_data, unsigned char* out_data, int bytes_in, int* bytes_out)
+encrypt_rtcp	system_wrapper/phone_common_types.h	/^    virtual void encrypt_rtcp($/;"	p	language:C++	class:webrtc::Encryption	signature:( int channel, unsigned char* in_data, unsigned char* out_data, int bytes_in, int* bytes_out)
+erl	system_wrapper/phone_common_types.h	/^    StatVal erl;      \/\/ Echo Return Loss$/;"	m	language:C++	struct:webrtc::__anon13
+erle	system_wrapper/phone_common_types.h	/^    StatVal erle;     \/\/ Echo Return Loss Enhancement$/;"	m	language:C++	struct:webrtc::__anon13
+errorConcealmentOn	system_wrapper/phone_common_types.h	/^    bool                 errorConcealmentOn;$/;"	m	language:C++	struct:webrtc::VideoCodecVP8
+feedbackModeOn	system_wrapper/phone_common_types.h	/^    bool                 feedbackModeOn;$/;"	m	language:C++	struct:webrtc::VideoCodecVP8
+frameDroppingOn	system_wrapper/phone_common_types.h	/^    bool                 frameDroppingOn;$/;"	m	language:C++	struct:webrtc::VideoCodecVP8
+height	system_wrapper/phone_common_types.h	/^    unsigned short      height;$/;"	m	language:C++	struct:webrtc::SimulcastStream
+height	system_wrapper/phone_common_types.h	/^    unsigned short      height;$/;"	m	language:C++	struct:webrtc::VideoCodec
+initial_avg_noise	system_wrapper/phone_common_types.h	/^  double initial_avg_noise;$/;"	m	language:C++	struct:webrtc::OverUseDetectorOptions
+initial_e	system_wrapper/phone_common_types.h	/^  double initial_e[2][2];$/;"	m	language:C++	struct:webrtc::OverUseDetectorOptions
+initial_offset	system_wrapper/phone_common_types.h	/^  double initial_offset;$/;"	m	language:C++	struct:webrtc::OverUseDetectorOptions
+initial_process_noise	system_wrapper/phone_common_types.h	/^  double initial_process_noise[2];$/;"	m	language:C++	struct:webrtc::OverUseDetectorOptions
+initial_slope	system_wrapper/phone_common_types.h	/^  double initial_slope;$/;"	m	language:C++	struct:webrtc::OverUseDetectorOptions
+initial_threshold	system_wrapper/phone_common_types.h	/^  double initial_threshold;$/;"	m	language:C++	struct:webrtc::OverUseDetectorOptions
+initial_var_noise	system_wrapper/phone_common_types.h	/^  double initial_var_noise;$/;"	m	language:C++	struct:webrtc::OverUseDetectorOptions
+jitterPeaksFound	system_wrapper/phone_common_types.h	/^    bool jitterPeaksFound;$/;"	m	language:C++	struct:webrtc::NetworkStatistics
+kAecmEarpiece	system_wrapper/phone_common_types.h	/^    kAecmEarpiece,             \/\/ most earpiece use$/;"	e	language:C++	enum:webrtc::AecmModes
+kAecmLoudEarpiece	system_wrapper/phone_common_types.h	/^    kAecmLoudEarpiece,         \/\/ Loud earpiece or quiet speakerphone use$/;"	e	language:C++	enum:webrtc::AecmModes
+kAecmLoudSpeakerphone	system_wrapper/phone_common_types.h	/^    kAecmLoudSpeakerphone      \/\/ Loud speakerphone$/;"	e	language:C++	enum:webrtc::AecmModes
+kAecmQuietEarpieceOrHeadset	system_wrapper/phone_common_types.h	/^    kAecmQuietEarpieceOrHeadset = 0,$/;"	e	language:C++	enum:webrtc::AecmModes
+kAecmSpeakerphone	system_wrapper/phone_common_types.h	/^    kAecmSpeakerphone,         \/\/ most speakerphone use (default)$/;"	e	language:C++	enum:webrtc::AecmModes
+kAgcAdaptiveAnalog	system_wrapper/phone_common_types.h	/^    kAgcAdaptiveAnalog,$/;"	e	language:C++	enum:webrtc::AgcModes
+kAgcAdaptiveDigital	system_wrapper/phone_common_types.h	/^    kAgcAdaptiveDigital,$/;"	e	language:C++	enum:webrtc::AgcModes
+kAgcDefault	system_wrapper/phone_common_types.h	/^    kAgcDefault,              \/\/ platform default$/;"	e	language:C++	enum:webrtc::AgcModes
+kAgcFixedDigital	system_wrapper/phone_common_types.h	/^    kAgcFixedDigital$/;"	e	language:C++	enum:webrtc::AgcModes
+kAgcUnchanged	system_wrapper/phone_common_types.h	/^    kAgcUnchanged = 0,        \/\/ previously set mode$/;"	e	language:C++	enum:webrtc::AgcModes
+kAudioFrameCN	system_wrapper/phone_common_types.h	/^    kAudioFrameCN          = 2,$/;"	e	language:C++	enum:webrtc::FrameType
+kAudioFrameSpeech	system_wrapper/phone_common_types.h	/^    kAudioFrameSpeech      = 1,$/;"	e	language:C++	enum:webrtc::FrameType
+kAudioLinuxAlsa	system_wrapper/phone_common_types.h	/^    kAudioLinuxAlsa = 3,$/;"	e	language:C++	enum:webrtc::AudioLayers
+kAudioLinuxPulse	system_wrapper/phone_common_types.h	/^    kAudioLinuxPulse = 4$/;"	e	language:C++	enum:webrtc::AudioLayers
+kAudioPlatformDefault	system_wrapper/phone_common_types.h	/^    kAudioPlatformDefault = 0,$/;"	e	language:C++	enum:webrtc::AudioLayers
+kAudioWindowsCore	system_wrapper/phone_common_types.h	/^    kAudioWindowsCore = 2,$/;"	e	language:C++	enum:webrtc::AudioLayers
+kAudioWindowsWave	system_wrapper/phone_common_types.h	/^    kAudioWindowsWave = 1,$/;"	e	language:C++	enum:webrtc::AudioLayers
+kComplexityHigh	system_wrapper/phone_common_types.h	/^    kComplexityHigh    = 1,$/;"	e	language:C++	enum:webrtc::VideoCodecComplexity
+kComplexityHigher	system_wrapper/phone_common_types.h	/^    kComplexityHigher  = 2,$/;"	e	language:C++	enum:webrtc::VideoCodecComplexity
+kComplexityMax	system_wrapper/phone_common_types.h	/^    kComplexityMax     = 3$/;"	e	language:C++	enum:webrtc::VideoCodecComplexity
+kComplexityNormal	system_wrapper/phone_common_types.h	/^    kComplexityNormal = 0,$/;"	e	language:C++	enum:webrtc::VideoCodecComplexity
+kConfigParameterSize	system_wrapper/phone_common_types.h	/^enum { kConfigParameterSize = 128};$/;"	e	language:C++	enum:webrtc::__anon15
+kEcAec	system_wrapper/phone_common_types.h	/^    kEcAec,                    \/\/ Acoustic Echo Cancellation$/;"	e	language:C++	enum:webrtc::EcModes
+kEcAecm	system_wrapper/phone_common_types.h	/^    kEcAecm,                   \/\/ AEC mobile$/;"	e	language:C++	enum:webrtc::EcModes
+kEcConference	system_wrapper/phone_common_types.h	/^    kEcConference,             \/\/ conferencing default (aggressive AEC)$/;"	e	language:C++	enum:webrtc::EcModes
+kEcDefault	system_wrapper/phone_common_types.h	/^    kEcDefault,                \/\/ platform default$/;"	e	language:C++	enum:webrtc::EcModes
+kEcUnchanged	system_wrapper/phone_common_types.h	/^    kEcUnchanged = 0,          \/\/ previously set mode$/;"	e	language:C++	enum:webrtc::EcModes
+kFileFormatAviFile	system_wrapper/phone_common_types.h	/^    kFileFormatAviFile        = 3,$/;"	e	language:C++	enum:webrtc::FileFormats
+kFileFormatCompressedFile	system_wrapper/phone_common_types.h	/^    kFileFormatCompressedFile = 2,$/;"	e	language:C++	enum:webrtc::FileFormats
+kFileFormatPcm16kHzFile	system_wrapper/phone_common_types.h	/^    kFileFormatPcm16kHzFile   = 7,$/;"	e	language:C++	enum:webrtc::FileFormats
+kFileFormatPcm32kHzFile	system_wrapper/phone_common_types.h	/^    kFileFormatPcm32kHzFile   = 9$/;"	e	language:C++	enum:webrtc::FileFormats
+kFileFormatPcm8kHzFile	system_wrapper/phone_common_types.h	/^    kFileFormatPcm8kHzFile    = 8,$/;"	e	language:C++	enum:webrtc::FileFormats
+kFileFormatPreencodedFile	system_wrapper/phone_common_types.h	/^    kFileFormatPreencodedFile = 4,$/;"	e	language:C++	enum:webrtc::FileFormats
+kFileFormatWavFile	system_wrapper/phone_common_types.h	/^    kFileFormatWavFile        = 1,$/;"	e	language:C++	enum:webrtc::FileFormats
+kFrameEmpty	system_wrapper/phone_common_types.h	/^    kFrameEmpty            = 0,$/;"	e	language:C++	enum:webrtc::FrameType
+kFreq16000Hz	system_wrapper/phone_common_types.h	/^    kFreq16000Hz = 16000,$/;"	e	language:C++	enum:webrtc::PayloadFrequencies
+kFreq32000Hz	system_wrapper/phone_common_types.h	/^    kFreq32000Hz = 32000$/;"	e	language:C++	enum:webrtc::PayloadFrequencies
+kFreq8000Hz	system_wrapper/phone_common_types.h	/^    kFreq8000Hz = 8000,$/;"	e	language:C++	enum:webrtc::PayloadFrequencies
+kHoldPlayOnly	system_wrapper/phone_common_types.h	/^    kHoldPlayOnly            \/\/ Put only playing in on-hold state.$/;"	e	language:C++	enum:webrtc::OnHoldModes
+kHoldSendAndPlay	system_wrapper/phone_common_types.h	/^    kHoldSendAndPlay = 0,    \/\/ Put both sending and playing in on-hold state.$/;"	e	language:C++	enum:webrtc::OnHoldModes
+kHoldSendOnly	system_wrapper/phone_common_types.h	/^    kHoldSendOnly,           \/\/ Put only sending in on-hold state.$/;"	e	language:C++	enum:webrtc::OnHoldModes
+kMaxSimulcastStreams	system_wrapper/phone_common_types.h	/^enum { kMaxSimulcastStreams = 4};$/;"	e	language:C++	enum:webrtc::__anon17
+kMaxTemporalStreams	system_wrapper/phone_common_types.h	/^enum { kMaxTemporalStreams = 4};$/;"	e	language:C++	enum:webrtc::__anon18
+kNetEqDefault	system_wrapper/phone_common_types.h	/^    kNetEqDefault = 0,$/;"	e	language:C++	enum:webrtc::NetEqModes
+kNetEqFax	system_wrapper/phone_common_types.h	/^    kNetEqFax = 2,$/;"	e	language:C++	enum:webrtc::NetEqModes
+kNetEqOff	system_wrapper/phone_common_types.h	/^    kNetEqOff = 3,$/;"	e	language:C++	enum:webrtc::NetEqModes
+kNetEqStreaming	system_wrapper/phone_common_types.h	/^    kNetEqStreaming = 1,$/;"	e	language:C++	enum:webrtc::NetEqModes
+kNsConference	system_wrapper/phone_common_types.h	/^    kNsConference,      \/\/ conferencing default$/;"	e	language:C++	enum:webrtc::NsModes
+kNsDefault	system_wrapper/phone_common_types.h	/^    kNsDefault,         \/\/ platform default$/;"	e	language:C++	enum:webrtc::NsModes
+kNsHighSuppression	system_wrapper/phone_common_types.h	/^    kNsHighSuppression,$/;"	e	language:C++	enum:webrtc::NsModes
+kNsLowSuppression	system_wrapper/phone_common_types.h	/^    kNsLowSuppression,  \/\/ lowest suppression$/;"	e	language:C++	enum:webrtc::NsModes
+kNsModerateSuppression	system_wrapper/phone_common_types.h	/^    kNsModerateSuppression,$/;"	e	language:C++	enum:webrtc::NsModes
+kNsUnchanged	system_wrapper/phone_common_types.h	/^    kNsUnchanged = 0,   \/\/ previously set mode$/;"	e	language:C++	enum:webrtc::NsModes
+kNsVeryHighSuppression	system_wrapper/phone_common_types.h	/^    kNsVeryHighSuppression,     \/\/ highest suppression$/;"	e	language:C++	enum:webrtc::NsModes
+kPayloadNameSize	system_wrapper/phone_common_types.h	/^enum { kPayloadNameSize = 32};$/;"	e	language:C++	enum:webrtc::__anon16
+kPlaybackAllChannelsMixed	system_wrapper/phone_common_types.h	/^    kPlaybackAllChannelsMixed,$/;"	e	language:C++	enum:webrtc::ProcessingTypes
+kPlaybackPerChannel	system_wrapper/phone_common_types.h	/^    kPlaybackPerChannel = 0,$/;"	e	language:C++	enum:webrtc::ProcessingTypes
+kProfileBase	system_wrapper/phone_common_types.h	/^    kProfileBase = 0x00,$/;"	e	language:C++	enum:webrtc::VideoCodecProfile
+kProfileMain	system_wrapper/phone_common_types.h	/^    kProfileMain = 0x01$/;"	e	language:C++	enum:webrtc::VideoCodecProfile
+kRealtimeVideo	system_wrapper/phone_common_types.h	/^  kRealtimeVideo,$/;"	e	language:C++	enum:webrtc::VideoCodecMode
+kRecordingAllChannelsMixed	system_wrapper/phone_common_types.h	/^    kRecordingAllChannelsMixed,$/;"	e	language:C++	enum:webrtc::ProcessingTypes
+kRecordingPerChannel	system_wrapper/phone_common_types.h	/^    kRecordingPerChannel,$/;"	e	language:C++	enum:webrtc::ProcessingTypes
+kRecordingPreprocessing	system_wrapper/phone_common_types.h	/^    kRecordingPreprocessing$/;"	e	language:C++	enum:webrtc::ProcessingTypes
+kResilienceOff	system_wrapper/phone_common_types.h	/^  kResilienceOff,    \/\/ The stream produced by the encoder requires a$/;"	e	language:C++	enum:webrtc::VP8ResilienceMode
+kResilientFrames	system_wrapper/phone_common_types.h	/^  kResilientFrames   \/\/ Same as kResilientStream but with added resilience$/;"	e	language:C++	enum:webrtc::VP8ResilienceMode
+kResilientStream	system_wrapper/phone_common_types.h	/^  kResilientStream,  \/\/ A stream produced by the encoder is resilient to$/;"	e	language:C++	enum:webrtc::VP8ResilienceMode
+kRfc3267BwEfficient	system_wrapper/phone_common_types.h	/^    kRfc3267BwEfficient = 0,$/;"	e	language:C++	enum:webrtc::AmrMode
+kRfc3267FileStorage	system_wrapper/phone_common_types.h	/^    kRfc3267FileStorage = 2,$/;"	e	language:C++	enum:webrtc::AmrMode
+kRfc3267OctetAligned	system_wrapper/phone_common_types.h	/^    kRfc3267OctetAligned = 1,$/;"	e	language:C++	enum:webrtc::AmrMode
+kRtpCsrcSize	system_wrapper/phone_common_types.h	/^enum {kRtpCsrcSize = 15}; \/\/ RFC 3550 page 13$/;"	e	language:C++	enum:webrtc::__anon10
+kRtpIncoming	system_wrapper/phone_common_types.h	/^    kRtpIncoming = 0,$/;"	e	language:C++	enum:webrtc::RTPDirections
+kRtpOutgoing	system_wrapper/phone_common_types.h	/^    kRtpOutgoing$/;"	e	language:C++	enum:webrtc::RTPDirections
+kScreensharing	system_wrapper/phone_common_types.h	/^  kScreensharing$/;"	e	language:C++	enum:webrtc::VideoCodecMode
+kStereoBoth	system_wrapper/phone_common_types.h	/^    kStereoBoth$/;"	e	language:C++	enum:webrtc::StereoChannel
+kStereoLeft	system_wrapper/phone_common_types.h	/^    kStereoLeft = 0,$/;"	e	language:C++	enum:webrtc::StereoChannel
+kStereoRight	system_wrapper/phone_common_types.h	/^    kStereoRight,$/;"	e	language:C++	enum:webrtc::StereoChannel
+kTraceAll	system_wrapper/phone_common_types.h	/^    kTraceAll                = 0xffff$/;"	e	language:C++	enum:webrtc::TraceLevel
+kTraceApiCall	system_wrapper/phone_common_types.h	/^    kTraceApiCall            = 0x0010,$/;"	e	language:C++	enum:webrtc::TraceLevel
+kTraceAudioCoding	system_wrapper/phone_common_types.h	/^    kTraceAudioCoding        = 0x0007,$/;"	e	language:C++	enum:webrtc::TraceModule
+kTraceAudioDevice	system_wrapper/phone_common_types.h	/^    kTraceAudioDevice        = 0x0012,$/;"	e	language:C++	enum:webrtc::TraceModule
+kTraceAudioMixerClient	system_wrapper/phone_common_types.h	/^    kTraceAudioMixerClient   = 0x0009,$/;"	e	language:C++	enum:webrtc::TraceModule
+kTraceAudioMixerServer	system_wrapper/phone_common_types.h	/^    kTraceAudioMixerServer   = 0x0008,$/;"	e	language:C++	enum:webrtc::TraceModule
+kTraceAudioProcessing	system_wrapper/phone_common_types.h	/^    kTraceAudioProcessing    = 0x000b,$/;"	e	language:C++	enum:webrtc::TraceModule
+kTraceCritical	system_wrapper/phone_common_types.h	/^    kTraceCritical           = 0x0008,$/;"	e	language:C++	enum:webrtc::TraceLevel
+kTraceDebug	system_wrapper/phone_common_types.h	/^    kTraceDebug              = 0x0800,  \/\/ debug$/;"	e	language:C++	enum:webrtc::TraceLevel
+kTraceDefault	system_wrapper/phone_common_types.h	/^    kTraceDefault            = 0x00ff,$/;"	e	language:C++	enum:webrtc::TraceLevel
+kTraceError	system_wrapper/phone_common_types.h	/^    kTraceError              = 0x0004,$/;"	e	language:C++	enum:webrtc::TraceLevel
+kTraceFile	system_wrapper/phone_common_types.h	/^    kTraceFile               = 0x000a,$/;"	e	language:C++	enum:webrtc::TraceModule
+kTraceInfo	system_wrapper/phone_common_types.h	/^    kTraceInfo               = 0x1000,  \/\/ debug info$/;"	e	language:C++	enum:webrtc::TraceLevel
+kTraceMemory	system_wrapper/phone_common_types.h	/^    kTraceMemory             = 0x0100,   \/\/ memory info$/;"	e	language:C++	enum:webrtc::TraceLevel
+kTraceModuleCall	system_wrapper/phone_common_types.h	/^    kTraceModuleCall         = 0x0020,$/;"	e	language:C++	enum:webrtc::TraceLevel
+kTraceNone	system_wrapper/phone_common_types.h	/^    kTraceNone               = 0x0000,    \/\/ no trace$/;"	e	language:C++	enum:webrtc::TraceLevel
+kTraceRtpRtcp	system_wrapper/phone_common_types.h	/^    kTraceRtpRtcp            = 0x0004,$/;"	e	language:C++	enum:webrtc::TraceModule
+kTraceSrtp	system_wrapper/phone_common_types.h	/^    kTraceSrtp               = 0x0006,$/;"	e	language:C++	enum:webrtc::TraceModule
+kTraceStateInfo	system_wrapper/phone_common_types.h	/^    kTraceStateInfo          = 0x0001,$/;"	e	language:C++	enum:webrtc::TraceLevel
+kTraceStream	system_wrapper/phone_common_types.h	/^    kTraceStream             = 0x0400,   \/\/ "continuous" stream of data$/;"	e	language:C++	enum:webrtc::TraceLevel
+kTraceTerseInfo	system_wrapper/phone_common_types.h	/^    kTraceTerseInfo          = 0x2000,$/;"	e	language:C++	enum:webrtc::TraceLevel
+kTraceTimer	system_wrapper/phone_common_types.h	/^    kTraceTimer              = 0x0200,   \/\/ timing info$/;"	e	language:C++	enum:webrtc::TraceLevel
+kTraceTransport	system_wrapper/phone_common_types.h	/^    kTraceTransport          = 0x0005,$/;"	e	language:C++	enum:webrtc::TraceModule
+kTraceUndefined	system_wrapper/phone_common_types.h	/^    kTraceUndefined          = 0,$/;"	e	language:C++	enum:webrtc::TraceModule
+kTraceUtility	system_wrapper/phone_common_types.h	/^    kTraceUtility            = 0x0003,$/;"	e	language:C++	enum:webrtc::TraceModule
+kTraceVideo	system_wrapper/phone_common_types.h	/^    kTraceVideo              = 0x0002,$/;"	e	language:C++	enum:webrtc::TraceModule
+kTraceVideoCapture	system_wrapper/phone_common_types.h	/^    kTraceVideoCapture       = 0x0015,$/;"	e	language:C++	enum:webrtc::TraceModule
+kTraceVideoCoding	system_wrapper/phone_common_types.h	/^    kTraceVideoCoding        = 0x0010,$/;"	e	language:C++	enum:webrtc::TraceModule
+kTraceVideoMixer	system_wrapper/phone_common_types.h	/^    kTraceVideoMixer         = 0x0011,$/;"	e	language:C++	enum:webrtc::TraceModule
+kTraceVideoPreocessing	system_wrapper/phone_common_types.h	/^    kTraceVideoPreocessing   = 0x0016$/;"	e	language:C++	enum:webrtc::TraceModule
+kTraceVideoRenderer	system_wrapper/phone_common_types.h	/^    kTraceVideoRenderer      = 0x0014,$/;"	e	language:C++	enum:webrtc::TraceModule
+kTraceVoice	system_wrapper/phone_common_types.h	/^    kTraceVoice              = 0x0001,$/;"	e	language:C++	enum:webrtc::TraceModule
+kTraceWarning	system_wrapper/phone_common_types.h	/^    kTraceWarning            = 0x0002,$/;"	e	language:C++	enum:webrtc::TraceLevel
+kVadAggressiveHigh	system_wrapper/phone_common_types.h	/^    kVadAggressiveHigh         \/\/ highest reduction$/;"	e	language:C++	enum:webrtc::VadModes
+kVadAggressiveLow	system_wrapper/phone_common_types.h	/^    kVadAggressiveLow,$/;"	e	language:C++	enum:webrtc::VadModes
+kVadAggressiveMid	system_wrapper/phone_common_types.h	/^    kVadAggressiveMid,$/;"	e	language:C++	enum:webrtc::VadModes
+kVadConventional	system_wrapper/phone_common_types.h	/^    kVadConventional = 0,      \/\/ lowest reduction$/;"	e	language:C++	enum:webrtc::VadModes
+kVideoARGB	system_wrapper/phone_common_types.h	/^    kVideoARGB     = 5,$/;"	e	language:C++	enum:webrtc::RawVideoType
+kVideoARGB1555	system_wrapper/phone_common_types.h	/^    kVideoARGB1555 = 9,$/;"	e	language:C++	enum:webrtc::RawVideoType
+kVideoARGB4444	system_wrapper/phone_common_types.h	/^    kVideoARGB4444 = 8,$/;"	e	language:C++	enum:webrtc::RawVideoType
+kVideoBGRA	system_wrapper/phone_common_types.h	/^    kVideoBGRA     = 13,$/;"	e	language:C++	enum:webrtc::RawVideoType
+kVideoCodecGeneric	system_wrapper/phone_common_types.h	/^    kVideoCodecGeneric,$/;"	e	language:C++	enum:webrtc::VideoCodecType
+kVideoCodecI420	system_wrapper/phone_common_types.h	/^    kVideoCodecI420,$/;"	e	language:C++	enum:webrtc::VideoCodecType
+kVideoCodecRED	system_wrapper/phone_common_types.h	/^    kVideoCodecRED,$/;"	e	language:C++	enum:webrtc::VideoCodecType
+kVideoCodecULPFEC	system_wrapper/phone_common_types.h	/^    kVideoCodecULPFEC,$/;"	e	language:C++	enum:webrtc::VideoCodecType
+kVideoCodecUnknown	system_wrapper/phone_common_types.h	/^    kVideoCodecUnknown$/;"	e	language:C++	enum:webrtc::VideoCodecType
+kVideoCodecVP8	system_wrapper/phone_common_types.h	/^    kVideoCodecVP8,$/;"	e	language:C++	enum:webrtc::VideoCodecType
+kVideoFrameAltRef	system_wrapper/phone_common_types.h	/^    kVideoFrameAltRef      = 6$/;"	e	language:C++	enum:webrtc::FrameType
+kVideoFrameDelta	system_wrapper/phone_common_types.h	/^    kVideoFrameDelta       = 4,    \/\/ depends on the previus frame$/;"	e	language:C++	enum:webrtc::FrameType
+kVideoFrameGolden	system_wrapper/phone_common_types.h	/^    kVideoFrameGolden      = 5,    \/\/ depends on a old known previus frame$/;"	e	language:C++	enum:webrtc::FrameType
+kVideoFrameKey	system_wrapper/phone_common_types.h	/^    kVideoFrameKey         = 3,    \/\/ independent frame$/;"	e	language:C++	enum:webrtc::FrameType
+kVideoI420	system_wrapper/phone_common_types.h	/^    kVideoI420     = 0,$/;"	e	language:C++	enum:webrtc::RawVideoType
+kVideoIYUV	system_wrapper/phone_common_types.h	/^    kVideoIYUV     = 4,$/;"	e	language:C++	enum:webrtc::RawVideoType
+kVideoMJPEG	system_wrapper/phone_common_types.h	/^    kVideoMJPEG    = 10,$/;"	e	language:C++	enum:webrtc::RawVideoType
+kVideoNV12	system_wrapper/phone_common_types.h	/^    kVideoNV12     = 11,$/;"	e	language:C++	enum:webrtc::RawVideoType
+kVideoNV21	system_wrapper/phone_common_types.h	/^    kVideoNV21     = 12,$/;"	e	language:C++	enum:webrtc::RawVideoType
+kVideoRGB24	system_wrapper/phone_common_types.h	/^    kVideoRGB24    = 6,$/;"	e	language:C++	enum:webrtc::RawVideoType
+kVideoRGB565	system_wrapper/phone_common_types.h	/^    kVideoRGB565   = 7,$/;"	e	language:C++	enum:webrtc::RawVideoType
+kVideoUYVY	system_wrapper/phone_common_types.h	/^    kVideoUYVY     = 3,$/;"	e	language:C++	enum:webrtc::RawVideoType
+kVideoUnknown	system_wrapper/phone_common_types.h	/^    kVideoUnknown  = 99$/;"	e	language:C++	enum:webrtc::RawVideoType
+kVideoYUY2	system_wrapper/phone_common_types.h	/^    kVideoYUY2     = 2,$/;"	e	language:C++	enum:webrtc::RawVideoType
+kVideoYV12	system_wrapper/phone_common_types.h	/^    kVideoYV12     = 1,$/;"	e	language:C++	enum:webrtc::RawVideoType
+keyFrameInterval	system_wrapper/phone_common_types.h	/^    int                  keyFrameInterval;$/;"	m	language:C++	struct:webrtc::VideoCodecVP8
+limiterEnable	system_wrapper/phone_common_types.h	/^    bool           limiterEnable;$/;"	m	language:C++	struct:webrtc::__anon14
+max	system_wrapper/phone_common_types.h	/^    int max;              \/\/ maximum$/;"	m	language:C++	struct:webrtc::__anon11
+maxBitrate	system_wrapper/phone_common_types.h	/^    unsigned int        maxBitrate;$/;"	m	language:C++	struct:webrtc::SimulcastStream
+maxBitrate	system_wrapper/phone_common_types.h	/^    unsigned int        maxBitrate;$/;"	m	language:C++	struct:webrtc::VideoCodec
+maxFramerate	system_wrapper/phone_common_types.h	/^    unsigned char       maxFramerate;$/;"	m	language:C++	struct:webrtc::VideoCodec
+maxWaitingTimeMs	system_wrapper/phone_common_types.h	/^    int maxWaitingTimeMs;$/;"	m	language:C++	struct:webrtc::NetworkStatistics
+meanWaitingTimeMs	system_wrapper/phone_common_types.h	/^    int meanWaitingTimeMs;$/;"	m	language:C++	struct:webrtc::NetworkStatistics
+medianWaitingTimeMs	system_wrapper/phone_common_types.h	/^    int medianWaitingTimeMs;$/;"	m	language:C++	struct:webrtc::NetworkStatistics
+min	system_wrapper/phone_common_types.h	/^    int min;              \/\/ minumum$/;"	m	language:C++	struct:webrtc::__anon11
+minBitrate	system_wrapper/phone_common_types.h	/^    unsigned int        minBitrate;$/;"	m	language:C++	struct:webrtc::SimulcastStream
+minBitrate	system_wrapper/phone_common_types.h	/^    unsigned int        minBitrate;$/;"	m	language:C++	struct:webrtc::VideoCodec
+minWaitingTimeMs	system_wrapper/phone_common_types.h	/^    int minWaitingTimeMs;$/;"	m	language:C++	struct:webrtc::NetworkStatistics
+mode	system_wrapper/phone_common_types.h	/^    VideoCodecMode      mode;$/;"	m	language:C++	struct:webrtc::VideoCodec
+noise_rx	system_wrapper/phone_common_types.h	/^    StatVal noise_rx;    \/\/ long-term noise\/silence levels on receiving side$/;"	m	language:C++	struct:webrtc::__anon12
+noise_tx	system_wrapper/phone_common_types.h	/^    StatVal noise_tx;    \/\/ long-term noise\/silence levels on transmitting side$/;"	m	language:C++	struct:webrtc::__anon12
+numberOfSimulcastStreams	system_wrapper/phone_common_types.h	/^    unsigned char       numberOfSimulcastStreams;$/;"	m	language:C++	struct:webrtc::VideoCodec
+numberOfTemporalLayers	system_wrapper/phone_common_types.h	/^    unsigned char        numberOfTemporalLayers;$/;"	m	language:C++	struct:webrtc::VideoCodecVP8
+numberOfTemporalLayers	system_wrapper/phone_common_types.h	/^    unsigned char       numberOfTemporalLayers;$/;"	m	language:C++	struct:webrtc::SimulcastStream
+pacsize	system_wrapper/phone_common_types.h	/^    int pacsize;$/;"	m	language:C++	struct:webrtc::CodecInst
+pictureLossIndicationOn	system_wrapper/phone_common_types.h	/^    bool                 pictureLossIndicationOn;$/;"	m	language:C++	struct:webrtc::VideoCodecVP8
+plName	system_wrapper/phone_common_types.h	/^    char                plName[kPayloadNameSize];$/;"	m	language:C++	struct:webrtc::VideoCodec
+plType	system_wrapper/phone_common_types.h	/^    unsigned char       plType;$/;"	m	language:C++	struct:webrtc::VideoCodec
+plfreq	system_wrapper/phone_common_types.h	/^    int plfreq;$/;"	m	language:C++	struct:webrtc::CodecInst
+plname	system_wrapper/phone_common_types.h	/^    char plname[RTP_PAYLOAD_NAME_SIZE];$/;"	m	language:C++	struct:webrtc::CodecInst
+pltype	system_wrapper/phone_common_types.h	/^    int pltype;$/;"	m	language:C++	struct:webrtc::CodecInst
+preferredBufferSize	system_wrapper/phone_common_types.h	/^    WebRtc_UWord16 preferredBufferSize;$/;"	m	language:C++	struct:webrtc::NetworkStatistics
+qpMax	system_wrapper/phone_common_types.h	/^    unsigned int        qpMax; \/\/ minimum quality$/;"	m	language:C++	struct:webrtc::SimulcastStream
+qpMax	system_wrapper/phone_common_types.h	/^    unsigned int        qpMax;$/;"	m	language:C++	struct:webrtc::VideoCodec
+rate	system_wrapper/phone_common_types.h	/^    int rate;$/;"	m	language:C++	struct:webrtc::CodecInst
+rerl	system_wrapper/phone_common_types.h	/^    StatVal rerl;     \/\/ RERL = ERL + ERLE$/;"	m	language:C++	struct:webrtc::__anon13
+resilience	system_wrapper/phone_common_types.h	/^    VP8ResilienceMode    resilience;$/;"	m	language:C++	struct:webrtc::VideoCodecVP8
+simulcastStream	system_wrapper/phone_common_types.h	/^    SimulcastStream     simulcastStream[kMaxSimulcastStreams];$/;"	m	language:C++	struct:webrtc::VideoCodec
+speech_rx	system_wrapper/phone_common_types.h	/^    StatVal speech_rx;   \/\/ long-term speech levels on receiving side$/;"	m	language:C++	struct:webrtc::__anon12
+speech_tx	system_wrapper/phone_common_types.h	/^    StatVal speech_tx;   \/\/ long-term speech levels on transmitting side$/;"	m	language:C++	struct:webrtc::__anon12
+startBitrate	system_wrapper/phone_common_types.h	/^    unsigned int        startBitrate;$/;"	m	language:C++	struct:webrtc::VideoCodec
+targetBitrate	system_wrapper/phone_common_types.h	/^    unsigned int        targetBitrate;$/;"	m	language:C++	struct:webrtc::SimulcastStream
+targetLeveldBOv	system_wrapper/phone_common_types.h	/^    unsigned short targetLeveldBOv;$/;"	m	language:C++	struct:webrtc::__anon14
+webrtc	system_wrapper/phone_common_types.h	/^namespace webrtc {$/;"	n	language:C++
+width	system_wrapper/phone_common_types.h	/^    unsigned short      width;$/;"	m	language:C++	struct:webrtc::SimulcastStream
+width	system_wrapper/phone_common_types.h	/^    unsigned short      width;$/;"	m	language:C++	struct:webrtc::VideoCodec
+~Encryption	system_wrapper/phone_common_types.h	/^    virtual ~Encryption() {}$/;"	f	language:C++	class:webrtc::Encryption	signature:()
+~InStream	system_wrapper/phone_common_types.h	/^    virtual ~InStream() {}$/;"	f	language:C++	class:webrtc::InStream	signature:()
+~OutStream	system_wrapper/phone_common_types.h	/^    virtual ~OutStream() {}$/;"	f	language:C++	class:webrtc::OutStream	signature:()
+~TraceCallback	system_wrapper/phone_common_types.h	/^  virtual ~TraceCallback() {}$/;"	f	language:C++	class:webrtc::TraceCallback	signature:()
+~Transport	system_wrapper/phone_common_types.h	/^    virtual ~Transport() {}$/;"	f	language:C++	class:webrtc::Transport	signature:()
+CreateConditionVariable	system_wrapper/phone_condition_variable.cc	/^ConditionVariableWrapper* ConditionVariableWrapper::CreateConditionVariable() {$/;"	f	language:C++	class:webrtc::ConditionVariableWrapper	signature:()
+webrtc	system_wrapper/phone_condition_variable.cc	/^namespace webrtc {$/;"	n	language:C++	file:
+ConditionVariablePosix	system_wrapper/phone_condition_variable_posix.cc	/^ConditionVariablePosix::ConditionVariablePosix() {$/;"	f	language:C++	class:webrtc::ConditionVariablePosix	signature:()
+Construct	system_wrapper/phone_condition_variable_posix.cc	/^int ConditionVariablePosix::Construct() {$/;"	f	language:C++	class:webrtc::ConditionVariablePosix	signature:()
+Create	system_wrapper/phone_condition_variable_posix.cc	/^ConditionVariableWrapper* ConditionVariablePosix::Create() {$/;"	f	language:C++	class:webrtc::ConditionVariablePosix	signature:()
+SleepCS	system_wrapper/phone_condition_variable_posix.cc	/^bool ConditionVariablePosix::SleepCS(CriticalSectionWrapper& crit_sect,$/;"	f	language:C++	class:webrtc::ConditionVariablePosix	signature:(CriticalSectionWrapper& crit_sect, unsigned long max_time_inMS)
+SleepCS	system_wrapper/phone_condition_variable_posix.cc	/^void ConditionVariablePosix::SleepCS(CriticalSectionWrapper& crit_sect) {$/;"	f	language:C++	class:webrtc::ConditionVariablePosix	signature:(CriticalSectionWrapper& crit_sect)
+Wake	system_wrapper/phone_condition_variable_posix.cc	/^void ConditionVariablePosix::Wake() {$/;"	f	language:C++	class:webrtc::ConditionVariablePosix	signature:()
+WakeAll	system_wrapper/phone_condition_variable_posix.cc	/^void ConditionVariablePosix::WakeAll() {$/;"	f	language:C++	class:webrtc::ConditionVariablePosix	signature:()
+webrtc	system_wrapper/phone_condition_variable_posix.cc	/^namespace webrtc {$/;"	n	language:C++	file:
+~ConditionVariablePosix	system_wrapper/phone_condition_variable_posix.cc	/^ConditionVariablePosix::~ConditionVariablePosix() {$/;"	f	language:C++	class:webrtc::ConditionVariablePosix	signature:()
+ConditionVariablePosix	system_wrapper/phone_condition_variable_posix.h	/^  ConditionVariablePosix();$/;"	p	language:C++	class:webrtc::ConditionVariablePosix	signature:()
+ConditionVariablePosix	system_wrapper/phone_condition_variable_posix.h	/^class ConditionVariablePosix : public ConditionVariableWrapper {$/;"	c	language:C++	namespace:webrtc
+Construct	system_wrapper/phone_condition_variable_posix.h	/^  int Construct();$/;"	p	language:C++	class:webrtc::ConditionVariablePosix	signature:()
+Create	system_wrapper/phone_condition_variable_posix.h	/^  static ConditionVariableWrapper* Create();$/;"	p	language:C++	class:webrtc::ConditionVariablePosix	signature:()
+SleepCS	system_wrapper/phone_condition_variable_posix.h	/^  bool SleepCS(CriticalSectionWrapper& crit_sect, unsigned long max_time_in_ms);$/;"	p	language:C++	class:webrtc::ConditionVariablePosix	signature:(CriticalSectionWrapper& crit_sect, unsigned long max_time_in_ms)
+SleepCS	system_wrapper/phone_condition_variable_posix.h	/^  void SleepCS(CriticalSectionWrapper& crit_sect);$/;"	p	language:C++	class:webrtc::ConditionVariablePosix	signature:(CriticalSectionWrapper& crit_sect)
+WEBRTC_SYSTEM_WRAPPERS_SOURCE_CONDITION_VARIABLE_POSIX_H_	system_wrapper/phone_condition_variable_posix.h	12;"	d	language:C++
+Wake	system_wrapper/phone_condition_variable_posix.h	/^  void Wake();$/;"	p	language:C++	class:webrtc::ConditionVariablePosix	signature:()
+WakeAll	system_wrapper/phone_condition_variable_posix.h	/^  void WakeAll();$/;"	p	language:C++	class:webrtc::ConditionVariablePosix	signature:()
+cond_	system_wrapper/phone_condition_variable_posix.h	/^  pthread_cond_t cond_;$/;"	m	language:C++	class:webrtc::ConditionVariablePosix
+webrtc	system_wrapper/phone_condition_variable_posix.h	/^namespace webrtc {$/;"	n	language:C++
+~ConditionVariablePosix	system_wrapper/phone_condition_variable_posix.h	/^  ~ConditionVariablePosix();$/;"	p	language:C++	class:webrtc::ConditionVariablePosix	signature:()
+ConditionVariableWrapper	system_wrapper/phone_condition_variable_wrapper.h	/^class ConditionVariableWrapper {$/;"	c	language:C++	namespace:webrtc
+CreateConditionVariable	system_wrapper/phone_condition_variable_wrapper.h	/^  static ConditionVariableWrapper* CreateConditionVariable();$/;"	p	language:C++	class:webrtc::ConditionVariableWrapper	signature:()
+CriticalSectionWrapper	system_wrapper/phone_condition_variable_wrapper.h	/^class CriticalSectionWrapper;$/;"	x	language:C++
+SleepCS	system_wrapper/phone_condition_variable_wrapper.h	/^  virtual bool SleepCS(CriticalSectionWrapper& crit_sect,$/;"	p	language:C++	class:webrtc::ConditionVariableWrapper	signature:(CriticalSectionWrapper& crit_sect, unsigned long max_time_in_ms)
+SleepCS	system_wrapper/phone_condition_variable_wrapper.h	/^  virtual void SleepCS(CriticalSectionWrapper& crit_sect) = 0;$/;"	p	language:C++	class:webrtc::ConditionVariableWrapper	signature:(CriticalSectionWrapper& crit_sect)
+WEBRTC_SYSTEM_WRAPPERS_INTERFACE_CONDITION_VARIABLE_WRAPPER_H_	system_wrapper/phone_condition_variable_wrapper.h	12;"	d	language:C++
+Wake	system_wrapper/phone_condition_variable_wrapper.h	/^  virtual void Wake() = 0;$/;"	p	language:C++	class:webrtc::ConditionVariableWrapper	signature:()
+WakeAll	system_wrapper/phone_condition_variable_wrapper.h	/^  virtual void WakeAll() = 0;$/;"	p	language:C++	class:webrtc::ConditionVariableWrapper	signature:()
+webrtc	system_wrapper/phone_condition_variable_wrapper.h	/^namespace webrtc {$/;"	n	language:C++
+~ConditionVariableWrapper	system_wrapper/phone_condition_variable_wrapper.h	/^  virtual ~ConditionVariableWrapper() {}$/;"	f	language:C++	class:webrtc::ConditionVariableWrapper	signature:()
+CreateCriticalSection	system_wrapper/phone_critical_section.cc	/^CriticalSectionWrapper* CriticalSectionWrapper::CreateCriticalSection() {$/;"	f	language:C++	class:webrtc::CriticalSectionWrapper	signature:()
+webrtc	system_wrapper/phone_critical_section.cc	/^namespace webrtc {$/;"	n	language:C++	file:
+CriticalSectionPosix	system_wrapper/phone_critical_section_posix.cc	/^CriticalSectionPosix::CriticalSectionPosix() {$/;"	f	language:C++	class:webrtc::CriticalSectionPosix	signature:()
+Enter	system_wrapper/phone_critical_section_posix.cc	/^CriticalSectionPosix::Enter() {$/;"	f	language:C++	class:webrtc::CriticalSectionPosix	signature:()
+Leave	system_wrapper/phone_critical_section_posix.cc	/^CriticalSectionPosix::Leave() {$/;"	f	language:C++	class:webrtc::CriticalSectionPosix	signature:()
+webrtc	system_wrapper/phone_critical_section_posix.cc	/^namespace webrtc {$/;"	n	language:C++	file:
+~CriticalSectionPosix	system_wrapper/phone_critical_section_posix.cc	/^CriticalSectionPosix::~CriticalSectionPosix() {$/;"	f	language:C++	class:webrtc::CriticalSectionPosix	signature:()
+ConditionVariablePosix	system_wrapper/phone_critical_section_posix.h	/^  friend class ConditionVariablePosix;$/;"	x	language:C++
+CriticalSectionPosix	system_wrapper/phone_critical_section_posix.h	/^  CriticalSectionPosix();$/;"	p	language:C++	class:webrtc::CriticalSectionPosix	signature:()
+CriticalSectionPosix	system_wrapper/phone_critical_section_posix.h	/^class CriticalSectionPosix : public CriticalSectionWrapper {$/;"	c	language:C++	namespace:webrtc
+Enter	system_wrapper/phone_critical_section_posix.h	/^  virtual void Enter();$/;"	p	language:C++	class:webrtc::CriticalSectionPosix	signature:()
+Leave	system_wrapper/phone_critical_section_posix.h	/^  virtual void Leave();$/;"	p	language:C++	class:webrtc::CriticalSectionPosix	signature:()
+WEBRTC_SYSTEM_WRAPPERS_SOURCE_CRITICAL_SECTION_POSIX_H_	system_wrapper/phone_critical_section_posix.h	12;"	d	language:C++
+mutex_	system_wrapper/phone_critical_section_posix.h	/^  pthread_mutex_t mutex_;$/;"	m	language:C++	class:webrtc::CriticalSectionPosix
+webrtc	system_wrapper/phone_critical_section_posix.h	/^namespace webrtc {$/;"	n	language:C++
+~CriticalSectionPosix	system_wrapper/phone_critical_section_posix.h	/^  virtual ~CriticalSectionPosix();$/;"	p	language:C++	class:webrtc::CriticalSectionPosix	signature:()
+CreateCriticalSection	system_wrapper/phone_critical_section_wrapper.h	/^  static CriticalSectionWrapper* CreateCriticalSection();$/;"	p	language:C++	class:webrtc::CriticalSectionWrapper	signature:()
+CriticalSectionScoped	system_wrapper/phone_critical_section_wrapper.h	/^  explicit CriticalSectionScoped(CriticalSectionWrapper* critsec)$/;"	f	language:C++	class:webrtc::CriticalSectionScoped	signature:(CriticalSectionWrapper* critsec)
+CriticalSectionScoped	system_wrapper/phone_critical_section_wrapper.h	/^class CriticalSectionScoped {$/;"	c	language:C++	namespace:webrtc
+CriticalSectionWrapper	system_wrapper/phone_critical_section_wrapper.h	/^class CriticalSectionWrapper {$/;"	c	language:C++	namespace:webrtc
+Enter	system_wrapper/phone_critical_section_wrapper.h	/^  virtual void Enter() = 0;$/;"	p	language:C++	class:webrtc::CriticalSectionWrapper	signature:()
+Leave	system_wrapper/phone_critical_section_wrapper.h	/^  virtual void Leave() = 0;$/;"	p	language:C++	class:webrtc::CriticalSectionWrapper	signature:()
+Leave	system_wrapper/phone_critical_section_wrapper.h	/^  void Leave() {$/;"	f	language:C++	class:webrtc::CriticalSectionScoped	signature:()
+WEBRTC_SYSTEM_WRAPPERS_INTERFACE_CRITICAL_SECTION_WRAPPER_H_	system_wrapper/phone_critical_section_wrapper.h	12;"	d	language:C++
+ptr_crit_sec_	system_wrapper/phone_critical_section_wrapper.h	/^  CriticalSectionWrapper* ptr_crit_sec_;$/;"	m	language:C++	class:webrtc::CriticalSectionScoped
+webrtc	system_wrapper/phone_critical_section_wrapper.h	/^namespace webrtc {$/;"	n	language:C++
+~CriticalSectionScoped	system_wrapper/phone_critical_section_wrapper.h	/^  ~CriticalSectionScoped() {$/;"	f	language:C++	class:webrtc::CriticalSectionScoped	signature:()
+~CriticalSectionWrapper	system_wrapper/phone_critical_section_wrapper.h	/^  virtual ~CriticalSectionWrapper() {}$/;"	f	language:C++	class:webrtc::CriticalSectionWrapper	signature:()
+Create	system_wrapper/phone_event.cc	/^EventWrapper* EventWrapper::Create() {$/;"	f	language:C++	class:webrtc::EventWrapper	signature:()
+KeyPressed	system_wrapper/phone_event.cc	/^int EventWrapper::KeyPressed() {$/;"	f	language:C++	class:webrtc::EventWrapper	signature:()
+webrtc	system_wrapper/phone_event.cc	/^namespace webrtc {$/;"	n	language:C++	file:
+Construct	system_wrapper/phone_event_posix.cc	/^int EventPosix::Construct() {$/;"	f	language:C++	class:webrtc::EventPosix	signature:()
+Create	system_wrapper/phone_event_posix.cc	/^EventWrapper* EventPosix::Create() {$/;"	f	language:C++	class:webrtc::EventPosix	signature:()
+E6	system_wrapper/phone_event_posix.cc	/^const long int E6 = 1000000;$/;"	m	language:C++	namespace:webrtc	file:
+E9	system_wrapper/phone_event_posix.cc	/^const long int E9 = 1000 * E6;$/;"	m	language:C++	namespace:webrtc	file:
+EventPosix	system_wrapper/phone_event_posix.cc	/^EventPosix::EventPosix()$/;"	f	language:C++	class:webrtc::EventPosix	signature:()
+Process	system_wrapper/phone_event_posix.cc	/^bool EventPosix::Process() {$/;"	f	language:C++	class:webrtc::EventPosix	signature:()
+Reset	system_wrapper/phone_event_posix.cc	/^bool EventPosix::Reset() {$/;"	f	language:C++	class:webrtc::EventPosix	signature:()
+Run	system_wrapper/phone_event_posix.cc	/^bool EventPosix::Run(ThreadObj obj) {$/;"	f	language:C++	class:webrtc::EventPosix	signature:(ThreadObj obj)
+Set	system_wrapper/phone_event_posix.cc	/^bool EventPosix::Set() {$/;"	f	language:C++	class:webrtc::EventPosix	signature:()
+StartTimer	system_wrapper/phone_event_posix.cc	/^bool EventPosix::StartTimer(bool periodic, unsigned long time) {$/;"	f	language:C++	class:webrtc::EventPosix	signature:(bool periodic, unsigned long time)
+StopTimer	system_wrapper/phone_event_posix.cc	/^bool EventPosix::StopTimer() {$/;"	f	language:C++	class:webrtc::EventPosix	signature:()
+Wait	system_wrapper/phone_event_posix.cc	/^EventTypeWrapper EventPosix::Wait(timespec& wake_at) {$/;"	f	language:C++	class:webrtc::EventPosix	signature:(timespec& wake_at)
+Wait	system_wrapper/phone_event_posix.cc	/^EventTypeWrapper EventPosix::Wait(unsigned long timeout) {$/;"	f	language:C++	class:webrtc::EventPosix	signature:(unsigned long timeout)
+webrtc	system_wrapper/phone_event_posix.cc	/^namespace webrtc {$/;"	n	language:C++	file:
+~EventPosix	system_wrapper/phone_event_posix.cc	/^EventPosix::~EventPosix() {$/;"	f	language:C++	class:webrtc::EventPosix	signature:()
+Construct	system_wrapper/phone_event_posix.h	/^  int Construct();$/;"	p	language:C++	class:webrtc::EventPosix	signature:()
+Create	system_wrapper/phone_event_posix.h	/^  static EventWrapper* Create();$/;"	p	language:C++	class:webrtc::EventPosix	signature:()
+EventPosix	system_wrapper/phone_event_posix.h	/^  EventPosix();$/;"	p	language:C++	class:webrtc::EventPosix	signature:()
+EventPosix	system_wrapper/phone_event_posix.h	/^class EventPosix : public EventWrapper {$/;"	c	language:C++	namespace:webrtc
+Process	system_wrapper/phone_event_posix.h	/^  bool Process();$/;"	p	language:C++	class:webrtc::EventPosix	signature:()
+Reset	system_wrapper/phone_event_posix.h	/^  virtual bool Reset();$/;"	p	language:C++	class:webrtc::EventPosix	signature:()
+Run	system_wrapper/phone_event_posix.h	/^  static bool Run(ThreadObj obj);$/;"	p	language:C++	class:webrtc::EventPosix	signature:(ThreadObj obj)
+Set	system_wrapper/phone_event_posix.h	/^  virtual bool Set();$/;"	p	language:C++	class:webrtc::EventPosix	signature:()
+StartTimer	system_wrapper/phone_event_posix.h	/^  virtual bool StartTimer(bool periodic, unsigned long time);$/;"	p	language:C++	class:webrtc::EventPosix	signature:(bool periodic, unsigned long time)
+State	system_wrapper/phone_event_posix.h	/^enum State {$/;"	g	language:C++	namespace:webrtc
+StopTimer	system_wrapper/phone_event_posix.h	/^  virtual bool StopTimer();$/;"	p	language:C++	class:webrtc::EventPosix	signature:()
+WEBRTC_SYSTEM_WRAPPERS_SOURCE_EVENT_POSIX_H_	system_wrapper/phone_event_posix.h	12;"	d	language:C++
+Wait	system_wrapper/phone_event_posix.h	/^  EventTypeWrapper Wait(timespec& wake_at);$/;"	p	language:C++	class:webrtc::EventPosix	signature:(timespec& wake_at)
+Wait	system_wrapper/phone_event_posix.h	/^  virtual EventTypeWrapper Wait(unsigned long max_time);$/;"	p	language:C++	class:webrtc::EventPosix	signature:(unsigned long max_time)
+cond_	system_wrapper/phone_event_posix.h	/^  pthread_cond_t  cond_;$/;"	m	language:C++	class:webrtc::EventPosix
+count_	system_wrapper/phone_event_posix.h	/^  unsigned long count_;$/;"	m	language:C++	class:webrtc::EventPosix
+created_at_	system_wrapper/phone_event_posix.h	/^  timespec       created_at_;$/;"	m	language:C++	class:webrtc::EventPosix
+kDown	system_wrapper/phone_event_posix.h	/^  kDown = 2$/;"	e	language:C++	enum:webrtc::State
+kUp	system_wrapper/phone_event_posix.h	/^  kUp = 1,$/;"	e	language:C++	enum:webrtc::State
+mutex_	system_wrapper/phone_event_posix.h	/^  pthread_mutex_t mutex_;$/;"	m	language:C++	class:webrtc::EventPosix
+periodic_	system_wrapper/phone_event_posix.h	/^  bool          periodic_;$/;"	m	language:C++	class:webrtc::EventPosix
+state_	system_wrapper/phone_event_posix.h	/^  State         state_;$/;"	m	language:C++	class:webrtc::EventPosix
+time_	system_wrapper/phone_event_posix.h	/^  unsigned long time_;  \/\/ In ms$/;"	m	language:C++	class:webrtc::EventPosix
+timer_event_	system_wrapper/phone_event_posix.h	/^  EventPosix*    timer_event_;$/;"	m	language:C++	class:webrtc::EventPosix
+timer_thread_	system_wrapper/phone_event_posix.h	/^  ThreadWrapper* timer_thread_;$/;"	m	language:C++	class:webrtc::EventPosix
+webrtc	system_wrapper/phone_event_posix.h	/^namespace webrtc {$/;"	n	language:C++
+~EventPosix	system_wrapper/phone_event_posix.h	/^  virtual ~EventPosix();$/;"	p	language:C++	class:webrtc::EventPosix	signature:()
+Create	system_wrapper/phone_event_wrapper.h	/^  static EventWrapper* Create();$/;"	p	language:C++	class:webrtc::EventWrapper	signature:()
+EventTypeWrapper	system_wrapper/phone_event_wrapper.h	/^enum EventTypeWrapper {$/;"	g	language:C++	namespace:webrtc
+EventWrapper	system_wrapper/phone_event_wrapper.h	/^class EventWrapper {$/;"	c	language:C++	namespace:webrtc
+KeyPressed	system_wrapper/phone_event_wrapper.h	/^  static int KeyPressed();$/;"	p	language:C++	class:webrtc::EventWrapper	signature:()
+Reset	system_wrapper/phone_event_wrapper.h	/^  virtual bool Reset() = 0;$/;"	p	language:C++	class:webrtc::EventWrapper	signature:()
+Set	system_wrapper/phone_event_wrapper.h	/^  virtual bool Set() = 0;$/;"	p	language:C++	class:webrtc::EventWrapper	signature:()
+StartTimer	system_wrapper/phone_event_wrapper.h	/^  virtual bool StartTimer(bool periodic, unsigned long time) = 0;$/;"	p	language:C++	class:webrtc::EventWrapper	signature:(bool periodic, unsigned long time)
+StopTimer	system_wrapper/phone_event_wrapper.h	/^  virtual bool StopTimer() = 0;$/;"	p	language:C++	class:webrtc::EventWrapper	signature:()
+WEBRTC_EVENT_10_SEC	system_wrapper/phone_event_wrapper.h	21;"	d	language:C++
+WEBRTC_EVENT_INFINITE	system_wrapper/phone_event_wrapper.h	22;"	d	language:C++
+WEBRTC_SYSTEM_WRAPPERS_INTERFACE_EVENT_WRAPPER_H_	system_wrapper/phone_event_wrapper.h	12;"	d	language:C++
+Wait	system_wrapper/phone_event_wrapper.h	/^  virtual EventTypeWrapper Wait(unsigned long max_time) = 0;$/;"	p	language:C++	class:webrtc::EventWrapper	signature:(unsigned long max_time)
+kEventError	system_wrapper/phone_event_wrapper.h	/^  kEventError = 2,$/;"	e	language:C++	enum:webrtc::EventTypeWrapper
+kEventSignaled	system_wrapper/phone_event_wrapper.h	/^  kEventSignaled = 1,$/;"	e	language:C++	enum:webrtc::EventTypeWrapper
+kEventTimeout	system_wrapper/phone_event_wrapper.h	/^  kEventTimeout = 3$/;"	e	language:C++	enum:webrtc::EventTypeWrapper
+webrtc	system_wrapper/phone_event_wrapper.h	/^namespace webrtc {$/;"	n	language:C++
+~EventWrapper	system_wrapper/phone_event_wrapper.h	/^  virtual ~EventWrapper() {}$/;"	f	language:C++	class:webrtc::EventWrapper	signature:()
+SleepMs	system_wrapper/phone_sleep.cc	/^void SleepMs(int msecs) {$/;"	f	language:C++	namespace:webrtc	signature:(int msecs)
+webrtc	system_wrapper/phone_sleep.cc	/^namespace webrtc {$/;"	n	language:C++	file:
+SleepMs	system_wrapper/phone_sleep.h	/^void SleepMs(int msecs);$/;"	p	language:C++	namespace:webrtc	signature:(int msecs)
+WEBRTC_SYSTEM_WRAPPERS_INTERFACE_SLEEP_H_	system_wrapper/phone_sleep.h	13;"	d	language:C++
+webrtc	system_wrapper/phone_sleep.h	/^namespace webrtc {$/;"	n	language:C++
+CreateThread	system_wrapper/phone_thread.cc	/^ThreadWrapper* ThreadWrapper::CreateThread(ThreadRunFunction func,$/;"	f	language:C++	class:webrtc::ThreadWrapper	signature:(ThreadRunFunction func, ThreadObj obj, ThreadPriority prio, const char* thread_name)
+webrtc	system_wrapper/phone_thread.cc	/^namespace webrtc {$/;"	n	language:C++	file:
+Construct	system_wrapper/phone_thread_posix.cc	/^int ThreadPosix::Construct() {$/;"	f	language:C++	class:webrtc::ThreadPosix	signature:()
+ConvertToSystemPriority	system_wrapper/phone_thread_posix.cc	/^int ConvertToSystemPriority(ThreadPriority priority, int min_prio,$/;"	f	language:C++	namespace:webrtc	signature:(ThreadPriority priority, int min_prio, int max_prio)
+Create	system_wrapper/phone_thread_posix.cc	/^ThreadWrapper* ThreadPosix::Create(ThreadRunFunction func, ThreadObj obj,$/;"	f	language:C++	class:webrtc::ThreadPosix	signature:(ThreadRunFunction func, ThreadObj obj, ThreadPriority prio, const char* thread_name)
+GetThreadId	system_wrapper/phone_thread_posix.cc	/^uint32_t ThreadWrapper::GetThreadId() {$/;"	f	language:C++	class:webrtc::ThreadWrapper	signature:()
+HAS_THREAD_ID	system_wrapper/phone_thread_posix.cc	179;"	d	language:C++	file:
+Run	system_wrapper/phone_thread_posix.cc	/^void ThreadPosix::Run() {$/;"	f	language:C++	class:webrtc::ThreadPosix	signature:()
+SetAffinity	system_wrapper/phone_thread_posix.cc	/^bool ThreadPosix::SetAffinity(const int* , const unsigned int) {$/;"	f	language:C++	class:webrtc::ThreadPosix	signature:(const int* , const unsigned int)
+SetAffinity	system_wrapper/phone_thread_posix.cc	/^bool ThreadPosix::SetAffinity(const int* processor_numbers,$/;"	f	language:C++	class:webrtc::ThreadPosix	signature:(const int* processor_numbers, const unsigned int amount_of_processors)
+SetNotAlive	system_wrapper/phone_thread_posix.cc	/^void ThreadPosix::SetNotAlive() {$/;"	f	language:C++	class:webrtc::ThreadPosix	signature:()
+Start	system_wrapper/phone_thread_posix.cc	/^bool ThreadPosix::Start(unsigned int& thread_id)$/;"	f	language:C++	class:webrtc::ThreadPosix	signature:(unsigned int& thread_id)
+StartThread	system_wrapper/phone_thread_posix.cc	/^  static void* StartThread(void* lp_parameter) {$/;"	f	language:C++	file:	signature:(void* lp_parameter)
+Stop	system_wrapper/phone_thread_posix.cc	/^bool ThreadPosix::Stop() {$/;"	f	language:C++	class:webrtc::ThreadPosix	signature:()
+ThreadPosix	system_wrapper/phone_thread_posix.cc	/^ThreadPosix::ThreadPosix(ThreadRunFunction func, ThreadObj obj,$/;"	f	language:C++	class:webrtc::ThreadPosix	signature:(ThreadRunFunction func, ThreadObj obj, ThreadPriority prio, const char* thread_name)
+WEBRTC_MIPSEL_FOR_PHONE_	system_wrapper/phone_thread_posix.cc	241;"	d	language:C++	file:
+webrtc	system_wrapper/phone_thread_posix.cc	/^namespace webrtc {$/;"	n	language:C++	file:
+~ThreadPosix	system_wrapper/phone_thread_posix.cc	/^ThreadPosix::~ThreadPosix() {$/;"	f	language:C++	class:webrtc::ThreadPosix	signature:()
+Construct	system_wrapper/phone_thread_posix.h	/^  int Construct();$/;"	p	language:C++	class:webrtc::ThreadPosix	signature:()
+ConvertToSystemPriority	system_wrapper/phone_thread_posix.h	/^int ConvertToSystemPriority(ThreadPriority priority, int min_prio,$/;"	p	language:C++	namespace:webrtc	signature:(ThreadPriority priority, int min_prio, int max_prio)
+Create	system_wrapper/phone_thread_posix.h	/^  static ThreadWrapper* Create(ThreadRunFunction func, ThreadObj obj,$/;"	p	language:C++	class:webrtc::ThreadPosix	signature:(ThreadRunFunction func, ThreadObj obj, ThreadPriority prio, const char* thread_name)
+CriticalSectionWrapper	system_wrapper/phone_thread_posix.h	/^class CriticalSectionWrapper;$/;"	x	language:C++
+EventWrapper	system_wrapper/phone_thread_posix.h	/^class EventWrapper;$/;"	x	language:C++
+Run	system_wrapper/phone_thread_posix.h	/^  void Run();$/;"	p	language:C++	class:webrtc::ThreadPosix	signature:()
+SetAffinity	system_wrapper/phone_thread_posix.h	/^  virtual bool SetAffinity(const int* processor_numbers,$/;"	p	language:C++	class:webrtc::ThreadPosix	signature:(const int* processor_numbers, unsigned int amount_of_processors)
+SetNotAlive	system_wrapper/phone_thread_posix.h	/^  virtual void SetNotAlive();$/;"	p	language:C++	class:webrtc::ThreadPosix	signature:()
+Start	system_wrapper/phone_thread_posix.h	/^  virtual bool Start(unsigned int& id);$/;"	p	language:C++	class:webrtc::ThreadPosix	signature:(unsigned int& id)
+Stop	system_wrapper/phone_thread_posix.h	/^  virtual bool Stop();$/;"	p	language:C++	class:webrtc::ThreadPosix	signature:()
+ThreadPosix	system_wrapper/phone_thread_posix.h	/^  ThreadPosix(ThreadRunFunction func, ThreadObj obj, ThreadPriority prio,$/;"	p	language:C++	class:webrtc::ThreadPosix	signature:(ThreadRunFunction func, ThreadObj obj, ThreadPriority prio, const char* thread_name)
+ThreadPosix	system_wrapper/phone_thread_posix.h	/^class ThreadPosix : public ThreadWrapper {$/;"	c	language:C++	namespace:webrtc
+WEBRTC_SYSTEM_WRAPPERS_SOURCE_THREAD_POSIX_H_	system_wrapper/phone_thread_posix.h	12;"	d	language:C++
+alive_	system_wrapper/phone_thread_posix.h	/^  bool                    alive_;$/;"	m	language:C++	class:webrtc::ThreadPosix
+attr_	system_wrapper/phone_thread_posix.h	/^  pthread_attr_t          attr_;$/;"	m	language:C++	class:webrtc::ThreadPosix
+crit_state_	system_wrapper/phone_thread_posix.h	/^  CriticalSectionWrapper* crit_state_;  \/\/ Protects alive_ and dead_$/;"	m	language:C++	class:webrtc::ThreadPosix
+dead_	system_wrapper/phone_thread_posix.h	/^  bool                    dead_;$/;"	m	language:C++	class:webrtc::ThreadPosix
+event_	system_wrapper/phone_thread_posix.h	/^  EventWrapper*           event_;$/;"	m	language:C++	class:webrtc::ThreadPosix
+name_	system_wrapper/phone_thread_posix.h	/^  char                    name_[kThreadMaxNameLength];$/;"	m	language:C++	class:webrtc::ThreadPosix
+obj_	system_wrapper/phone_thread_posix.h	/^  ThreadObj           obj_;$/;"	m	language:C++	class:webrtc::ThreadPosix
+pid_	system_wrapper/phone_thread_posix.h	/^  pid_t                   pid_;$/;"	m	language:C++	class:webrtc::ThreadPosix
+prio_	system_wrapper/phone_thread_posix.h	/^  ThreadPriority          prio_;$/;"	m	language:C++	class:webrtc::ThreadPosix
+run_function_	system_wrapper/phone_thread_posix.h	/^  ThreadRunFunction   run_function_;$/;"	m	language:C++	class:webrtc::ThreadPosix
+set_thread_name_	system_wrapper/phone_thread_posix.h	/^  bool                    set_thread_name_;$/;"	m	language:C++	class:webrtc::ThreadPosix
+thread_	system_wrapper/phone_thread_posix.h	/^  pthread_t               thread_;$/;"	m	language:C++	class:webrtc::ThreadPosix
+webrtc	system_wrapper/phone_thread_posix.h	/^namespace webrtc {$/;"	n	language:C++
+~ThreadPosix	system_wrapper/phone_thread_posix.h	/^  ~ThreadPosix();$/;"	p	language:C++	class:webrtc::ThreadPosix	signature:()
+CreateThread	system_wrapper/phone_thread_wrapper.h	/^  static ThreadWrapper* CreateThread(ThreadRunFunction func,$/;"	p	language:C++	class:webrtc::ThreadWrapper	signature:(ThreadRunFunction func, ThreadObj obj, ThreadPriority prio = kNormalPriority, const char* thread_name = 0)
+GetThreadId	system_wrapper/phone_thread_wrapper.h	/^  static uint32_t GetThreadId();$/;"	p	language:C++	class:webrtc::ThreadWrapper	signature:()
+SetAffinity	system_wrapper/phone_thread_wrapper.h	/^  virtual bool SetAffinity(const int* processor_numbers,$/;"	f	language:C++	class:webrtc::ThreadWrapper	signature:(const int* processor_numbers, const unsigned int amount_of_processors)
+SetNotAlive	system_wrapper/phone_thread_wrapper.h	/^  virtual void SetNotAlive() = 0;$/;"	p	language:C++	class:webrtc::ThreadWrapper	signature:()
+Start	system_wrapper/phone_thread_wrapper.h	/^  virtual bool Start(unsigned int& id) = 0;$/;"	p	language:C++	class:webrtc::ThreadWrapper	signature:(unsigned int& id)
+Stop	system_wrapper/phone_thread_wrapper.h	/^  virtual bool Stop() = 0;$/;"	p	language:C++	class:webrtc::ThreadWrapper	signature:()
+ThreadObj	system_wrapper/phone_thread_wrapper.h	26;"	d	language:C++
+ThreadPriority	system_wrapper/phone_thread_wrapper.h	/^enum ThreadPriority {$/;"	g	language:C++	namespace:webrtc
+ThreadRunFunction	system_wrapper/phone_thread_wrapper.h	/^typedef bool(*ThreadRunFunction)(ThreadObj);$/;"	t	language:C++	namespace:webrtc
+ThreadWrapper	system_wrapper/phone_thread_wrapper.h	/^class ThreadWrapper {$/;"	c	language:C++	namespace:webrtc
+WEBRTC_SYSTEM_WRAPPERS_INTERFACE_THREAD_WRAPPER_H_	system_wrapper/phone_thread_wrapper.h	17;"	d	language:C++
+kHighPriority	system_wrapper/phone_thread_wrapper.h	/^  kHighPriority = 3,$/;"	e	language:C++	enum:webrtc::ThreadPriority
+kHighestPriority	system_wrapper/phone_thread_wrapper.h	/^  kHighestPriority = 4,$/;"	e	language:C++	enum:webrtc::ThreadPriority
+kLowPriority	system_wrapper/phone_thread_wrapper.h	/^  kLowPriority = 1,$/;"	e	language:C++	enum:webrtc::ThreadPriority
+kNormalPriority	system_wrapper/phone_thread_wrapper.h	/^  kNormalPriority = 2,$/;"	e	language:C++	enum:webrtc::ThreadPriority
+kRealtimePriority	system_wrapper/phone_thread_wrapper.h	/^  kRealtimePriority = 5$/;"	e	language:C++	enum:webrtc::ThreadPriority
+kThreadMaxNameLength	system_wrapper/phone_thread_wrapper.h	/^  enum {kThreadMaxNameLength = 64};$/;"	e	language:C++	enum:webrtc::ThreadWrapper::__anon19
+webrtc	system_wrapper/phone_thread_wrapper.h	/^namespace webrtc {$/;"	n	language:C++
+~ThreadWrapper	system_wrapper/phone_thread_wrapper.h	/^  virtual ~ThreadWrapper() {};$/;"	f	language:C++	class:webrtc::ThreadWrapper	signature:()
+G_CONST	system_wrapper/phone_typedefs.h	19;"	d	language:C++
+OVERRIDE	system_wrapper/phone_typedefs.h	101;"	d	language:C++
+OVERRIDE	system_wrapper/phone_typedefs.h	103;"	d	language:C++
+OVERRIDE	system_wrapper/phone_typedefs.h	99;"	d	language:C++
+WEBRTC_ARCH_32_BITS	system_wrapper/phone_typedefs.h	42;"	d	language:C++
+WEBRTC_ARCH_32_BITS	system_wrapper/phone_typedefs.h	53;"	d	language:C++
+WEBRTC_ARCH_32_BITS	system_wrapper/phone_typedefs.h	57;"	d	language:C++
+WEBRTC_ARCH_64_BITS	system_wrapper/phone_typedefs.h	36;"	d	language:C++
+WEBRTC_ARCH_LITTLE_ENDIAN	system_wrapper/phone_typedefs.h	37;"	d	language:C++
+WEBRTC_ARCH_LITTLE_ENDIAN	system_wrapper/phone_typedefs.h	43;"	d	language:C++
+WEBRTC_ARCH_LITTLE_ENDIAN	system_wrapper/phone_typedefs.h	54;"	d	language:C++
+WEBRTC_ARCH_LITTLE_ENDIAN	system_wrapper/phone_typedefs.h	58;"	d	language:C++
+WEBRTC_ARCH_X86	system_wrapper/phone_typedefs.h	41;"	d	language:C++
+WEBRTC_ARCH_X86_64	system_wrapper/phone_typedefs.h	35;"	d	language:C++
+WEBRTC_ARCH_X86_FAMILY	system_wrapper/phone_typedefs.h	34;"	d	language:C++
+WEBRTC_ARCH_X86_FAMILY	system_wrapper/phone_typedefs.h	40;"	d	language:C++
+WEBRTC_LITTLE_ENDIAN	system_wrapper/phone_typedefs.h	38;"	d	language:C++
+WEBRTC_LITTLE_ENDIAN	system_wrapper/phone_typedefs.h	44;"	d	language:C++
+WEBRTC_LITTLE_ENDIAN	system_wrapper/phone_typedefs.h	55;"	d	language:C++
+WEBRTC_LITTLE_ENDIAN	system_wrapper/phone_typedefs.h	59;"	d	language:C++
+WEBRTC_POSIX	system_wrapper/phone_typedefs.h	25;"	d	language:C++
+WEBRTC_TYPEDEFS_H_	system_wrapper/phone_typedefs.h	15;"	d	language:C++
+WEBRTC_USE_SSE2	system_wrapper/phone_typedefs.h	65;"	d	language:C++
+WebRtc_UWord16	system_wrapper/phone_typedefs.h	/^typedef uint16_t            WebRtc_UWord16;$/;"	t	language:C++
+WebRtc_UWord32	system_wrapper/phone_typedefs.h	/^typedef uint32_t            WebRtc_UWord32;$/;"	t	language:C++
+WebRtc_UWord64	system_wrapper/phone_typedefs.h	/^typedef uint64_t            WebRtc_UWord64;$/;"	t	language:C++
+WebRtc_UWord8	system_wrapper/phone_typedefs.h	/^typedef uint8_t             WebRtc_UWord8;$/;"	t	language:C++
+WebRtc_Word16	system_wrapper/phone_typedefs.h	/^typedef int16_t             WebRtc_Word16;$/;"	t	language:C++
+WebRtc_Word32	system_wrapper/phone_typedefs.h	/^typedef int32_t             WebRtc_Word32;$/;"	t	language:C++
+WebRtc_Word64	system_wrapper/phone_typedefs.h	/^typedef int64_t             WebRtc_Word64;$/;"	t	language:C++
+WebRtc_Word8	system_wrapper/phone_typedefs.h	/^typedef int8_t              WebRtc_Word8;$/;"	t	language:C++
+int16_t	system_wrapper/phone_typedefs.h	/^typedef signed short        int16_t;$/;"	t	language:C++
+int32_t	system_wrapper/phone_typedefs.h	/^typedef signed int          int32_t;$/;"	t	language:C++
+int64_t	system_wrapper/phone_typedefs.h	/^typedef __int64             int64_t;$/;"	t	language:C++
+int8_t	system_wrapper/phone_typedefs.h	/^typedef signed char         int8_t;$/;"	t	language:C++
+uint16_t	system_wrapper/phone_typedefs.h	/^typedef unsigned short      uint16_t;$/;"	t	language:C++
+uint32_t	system_wrapper/phone_typedefs.h	/^typedef unsigned int        uint32_t;$/;"	t	language:C++
+uint64_t	system_wrapper/phone_typedefs.h	/^typedef unsigned __int64    uint64_t;$/;"	t	language:C++
+uint8_t	system_wrapper/phone_typedefs.h	/^typedef unsigned char       uint8_t;$/;"	t	language:C++

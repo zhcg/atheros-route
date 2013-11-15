@@ -1,0 +1,14 @@
+src/*.lo
+src/*.la
+src/.libs/
+src/.deps/
+tests/*.o
+tests/bench
+tests/echo
+tests/mediastream
+tests/mtudiscover
+tests/ring
+tests/tones
+tests/.libs/
+tests/.deps/
+

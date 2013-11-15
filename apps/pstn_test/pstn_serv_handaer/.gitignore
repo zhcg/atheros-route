@@ -1,0 +1,10 @@
+system_wrapper/*.o
+*.o
+phone_serv_handaer_19200
+phone_serv_19200
+
+reserve/
+serial_test.ccbak
+s_test
+stub/
+

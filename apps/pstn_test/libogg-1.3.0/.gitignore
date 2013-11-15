@@ -1,0 +1,8 @@
+src/.libs/
+src/.deps/
+src/*.lo
+src/*.la
+src/*.o
+src/test_bitwise
+src/test_framing
+
