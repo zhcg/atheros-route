@@ -6,6 +6,9 @@
 mount -a
 mount -o remount +w /
 
+#added by yhl 2013.11.13
+mknod /dev/ppp c 108 0
+mkdir -p /var/local/tmp/ppp/status
 #
 # Mount the RAM filesystem to /tmp
 #

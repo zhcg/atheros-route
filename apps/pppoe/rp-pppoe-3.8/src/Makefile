@@ -33,7 +33,7 @@ STRIP=$(if $(STRIP_),$(STRIP_),strip)
 
 # Plugin for pppd on Linux
 LINUX_KERNELMODE_PLUGIN=
-PPPD_INCDIR=../../ppp-2.4.4
+PPPD_INCDIR=../../ppp-2.4.5
 
 # Licensed version
 LIC_INCDIR=
@@ -53,7 +53,7 @@ PPPD_PATH=/usr/local/sbin/pppd
 
 
 # Kernel-mode plugin gets installed here.
-PLUGIN_DIR=/usr/local/lib/pppd/2.4.4
+PLUGIN_DIR=/usr/local/lib/pppd/2.4.5
 PLUGIN_PATH=$(PLUGIN_DIR)/rp-pppoe.so
 
 # Configuration file paths
@@ -65,7 +65,8 @@ PATHS='-DPPPOE_PATH="$(PPPOE_PATH)"' '-DPPPD_PATH="$(PPPD_PATH)"' \
 
 CFLAGS= -g -O2 -Wall -Wstrict-prototypes -ansi $(LIC_INCDIR) $(DEFINES) $(LIC_DEFINE) $(PATHS) -Ilibevent
 #TARGETS=pppoe pppoe-server pppoe-sniff pppoe-relay
-TARGETS=pppoe-server pppoe rp-pppoe-dir rp-pppoe.so
+#pppoe-sniff,pppoe-relay added by yhl 2013.11.4
+TARGETS=pppoe-server pppoe rp-pppoe-dir rp-pppoe.so pppoe-sniff pppoe-relay
 PPPOE_SERVER_LIBS=$(LIC_LIBDIR) $(LIC_LIB)
 
 all: $(TARGETS)
