@@ -101,7 +101,7 @@ else
 ifeq ($(strip ${ATH_SUPPORT_SPECTRAL}),1)
 db12x_build: common_mainline driver_build usb_build pci_build spectral_app_build $(BUILD_TYPE)_build art_mod
 else
-db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si3000_build si3000_app stm32_build stm32_app $(fs_build) makeoneimage 
+db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si3000_build si3000_app stm32_build stm32_app  pppoe_build  $(fs_build) makeoneimage 
 #db12x_build: common_mainline i2s_build athplay_tools_fus usb_build $(fs_build)
 #db12x_build: common_mainline slic_build slic_app i2s_build athplay_tools_fus $(fs_build)
 #db12x_build: common_mainline gateway_build slic_build slic_app $(fs_build)
@@ -130,6 +130,25 @@ endif
 #	lzma_uimage kernel_info enet_build busybox_build wpa2 \
 #	uboot_mainline sar cgi
 
+#
+#pppoe_build added by yhl 2013.10.29
+#
+pppoe_build:
+#	export INSTALL_ROOT=$(TOPDIR)/rootfs-$(BOARD_TYPE)$(BUILD_CONFIG)$(BUILD_EXT)$(NAND).build \
+	echo "*************yhl**************"
+	cd $(TOPDIR)/apps/pppoe && make clean && make
+	cp $(TOPDIR)/apps/pppoe/ppp-2.4.5/pppd/pppd $(INSTALL_ROOT)/usr/sbin
+	cp $(TOPDIR)/apps/pppoe/rp-pppoe-3.8/src/pppoe $(INSTALL_ROOT)/usr/sbin
+	cp $(TOPDIR)/apps/pppoe/rp-pppoe-3.8/src/pppoe-server $(INSTALL_ROOT)/usr/sbin
+	cp $(TOPDIR)/apps/pppoe/rp-pppoe-3.8/src/pppoe_start $(INSTALL_ROOT)/usr/sbin
+	cp $(TOPDIR)/apps/pppoe/rp-pppoe-3.8/src/pap-secrets $(INSTALL_ROOT)/usr/sbin
+	cp $(TOPDIR)/apps/pppoe/rp-pppoe-3.8/src/options $(INSTALL_ROOT)/usr/sbin
+	cp $(TOPDIR)/apps/pppoe/rp-pppoe-3.8/src/rp-pppoe.so $(INSTALL_ROOT)/usr/sbin
+	cp $(TOPDIR)/apps/pppoe/rp-pppoe-3.8/src/pppoe-sniff $(INSTALL_ROOT)/usr/sbin
+	cp $(TOPDIR)/apps/pppoe/rp-pppoe-3.8/src/pppoe-relay $(INSTALL_ROOT)/usr/sbin
+	mkdir $(INSTALL_ROOT)/etc/ppp
+	cp -ra $(TOPDIR)/apps/pppoe/rp-pppoe-3.8/configs/* $(INSTALL_ROOT)/etc/ppp
+	cp -ra $(TOPDIR)/apps/pppoe/rp-pppoe-3.8/scripts/* $(INSTALL_ROOT)/usr/sbin
 
 iptables_build:
 	@echo making iptables
