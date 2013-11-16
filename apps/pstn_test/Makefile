@@ -35,10 +35,15 @@ LIBOGG_SO = libogg.so
 LIBOGG_SO_0 = libogg.so.0
 LIBOGG_SO_0_8_0 = libogg.so.0.8.0
 
-all: libmediastreamer  libspirt  pstn_app
+all: libmediastreamer  libspirt socket_dep  pstn_app
 
-pstn_app: libmediastreamer  libspirt
+
+pstn_app: libmediastreamer  libspirt  socket_dep
 	make -C $(DIR_PSTN_APP)
+
+socket_dep:
+	@echo $(TOOLPATH)	
+	cp -af ./socket.h $(TOOLPATH)include/bits/
 
 libspirt:
 	make -C $(DIR_LIBSPIRT) clean
