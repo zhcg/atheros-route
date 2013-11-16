@@ -580,9 +580,11 @@ ssize_t ath_slic_read(struct file * filp, char __user * buf,
 		dma_cache_sync(NULL, scbuf[tail].bf_vaddr, desc[tail].length, DMA_FROM_DEVICE);
 
 		desc[tail].rsvd2 = 0;
+#if 0
 		for(index = 0; index < desc[tail].length; index = index + 2){	
 			le16_to_cpus(scbuf[tail].bf_vaddr + index); 
 		} 
+#endif
 		retval = copy_to_user(buf + offset, scbuf[tail].bf_vaddr, desc[tail].length);
 		//			printk("copy_to_user....\n");
 		if (retval)
@@ -665,7 +667,7 @@ ssize_t ath_slic_write(struct file * filp, const char __user * buf,
 		//		printk("copy_from_user = %d \n",desc[tail].length);
 		if (retval)
 			return retval;
-#if 1
+#if 0
 		for(index = 0; index < desc[tail].length; index = index + 2){
 			cpu_to_le16s(scbuf[tail].bf_vaddr + index);
 		} 
