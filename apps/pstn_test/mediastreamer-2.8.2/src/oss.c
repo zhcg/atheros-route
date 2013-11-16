@@ -181,7 +181,7 @@ static int hs_configure_fd(int fd, int vol,int bits,int stereo, int rate, int *m
 	TX PGA Gain Control.
 	11111= 12 dB
 	10111= 0 dB
-	00000= 每34.5 dB
+	00000= “C34.5 dB
 	LSB= 1.5 dB
 	1
 	SLM
@@ -273,7 +273,7 @@ static int hs_configure_fd(int fd, int vol,int bits,int stereo, int rate, int *m
 	RX PGA Gain Control.
 	11111= 12 dB
 	10111= 0 dB
-	00000= 每34.5 dB
+	00000= “C34.5 dB
 	LSB= 1.5 dB
 	1
 	LOM
@@ -335,9 +335,9 @@ static int hs_configure_fd(int fd, int vol,int bits,int stereo, int rate, int *m
 	3:2
 	LOT
 	Line Out Attenuation.
-	11 = 每18 dB analog attenuation on Line Output.
-	10 = 每12 dB analog attenuation on Line Output.
-	01 = 每6 dB analog attenuation on Line Output.
+	11 = “C18 dB analog attenuation on Line Output.
+	10 = “C12 dB analog attenuation on Line Output.
+	01 = “C6 dB analog attenuation on Line Output.
 	00 = 0 dB analog attenuation on Line Output.
 	*/
 	//01 <==
@@ -354,7 +354,7 @@ static int hs_configure_fd(int fd, int vol,int bits,int stereo, int rate, int *m
 	TX PGA Gain Control.
 	11111= 12 dB
 	10111= 0 dB
-	00000= 每34.5 dB
+	00000= “C34.5 dB
 	LSB= 1.5 dB
 	*/
 	//11000<==
@@ -400,7 +400,7 @@ static int hs_configure_fd(int fd, int vol,int bits,int stereo, int rate, int *m
 	RX PGA Gain Control.
 	11111= 12 dB
 	10111= 0 dB
-	00000= 每34.5 dB
+	00000= “C34.5 dB
 	LSB= 1.5 dB  
 	*/
 	//11000 <==

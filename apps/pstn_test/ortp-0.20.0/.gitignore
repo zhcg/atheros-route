@@ -1,6 +1,0 @@
-src/.libs/
-src/*.lo
-src/*.la
-src/.deps/
-src/tests/.deps/
-src/tests/
