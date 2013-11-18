@@ -58,6 +58,7 @@ libmediastreamer: libspeex libortp
 	echo "                                         "
 	echo "                                         "
 	cd $(DIR_LIBMEDIASTREAMER); \
+	./autogen.sh; \
 	./configure --prefix=$(shell pwd)/$(DIR_LIBMEDIASTREAMER)/../phone --host=mips-linux --with-gnu-ld --disable-static  --enable-macsnd=no --enable-video=no --enable-tests --disable-gsm PKG_CONFIG_PATH=$(shell pwd)/$(DIR_LIBMEDIASTREAMER)/../phone/lib/pkgconfig ;\
 	make ; make install	
 	
@@ -67,6 +68,8 @@ libmediastreamer: libspeex libortp
 
 
 libortp:
+	rm -rf $(DIR_LIBORTP);\
+	tar xvzf ortp-0.20.0.tar.gz; \
 	cd $(DIR_LIBORTP); \
 	./configure --prefix=$(shell pwd)/$(DIR_LIBORTP)/../phone --host=mips-linux --with-gnu-ld --disable-static ;\
 	make ;make install
@@ -98,8 +101,11 @@ clean:
 	$(MAKE) -C $(DIR_LIBORTP) clean 
 	$(MAKE) -C $(DIR_LIBSPEEX) uninstall 
 	$(MAKE) -C $(DIR_LIBSPEEX) clean 
-	$(MAKE) -C $(DIR_LIBMEDIASTREAMER) uninstall 
-	$(MAKE) -C $(DIR_LIBMEDIASTREAMER) clean 
+	if test -f  mediastreamer-2.8.2/Makefile ; then echo mediastreamer-2.8.2/Makefile exist;\
+		$(MAKE) -C $(DIR_LIBMEDIASTREAMER) uninstall ;\
+		$(MAKE) -C $(DIR_LIBMEDIASTREAMER) clean ; \
+	else echo mediastreamer-2.8.2/Makefile not exist; \
+	fi
 
 	$(MAKE) -C $(DIR_LIBSPIRT) clean
 
