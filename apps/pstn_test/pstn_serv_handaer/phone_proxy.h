@@ -73,7 +73,7 @@ class PhoneProxy{
 			REMOTE_AUDIO_PORT = 55556,
 			PAYLOAD_PCMU = 0,
 			TIMEOUT_TRANS = 60,
-			OPTION_INTERVAL = 5,
+			OPTION_INTERVAL = 60, // for heartbeat 60s
 			TIMEOUT_INCOMING = 5,
 			RING_INTERVAL = 2000,
 
