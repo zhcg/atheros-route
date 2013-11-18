@@ -152,3 +152,7 @@ insmod /lib/modules/2.6.31/stm32/ath_spi_stm32.ko
 
 mkdir -p /var/terminal_init/log
 
+cd /bin 
+./spi_rt_main & 
+/bin/phone_serv_19200 &
+
