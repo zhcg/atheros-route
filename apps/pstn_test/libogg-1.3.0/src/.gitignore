@@ -1,0 +1,11 @@
+.deps
+.libs
+*.o
+*.lo
+*.la
+test_bitwise
+test_framing
+Makefile
+
+
+

@@ -1,4 +1,6 @@
-Doxyfile
+.deps
+.libs
+*.o
+
 Makefile
 Makefile.in
-

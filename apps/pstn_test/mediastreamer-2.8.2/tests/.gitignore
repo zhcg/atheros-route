@@ -1,0 +1,13 @@
+Makefile.in
+Makefile
+.deps
+.libs
+echo
+mediastream
+ring
+videodisplay
+bench
+mtudiscover
+*.o
+tones
+

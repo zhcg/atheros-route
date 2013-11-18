@@ -1,0 +1,10 @@
+config.h
+config.log
+config.status
+libtool
+Makefile
+ogg.pc
+ogg-uninstalled.pc
+stamp-h1
+
+
