@@ -331,7 +331,8 @@ static int volume_set_ea_sustain(MSFilter *f, void *arg){
 
 static int volume_enable_noise_gate(MSFilter *f, void *arg){
 	Volume *v=(Volume*)f->data;
-	v->noise_gate_enabled=*(int*)arg;
+	//v->noise_gate_enabled=*(int*)arg;
+	v->noise_gate_enabled=*(unsigned char*)arg;
 	if (v->noise_gate_enabled){
 		v->gain = v->target_gain = v->ng_floorgain; // start with floorgain (soft start)
 	}
