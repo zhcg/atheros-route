@@ -155,4 +155,7 @@ mkdir -p /var/terminal_init/log
 cd /bin 
 ./spi_rt_main & 
 /bin/phone_serv_19200 &
+terminal_dev_register &
+swipe_card &
+monitor_application  &
 

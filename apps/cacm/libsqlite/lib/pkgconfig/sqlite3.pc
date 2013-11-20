@@ -1,0 +1,13 @@
+# Package Information for pkg-config
+
+prefix=/home/newdisk_1205/yangjl/sqlite/sqlite-autoconf-3080100/sqlite-mips-linux
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: SQLite
+Description: SQL database engine
+Version: 3.8.1
+Libs: -L${libdir} -lsqlite3
+Libs.private: -ldl -lpthread 
+Cflags: -I${includedir}
