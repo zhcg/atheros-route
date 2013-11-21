@@ -1,6 +1,6 @@
 # libspeexdsp pkg-config source file
 
-prefix=/home/chenchunsheng/20131118_compiletest/9344/apps/pstn_test/speex-1.2rc1/../phone
+prefix=/home/xutianbao/9344/apps/pstn_test/speex-1.2rc1/../phone
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include
