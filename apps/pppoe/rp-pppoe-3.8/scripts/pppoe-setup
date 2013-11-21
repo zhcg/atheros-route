@@ -86,8 +86,9 @@ while [ true ] ; do
     $ECHO "USER NAME"
     $ECHO ""
     printf "%s" ">>> Enter your PPPoE user name (default $USER): "
-    read U
-
+#    read U
+    U=$1
+    
     if [ "$U" = "" ] ; then
 	U="$USER"
     fi
@@ -103,8 +104,8 @@ while [ true ] ; do
     $ECHO "For Solaris, this is likely to be something like /dev/hme0."
     $ECHO "For Linux, it will be ethn, where 'n' is a number."
     printf "%s" "(default $ETH): "
-    read E
-
+#    read E
+    E=""
     if [ "$E" = "" ] ; then
 	E="$ETH"
     fi
@@ -117,7 +118,8 @@ while [ true ] ; do
     $ECHO "NOTE: Demand-activated links do not interact well with dynamic IP"
     $ECHO "addresses.  You may have some problems with demand-activated links."
     printf "%s" ">>> Enter the demand value (default $DEMAND): "
-    read D
+#    read D
+    D=""
     if [ "$D" = "" ] ; then
 	D=$DEMAND
     fi
@@ -132,8 +134,8 @@ while [ true ] ; do
     $ECHO "doing and not modify your DNS setup."
     printf "%s" ">>> Enter the DNS information here: "
 
-    read DNS1
-
+#    read DNS1
+    DNS1=""
 
     if [ "$DNS1" != "" ] ; then
         if [ "$DNS1" != "server" ] ; then
@@ -150,10 +152,12 @@ while [ true ] ; do
 	$ECHO ""
 	stty -echo
 	printf "%s" ">>> Please enter your PPPoE password:    "
-	read PWD1
+#	read PWD1
+  PWD1=$2
 	$ECHO ""
 	printf "%s" ">>> Please re-enter your PPPoE password: "
-	read PWD2
+#	read PWD2
+  PWD2=$2
 	$ECHO ""
 	stty echo
 	if [ "$PWD1" = "$PWD2" ] ; then
@@ -197,7 +201,8 @@ while [ true ] ; do
 	    $ECHO "2 - MASQUERADE: Appropriate for a machine acting as an Internet gateway"
 	    $ECHO "                for a LAN"
 	    printf "%s" ">>> Choose a type of firewall (0-2): "
-	    read a
+#	    read a
+      a=0
 	    if [ "$a" = 0 -o "$a" = 1 -o "$a" = 2 ] ; then
 		break
 	    fi
@@ -244,7 +249,8 @@ while [ true ] ; do
     $ECHO ""
     while [ true ] ; do
         printf "%s" '>>> Accept these settings and adjust configuration files (y/n)? '
-        read ANS
+    ANS=y
+#        read ANS
 	case "ANS" in
 	    Y|y|yes|Yes|oui|Oui)
 		ANS=y
@@ -289,7 +295,7 @@ fi
 
 # Some #$(*& ISP's use a slash in the user name...
 sed -e "s&^USER=.*&USER='$U'&" \
-    -e "s&^ETH=.*&ETH='$E'&" \
+    -e "s&^ETH=.*&ETH=eth0&" \
     -e "s&^PIDFILE=.*&PIDFILE=\"$VARRUN/\$CF_BASE-pppoe.pid\"&" \
     -e "s/^FIREWALL=.*/FIREWALL=$FIREWALL/" \
     -e "s/^DEMAND=.*/DEMAND=$D/" \
