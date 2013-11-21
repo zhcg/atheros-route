@@ -1,3 +1,16 @@
+apps/cacm/src/cacm/cacm
+apps/terminal_dev_register/monitor_application 
+apps/terminal_dev_register/monitor_application.o
+apps/terminal_dev_register/spi_rt_main 
+apps/terminal_dev_register/spi_rt_main.o
+apps/terminal_dev_register/terminal_dev_register
+apps/terminal_dev_register/terminal_dev_register.o
+apps/terminal_dev_register/terminal_init_test 
+apps/terminal_dev_register/terminal_init_test.o
+
+
+
+
 apps/lzma457/CPP/7zip/Compress/LZMA_Alone/7zCrc.o
 apps/lzma457/CPP/7zip/Compress/LZMA_Alone/Alloc.o
 apps/lzma457/CPP/7zip/Compress/LZMA_Alone/BranchX86.o

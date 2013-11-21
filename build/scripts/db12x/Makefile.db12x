@@ -243,6 +243,100 @@ slic_app:
 	cd ../apps/slicapp; make clean; make; \
 	$(STRIP) slicapp; \
 	cp -f slicapp $(INSTALL_ROOT)/bin;
+<<<<<<< HEAD
+=======
+	
+stm32_app:
+	@echo making stm32 application
+	cd ../apps/stm32app; make clean; make; \
+	$(STRIP) stm32app; \
+	cp -f stm32app $(INSTALL_ROOT)/bin;
+	
+si3000_app:
+	@echo making si3000 application
+	cd ../apps/si3000app; make clean; make; \
+	$(STRIP) pcmtest_send; \
+	$(STRIP) pcmtest_rece; \
+	$(STRIP) pcmtest_ioctl; \
+	cp -f pcmtest_send $(INSTALL_ROOT)/bin; \
+	cp -f pcmtest_rece $(INSTALL_ROOT)/bin;  \
+	cp -f pcmtest_ioctl $(INSTALL_ROOT)/bin;
+
+phone_9344: terminal_dev_register
+	@echo making phone_9344 application
+	cd ../apps/pstn_test; make clean; make; \
+	echo before strip; \
+	$(STRIP) phone/lib/libmediastreamer.so.1.0.0; \
+	$(STRIP) phone/lib/libogg.so.0.8.0; \
+	$(STRIP) phone/lib/libortp.so.8.0.0; \
+	$(STRIP) phone/lib/libspeexdsp.so.1.5.0; \
+	$(STRIP) phone/lib/libspeex.so.1.5.0; \
+	$(STRIP) pstn_serv_handaer/phone_serv_19200; \
+	cp -af phone/lib/libmediastreamer.so.1.0.0 $(INSTALL_ROOT)/lib; \
+	cp -af phone/lib/libmediastreamer.so.1 $(INSTALL_ROOT)/lib; \
+	cp -af phone/lib/libmediastreamer.so $(INSTALL_ROOT)/lib; \
+	cp -af phone/lib/libogg.so.0.8.0 $(INSTALL_ROOT)/lib; \
+	cp -af phone/lib/libogg.so.0 $(INSTALL_ROOT)/lib; \
+	cp -af phone/lib/libogg.so $(INSTALL_ROOT)/lib; \
+	cp -af phone/lib/libortp.so.8.0.0 $(INSTALL_ROOT)/lib; \
+	cp -af phone/lib/libortp.so.8 $(INSTALL_ROOT)/lib; \
+	cp -af phone/lib/libortp.so $(INSTALL_ROOT)/lib; \
+	cp -af phone/lib/libspeexdsp.so.1.5.0 $(INSTALL_ROOT)/lib; \
+	cp -af phone/lib/libspeexdsp.so.1 $(INSTALL_ROOT)/lib; \
+	cp -af phone/lib/libspeexdsp.so $(INSTALL_ROOT)/lib; \
+	cp -af phone/lib/libspeex.so.1.5.0 $(INSTALL_ROOT)/lib; \
+	cp -af phone/lib/libspeex.so.1 $(INSTALL_ROOT)/lib; \
+	cp -af phone/lib/libspeex.so $(INSTALL_ROOT)/lib; \
+	cp -af pstn_serv_handaer/phone_serv_19200 $(INSTALL_ROOT)/bin; \
+	echo finished making pstn_9344;
+
+	
+terminal_dev_register:
+	@echo making terminal_dev_register app
+	cd ../apps/terminal_dev_register; make clean; make; \
+	$(STRIP) sqlite-mips-linux/lib/libsqlite3.so.0.8.6; \
+	$(STRIP) libdatabase_management.so; \
+	$(STRIP) libspi_rt.so; \
+	$(STRIP) libterminal_authentication.so; \
+	$(STRIP) libterminal_register.so; \
+	$(STRIP) libcommon_tools.so; \
+	$(STRIP) spi_rt_main; \
+	$(STRIP) terminal_dev_register; \
+	$(STRIP) terminal_init_test; \
+	$(STRIP) swipe_card; \
+	$(STRIP) monitor_application; \
+	cp -af sqlite-mips-linux/lib/libsqlite3.so.0.8.6 $(INSTALL_ROOT)/lib; \
+	cp -af sqlite-mips-linux/bin/sqlite3 $(INSTALL_ROOT)/bin; \
+	cp -af libdatabase_management.so $(INSTALL_ROOT)/lib; \
+	cp -af libspi_rt.so $(INSTALL_ROOT)/lib; \
+	cp -af libterminal_authentication.so $(INSTALL_ROOT)/lib; \
+	cp -af libterminal_register.so $(INSTALL_ROOT)/lib; \
+	cp -af libcommon_tools.so $(INSTALL_ROOT)/lib; \
+	cp -af spi_rt_main $(INSTALL_ROOT)/bin; \
+	cp -af terminal_dev_register $(INSTALL_ROOT)/bin; \
+	cp -af terminal_init_test $(INSTALL_ROOT)/bin; \
+	cp -af swipe_card $(INSTALL_ROOT)/bin; \
+	cp -af monitor_application $(INSTALL_ROOT)/bin; \
+        mkdir -p $(INSTALL_ROOT)/var/terminal_dev_register/; \
+	cp -af config $(INSTALL_ROOT)/var/terminal_dev_register/; \
+	echo finished making terminal_dev_register;	
+
+cacm:
+	@echo making cacm app
+	cd ../apps/cacm; make clean; make; \
+	$(STRIP) target/lib/libeXosip2.so.4.2.0; \
+	$(STRIP) target/lib/libosip2.so.4.2.0; \
+	$(STRIP) target/lib/libosipparser2.so.4.2.0; \
+	$(STRIP) target/bin/cacm; \
+	cp -af target/lib/libeXosip2.so.4.2.0 $(INSTALL_ROOT)/lib; \
+	cp -af target/lib/libeXosip2.la $(INSTALL_ROOT)/lib; \
+	cp -af target/lib/libosip2.so.4.2.0 $(INSTALL_ROOT)/lib; \
+	cp -af target/lib/libosip2.la $(INSTALL_ROOT)/lib; \
+	cp -af target/lib/libosipparser2.so.4.2.0 $(INSTALL_ROOT)/lib; \
+	cp -af target/lib/libosipparser2.la $(INSTALL_ROOT)/lib; \
+	cp -af target/bin/cacm $(INSTALL_ROOT)/bin; \
+	echo finished making cacm;	
+>>>>>>> 0143eb706a042ba34c5a8ceddb8360299d90e078
 
 WIRELESSTOOLNAMES := athstats athstatsclear 80211stats athkey athchans athctrl\
 	athdebug 80211debug wlanconfig athcwm athampdutrc atrc \
