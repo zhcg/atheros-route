@@ -9,6 +9,7 @@ mount -o remount +w /
 #added by yhl 2013.11.13
 mknod /dev/ppp c 108 0
 mkdir -p /var/local/tmp/ppp/status
+
 #
 # Mount the RAM filesystem to /tmp
 #
@@ -152,7 +153,7 @@ else
 	mknod /dev/pcm0 c 252 0
 fi
 insmod /lib/modules/2.6.31/si3000/ath_si3000.ko
-insmod /lib/modules/2.6.31/stm32/ath_spi_stm32.ko
+#insmod /lib/modules/2.6.31/stm32/ath_spi_stm32.ko
 
 mkdir -p /var/terminal_init/log
 
