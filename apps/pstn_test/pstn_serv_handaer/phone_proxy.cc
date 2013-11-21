@@ -794,12 +794,12 @@ int PhoneProxy::netRead(int fd,void *buffer,int length){
 //buffer end with '\n' (in count) and then '\0'(out of count)
 ssize_t PhoneProxy::netReadLine(int fd,void *buffer,size_t maxlen, int i){
 	ssize_t 	n;
-	PLOG(LOG_INFO, "=-------------------------");
+	// PLOG(LOG_INFO, "=-------------------------");
 	if ( (n = readline(fd, buffer, maxlen, i)) < 0){
 		perror("PhoneProxy::netReadLine readline error: ");
 		PLOG(LOG_INFO,"readline error ");
 	}
-	PLOG(LOG_INFO, "======----------------");
+	// PLOG(LOG_INFO, "======----------------");
 	return(n);	
 }
 
@@ -876,7 +876,7 @@ int PhoneProxy::parseClient(cli_info_t *ci_ , int i){
 	char cmd[8] = {0};
 	memcpy(cmd, pbuff+9, 7);
 	_cli_req.cmd = getCmdtypeFromString(cmd);
-	// if( _cli_req.cmd != HEARTBEAT)
+	if( _cli_req.cmd != HEARTBEAT)
 	{
 		PLOG(LOG_INFO, "%s:%d@%s:%d:%s", ci_->username, 
 						ci_->id, ci_->client_ip, ci_->client_fd,buff);
@@ -1085,7 +1085,9 @@ int PhoneProxy::handleClient(cli_info_t *ci_){
 				}
 				// PLOG(LOG_INFO, "in_user %d ci->inuser %d", phone_in_use, ci_->using_phone );
 
-				if((!phone_in_use) ){
+				if( (!phone_in_use) ||
+					( phone_in_use && (!strcmp(ci_->client_ip, client_ip_using) ))
+					){
 					// CriticalSectionScoped lock(&_trans_critSect);
 
 					ci_->using_phone = true;
@@ -1166,7 +1168,9 @@ int PhoneProxy::handleClient(cli_info_t *ci_){
 				if(ci_->timer_setting == true){
 					ci_->timer_counter ++;
 				}
-				if((!phone_in_use) ){
+				if(  (!phone_in_use) ||
+					( phone_in_use && (!strcmp(ci_->client_ip, client_ip_using) )) 
+					) { 
 					
 #if 0
 					if(!incoming_call){
@@ -1207,7 +1211,7 @@ int PhoneProxy::handleClient(cli_info_t *ci_){
 								netWrite(ci[i].client_fd, send_buf, strlen(send_buf));
 							}
 						}
-						usleep(500000);
+						usleep(100000);
 						for(int i=0; i<CLIENT_NUM; i++){
 							ci[i].has_incom_ok = false;
 							if(ci[i].id  == ci_->id)
@@ -1284,7 +1288,7 @@ int PhoneProxy::handleClient(cli_info_t *ci_){
 					
 
 					
-					usleep(2000000);
+					// usleep(2000000);
 					ring_should_finish = false;
 
 
@@ -1307,7 +1311,7 @@ int PhoneProxy::handleClient(cli_info_t *ci_){
 					phone_in_use = false;
 					ci_transout = NULL;
 					timer_count_trans = timeout_trans = 0;
-					usleep(500000);
+					usleep(50000);
 					// PLOG(LOG_INFO, "in_user %d ci->inuser %d", phone_in_use, ci_->using_phone );
 					//netWrite(phone_proxy_fd[0], "ONHOOK\n", 7);
 					pcs->onHook();
@@ -2274,8 +2278,8 @@ bool PhoneProxy::phoneProxyThreadProcess(){
 				PDEBUG("client request in phoneproxy");
 				// CriticalSectionScoped lock(&_going_critSect);
 
-				PLOG(LOG_INFO, "%s:%d@%s:%d:i=%d", ci[i].username, 
-					ci[i].id, ci[i].client_ip, ci[i].client_fd,i);
+				// PLOG(LOG_INFO, "%s:%d@%s:%d:i=%d", ci[i].username, 
+					// ci[i].id, ci[i].client_ip, ci[i].client_fd,i);
 
 				parseClient(&ci[i], i); 
 				handleClient(&ci[i]);				

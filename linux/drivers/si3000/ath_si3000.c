@@ -293,12 +293,12 @@ int si3000_init(void){
 		{0xffff,0x05,0xd3},
 		{0xffff,0x06,0x7f},
 		{0xffff,0x06,0x7f},
-		{0xffff,0x07,0x60},
-		{0xffff,0x07,0x60},
+		{0xffff,0x07,0x70},
+		{0xffff,0x07,0x70},
 		//{0xffff,0x08,0x00},
 		//{0xffff,0x08,0x00},
-		{0xffff,0x09,0x06},
-		{0xffff,0x09,0x06}
+		{0xffff,0x09,0x02},
+		{0xffff,0x09,0x02}
 #endif
 };
 	retval = si3000_reg_write((char *)si3000_reg_init_data, sizeof(si3000_reg_init_data));
@@ -493,6 +493,8 @@ fail3:
 int ath_slic_open(struct inode *inode, struct file *filp)
 {
 
+printk("si3000 open start....\n");
+
 	ath_slic_softc_t *sc = &sc_buf_var;
 	int opened = 0;
 
@@ -531,6 +533,7 @@ int ath_slic_open(struct inode *inode, struct file *filp)
 ssize_t ath_slic_read(struct file * filp, char __user * buf,
 		size_t count, loff_t * f_pos)
 {
+//printk("si3000 read start....\n");
 	uint8_t *data;
 	ssize_t retval;
 	int byte_cnt, offset = 0, need_start = 0;
@@ -586,7 +589,7 @@ ssize_t ath_slic_read(struct file * filp, char __user * buf,
 		} 
 #endif
 		retval = copy_to_user(buf + offset, scbuf[tail].bf_vaddr, desc[tail].length);
-		//			printk("copy_to_user....\n");
+				//	printk("copy_to_user....\n");
 		if (retval)
 			return retval;
 		desc[tail].BufPtr = (unsigned int) scbuf[tail].bf_paddr;
