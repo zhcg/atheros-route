@@ -42,7 +42,7 @@ struct class_communication_stc
     int (* cmd_on_hook)();
     int (* cmd_off_hook_respond)(char cmd_data);
     int (* send_data)(unsigned char *data, struct s_data_list *a_data_list, unsigned int data_len, struct timeval *tv);
-    #else
+    #elif BOARDTYPE == 5350 || BOARDTYPE == 9344
     int (* cmd_on_hook)();
     int (* cmd_call)(char *phone);
     int (* cmd_off_hook)();

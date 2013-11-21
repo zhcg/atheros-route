@@ -3674,6 +3674,13 @@ void * pad_socket_monitor(void* para)
                             break;
                         }
                         
+                        if ((unsigned char)*network_config.pad_cmd != 0x00)
+                        {
+                            res = NO_INIT_ERR;
+                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no init!", res);
+                            break;
+                        }
+                        
                         // sn对比
                         memset(columns_name[0], 0, sizeof(columns_name[0]));
                         memset(columns_value[0], 0, sizeof(columns_value[0]));                  

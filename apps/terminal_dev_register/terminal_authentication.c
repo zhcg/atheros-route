@@ -1143,6 +1143,7 @@ int rebuild_device_token(char *device_token)
  */
 int rebuild_position_token(char *position_token)
 {
+    #define POTOKEN 1
     int fd_client = 0;
     int i = 0;
     int res = 0;
@@ -1203,7 +1204,6 @@ int rebuild_position_token(char *position_token)
 	base_random = rand();
 	memcpy(dial_back_respond.base_random + sizeof(base_random), (void *)&base_random, sizeof(base_random));
 	
-	
     // 0x2000请求打包
     dial_back_respond.cmd = 0x2000;
     if ((res = internetwork_communication.msg_pack2(&data_list, &dial_back_respond)) < 0)
@@ -1222,6 +1222,7 @@ int rebuild_position_token(char *position_token)
         common_tools.list_free(&data_list);
         return res;
     }
+    PRINT("________________0x2000\n");
     
     // 0x2001终端呼叫应答
     if ((res = internetwork_communication.msg_recv2(fd_client, buf, sizeof(buf))) < 0)
@@ -1229,15 +1230,9 @@ int rebuild_position_token(char *position_token)
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "msg_recv failed!", res);        
         close(fd_client);
         common_tools.list_free(&data_list);
-        #if BOARDTYPE == 5350
-        if (res == S_READ_ERR)
-        {
-            return WRONGFUL_DEV_ERR;
-        }
-        #endif
         return res;
     }
-    
+    PRINT("________________0x2001\n");
     // 0x2001解包
     if ((res = internetwork_communication.msg_unpack2(buf, res, &dial_back_respond)) < 0)
     {
@@ -1246,14 +1241,16 @@ int rebuild_position_token(char *position_token)
         common_tools.list_free(&data_list);
         return common_tools.get_errno('S', res);;
     }
-    
+    #if POTOKEN
+    PRINT("________________0x2001\n");
     // PSTN呼叫
     if ((res = communication_stc.cmd_call(common_tools.config->center_phone)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "cmd_call failed!", res);
         return res;
     }
-    
+    PRINT("________________call\n");
+    #endif
     memset(buf, 0, sizeof(buf));
     // 0x2002平台呼叫应答
     if ((res = internetwork_communication.msg_recv2(fd_client, buf, sizeof(buf))) < 0)
@@ -1261,22 +1258,28 @@ int rebuild_position_token(char *position_token)
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "msg_recv failed!", res);        
         close(fd_client);
         common_tools.list_free(&data_list);
-        #if BOARDTYPE == 5350
-        if (res == S_READ_ERR)
+        #if POTOKEN
+        // 挂机（停止呼叫）
+        if ((res = communication_stc.cmd_on_hook()) < 0)
         {
-            return WRONGFUL_DEV_ERR;
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "cmd_on_hook failed!", res);
+            return res;
         }
+        PRINT("________________hook\n");
         #endif
         return res;
     }
     
+    PRINT("________________0x2002\n");
+    #if POTOKEN
     // 挂机（停止呼叫）
     if ((res = communication_stc.cmd_on_hook()) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "cmd_on_hook failed!", res);
         return res;
     }
-    
+    PRINT("________________hook\n");
+    #endif
     // 0x2002解包
     if ((res = internetwork_communication.msg_unpack2(buf, res, &dial_back_respond)) < 0)
     {
@@ -1304,14 +1307,15 @@ int rebuild_position_token(char *position_token)
         common_tools.list_free(&data_list);
         return res;
     }
-    
+    PRINT("________________0x2003\n");
+    #if POTOKEN
     // 接收来电
     if ((res = communication_stc.recv_display_msg(dial_back_respond.phone_num)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "recv_display_msg failed!", res);
         return res;
     }
-    
+    #endif
     // 0x2004呼叫结果请求打包
     dial_back_respond.cmd = 0x2004;
     if ((res = internetwork_communication.msg_pack2(&data_list, &dial_back_respond)) < 0)
@@ -1330,7 +1334,7 @@ int rebuild_position_token(char *position_token)
         common_tools.list_free(&data_list);
         return res;
     }
-    
+    PRINT("________________0x2004\n");
     memset(buf, 0, sizeof(buf));
     // 0x2005颁发位置令牌应答
     if ((res = internetwork_communication.msg_recv2(fd_client, buf, sizeof(buf))) < 0)
@@ -1338,12 +1342,6 @@ int rebuild_position_token(char *position_token)
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "msg_recv failed!", res);        
         close(fd_client);
         common_tools.list_free(&data_list);
-        #if BOARDTYPE == 5350
-        if (res == S_READ_ERR)
-        {
-            return WRONGFUL_DEV_ERR;
-        }
-        #endif
         return res;
     }
     
@@ -1358,7 +1356,7 @@ int rebuild_position_token(char *position_token)
     common_tools.list_free(&data_list);
     memcpy(position_token, dial_back_respond.position_token, strlen(dial_back_respond.position_token));
     close(fd_client);
-    
+    PRINT("________________0x2005\n");
     // 把获取的位置令牌保存到本地
     memset(columns_name[0], 0, sizeof(columns_name[0]));
     memset(columns_value[0], 0, sizeof(columns_value[0]));

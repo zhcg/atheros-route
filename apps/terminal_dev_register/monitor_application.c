@@ -509,11 +509,7 @@ static int monitor_app()
     unsigned char register_flag = 0;
     int client_fd = 0;
     char *spi_cmd = "ps | grep spi_rt_main | sed '/grep/'d | sed '/\\[spi_rt_main\\]/'d | sed '/sed/'d";
-    #if TERMIANL_SCHEME == 0
-    char *terminal_init_cmd = "ps | grep terminal_init | sed '/grep/'d | sed '/\\[terminal_init\\]/'d | sed '/sed/'d";
-    #elif TERMIANL_SCHEME == 1 
     char *terminal_init_cmd = "ps | grep terminal_dev_register | sed '/grep/'d | sed '/\\[terminal_dev_register\\]/'d | sed '/sed/'d";
-    #endif
     char *swipe_card_cmd = "ps | grep swipe_card | sed '/grep/'d";
     #if BOARDTYPE == 5350
     char *terminal_init_para_check_cmd = "nvram_get freespace STEP_LOG";

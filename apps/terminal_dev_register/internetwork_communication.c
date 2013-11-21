@@ -1097,6 +1097,31 @@ int IP_msg_unpack2(char *buf, unsigned short buf_len, struct s_dial_back_respond
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "rsa_decrypt failed!", res);
                 return res;
             }
+            // 暂时处理电话号码
+            #if 1
+            {
+                memset(phone_num, 0, sizeof(phone_num));
+                int i = 0;
+                for (i = 0; i < sizeof(a_dial_back_respond->phone_num); i++)
+                {
+                    if ((a_dial_back_respond->phone_num[i] >= '0') && (a_dial_back_respond->phone_num[i] >= '9'))
+                    {
+                        phone_num[i] = a_dial_back_respond->phone_num[i];
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                #if 1
+                if ((i = 0) || (i < 7))
+                {
+                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data error!", DATA_ERR);
+                    return DATA_ERR;
+                }
+                #endif
+            }
+            #endif
             
             // 获取离散因子
             memcpy(src, buf + index, sizeof(src));
@@ -1174,7 +1199,7 @@ int IP_msg_unpack2(char *buf, unsigned short buf_len, struct s_dial_back_respond
         return res;
     }
     
-    #if 1
+    #if 0
     if ((char)res != IP_msg.check_sum)
     {        
         char print_info[128] = {0};
@@ -1339,6 +1364,7 @@ int IP_msg_recv2(int fd, char *buf, unsigned short buf_len)
             }
         }       
     }
+    PRINT_BUF_BY_HEX(buf, NULL, res, __FILE__, __FUNCTION__, __LINE__);
     PRINT_STEP("exit...\n");
     return res;
 }
