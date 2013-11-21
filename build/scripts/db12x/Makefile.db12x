@@ -344,6 +344,7 @@ terminal_dev_register:
 	$(STRIP) swipe_card; \
 	$(STRIP) monitor_application; \
 	cp -af sqlite-mips-linux/lib/libsqlite3.so.0.8.6 $(INSTALL_ROOT)/lib; \
+	cp -af sqlite-mips-linux/bin/sqlite3 $(INSTALL_ROOT)/bin; \
 	cp -af libdatabase_management.so $(INSTALL_ROOT)/lib; \
 	cp -af libspi_rt.so $(INSTALL_ROOT)/lib; \
 	cp -af libterminal_authentication.so $(INSTALL_ROOT)/lib; \

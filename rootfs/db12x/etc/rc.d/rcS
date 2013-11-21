@@ -16,6 +16,10 @@ mkdir -p /var/local/tmp/ppp/status
 mount -t ramfs -n none /tmp
 
 export PATH=$PATH:/etc/ath
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/lib
+cd /lib;
+ln -s libsqlite3.so.0.8.6 libsqlite3.so.0
+cd /root
 
 
 # for profile-based-optimization
