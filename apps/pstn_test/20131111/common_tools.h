@@ -65,9 +65,9 @@
 #define TEL_DOWN 1
 
 #define DEBUG 1
-#define PRINT_DATA 1
-#define PRINT_DEBUG 1
-#define LOG_DEBUG 1
+#define PRINT_DATA 0
+#define PRINT_DEBUG 0
+#define LOG_DEBUG 0
 #define RECORD_DEBUG 0
 
 #define SSID3_MONITOR 0
