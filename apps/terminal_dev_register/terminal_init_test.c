@@ -43,7 +43,7 @@ int main(int argc, char **argv)
         PRINT("w 从平台重获取位置令牌并返回\n");
         #endif
         PRINT("x 检测WAN口状态\n");
-        PRINT("y 连接服务器");
+        PRINT("y 连接服务器\n");
         return 0;
     }
     if (argc != 4)

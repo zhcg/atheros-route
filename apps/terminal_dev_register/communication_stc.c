@@ -42,7 +42,7 @@ static int cmd_off_hook_respond(char cmd_data);
  * 发送
  */
 static int send_data(unsigned char *data, struct s_data_list *a_data_list, unsigned int data_len, struct timeval *tv);
-#else
+#elif BOARDTYPE == 5350 || BOARDTYPE == 9344
 
 /**
  * 发送挂机命令
@@ -102,7 +102,7 @@ struct class_communication_stc communication_stc =
     #if BOARDTYPE == 6410
     cmd_on_hook, cmd_off_hook_respond, 
     send_data
-    #else
+    #elif BOARDTYPE == 5350 || BOARDTYPE == 9344
     cmd_on_hook, cmd_call, cmd_off_hook, recv_display_msg,
     send_data
     #endif
@@ -1110,7 +1110,7 @@ int send_data(unsigned char *data, struct s_data_list *a_data_list, unsigned int
     return 0;
 }
 
-#else // 5350时
+#elif BOARDTYPE == 5350 || BOARDTYPE == 9344 // 5350 9334时
 
 /*********************************************************************/
 // 使用/dev/ttyS0 和单片机通信时

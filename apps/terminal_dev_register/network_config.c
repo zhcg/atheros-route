@@ -274,6 +274,7 @@ void init_cmd_list()
 int init_usb()
 {
     int res = 0;
+	/*
     char buf[128] = {0};
     // 打开串口并且初始化
     if ((network_config.usb_pad_fd = open(USB_NODE, O_RDWR, 0644)) < 0)
@@ -284,6 +285,7 @@ int init_usb()
     
     sprintf(buf, "open %s (pad usb) and init success", USB_NODE);
     OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, buf, 0);
+	*/
     return 0;
 }
 #endif
@@ -1615,8 +1617,8 @@ int network_settings(int fd, int cmd_count, char cmd_word)
     #else // 20131111 新需求去掉mac地址复制
     if (((cmd_word == 0x01) && (cmd_count != 4)) || ((cmd_word == 0x02) && (cmd_count != 7)) || 
         ((cmd_word == 0x03) && (cmd_count != 5)) || ((cmd_word == 0x07) && (cmd_count != 3)) || 
-        ((cmd_word == 0x08) && (cmd_count != 4)) || ((cmd_word == 0x09) && (cmd_count != 8)) || 
-        ((cmd_word == 0x0A) && (cmd_count != 4)))
+        ((cmd_word == 0x08) && (cmd_count != 2)) || ((cmd_word == 0x09) && (cmd_count != 5)) || 
+        ((cmd_word == 0x0A) && (cmd_count != 3)))
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data error!", P_DATA_ERR);
         return P_DATA_ERR;
