@@ -335,8 +335,8 @@ void setup_media_streams(MediastreamDatas* args) {
 	if (args->is_verbose) {
 		ortp_set_log_level_mask(ORTP_DEBUG|ORTP_MESSAGE|ORTP_WARNING|ORTP_ERROR|ORTP_FATAL);
 	} else {
-		ortp_set_log_level_mask(ORTP_MESSAGE|ORTP_WARNING|ORTP_ERROR|ORTP_FATAL);
-		// ortp_set_log_level_mask(ORTP_ERROR|ORTP_FATAL);
+		//ortp_set_log_level_mask(ORTP_MESSAGE|ORTP_WARNING|ORTP_ERROR|ORTP_FATAL);
+		 ortp_set_log_level_mask(ORTP_ERROR|ORTP_FATAL);
 		printf("error and fatal ortp\n");
 	}
 

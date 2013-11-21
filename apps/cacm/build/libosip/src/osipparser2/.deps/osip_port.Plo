@@ -1,0 +1,187 @@
+osip_port.lo: ../../../../src/libosip2-3.3.0/src/osipparser2/osip_port.c \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/stdlib.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/features.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/uClibc_config.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/uClibc_arch_features.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/sys/cdefs.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/bin-ccache/../lib/gcc/mips-linux-uclibc/4.3.3/include/stddef.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/sys/types.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/types.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/wordsize.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/kernel_types.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/typesizes.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/pthreadtypes.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/sched.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/time.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/endian.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/endian.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/sys/select.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/select.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/sigset.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/time.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/sys/sysmacros.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/alloca.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/stdio.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/uClibc_stdio.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/uClibc_mutex.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/pthread.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/sched.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/uClibc_clk_tck.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/signal.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/initspin.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/sigthread.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/uClibc_pthread.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/bin-ccache/../lib/gcc/mips-linux-uclibc/4.3.3/include/stdarg.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/stdio_lim.h \
+  ../../../../src/libosip2-3.3.0/include/osipparser2/osip_port.h \
+  ../../config.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/string.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/sys/time.h \
+  ../../../../src/libosip2-3.3.0/include/osipparser2/osip_const.h \
+  ../../../../src/libosip2-3.3.0/include/osipparser2/osip_list.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/sys/stat.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/stat.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/sgidefs.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/fcntl.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/fcntl.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/ctype.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/uClibc_touplow.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/sys/unistd.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/unistd.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/posix_opt.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/confname.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/getopt.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/syslog.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/sys/syslog.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/bin-ccache/../lib/gcc/mips-linux-uclibc/4.3.3/include-fixed/limits.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/bin-ccache/../lib/gcc/mips-linux-uclibc/4.3.3/include-fixed/syslimits.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/limits.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/posix1_lim.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/local_lim.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/linux/limits.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/uClibc_local_lim.h \
+  /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/posix2_lim.h
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/stdlib.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/features.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/uClibc_config.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/uClibc_arch_features.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/sys/cdefs.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/bin-ccache/../lib/gcc/mips-linux-uclibc/4.3.3/include/stddef.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/sys/types.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/types.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/wordsize.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/kernel_types.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/typesizes.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/pthreadtypes.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/sched.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/time.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/endian.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/endian.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/sys/select.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/select.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/sigset.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/time.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/sys/sysmacros.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/alloca.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/stdio.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/uClibc_stdio.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/uClibc_mutex.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/pthread.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/sched.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/uClibc_clk_tck.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/signal.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/initspin.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/sigthread.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/uClibc_pthread.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/bin-ccache/../lib/gcc/mips-linux-uclibc/4.3.3/include/stdarg.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/stdio_lim.h:
+
+../../../../src/libosip2-3.3.0/include/osipparser2/osip_port.h:
+
+../../config.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/string.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/sys/time.h:
+
+../../../../src/libosip2-3.3.0/include/osipparser2/osip_const.h:
+
+../../../../src/libosip2-3.3.0/include/osipparser2/osip_list.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/sys/stat.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/stat.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/sgidefs.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/fcntl.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/fcntl.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/ctype.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/uClibc_touplow.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/sys/unistd.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/unistd.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/posix_opt.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/confname.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/getopt.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/syslog.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/sys/syslog.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/bin-ccache/../lib/gcc/mips-linux-uclibc/4.3.3/include-fixed/limits.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/bin-ccache/../lib/gcc/mips-linux-uclibc/4.3.3/include-fixed/syslimits.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/limits.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/posix1_lim.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/local_lim.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/linux/limits.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/uClibc_local_lim.h:
+
+/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/include/bits/posix2_lim.h:

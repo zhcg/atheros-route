@@ -68,9 +68,8 @@ libmediastreamer: libspeex libortp
 
 
 libortp:
-	rm -rf $(DIR_LIBORTP);\
-	tar xvzf ortp-0.20.0.tar.gz; \
 	cd $(DIR_LIBORTP); \
+	./autogen.sh; \
 	./configure --prefix=$(shell pwd)/$(DIR_LIBORTP)/../phone --host=mips-linux --with-gnu-ld --disable-static ;\
 	make ;make install
 	

@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <speex/speex_preprocess.h>
 #endif
 
+//#define  ENDEBUG
 static const float max_e = (32768* 0.7);   /* 0.7 - is RMS factor */
 static const float coef = 0.2; /* floating averaging coeff. for energy */
 //static const float gain_k = 0.02; /* floating averaging coeff. for gain */
@@ -158,7 +159,7 @@ static float volume_agc_process(Volume *v, mblk_t *om) {
 	// target is: 1
 	float gain_reduct = (agc_threshold + v->level_pk) / 1;
 	/* actual gain ramp timing the same as with echo limiter process */
-	#if 1
+#ifdef ENDEBUG
 	if (!(++counter % 20))
 		ms_message("_level=%f, gain reduction=%f, gain=%f, ng_gain=%f %f %f,agc_threshold=%f",
 				v->level_pk, gain_reduct, v->gain, v->ng_gain, v->ng_threshold, v->static_gain,agc_threshold);
@@ -215,9 +216,11 @@ static float volume_echo_avoider_process(Volume *v, mblk_t *om) {
 			v->fast_upramp=TRUE;
 		}
 	}
-	if (!(++counter % 20))
+	#ifdef ENDEBUG
+	if (!(++counter % 200))
 		ms_message("volume_echo_avoider_process(): mic_en=%f, peer_e=%f, target_g=%f, gain=%f, spk_peak=%f,mic_spk_ratio=%f",
 		             v->energy, peer_e, v->target_gain, v->gain, v->lt_speaker_en,mic_spk_ratio);
+	#endif
 	return v->target_gain;
 }
 
@@ -238,9 +241,11 @@ static void volume_noise_gate_process(Volume *v , float energy, mblk_t *om){
 	/* simple averaging computation is adequate here: fast rise, relatively slower decrease */
 	/* of gain - ears impression */
 	v->ng_gain = v->ng_gain*0.75 + tgain*0.25;
-	if (!(++counter % 200))
+		#ifdef ENDEBUG
+	if (!(++counter % 20))
 		ms_message("%d: nglevel=%f, energy=%f, tgain=%f, ng_gain=%f",
 				          (v->peer!=NULL)?1:0, energy, v->energy, tgain, v->ng_gain);
+	   #endif
 }
 
 static int volume_set_db_gain(MSFilter *f, void *gain){
@@ -331,7 +336,11 @@ static int volume_set_ea_sustain(MSFilter *f, void *arg){
 
 static int volume_enable_noise_gate(MSFilter *f, void *arg){
 	Volume *v=(Volume*)f->data;
-	v->noise_gate_enabled=*(int*)arg;
+	//JOhnny changed codec 
+	//
+	//v->noise_gate_enabled=*(int*)arg;
+	v->noise_gate_enabled=*(unsigned char *)arg;
+
 	if (v->noise_gate_enabled){
 		v->gain = v->target_gain = v->ng_floorgain; // start with floorgain (soft start)
 	}
@@ -413,9 +422,10 @@ static void apply_gain(Volume *v, mblk_t *m, float tgain) {
 
 	gain=v->gain * v->ng_gain;
 	intgain = gain* 4096;
-
-	if (!(++counter % 200))
+	#ifdef ENDEBUG
+	if (!(++counter % 20))
           ms_message("MSVolume:%p Applying gain %5f, v->gain=%5f, tgain=%5f, ng_gain=%5f,remove_dc= %d",v,gain,v->gain,tgain,v->ng_gain,v->remove_dc); 
+	#endif
 
 	if (v->remove_dc){
 		for (	sample=(int16_t*)m->b_rptr;
@@ -461,6 +471,7 @@ static void volume_process(MSFilter *f){
 	mblk_t *m;
 	Volume *v=(Volume*)f->data;
 	float target_gain;
+	static int counter;
 
 	/* Important notice: any processes called herein can modify v->target_gain, at
 	 * end of this function apply_gain() is called, thus: later process calls can
@@ -471,6 +482,47 @@ static void volume_process(MSFilter *f){
 		int nbytes=v->nsamples*2;
 		ms_bufferizer_put_from_queue(v->buffer,f->inputs[0]);
 		while(ms_bufferizer_get_avail(v->buffer)>=nbytes){
+		
+//#ifdef ENDEBUG
+#if 0
+	if (!(++counter % 20))
+		ms_message("volume_process(): 	v->vol_upramp=%5f ,\
+	v->vol_fast_upramp=%5f,\
+	v->vol_downramp=%5f,\
+	v->ea_thres***=%5f,\
+	v->ea_transmit_thres***=%5f,\
+	v->force=%5f,\
+	v->sustain_time=%d,\
+	v->sustain_dur=%d,\
+	v->agc_enabled=%d,\
+	v->sample_rate%d,\
+	v->nsamples=%d,\
+	v->noise_gate_enabled=%d,\
+	v->ng_cut_time =%d,\
+	v->ng_noise_dur=%d,\
+	v->ng_threshold***=%5f,\
+	v->ng_floorgain***=%5f,\
+	v->ng_gain =%5f,",
+	v->vol_upramp ,
+	v->vol_fast_upramp,
+	v->vol_downramp,
+	v->ea_thres,
+	v->ea_transmit_thres,
+	v->force,
+	v->sustain_time,
+	v->sustain_dur,
+	v->agc_enabled,
+	v->sample_rate,
+	v->nsamples,
+	v->noise_gate_enabled,
+	v->ng_cut_time ,
+	v->ng_noise_dur,
+	v->ng_threshold,
+	v->ng_floorgain,
+	v->ng_gain 
+);
+	#endif
+		
 			om=allocb(nbytes,0);
 			ms_bufferizer_read(v->buffer,om->b_wptr,nbytes);
 			om->b_wptr+=nbytes;

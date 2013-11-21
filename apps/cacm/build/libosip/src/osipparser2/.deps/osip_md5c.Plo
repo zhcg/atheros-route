@@ -1,0 +1,4 @@
+osip_md5c.lo: ../../../../src/libosip2-3.3.0/src/osipparser2/osip_md5c.c \
+  ../../../../src/libosip2-3.3.0/include/osipparser2/osip_md5.h
+
+../../../../src/libosip2-3.3.0/include/osipparser2/osip_md5.h:

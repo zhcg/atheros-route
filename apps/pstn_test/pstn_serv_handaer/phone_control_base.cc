@@ -268,11 +268,11 @@ ssize_t PhoneControlBase::readLine(char *buf, size_t len){
 	
 	
 	
-	PLOG(LOG_INFO, " before recv: ");
+	// PLOG(LOG_INFO, " before recv: ");
 
 	pthread_mutex_lock(&phone_ring_mutex);
 
-	PLOG(LOG_INFO, " before recv: ");
+	// PLOG(LOG_INFO, " before recv: ");
 	int nrread = spi_rt_interface.recv_data(UART1, buf, len);
 	PLOG(LOG_INFO," after recv: ");
 	pthread_mutex_unlock(&phone_ring_mutex);
@@ -281,7 +281,7 @@ ssize_t PhoneControlBase::readLine(char *buf, size_t len){
 //	int nrread = 0;
 
 	//cout << __FUNCTION__ << " after recv: " << __LINE__ << endl;
-	PLOG(LOG_INFO," after recv: ");
+	// PLOG(LOG_INFO," after recv: ");
 	if(nrread < 0){
 //		cout << __FUNCTION__ << " : " 
 //			 << "recv_data < 0." << endl;
@@ -399,7 +399,7 @@ ssize_t PhoneControlBase::writeDeviceXor(const char *buf, size_t len){
 #ifdef SPI_FOR_PHONE
 	
 	
-	PLOG(LOG_INFO, "before spi send_data");	
+	// PLOG(LOG_INFO, "before spi send_data");	
 
 	// pthread_mutex_lock(&phone_ring_mutex);
 	ssize_t	nwr = spi_rt_interface.send_data(UART1, (char *)wbuf, len+3);

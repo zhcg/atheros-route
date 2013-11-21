@@ -61,7 +61,7 @@ again:
 
 		}
 		
-		// if(strncmp(tsd->rl_buf +9, "OPTION_", 7) != 0)
+		if(strncmp(tsd->rl_buf +9, "OPTION_", 7) != 0)
 			PLOG(LOG_INFO, "%s:%p", tsd->rl_buf, tsd->rl_buf);
 
 		tsd->rl_bufptr = tsd->rl_buf;
@@ -83,13 +83,13 @@ ssize_t readline(int fd, void *vptr, size_t maxlen, int index) {
 	size_t		n, rc;
 	char	c, *ptr;
 	Rline	*tsd;
-	PLOG(LOG_INFO, "==================================");
+	// PLOG(LOG_INFO, "==================================");
 	pthread_once(&rl_once, readline_once);
 	if ( (tsd = (Rline	*)pthread_getspecific(rl_key[index])) == NULL) {
 		tsd = (Rline *)Calloc(1, sizeof(Rline));		/* init to 0 */
 		pthread_setspecific(rl_key[index], tsd);
 	}
-	PLOG(LOG_INFO, "+++++++++++++++++++++++++++++++++++");
+	// PLOG(LOG_INFO, "+++++++++++++++++++++++++++++++++++");
 	ptr = (char *)vptr;
 	for (n = 1; n < maxlen; n++) {
 		if ( (rc = my_read(tsd, fd, &c)) == 1) {

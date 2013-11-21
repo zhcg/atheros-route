@@ -17,6 +17,10 @@ mkdir -p /var/local/tmp/ppp/status
 mount -t ramfs -n none /tmp
 
 export PATH=$PATH:/etc/ath
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/lib
+cd /lib;
+ln -s libsqlite3.so.0.8.6 libsqlite3.so.0
+cd /root
 
 
 # for profile-based-optimization
@@ -153,7 +157,10 @@ insmod /lib/modules/2.6.31/si3000/ath_si3000.ko
 
 mkdir -p /var/terminal_init/log
 
-cd /bin 
-./spi_rt_main & 
+spi_rt_main & 
+terminal_dev_register &
+swipe_card &
+monitor_application  &
+
 /bin/phone_serv_19200 &
 
