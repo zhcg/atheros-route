@@ -101,7 +101,7 @@ else
 ifeq ($(strip ${ATH_SUPPORT_SPECTRAL}),1)
 db12x_build: common_mainline driver_build usb_build pci_build spectral_app_build $(BUILD_TYPE)_build art_mod
 else
-db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si3000_build si3000_app stm32_build stm32_app phone_9344  pppoe_build  $(fs_build) makeotaimage makeoneimage 
+db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si3000_build si3000_app stm32_build stm32_app phone_9344  pppoe_build  terminal_dev_register cacm $(fs_build) makeotaimage makeoneimage 
 #db12x_build: common_mainline i2s_build athplay_tools_fus usb_build $(fs_build)
 #db12x_build: common_mainline slic_build slic_app i2s_build athplay_tools_fus $(fs_build)
 #db12x_build: common_mainline gateway_build slic_build slic_app $(fs_build)
@@ -329,11 +329,56 @@ phone_9344:
 	echo finished making pstn_9344;
 
 	
-	
+terminal_dev_register:
+	@echo making terminal_dev_register app
+	cd ../apps/terminal_dev_register; make clean; make; \
+	$(STRIP) sqlite-mips-linux/lib/libsqlite3.so.0.8.6; \
+	$(STRIP) libdatabase_management.so; \
+	$(STRIP) libspi_rt.so; \
+	$(STRIP) libterminal_authentication.so; \
+	$(STRIP) libterminal_register.so; \
+	$(STRIP) libcommon_tools.so; \
+	$(STRIP) spi_rt_main; \
+	$(STRIP) terminal_dev_register; \
+	$(STRIP) terminal_init_test; \
+	$(STRIP) swipe_card; \
+	$(STRIP) monitor_application; \
+	cp -af sqlite-mips-linux/lib/libsqlite3.so.0.8.6 $(INSTALL_ROOT)/lib; \
+	cp -af sqlite-mips-linux/bin/sqlite3 $(INSTALL_ROOT)/bin; \
+	cp -af libdatabase_management.so $(INSTALL_ROOT)/lib; \
+	cp -af libspi_rt.so $(INSTALL_ROOT)/lib; \
+	cp -af libterminal_authentication.so $(INSTALL_ROOT)/lib; \
+	cp -af libterminal_register.so $(INSTALL_ROOT)/lib; \
+	cp -af libcommon_tools.so $(INSTALL_ROOT)/lib; \
+	cp -af spi_rt_main $(INSTALL_ROOT)/bin; \
+	cp -af terminal_dev_register $(INSTALL_ROOT)/bin; \
+	cp -af terminal_init_test $(INSTALL_ROOT)/bin; \
+	cp -af swipe_card $(INSTALL_ROOT)/bin; \
+	cp -af monitor_application $(INSTALL_ROOT)/bin; \
+        mkdir -p $(INSTALL_ROOT)/var/terminal_dev_register/; \
+	cp -af config $(INSTALL_ROOT)/var/terminal_dev_register/; \
+	echo finished making terminal_dev_register;	
+
+cacm:
+	@echo making cacm app
+	cd ../apps/cacm; make clean; make; \
+	$(STRIP) target/lib/libeXosip2.so.4.2.0; \
+	$(STRIP) target/lib/libosip2.so.4.2.0; \
+	$(STRIP) target/lib/libosipparser2.so.4.2.0; \
+	$(STRIP) target/bin/cacm; \
+	cp -af target/lib/libeXosip2.so.4.2.0 $(INSTALL_ROOT)/lib; \
+	cp -af target/lib/libeXosip2.la $(INSTALL_ROOT)/lib; \
+	cp -af target/lib/libosip2.so.4.2.0 $(INSTALL_ROOT)/lib; \
+	cp -af target/lib/libosip2.la $(INSTALL_ROOT)/lib; \
+	cp -af target/lib/libosipparser2.so.4.2.0 $(INSTALL_ROOT)/lib; \
+	cp -af target/lib/libosipparser2.la $(INSTALL_ROOT)/lib; \
+	cp -af target/bin/cacm $(INSTALL_ROOT)/bin; \
+	echo finished making cacm;	
 
 WIRELESSTOOLNAMES := athstats athstatsclear 80211stats athkey athchans athctrl\
 	athdebug 80211debug wlanconfig athcwm athampdutrc atrc \
 	pktlogconf pktlogdump radartool cgiMain
+
 wireless_tools_main:
 	@echo making wireless_tools 
 	if test -n "$(WIRELESSTOOLS)"; then \
