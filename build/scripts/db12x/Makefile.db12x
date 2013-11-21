@@ -290,25 +290,16 @@ si3000_app:
 	cp -f pcmtest_rece $(INSTALL_ROOT)/bin;  \
 	cp -f pcmtest_ioctl $(INSTALL_ROOT)/bin;
 
-phone_9344:
+phone_9344: terminal_dev_register
 	@echo making phone_9344 application
 	cd ../apps/pstn_test; make clean; make; \
 	echo before strip; \
-	$(STRIP) 20131111/libspi_rt.so; \
-	$(STRIP) 20131111/libterminal_authentication.so; \
-	$(STRIP) 20131111/libterminal_register.so; \
-	$(STRIP) 20131111/libcommon_tools.so; \
 	$(STRIP) phone/lib/libmediastreamer.so.1.0.0; \
 	$(STRIP) phone/lib/libogg.so.0.8.0; \
 	$(STRIP) phone/lib/libortp.so.8.0.0; \
 	$(STRIP) phone/lib/libspeexdsp.so.1.5.0; \
 	$(STRIP) phone/lib/libspeex.so.1.5.0; \
-	$(STRIP) 20131111/spi_rt_main; \
 	$(STRIP) pstn_serv_handaer/phone_serv_19200; \
-	cp -af 20131111/libspi_rt.so $(INSTALL_ROOT)/lib; \
-	cp -af 20131111/libterminal_authentication.so $(INSTALL_ROOT)/lib; \
-	cp -af 20131111/libterminal_register.so $(INSTALL_ROOT)/lib; \
-	cp -af 20131111/libcommon_tools.so $(INSTALL_ROOT)/lib; \
 	cp -af phone/lib/libmediastreamer.so.1.0.0 $(INSTALL_ROOT)/lib; \
 	cp -af phone/lib/libmediastreamer.so.1 $(INSTALL_ROOT)/lib; \
 	cp -af phone/lib/libmediastreamer.so $(INSTALL_ROOT)/lib; \
@@ -324,7 +315,6 @@ phone_9344:
 	cp -af phone/lib/libspeex.so.1.5.0 $(INSTALL_ROOT)/lib; \
 	cp -af phone/lib/libspeex.so.1 $(INSTALL_ROOT)/lib; \
 	cp -af phone/lib/libspeex.so $(INSTALL_ROOT)/lib; \
-	cp -af 20131111/spi_rt_main $(INSTALL_ROOT)/bin; \
 	cp -af pstn_serv_handaer/phone_serv_19200 $(INSTALL_ROOT)/bin; \
 	echo finished making pstn_9344;
 
