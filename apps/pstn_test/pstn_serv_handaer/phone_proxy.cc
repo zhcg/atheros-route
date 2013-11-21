@@ -1125,7 +1125,7 @@ int PhoneProxy::handleClient(cli_info_t *ci_){
 					usleep(300000);
 					
 					pcs->offHook();
-					usleep(1000000);
+					usleep(800000);
 
 				
 					pcs->setGoingNumber(_cli_req.arg, _cli_req.arglen);
