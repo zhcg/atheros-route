@@ -1,0 +1,122 @@
+<html>
+<head>
+<title>Wizard Internet Settings</title>
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<script type="text/javascript" src="/lang/b28n.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+function initTranslation()
+{
+	var e = document.getElementById("qsettitle");
+	e.innerHTML = _("admw w5ttitle");
+	e = document.getElementById("parentdes");
+	e.innerHTML = _("admw parentdes");
+	
+	e = document.getElementById("pup");
+	e.innerHTML = _("admin enable");
+	e = document.getElementById("pdown");
+	e.innerHTML = _("admin disable");
+
+	e = document.getElementById("PPMAC");
+	e.innerHTML = _("admw PPMAC");
+	e = document.getElementById("MPMAC");
+	e.innerHTML = _("admw MPMAC");
+	e = document.getElementById("maccopy");
+	e.innerHTML = _("admw maccopy");
+
+	e = document.getElementById("bCANCEL");
+	e.value = _("admw bCANCEL");
+	e = document.getElementById("bAPPLY");
+	e.value = _("admw bAPPLY");
+}
+function initValue()
+{
+	Butterlate.setTextDomain("admin");
+	initTranslation();
+}
+function CheckWirelessValue()
+{
+	return true;
+}
+function reloadd()
+{
+		// alert("step: "+step_num);
+		window.location.reload();
+}
+function open_addchildc_window()
+{
+	window.open("addchild.asp","WMM_Parameters_List","toolbar=no, location=yes, scrollbars=yes, resizable=no, width=640, height=480")
+}
+
+</script>
+</head>
+
+<body onLoad="initValue()" ondragstart="window.event.returnValue=false" oncontextmenu="window.event.returnValue=false" onselectstart="event.returnValue=false">
+
+<table class="body"><tr><td>
+<h1 id="qsettitle"></h1>
+<p></p>
+<hr />
+<form method=post name="wizard_form" action="/goform/setWizard5">
+<!-- ============= Wizard Home Page ============= -->
+<h2 id="parentdes"></h2>
+<!-- ================= Router Mode ================= -->
+
+<table id="div_enPC" cellpadding="0" cellspacing="0"   class="handaer_text">
+<tr>
+  <td width="15px"><input type="radio" name="intType" value="interner" checked></td>
+  <th align="left" id="pup"></th>
+</tr>
+<tr>
+  <td width="15px"><input type="radio" name="intType" value="router"></td>
+  <th align="left" id="pdown"></th>
+</tr>
+</table>
+<table id="div_ppc" width="640" border="0" cellpadding="0" cellspacing="0">
+<tr>
+  <td class="head" id="PPMAC"></td>
+  <td><input type="text" name="ppmac" size="20" maxlength="32"></td>
+</tr>
+<tr>
+  <td class="head" id="MPMAC"></td>
+  <td><input type="text" name="mpmac" size="20" maxlength="32"></td>
+</tr>
+<tr>
+  <td>&nbsp; &nbsp;</td>
+  <td width="15px"><input type="checkbox" name="checkbox1" value="checkbox" id="maccopy"></td>
+</tr>
+</table>
+
+<table id="div_list" width="100%" border="1" cellpadding="2" cellspacing="1">
+  <tr>
+    <td bgcolor=#E8F8FF id="stalistMacAddr">ID</td>
+    <td bgcolor=#E8F8FF>MAC地址</td>
+    <td bgcolor=#E8F8FF>网站列表</td>
+    <td bgcolor=#E8F8FF>日程计划</td>
+    <td bgcolor=#E8F8FF>状态</td>
+    <td bgcolor=#E8F8FF>配置</td>
+  </tr>
+  <!--% getPClistInfo(); %-->
+    <tr>
+		<td>
+		   <input type="button" name="wmm_list" value="WMM Configuration" id="advWMMConf" onClick="open_addchildc_window()">添加
+		</td>
+	</tr>
+</table>
+
+<table width="540" cellpadding="2" cellspacing="1" id="buttontable">
+<tr align="center">
+  <td>
+    <input type="button" name="cancel_motion" id="bCANCEL" style="{width:120px;}" value="Cancel" onClick="reloadd();">
+    <input type="submit" name="apply_motion" id="bAPPLY" style="{width:120px;}" value="Apply" onClick="CheckWirelessValue();">
+  </td>
+</tr>
+</table>
+</form>
+
+</td></tr></table>
+</body>
+
+</html>
+

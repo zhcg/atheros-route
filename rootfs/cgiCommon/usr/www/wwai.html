@@ -1,0 +1,1463 @@
+<html>
+<head>
+<title>Wizard Internet Settings</title>
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<script type="text/javascript" src="/lang/b28n.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+var step_num;
+var pppoecdb = "0";
+var showothers;
+var showoadv0;
+
+function style_display_on()
+{
+	if (window.ActiveXObject)
+	{ // IE
+		return "block";
+	}
+	else if (window.XMLHttpRequest)
+	{ // Mozilla, Safari,...
+		return "table-row";
+	}
+}
+
+function checkInjection(str)
+{
+	var len = str.length;
+	for (var i=0; i<str.length; i++) {
+		if ( str.charAt(i) == '\r' || str.charAt(i) == '\n'){
+				return false;
+		}else
+	        continue;
+	}
+    return true;
+}
+
+function change_step(offset)
+{
+	// alert("Offset: "+offset+"; From Step: "+ step_num);
+	if (offset == 1)
+	{
+		if (step_num == 2)
+		{
+			if (document.wizard_form.intType[0].checked == true) 
+			{
+				if (!CheckWanValue())
+					return false;
+			}
+		}
+	}
+	hideAllTables();
+	if (offset == 0)
+		step_num = offset;
+	else
+		step_num += offset;
+
+	if (step_num == 1)
+	{
+		// alert("step: "+step_num);
+		if (document.wizard_form.intType[0].checked == true) 
+		{		
+			document.getElementById("div_wan_opmode").style.visibility = "visible";
+			document.getElementById("div_wan_opmode").style.display = style_display_on();
+			document.getElementById("div_wan_title").style.visibility = "visible";
+			document.getElementById("div_wan_title").style.display = style_display_on();
+			document.wizard_form.back_motion.disabled = false;
+			document.wizard_form.next_motion.disabled = false;
+			document.wizard_form.cancel_motion.disabled = false;
+			document.wizard_form.apply_motion.disabled = true;
+		}
+		else if (document.wizard_form.intType[1].checked == true) 
+		{
+			
+			document.getElementById("div_Router").style.visibility = "visible";
+			document.getElementById("div_Router").style.display = style_display_on();
+			
+			document.wizard_form.back_motion.disabled = false;
+			document.wizard_form.next_motion.disabled = true;
+			document.wizard_form.cancel_motion.disabled = false;
+			document.wizard_form.apply_motion.disabled = false;
+		}
+
+	}
+	else if (step_num == 2)
+	{
+		if(document.wizard_form.intType[1].checked == true)
+		{
+			document.getElementById('WIRRE').click();
+		}
+		else if (document.wizard_form.WAN_MODE[0].checked == true) 
+		{
+			document.getElementById("buttontable").style.visibility = "hidden";
+			document.getElementById("buttontable").style.display = "none";	
+			document.getElementById("gifshow").style.visibility = "visible";
+			document.getElementById("gifshow").style.display = style_display_on();
+			document.getElementById('AUTOGET').click();
+			/*var zidong = document.getElementById("AUTOTYPE").value;
+			if(zidong == "Static")
+			{
+				document.wizard_form.WAN_MODE[2].checked = true;
+				alert(_("admw auto_sip"));
+				step_num += -1;
+				change_step(1);
+			}
+			else if(zidong == "DHCP")
+			{
+				document.wizard_form.WAN_MODE[1].checked = true;
+				alert(_("admw auto_dhcp"));
+				step_num += -1;
+				change_step(1);
+			
+			}
+			else if(zidong == "PPPOE")
+			{
+				document.wizard_form.WAN_MODE[3].checked = true;
+				alert(_("admw auto_ppp"));
+				step_num += -1;
+				change_step(1);
+			
+			}
+			else if(zidong == "L2TP")
+			{
+				document.wizard_form.WAN_MODE[4].checked = true;
+				alert(_("admw auto_l2tp"));
+				step_num += -1;
+				change_step(1);
+		
+			}
+			else if(zidong == "P2TP")
+			{
+				document.wizard_form.WAN_MODE[5].checked = true;
+				alert(_("admw auto_p2tp"));
+				step_num += -1;
+				change_step(1);
+			
+			}
+			else
+				alert("zidong"+step_num);
+				*/
+		}
+		else if (document.wizard_form.WAN_MODE[1].checked == true) 
+		{
+			document.getElementById("buttontable").style.visibility = "hidden";
+			document.getElementById("buttontable").style.display = "none";
+			document.getElementById('DHCP').click();
+		}
+		else
+		{
+			document.getElementById("div_wan_title").style.visibility = "visible";
+			document.getElementById("div_wan_title").style.display = style_display_on();
+			connectionTypeSwitch();
+			document.wizard_form.back_motion.disabled = false;
+			document.wizard_form.next_motion.disabled = false;
+			document.wizard_form.cancel_motion.disabled = false;
+			document.wizard_form.apply_motion.disabled = true;
+		}
+	}
+	else if (step_num == 3)
+	{
+		if (document.wizard_form.WAN_MODE[1].checked == true) 
+		{
+			document.getElementById('DHCP').click();
+		}
+		else if (document.wizard_form.WAN_MODE[2].checked == true) 
+		{
+			document.getElementById('SIP').click();
+		}
+		else if (document.wizard_form.WAN_MODE[3].checked == true) 
+		{
+			document.getElementById('PPP').click();
+		}
+		else if (document.wizard_form.WAN_MODE[4].checked == true) 
+		{
+			document.getElementById('L2TP').click();
+		}
+		else if (document.wizard_form.WAN_MODE[5].checked == true) 
+		{
+			document.getElementById('P2TP').click();
+		}
+		else 
+		{
+			alert("typeerror");
+		}
+		document.getElementById("buttontable").style.visibility = "hidden";
+		document.getElementById("buttontable").style.display = "none";	
+	}
+	else
+	{
+		// alert("step: "+step_num);
+		window.location.reload();
+	}
+	return true;
+}
+
+function hideAllTables()
+{
+	document.getElementById("div_wizard_home").style.visibility = "hidden";
+	document.getElementById("div_wizard_home").style.display = "none";
+	document.getElementById("RCMd").style.visibility = "hidden";
+	document.getElementById("RCMd").style.display = "none";
+	
+	document.getElementById("div_Router").style.visibility = "hidden";
+	document.getElementById("div_Router").style.display = "none";
+	
+	document.getElementById("div_wan_title").style.visibility = "hidden";
+	document.getElementById("div_wan_title").style.display = "none";
+	document.getElementById("div_wan_opmode").style.visibility = "hidden";
+	document.getElementById("div_wan_opmode").style.display = "none";
+	hideWanOption();
+	document.getElementById("gifshow").style.visibility = "hidden";
+	document.getElementById("gifshow").style.display = "none";
+
+}
+
+function hideWanOption()
+{
+	document.getElementById("div_wan_static").style.visibility = "hidden";
+	document.getElementById("div_wan_static").style.display = "none";
+	document.getElementById("div_wan_pppoe").style.visibility = "hidden";
+	document.getElementById("div_wan_pppoe").style.display = "none";
+	document.getElementById("div_wan_l2tp").style.visibility = "hidden";
+	document.getElementById("div_wan_l2tp").style.display = "none";
+	document.getElementById("div_wan_pptp").style.visibility = "hidden";
+	document.getElementById("div_wan_pptp").style.display = "none";
+	document.getElementById("div_wan_3G").style.visibility = "hidden";
+	document.getElementById("div_wan_3G").style.display = "none";
+}
+
+function disableWanSettings()
+{
+	document.wizard_form.WAN_IPADDR.disabled = true;
+	document.wizard_form.WAN_NETMASK.disabled = true;
+	document.wizard_form.IPGW.disabled = true;
+	document.wizard_form.PRIDNS.disabled = true;
+	document.wizard_form.SECDNS.disabled = true;
+	document.wizard_form.PPPOE_USER.disabled = true;
+	document.wizard_form.PPPOE_PWD.disabled = true;
+	document.wizard_form.PPPOE_PWD2.disabled = true;
+	document.wizard_form.pppoeOPMode.disabled = true;
+	document.wizard_form.pppoeRedialPeriod.disabled = true;
+	document.wizard_form.pppoeIdleTime.disabled = true;
+	document.wizard_form.l2tpServer.disabled = true;
+	document.wizard_form.l2tpUser.disabled = true;
+	document.wizard_form.l2tpPass.disabled = true;
+	document.wizard_form.l2tpMode.disabled = true;
+	document.wizard_form.l2tpIp.disabled = true;
+	document.wizard_form.l2tpNetmask.disabled = true;
+	document.wizard_form.l2tpGateway.disabled = true;
+	document.wizard_form.l2tpOPMode.disabled = true;
+	document.wizard_form.l2tpRedialPeriod.disabled = true;
+	document.wizard_form.pptpServer.disabled = true;
+	document.wizard_form.pptpUser.disabled = true;
+	document.wizard_form.pptpPass.disabled = true;
+	document.wizard_form.pptpMode.disabled = true;
+	document.wizard_form.pptpIp.disabled = true;
+	document.wizard_form.pptpNetmask.disabled = true;
+	document.wizard_form.pptpGateway.disabled = true;
+	document.wizard_form.pptpOPMode.disabled = true;
+	document.wizard_form.pptpRedialPeriod.disabled = true;
+	document.wizard_form.Dev3G.disabled = true;
+}
+
+function connectionTypeSwitch()
+{
+	hideWanOption();
+	if (document.wizard_form.WAN_MODE[2].checked == true) {
+		document.getElementById("div_wan_static").style.visibility = "visible";
+		document.getElementById("div_wan_static").style.display = style_display_on();
+		document.wizard_form.WAN_IPADDR.disabled = false;
+		document.wizard_form.WAN_NETMASK.disabled = false;
+		document.wizard_form.IPGW.disabled = false;
+		document.wizard_form.PRIDNS.disabled = false;
+		document.wizard_form.SECDNS.disabled = false;
+	}
+	else if (document.wizard_form.WAN_MODE[3].checked == true) {
+		document.getElementById("div_wan_pppoe").style.visibility = "visible";
+		document.getElementById("div_wan_pppoe").style.display = style_display_on();
+		document.wizard_form.PPPOE_USER.disabled = false;
+		document.wizard_form.PPPOE_PWD.disabled = false;
+		document.wizard_form.PPPOE_PWD2.disabled = false;
+		if (pppoecdb == "1")
+		{
+			document.getElementById("div_pppoe_opmode").style.visibility = "hidden";
+			document.getElementById("div_pppoe_opmode").style.display = "none";
+		}
+		else 
+		{
+			document.wizard_form.pppoeOPMode.disabled = false;
+		}
+		pppoeOPModeSwitch();
+	}
+	else if (document.wizard_form.WAN_MODE[4].checked == true) {
+		document.getElementById("div_wan_l2tp").style.visibility = "visible";
+		document.getElementById("div_wan_l2tp").style.display = style_display_on();
+		document.wizard_form.l2tpServer.disabled = false;
+		document.wizard_form.l2tpUser.disabled = false;
+		document.wizard_form.l2tpPass.disabled = false;
+		document.wizard_form.l2tpMode.disabled = false;
+		document.wizard_form.l2tpIp.disabled = false;
+		document.wizard_form.l2tpNetmask.disabled = false;
+		document.wizard_form.l2tpGateway.disabled = false;
+		document.wizard_form.l2tpOPMode.disabled = false;
+		l2tpOPModeSwitch();
+	}
+	else if (document.wizard_form.WAN_MODE[5].checked == true) {
+		document.getElementById("div_wan_pptp").style.visibility = "visible";
+		document.getElementById("div_wan_pptp").style.display = style_display_on();
+		document.wizard_form.pptpServer.disabled = false;
+		document.wizard_form.pptpUser.disabled = false;
+		document.wizard_form.pptpPass.disabled = false;
+		document.wizard_form.pptpMode.disabled = false;
+		document.wizard_form.pptpIp.disabled = false;
+		document.wizard_form.pptpNetmask.disabled = false;
+		document.wizard_form.pptpGateway.disabled = false;
+		document.wizard_form.pptpOPMode.disabled = false;
+		pptpOPModeSwitch();
+	}
+	else if (document.wizard_form.WAN_MODE[6].checked == true) {
+		document.getElementById("div_wan_3G").style.visibility = "visible";
+		document.getElementById("div_wan_3G").style.display = style_display_on();
+		document.wizard_form.Dev3G.disabled = false;
+	}
+}
+
+function l2tpModeSwitch()
+{
+	if (document.wizard_form.l2tpMode.selectedIndex == 0) {
+		document.getElementById("div_l2tpIp").style.visibility = "visible";
+		document.getElementById("div_l2tpIp").style.display = style_display_on();
+		document.getElementById("div_l2tpNetmask").style.visibility = "visible";
+		document.getElementById("div_l2tpNetmask").style.display = style_display_on();
+		document.getElementById("div_l2tpGateway").style.visibility = "visible";
+		document.getElementById("div_l2tpGateway").style.display = style_display_on();
+	}
+	else {
+		document.getElementById("div_l2tpIp").style.visibility = "hidden";
+		document.getElementById("div_l2tpIp").style.display = "none";
+		document.getElementById("div_l2tpNetmask").style.visibility = "hidden";
+		document.getElementById("div_l2tpNetmask").style.display = "none";
+		document.getElementById("div_l2tpGateway").style.visibility = "hidden";
+		document.getElementById("div_l2tpGateway").style.display = "none";
+	}
+}
+
+function pptpModeSwitch()
+{
+	if (document.wizard_form.pptpMode.selectedIndex == 0) {
+		document.getElementById("div_pptpIp").style.visibility = "visible";
+		document.getElementById("div_pptpIp").style.display = style_display_on();
+		document.getElementById("div_pptpNetmask").style.visibility = "visible";
+		document.getElementById("div_pptpNetmask").style.display = style_display_on();
+		document.getElementById("div_pptpGateway").style.visibility = "visible";
+		document.getElementById("div_pptpGateway").style.display = style_display_on();
+	}
+	else {
+		document.getElementById("div_pptpIp").style.visibility = "hidden";
+		document.getElementById("div_pptpIp").style.display = "none";
+		document.getElementById("div_pptpNetmask").style.visibility = "hidden";
+		document.getElementById("div_pptpNetmask").style.display = "none";
+		document.getElementById("div_pptpGateway").style.visibility = "hidden";
+		document.getElementById("div_pptpGateway").style.display = "none";
+	}
+}
+
+function pppoeOPModeSwitch()
+{
+	document.wizard_form.pppoeRedialPeriod.disabled = true;
+	document.wizard_form.pppoeIdleTime.disabled = true;
+	if (pppoecdb == "1")
+	{
+		document.getElementById("div_pppoe_opmode_setting").style.visibility = "hidden";
+		document.getElementById("div_pppoe_opmode_setting").style.display = "none";
+	}
+	else
+	{
+		if (document.wizard_form.pppoeOPMode.selectedIndex == 0) 
+			document.wizard_form.pppoeRedialPeriod.disabled = false;
+		else if (document.wizard_form.pppoeOPMode.selectedIndex == 1)
+			document.wizard_form.pppoeIdleTime.disabled = false;
+	}
+}
+
+function l2tpOPModeSwitch()
+{
+	document.wizard_form.l2tpRedialPeriod.disabled = true;
+	// document.wizard_form.l2tpIdleTime.disabled = true;
+	if (document.wizard_form.l2tpOPMode.selectedIndex == 0) 
+		document.wizard_form.l2tpRedialPeriod.disabled = false;
+	/*
+	else if (document.wizard_form.l2tpOPMode.selectedIndex == 1)
+		document.wizard_form.l2tpIdleTime.disabled = false;
+	*/
+}
+
+function pptpOPModeSwitch()
+{
+	document.wizard_form.pptpRedialPeriod.disabled = true;
+	// document.wizard_form.pptpIdleTime.disabled = true;
+	if (document.wizard_form.pptpOPMode.selectedIndex == 0) 
+		document.wizard_form.pptpRedialPeriod.disabled = false;
+	/*
+	else if (document.wizard_form.pptpOPMode.selectedIndex == 1)
+		document.wizard_form.pptpIdleTime.disabled = false;
+	*/
+}
+
+function atoi(str, num)
+{
+	i = 1;
+	if (num != 1) {
+		while (i != num && str.length != 0) {
+			if (str.charAt(0) == '.') {
+				i++;
+			}
+			str = str.substring(1);
+		}
+		if (i != num)
+			return -1;
+	}
+
+	for (i=0; i<str.length; i++) {
+		if (str.charAt(i) == '.') {
+			str = str.substring(0, i);
+			break;
+		}
+	}
+	if (str.length == 0)
+		return -1;
+	return parseInt(str, 10);
+}
+
+function checkRange(str, num, min, max)
+{
+	d = atoi(str, num);
+	if (d > max || d < min)
+		return false;
+	return true;
+}
+
+function isAllNum(str)
+{
+	for (var i=0; i<str.length; i++) {
+		if ((str.charAt(i) >= '0' && str.charAt(i) <= '9') || (str.charAt(i) == '.' ))
+			continue;
+		return 0;
+	}
+	return 1;
+}
+
+function checkIpAddr(field, ismask)
+{
+	if (field.value == "") {
+		alert("Error. IP address is empty.");
+		field.value = field.defaultValue;
+		field.focus();
+		return false;
+	}
+
+	if (isAllNum(field.value) == 0) {
+		alert('It should be a [0-9] number.');
+		field.value = field.defaultValue;
+		field.focus();
+		return false;
+	}
+
+	if (ismask) {
+		if ((!checkRange(field.value, 1, 0, 256)) ||
+				(!checkRange(field.value, 2, 0, 256)) ||
+				(!checkRange(field.value, 3, 0, 256)) ||
+				(!checkRange(field.value, 4, 0, 256)))
+		{
+			alert('IP adress format error.');
+			field.value = field.defaultValue;
+			field.focus();
+			return false;
+		}
+	}
+	else {
+		if ((!checkRange(field.value, 1, 0, 255)) ||
+				(!checkRange(field.value, 2, 0, 255)) ||
+				(!checkRange(field.value, 3, 0, 255)) ||
+				(!checkRange(field.value, 4, 1, 254)))
+		{
+			alert('IP adress format error.');
+			field.value = field.defaultValue;
+			field.focus();
+			return false;
+		}
+	}
+	return true;
+}
+
+function CheckWanValue()
+{
+	if (document.wizard_form.WAN_MODE[2].checked == true)		//STATIC
+	{      
+		if (!checkIpAddr(document.wizard_form.WAN_IPADDR, false))
+		{
+			document.wizard_form.WAN_IPADDR.select();
+			return false;
+		}
+		if (!checkIpAddr(document.wizard_form.WAN_NETMASK, true))
+		{
+			document.wizard_form.WAN_NETMASK.select();
+			return false;
+		}
+
+		if (document.wizard_form.IPGW.value != "")
+			if (!checkIpAddr(document.wizard_form.IPGW, false))
+			{
+				document.wizard_form.IPGW.select();
+				return false;
+			}
+		if (document.wizard_form.PRIDNS.value != "")
+			if (!checkIpAddr(document.wizard_form.PRIDNS, false))
+			{
+				document.wizard_form.PRIDNS.select();
+				return false;
+			}
+		if (document.wizard_form.SECDNS.value != "")
+			if (!checkIpAddr(document.wizard_form.SECDNS, false))
+			{
+				document.wizard_form.PRIDNS.select();
+				return false;
+			}
+	}
+	else if (document.wizard_form.WAN_MODE[3].checked == true)	//PPPOE
+	{ 
+		if (document.wizard_form.PPPOE_USER.value.length == 0)
+		{
+			alert("Please enter user name!");
+			document.wizard_form.PPPOE_USER.select();
+			return false;
+		}
+		if (document.wizard_form.PPPOE_PWD.value.length == 0)
+		{
+			alert("Please enter password!");
+			document.wizard_form.PPPOE_PWD.select();
+			return false;
+		}
+		if (document.wizard_form.PPPOE_PWD.value != document.wizard_form.PPPOE_PWD2.value) 
+		{
+			alert("Password mismatched!");
+			return false;
+		}
+		if (pppoecdb != "1")
+		{
+			if (document.wizard_form.pppoeOPMode.selectedIndex == 0)
+			{
+				if (document.wizard_form.pppoeRedialPeriod.value == "")
+				{
+					alert("Please specify Redial Period");
+					document.wizard_form.pppoeRedialPeriod.select();
+					return false;
+				}
+			}
+			else if (document.wizard_form.pppoeOPMode.selectedIndex == 1);
+			{
+				if (document.wizard_form.pppoeIdleTime.value == "")
+				{
+					alert("Please specify Idle Time");
+					document.wizard_form.pppoeIdleTime.select();
+					return false;
+				}
+			}
+		}
+	}
+	else if (document.wizard_form.WAN_MODE[4].checked == true) 	//L2TP
+	{ 
+		if (!checkIpAddr(document.wizard_form.l2tpServer, false))
+		{
+			document.wizard_form.l2tpServer.select();
+			return false;
+		}
+		if (document.wizard_form.l2tpUser.value.length == 0)
+		{
+			alert("Please enter user name!");
+			document.wizard_form.l2tpUser.select();
+			return false;
+		}
+		if (document.wizard_form.l2tpPass.value.length == 0)
+		{
+			alert("Please enter password!");
+			document.wizard_form.l2tpPass.select();
+			return false;
+		}
+		if (document.wizard_form.l2tpMode.selectedIndex == 0)
+		{
+			if (!checkIpAddr(document.wizard_form.l2tpIp, false))
+			{
+				document.wizard_form.WAN_IPADDR.select();
+				return false;
+			}
+			if (!checkIpAddr(document.wizard_form.l2tpNetmask, true))
+			{
+				document.wizard_form.l2tpNetmask.select();
+				return false;
+			}
+			if (!checkIpAddr(document.wizard_form.l2tpGateway, false))
+			{
+				document.wizard_form.l2tpGateway.select();
+				return false;
+			}
+		}
+		if (document.wizard_form.l2tpOPMode.selectedIndex == 0)
+		{
+			if (document.wizard_form.l2tpRedialPeriod.value == "")
+			{
+				alert("Please specify Redial Period");
+				document.wizard_form.l2tpRedialPeriod.select();
+				return false;
+			}
+		}
+		/*
+		else if (document.wizard_form.l2tpOPMode.selectedIndex == 1)
+		{
+			if (document.wizard_form.l2tpIdleTime.value == "")
+			{
+				alert("Please specify Idle Time");
+				document.wizard_form.l2tpIdleTime.focus();
+				document.wizard_form.l2tpIdleTime.select();
+				return false;
+			}
+		}
+		*/
+	}
+	else if (document.wizard_form.WAN_MODE[5].checked == true) 	//PPTP
+	{ 
+		if (!checkIpAddr(document.wizard_form.pptpServer, false))
+		{
+			document.wizard_form.pptpServer.select();
+			return false;
+		}
+		if (document.wizard_form.pptpUser.value.length == 0)
+		{
+			alert("Please enter user name!");
+			document.wizard_form.pptpUser.select();
+			return false;
+		}
+		if (document.wizard_form.pptpPass.value.length == 0)
+		{
+			alert("Please enter password!");
+			document.wizard_form.pptpPass.select();
+			return false;
+		}
+		if (document.wizard_form.pptpMode.selectedIndex == 0) 
+		{
+			if (!checkIpAddr(document.wizard_form.pptpIp, false))
+			{
+				document.wizard_form.pptpIp.select();
+				return false;
+			}
+			if (!checkIpAddr(document.wizard_form.pptpNetmask, true))
+			{
+				document.wizard_form.pptpNetmask.select();
+				return false;
+			}
+			if (!checkIpAddr(document.wizard_form.pptpGateway, false))
+			{
+				document.wizard_form.pptpGateway.select();
+				return false;
+			}
+		}
+		if (document.wizard_form.pptpOPMode.selectedIndex == 0)
+		{
+			if (document.wizard_form.pptpRedialPeriod.value == "")
+			{
+				alert("Please specify Redial Period");
+				document.wizard_form.pptpRedialPeriod.select();
+				return false;
+			}
+		}
+		/*
+		else if(document.wizard_form.pptpOPMode.selectedIndex == 1)
+		{
+			if (document.wizard_form.pptpIdleTime.value == "")
+			{
+				alert("Please specify Idle Time");
+				document.wizard_form.pptpIdleTime.select();
+				return false;
+			}
+		}
+		*/
+	}
+
+	return true;
+}
+
+
+function initTranslation()
+{
+	var e = document.getElementById("qsettitle");
+	e.innerHTML = _("admw wwtitle");
+	
+	e = document.getElementById("RCMd");
+	e.innerHTML = _("admw RCMd");
+	e = document.getElementById("int");
+	e.innerHTML = _("admw int");
+	e = document.getElementById("int1");
+	e.innerHTML = _("admw int1");
+	e = document.getElementById("int2");
+	e.innerHTML = _("admw int2");
+	e = document.getElementById("wireless");
+	e.innerHTML = _("admw wireless");
+	
+	e = document.getElementById("RMd");
+	e.innerHTML = _("admw RMd");
+	e = document.getElementById("R_uname");
+	e.innerHTML = _("admw R_uname");
+	e = document.getElementById("R_pword");
+	e.innerHTML = _("admw R_pword");
+
+	e = document.getElementById("div_wan_title");
+	e.innerHTML = _("admw div_wan_title");
+	e = document.getElementById("AutoMode");
+	e.innerHTML = _("admw AutoMode");
+	e = document.getElementById("Autodisc");
+	e.innerHTML = _("admw Autodisc");
+	
+	e = document.getElementById("DHCPac");
+	e.innerHTML = _("admw DHCP");
+	e = document.getElementById("DHCPdisc");
+	e.innerHTML = _("admw DHCPdisc");
+	e = document.getElementById("SM");
+	e.innerHTML = _("admw SM");
+	e = document.getElementById("SMdisc");
+	e.innerHTML = _("admw SMdisc");
+	e = document.getElementById("PPPOE");
+	e.innerHTML = _("admw PPPOE");
+	e = document.getElementById("PPPOEdisc");
+	e.innerHTML = _("admw PPPOEdisc");
+	e = document.getElementById("L2TPc");
+	e.innerHTML = _("admw L2TPc");
+	e = document.getElementById("PPTPc");
+	e.innerHTML = _("admw PPTPc");
+
+	e = document.getElementById("SMD");
+	e.innerHTML = _("admw SMD");
+	e = document.getElementById("IPA");
+	e.innerHTML = _("admw IPA");
+	e = document.getElementById("SubMask");
+	e.innerHTML = _("admw SubMask");
+	e = document.getElementById("defgw");
+	e.innerHTML = _("admw defgw");
+	e = document.getElementById("pDNSserver");
+	e.innerHTML = _("admw pDNSserver");
+	e = document.getElementById("sDNSserver");
+	e.innerHTML = _("admw sDNSserver");
+
+	e = document.getElementById("pppoemod");
+	e.innerHTML = _("admw pppoemod");
+	e = document.getElementById("uname");
+	e.innerHTML = _("admw uname");
+	e = document.getElementById("pword");
+	e.innerHTML = _("admw pword");
+	e = document.getElementById("vpword");
+	e.innerHTML = _("admw vpword");
+	e = document.getElementById("opmope");
+	e.innerHTML = _("admw opmope");
+
+	
+	e = document.getElementById("wPppoeKeepAlive");
+	e.innerHTML = _("admw opmode keepalive");
+	e = document.getElementById("wPppoeOnDemand");
+	e.innerHTML = _("admw opmode ondemand");
+	e = document.getElementById("wPppoeManual");
+	e.innerHTML = _("admw opmode manual");
+	e = document.getElementById("PPPOE_KAM");
+	e.innerHTML = _("KAM");
+	e = document.getElementById("PPPOE_seconds");
+	e.innerHTML = _("seconds");
+	e = document.getElementById("PPPOE_ODM");
+	e.innerHTML = _("ODM");
+	e = document.getElementById("PPPOE_minutes");
+	e.innerHTML = _("minutes");
+	
+	e = document.getElementById("L2TPM");
+	e.innerHTML = _("adminw L2TPM");
+	e = document.getElementById("L2TPSIP");
+	e.innerHTML = _("adminw L2TPSIP");
+	e = document.getElementById("L2TPname");
+	e.innerHTML = _("adminw L2TPname");
+	e = document.getElementById("L2TPpwd");
+	e.innerHTML = _("adminw L2TPpwd");
+	e = document.getElementById("L2TPAM");
+	e.innerHTML = _("adminw L2TPAM");
+	e = document.getElementById("l2tpMs");
+	e.innerHTML = _("adminw l2tpMs");
+	e = document.getElementById("l2tpMd");
+	e.innerHTML = _("adminw l2tpMd");
+	e = document.getElementById("L2TP_IP");
+	e.innerHTML = _("adminw L2TPIP");
+	e = document.getElementById("L2TPSM");
+	e.innerHTML = _("adminw L2TPSM");
+	e = document.getElementById("L2TPDG");
+	e.innerHTML = _("adminw L2TPDG");
+	e = document.getElementById("L2TPOM");
+	e.innerHTML = _("adminw L2TPOM");
+	e = document.getElementById("L2TPka");
+	e.innerHTML = _("adminw L2TPka");
+	e = document.getElementById("L2TPMa");
+	e.innerHTML = _("adminw L2TPMa");
+	e = document.getElementById("L2TP_KAM");
+	e.innerHTML = _("adminw L2TP_KAM");
+	e = document.getElementById("L2TP_seconds");
+	e.innerHTML = _("adminw L2TP_seconds");
+
+	e = document.getElementById("PPM");
+	e.innerHTML = _("adminw PPM");
+	e = document.getElementById("PPSIP");
+	e.innerHTML = _("adminw PPSIP");
+	e = document.getElementById("PPuname");
+	e.innerHTML = _("adminw PPuname");
+	e = document.getElementById("PPpwd");
+	e.innerHTML = _("adminw PPpwd");
+	e = document.getElementById("PPAM");
+	e.innerHTML = _("adminw PPAM");
+	e = document.getElementById("PPS");
+	e.innerHTML = _("adminw PPS");
+	e = document.getElementById("PPD");
+	e.innerHTML = _("adminw PPD");
+	e = document.getElementById("PPIP");
+	e.innerHTML = _("adminw PPIP");
+	e = document.getElementById("PPSM");
+	e.innerHTML = _("adminw PPSM");
+	e = document.getElementById("PPDG");
+	e.innerHTML = _("adminw PPDG");
+	e = document.getElementById("PPOM");
+	e.innerHTML = _("adminw PPOM");
+	e = document.getElementById("PPKA");
+	e.innerHTML = _("adminw PPKA");
+	e = document.getElementById("PPma");
+	e.innerHTML = _("adminw PPma");
+	e = document.getElementById("PPtP_KAM");
+	e.innerHTML = _("adminw PPtP_KAM");
+	e = document.getElementById("PPtP_seconds");
+	e.innerHTML = _("adminw PPtP_seconds");
+
+	e = document.getElementById("bBACK");
+	e.value = _("admw bBACK");
+	e = document.getElementById("bNEXT");
+	e.value = _("admw bNEXT");
+	e = document.getElementById("bCANCEL");
+	e.value = _("admw bCANCEL");
+	e = document.getElementById("bAPPLY");
+	e.value = _("admw bAPPLY");
+	
+	e = document.getElementById("otherbutton");
+	e.value = _("admw otherbutton");
+	e = document.getElementById("advbutton");
+	e.value = _("admw advbutton");
+	
+	e = document.getElementById("wrshowp");
+	e.innerHTML = _("admw showp");
+	e = document.getElementById("pppshowp");
+	e.innerHTML = _("admw showp");
+	e = document.getElementById("l2tpshowp");
+	e.innerHTML = _("admw showp");
+	e = document.getElementById("p2tpshowp");
+	e.innerHTML = _("admw showp");
+	
+	e = document.getElementById("optionXX");
+	e.innerHTML = _("admw optionXX");
+	
+	e = document.getElementById("fresh");
+	e.value = _("admw fresh");
+	e = document.getElementById("Wlisttitle1");
+	e.innerHTML = _("admw Wlisttitle1");
+	e = document.getElementById("Wlisttitle2");
+	e.innerHTML = _("admw Wlisttitle2");
+	e = document.getElementById("Wlisttitle3");
+	e.innerHTML = _("admw Wlisttitle3");
+	e = document.getElementById("waiting");
+	e.innerHTML = _("admw waiting");	
+
+}
+function initValue()
+{
+	Butterlate.setTextDomain("admin");
+	initTranslation();
+	hideAllTables();
+	disableWanSettings();
+
+	step_num = 0;
+	showothers = 0;
+	showoadv = 0;
+	{
+		if((document.getElementById("INDEX").value == "11") || (document.getElementById("INDEX").value == 11))
+		{
+			document.getElementById("INDEX").value = "99";
+			document.wizard_form.intType[1].checked = true;
+			change_step(1);
+			return true;
+		}
+		if((document.getElementById("INDEX").value == "12") || (document.getElementById("INDEX").value == 12))
+		{
+			document.getElementById("INDEX").value = "99";
+			document.wizard_form.intType[0].checked = true;
+			change_step(1);
+			var zidong = document.getElementById("AUTOTYPE").value;
+			if(zidong == "static")
+			{
+				document.wizard_form.WAN_MODE[2].checked = true;
+				alert(_("admw auto_sip"));
+				change_step(1);
+			}
+			else if(zidong == "dhcp")
+			{
+				document.wizard_form.WAN_MODE[1].checked = true;
+				alert(_("admw auto_dhcp"));
+				change_step(1);
+			
+			}
+			else if(zidong == "pppoe")
+			{
+				document.wizard_form.WAN_MODE[3].checked = true;
+				alert(_("admw auto_ppp"));
+				change_step(1);
+			
+			}
+			else if(zidong == "l2tp")
+			{
+				document.wizard_form.WAN_MODE[4].checked = true;
+				alert(_("admw auto_l2tp"));
+				change_step(1);
+		
+			}
+			else if(zidong == "p2tp")
+			{
+				document.wizard_form.WAN_MODE[5].checked = true;
+				alert(_("admw auto_p2tp"));
+				change_step(1);
+			}
+			else
+			{
+				alert(_("admw auto_fail"));
+			}
+			return true;
+		}
+	}
+	document.getElementById("div_wizard_home").style.visibility = "visible";
+	document.getElementById("div_wizard_home").style.display = style_display_on();
+	document.getElementById("RCMd").style.visibility = "visible";
+	document.getElementById("RCMd").style.display = style_display_on();
+	
+	document.wizard_form.back_motion.disabled = true;
+	document.wizard_form.next_motion.disabled = false;
+	document.wizard_form.cancel_motion.disabled = false;
+	document.wizard_form.apply_motion.disabled = true;
+}
+
+function others() 
+{
+	if(showothers == 0)
+	{
+		document.getElementById("l2tptr1").style.visibility = "visible";
+		document.getElementById("l2tptr1").style.display = style_display_on();
+		document.getElementById("l2tptr2").style.visibility = "visible";
+		document.getElementById("l2tptr2").style.display = style_display_on();
+		document.getElementById("pptptr1").style.visibility = "visible";
+		document.getElementById("pptptr1").style.display = style_display_on();
+		document.getElementById("pptptr2").style.visibility = "visible";
+		document.getElementById("pptptr2").style.display = style_display_on();
+		showothers = 1;
+	}
+	else
+	{
+		document.getElementById("l2tptr1").style.visibility = "hidden";
+		document.getElementById("l2tptr1").style.display = "none";
+		document.getElementById("l2tptr2").style.visibility = "hidden";
+		document.getElementById("l2tptr2").style.display = "none";
+		document.getElementById("pptptr1").style.visibility = "hidden";
+		document.getElementById("pptptr1").style.display = "none";
+		document.getElementById("pptptr2").style.visibility = "hidden";
+		document.getElementById("pptptr2").style.display = "none";
+		showothers = 0;
+	}
+}
+function advance() 
+{
+	if(showoadv == 0)
+	{
+		document.getElementById("div_pppoe_opmode").style.visibility = "visible";
+		document.getElementById("div_pppoe_opmode").style.display = style_display_on();
+		document.getElementById("div_pppoe_opmode_setting").style.visibility = "visible";
+		document.getElementById("div_pppoe_opmode_setting").style.display = style_display_on();
+		showoadv = 1;
+	}
+	else
+	{
+		document.getElementById("div_pppoe_opmode").style.visibility = "hidden";
+		document.getElementById("div_pppoe_opmode").style.display = "none";
+		document.getElementById("div_pppoe_opmode_setting").style.visibility = "hidden";
+		document.getElementById("div_pppoe_opmode_setting").style.display = "none";
+		showoadv = 0;
+	}
+}
+function wrshowpwd()
+{
+ 
+ if(document.getElementById("wrpass").type=="password"){
+   var pass = document.getElementById("wrpass").value;
+   document.getElementById("wrpwd").innerHTML='<input type="text" name="WDS_KEY" id="wrpass" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
+  }
+  else
+  {
+   var pass = document.getElementById("wrpass").value;
+   document.getElementById("wrpwd").innerHTML='<input type="password" name="WDS_KEY" id="wrpass" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
+   }
+ }
+
+function pppshowpwd()
+{
+  if(document.getElementById("ppppass").type=="password"){
+   var pass = document.getElementById("ppppass").value;
+   document.getElementById("ppppwdinput").innerHTML='<input type="text" name="PPPOE_PWD" id="ppppass" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
+  }else{
+   var pass = document.getElementById("ppppass").value;
+   document.getElementById("ppppwdinput").innerHTML='<input type="password" name="PPPOE_PWD" id="ppppass" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
+   }
+ }
+ function l2tpshowpwd()
+{
+  if(document.getElementById("l2tppass").type=="password"){
+   var pass = document.getElementById("l2tppass").value;
+   document.getElementById("pl2tppwdinput").innerHTML='<input type="text" name="l2tpPass" id="l2tppass" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
+  }else{
+   var pass = document.getElementById("l2tppass").value;
+   document.getElementById("pl2tppwdinput").innerHTML='<input type="password" name="l2tpPass" id="l2tppass" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
+   }
+ }
+ function p2tpshowpwd()
+{
+  if(document.getElementById("p2tppass").type=="password"){
+   var pass = document.getElementById("p2tppass").value;
+   document.getElementById("p2tppwdinput").innerHTML='<input type="text" name="pptpPass" id="p2tppass" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
+  }else{
+   var pass = document.getElementById("p2tppass").value;
+   document.getElementById("p2tppwdinput").innerHTML='<input type="password" name="pptpPass" id="p2tppass" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
+   }
+ }
+function  WIFSwitch()
+{
+	var obj=document.getElementById("WFILIST");
+	var index=obj.selectedIndex; //序号，取当前选中选项的序号
+	
+	var myString=obj.options[index].text;
+	
+	var a = myString.indexOf("(");
+	var b = myString.indexOf(")(");
+	var c = myString.lastIndexOf(")(");
+	var d = myString.lastIndexOf(")");
+	
+	var s, ss, sss, ssss;                // 声明变量。
+	
+    s = myString.substr(0, a); // 获取子字符串。
+    ss = myString.substr(a+1, b-a-1); // 获取子字符串。
+	sss = myString.substr(b+2, c-b-2);
+	ssss = myString.substr(c+2, d-c-2);
+	
+	document.getElementById("WDS_NAME").value = s;//obj.options[index].text;
+	document.getElementById("WDS_MAC").value = ss;//obj.options[index].text;
+	document.getElementById("WDS_CHAN").value = sss;//obj.options[index].text;
+	document.getElementById("WDS_SECMODE").value = ssss;//obj.options[index].text;
+}
+function refreshwds()
+{
+	hideAllTables();
+	document.getElementById("buttontable").style.visibility = "hidden";
+	document.getElementById("buttontable").style.display = "none";	
+	document.getElementById("gifshow").style.visibility = "visible";
+	document.getElementById("gifshow").style.display = style_display_on();
+	document.getElementById('REFRESHWFi').click();
+}
+
+</script>
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+</head>
+
+<body onLoad="initValue()" ondragstart="window.event.returnValue=false" oncontextmenu="window.event.returnValue=false" onselectstart="event.returnValue=false">
+<div class="handaer_main">
+<table  width="100%" border="0" cellpadding="0" cellspacing="0">
+<tr><td>
+<h1 id="qsettitle"></h1>
+<p></p>
+
+<form method="post" name="wizard_form">
+<!-- ============= Wizard Home Page ============= -->
+<h2 id="RCMd"></h2>
+<table id="div_wizard_home" width="100%" border="0" cellpadding="2" cellspacing="1">
+<tr>
+  <td width="15px"><input type="radio" name="intType" value="interner" checked></td>
+  <th align="left" id="int"></th>
+</tr>
+<tr>
+  <td>&nbsp; &nbsp;</td>
+  <td id="int1"></td>
+</tr> 
+<tr>
+  <td width="15px"><input type="radio" name="intType" value="router"></td>
+  <th align="left" id="wireless"></th>
+</tr>
+<tr>
+  <td>&nbsp; &nbsp;</td>
+  <td id="int2"></td>
+</tr>
+</table>
+<!-- ================= Router Mode ================= -->
+<table id="div_Router" cellpadding="0" cellspacing="0"   class="handaer_text">
+<tr>
+  <td class="title" colspan="2" id="RMd"></td>
+</tr>
+<tr>
+  <td class="head" id="R_uname"></td>
+  <td><input name="WDS_NAME"  class="handaer_text_content" maxlength=32 size=32 value="~~WDS_NAME~"></td>
+</tr>
+<tr>
+  <td class="head">MAC</td>
+  <td><input name="WDS_MAC"  class="handaer_text_content" maxlength=32 size=32 value="~~WDS_MAC~"></td>
+</tr>
+<tr>
+  <td class="head" id="R_pword"></td>
+  <td><span id="wrpwd"><input type="password" id="wrpass" name="WDS_KEY"  class="handaer_text_content" maxlength="32" size="32" value="~~WDS_KEY~" /></span><input type="checkbox" onClick="wrshowpwd()"/><span id="wrshowp"></span></td>
+</tr>
+<tr>
+    <td id="Wlisttitle1"></td>
+    <td id="Wlisttitle2"></td>
+  </tr>
+  <tr>
+	<td id="Wlisttitle3"></td>
+    <td><select name="WFILIST" id="WFILIST" size="1" onChange="WIFSwitch()">
+	~LList~</select>
+	</td>
+ </tr>
+ <tr>
+    <td>&nbsp; &nbsp;</td>
+    <td><input type="button" name="refresh" id="fresh" class="handaer_input" value="Fresh" onClick="refreshwds()"></td>
+ </tr>
+</table>
+
+<h2 id="div_wan_title"></h2>
+<!-- ============= Internet OP Mode ============= -->
+<table id="div_wan_opmode" width="640" border="0" cellpadding="2" cellspacing="1">
+<tr>
+  <td width="15px"><input type="radio" name="WAN_MODE" value="auto" checked></td>
+  <th align="left" id="AutoMode"></th>
+</tr>
+<tr>
+  <td>&nbsp; &nbsp;</td>
+  <td id="Autodisc"></td>
+</tr> 
+
+<tr>
+  <td width="15px"><input type="radio" name="WAN_MODE" value="dhcp"></td>
+  <th align="left" id="DHCPac"></th>
+</tr>
+<tr>
+  <td>&nbsp; &nbsp;</td>
+  <td id="DHCPdisc"></td>
+</tr> 
+<tr>
+  <td width="15px"><input type="radio" name="WAN_MODE" value="static"></td>
+  <th align="left" id="SM"></th>
+</tr>
+<tr>
+  <td>&nbsp; &nbsp;</td>
+  <td id="SMdisc"></td>
+</tr>
+  <td width="15px"><input type="radio" name="WAN_MODE" value="pppoe"></td>
+  <th align="left" id="PPPOE"></th>
+</tr>
+<tr>
+  <td>&nbsp; &nbsp;</td>
+  <td id="PPPOEdisc"></td>
+</tr>
+<tr>
+  <td>&nbsp; &nbsp;</td>
+  <td><input id="otherbutton" type="button" value="其他" onClick="others()" /></td>
+</tr>
+<tr id="l2tptr1" style="display:none">
+  <td width="15px"><input type="radio" name="WAN_MODE" value="l2tp"></td>
+  <th align="left">L2TP</th>
+</tr>
+<tr id="l2tptr2" style="display:none">
+  <td>&nbsp; &nbsp;</td>
+  <td id="L2TPc"></th>
+</tr>
+<tr id="pptptr1" style="display:none">
+  <td width="15px"><input type="radio" name="WAN_MODE" value="pptp"></td>
+  <th align="left">PPTP</th>
+</tr>
+<tr id="pptptr2" style="display:none">
+  <td>&nbsp; &nbsp;</td>
+  <td id="PPTPc"></td>
+</tr>
+<tr style="display:none">
+  <td width="15px"><input type="radio" name="WAN_MODE" value="3g"></td>
+  <th align="left">3G</th>
+</tr>
+<tr style="display:none">
+  <td>&nbsp; &nbsp;</td>
+  <td>3G Client</td>
+</tr>
+</table>
+
+<!-- ================= STATIC Mode ================= -->
+<table id="div_wan_static" cellpadding="0" cellspacing="0"   class="handaer_text">
+<tr>
+  <td class="title" colspan="2" id="SMD"></td>
+</tr>
+<tr>
+  <td class="head" id="IPA"></td>
+  <td><input name="WAN_IPADDR"  class="handaer_text_content" maxlength=15 value="~~WAN_IPADDR~"></td>
+</tr>
+<tr>
+  <td class="head" id="SubMask"></td>
+  <td><input name="WAN_NETMASK"  class="handaer_text_content" maxlength=15 value="~~WAN_NETMASK~">
+  </td>
+</tr>
+<tr>
+  <td class="head" id="defgw"></td>
+  <td><input name="IPGW"  class="handaer_text_content" maxlength=15 value="~~IPGW~">
+  </td>
+</tr>
+<tr>
+  <td class="head" id="pDNSserver"></td>
+  <td><input name="PRIDNS"  class="handaer_text_content" maxlength=15 value="~~PRIDNS~"></td>
+</tr>
+<tr>
+  <td class="head" id="sDNSserver"></td>
+  <td><input name="SECDNS"  class="handaer_text_content" maxlength=15 value="~~SECDNS~"/><span id="optionXX"></span></td>
+</tr>
+</table>
+
+<!-- ================= PPPOE Mode ================= -->
+<table id="div_wan_pppoe" cellpadding="0" cellspacing="0"   class="handaer_text">
+<tr>
+  <td class="title" colspan="2" id="pppoemod"></td>
+</tr>
+<tr>
+  <td class="head" id="uname"></td>
+  <td><input name="PPPOE_USER"  class="handaer_text_content" maxlength=32 size=32 value="~~PPPOE_USER~"></td>
+</tr>
+<tr>
+  <td class="head" id="pword"></td>
+  <td><span id="ppppwdinput"><input type="password" id="ppppass"  class="handaer_text_content" name="PPPOE_PWD" maxlength="32" size="32"  value="~~PPPOE_PWD~"/></span><input type="checkbox" onClick="pppshowpwd()"/><span id="pppshowp"></span></td>
+</tr>
+<tr>
+  <td class="head" id="vpword"></td>
+  <td><input type="password"  class="handaer_text_content" name="PPPOE_PWD2" maxlength=32 size=32></td>
+</tr>
+<tr>
+  <td><input id="advbutton" type="button" onClick="advance()" /></td>
+  <td>&nbsp; &nbsp;</td>
+</tr>
+<tr id="div_pppoe_opmode" style="display:none">
+  <td class="head" rowspan="2" id="opmope"></td>
+  <td>
+    <select name="pppoeOPMode" size="1" onChange="pppoeOPModeSwitch()">
+      <option value="KeepAlive" id="wPppoeKeepAlive"></option>
+      <option value="OnDemand" id="wPppoeOnDemand"></option>
+      <option value="Manual" id="wPppoeManual"></option>
+    </select>
+  </td>
+</tr>
+<tr id="div_pppoe_opmode_setting" style="display:none">
+  	<td><span id="PPPOE_KAM"></span><input type="text" name="pppoeRedialPeriod" maxlength="5" size="3" value="60"><span id="PPPOE_seconds"></span>
+	<br />
+  	<span id="PPPOE_ODM"></span><input type="text" name="pppoeIdleTime" maxlength="3" size="2" value="5"><span id="PPPOE_minutes"></span>
+	</td>
+</tr>
+</table>
+
+<!-- ================= L2TP Mode ================= -->
+<table id="div_wan_l2tp" cellpadding="0" cellspacing="0"   class="handaer_text">
+<tr>
+  <td class="title" colspan="2" id="L2TPM"></td>
+</tr>
+<tr>
+  <td class="head" id="L2TPSIP"></td>
+  <td><input name="l2tpServer"  class="handaer_text_content" maxlength="15" size=15 value="~~l2tpServer~"></td>
+</tr>
+<tr>
+  <td class="head" id="L2TPname" ></td>
+  <td><input name="l2tpUser"  class="handaer_text_content" maxlength="20" size=20 value="~~l2tpUser~"></td>
+</tr>
+<tr>
+  <td class="head" id="L2TPpwd"></td>
+  <td><span id="pl2tppwdinput"><input type="password" id="l2tppass"  class="handaer_text_content" name="l2tpPass" maxlength="32" size="32" value="~~l2tpPass~" /></span><input type="checkbox" onClick="l2tpshowpwd()"/><span id="l2tpshowp"></span></td>
+</tr>
+<tr>
+  <td class="head" id="L2TPAM"></td>
+  <td>
+    <select name="l2tpMode" size="1" onChange="l2tpModeSwitch()">
+      <option value="0" id="l2tpMs"></option>
+      <option value="1" id="l2tpMd"></option>
+    </select>
+  </td>
+</tr>
+<tr id="div_l2tpIp">
+  <td class="head" id="L2TP_IP"></td>
+  <td><input name="l2tpIp"  class="handaer_text_content" maxlength=15 size=15 value="~~l2tpIp~"></td>
+</tr>
+<tr id="div_l2tpNetmask">
+  <td class="head" id="L2TPSM"></td>
+  <td><input name="l2tpNetmask"  class="handaer_text_content" maxlength=15 size=15 value="~~l2tpNetmask~">
+  </td>
+</tr>
+<tr id="div_l2tpGateway">
+  <td class="head" id="L2TPDG"></td>
+  <td><input name="l2tpGateway" class="handaer_text_content"  maxlength=15 size=15 value="~~l2tpGateway~">
+  </td>
+</tr>
+<tr>
+  <td class="head" rowspan="3" id="L2TPOM"></td>
+  <td>
+    <select name="l2tpOPMode" size="1" onChange="l2tpOPModeSwitch()">
+      <option value="KeepAlive" selected id="L2TPka"></option>
+      <!--
+      <option value="OnDemand" id="wL2tpOnDemand">On Demand</option>
+      -->
+      <option value="Manual" id="L2TPMa"></option>
+    </select>
+  </td>
+</tr>
+<tr>
+  <td>
+   <span id="L2TP_KAM"></span>
+    <input type="text" name="l2tpRedialPeriod" maxlength="5" size="3" value="60">
+    <span id="L2TP_seconds">
+    <!--
+    <br />
+    On demand Mode:  Idle Time
+    <input type="text" name="l2tpIdleTime" maxlength="3" size="2" value="5">
+    minutes
+    -->
+  </span>
+  </td>
+</tr>
+</table>
+
+<!-- ================= PPTP Mode ================= -->
+<table id="div_wan_pptp" cellpadding="0" cellspacing="0"   class="handaer_text">
+<tr>
+  <td class="title" colspan="2" id="PPM"></td>
+</tr>
+<tr>
+  <td class="head" id="PPSIP"></td>
+  <td><input name="pptpServer"  class="handaer_text_content" maxlength="15" size=15 value="~~pptpServer~"></td>
+</tr>
+<tr>
+  <td class="head" id="PPuname"></td>
+  <td><input name="pptpUser"  class="handaer_text_content" maxlength="20" size=20 value="~~pptpUser~"></td>
+</tr>
+<tr>
+  <td class="head" id="PPpwd"></td>
+  <td><span id="p2tppwdinput"><input type="password" id="p2tppass"  class="handaer_text_content" name="pptpPass" maxlength="32" size="32" value="~~pptpPass~"/></span><input type="checkbox" onClick="p2tpshowpwd()"/><span id="p2tpshowp"></span></td>
+</tr>
+<tr>
+  <td class="head" id="PPAM"></td>
+  <td>
+    <select name="pptpMode" size="1" onChange="pptpModeSwitch()">
+      <option value="0" id="PPS"></option>
+      <option value="1" id="PPD"></option>
+    </select>
+  </td>
+</tr>
+<tr id="div_pptpIp">
+  <td class="head" id="PPIP"></td>
+  <td><input name="pptpIp"  class="handaer_text_content" maxlength=15 size=15 value="~~pptpIp~"></td>
+</tr>
+<tr id="div_pptpNetmask">
+  <td class="head" id="PPSM"></td>
+  <td><input name="pptpNetmask"  class="handaer_text_content" maxlength=15 size=15 value="~~pptpNetmask~">
+  </td>
+</tr>
+<tr id="div_pptpGateway">
+  <td class="head" id="PPDG"></td>
+  <td><input name="pptpGateway"  class="handaer_text_content" maxlength=15 size=15 value="~~pptpGateway~">
+  </td>
+</tr>
+<tr>
+  <td class="head" rowspan="3" id="PPOM"></td>
+  <td>
+    <select name="pptpOPMode" size="1" onChange="pptpOPModeSwitch()">
+      <option value="KeepAlive" id="PPKA" selected></option>
+      <!--
+      <option value="OnDemand" id="wPptpOnDemand">On Demand</option>
+      -->
+      <option value="Manual" id="PPma"></option>
+    </select>
+  </td>
+</tr>
+<tr>
+  <td>
+    <span id="PPtP_KAM"></span>
+    <input type="text" name="pptpRedialPeriod" maxlength="5" size="3" value="60">
+    <span id="PPtP_seconds">
+    <!--
+    <br />
+    On demand Mode:  Idle Time
+    <input type="text" name="pptpIdleTime" maxlength="3" size="2" value="5">
+    minutes
+    -->
+    </span>
+  </td>
+</tr>
+</table>
+
+<!-- =========== 3G Modular =========== -->
+<table id="div_wan_3G" cellpadding="0" cellspacing="0"   class="handaer_text">
+<tr>
+  <td class="title" colspan="2">3G Mode</td>
+</tr>
+<tr>
+  <td class="head" rowspan="3">USB 3G modem</td>
+  <td>
+    <select name="Dev3G" size="1">
+      <option value="MU-Q101">NU MU-Q101</option>
+      <option value="HUAWEI-E169">HUAWEI E169</option>
+      <option value="BandLuxe-C270">BandLuxe C270</option>
+      <option value="OPTION-ICON225">OPTION ICON 225</option>
+    </select>
+  </td>
+</tr>
+</table>
+
+<div id="gifshow" style="display:none">
+
+  <img src="/images/loading.gif"><span id="waiting"></span>
+
+</div>
+
+<table width="540" cellpadding="2" cellspacing="1" id="buttontable">
+<tr align="center">
+  <td>
+    <input type="button" name="back_motion" id="bBACK" class="handaer_input" value="Back" onClick="change_step(-1);">
+    <input type="button" name="next_motion" id="bNEXT" class="handaer_input" value="Next" onClick="change_step(1);">
+    <input type="button" name="cancel_motion" id="bCANCEL" class="handaer_input" value="Cancel" onClick="change_step(0);">
+    <input type="button" name="apply_motion" id="bAPPLY" class="handaer_input" value="Apply" onClick="change_step(1);">
+    <input type="submit" name="DHCP" id="DHCP" style="display:none" value="DHCP">
+    <input type="submit" name="SIP" id="SIP" style="display:none" value="SIP">
+    <input type="submit" name="PPP" id="PPP" style="display:none" value="PPP">
+    <input type="submit" name="L2TP" id="L2TP" style="display:none" value="L2TP">
+    <input type="submit" name="P2TP" id="P2TP" style="display:none" value="P2TP">
+	<input type="text" style="display:none" name="AUTOTYPE" id="AUTOTYPE" size="20" maxlength="32" value="~~AUTOTYPE~">
+	<input type="text" style="display:none" name="INDEX" id="INDEX" value="~~INDEX~">
+    <input type="button" name="AUTOGET" id="AUTOGET" style="display:none" value="AUTOGET" onClick="window.location.href='wwai?INDEX=12'"></td>
+	<input type="button" name="REFRESHWFi" id="REFRESHWFi" style="display:none" value="REFRESHWFi" onClick="window.location.href='wwai?INDEX=11'">
+	<input type="text" style="display:none" name="WDS_CHAN" id="WDS_CHAN" size="20" maxlength="32" value="~~WDS_CHAN~">	
+	<input type="text" style="display:none" name="WDS_SECMODE" id="WDS_SECMODE" size="20" maxlength="32" value="~~WDS_SECMODE~">	
+</tr>
+</table>
+<!--/form-->
+
+</td></tr></table> </div>
+
+
+</body>
+
+</html>
+

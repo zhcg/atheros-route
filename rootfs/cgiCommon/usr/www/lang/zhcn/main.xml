@@ -1,0 +1,25 @@
+﻿<po>
+  <message msgid="main disable" msgstr="停用" />
+  <message msgid="main enable" msgstr="启用" />
+  <message msgid="main apply" msgstr="确定" />
+  <message msgid="main cancel" msgstr="取消" />
+  <message msgid="toplanguage" msgstr="z" />
+  
+  <message msgid="man simph" msgstr="简单模式" />
+  <message msgid="man simpd" msgstr="简单模式适用于……………………" />
+  <message msgid="man profh" msgstr="专家模式" />
+  <message msgid="man profd" msgstr="专家模式适用于……………………" />
+  <message msgid="sset exit" msgstr="你确定要退出吗？" />  
+  
+  <message msgid="top_adv" msgstr="高级设置" />
+  <message msgid="top_admin" msgstr="密码管理" />
+  <message msgid="top_exit" msgstr="退出" />
+  
+  <message msgid="admw m_fast" msgstr="快速设置" />
+  <message msgid="admw m_normal" msgstr="设置向导" />
+  <message msgid="admw m_wan" msgstr="外网设置" />
+  <message msgid="admw m_wifi" msgstr="内网设置" />
+  <message msgid="admw m_wirere" msgstr="无线中继" />
+  <message msgid="admw m_parent" msgstr="家长控制" />
+
+</po>

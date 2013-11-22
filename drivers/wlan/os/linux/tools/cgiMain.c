@@ -120,6 +120,14 @@ static  int		FactoryDefault = 0;  // indicates that parameters have been changed
 
 static FILE *errOut;
 
+static  char  *val1[100];
+static  char  *val2[100];
+static  char  *val3[100];
+static  char  *val4[100];
+int num=0;
+static int flaglist;
+
+
 /*
 ** Internal Prototypes
 */
@@ -578,6 +586,25 @@ char *processSpecial(char *paramStr, char *outBuff)
             AbortFlag = 1;
 
         break;
+
+     case 'L'://update wifi list
+            {	
+				if(flaglist!=1)
+					break;
+				//val1-mac,val2-ssid,val3-security,val4-channel
+				for(num=0;num<100;num++)
+				{
+					if(&val3[num]==NULL)
+					{
+						break;
+					}
+					fprintf(errOut,"[luodp] %s(%s)(%s)(%s) \n",val2[num],val1[num],val3[num],val4[num]);
+					outBuff +=sprintf(outBuff,"<option>%s(%s)(%s)(%s)</option>",val2[num],val1[num],val3[num],val4[num]);
+				}
+				flaglist=0;
+				fprintf(errOut,"[luodp] %s \n",outBuff);
+            }								
+        break;       
     }
 
     return outBuff;
@@ -1197,11 +1224,36 @@ void writeParameters(char *name,char *mode,unsigned long offset)
             ** We don't want to store the "update" or "commit" parameters, so
             ** remove them if we get here.  Also, if we have values that have
             ** no value, don't write them out.
+            DHCP SIP PPP L2TP P2TP WIRRE WIRELESS DHCPW SIPW PPPW L2TPW P2TPW ADMINSET
             */
 
-            if( !strcmp(config.Param[i].Name,"UPDATE") )
+            if( !strcmp(config.Param[i].Name,"DHCP") )
                 continue;
-            if( !strcmp(config.Param[i].Name,"COMMIT") )
+            if( !strcmp(config.Param[i].Name,"SIP") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"PPP") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"L2TP") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"P2TP") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"WIRRE") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"WIRELESS") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"DHCPW") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"SIPW") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"PPPW") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"L2TPW") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"P2TPW") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"ADMINSET") )
+                continue;
+			if( !strcmp(config.Param[i].Name,"WFILIST") )
                 continue;
             if( !strcmp(config.Param[i].Name,"INDEX") )
                 continue;
@@ -1777,16 +1829,18 @@ int main(int argc,char **argv)
     char            *update;
     FILE            *f;
 
+    int             lock11=0;
+    int             lock12=0;
     /*
     ** Code Begins.
     ** Zero out the config structure, and read the parameter cache
     ** (or flash, depending on command)
     */
-
     errOut = fopen("/dev/ttyS0","w");
 
     memset(&config,0,sizeof(config));
-
+    
+    //fprintf(errOut,"%s  %d\n",__func__,__LINE__);
     f = fopen("/tmp/.apcfg","r");
 
     if ( !f )
@@ -1808,7 +1862,6 @@ int main(int argc,char **argv)
 
         fseek(f, NVRAM_OFFSET, SEEK_SET);
     }
-
     /*
     ** At this point the file is either open or not.  If it is, read the 
     ** parameters as require
@@ -1824,6 +1877,7 @@ int main(int argc,char **argv)
     ** Now we look for options.
     ** -t means translate the indicated file
     */
+    //fprintf(errOut,"%s  %d\n",__func__,__LINE__);
 
     if(argc > 1)
     {
@@ -2068,6 +2122,7 @@ int main(int argc,char **argv)
     strcat(Page,argv[0]);
     strcat(Page,".html");
 
+   // fprintf(errOut,"%s  %d Page:%s\n",__func__,__LINE__,Page);
     /*
     ** Now to get the environment data.
     ** We parse the input until all parameters are inserted.  If we see a reset, commit,
@@ -2088,7 +2143,6 @@ int main(int argc,char **argv)
     ** This method allows processing of either "get" or "post" methods.  Post
     ** overrides Get.
     */
-
     nextField = getenv("CONTENT_LENGTH");
 
     if (nextField == NULL)
@@ -2096,6 +2150,7 @@ int main(int argc,char **argv)
         sprintf(valBuff,"?%s",getenv("QUERY_STRING"));
         nextField = valBuff;
     }
+   // fprintf(errOut,"%s  %d nextField:%s\n",__func__,__LINE__ ,nextField);
 
     if(nextField != NULL)
     {
@@ -2108,6 +2163,12 @@ int main(int argc,char **argv)
             nextField = opBuff;
         }
 
+        fprintf(errOut,"%s  %d nextField:%s\n",__func__,__LINE__ ,nextField);
+       {
+            char *s="&";
+            strcat(nextField,s);
+        }
+        fprintf(errOut,"%s  %d nextField:%s\n",__func__,__LINE__ ,nextField);
         /*
         ** Check for the reboot button
         ** If hit, we die gloriously
@@ -2124,29 +2185,98 @@ int main(int argc,char **argv)
         ** what was read from tmp/flash.  If the commit parameter
         ** is set, we will write to flash
         */
-
+        fprintf(errOut,"\n----------Page:%s parameter :\n",Page);
         while(nextField)
         {
+            //memset(Value,0x0,70);
+            //Value[0]='\0';
             nextField = extractParam(nextField,Name,valBuff);
             unencode(valBuff,Value);
 
             if(!strcmp("INDEX",Name))
             {
-               parameterIndex = atoi(Value);
+                parameterIndex = atoi(Value);
+                if((parameterIndex==11)&&(lock11==0))//update wifilist
+                {
+					fprintf(errOut,"[luodp] do update wifilist");
+					num=0;
+					//list
+					Execute_cmd("iwlist ath0 scanning > /tmp/scanlist", rspBuff);
+					//mac
+					Execute_cmd("cat /tmp/scanlist | grep Cell | awk '{print $5}'", rspBuff);
+					//fprintf(errOut,"\n-[luodp] %s\n",rspBuff);
+					val1[num]=strtok(rspBuff,"\n\n");
+					while(val1[num]) {
+						num++;
+						val1[num]=strtok(NULL,"\n\n"); 
+					}
+					for(num=0;num<100;num++)
+					{
+						fprintf(errOut,"[luodp] %s\n",val1[num]);
+					}
+					num=0;
+					//ssid
+					Execute_cmd("cat /tmp/scanlist | grep ESSID | awk '{print $1}' | cut -d \"\\\"\" -f2", rspBuff);
+					//fprintf(errOut,"\n-[luodp] %s\n",rspBuff);
+					val2[num]=strtok(rspBuff,"\n\n");
+					while(val2[num]) {
+						num++;
+						val2[num]=strtok(NULL,"\n\n"); 
+					}
+					for(num=0;num<100;num++)
+					{
+						fprintf(errOut,"[luodp] %s\n",val2[num]);
+					}
+					num=0;
+					//security
+					Execute_cmd("cat /tmp/scanlist | grep Encryption | awk '{print $2}' | cut -d \":\" -f2", rspBuff);
+					//fprintf(errOut,"\n-[luodp] %s\n",rspBuff);
+					val3[num]=strtok(rspBuff,"\n\n");
+					while(val3[num]) {
+						num++;
+						val3[num]=strtok(NULL,"\n\n"); 
+					}
+					for(num=0;num<100;num++)
+					{
+						fprintf(errOut,"[luodp] %s\n",val3[num]);
+					}
+					num=0;
+					//channel
+					Execute_cmd("cat /tmp/scanlist | grep Frequency | awk '{print $4}' | cut -d \")\" -f1", rspBuff);
+					//fprintf(errOut,"\n-[luodp] %s\n",rspBuff);
+					val4[num]=strtok(rspBuff,"\n\n");
+					while(val4[num]) {
+						num++;
+						val4[num]=strtok(NULL,"\n\n"); 
+					}
+					for(num=0;num<100;num++)
+					{
+						fprintf(errOut,"[luodp] %s\n",val4[num]);
+					}
+					flaglist=1;
+                    lock11 = 1;
+                }
+                else if((parameterIndex==12)&&(lock12==0))//do wan mode detect
+                {
+					Execute_cmd("net_check", rspBuff);
+                    lock12 = 1;
+                }
                sprintf(Value,"%d",parameterIndex);
             }
-            CFG_set_by_name(Name,Value);
+             fprintf(errOut,"Name:%s Value:%s\n",Name,Value);
+             CFG_set_by_name(Name,Value);
         }
     if(parameterIndex)
 		radioIndex = getRadioID(parameterIndex);
 
     }
-
+        fprintf(errOut,"\n#######-Page:%s parameter .\n",Page);
+        fprintf(errOut,"\n%s  %d valBuff:%s\n \n",__func__,__LINE__,valBuff);
     /*
     ** use the "translate file" function to translate the file, inserting the
     ** special strings as required.
     */
-
+   // fprintf(errOut,"%s  %d Page:%s\n",__func__,__LINE__,Page);
     if(translateFile(Page) < 0)
     {
         printf("Content-Type:text/html\n\n");
@@ -2159,31 +2289,224 @@ int main(int argc,char **argv)
     }
 
     sync();
+   // fprintf(errOut,"%s  %d\n",__func__,__LINE__);
+
 
     /*
     ** Now, look for the update and/or commit strings to send to either
     ** the temp file or the flash file
     */
-
-    if((strcmp(CFG_get_by_name("COMMIT",valBuff),"Commit") == 0)  
-        || (strcmp(CFG_get_by_name("COMMIT",valBuff),"Save") == 0))
+	//wan mode dhcp
+     if((strcmp(CFG_get_by_name("DHCP",valBuff),"DHCP") == 0 )|| (strcmp(CFG_get_by_name("DHCPW",valBuff),"DHCPW")== 0 ))
     {
+        fprintf(errOut,"\n%s  %d DHCP \n",__func__,__LINE__);
+		
+		//1.destory old mode pid 
+		CFG_get_by_name("WAN_MODE",valBuff);
+		if(strcmp(valBuff,"pppoe") == 0)
+		{
+			//kill pppoe
+			Execute_cmd("pppoe-stop", rspBuff);
+		}
+		if(strcmp(valBuff,"dhcp") == 0)
+		{
+			//kill udhcpc
+			Execute_cmd("ps aux | grep udhcpc | awk '{print $1}' | xargs kill -9  > /dev/null 2>&1", rspBuff);	
+		}
+		//2.save new config to flash 
+		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+        writeParameters("/tmp/.apcfg","w+",0);
+		//3.do new config pid
+		Execute_cmd("udhcpc -b -i eth0 -s /etc/udhcpc.script", rspBuff);
+    }
+	//wan mode static ip
+    if((strcmp(CFG_get_by_name("SIP",valBuff),"SIP") == 0 ) || (strcmp(CFG_get_by_name("SIPW",valBuff),"SIPW") == 0 ))
+    {
+		fprintf(errOut,"\n%s  %d SIP \n",__func__,__LINE__);
+	
+		char pChar[128];
+		char valBuff2[128];	
+		//1.destory old mode pid
+		CFG_get_by_name("WAN_MODE",valBuff);
+		if(strcmp(valBuff,"pppoe") == 0)
+		{
+			//kill pppoe
+			Execute_cmd("pppoe-stop", rspBuff);
+		}
+		if(strcmp(valBuff,"dhcp") == 0)
+		{
+			//kill udhcpc
+			Execute_cmd("ps aux | grep udhcpc | awk '{print $1}' | xargs kill -9  > /dev/null 2>&1", rspBuff);
+		}		
+		//2.save new config to flash 
+		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+        writeParameters("/tmp/.apcfg","w+",0);
+		//3.do new config pid
+		CFG_get_by_name("WAN_IPADDR",valBuff);
+		CFG_get_by_name("WAN_NETMASK",valBuff2);
+		sprintf(pChar,"ifconfig eth0 %s netmask %s up",valBuff,valBuff2);
+		Execute_cmd(pChar, rspBuff);
+		//[TODO] IPGW/DNS
+    }
+	//wan mode pppoe
+     if((strcmp(CFG_get_by_name("PPP",valBuff),"PPP") == 0 ) || (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 ))
+    {
+        fprintf(errOut,"\n%s  %d PPP \n",__func__,__LINE__);
+		
+		char  usernameBuff[128];
+		char  passBuff[128];
+		char  cmdstr[128];
+
+		memset(usernameBuff,'\0',128);
+		memset(passBuff,'\0',128);
+        memset(cmdstr,'\0',128);
+		//1.destory old mode pid
+		CFG_get_by_name("WAN_MODE",valBuff);
+		if(strcmp(valBuff,"dhcp") == 0)
+		{
+			//kill udhcpc
+			Execute_cmd("ps aux | grep udhcpc | awk '{print $1}' | xargs kill -9  > /dev/null 2>&1", rspBuff);
+		}		
+		//2.save new config to flash 
+		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+        writeParameters("/tmp/.apcfg","w+",0);
+		//3.do new config pid
+		CFG_get_by_name("PPPOE_USER",usernameBuff);
+		CFG_get_by_name("PPPOE_PWD",passBuff);
+
+		strcat(cmdstr,"pppoe-setup ");
+		strcat(cmdstr,usernameBuff);
+		strcat(cmdstr," ");
+		strcat(cmdstr,passBuff);
+		Execute_cmd(cmdstr, rspBuff);
+		Execute_cmd("pppoe-start", rspBuff);
+		fprintf(errOut,"\n%s  %d [luodp]PPPOE \n",__func__,__LINE__);		
+    }
+	//wan mode l2tp
+     if((strcmp(CFG_get_by_name("L2TP",valBuff),"L2TP") == 0 ) ||(strcmp(CFG_get_by_name("L2TPW",valBuff),"L2TPW") == 0 ))
+    {
+        fprintf(errOut,"\n%s  %d L2TP \n",__func__,__LINE__);
+    }
+	//wan mode p2tp
+     if((strcmp(CFG_get_by_name("P2TP",valBuff),"P2TP") == 0 ) || (strcmp(CFG_get_by_name("P2TPW",valBuff),"P2TPW") == 0 ))
+    {
+        fprintf(errOut,"\n%s  %d P2TP \n",__func__,__LINE__);
+    }
+	//wds 
+     if(strcmp(CFG_get_by_name("WIRRE",valBuff),"WIRRE") == 0 ) 
+    { 
+		fprintf(errOut,"\n%s  %d WIRRE \n",__func__,__LINE__);
+		
+		char pChar[128];
+		char mac[128];
+		char channel[128];
+		
+		//2.save new config to flash 
+		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+        writeParameters("/tmp/.apcfg","w+",0);
+		
+		Execute_cmd("wlanconfig ath1 create wlandev wifi0 wlanmode sta nosbeacon", rspBuff);
+		Execute_cmd("iwconfig ath1 essid wds", rspBuff);
+		CFG_get_by_name("WDS_MAC",mac);
+		CFG_get_by_name("WDS_CHAN",channel);
+		sprintf(pChar,"iwconfig ath1 ap  %s",mac);
+		Execute_cmd(pChar, rspBuff);
+		sprintf(pChar,"iwconfig ath1 channel  %s",channel);
+		Execute_cmd(pChar, rspBuff);
+		Execute_cmd("iwpriv ath1 wds 1", rspBuff);
+		Execute_cmd("brctl addif br0 ath1", rspBuff);
+		Execute_cmd("ifconfig ath1 up", rspBuff);
+    }
+	//wifi settings
+     if((strcmp(CFG_get_by_name("WIRELESS",valBuff),"WIRELESS") == 0 ) || (strcmp(CFG_get_by_name("DHCPW",valBuff),"DHCPW") == 0 ) || (strcmp(CFG_get_by_name("SIPW",valBuff),"SIPW") == 0 ) || (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 ) || (strcmp(CFG_get_by_name("L2TPW",valBuff),"L2TPW") == 0 ) || (strcmp(CFG_get_by_name("P2TPW",valBuff),"P2TPW") == 0 ) )
+    {
+		fprintf(errOut,"\n%s  %d WIRELESS \n",__func__,__LINE__);
+	
+		char pChar[128];
+		char valBuff2[128];	
+		char valBuff3[128];	
+		char valBuff4[128];	
+		char valBuff5[128];	
+
+		//1.destory old mode pid 
+		CFG_get_by_name("WIFION_OFF",valBuff);
+		CFG_get_by_name("AP_SSID",valBuff2);
+		CFG_get_by_name("PSK_KEY",valBuff4);
+		CFG_get_by_name("AP_SECMODE",valBuff5);
+		//2.save new config to flash 
+		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+        writeParameters("/tmp/.apcfg","w+",0);
+		//3.do new config pid
+		CFG_get_by_name("AP_SSID",valBuff3);
+		if(strcmp(valBuff2,valBuff3) != 0)
+		{
+			sprintf(pChar,"iwconfig ath0 essid %s",CFG_get_by_name("AP_SSID",valBuff));
+			Execute_cmd(pChar, rspBuff);
+		}
+		//TODO key check
+		CFG_get_by_name("PSK_KEY",valBuff3);
+		if(strcmp(valBuff3,valBuff4) != 0)
+		{
+			CFG_set_by_name("PSK_KEY",valBuff3);
+		}
+		//TODO SECMODE
+		CFG_get_by_name("AP_SECMODE",valBuff3);
+		if((strcmp(valBuff3,valBuff5) != 0)&&(strcmp(valBuff3,"None") != 0))
+		{
+			//AP_SECMODE=WPA
+			//AP_WPA=2
+			//AP_CYPHER="TKIP CCMP"
+			CFG_set_by_name("AP_SECMODE","WPA");
+			CFG_set_by_name("AP_WPA","2");
+			CFG_set_by_name("AP_CYPHER","TKIP CCMP");
+		}
+		if((strcmp(valBuff3,valBuff5) != 0)&&(strcmp(valBuff3,"WPA") != 0))
+		{
+			//AP_SECMODE=WPA
+			//AP_WPA=2
+			//AP_CYPHER="TKIP CCMP"
+			CFG_set_by_name("AP_SECMODE","None");
+		}
+		
+		CFG_get_by_name("WIFION_OFF",valBuff2);
+		if((strcmp(valBuff,valBuff2) != 0) && (strcmp(valBuff2,"on") == 0) )
+		{
+			Execute_cmd("apup > /dev/null 2>&1", rspBuff);
+		}
+		if((strcmp(valBuff,valBuff2) != 0) && (strcmp(valBuff2,"off") == 0) )
+		{
+			Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
+		}			
+    }
+	//login settings
+     if(strcmp(CFG_get_by_name("ADMINSET",valBuff),"ADMINSET") == 0 )
+    {
+        fprintf(errOut,"\n%s  %d ADMINSET \n",__func__,__LINE__);
+    }
+
+    #if 0
+    if((strcmp(CFG_get_by_name("COMMIT",valBuff),"Commit") == 0)  || (strcmp(CFG_get_by_name("COMMIT",valBuff),"Save") == 0))
+    {
+        //fprintf(errOut,"%s  %d\n",__func__,__LINE__);
         writeParameters(NVRAM,"w+", NVRAM_OFFSET);
         writeParameters("/tmp/.apcfg","w+",0);
     }
 
     if(strcmp(CFG_get_by_name("UPDATE",valBuff),"Update") == 0 )
     {
+       // fprintf(errOut,"%s  %d\n",__func__,__LINE__);
         writeParameters("/tmp/.apcfg","w+",0);
     }
 
     if(strcmp(CFG_get_by_name("StopButton",valBuff),"Stop") == 0 )
     {
+       // fprintf(errOut,"%s  %d\n",__func__,__LINE__);
         Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
     }
 
     if(strcmp(CFG_get_by_name("StartButton",valBuff),"Start") == 0 )
     {
+        //fprintf(errOut,"%s  %d\n",__func__,__LINE__);
         Execute_cmd("apup > /dev/null 2>&1", rspBuff);
     }
 
@@ -2211,8 +2534,17 @@ int main(int argc,char **argv)
         sprintf(cmd, "wpatalk -v ath0 configthem");
         Execute_cmd(cmd, rspBuff);
     }
+     if(strcmp(CFG_get_by_name("w3",valBuff),"w3") == 0 )
+    {
+       // fprintf(errOut,"%s  %d\n",__func__,__LINE__);
+        sleep(1);
+        reboot(RB_AUTOBOOT);
+        
+    }
+     #endif
 #endif /* #ifndef ATH_SINGLE_CFG */
-    exit(0);
+     //fprintf(errOut,"%s  %d\n",__func__,__LINE__);
+   exit(0);
 }
 
 /********************************** End of Module *****************************/

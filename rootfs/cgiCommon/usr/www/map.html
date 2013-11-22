@@ -1,0 +1,49 @@
+<html>
+<head>
+<title>Wizard Internet Settings</title>
+<!--link rel="stylesheet" href="/style/normal_ws.css" type="text/css"-->
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<script type="text/javascript" src="/lang/b28n.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+function initTranslation()
+{
+	var e = document.getElementById("m_bset");
+	e.value = _("admw m_bset");
+	
+	e = document.getElementById("logoimage");
+	if (_("toplanguage")=="e")
+		e.src = "/images/luyou_e.gif";
+	else
+		e.src = "/images/luyou.gif";
+}
+function initValue()
+{
+	Butterlate.setTextDomain("admin");	
+	initTranslation();
+}
+function CheckWirelessValue()
+{
+	return true;
+}
+function reloadd()
+{
+	// alert("step: "+step_num);
+	window.location.reload();
+}
+</script>
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+</head>
+
+<body onLoad="initValue()">
+<div class="handaer_main">
+<center><img usemap = "#router" border = "0" id="logoimage"/></center>
+    <map name = "router">
+      <area shape="rect" coords="20,250,300,500" href="wwai" target="pro" alt="网络设置">
+      <area shape="rect" coords="500,10,750,150" href="w3" target="pro" alt="wifi设置">
+    </map>
+ <p align="center"><input  name="m_normal" class="handaer_input" type="button" id="m_bset" onClick="window.location.href='w1'"/></p></div>
+</body>
+
+</html>
+

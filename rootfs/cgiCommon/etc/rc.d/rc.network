@@ -26,12 +26,18 @@ if [ "${WAN_MODE}" != "bridged" ]; then
         ##
 
         udhcpc -b -i $WAN_IF -s /etc/udhcpc.script
-    else
+    elif [ "${WAN_MODE}" = "static" ]; then
         ##
         ## Static IP address
         ##
 
         ifconfig $WAN_IF $WAN_IPADDR netmask $WAN_NETMASK up
+	elif [ "${WAN_MODE}" = "pppoe" ]; then
+        ##
+        ## pppoe
+        ##
+
+        pppoe-start
     fi
 fi
 
