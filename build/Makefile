@@ -316,9 +316,9 @@ rootfs_prep:
 	cp -R ../rootfs/cgiCommon/* $(INSTALL_ROOT)
 	cp -rf ../rootfs/cgiCommon/etc/ath.$(AP_TYPE)/* $(INSTALL_ROOT)/etc/ath
 	rm -rf $(INSTALL_ROOT)/etc/ath.single $(INSTALL_ROOT)/etc/ath.dual
-	cp -rf ../rootfs/cgiCommon/usr/www.$(AP_TYPE)/* $(INSTALL_ROOT)/usr/www
-	rm -rf $(INSTALL_ROOT)/usr/www.single
-	rm -rf $(INSTALL_ROOT)/usr/www.dual
+	##cp -rf ../rootfs/cgiCommon/usr/www.$(AP_TYPE)/* $(INSTALL_ROOT)/usr/www
+	##rm -rf $(INSTALL_ROOT)/usr/www.single
+	##rm -rf $(INSTALL_ROOT)/usr/www.dual
 	rm -rf $(INSTALL_ROOT)/etc/ath/hostapd0.7.0_conf
 ifeq ($(KERNELVER),2.6.31)
 	rm -rf $(INSTALL_ROOT)/lib/modules/2.6.15

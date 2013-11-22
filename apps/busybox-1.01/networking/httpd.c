@@ -282,6 +282,7 @@ static const char* const suffixTable [] = {
   ".mpe.mpeg", "video/mpeg",
   ".mid.midi", "audio/midi",
   ".mp3", "audio/mpeg",
+  ".xml", "text/xml",
 #if 0                        /* unpopular */
   ".au", "audio/basic",
   ".pac", "application/x-ns-proxy-autoconfig",

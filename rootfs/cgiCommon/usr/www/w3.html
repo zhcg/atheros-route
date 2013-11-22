@@ -1,0 +1,219 @@
+<html>
+<head>
+<title>Wizard Internet Settings</title>
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+var step_num;
+function style_display_on()
+{
+	if (window.ActiveXObject)
+	{ // IE
+		return "block";
+	}
+	else if (window.XMLHttpRequest)
+	{ // Mozilla, Safari,...
+		return "table-row";
+	}
+}
+
+function checkInjection(str)
+{
+	var len = str.length;
+	for (var i=0; i<str.length; i++) {
+		if ( str.charAt(i) == '\r' || str.charAt(i) == '\n'){
+				return false;
+		}else
+	        continue;
+	}
+    return true;
+}
+
+function reloadd()
+{
+		// alert("step: "+step_num);
+		window.location.reload();
+}
+
+function disableWirelessSettings()
+{
+	document.wizard_form.AP_SSID.disabled = false;
+	switch_security_mode();
+}
+
+
+function switch_security_mode()
+{
+	document.getElementById("div_security_key").style.visibility = "visible";
+	document.getElementById("div_security_key").style.display = style_display_on();
+	document.wizard_form.PSK_KEY.disabled = false;
+	if (document.wizard_form.AP_SECMODE.selectedIndex != 0)
+	{
+		document.getElementById("div_security_key").style.visibility = "hidden";
+		document.getElementById("div_security_key").style.display = "none";
+		document.wizard_form.PSK_KEY.disabled = true;
+	}
+}
+
+function CheckWirelessValue()
+{
+	if(document.wizard_form.WIFION_OFF[0].checked == true)
+	{
+		if (document.wizard_form.AP_SSID.value.length == 0)
+		{
+			alert("Please enter SSID!");
+			document.wizard_form.AP_SSID.select();
+			return false;
+		}
+
+		if (document.wizard_form.AP_SECMODE.selectedIndex == 0)
+		{
+			var keyvalue = document.wizard_form.PSK_KEY.value;
+			if (keyvalue.length == 0)
+			{
+				alert('Please input wpapsk key!');
+				document.wizard_form.PSK_KEY.select();
+				return false;
+			}
+			if (keyvalue.length < 8){
+				alert('Please input at least 8 character of wpapsk key!');
+				document.wizard_form.PSK_KEY.select();
+				return false;
+			}
+			if(checkInjection(keyvalue) == false){
+				alert('Invalid characters in Pass Phrase.');
+				document.wizard_form.PSK_KEY.select();
+				return false;
+			}
+		}	
+	}
+	document.getElementById('WIRELESS').click();
+	return true;
+}
+function initTranslation()
+{
+	var e = document.getElementById("qsettitle");
+	e.innerHTML = _("admw w3ttitle");
+	e = document.getElementById("wifides");
+	e.innerHTML = _("admw wifides");
+	
+	e = document.getElementById("wsetingst");
+	e.innerHTML = _("admw wsetingst");
+	e = document.getElementById("nname");
+	e.innerHTML = _("admw nname");
+	e = document.getElementById("security");
+	e.innerHTML = _("admw security");
+	e = document.getElementById("wkey");
+	e.innerHTML = _("admw wkey");
+	
+	e = document.getElementById("Sdisable");
+	e.innerHTML = _("admin open");
+	e = document.getElementById("Senable");
+	e.innerHTML = _("admin jiami");
+	
+	e = document.getElementById("showp");
+	e.innerHTML = _("admw showp");	
+	e = document.getElementById("bCANCEL");
+	e.value = _("admw bCANCEL");
+	e = document.getElementById("bAPPLY");
+	e.value = _("admw bAPPLY");
+	
+	e = document.getElementById("onbutton");
+	e.innerHTML = _("admw onbutton");	
+	e = document.getElementById("offbutton");
+	e.innerHTML = _("admw offbutton");	
+}
+function initValue()
+{
+	Butterlate.setTextDomain("admin");
+	initTranslation();
+	disableWirelessSettings();
+}
+function showpwd()
+{
+ 
+ if(document.getElementById("pwd").type=="password"){
+   var pass = document.getElementById("pwd").value;
+   document.getElementById("pwdinput").innerHTML='<input type="text" id="pwd" name="PSK_KEY" maxlength="64" size="28" class="handaer_text_content"  value="'+pass+'" />';
+  }else{
+   var pass = document.getElementById("pwd").value;
+   document.getElementById("pwdinput").innerHTML='<input type="password" id="pwd" name="PSK_KEY" maxlength="64" size="28"  class="handaer_text_content" value="'+pass+'" />';
+   }
+ }
+ 
+function switch_wifi()
+{
+	if(document.wizard_form.WIFION_OFF[0].checked == true)
+	{
+		document.wizard_form.AP_SECMODE.disabled = false;
+		document.wizard_form.PSK_KEY.disabled = false;
+	}
+	else
+	{
+		document.wizard_form.AP_SECMODE.disabled = true;
+		document.wizard_form.PSK_KEY.disabled = true;
+	}
+}
+</script>
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+</head>
+
+<body onLoad="initValue()" ondragstart="window.event.returnValue=false" oncontextmenu="window.event.returnValue=false" onselectstart="event.returnValue=false">
+<div class="handaer_main">
+<table  width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td>
+<h1 id="qsettitle"></h1>
+<p></p>
+
+<FORM method="POST" name="wizard_form">
+<!-- =========== Wireless Settings =========== -->
+<h2 id="wifides"></h2>
+<table id="div_wireless"  width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
+<tr><td class="title" colspan="2" id="wsetingst"></td></tr>
+<tr>
+  <td class="head" id="nname"></td>
+  <td><input type="text" name="AP_SSID" size="20" maxlength="32" class="handaer_text_content"  value="~~AP_SSID~"></td>
+</tr>
+
+<tr>
+ <td class="head"></td>
+	<td><input type="radio" name="WIFION_OFF" value="on" onChange="switch_wifi();" checked /><span id="onbutton"></span>
+	<input type="radio" name="WIFION_OFF" value="off"  onChange="switch_wifi();"/><span id="offbutton"></span>
+	</td>
+</tr>
+
+<tr>
+  <td class="head" rowspan="2" id="security"></td>
+  <td>
+    <select name="AP_SECMODE" size="1" onChange="switch_security_mode();">
+      <option ~sAP_SECMODE:enable~ value="enable" id="Senable" ></option>
+      <option ~sAP_SECMODE:disable~  value="disable" id="Sdisable"></option>
+      <!--option value="WEPAUTO">WEP</option>
+      <option value="WPAPSKWPA2PSK">WPA-PSK/WPA2-PSK</option-->
+    </select>
+  </td>
+</tr>
+<tr id="div_security_key">
+  <td><span id="wkey"></span><span id="pwdinput"><input type="password" id="pwd" name="PSK_KEY" maxlength="64" size="28"  class="handaer_text_content"  value="~~PSK_KEY~"/></span><input type="checkbox" onClick="showpwd()" /><span id="showp"></span></td>
+							
+</tr>
+</table>
+
+<table width="540" cellpadding="2" cellspacing="1" id="buttontable">
+<tr align="center">
+  <td>
+    <input type="button" name="cancel_motion" id="bCANCEL" class="handaer_input" value="Cancel" onClick="reloadd();">
+    <input type="button" name="apply_motion" id="bAPPLY" class="handaer_input" value="Apply" onClick="CheckWirelessValue();">
+	<input type="submit" name="WIRELESS" id="WIRELESS" style="display:none" value="WIRELESS">
+
+  </td>
+</tr>
+</table>
+<!--/form-->
+
+</td></tr></table> </div>
+</body>
+
+</html>
+

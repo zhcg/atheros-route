@@ -1,5 +1,14 @@
 TOPDIR= ./
 
+ifneq ($(strip $(TOOLPREFIX)),)
+CROSS:=$(TOOLPREFIX)
+endif
+
+CC = $(CROSS)gcc
+
+CXX = $(CROSS)g++
+
+
 DIR_LIBMEDIASTREAMER := mediastreamer-2.8.2
 DIR_LIBORTP := ortp-0.20.0
 DIR_LIBSPEEX := speex-1.2rc1
@@ -35,7 +44,16 @@ LIBOGG_SO = libogg.so
 LIBOGG_SO_0 = libogg.so.0
 LIBOGG_SO_0_8_0 = libogg.so.0.8.0
 
-all: libmediastreamer  libspirt socket_dep  pstn_app
+
+RESET_SRC = reset.cpp
+RESET_EXE = reset_mips
+
+
+all: libmediastreamer  libspirt socket_dep  pstn_app reset_mips
+
+
+reset_mips:
+	$(CXX) -o $(RESET_EXE) $(RESET_SRC)
 
 
 pstn_app: libmediastreamer  libspirt  socket_dep
@@ -92,7 +110,7 @@ libogg:
 
 
 clean:
-	$(RM) *.la *.so *.so.1 *.so.1.0.0 *.so.*
+	$(RM) *.la *.so *.so.1 *.so.1.0.0 *.so.*  *.o  $(RESET_EXE)
 
 	$(MAKE) -C $(DIR_LIBOGG) uninstall 
 	$(MAKE) -C $(DIR_LIBOGG) clean 

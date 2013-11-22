@@ -193,7 +193,8 @@ CONFIG_MKTEMP=y
 #
 # Editors
 #
-# CONFIG_AWK is not set
+CONFIG_AWK=y
+# CONFIG_FEATURE_AWK_MATH is not set
 # CONFIG_PATCH is not set
 CONFIG_SED=y
 CONFIG_VI=y

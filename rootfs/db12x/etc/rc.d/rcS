@@ -163,5 +163,5 @@ cd /bin
 #swipe_card &
 #monitor_application  &
 
-/bin/phone_serv_19200 &
+/bin/reset_mips /bin/phone_serv_19200 &
 /bin/server &

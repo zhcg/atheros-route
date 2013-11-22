@@ -1,0 +1,53 @@
+#!/bin/sh
+
+#VAL="`ethreg -p 4 0x11 | awk -F' ' '/Read Reg/{print $5}'`"
+VAL="`ethreg -p 4 0x11 | grep "Read Reg" | sed 's/.* //g' `"
+VAL2=0x0400
+#echo $VAL
+VAL=$(($VAL&0x0400))
+echo $VAL
+ 
+if [ $VAL -eq 1024 ];then
+	echo "WAN link on"
+else
+if [ $VAL -eq 0 ];then
+	echo "WAN link down"
+	exit 1
+fi
+fi
+
+/usr/sbin/pppoe-connect > /tmp/log 2>&1 &
+#echo "begin"
+sleep  20
+pppoe=`grep "CHAP authentication succeeded" /tmp/log `
+#pppoe=`/usr/sbin/pppoe-connect | grep "CHAP authentication succeeded" 2>&1 &`
+
+echo $pppoe
+
+#echo "second"
+if [ ! -z "$pppoe" ];then
+        echo "PPPoE"
+		cfg -a AUTOTYPE=PPPoE
+		cfg -c
+        exit 1
+fi
+killall pppoe-connect
+#echo "third"
+
+udhcpc -i br0 > /tmp/log2 2>&1 &
+sleep  3
+dhcp=`grep "Sending select for " /tmp/log2`
+echo $dhcp
+#echo "fourth"
+if [ ! -z "$dhcp" ];then
+	echo "dynamic IP"
+	cfg -a AUTOTYPE=dhcp
+	cfg -c
+	exit 2
+fi
+killall udhcpc
+
+cfg -a AUTOTYPE=static
+cfg -c
+
+echo "Static IP"
