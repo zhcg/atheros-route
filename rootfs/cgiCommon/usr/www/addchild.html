@@ -1,0 +1,78 @@
+<!-- Copyright 2004, Ralink Technology Corporation All Rights Reserved. -->
+<html>
+<head>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="-1">
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script type="text/javascript" src="/lang/b28n.js"></script>
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+<title></title>
+
+<script language="JavaScript" type="text/javascript">
+
+function CheckValue()
+{
+
+}
+function initTranslation()
+{
+	
+	//var e = document.getElementById("wmmAP");
+	//e.innerHTML = _("wmm ap parameter");
+
+	//e = document.getElementById("wmmClose");
+	//e.value = _("wireless close");
+}
+
+function initValue()
+{
+	//Butterlate.setTextDomain("wireless");
+	initTranslation();
+}
+
+function submit_apply()
+{
+  if (CheckValue() == true) {
+    document.wmm.submit();
+    window.close();
+  }
+}
+</script>
+<title></title>
+
+<body onLoad="initValue()" ondragstart="window.event.returnValue=false" oncontextmenu="window.event.returnValue=false" onselectstart="event.returnValue=false">
+
+<form method="post" name="addc">
+  <table align="center" width="100%" border="1" cellspacing="1" cellpadding="3" vspace="2" hspace="2" bordercolor="#9BABBD">
+    <tr>
+		<td class="head" id="add_cpc_mac">小孩PC的MAC地址</td>
+		<td><input name="cpc_mac" maxlength=32 size=32></td>
+    </tr>
+    <tr>
+      <td align="center" bgcolor="#E8F8FF" nowrap><b>AC_BE</b></td>
+      <td align="center" bgcolor="#FFFFFF" nowrap>
+		<select name="ap_cwmin_acbe" size="1">
+		  <option value=1>1</option>
+		  <option value=2>3</option>
+		  <option value=3>7</option>
+		  <option value=4 selected>15</option>
+		</select>
+      </td>
+    <tr>
+		<td class="head" id="add_cpc_mac">小孩PC的MAC地址</td>
+		<td><input name="cpc_mac" maxlength=32 size=32></td>
+    </tr>	  
+  </table>
+
+  <table align="center" width = "100%" border = "0" cellpadding = "2" cellspacing = "1">
+    <tr align="center">
+      <td>
+        <input type=button style="{width:120px;}" value="Apply" id="wmmApply" onClick="submit_apply()">&nbsp;&nbsp;
+        <input type=reset  style="{width:120px;}" value="Cancel" id="wmmCancel"  onClick="window.location.reload()">
+        <input type=button name="Close" value="Close" id="wmmClose" style="{width:120px;}" onClick="window.close()">
+      </td>
+    </tr>
+  </table>
+<!--/form-->
+</body>
+</html>
