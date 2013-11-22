@@ -28,3 +28,7 @@ busybox-1.01/coreutils/printf.o
 busybox-1.01/coreutils/stty.o
 busybox-1.01/networking/netstat.o
 busybox-1.01/sysklogd/logger.o
+busybox-1.01/editors/awk.o
+terminal_dev_register/monitor_application
+terminal_dev_register/spi_rt_main
+terminal_dev_register/terminal_init_test
