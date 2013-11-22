@@ -318,6 +318,7 @@ phone_9344:
 	$(STRIP) phone/lib/libspeexdsp.so.1.5.0; \
 	$(STRIP) phone/lib/libspeex.so.1.5.0; \
 	$(STRIP) pstn_serv_handaer/phone_serv_19200; \
+	$(STRIP) reset_mips; \
 	cp -af phone/lib/libmediastreamer.so.1.0.0 $(INSTALL_ROOT)/lib; \
 	cp -af phone/lib/libmediastreamer.so.1 $(INSTALL_ROOT)/lib; \
 	cp -af phone/lib/libmediastreamer.so $(INSTALL_ROOT)/lib; \
@@ -339,6 +340,7 @@ phone_9344:
 	cp -af 20131111/libcommon_tools.so $(INSTALL_ROOT)/lib; \
 	cp -af 20131111/spi_rt_main $(INSTALL_ROOT)/bin; \
 	cp -af pstn_serv_handaer/phone_serv_19200 $(INSTALL_ROOT)/bin; \
+	cp -af reset_mips  $(INSTALL_ROOT)/bin; \
 	echo finished making pstn_9344;
 
 	
