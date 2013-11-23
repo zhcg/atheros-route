@@ -27,6 +27,12 @@
 #endif
 
 
+#include <linux/workqueue.h> 
+
+struct workqueue_struct *doint_wq; 
+struct work_struct doint_work;
+
+
 #define CNUM_TO_CID_QUAD(channelNumber)   (((channelNumber<<4)&0x10)|((channelNumber<<2)&0x8)|((channelNumber>>2)&0x2)|((channelNumber>>4)&0x1)|(channelNumber&0x4))
 
 int spidrv_major =  217;
@@ -175,6 +181,40 @@ u16 count_buffer_datalen(void)
 		return (NUMBER- (circle_buffer.r_pos - circle_buffer.w_pos));
 	}
 }
+
+
+void doint_func(struct work_struct *work)
+{ 
+	int i = 0;
+	u8	msb_head = 0;
+	u8	lsb_head = 0;
+	u8  msb_length = 0;
+	u8  lsb_length = 0;
+	u8  data = 0;
+	u16 length = 0;
+	
+	
+	//printk("[luodp] go queue\n");
+
+	msb_head = spi_stm32_read8(0,0,0);
+	lsb_head = spi_stm32_read8(0,0,0);
+	write_buf(msb_head);			//write the  MSB effective data to circle buffer
+	write_buf(lsb_head);			//write the  LSB effective data to circle buffer
+	msb_length = spi_stm32_read8(0,0,0);
+	lsb_length = spi_stm32_read8(0,0,0);
+	write_buf(msb_length);			//write the  MSB effective data to circle buffer
+	write_buf(lsb_length);			//write the  LSB effective data to circle buffer
+
+	length = (msb_length << 8) | lsb_length;
+	for(i = 0; i < length; i++ )
+	{
+		data = spi_stm32_read8(0,0,0);
+		write_buf(data);			//write the effective data to circle buffer
+	}
+	enable_irq(ATH_GPIO_IRQn(STM32_INT_GPIO));
+	//printk("[luodp] do enable_irq\n");
+} 
+
 
 int spidrv_open(struct inode *inode, struct file *filp)
 {
@@ -544,51 +584,18 @@ void spi_stm32_write16(int sid, unsigned char cid, unsigned char reg, unsigned s
 
 static irqreturn_t rxtx_irq_handler(int irq, void *irqaction)
 {
-	int i = 0;
-	u8	msb_head = 0;
-	u8	lsb_head = 0;
-	u8  msb_length = 0;
-	u8  lsb_length = 0;
-	u8  data = 0;
-	u16 length = 0;
-
-	//TODO LED
-
-	//if (atomic_read(&ath_fr_status)) {
-		
-			printk("do int!\n");
+	//TODO LED		
+	printk("do int!\n");
 			
-			if (get_gpio_val(STM32_INT_GPIO)) {
-				printk("INT Hight!\n");
-				return IRQ_HANDLED;
-			}
-			printk("INT FALLING!\n");
-			atomic_dec(&ath_fr_status);
-			disable_irq(ATH_GPIO_IRQn(STM32_INT_GPIO));			
-		    //wake_up(&ath_fr_wq);
-			
-			msb_head = spi_stm32_read8(0,0,0);
-			lsb_head = spi_stm32_read8(0,0,0);
-			write_buf(msb_head);			//write the  MSB effective data to circle buffer
-			write_buf(lsb_head);			//write the  LSB effective data to circle buffer
-			msb_length = spi_stm32_read8(0,0,0);
-			lsb_length = spi_stm32_read8(0,0,0);
-			write_buf(msb_length);			//write the  MSB effective data to circle buffer
-			write_buf(lsb_length);			//write the  LSB effective data to circle buffer
+	if (get_gpio_val(STM32_INT_GPIO)) {
+		printk("INT Hight!\n");
+		return IRQ_HANDLED;
+	}
+	printk("INT FALLING!\n");
 
-			length = (msb_length << 8) | lsb_length;
-			for(i = 0; i < length; i++ )
-			{
-				data = spi_stm32_read8(0,0,0);
-				write_buf(data);			//write the effective data to circle buffer
-			}
-			
-			//printk("[luodp] INT_MASK %x \n",ath_reg_rd(ATH_GPIO_INT_MASK));
-			//printk("[luodp] INT_Pending %x \n",ath_reg_rd(ATH_GPIO_INT_PENDING));
-			enable_irq(ATH_GPIO_IRQn(STM32_INT_GPIO));
-
-			/* clear int */
-	//}
+	disable_irq(ATH_GPIO_IRQn(STM32_INT_GPIO));		
+	//printk("[luodp] do disable_irq\n");
+	queue_work(doint_wq ,&doint_work);
 	return IRQ_HANDLED;
 }
 
@@ -600,14 +607,12 @@ void rxtx_request_irq(void)
 	
 	//TODO LED int
 
-	//MSG("start request irq!\n");
 	ret = request_irq(ATH_GPIO_IRQn(STM32_INT_GPIO), rxtx_irq_handler, IRQF_TRIGGER_FALLING | IRQF_SHARED , "stm32", dev_id); //IRQF_SHARED IRQF_TRIGGER_FALLING
 	if(ret)
 	{
 		printk("SPI: GPIO_IRQ %d is not free.\n", STM32_INT_GPIO);
 		return ;
 	}
-	//init_waitqueue_head(&ath_fr_wq);
 }
 
 
@@ -615,8 +620,9 @@ static int __init ath_spi_stm32_init(void)
 {
 
 	printk("ath_spi_stm32_init\n");
-	ath_spi_stm32_gpio_init();
 
+
+	
 #ifdef  CONFIG_DEVFS_FS
 	if(devfs_register_chrdev(spidrv_major, SPI_DEV_NAME , &spidrv_fops)) {
 		printk(KERN_WARNING " spidrv: can't create device node\n");
@@ -639,7 +645,9 @@ static int __init ath_spi_stm32_init(void)
 #endif
 	//TODO add LED ?
 	rxtx_request_irq();
-	
+	INIT_WORK(&doint_work, doint_func);
+	doint_wq = create_workqueue("doint");
+	ath_spi_stm32_gpio_init();
 	//ath_reg_wr(ATH_SPI_FS, 0);
 	return 0;
 }
@@ -647,6 +655,10 @@ static int __init ath_spi_stm32_init(void)
 static void __exit ath_spi_stm32_exit(void)
 {
 	printk("ath_spi_stm32_exit\n");
+	
+    flush_workqueue(doint_wq);
+    destroy_workqueue(doint_wq);
+	
 	free_irq(ATH_GPIO_IRQn(STM32_INT_GPIO), dev_id);
 #ifdef  CONFIG_DEVFS_FS
 	devfs_unregister_chrdev(spidrv_major, SPI_DEV_NAME);
