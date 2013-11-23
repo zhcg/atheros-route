@@ -40,9 +40,9 @@
 //////////////////////////
 
 //////
-/////
-
-
+ /////
+ 
+ 
 #include "phone_thread_wrapper.h"
 
 #include "phone_proxy.h"
@@ -56,8 +56,7 @@ extern pthread_mutex_t phone_ring_mutex;
 
 using namespace webrtc;
 using namespace std;
-namespace handaer
-{
+namespace handaer{
 
 CriticalSectionWrapper& _spi_critSect =
     *CriticalSectionWrapper::CreateCriticalSection();
@@ -160,10 +159,9 @@ static const char *audio_argv[] = {
 
 #endif
 
-void PhoneProxy::setNoiseGateThreshold ( const char *_ng_thres )
-{
-#if 0
-    audio_argv[11] = _ng_thres;
+void PhoneProxy::setNoiseGateThreshold(const char *_ng_thres){
+#if 0	
+		audio_argv[11] = _ng_thres;
 #endif
 }
 
@@ -215,9 +213,8 @@ bool PhoneProxy::stopAudio ( cli_info_t *p_ci, int payload )
 }
 
 
-void PhoneProxy::phoneRingStart()
-{
-    // CriticalSectionScoped lock(&_spi_critSect);
+void PhoneProxy::phoneRingStart(){
+	// CriticalSectionScoped lock(&_spi_critSect);
 
     if ( dnd )
         return;
@@ -320,9 +317,8 @@ void PhoneProxy::phoneRingStop()
     return;
 }
 
-void PhoneProxy::setDND ( bool yes_no )
-{
-    dnd = yes_no;
+void PhoneProxy::setDND(bool yes_no){
+	dnd = yes_no;
 }
 
 static CriticalSectionWrapper& _phone_critSect = *CriticalSectionWrapper::CreateCriticalSection();
@@ -467,10 +463,9 @@ PhoneProxy::PhoneProxy()
 #endif
 }
 
-PhoneProxy::~PhoneProxy()
-{
-    phoneProxyExit();
-    delete &_phone_critSect;
+PhoneProxy::~PhoneProxy(){
+	phoneProxyExit();
+	delete &_phone_critSect;
 }
 
 
@@ -849,14 +844,14 @@ int PhoneProxy::netRead ( int fd, void *buffer, int length )
 ssize_t PhoneProxy::netReadLine ( int fd, void *buffer, size_t maxlen, int i )
 {
     ssize_t 	n;
-    PLOG ( LOG_INFO, "=-------------------------" );
+    //PLOG ( LOG_INFO, "=-------------------------" );
 
     if ( ( n = readline ( fd, buffer, maxlen, i ) ) < 0 ) {
         perror ( "PhoneProxy::netReadLine readline error: " );
         PLOG ( LOG_INFO, "readline error " );
     }
 
-    PLOG ( LOG_INFO, "======----------------" );
+   // PLOG ( LOG_INFO, "======----------------" );
     return ( n );
 }
 
@@ -865,8 +860,7 @@ ssize_t PhoneProxy::netReadLine ( int fd, void *buffer, size_t maxlen, int i )
 // head      id     length       cmd        arg_len      argument (64)       terminator
 // HEADS    1	     022    	DIALING	   012       913146672056         \n
 
-int PhoneProxy::parseClient ( cli_info_t *ci_ , int i )
-{
+int PhoneProxy::parseClient(cli_info_t *ci_ , int i){
 
 //	cout << __FUNCTION__ << " : " << __LINE__ << endl;
 //	cout << "client_fd : " << ci_->client_fd << endl;
@@ -957,7 +951,7 @@ int PhoneProxy::parseClient ( cli_info_t *ci_ , int i )
     char cmd[8] = {0};
     memcpy ( cmd, pbuff + 9, 7 );
     _cli_req.cmd = getCmdtypeFromString ( cmd );
-    // if( _cli_req.cmd != HEARTBEAT)
+     if( _cli_req.cmd != HEARTBEAT)
     {
         PLOG ( LOG_INFO, "%s:%d@%s:%d:%s", ci_->username,
                ci_->id, ci_->client_ip, ci_->client_fd, buff );
@@ -1197,8 +1191,10 @@ int PhoneProxy::handleClient ( cli_info_t *ci_ )
 
             // PLOG(LOG_INFO, "in_user %d ci->inuser %d", phone_in_use, ci_->using_phone );
 
-            if ( ( !phone_in_use ) ) {
-                // CriticalSectionScoped lock(&_trans_critSect);
+				if( (!phone_in_use) ||
+					( phone_in_use && (!strcmp(ci_->client_ip, client_ip_using) ))
+					){
+					// CriticalSectionScoped lock(&_trans_critSect);
 
                 ci_->using_phone = true;
                 phone_in_use = true;
@@ -1232,18 +1228,17 @@ int PhoneProxy::handleClient ( cli_info_t *ci_ )
                 PLOG ( LOG_INFO, "after in dialing" );
 
 
-                startAudio ( ci_, PAYLOAD_PCMU );
-                //usleep(500000);
-                //pcs->onHook();
-                //usleep(200000);
+					startAudio(ci_, PAYLOAD_PCMU);
+					
+					pcs->onHook();
+					usleep(300000);
+					
+					pcs->offHook();
+					usleep(800000);
 
-                pcs->offHook();
-                usleep ( 1000000 );
-
-                //startAudio(ci_, PAYLOAD_PCMU);
-
-                pcs->setGoingNumber ( _cli_req.arg, _cli_req.arglen );
-                //netWrite(phone_proxy_fd[0], "DIALING\n", 8);
+				
+					pcs->setGoingNumber(_cli_req.arg, _cli_req.arglen);
+					//netWrite(phone_proxy_fd[0], "DIALING\n", 8);
 
                 pcs->dialUp ( pcs->going_number, strlen ( pcs->going_number ) );
 
@@ -1282,15 +1277,15 @@ int PhoneProxy::handleClient ( cli_info_t *ci_ )
         if ( ci_->registerd ) {
             CriticalSectionScoped lock ( &_phone_critSect );
 
-            if ( ci_->client_fd != -1 )
-                netWrite ( ci_->client_fd, "HEADR0010OFHK_OK000\r\n", 21 );
-
-            if ( ci_->timer_setting == true ) {
-                ci_->timer_counter ++;
-            }
-
-            if ( ( !phone_in_use ) ) {
-
+				if(ci_->client_fd != -1)
+					netWrite(ci_->client_fd, "HEADR0010OFHK_OK000\r\n", 21);
+				if(ci_->timer_setting == true){
+					ci_->timer_counter ++;
+				}
+				if(  (!phone_in_use) ||
+					( phone_in_use && (!strcmp(ci_->client_ip, client_ip_using) )) 
+					) { 
+					
 #if 0
 
                 if ( !incoming_call ) {
@@ -1336,7 +1331,7 @@ int PhoneProxy::handleClient ( cli_info_t *ci_ )
                         }
                     }
 
-                    usleep ( 500000 );
+                    usleep ( 100000 );
 
                     for ( int i = 0; i < CLIENT_NUM; i++ ) {
                         ci[i].has_incom_ok = false;
@@ -1425,9 +1420,9 @@ int PhoneProxy::handleClient ( cli_info_t *ci_ )
 
 
 
-
-                usleep ( 2000000 );
-                ring_should_finish = false;
+					
+					// usleep(2000000);
+					ring_should_finish = false;
 
 
 
@@ -1450,7 +1445,7 @@ int PhoneProxy::handleClient ( cli_info_t *ci_ )
                 phone_in_use = false;
                 ci_transout = NULL;
                 timer_count_trans = timeout_trans = 0;
-                usleep ( 500000 );
+                usleep ( 50000 );
                 // PLOG(LOG_INFO, "in_user %d ci->inuser %d", phone_in_use, ci_->using_phone );
                 //netWrite(phone_proxy_fd[0], "ONHOOK\n", 7);
                 pcs->onHook();
@@ -2158,8 +2153,9 @@ int PhoneProxy::handlePhoneControlServiceEvent()
     }
     break;
 
-
-    case INCOMING_NUM: {
+			
+		case INCOMING_NUM:
+		{
 
         if ( ring_should_finish ) {
             PLOG ( LOG_INFO, "ring_should_finish" );
@@ -2255,9 +2251,8 @@ int PhoneProxy::handlePhoneControlServiceEvent()
 
 
 
-int32_t PhoneProxy::startPhoneProxy()
-{
-    if ( _phoneProxyRunning ) {
+int32_t PhoneProxy::startPhoneProxy(){
+    if (_phoneProxyRunning) {
         return 0;
     }
 
@@ -2292,9 +2287,8 @@ int32_t PhoneProxy::startPhoneProxy()
     return 0;
 
 }
-int32_t PhoneProxy::stopPhoneProxy()
-{
-    _phoneProxyRunning = false;
+int32_t PhoneProxy::stopPhoneProxy(){
+	_phoneProxyRunning = false;
 
     if ( _ptrThreadPhoneProxy
          && !_ptrThreadPhoneProxy->Stop() ) {
@@ -2308,15 +2302,13 @@ int32_t PhoneProxy::stopPhoneProxy()
     return 0;
 
 }
-bool PhoneProxy::phoneProxyisRunning() const
-{
-    return ( _phoneProxyRunning );
+bool PhoneProxy::phoneProxyisRunning() const{
+	return (_phoneProxyRunning);
 
 }
 
-int32_t PhoneProxy::startHeartBeating()
-{
-    if ( _heartBeatingisRunning ) {
+int32_t PhoneProxy::startHeartBeating(){
+    if (_heartBeatingisRunning) {
         return 0;
     }
 
@@ -2351,9 +2343,8 @@ int32_t PhoneProxy::startHeartBeating()
     return 0;
 
 }
-int32_t PhoneProxy::stopHeartBeating()
-{
-    _heartBeatingisRunning = false;
+int32_t PhoneProxy::stopHeartBeating(){
+	_heartBeatingisRunning = false;
 
     if ( _ptrThreadHeartBeating
          && !_ptrThreadHeartBeating->Stop() ) {
@@ -2366,23 +2357,20 @@ int32_t PhoneProxy::stopHeartBeating()
 
     return 0;
 }
-bool PhoneProxy::heartBeatingisRunning() const
-{
-    return ( _heartBeatingisRunning );
+bool PhoneProxy::heartBeatingisRunning() const{
+	return (_heartBeatingisRunning);
 
 }
 
 
 
 
-bool PhoneProxy::phoneProxyThreadFunc ( void* pThis )
-{
-    return ( static_cast<PhoneProxy*> ( pThis )->phoneProxyThreadProcess() );
+bool PhoneProxy::phoneProxyThreadFunc(void* pThis){
+	return (static_cast<PhoneProxy*>(pThis)->phoneProxyThreadProcess());
 
 }
 
-bool PhoneProxy::resetFdsetAndTimeout()
-{
+bool PhoneProxy::resetFdsetAndTimeout(){
 
 
 
@@ -2390,8 +2378,7 @@ bool PhoneProxy::resetFdsetAndTimeout()
     return true;
 }
 
-int updateMaxfd ( fd_set fds, int maxfd )
-{
+int updateMaxfd(fd_set fds, int maxfd) {
     int i;
     int new_maxfd = 0;
 
@@ -2406,8 +2393,7 @@ int updateMaxfd ( fd_set fds, int maxfd )
 
 
 
-bool PhoneProxy::phoneProxyThreadProcess()
-{
+bool PhoneProxy::phoneProxyThreadProcess(){
 
 
     //cout << __FUNCTION__ << " " << __LINE__ << endl;
@@ -2556,8 +2542,8 @@ bool PhoneProxy::phoneProxyThreadProcess()
                 PDEBUG ( "client request in phoneproxy" );
                 // CriticalSectionScoped lock(&_going_critSect);
 
-                PLOG ( LOG_INFO, "%s:%d@%s:%d:i=%d", ci[i].username,
-                       ci[i].id, ci[i].client_ip, ci[i].client_fd, i );
+				// PLOG(LOG_INFO, "%s:%d@%s:%d:i=%d", ci[i].username, 
+					// ci[i].id, ci[i].client_ip, ci[i].client_fd,i);
 
                 parseClient ( &ci[i], i );
                 handleClient ( &ci[i] );
@@ -2695,31 +2681,21 @@ same_client:
     return true;
 }
 
-bool PhoneProxy::heartBeatingThreadFunc ( void* pThis )
-{
-    return ( static_cast<PhoneProxy*> ( pThis )->heartBeatingThreadProcess() );
+bool PhoneProxy::heartBeatingThreadFunc(void* pThis){
+	return (static_cast<PhoneProxy*>(pThis)->heartBeatingThreadProcess());
 
 }
 
-static void xxx ( int x )
-{
-
-
-
-
-
-
-    if ( ring_count > 0 )
-        timer_count ++;
-
-    if ( timeout_trans > 0 ) {
-        CriticalSectionScoped lock ( &_trans_critSect );
-        timer_count_trans ++;
-    }
-
-    if ( timeout_talkback > 0 ) {
-        timer_count_talkback ++;
-    }
+static void xxx(int x){
+	if(ring_count > 0)
+		timer_count ++;	
+	if(timeout_trans > 0){
+		CriticalSectionScoped lock(&_trans_critSect);
+		timer_count_trans ++;
+	}
+	if(timeout_talkback > 0){
+		timer_count_talkback ++;
+	}
 
 
     //cout << "total_receive: " << total_receive << endl;
@@ -2730,17 +2706,14 @@ static void xxx ( int x )
 
 
 
-void PhoneProxy::notify ( int signum )
-{
-    xxx ( 0 );
-    assert ( signum == SIGALRM );
-    int i;
-
-    for ( i = 0; i < CLIENT_NUM * 2; i++ ) {
-        if ( timer_info_g[i].in_use == 0 ) {
-            continue;
-        }
-
+void PhoneProxy::notify( int signum ){
+	xxx(0);
+	assert( signum == SIGALRM );
+	int i;
+	for(i = 0; i < CLIENT_NUM*2; i++) {
+		if(timer_info_g[i].in_use == 0) {
+			continue;
+		}
         timer_info_g[i].elapse ++;
 
         if ( timer_info_g[i].elapse ==
@@ -2756,9 +2729,8 @@ void PhoneProxy::notify ( int signum )
 
 
 
-bool PhoneProxy::heartBeatingThreadProcess()
-{
-    //cout << __FUNCTION__ << " " << __LINE__ << endl;
+bool PhoneProxy::heartBeatingThreadProcess(){
+	//cout << __FUNCTION__ << " " << __LINE__ << endl;
 
 #if 1
     timer->setTimer ( TIMER_SEC, 0 );
@@ -2769,29 +2741,25 @@ bool PhoneProxy::heartBeatingThreadProcess()
     return false;
 }
 
-void PhoneProxy::get_current_format_time ( char * tstr )
-{
-    time_t t;
-    t = time ( NULL );
-    strcpy ( tstr, ctime ( &t ) );
-    tstr[strlen ( tstr ) - 1] = '\0'; // replace '\n' with '\0'
-    return;
+void PhoneProxy::get_current_format_time(char * tstr) {
+	time_t t;
+	t = time(NULL);
+	strcpy(tstr, ctime(&t));
+	tstr[strlen(tstr)-1] = '\0'; // replace '\n' with '\0'
+	return;
 }
 
 
 
-int PhoneProxy::destroyClient ( cli_info_t *pci )
-{
+int PhoneProxy::destroyClient(cli_info_t *pci){
 
     CriticalSectionScoped lock ( &_phone_critSect );
 
 //	cout << __FUNCTION__ << " " << __LINE__ << endl;
-    if ( pci->timer_setting ) {
-        deleteClientTimer ( pci, TIMER_HEARTBEAT );
-        deleteClientTimer ( pci, TIMER_INCOMING );
-        pci->timer_setting = false;
-    }
-
+	if(pci->timer_setting){
+		deleteClientTimer(pci, TIMER_HEARTBEAT);
+		pci->timer_setting = false;
+	}
 #if 0
 
     //int epollfd_tmp = getEpollFd();
@@ -2853,14 +2821,12 @@ int PhoneProxy::destroyClient ( cli_info_t *pci )
 
 
 // arg --> cli_info_t *
-int PhoneProxy::recycleClient ( void *arg, void *pThis )
-{
-    if ( arg == NULL ) {
-        return -1;
-    }
-
-    PhoneProxy *ppx = static_cast<PhoneProxy*> ( pThis );
-    cli_info_t * cli_info_ = ( cli_info_t * ) arg;
+int PhoneProxy::recycleClient(void *arg, void *pThis){
+	if(arg == NULL){
+		return -1;
+	}
+	PhoneProxy *ppx = static_cast<PhoneProxy*>(pThis);
+	cli_info_t * cli_info_ = (cli_info_t *)arg;
 //	cout << "client_fd " << cli_info_->client_fd << endl;
 
     char tstr[200] = {0};
@@ -2878,7 +2844,7 @@ int PhoneProxy::recycleClient ( void *arg, void *pThis )
         cli_info_->old_timer_counter = cli_info_->timer_counter;
     }
 
-    if ( cli_info_->exit_threshold > 10 ) {
+    if ( cli_info_->exit_threshold > 3 ) {
         PLOG ( LOG_INFO, "%s", tstr );
         ppx->destroyClient ( cli_info_ );
     }
@@ -2908,20 +2874,18 @@ int PhoneProxy::resendIncoming ( void *arg, void *pThis )
     return 0;
 }
 
-int PhoneProxy::setClientTimer ( cli_info_t* cli_info, int interval,
-                                 timer_process_cbfn_t timer_proc, void *arg, void* pThis,
-                                 TimerTypeEnum _timer_type )
-{
-    if ( timer_proc == NULL || interval <= 0 ) {
-        return ( -1 );
-    }
-
-    int i;
-
-    for ( i = 0 ; i < CLIENT_NUM * 2; i++ ) {
-        if ( timer_info_g[i].in_use == 1 ) {
-            continue;
-        }
+int PhoneProxy::setClientTimer(cli_info_t* cli_info, int interval, 
+			timer_process_cbfn_t timer_proc, void *arg, void* pThis,
+			TimerTypeEnum _timer_type) {
+	if (timer_proc == NULL || interval <= 0) {
+		return(-1);
+	}
+	
+	int i;
+	for(i=0 ; i<CLIENT_NUM*2; i++){
+		if(timer_info_g[i].in_use == 1) {
+			continue;
+		}
 
         memset ( &timer_info_g[i], 0, sizeof ( timer_info_g[i] ) );
 
@@ -2949,10 +2913,9 @@ int PhoneProxy::setClientTimer ( cli_info_t* cli_info, int interval,
 
 
 
-int PhoneProxy::deleteClientTimer ( cli_info_t* cli_info, TimerTypeEnum _timer_type )
-{
-    //cout << __FUNCTION__ << " " << __LINE__ << endl;
-    PDEBUG ( "deleteClientTimer" );
+int PhoneProxy::deleteClientTimer(cli_info_t* cli_info, TimerTypeEnum _timer_type) {
+	//cout << __FUNCTION__ << " " << __LINE__ << endl;
+	PDEBUG("deleteClientTimer");
 
     if ( cli_info->ti[_timer_type] == NULL ) {
         return -1;
@@ -2964,15 +2927,13 @@ int PhoneProxy::deleteClientTimer ( cli_info_t* cli_info, TimerTypeEnum _timer_t
     return ( 0 );
 }
 
-bool PhoneProxy::resetTimerInfo()
-{
-    memset ( timer_info_g, 0, sizeof ( timer_info_g ) );
-    return true;
+bool PhoneProxy::resetTimerInfo(){
+	memset(timer_info_g, 0, sizeof(timer_info_g));
+	return true;
 }
 
 
-bool PhoneProxy::phoneProxyInit ( int port )
-{
+bool PhoneProxy::phoneProxyInit(int port){
 #if 0
     epollfd = epoll_create ( MAX_EVENTS );
 
@@ -3063,10 +3024,9 @@ bool PhoneProxy::phoneProxyInit ( int port )
 }
 
 
-bool PhoneProxy::phoneProxyExit()
-{
-    stopPhoneProxy();
-    stopHeartBeating();
+bool PhoneProxy::phoneProxyExit(){
+	stopPhoneProxy();
+	stopHeartBeating();
 
     timer->cancel();
 
