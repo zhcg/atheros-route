@@ -585,7 +585,7 @@ int to_pad_msg_pack(struct s_to_pad_msg *to_pad_msg, char **send_buf)
     memcpy(*send_buf + send_buf_len, &(to_pad_msg->len), sizeof(to_pad_msg->len));
     #else
     unsigned short len = DATA_ENDIAN_CHANGE_SHORT(to_pad_msg->len);
-    memcpy(*send_buf + send_buf_len, &len, len);
+    memcpy(*send_buf + send_buf_len, &len, sizeof(len));
     PRINT("to_pad_msg->len = %04X, len = %04X\n", to_pad_msg->len, len);
     #endif
     
