@@ -1110,7 +1110,7 @@ int send_data(unsigned char *data, struct s_data_list *a_data_list, unsigned int
     return 0;
 }
 
-#elif BOARDTYPE == 5350 || BOARDTYPE == 9344 // 5350 9334时
+#elif BOARDTYPE == 5350 || BOARDTYPE == 9344 // 5350时
 
 /*********************************************************************/
 // 使用/dev/ttyS0 和单片机通信时
@@ -1196,7 +1196,7 @@ int cmd_call(char *phone)
     send_data[0] = 0xA5;
     send_data[1] = 0x5A;
     send_data[2] = 0x42;
-    send_data[3] = 0x06;
+    send_data[3] = 2 + strlen(phone);
     send_data[4] = 0x01;
     send_data[5] = 0x01;
     memcpy(send_data + 6, phone, strlen(phone));
@@ -1445,8 +1445,7 @@ int recv_display_msg()
     return 0;
 }
 
-#else 
-// 使用STUB程序与单片机通信时
+#else  // 使用STUB程序与单片机通信时
 
 /**
  * 发送挂机命令
@@ -1465,7 +1464,6 @@ int cmd_on_hook()
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_data failed!", res);
     	return res; 
     }
-    
     
     for (i = 0; i < sizeof(head); i++)
     {
@@ -1501,7 +1499,54 @@ int cmd_on_hook()
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "data err!", DATA_ERR);
         return DATA_ERR;
     }
+    
+    if ((res = spi_rt_interface.recv_data(UART1, buf, 4)) != 4)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data failed!", res);
+        return res;
+    }
+    if (((unsigned char)buf[0] != 0xAA) || (buf[1] != 0x03) || (buf[2] != 0x55) || ((unsigned char)buf[3] != 0x55))
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "data err!", DATA_ERR);
+        return DATA_ERR;
+    }
     *(common_tools.phone_status_flag) = 0;
+    PRINT_STEP("exit...\n");
+    return 0;
+}
+
+/**
+ * 摘机
+ */
+int cmd_off_hook()
+{
+    PRINT_STEP("entry...\n");
+    char buf[6] = {0xA5, 0x5A, 0x73, 0x01, 0x01, 0x73};
+    char recv_buf[8] = {0};
+    int res = 0;
+    
+	if ((res = spi_rt_interface.send_data(UART1, buf, sizeof(buf)))< 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_data failed!", res);
+    	return res; 
+    }
+    
+    *(common_tools.phone_status_flag) = 1;
+    
+    // A55A C1 02 02 00 00 C1
+    if ((res = spi_rt_interface.recv_data(UART1, recv_buf, 8)) != 8)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data failed!", res);
+        return res;
+    }
+    
+    if (((unsigned char)recv_buf[0] != 0xA5) || (recv_buf[1] != 0x5A) || ((unsigned char)recv_buf[2] != 0xC1) || (recv_buf[3] != 0x02)
+        || (recv_buf[4] != 0x02) || (recv_buf[5] != 0x00) || (recv_buf[6] != 0x00) || ((unsigned char)recv_buf[7] != 0xC1))
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "data err!", DATA_ERR);
+        return DATA_ERR;
+    }
+    
     PRINT_STEP("exit...\n");
     return 0;
 }
@@ -1513,27 +1558,31 @@ int cmd_call(char *phone)
 {
     PRINT_STEP("entry...\n"); 
     printf("\n");
-    char buf[6] = {0xA5, 0x5A, 0x73, 0x01, 0x01, 0x73};
     char *send_data = NULL;
     int res = 0;
     
-    if ((res = spi_rt_interface.send_data(UART1, buf, sizeof(buf)))< 0)
+    if ((res = cmd_off_hook()) < 0)
     {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_data failed!", res);
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "cmd_off_hook failed!", res);
     	return res; 
     }
+    
     if ((send_data = malloc(strlen(phone) + 7)) == NULL)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "malloc failed!", MALLOC_ERR);
     	return MALLOC_ERR; 
     }
     memset(send_data, 0, strlen(phone) + 7);
+    /*
+    0x42:拨号命令字
+    一次性发送的呼叫号码有限制，可以设置长度（单片机）
+    */
     send_data[0] = 0xA5;
     send_data[1] = 0x5A;
     send_data[2] = 0x42;
-    send_data[3] = 0x06;
-    send_data[4] = 0x01;
-    send_data[5] = 0x01;
+    send_data[3] = 2 + strlen(phone); // 包长度
+    send_data[4] = 0x01; // 包个数： 为一，说明号码没有分包
+    send_data[5] = 0x01; // 包编号
     memcpy(send_data + 6, phone, strlen(phone));
     send_data[strlen(phone) + 6] = common_tools.get_checkbit(send_data, NULL, 2, strlen(phone) + 4, XOR, 1);
     sleep(1);
@@ -1547,26 +1596,6 @@ int cmd_call(char *phone)
     }
     free(send_data);
     send_data = NULL;
-    *(common_tools.phone_status_flag) = 1;
-    PRINT_STEP("exit...\n");
-    return 0;
-}
-
-/**
- * 摘机
- */
-int cmd_off_hook()
-{
-    PRINT_STEP("entry...\n");
-    char buf[6] = {0xA5, 0x5A, 0x73, 0x01, 0x01, 0x73};
-    int res = 0;
-    
-	if ((res = spi_rt_interface.send_data(UART1, buf, sizeof(buf)))< 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_data failed!", res);
-    	return res; 
-    }
-    
     *(common_tools.phone_status_flag) = 1;
     PRINT_STEP("exit...\n");
     return 0;

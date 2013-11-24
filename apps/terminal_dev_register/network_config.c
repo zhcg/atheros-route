@@ -5,11 +5,6 @@ static int serial_pad_fd = 0, serial_5350_fd = 0, server_pad_fd = 0, server_base
 static char network_flag = 0; // 否已经注册成功
 static char g_cmd = 0xFF;
 static char pad_cmd = 0xFB;
-/*
-static char base_sn[35] = {0};
-static char base_mac[18] = {0};
-static char base_ip[16] = {0};
-*/
 
 #if BOARDTYPE == 5350 || BOARDTYPE == 9344
 // 初始化cmd_list
@@ -56,7 +51,7 @@ static int recovery_route(int fd, char *buf, unsigned short buf_len);
  * 设置路由器
  */
 static int route_config(int fd, int index);
-#elif BOARDTYPE == 5350 
+#elif BOARDTYPE == 5350 // 5350
 
 /**
  * 获取路由wan口状态
@@ -78,7 +73,8 @@ static int config_route_take_effect();
  */
 static int route_config(int index);
 static int route_config2(int index);
-#elif BOARDTYPE == 9344 
+
+#elif BOARDTYPE == 9344 // 9344
 /**
  * 获取路由wan口状态
  */
@@ -93,7 +89,6 @@ static int config_route_take_effect();
  * 设置路由器
  */
 static int route_config(int index);
-static int route_config2(int index);
 #endif
 
 /**
@@ -252,7 +247,6 @@ struct class_network_config network_config =
     .get_wan_state = get_wan_state,
     .config_route_take_effect = config_route_take_effect,
     .route_config = route_config,
-    .route_config2 = route_config2,
     #endif
 };
 
@@ -410,8 +404,13 @@ int send_msg_to_pad(int fd, char cmd, char *data)
     else
     {
         msg_len = strlen(data) + 1;
-        
+        #if ENDIAN == 0
         memcpy(send_buf + 2, &msg_len, sizeof(unsigned short));
+        #else
+        msg_len = DATA_ENDIAN_CHANGE_SHORT(msg_len);
+        memcpy(send_buf + 2, &msg_len, sizeof(unsigned short));        
+        #endif
+        
         send_buf[4] = cmd;
         memcpy(send_buf + 5, data, strlen(data));
         
@@ -427,17 +426,7 @@ int send_msg_to_pad(int fd, char cmd, char *data)
         send_buf = NULL;
         return common_tools.get_errno('P', res);
     }
-    /*
-    for (i = 0; i < buf_len; i++)
-    {
-        if (write(fd, &send_buf[i], sizeof(send_buf[i])) != sizeof(send_buf[i]))
-        {
-            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "write failed", res);
-            return P_WRITE_ERR;
-        }
-        //usleep(g_config.one_byte_delay_usec);
-    }
-    */
+    
     PRINT_BUF_BY_HEX(send_buf, NULL, buf_len, __FILE__, __FUNCTION__, __LINE__);
     free(send_buf);
     send_buf = NULL;
@@ -1233,76 +1222,6 @@ int check_route_config(unsigned char cmd_count)
     return 0;
 }
 
-#if 0
-/**
- * 使设置生效
- */
-int config_route_take_effect()
-{
-    int res = 0;
-    char buf[20] = {0};
-    if ((res = get_pid_by_process_name("nvram_daemon")) < 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_pid_by_process_name failed", res);
-        return res;
-    }
-    PRINT("pid = %d\n", (pid_t)res);
-    sprintf(buf, "kill -9 %d", (pid_t)res);
-    PRINT("%s\n", buf);
-    if (system(buf) < 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "system failed", SYSTEM_ERR);
-        return SYSTEM_ERR;
-    }
-    
-    if ((res = get_pid_by_process_name("goahead")) < 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_pid_by_process_name failed", res);
-        return res;
-    }
-    memset(buf, 0, sizeof(buf));
-    PRINT("pid = %d\n", (pid_t)res);
-    sprintf(buf, "kill -9 %d", (pid_t)res);
-    PRINT("%s\n", buf);
-    if (system(buf) < 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "system failed", SYSTEM_ERR);
-        return SYSTEM_ERR;
-    }
-    
-    #if 1
-    if (system("nvram_daemon &") < 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "system failed", SYSTEM_ERR);
-        return SYSTEM_ERR;
-    }
-    
-    if (system("goahead &") < 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "system failed", SYSTEM_ERR);
-        return SYSTEM_ERR;
-    }
-    #else
-    char * const nvram_daemon_app_argv[] = {"nvram_daemon", NULL};
-    char * const goahead_app_argv[] = {"goahead", NULL};
-    
-    if ((res = common_tools.start_up_application("/bin/nvram_daemon", nvram_daemon_app_argv, 0)) < 0)
-    {
-        PERROR("start_up_application failed!\n");
-        return res;
-    }
-    
-    if ((res = common_tools.start_up_application("/bin/goahead", goahead_app_argv, 0)) < 0)
-    {
-        PERROR("start_up_application failed!\n");
-        return res;
-    }
-    #endif
-    return 0;
-}
-
-#else
-
 /**
  * 使设置生效
  */
@@ -1337,7 +1256,6 @@ int config_route_take_effect()
     }
     return 0;
 }
-#endif
 
 /**
  * 设置路由器
@@ -1496,10 +1414,6 @@ int check_route_config(unsigned char cmd_count)
  * 设置路由器
  */
 int route_config(int index)
-{
-    return 0;
-}
-int route_config2(int index)
 {
     int res = 0;
     int i= 0, j = 0;
@@ -1682,7 +1596,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
                 }
                 free(_6410_and_5350_msg.data);
                 _6410_and_5350_msg.data = NULL;
-                #else
+                #elif BOARDTYPE == 5350 ||  BOARDTYPE == 9344
                 /*
                 if ((res = get_wan_state()) < 0)
                 {
@@ -3160,24 +3074,6 @@ int network_settings(int fd, int cmd_count, char cmd_word)
         return res;
     }
     PRINT("after route_config2\n");
-    /*
-    if ((cmd_word == 0x01) || (cmd_word == 0x02) || (cmd_word == 0x03) || (cmd_word == 0x08) || (cmd_word == 0x0A) || (cmd_word == 0x07))
-    {
-        if ((res = route_config2(index)) < 0)
-        {
-            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "route_config failed", res);
-            return res;
-        }
-    }
-    else 
-    {
-        if ((res = route_config(index)) < 0)
-        {
-            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "route_config failed", res);
-            return res;
-        }
-    }
-    */
     #else
     if ((res = route_config(index)) < 0)
     {
@@ -3198,7 +3094,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
     
     OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, " route configuration success!", 0);
     #elif BOARDTYPE == 9344
-    if ((res = route_config2(index)) < 0)
+    if ((res = route_config(index)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "route_config failed", res);
         PERROR("route_config2 failed!\n");
@@ -3408,67 +3304,4 @@ int network_settings(int fd, int cmd_count, char cmd_word)
     }
     
     return 0;
-}
-
-
-/**
- * 按照进程名称获取PID
- */
-int get_pid_by_process_name(char *process_name)
-{
-    if (process_name == NULL)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "process_name is NULL!", NULL_ERR);
-        return NULL_ERR;
-    }
-    char *buf = NULL;
-    int fd = 0;
-    pid_t pid = 0;
-    unsigned short buf_len = 0;
-    
-    buf_len = strlen("ps | grep ") + strlen(process_name) + strlen(" | sed '/grep/'d  > /var/process_info");
-    if ((buf = (char *)malloc(buf_len + 1)) == NULL)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "malloc failed!", MALLOC_ERR);
-        return MALLOC_ERR;
-    }
-    memset(buf, 0, buf_len + 1);
-    
-    sprintf(buf, "ps | grep %s | sed '/grep/'d > /var/process_info", process_name);
-    
-    if (system(buf) < 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "system failed!", SYSTEM_ERR);
-        free(buf);
-        buf = NULL;
-        return SYSTEM_ERR;
-    }
-    memset(buf, 0, buf_len + 1);
-    
-    if ((fd = open("/var/process_info", O_RDONLY, 0644)) < 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "open failed!", OPEN_ERR);
-        free(buf);
-        buf = NULL;
-        return OPEN_ERR;
-    }
-    
-    if (read(fd, buf, 6) != 6)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "read failed!", READ_ERR);
-        free(buf);
-        buf = NULL;
-        close(fd);
-        return READ_ERR;
-    }
-    
-    PRINT("buf = %s\n", buf);
-    pid = atoi(buf);
-    
-    free(buf);
-    buf = NULL;
-    close(fd);
-    system("rm -rf /var/process_info");
-    PRINT("pid = %d\n", pid);
-    return pid;
 }

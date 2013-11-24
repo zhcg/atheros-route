@@ -268,10 +268,17 @@ int PSTN_msg_link_request_unpack(struct s_data_list *a_data_list)
 	}
 	index += sizeof(link_message.length);
     
+    // ENDIAN
+    
+    /*
+    //原来为小端处理
 	buf_tmp[0] = buf_tmp[0] + buf_tmp[1];
 	buf_tmp[1] = buf_tmp[0] - buf_tmp[1];
 	buf_tmp[0] = buf_tmp[0] - buf_tmp[1];
 	memcpy(&(link_message.length), buf_tmp, sizeof(buf_tmp));
+    */
+    link_message.length = ((unsigned short)buf_tmp[0] << 8) & 0xFF00);
+    link_message.length += buf_tmp[1];
     
 	if (link_message.length != 5)
     {
@@ -344,13 +351,16 @@ int PSTN_msg_link_respond_pack(struct s_data_list *a_data_list)
 	common_tools.list_free(a_data_list);
 	
 	link_message.news_type = 0x82;
-	link_message.length = 5;
+	link_message.length = htons(5);
 	
+	/*
+	ENDIAN
 	unsigned char length_tmp[2] = {0};
 	length_tmp[0] = (char)((link_message.length & 0xFF00) >> 8);
 	length_tmp[1] = (char)(link_message.length & 0x00FF);
 	memcpy(&(link_message.length), length_tmp, 2);
-
+	*/
+	
 	link_message.deal_sync_random_num = common_tools.deal_attr->sync_random_num;
 	link_message.message_sync_num = common_tools.deal_attr->message_sync_num;
 
@@ -408,10 +418,15 @@ int PSTN_msg_data_finish_unpack(struct s_data_list *a_data_list)
 	}
 	index += sizeof(data_finish_message.length);
     
+    /*
+    ENDIAN
 	buf_tmp[0] = buf_tmp[0] + buf_tmp[1];
 	buf_tmp[1] = buf_tmp[0] - buf_tmp[1];
 	buf_tmp[0] = buf_tmp[0] - buf_tmp[1];
 	memcpy(&(data_finish_message.length), buf_tmp, sizeof(buf_tmp));
+    */
+    data_finish_message.length = ((unsigned short)buf_tmp[0] << 8) & 0xFF00);
+    data_finish_message.length += buf_tmp[1];
     
 	if (data_finish_message.length != 5)
     {    	
@@ -486,13 +501,15 @@ int PSTN_msg_data_finish_pack(struct s_data_list *a_data_list)
 	common_tools.list_free(a_data_list);
 	
 	data_finish_message.news_type = 0x83;
-	data_finish_message.length = 5;
+	data_finish_message.length = htons(5);
 	
+	/*
+	ENDIAN
 	unsigned char length_tmp[2] = {0};
 	length_tmp[0] = (char)((data_finish_message.length & 0xFF00) >> 8);
 	length_tmp[1] = (char)(data_finish_message.length & 0x00FF);
 	memcpy(&(data_finish_message.length), length_tmp, 2);
-
+	*/
 	data_finish_message.deal_sync_random_num = common_tools.deal_attr->sync_random_num;
 	data_finish_message.message_sync_num = common_tools.deal_attr->message_sync_num;
 	
@@ -551,10 +568,15 @@ int PSTN_msg_deal_unpack(struct s_data_list *a_data_list, void *para)
         return res;  
 	}
 	index += sizeof(deal_message_84.length);
+	/*
+	ENDIAN
 	buf_tmp[0] = buf_tmp[0] + buf_tmp[1];
 	buf_tmp[1] = buf_tmp[0] - buf_tmp[1];
 	buf_tmp[0] = buf_tmp[0] - buf_tmp[1];
 	memcpy(&(deal_message_84.length), buf_tmp, sizeof(buf_tmp));
+    */
+    deal_message_84.length = ((unsigned short)buf_tmp[0] << 8) & 0xFF00);
+    deal_message_84.length += buf_tmp[1];
     
     // 同步随机数
     if ((res = common_tools.list_get_data(a_data_list, index, sizeof(deal_message_84.deal_sync_random_num), (char *)&(deal_message_84.deal_sync_random_num))) < 0)
@@ -597,10 +619,15 @@ int PSTN_msg_deal_unpack(struct s_data_list *a_data_list, void *para)
 	}
 	index += sizeof(buf_tmp);
 	
+	/*
+	ENDIAN
 	buf_tmp[0] = buf_tmp[0] + buf_tmp[1];
 	buf_tmp[1] = buf_tmp[0] - buf_tmp[1];
 	buf_tmp[0] = buf_tmp[0] - buf_tmp[1];
 	memcpy(&(deal_message_84.news_content_len), buf_tmp, sizeof(buf_tmp));
+	*/
+    deal_message_84.news_content_len = ((unsigned short)buf_tmp[0] << 8) & 0xFF00);
+    deal_message_84.news_content_len += buf_tmp[1];
     
     // 消息报文类型
     if ((res = common_tools.list_get_data(a_data_list, index, sizeof(deal_message_84.news_content_84.message_type), &deal_message_84.news_content_84.message_type)) < 0)
@@ -994,6 +1021,7 @@ int PSTN_msg_deal_pack(struct s_data_list *a_data_list, void *para)
 	}
     
     list_len = deal_message_87.length + 4;
+    //ENDIAN
     deal_message_87.length = htons(deal_message_87.length);
     deal_message_87.news_content_len= htons(deal_message_87.news_content_len);
     // 把结构体数据添加到链表中去

@@ -3,7 +3,7 @@
 
 #include "common_tools.h"
 
-#define TB "base_init_tb"
+#define TB "terminal_base_tb"
 
 // 结构体定义
 struct class_database_management

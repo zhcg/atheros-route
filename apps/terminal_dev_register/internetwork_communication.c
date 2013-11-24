@@ -539,7 +539,6 @@ int IP_msg_pack2(struct s_data_list *a_data_list, struct s_dial_back_respond *a_
                 return MALLOC_ERR;
             }
             sprintf(IP_msg.valid_data, "%s%s", a_dial_back_respond->BASE_id, a_dial_back_respond->PAD_id);
-            // strncat(IP_msg.valid_data, (void *)&a_dial_back_respond->base_random, sizeof(a_dial_back_respond->base_random));
             common_tools.memncat(IP_msg.valid_data, (void *)&a_dial_back_respond->base_random, strlen(a_dial_back_respond->BASE_id) + strlen(a_dial_back_respond->PAD_id), sizeof(a_dial_back_respond->base_random));
             PRINT("IP_msg.valid_data = %08X\n", *(long*)(IP_msg.valid_data + strlen(a_dial_back_respond->BASE_id) + strlen(a_dial_back_respond->PAD_id)));
             PRINT("a_dial_back_respond->base_random = %08X\n", a_dial_back_respond->base_random);
@@ -627,12 +626,14 @@ int IP_msg_pack2(struct s_data_list *a_data_list, struct s_dial_back_respond *a_
         case 0x2003: // 接收呼叫请求
         {
             IP_msg.data_len++;
+            IP_msg.data_len += sizeof(reserve[0]);
             if ((IP_msg.valid_data = malloc(IP_msg.data_len + 1)) == NULL)
             {                
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "malloc failed!", MALLOC_ERR);                
                 return MALLOC_ERR;
             }
             IP_msg.valid_data[0] = a_dial_back_respond->call_permit;
+            IP_msg.valid_data[0] = reserve[0];
             break;
         }
         case 0x2004: // 呼叫结果请求
@@ -991,6 +992,7 @@ int IP_msg_unpack2(char *buf, unsigned short buf_len, struct s_dial_back_respond
     memcpy((void *)&IP_msg.data_len, buf + index, sizeof(IP_msg.data_len));
     index += sizeof(IP_msg.data_len);
     
+    PRINT("IP_msg.data_len = %d, buf_len - 6 = %d\n", IP_msg.data_len, buf_len - 6);
     if (IP_msg.data_len != (buf_len - 6))
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data error!", res);
@@ -1104,7 +1106,7 @@ int IP_msg_unpack2(char *buf, unsigned short buf_len, struct s_dial_back_respond
                 int i = 0;
                 for (i = 0; i < sizeof(a_dial_back_respond->phone_num); i++)
                 {
-                    if ((a_dial_back_respond->phone_num[i] >= '0') && (a_dial_back_respond->phone_num[i] >= '9'))
+                    if ((a_dial_back_respond->phone_num[i] >= '0') && (a_dial_back_respond->phone_num[i] <= '9'))
                     {
                         phone_num[i] = a_dial_back_respond->phone_num[i];
                     }
@@ -1113,13 +1115,12 @@ int IP_msg_unpack2(char *buf, unsigned short buf_len, struct s_dial_back_respond
                         break;
                     }
                 }
-                #if 1
-                if ((i = 0) || (i < 7))
+                PRINT("i = %d\n", i);
+                if ((i == 0) || (i < 7))
                 {
                     OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data error!", DATA_ERR);
                     return DATA_ERR;
                 }
-                #endif
             }
             #endif
             
@@ -1330,7 +1331,7 @@ int IP_msg_recv2(int fd, char *buf, unsigned short buf_len)
 {
     PRINT_STEP("entry...\n");
     int res = 0;
-    struct timeval tv = {5, 0};
+    struct timeval tv = {15, 0};
     fd_set fdset; 
     FD_ZERO(&fdset);
     FD_SET(fd, &fdset);

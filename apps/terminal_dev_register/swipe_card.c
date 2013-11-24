@@ -581,7 +581,14 @@ int to_pad_msg_pack(struct s_to_pad_msg *to_pad_msg, char **send_buf)
     memcpy(*send_buf, to_pad_msg->head, sizeof(to_pad_msg->head));
     send_buf_len += sizeof(to_pad_msg->head);
     
+    #if ENDIAN == 0
     memcpy(*send_buf + send_buf_len, &(to_pad_msg->len), sizeof(to_pad_msg->len));
+    #else
+    unsigned short len = DATA_ENDIAN_CHANGE_SHORT(to_pad_msg->len);
+    memcpy(*send_buf + send_buf_len, &len, len);
+    PRINT("to_pad_msg->len = %04X, len = %04X\n", to_pad_msg->len, len);
+    #endif
+    
     send_buf_len += sizeof(to_pad_msg->len);
     
     memcpy(*send_buf + send_buf_len, &(to_pad_msg->card_type), sizeof(to_pad_msg->card_type));
@@ -649,6 +656,7 @@ int main(int argc, char ** argv)
   	struct sockaddr_in client; 
     socklen_t len = sizeof(client); 
     
+    char pack_len[2] = {0};
   	int sock_server_fd = 0, accept_fd = 0;
   	int res = 0;
   	
@@ -695,11 +703,21 @@ int main(int argc, char ** argv)
                         break;
                     }
                     
+                    #if 0
+                    // 长度 此处要区分大小端在此修改
                     if ((res = common_tools.recv_data(accept_fd, (char*)&(to_pad_msg.len), NULL, sizeof(to_pad_msg.len), &timeout)) < 0)
                     {
                         PERROR("recv_data failed!\n");
                         break;
                     }
+                    #endif
+                    if ((res = common_tools.recv_data(accept_fd, pack_len, NULL, sizeof(pack_len), &timeout)) < 0)
+                    {
+                        PERROR("recv_data failed!\n");
+                        break;
+                    }
+                    to_pad_msg.len = pack_len[0];
+                    to_pad_msg.len += (pack_len[1] * 0xFF);
                     
                     if ((res = common_tools.recv_one_byte(accept_fd, &to_pad_msg.card_type, &timeout)) < 0)
                     {

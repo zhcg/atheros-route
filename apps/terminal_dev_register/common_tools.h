@@ -35,12 +35,25 @@
 #include <sqlite3.h>
 #endif
 #include <regex.h>
-
+#include <arpa/inet.h>
 // 宏定义
 
 #define TERMIANL_SCHEME 1  // 终端初始化方案。0代表是旧UI方案（无取消）；1代表新UI方案
 
+// 大小端的问题
 
+#if BOARDTYPE == 9344
+#define ENDIAN 1 // 0代表小端；1代表大端
+#elif BOARDTYPE == 5350 || BOARDTYPE == 6410
+#define ENDIAN 0 // 0代表小端；1代表大端
+#endif
+ 
+// 数据大小端互转 short 2字节
+#define DATA_ENDIAN_CHANGE_SHORT(A)  ((((unsigned short)(A) & 0xff00) >> 8 ) | (((unsigned short)(A) & 0x00ff) << 8 ))
+// 数据大小端互转 long 4字节
+#define DATA_ENDIAN_CHANGE_LONG(A)  ((((unsigned long)(A) & 0xff000000) >> 24)  | (((unsigned long)(A) & 0x00ff0000) >> 8 ) | \
+                                    (((unsigned long)(A) & 0x0000ff00) << 8 )  | (((unsigned long)(A) & 0x000000ff) << 24))
+                                    
 #if BOARDTYPE == 5350
 
 #ifdef CONFIG_DUAL_IMAGE
@@ -198,15 +211,16 @@ enum ERROR_NUM
 	NO_INIT_ERR,           // 没有初始化设备 
 	NO_FILE_ERR,           // 文件未找到错误 
 	NULL_ERR,              // 数据为空错误 
+	NO_RECORD_ERR,         // 没有此记录
 	
 	OFF_HOOK_ERR,          // 中心号码错误 
 	OPEN_ERR,              // 文件打开错误
 	OVER_LEN_ERR,          // 自定义数据超长错误
 	PIPE_ERR,              // 创建管道失败 
 	PTHREAD_CREAT_ERR,     // 线程创建错误
-	PTHREAD_CANCEL_ERR,    // 线程终止错误
+	PTHREAD_CANCEL_ERR,    // 线程终止错误 -200
 	
-	PTHREAD_LOCK_ERR,      // 获取锁错误 -200
+	PTHREAD_LOCK_ERR,      // 获取锁错误 
 	PTHREAD_UNLOCK_ERR,    // 解锁失败错误
 	PPPOE_INVALID_INFO,    // 无效的账号和密码 
 	PPPOE_CALL_FAILED,     // 呼叫失败 
@@ -216,8 +230,8 @@ enum ERROR_NUM
 	REGCOMP_ERR,           // 编译正则表达式
 	REGEXEC_ERR,           // 匹配字符串
 	READ_ERR,              // 文件读取错误
-	P_READ_ERR,            // 文件读取错误
-	S_READ_ERR,            // 文件读取错误  -190
+	P_READ_ERR,            // 文件读取错误 -190
+	S_READ_ERR,            // 文件读取错误  
 	
 	SHMGET_ERR,            // 创建共享内存失败   
 	SHMAT_ERR,             // 添加共享内存到进程
@@ -227,9 +241,9 @@ enum ERROR_NUM
 	SEMGET_ERR,            // 信号量获取失败 
 	SEMCTL_ERR,            // 信号量设置失败   
 	SEMOP_ERR,             // 信号量操作失败 
-	SEM_OPEN_ERR,          // 创建命名信号量
+	SEM_OPEN_ERR,          // 创建命名信号量  -180
 	SEM_WAIT_ERR,          // 信号量减一 
-	SEM_POST_ERR,          // 信号量加一    -180
+	SEM_POST_ERR,          // 信号量加一   
 	
 	STOP_CMD,              // 终止命令       
 	SERVER_ERR,            // 服务器端错误 
@@ -239,8 +253,8 @@ enum ERROR_NUM
 	SELECT_ERR,            // 轮询等待错误 
 	SELECT_NULL_ERR,       // 轮询为空错误 
 	P_SELECT_NULL_ERR,     // 轮询为空错误 
-	S_SELECT_NULL_ERR,     // 轮询为空错误 
-	SOCKET_ERR,            // 获取套接字错误 -170
+	S_SELECT_NULL_ERR,     // 轮询为空错误 -170
+	SOCKET_ERR,            // 获取套接字错误 
 	SETSOCKOPT_ERR,        // 设置套接字属性错误
 	SETATTR_ERR,           // 属性设置错误 
 	SYSTEM_ERR,            // 执行shell命令失败
@@ -249,7 +263,7 @@ enum ERROR_NUM
 	WRITE_ERR,             // 文件写入错误 
 	WRONGFUL_PAD_ERR,      // PAD不合法 
 	WRONGFUL_DEV_ERR,      // PAD和base不合法 
-	WAN_STATE_ERR,         // wan口没有插入  
+	WAN_STATE_ERR,         // wan口没有插入 -160  
 	P_WRITE_ERR,           // 文件写入错误
 	S_WRITE_ERR,           // 文件写入错误
 };

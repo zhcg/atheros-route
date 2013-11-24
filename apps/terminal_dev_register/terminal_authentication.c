@@ -491,7 +491,7 @@ int return_device_token(char *device_token)
     {
         memset(column_value[0], 0, sizeof(column_value[0]));
         sprintf(column_value[0], "There is no (%s) record!", column_name[0]);
-        res = NULL_ERR;
+        res = NO_RECORD_ERR;
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, column_value[0], res); 
         return res;
     }
@@ -1143,10 +1143,10 @@ int rebuild_device_token(char *device_token)
  */
 int rebuild_position_token(char *position_token)
 {
-    #define POTOKEN 1
     int fd_client = 0;
     int i = 0;
     int res = 0;
+    int ret = 0;
     unsigned long base_random = 0;
     struct s_data_list data_list;
     struct s_dial_back_respond dial_back_respond;
@@ -1241,7 +1241,7 @@ int rebuild_position_token(char *position_token)
         common_tools.list_free(&data_list);
         return common_tools.get_errno('S', res);;
     }
-    #if POTOKEN
+    
     PRINT("________________0x2001\n");
     // PSTN呼叫
     if ((res = communication_stc.cmd_call(common_tools.config->center_phone)) < 0)
@@ -1250,7 +1250,7 @@ int rebuild_position_token(char *position_token)
         return res;
     }
     PRINT("________________call\n");
-    #endif
+    
     memset(buf, 0, sizeof(buf));
     // 0x2002平台呼叫应答
     if ((res = internetwork_communication.msg_recv2(fd_client, buf, sizeof(buf))) < 0)
@@ -1258,28 +1258,27 @@ int rebuild_position_token(char *position_token)
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "msg_recv failed!", res);        
         close(fd_client);
         common_tools.list_free(&data_list);
-        #if POTOKEN
         // 挂机（停止呼叫）
-        if ((res = communication_stc.cmd_on_hook()) < 0)
+        if ((ret = communication_stc.cmd_on_hook()) < 0)
         {
-            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "cmd_on_hook failed!", res);
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "cmd_on_hook failed!", ret);
             return res;
         }
         PRINT("________________hook\n");
-        #endif
         return res;
     }
     
     PRINT("________________0x2002\n");
-    #if POTOKEN
     // 挂机（停止呼叫）
-    if ((res = communication_stc.cmd_on_hook()) < 0)
+    //communication_stc.cmd_on_hook();
+    
+    if ((ret = communication_stc.cmd_on_hook()) < 0)
     {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "cmd_on_hook failed!", res);
-        return res;
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "cmd_on_hook failed!", ret);
+        return ret;
     }
+    
     PRINT("________________hook\n");
-    #endif
     // 0x2002解包
     if ((res = internetwork_communication.msg_unpack2(buf, res, &dial_back_respond)) < 0)
     {
@@ -1308,7 +1307,7 @@ int rebuild_position_token(char *position_token)
         return res;
     }
     PRINT("________________0x2003\n");
-    #if POTOKEN
+    #if 0
     // 接收来电
     if ((res = communication_stc.recv_display_msg(dial_back_respond.phone_num)) < 0)
     {
@@ -1401,10 +1400,10 @@ int start_up_CACM()
 {
     int res = 0;
     char buf[256] = {0};
-    char *linphone_cmd = "ps | grep linphone | sed '/grep/'d";
-    char * const app_argv[] = {"linphone", NULL};
+    char *cacm_cmd = "ps | grep cacm | sed '/grep/'d";
+    char * const app_argv[] = {"cacm", NULL};
     
-    if ((res = common_tools.get_cmd_out(linphone_cmd, buf, sizeof(buf))) < 0)
+    if ((res = common_tools.get_cmd_out(cacm_cmd, buf, sizeof(buf))) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_cmd_out failed!", res);
         return res;
@@ -1414,10 +1413,10 @@ int start_up_CACM()
     
     if (strlen(buf) != 0) 
     {
-        system("kill -9 `ps | grep linphonec | sed \'/grep/\'d | awk \'{print $1}\'`");
+        system("kill -9 `ps | grep cacm | sed \'/grep/\'d | awk \'{print $1}\'`");
 	}
     
-    if ((res = common_tools.start_up_application("/bin/linphone", app_argv, 1)) < 0)
+    if ((res = common_tools.start_up_application("/bin/cacm", app_argv, 1)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "start_up_application failed!", res);
         return res;

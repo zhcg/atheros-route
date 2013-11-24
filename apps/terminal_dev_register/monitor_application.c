@@ -25,10 +25,10 @@ int start_up_CACM()
 {
     int res = 0;
     char buf[256] = {0};
-    char *linphone_cmd = "ps | grep linphone | sed '/grep/'d";
-    char * const app_argv[] = {"linphone", NULL};
+    char *cacm_cmd = "ps | grep cacm | sed '/grep/'d";
+    char * const app_argv[] = {"cacm", NULL};
     
-    if ((res = common_tools.get_cmd_out(linphone_cmd, buf, sizeof(buf))) < 0)
+    if ((res = common_tools.get_cmd_out(cacm_cmd, buf, sizeof(buf))) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_cmd_out failed!", res);
         return res;
@@ -38,10 +38,10 @@ int start_up_CACM()
     
     if (strlen(buf) != 0) 
     {
-        system("kill -9 `ps | grep linphonec | sed \'/grep/\'d | awk \'{print $1}\'`");
+        system("kill -9 `ps | grep cacm | sed \'/grep/\'d | awk \'{print $1}\'`");
 	}
     
-    if ((res = common_tools.start_up_application("/bin/linphone", app_argv, 1)) < 0)
+    if ((res = common_tools.start_up_application("/bin/cacm", app_argv, 1)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "start_up_application failed!", res);
         return res;
@@ -538,6 +538,12 @@ static int monitor_app()
 	if (columns_value[0][0] ==  '0')
 	    
 	#elif BOARDTYPE == 9344
+	if ((res = database_management.select(1, columns_name, columns_value)) < 0)
+	{
+	    PERROR("sqlite_select failed!\n");
+	    return res;
+	}
+	
     // 初始化成功
 	if (columns_value[0][0] ==  0)
     #endif
@@ -595,7 +601,6 @@ static int monitor_app()
         PRINT("buf = %s\n", buf);
         if ((strlen(buf) == 0) || (memcmp("/var/terminal_init/log/operation_steps/", buf, strlen("/var/terminal_init/log/operation_steps/")) != 0)) 
         {
-            //system("terminal_init -i &");
             if ((res = common_tools.start_up_application("/bin/terminal_init", app_argv, 1)) < 0)
             {
                 PERROR("start_up_application failed!\n");
@@ -619,7 +624,6 @@ static int monitor_app()
             PRINT("buf = %s\n", buf);
             if ((strlen(buf) == 0) || (memcmp("/var/terminal_init/log/operation_steps/", buf, strlen("/var/terminal_init/log/operation_steps/")) != 0)) 
             {
-                //system("terminal_init -i &");
                 if ((res = common_tools.start_up_application("/bin/terminal_init", app_argv, 1)) < 0)
                 {
                     PERROR("start_up_application failed!\n");

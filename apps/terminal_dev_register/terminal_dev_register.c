@@ -1862,6 +1862,7 @@ void * pad_socket_monitor(void* para)
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "nvram_select failed!", res);  
                             break;
                         }
+                        #endif
                         if ((strcmp("\"\"", columns_value[0]) == 0) || (strlen(columns_value[0]) == 0))
                         {
                             memset(columns_value[0], 0, sizeof(columns_value[0]));
@@ -1870,7 +1871,7 @@ void * pad_socket_monitor(void* para)
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, columns_value[0], res); 
                             break;
                         }
-                        #endif
+                        
                         PRINT("columns_value[0] = %s\n", columns_value[0]);
                         if (pad_and_6410_msg.cmd == 0x04)
                         {
@@ -1902,7 +1903,7 @@ void * pad_socket_monitor(void* para)
                                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "pad and base mismatching!", DATA_ERR);
                             }
                         }                            
-                    }    
+                    }
                     // 判断命令字
                     if (pad_and_6410_msg.cmd == 0x04)
                     {
@@ -2576,7 +2577,7 @@ void * pad_socket_monitor(void* para)
                          *****************************************************************/
                         #elif BOARDTYPE == 9344
                         // 设置路由
-                        if ((res = network_config.route_config2(index)) < 0)
+                        if ((res = network_config.route_config(index)) < 0)
                         {
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "route_config failed!", res);
                             break;

@@ -28,165 +28,6 @@ struct class_terminal_register terminal_register =
     &respond_pack, get_sip_info, user_register, get_base_sn_and_mac
 };
 
-#if 0
-/**
- * 对响应的数据解包，判断数据是否正确
- */
-static int respond_data_unpack(void *respond_buf, void *out_buf, unsigned int len)
-{
-    PRINT_STEP("entry...\n");
-    char *buf_tmp = (char *)respond_buf;
-    char *tmp = NULL;
-    unsigned int len_tmp = 0;
-    unsigned short index = 0;
-    char msg_data_status_num[4] = {0};
-    
-    len_tmp += 6;
-    if (len_tmp >= len)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "the length is error!", OVER_LEN_ERR);
-        return OVER_LEN_ERR;
-    }
-
-    memcpy(&((struct s_respond_pack *)out_buf)->message_type, buf_tmp, 
-    sizeof(((struct s_respond_pack*)respond_buf)->message_type));
-    buf_tmp += 2;
-    if (((struct s_respond_pack *)out_buf)->message_type != 2)
-    {   
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "the data is error!", S_DATA_ERR);
-        return S_DATA_ERR;
-    }    
-    
-    memcpy(((struct s_respond_pack *)out_buf)->version, buf_tmp, 4);
-    buf_tmp += 4;
-    index = common_tools.str_in_str((void *)buf_tmp, len - len_tmp, ',', 1);
-    len_tmp += (index + 1);
-    
-    if (len_tmp >= len)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "the length is error!", OVER_LEN_ERR);
-        return OVER_LEN_ERR;
-    }
-    memcpy(((struct s_respond_pack *)out_buf)->msg_data_status, buf_tmp, index);
-    buf_tmp += (index + 1);
-    index = common_tools.str_in_str((void *)buf_tmp, len - len_tmp, ',', 1);
-    len_tmp += (index + 1);
-    
-    if (len_tmp >= len)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "the length is error!", OVER_LEN_ERR);
-        return OVER_LEN_ERR;
-    }
-    memcpy(((struct s_respond_pack *)out_buf)->s_data_process_time, buf_tmp, index);
-    buf_tmp += (index + 1);
-    index = common_tools.str_in_str((void *)((struct s_respond_pack *)out_buf)->msg_data_status, strlen(((struct s_respond_pack *)out_buf)->msg_data_status), ':', 1);
-    memcpy(msg_data_status_num, ((struct s_respond_pack *)out_buf)->msg_data_status + index + 1, 3);
-    if (strcmp(msg_data_status_num, "200") != 0)
-    {
-        len_tmp += strlen(buf_tmp);
-        if (len_tmp > len)
-        {
-            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "the length is error!", OVER_LEN_ERR);
-            return OVER_LEN_ERR;
-        }
-        strcpy(((struct s_respond_pack *)out_buf)->start_time, buf_tmp);
-        return 0;
-    }
-    
-    index = common_tools.str_in_str((void *)buf_tmp, len - len_tmp, ',', 1);
-    len_tmp += (index + 1);
-    if (len_tmp >= len)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "the length is error!", OVER_LEN_ERR);
-        return OVER_LEN_ERR;
-    }
-    memcpy(((struct s_respond_pack *)out_buf)->start_time, buf_tmp, index);
-    buf_tmp += (index + 1);
-    index = common_tools.str_in_str((void *)buf_tmp, len - len_tmp, ',', 1);
-    len_tmp += (index + 1);
-    
-    if (len_tmp >= len)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "the length is error!", OVER_LEN_ERR);
-        return OVER_LEN_ERR;
-    }
-    memcpy(((struct s_respond_pack *)out_buf)->base_user_name, buf_tmp, index);
-    buf_tmp += (index + 1);
-    index = common_tools.str_in_str((void *)buf_tmp, len - len_tmp, ',', 1);
-    len_tmp += (index + 1);
-    
-    if (len_tmp >= len)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "the length is error!", OVER_LEN_ERR);
-        return OVER_LEN_ERR;
-    }
-    memcpy(((struct s_respond_pack *)out_buf)->base_password, buf_tmp, index);
-    buf_tmp += (index + 1);
-    index = common_tools.str_in_str((void *)buf_tmp, len - len_tmp, ',', 1);
-    len_tmp += (index + 1);
-    
-    if (len_tmp >= len)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "the length is error!", OVER_LEN_ERR);
-        return OVER_LEN_ERR;
-    }
-    memcpy(((struct s_respond_pack *)out_buf)->pad_user_name, buf_tmp, index);
-    buf_tmp += (index + 1);
-    index = common_tools.str_in_str((void *)buf_tmp, len - len_tmp, ',', 1);
-    len_tmp += (index + 1);
-    
-    if (len_tmp >= len)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "the length is error!", OVER_LEN_ERR);
-        return OVER_LEN_ERR;
-    }
-    memcpy(((struct s_respond_pack *)out_buf)->pad_password, buf_tmp, index);
-    buf_tmp += (index + 1);
-    index = common_tools.str_in_str((void *)buf_tmp, len - len_tmp, ',', 1);
-    len_tmp += (index + 1);
-    
-    if (len_tmp >= len)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "the length is error!", OVER_LEN_ERR);
-        return OVER_LEN_ERR;
-    }
-    memcpy(((struct s_respond_pack *)out_buf)->sip_ip_address, buf_tmp, index);
-    buf_tmp += (index + 1);
-    index = common_tools.str_in_str((void *)buf_tmp, len - len_tmp, ',', 1);
-    len_tmp += (index + 1);
-    
-    if (len_tmp >= len)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "the length is error!", OVER_LEN_ERR);
-        return OVER_LEN_ERR;
-    }
-    memcpy(((struct s_respond_pack *)out_buf)->sip_port, buf_tmp, index);
-    buf_tmp += (index + 1);
-    index = common_tools.str_in_str((void *)buf_tmp, len - len_tmp, ',', 1);
-    len_tmp += (index + 1);
-    
-    if (len_tmp >= len)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "the length is error!", OVER_LEN_ERR);
-        return OVER_LEN_ERR;
-    }
-    memcpy(((struct s_respond_pack *)out_buf)->heart_beat_cycle, buf_tmp, index);
-    buf_tmp += (index + 1);
-    len_tmp += strlen(buf_tmp);
-    
-    if (len_tmp > len)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "the length is error!", OVER_LEN_ERR);
-        return OVER_LEN_ERR;
-    }
-    strcpy(((struct s_respond_pack *)out_buf)->business_cycle, buf_tmp);
-    
-    PRINT_STEP("exit...\n");
-    return 0;
-}
-
-#else
-
 /**
  * 对响应的数据解包，判断数据是否正确
  */
@@ -204,7 +45,12 @@ static int respond_data_unpack(void *respond_buf, void *out_buf, unsigned int le
     
     memcpy(&((struct s_respond_pack *)out_buf)->message_type, buf_tmp, sizeof(((struct s_respond_pack*)respond_buf)->message_type));
     buf_tmp += 2;
+    
+    #if ENDIAN == 0
     if (((struct s_respond_pack *)out_buf)->message_type != 2)
+    #else 
+    if (DATA_ENDIAN_CHANGE_SHORT(((struct s_respond_pack *)out_buf)->message_type) != 2)
+    #endif    
     {   
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "the data is error!", S_DATA_ERR);
         return S_DATA_ERR;
@@ -364,19 +210,21 @@ static int respond_data_unpack(void *respond_buf, void *out_buf, unsigned int le
     return 0;
 }
 
-#endif
-
 /**
  * 对响应的数据解包，判断数据是否正确
  */
 static int request_data_pack(char **send_pack, char (*columns_value)[100])
 {
     int count = 0;
-    unsigned short buf_len = count;
+    unsigned int buf_len = 0;
     struct s_request_pack request_pack;
     memset((void *)&request_pack, 0, sizeof(struct s_request_pack));
     
+    #if ENDIAN == 0
     request_pack.message_type = 1;
+    #else
+    request_pack.message_type = DATA_ENDIAN_CHANGE_SHORT(1);
+    #endif
     strcpy(request_pack.version, "0101");
     set_function_id(request_pack.func_id);
     common_tools.set_start_time(request_pack.start_time);
@@ -402,7 +250,12 @@ static int request_data_pack(char **send_pack, char (*columns_value)[100])
     }
     memset(*send_pack, 0, request_pack.total_len + 1);
     
+    #if ENDIAN == 0
     memcpy(*send_pack, &request_pack.total_len, sizeof(unsigned int));
+    #else
+    buf_len = DATA_ENDIAN_CHANGE_LONG(request_pack.total_len);
+    memcpy(*send_pack, &buf_len, sizeof(unsigned int));
+    #endif
     count += sizeof(request_pack.total_len);
     
     (*send_pack)[4] = (char)request_pack.message_type;
@@ -647,6 +500,7 @@ static int get_sip_info(char *pad_sn, char *pad_mac)
     free(buf);
     buf = NULL;
     PRINT("recv data start!\n");
+    
     // 接收数据 长度
     if ((res = common_tools.recv_data(fd, (char *)&buf_len, NULL, sizeof(buf_len), &tv)) < 0)
     {
@@ -654,7 +508,11 @@ static int get_sip_info(char *pad_sn, char *pad_mac)
         close(fd);
         return common_tools.get_errno('S', res);
     }
-          
+    
+    #if ENDIAN == 1
+    buf_len = DATA_ENDIAN_CHANGE_SHORT(buf_len);
+    #endif
+    
     if ((buf = (char *)malloc(buf_len - 3)) == NULL)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "malloc failed!", res);

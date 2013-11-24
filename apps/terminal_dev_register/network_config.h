@@ -72,18 +72,11 @@ struct class_network_config
     int (* send_msg_to_5350)(int fd, char *cmd, unsigned short len);
     int (* recv_msg_from_5350)(int fd, struct s_6410_and_5350_msg *a_6410_and_5350_msg);
     int (* get_pppoe_state)(int fd);
-//    int (* save_current_route_state)(int fd, char *route_state_buf, unsigned short *route_state_buf_len);
-//    int (* recovery_route)(int fd, char *buf, unsigned short buf_len);
-//    int (* check_route_config)(int fd, char *route_state_buf, unsigned short route_state_buf_len, char index);
     int (* route_config)(int fd, int index);
     
     #elif BOARDTYPE == 5350
     int (* get_wan_state)();
     int (* get_pppoe_state)();
-//    int (* save_current_route_state)()
-//    int (* recovery_route)(unsigned char cmd_count)
-//    int (* check_route_config)(unsigned char cmd_count)
-//    int (* get_pid_by_process_name)(char *process_name)
     int (* config_route_take_effect)();
     int (* route_config)(int index);
     int (* route_config2)(int index);
@@ -91,7 +84,6 @@ struct class_network_config
     int (* get_wan_state)();
     int (* config_route_take_effect)();
     int (* route_config)(int index);
-    int (* route_config2)(int index);
     #endif
     
     char base_sn[35];

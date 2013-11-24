@@ -1825,6 +1825,13 @@ int get_user_prompt(int error_num, char **out_buf)
             len = strlen(prompt);
             break;
         }
+        case NO_RECORD_ERR: // 没有此记录
+        {
+            state_num = 21;  //状态码
+            memcpy(prompt, "没有此记录！", sizeof(prompt) - 1);  // 提示信息
+            len = strlen(prompt);
+            break;
+        }
         default:
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "option does not mismatch!", MISMATCH_ERR);

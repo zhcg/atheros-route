@@ -27,8 +27,6 @@ struct class_internetwork_communication
     #if CTSI_SECURITY_SCHEME == 1
     int (* unpack_pack_send_data)(struct s_data_list *a_data_list, char a_pack_type, void *a_par);
     #endif
-    //int (* send)(unsigned int fd, unsigned char *data, struct s_data_list *a_data_list, unsigned int data_len, struct timeval *tv);
-    //int (* recv)(unsigned int fd, unsigned char *data, struct s_data_list *a_data_list, unsigned int data_len, struct timeval *tv);
 };
 extern struct class_internetwork_communication internetwork_communication;
 #endif

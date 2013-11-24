@@ -124,6 +124,7 @@ int main(int argc, char **argv)
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "cmd_call failed!", res);
                 return res;
             }
+            sleep(50);
             return 0;
         }
         else if (strcmp(argv[1], "e") == 0) // 发建链应答

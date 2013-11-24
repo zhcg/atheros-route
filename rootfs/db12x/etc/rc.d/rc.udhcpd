@@ -1,5 +1,5 @@
-echo "start 192.168.1.100" > /etc/udhcpd.conf
-echo "end 192.168.1.199"  >> /etc/udhcpd.conf
+echo "start 10.10.10.101" > /etc/udhcpd.conf
+echo "end 10.10.10.199"  >> /etc/udhcpd.conf
 echo "opt lease   7200" >> /etc/udhcpd.conf
 echo "opt dns 8.8.8.8" >> /etc/udhcpd.conf
 echo "opt router  ${AP_IPADDR}" >> /etc/udhcpd.conf
