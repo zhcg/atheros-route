@@ -2987,8 +2987,13 @@ bool PhoneProxy::phoneProxyInit(int port){
 
     resetTimerInfo();
     timer = PhoneTimerWrapper::CreatePhoneTimerWrapper();
-    startHeartBeating();
-    startPhoneProxy();
+    // startHeartBeating();
+
+    timer->setTimer ( TIMER_SEC, 0 );
+    timer->setHandler ( notify );
+//  timer->setHandler(xxx);
+    timer->reset();
+    
 
 #if 0
     sigset_t signal_set;
@@ -3002,7 +3007,7 @@ bool PhoneProxy::phoneProxyInit(int port){
 
 #endif
     //netWrite(phone_proxy_fd[0], "ONHOOK\n", 7);
-    pcs->onHook();
+    
 
     cli_info_t cii;
     memset ( &cii, 0, sizeof ( cli_info_t ) );
@@ -3018,8 +3023,15 @@ bool PhoneProxy::phoneProxyInit(int port){
     sa.sa_handler = SIG_IGN;
     sigaction ( SIGPIPE, &sa, 0 );
 
-    pthread_mutex_init ( &phone_ring_mutex, NULL );
+    PLOG(LOG_INFO, "before phone_ring_mutex");
 
+    pthread_mutex_init ( &phone_ring_mutex, NULL );
+    PLOG(LOG_INFO, "before onHook");
+    // sleep(3);
+    pcs->onHook();
+    PLOG(LOG_INFO, "before startPhoneProxy");
+    startPhoneProxy();
+    PLOG(LOG_INFO, "before return true");
     return true;
 }
 
