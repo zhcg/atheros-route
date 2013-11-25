@@ -56,7 +56,7 @@ int main()
 	{
 		bzero(&buff, 30 * sizeof(unsigned int));
 		len = recvfrom(sock, buff, 30 * sizeof(unsigned int), 0, (struct sockaddr *)&c_addr, &addr_len);
-	
+		int i;
 	
 		if( len < 0)
 		{
@@ -74,38 +74,47 @@ int main()
 			return -1;
 			//exit(1);
 		}
-		//int i;
-		//for( i = 0;i<30;i++)
-		//{
-		//	printf("buff[%d] = 0x%x\n",i,buff[i]);
-		//}
 		if(buff[0] == 0x55556666)
 		{
-			 
-			//printf("buff[0] = 0x%x\n", buff[0]);
+			
+			printf("buff[0] = 0x%x\n", buff[0]);
 			if(buff[1] == 0x34120000)
 			{
-				//printf("buff[1] = 0x%x\n", buff[1]);
-				//printf("buff[4] = 0x%x\n", buff[4]);
+				printf("buff[1] = 0x%x\n", buff[1]);
+				printf("buff = 0x%x\n", buff[4]);
 				{	
 					unsigned int *val_ip = buff + 4;
 					unsigned char *val_cp = val_ip;
-					int val = *(val_cp);
+					int val = *(val_cp),val1 = *(val_cp + 3);
 					
-					//printf("val_ip = %x\n",*val_ip);
-					//printf("val = %d\n",val);
-				
-					if(0 < val < 14)
-					{				
-						//sprintf(buff_char, "%x", val);
-						//buff_char[5]  = '\0';
-						sprintf(cmd, "iwconfig ath0 freq %d", val);
+					int i;
+					//printf("val_ip = %x",*val_ip);
+					//printf("val = %x\n",val);
+					if(0 < val <14)
+					{
+					if(val == 12||val == 13)
+					{
+						if (system("iwconfig ath0 freq 11") < 0)
+						 {
+							printf("try it angin\n");
+							sleep (1);
+							system("iwconfig ath0 freq 11");
+						 }
+					}
+					else
+					{					
+						printf("buff[4] = %x\n", buff[4]);
+						sprintf(buff_char, "%x", val);
+						buff_char[5]  = '\0';
+						sprintf(cmd, "iwconfig ath0 freq %s", buff_char);
 						if (system(cmd) < 0)
 						{
-							//printf("try it angin\n");
+							printf("try it angin\n");
 							sleep(1);
 							system(cmd);
 						}
+					
+					}
 					memset(cmd, 0, sizeof(cmd));
 					memset(buff,0, sizeof(buff));
 					}
