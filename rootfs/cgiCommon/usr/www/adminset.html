@@ -10,15 +10,16 @@ function AdmFormCheck()
 {
 	if (document.Adm.ADMPASS.value.length == 0)
 	{
-		alert("Please enter password!");
+		alert(_("err pwd empty"));
 		document.Adm.PPPOE_PWD.select();
 		return false;
 	}
 	if (document.Adm.ADMPASS.value != document.Adm.ADMPASS2.value) 
 	{
-		alert("Password mismatched!");
+		alert(_("err pwd mismatch"));
 		return false;
 	}
+	alert(_("password change"));
 	document.getElementById('ADMINSET').click();
 	return true;
 }
@@ -26,6 +27,7 @@ function AdmFormCheck()
 function initTranslation()
 {
 	Butterlate.setTextDomain("admin");
+	
 	var e = document.getElementById("manAdmSet");
 	e.innerHTML = _("man admin setting");
 
@@ -38,6 +40,10 @@ function initTranslation()
 	e.value = _("admin apply");
 	e = document.getElementById("showp");
 	e.innerHTML = _("admw showp");	
+	e = document.getElementById("securitydes");
+	e.innerHTML = _("admw securitydes");	
+	e = document.getElementById("securitytitle");
+	e.innerHTML = _("man admin setting");
 }
 function initValue()
 {
@@ -64,7 +70,10 @@ function showpwd()
 <div class="handaer_main">
 <p align="left" id="gsset"></p>
 <!-- ================= Adm Settings ================= -->
+<h1 id="securitytitle"></h1>
+<p></p>
 <form method="post" name="Adm">
+<h2 id="securitydes"></h2>
 <table id="table2" cellpadding="0" cellspacing="0"   class="handaer_text">
   <tr>
     <td class="title" colspan="2" id="manAdmSet"></td>

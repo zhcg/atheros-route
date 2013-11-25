@@ -11,7 +11,7 @@
   <message msgid="man introduction" msgstr="You may configure administrator account and password, NTP settings, and Dynamic DNS settings here." />
   <message msgid="man language setting" msgstr="Language Settings" />
   <message msgid="man select language" msgstr="Select Language" />
-  <message msgid="man admin setting" msgstr="Adminstrator Settings" />
+  <message msgid="man admin setting" msgstr="Security Settings" />
   <message msgid="man admin account" msgstr="Account" />
   <message msgid="man admin passwd" msgstr="Password" />
   <message msgid="man admin watchdog" msgstr="WatchDog" />
@@ -260,7 +260,7 @@
 	<message msgid="admw AutoMode" msgstr="Internet router automatically (recommended)" />    
 	<message msgid="admw Autodisc" msgstr="Choose this, this device will select the connection type automatically." />
 	
-	<message msgid="admw m_bset" msgstr="Start setting" />
+	<message msgid="admw m_bset" msgstr="Start" />
 	
 	<message msgid="admw showp" msgstr="show password" />
 	<message msgid="admw optionXX" msgstr="(optional)" />
@@ -280,7 +280,36 @@
     <message msgid="admin open" msgstr="Open" />
 	<message msgid="admin jiami" msgstr="Security（Recommend）" />
 
-    <message msgid="admw onbutton" msgstr="ON" />
+    <message msgid="admw wifiswitch" msgstr="WIFI switch" />
+	<message msgid="admw onbutton" msgstr="ON" />
     <message msgid="admw offbutton" msgstr="OFF" />
     <message msgid="admw waiting" msgstr="Please Wait......" />
+	
+	<message msgid="admw ssidrequest" msgstr="  (1-12 hinese letters, numbers, or underscore)" />
+    <message msgid="admw passwordrequest" msgstr="  (6-12 letters, numbers or underscore)" />
+
+	    <message msgid="err ip empty" msgstr="Error. IP address is empty." />
+    <message msgid="err name empty" msgstr="Please enter user name!" />
+	<message msgid="err SSID empty" msgstr="Please enter SSID!" />    
+    <message msgid="err pwd empty" msgstr="Please enter password!" />
+	<message msgid="err key" msgstr="Please input key!" />
+	
+    <message msgid="err pwd mismatch" msgstr="Password mismatched!" />
+	
+	<message msgid="err sRP" msgstr="Please specify Redial Period" />
+	<message msgid="err sIT" msgstr="Please specify Idle Time" />
+	
+	<message msgid="err number" msgstr="It should be a [0-9] number." />
+	<message msgid="err IPmormat" msgstr="IP adress format error." />
+	<message msgid="err IP error" msgstr="WAN IP and local IP cannot be located in the same network, please reset" />
+	
+	<message msgid="err keylen" msgstr="Please input at least 6 and less than 12 character of key!" />
+	<message msgid="err keychar" msgstr="Invalid characters in Pass Phrase." />
+	<message msgid="admw internet" msgstr="Internet" />
+	<message msgid="admw wai" msgstr="Internet settings" />
+	<message msgid="admw nei" msgstr="Wifi settings" />
+	
+	<message msgid="password change" msgstr="Password has been changed,the new password works after reset" />
+	<message msgid="admw securitydes" msgstr="Modify the routing Web management page login password" />
+
 </po>

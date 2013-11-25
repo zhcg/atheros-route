@@ -37,7 +37,6 @@ function checkInjection(str)
 
 function change_step(offset)
 {
-	// alert("Offset: "+offset+"; From Step: "+ step_num);
 	if (offset == 1)
 	{
 		if (step_num == 2)
@@ -57,7 +56,6 @@ function change_step(offset)
 
 	if (step_num == 1)
 	{
-		// alert("step: "+step_num);
 		if (document.wizard_form.intType[0].checked == true) 
 		{		
 			document.getElementById("div_wan_opmode").style.visibility = "visible";
@@ -95,49 +93,6 @@ function change_step(offset)
 			document.getElementById("gifshow").style.visibility = "visible";
 			document.getElementById("gifshow").style.display = style_display_on();
 			document.getElementById('AUTOGET').click();
-			/*var zidong = document.getElementById("AUTOTYPE").value;
-			if(zidong == "Static")
-			{
-				document.wizard_form.WAN_MODE[2].checked = true;
-				alert(_("admw auto_sip"));
-				step_num += -1;
-				change_step(1);
-			}
-			else if(zidong == "DHCP")
-			{
-				document.wizard_form.WAN_MODE[1].checked = true;
-				alert(_("admw auto_dhcp"));
-				step_num += -1;
-				change_step(1);
-			
-			}
-			else if(zidong == "PPPOE")
-			{
-				document.wizard_form.WAN_MODE[3].checked = true;
-				alert(_("admw auto_ppp"));
-				step_num += -1;
-				change_step(1);
-			
-			}
-			else if(zidong == "L2TP")
-			{
-				document.wizard_form.WAN_MODE[4].checked = true;
-				alert(_("admw auto_l2tp"));
-				step_num += -1;
-				change_step(1);
-		
-			}
-			else if(zidong == "P2TP")
-			{
-				document.wizard_form.WAN_MODE[5].checked = true;
-				alert(_("admw auto_p2tp"));
-				step_num += -1;
-				change_step(1);
-			
-			}
-			else
-				alert("zidong"+step_num);
-				*/
 		}
 		else if (document.wizard_form.WAN_MODE[1].checked == true) 
 		{
@@ -187,7 +142,6 @@ function change_step(offset)
 	}
 	else
 	{
-		// alert("step: "+step_num);
 		window.location.reload();
 	}
 	return true;
@@ -451,14 +405,14 @@ function isAllNum(str)
 function checkIpAddr(field, ismask)
 {
 	if (field.value == "") {
-		alert("Error. IP address is empty.");
+		alert(_("err ip empty"));
 		field.value = field.defaultValue;
 		field.focus();
 		return false;
 	}
 
 	if (isAllNum(field.value) == 0) {
-		alert('It should be a [0-9] number.');
+		alert(_("err number"));
 		field.value = field.defaultValue;
 		field.focus();
 		return false;
@@ -482,7 +436,7 @@ function checkIpAddr(field, ismask)
 				(!checkRange(field.value, 3, 0, 255)) ||
 				(!checkRange(field.value, 4, 1, 254)))
 		{
-			alert('IP adress format error.');
+			alert(_("err IPmormat"));
 			field.value = field.defaultValue;
 			field.focus();
 			return false;
@@ -499,6 +453,23 @@ function CheckWanValue()
 		{
 			document.wizard_form.WAN_IPADDR.select();
 			return false;
+		}
+		{
+			var myString1=document.wizard_form.WAN_IPADDR.value;//obj.options[index].text;
+			var myString2=document.wizard_form.AP_locatIP.value;//obj.options[index].text;
+			var a = myString1.lastIndexOf(".");
+			var b = myString2.lastIndexOf(".");
+
+			var s, ss;
+	
+			s = myString1.substr(0, a); // 获取子字符串。
+			ss = myString2.substr(0, b); 
+			if(s == ss)
+			{
+				alert(_("err IP error"));
+				return false;
+			}
+		
 		}
 		if (!checkIpAddr(document.wizard_form.WAN_NETMASK, true))
 		{
@@ -529,19 +500,19 @@ function CheckWanValue()
 	{ 
 		if (document.wizard_form.PPPOE_USER.value.length == 0)
 		{
-			alert("Please enter user name!");
+			alert(_("err name empty"));
 			document.wizard_form.PPPOE_USER.select();
 			return false;
 		}
 		if (document.wizard_form.PPPOE_PWD.value.length == 0)
 		{
-			alert("Please enter password!");
+			alert(_("err pwd empty"));
 			document.wizard_form.PPPOE_PWD.select();
 			return false;
 		}
 		if (document.wizard_form.PPPOE_PWD.value != document.wizard_form.PPPOE_PWD2.value) 
 		{
-			alert("Password mismatched!");
+			alert(_("err pwd mismatch"));
 			return false;
 		}
 		if (pppoecdb != "1")
@@ -550,7 +521,7 @@ function CheckWanValue()
 			{
 				if (document.wizard_form.pppoeRedialPeriod.value == "")
 				{
-					alert("Please specify Redial Period");
+					alert(_("err sRP"));
 					document.wizard_form.pppoeRedialPeriod.select();
 					return false;
 				}
@@ -559,7 +530,7 @@ function CheckWanValue()
 			{
 				if (document.wizard_form.pppoeIdleTime.value == "")
 				{
-					alert("Please specify Idle Time");
+					alert(_("err sIT"));
 					document.wizard_form.pppoeIdleTime.select();
 					return false;
 				}
@@ -575,13 +546,13 @@ function CheckWanValue()
 		}
 		if (document.wizard_form.l2tpUser.value.length == 0)
 		{
-			alert("Please enter user name!");
+			alert(_("err name empty"));
 			document.wizard_form.l2tpUser.select();
 			return false;
 		}
 		if (document.wizard_form.l2tpPass.value.length == 0)
 		{
-			alert("Please enter password!");
+			alert(_("err pwd empty"));
 			document.wizard_form.l2tpPass.select();
 			return false;
 		}
@@ -607,7 +578,7 @@ function CheckWanValue()
 		{
 			if (document.wizard_form.l2tpRedialPeriod.value == "")
 			{
-				alert("Please specify Redial Period");
+				alert(_("err sRP"));
 				document.wizard_form.l2tpRedialPeriod.select();
 				return false;
 			}
@@ -634,13 +605,13 @@ function CheckWanValue()
 		}
 		if (document.wizard_form.pptpUser.value.length == 0)
 		{
-			alert("Please enter user name!");
+			alert(_("err name empty"));
 			document.wizard_form.pptpUser.select();
 			return false;
 		}
 		if (document.wizard_form.pptpPass.value.length == 0)
 		{
-			alert("Please enter password!");
+			alert(_("err pwd empty"));
 			document.wizard_form.pptpPass.select();
 			return false;
 		}
@@ -666,7 +637,7 @@ function CheckWanValue()
 		{
 			if (document.wizard_form.pptpRedialPeriod.value == "")
 			{
-				alert("Please specify Redial Period");
+				alert(_("err sRP"));
 				document.wizard_form.pptpRedialPeriod.select();
 				return false;
 			}
@@ -1001,12 +972,12 @@ function wrshowpwd()
  
  if(document.getElementById("wrpass").type=="password"){
    var pass = document.getElementById("wrpass").value;
-   document.getElementById("wrpwd").innerHTML='<input type="text" name="WDS_KEY" id="wrpass" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
+   document.getElementById("wrpwd").innerHTML='<input type="text" name="PSK_KEY_2" id="wrpass" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
   }
   else
   {
    var pass = document.getElementById("wrpass").value;
-   document.getElementById("wrpwd").innerHTML='<input type="password" name="WDS_KEY" id="wrpass" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
+   document.getElementById("wrpwd").innerHTML='<input type="password" name="PSK_KEY_2" id="wrpass" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
    }
  }
 
@@ -1059,10 +1030,18 @@ function  WIFSwitch()
 	sss = myString.substr(b+2, c-b-2);
 	ssss = myString.substr(c+2, d-c-2);
 	
-	document.getElementById("WDS_NAME").value = s;//obj.options[index].text;
-	document.getElementById("WDS_MAC").value = ss;//obj.options[index].text;
+	document.getElementById("AP_SSID_2").value = s;//obj.options[index].text;
+	document.getElementById("ROOTAP_MAC_2").value = ss;//obj.options[index].text;
 	document.getElementById("WDS_CHAN").value = sss;//obj.options[index].text;
-	document.getElementById("WDS_SECMODE").value = ssss;//obj.options[index].text;
+	document.getElementById("AP_SECMODE_2").value = ssss;//obj.options[index].text;
+	if(ssss == "None")
+	{
+		document.wizard_form.PSK_KEY_2.disabled = true;
+	}	
+	else
+	{
+		document.wizard_form.PSK_KEY_2.disabled = false;
+	}
 }
 function refreshwds()
 {
@@ -1113,15 +1092,15 @@ function refreshwds()
 </tr>
 <tr>
   <td class="head" id="R_uname"></td>
-  <td><input name="WDS_NAME"  class="handaer_text_content" maxlength=32 size=32 value="~~WDS_NAME~"></td>
+  <td><input name="AP_SSID_2" id="AP_SSID_2"  class="handaer_text_content" maxlength=32 size=32 value="~~AP_SSID_2~"></td>
 </tr>
 <tr>
   <td class="head">MAC</td>
-  <td><input name="WDS_MAC"  class="handaer_text_content" maxlength=32 size=32 value="~~WDS_MAC~"></td>
+  <td><input name="ROOTAP_MAC_2" id="ROOTAP_MAC_2" class="handaer_text_content" maxlength=32 size=32 value="~~ROOTAP_MAC_2~"></td>
 </tr>
 <tr>
   <td class="head" id="R_pword"></td>
-  <td><span id="wrpwd"><input type="password" id="wrpass" name="WDS_KEY"  class="handaer_text_content" maxlength="32" size="32" value="~~WDS_KEY~" /></span><input type="checkbox" onClick="wrshowpwd()"/><span id="wrshowp"></span></td>
+  <td><span id="wrpwd"><input type="password" id="wrpass" name="PSK_KEY_2"  class="handaer_text_content" maxlength="32" size="32" value="~~PSK_KEY_2~" /></span><input type="checkbox" onClick="wrshowpwd()"/><span id="wrshowp"></span></td>
 </tr>
 <tr>
     <td id="Wlisttitle1"></td>
@@ -1129,7 +1108,7 @@ function refreshwds()
   </tr>
   <tr>
 	<td id="Wlisttitle3"></td>
-    <td><select name="WFILIST" id="WFILIST" size="1" onChange="WIFSwitch()">
+    <td><select name="WFILIST" id="WFILIST" size="1" onclick="WIFSwitch()">
 	~LList~</select>
 	</td>
  </tr>
@@ -1426,9 +1405,10 @@ function refreshwds()
 </tr>
 </table>
 
-<div id="gifshow" style="display:none">
+<div id="gifshow" style="display:none" align="center">
 
-  <img src="/images/loading.gif"><span id="waiting"></span>
+  <img align="center" src="/images/loading.gif"></img>
+    <p align="center" id="waiting"></p>
 
 </div>
 
@@ -1449,7 +1429,10 @@ function refreshwds()
     <input type="button" name="AUTOGET" id="AUTOGET" style="display:none" value="AUTOGET" onClick="window.location.href='wwai?INDEX=12'"></td>
 	<input type="button" name="REFRESHWFi" id="REFRESHWFi" style="display:none" value="REFRESHWFi" onClick="window.location.href='wwai?INDEX=11'">
 	<input type="text" style="display:none" name="WDS_CHAN" id="WDS_CHAN" size="20" maxlength="32" value="~~WDS_CHAN~">	
-	<input type="text" style="display:none" name="WDS_SECMODE" id="WDS_SECMODE" size="20" maxlength="32" value="~~WDS_SECMODE~">	
+	<input type="text" style="display:none" name="AP_SECMODE_2" id="AP_SECMODE_2" size="20" maxlength="32" value="~~AP_SECMODE_2~">	
+	
+	<input type="text" style="display:none" name="AP_locatIP" id="AP_locatIP" size="20" maxlength="32" value="~~AP_IPADDR~">	
+
 </tr>
 </table>
 <!--/form-->

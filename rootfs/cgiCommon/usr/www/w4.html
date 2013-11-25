@@ -63,33 +63,32 @@ function checkInjection(str)
 
 function CheckWirelessValue()
 {
-	if (document.wizard_form.WDS_NAME.value.length == 0)
+	if (document.wizard_form.AP_SSID_2.value.length == 0)
 	{
-		alert("Please enter SSID!");
+		alert(_("err SSID empty"));
 		return false;
 	}
-	var keyvalue = document.wizard_form.WDS_KEY.value;
-	if (keyvalue.length == 0)
-	{
-		alert('Please input password!');
-		return false;
-	}
-	if (keyvalue.length < 8)
-	{
-		alert('Please input at least 8 character of password!');
-		return false;
-	}
-	if(checkInjection(keyvalue) == false)
-	{
-		alert('Invalid characters in Pass Phrase.');
-		return false;
-	}
+	//var keyvalue = document.wizard_form.PSK_KEY_2.value;
+	//if (keyvalue.length == 0)
+	//{
+	//	alert('Please input password!');
+	//	return false;
+	//}
+	//if (keyvalue.length < 8)
+	//{
+	//	alert('Please input at least 8 character of password!');
+	//	return false;
+	//}
+	//if(checkInjection(keyvalue) == false)
+	//{
+	//	alert('Invalid characters in Pass Phrase.');
+	//	return false;
+	//}
 	document.getElementById('WIRRE').click();
 	return true;
 }
 function reloadd()
 {
-	// alert("step: "+step_num);
 	window.location.reload();
 }
 function showpwd()
@@ -97,12 +96,12 @@ function showpwd()
  
  if(document.getElementById("pwd").type=="password"){
    var pass = document.getElementById("pwd").value;
-   document.getElementById("pwdinput").innerHTML='<input type="text" name="WDS_KEY" id="pwd" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
+   document.getElementById("pwdinput").innerHTML='<input type="text" name="PSK_KEY_2" id="pwd" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
   }
   else
   {
    var pass = document.getElementById("pwd").value;
-   document.getElementById("pwdinput").innerHTML='<input type="password" name="WDS_KEY" id="pwd" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
+   document.getElementById("pwdinput").innerHTML='<input type="password" name="PSK_KEY_2" id="pwd" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
    }
  }
 function  WIFSwitch()
@@ -124,10 +123,19 @@ function  WIFSwitch()
 	sss = myString.substr(b+2, c-b-2);
 	ssss = myString.substr(c+2, d-c-2);
 	
-	document.getElementById("WDS_NAME").value = s;//obj.options[index].text;
-	document.getElementById("WDS_MAC").value = ss;//obj.options[index].text;
+	document.getElementById("AP_SSID_2").value = s;//obj.options[index].text;
+	document.getElementById("ROOTAP_MAC_2").value = ss;//obj.options[index].text;
 	document.getElementById("WDS_CHAN").value = sss;//obj.options[index].text;
-	document.getElementById("WDS_SECMODE").value = ssss;//obj.options[index].text;
+	document.getElementById("AP_SECMODE_2").value = ssss;//obj.options[index].text;
+	
+	if(ssss == "None")
+	{
+		document.wizard_form.PSK_KEY_2.disabled = true;
+	}
+	else
+	{
+		document.wizard_form.PSK_KEY_2.disabled = false;
+	}
 }
 function refreshwds()
 {
@@ -162,15 +170,15 @@ function refreshwds()
 </tr>
 <tr>
   <td class="head" id="R_uname"></td>
-  <td><input name="WDS_NAME" maxlength=32 size=32 class="handaer_text_content" value="~~WDS_NAME~"></td>
+  <td><input name="AP_SSID_2" id="AP_SSID_2" maxlength=32 size=32 class="handaer_text_content" value="~~AP_SSID_2~"></td>
 </tr>
 <tr>
   <td class="head">MAC</td>
-  <td><input name="WDS_MAC" maxlength=32 size=32 class="handaer_text_content" value="~~WDS_MAC~"></td>
+  <td><input name="ROOTAP_MAC_2" id="ROOTAP_MAC_2" maxlength=32 size=32 class="handaer_text_content" value="~~ROOTAP_MAC_2~"></td>
 </tr>
 <tr>
   <td class="head" id="R_pword"></td>
-  <td><span id="pwdinput"><input type="password" id="pwd" name="WDS_KEY" maxlength="32" size="32" class="handaer_text_content" value="~~WDS_KEY~" /></span><input type="checkbox" onClick="showpwd()"/><span id="showp"></span></td>
+  <td><span id="pwdinput"><input type="password" id="pwd" name="PSK_KEY_2" maxlength="32" size="32" class="handaer_text_content" value="~~PSK_KEY_2~" /></span><input type="checkbox" onClick="showpwd()"/><span id="showp"></span></td>
 </tr>
 <tr>
     <td id="Wlisttitle1"></td>
@@ -178,7 +186,7 @@ function refreshwds()
   </tr>
   <tr>
 	<td id="Wlisttitle3"></td>
-    <td><select name="WFILIST" id="WFILIST" size="1" onChange="WIFSwitch()">
+    <td><select name="WFILIST" id="WFILIST" size="1" onclick="WIFSwitch()">
 	~LList~</select>
 	</td>
  </tr>
@@ -189,9 +197,10 @@ function refreshwds()
  </tr>
 </table>
 
-<div id="gifshow" style="display:none">
+<div id="gifshow" style="display:none" align="center">
 
-  <img src="/images/loading.gif"><span id="waiting"></span>
+  <img align="center" src="/images/loading.gif"></img>
+  <p align="center" id="waiting"></p>
 
 </div>
 
@@ -203,7 +212,7 @@ function refreshwds()
 	<input type="submit" name="WIRRE" id="WIRRE" style="display:none" value="WIRRE">
 	<input type="text" style="display:none" name="INDEX" id="INDEX" value="~~INDEX~">
 	<input type="text" style="display:none" name="WDS_CHAN" id="WDS_CHAN" size="20" maxlength="32" value="~~WDS_CHAN~">	
-	<input type="text" style="display:none" name="WDS_SECMODE" id="WDS_SECMODE" size="20" maxlength="32" value="~~WDS_SECMODE~">	
+	<input type="text" style="display:none" name="AP_SECMODE_2" id="AP_SECMODE_2" size="20" maxlength="32" value="~~AP_SECMODE_2~">	
   </td>
 </tr>
 </table>

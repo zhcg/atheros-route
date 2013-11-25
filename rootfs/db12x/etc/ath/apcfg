@@ -26,7 +26,7 @@ rm /tmp/vars.$$
 ##
 ###################################################################################
 cfg -a ATH_countrycode=${ATH_countrycode:="156"}
-cfg -a AP_IPADDR=${AP_IPADDR:="192.168.1.1"}
+cfg -a AP_IPADDR=${AP_IPADDR:="10.10.10.254"}
 cfg -a AP_NETMASK=${AP_NETMASK:="255.255.255.0"}
 cfg -a WAN_MODE=${WAN_MODE:="dhcp"}
 #cfg -a WAN_IPADDR=${WAN_IPADDR:="192.168.2.1"}
@@ -51,9 +51,10 @@ cfg -a WLAN_ON_BOOT=${WLAN_ON_BOOT:="y"}
 #
 #
 
-cfg -a AP_STARTMODE=${AP_STARTMODE:="dual"}
+cfg -a AP_STARTMODE=${AP_STARTMODE:="standard"}
+cfg -a WIFION_OFF=${WIFION_OFF:="on"}
 cfg -a AP_RADIO_ID=${AP_RADIO_ID:=0}
-cfg -a AP_RADIO_ID_2=${AP_RADIO_ID_2:=1}
+cfg -a AP_RADIO_ID_2=${AP_RADIO_ID_2:=0}
 export NUMRADIO_AHB=1
 
 

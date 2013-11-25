@@ -49,3 +49,12 @@ color: #333; font-weight: 800; background:url(../images/button2.gif) 0 0  no-rep
 .handaer_text td{  border-bottom:1px solid #d0d0d0;}
 .handaer_text_content{ border:1px solid #d0d0d0!important; height:30px; line-height:30px;}
 
+.handaer_main2{ background-color:#fff;overflow:hidden; padding:10px;}
+* html .handaer_main2{height:400px;overflow:visible;}
+.handaer_main2{min-height: 400px;overflow: visible;position: relative; font-size:14px; color:#848484;}
+.handaer_main2 span{ overflow:hidden;}
+.handaer_txt1{ position:absolute; left:300px; top:70px;}
+.handaer_txt2{ position:absolute; left:125px; top:385px;}
+.handaer_txt3{ position:absolute; left:900px; top:108px;}
+.handaer_txt4{ position:absolute; left:302px; top:380px;}
+.handaer_txt5{ position:absolute; left:776px; top:100px;}

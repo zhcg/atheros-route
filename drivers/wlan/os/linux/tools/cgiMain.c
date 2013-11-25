@@ -120,11 +120,11 @@ static  int		FactoryDefault = 0;  // indicates that parameters have been changed
 
 static FILE *errOut;
 
-static  char  *val1[100];
-static  char  *val2[100];
-static  char  *val3[100];
-static  char  *val4[100];
-int num=0;
+static char  *val1[100];
+static char  *val2[100];
+static char  *val3[100];
+static char  *val4[100];
+int lists=0;
 static int flaglist;
 
 
@@ -591,18 +591,15 @@ char *processSpecial(char *paramStr, char *outBuff)
             {	
 				if(flaglist!=1)
 					break;
+				int num;
 				//val1-mac,val2-ssid,val3-security,val4-channel
-				for(num=0;num<100;num++)
+				outBuff +=sprintf(outBuff,"<option>%s(%s)(%s)(%s)</option>",val2[0],val1[0],val4[0],val3[0]);
+				for(num=1;num<lists;num++)
 				{
-					if(&val3[num]==NULL)
-					{
-						break;
-					}
-					fprintf(errOut,"[luodp] %s(%s)(%s)(%s) \n",val2[num],val1[num],val3[num],val4[num]);
-					outBuff +=sprintf(outBuff,"<option>%s(%s)(%s)(%s)</option>",val2[num],val1[num],val3[num],val4[num]);
+					//fprintf(errOut,"[luodp] %s(%s)(%s)(%s) \n",val2[num]+4,val1[num]+4,val3[num]+4,val4[num]+4);
+					outBuff +=sprintf(outBuff,"<option>%s(%s)(%s)(%s)</option>",val2[num]+4,val1[num]+4,val4[num]+4,val3[num]+4);
 				}
 				flaglist=0;
-				fprintf(errOut,"[luodp] %s \n",outBuff);
             }								
         break;       
     }
@@ -1831,6 +1828,7 @@ int main(int argc,char **argv)
 
     int             lock11=0;
     int             lock12=0;
+    int             gohome = 0;
     /*
     ** Code Begins.
     ** Zero out the config structure, and read the parameter cache
@@ -2195,6 +2193,11 @@ int main(int argc,char **argv)
 
             if(!strcmp("INDEX",Name))
             {
+				int num=0;
+				static  char rspBuff1[65536];
+				static  char rspBuff2[65536];
+				static  char rspBuff3[65536];
+				static  char rspBuff4[65536];
                 parameterIndex = atoi(Value);
                 if((parameterIndex==11)&&(lock11==0))//update wifilist
                 {
@@ -2203,56 +2206,64 @@ int main(int argc,char **argv)
 					//list
 					Execute_cmd("iwlist ath0 scanning > /tmp/scanlist", rspBuff);
 					//mac
-					Execute_cmd("cat /tmp/scanlist | grep Cell | awk '{print $5}'", rspBuff);
-					//fprintf(errOut,"\n-[luodp] %s\n",rspBuff);
-					val1[num]=strtok(rspBuff,"\n\n");
+					Execute_cmd("cat /tmp/scanlist | grep Cell | awk '{print $5}'", rspBuff1);
+					//fprintf(errOut,"\n-[luodp] %s\n",rspBuff1);
+					val1[num]=strtok(rspBuff1,"\n");
 					while(val1[num]) {
 						num++;
-						val1[num]=strtok(NULL,"\n\n"); 
+						val1[num]=strtok(NULL,"\n"); 
 					}
-					for(num=0;num<100;num++)
+					//fprintf(errOut,"[luodp] new20\n");
+					//int i=0;
+					/*for(i=1;i<num-1;i++)
 					{
-						fprintf(errOut,"[luodp] %s\n",val1[num]);
-					}
+						fprintf(errOut,"[luodp] %s\n",val1[i]+4);
+					}*/
 					num=0;
 					//ssid
-					Execute_cmd("cat /tmp/scanlist | grep ESSID | awk '{print $1}' | cut -d \"\\\"\" -f2", rspBuff);
-					//fprintf(errOut,"\n-[luodp] %s\n",rspBuff);
-					val2[num]=strtok(rspBuff,"\n\n");
+					Execute_cmd("cat /tmp/scanlist | grep ESSID | awk '{print $1}' | cut -d \"\\\"\" -f2", rspBuff2);
+					//fprintf(errOut,"\n[luodp] %s\n",rspBuff2);
+					val2[num]=strtok(rspBuff2,"\n");
 					while(val2[num]) {
 						num++;
-						val2[num]=strtok(NULL,"\n\n"); 
+						val2[num]=strtok(NULL,"\n"); 
 					}
-					for(num=0;num<100;num++)
+					/*for(i=1;i<num-1;i++)
 					{
-						fprintf(errOut,"[luodp] %s\n",val2[num]);
-					}
+						fprintf(errOut,"[luodp] %s\n",val2[i]+4);
+					}*/
 					num=0;
 					//security
-					Execute_cmd("cat /tmp/scanlist | grep Encryption | awk '{print $2}' | cut -d \":\" -f2", rspBuff);
-					//fprintf(errOut,"\n-[luodp] %s\n",rspBuff);
-					val3[num]=strtok(rspBuff,"\n\n");
+					Execute_cmd("cat /tmp/scanlist | grep Encryption | awk '{print $2}' | cut -d \":\" -f2", rspBuff3);
+					//fprintf(errOut,"\n[luodp] %s\n",rspBuff);
+					val3[num]=strtok(rspBuff3,"\n");
 					while(val3[num]) {
 						num++;
-						val3[num]=strtok(NULL,"\n\n"); 
+						val3[num]=strtok(NULL,"\n"); 
 					}
-					for(num=0;num<100;num++)
+					/*for(i=1;i<num-1;i++)
 					{
-						fprintf(errOut,"[luodp] %s\n",val3[num]);
-					}
+						fprintf(errOut,"[luodp] %s\n",val3[i]+4);
+					}*/
 					num=0;
 					//channel
-					Execute_cmd("cat /tmp/scanlist | grep Frequency | awk '{print $4}' | cut -d \")\" -f1", rspBuff);
-					//fprintf(errOut,"\n-[luodp] %s\n",rspBuff);
-					val4[num]=strtok(rspBuff,"\n\n");
+					Execute_cmd("cat /tmp/scanlist | grep Frequency | awk '{print $4}' | cut -d \")\" -f1", rspBuff4);
+					//fprintf(errOut,"\n[luodp] %s\n",rspBuff);
+					val4[num]=strtok(rspBuff4,"\n");
 					while(val4[num]) {
 						num++;
-						val4[num]=strtok(NULL,"\n\n"); 
+						val4[num]=strtok(NULL,"\n"); 
 					}
-					for(num=0;num<100;num++)
+					
+					/*for(i=1;i<num-1;i++)
 					{
-						fprintf(errOut,"[luodp] %s\n",val4[num]);
-					}
+						fprintf(errOut,"[luodp] %s\n",val4[i]+4);
+					}*/
+					lists=num-1;
+					/*for(i=1;i<lists;i++)
+					{
+						fprintf(errOut,"[luodp] %s(%s)(%s)(%s)\n",val2[i]+4,val1[i]+4,val3[i]+4,val4[i]+4);
+					}*/
 					flaglist=1;
                     lock11 = 1;
                 }
@@ -2298,26 +2309,29 @@ int main(int argc,char **argv)
     */
 	//wan mode dhcp
      if((strcmp(CFG_get_by_name("DHCP",valBuff),"DHCP") == 0 )|| (strcmp(CFG_get_by_name("DHCPW",valBuff),"DHCPW")== 0 ))
-    {
+     {
         fprintf(errOut,"\n%s  %d DHCP \n",__func__,__LINE__);
-		
+		//int flag=0;
 		//1.destory old mode pid 
-		CFG_get_by_name("WAN_MODE",valBuff);
-		if(strcmp(valBuff,"pppoe") == 0)
+		Execute_cmd("cfg -e | grep \"WAN_MODE=\"",valBuff);
+		if(strstr(valBuff,"pppoe") != 0)
 		{
 			//kill pppoe
 			Execute_cmd("pppoe-stop", rspBuff);
 		}
-		if(strcmp(valBuff,"dhcp") == 0)
+		if(strstr(valBuff,"dhcp") != 0)
 		{
-			//kill udhcpc
-			Execute_cmd("ps aux | grep udhcpc | awk '{print $1}' | xargs kill -9  > /dev/null 2>&1", rspBuff);	
+			//[TODO]kill udhcpc that may slow and httpd: bind: Address already in use
+			Execute_cmd("ps | grep udhcpc | awk \'{print $1}\' | xargs kill -9 > /dev/null 2>&1", rspBuff);	
+			//flag=1;
 		}
 		//2.save new config to flash 
 		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
         writeParameters("/tmp/.apcfg","w+",0);
 		//3.do new config pid
+		//if(flag!=1)
 		Execute_cmd("udhcpc -b -i eth0 -s /etc/udhcpc.script", rspBuff);
+		gohome =1;
     }
 	//wan mode static ip
     if((strcmp(CFG_get_by_name("SIP",valBuff),"SIP") == 0 ) || (strcmp(CFG_get_by_name("SIPW",valBuff),"SIPW") == 0 ))
@@ -2327,16 +2341,17 @@ int main(int argc,char **argv)
 		char pChar[128];
 		char valBuff2[128];	
 		//1.destory old mode pid
-		CFG_get_by_name("WAN_MODE",valBuff);
-		if(strcmp(valBuff,"pppoe") == 0)
+		Execute_cmd("cfg -e | grep \"WAN_MODE=\"",valBuff);
+		//fprintf(errOut,"[luodp] WAN_MODE: %s\n",valBuff);
+		if(strstr(valBuff,"pppoe") != 0)
 		{
 			//kill pppoe
 			Execute_cmd("pppoe-stop", rspBuff);
 		}
-		if(strcmp(valBuff,"dhcp") == 0)
+		if(strstr(valBuff,"dhcp") != 0)
 		{
 			//kill udhcpc
-			Execute_cmd("ps aux | grep udhcpc | awk '{print $1}' | xargs kill -9  > /dev/null 2>&1", rspBuff);
+			Execute_cmd("ps aux | grep udhcpc | awk \'{print $1}\' | xargs kill -9  > /dev/null 2>&1", rspBuff);
 		}		
 		//2.save new config to flash 
 		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
@@ -2346,7 +2361,12 @@ int main(int argc,char **argv)
 		CFG_get_by_name("WAN_NETMASK",valBuff2);
 		sprintf(pChar,"ifconfig eth0 %s netmask %s up",valBuff,valBuff2);
 		Execute_cmd(pChar, rspBuff);
-		//[TODO] IPGW/DNS
+		//[TODO] DNS ,use system default dns 8.8.8.8
+		//[TODO] may be this is a bug
+		CFG_get_by_name("IPGW",valBuff);
+		sprintf(pChar,"route add default gw %s dev eth0",valBuff);
+		Execute_cmd(pChar, rspBuff);
+		gohome =1;
     }
 	//wan mode pppoe
      if((strcmp(CFG_get_by_name("PPP",valBuff),"PPP") == 0 ) || (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 ))
@@ -2360,12 +2380,13 @@ int main(int argc,char **argv)
 		memset(usernameBuff,'\0',128);
 		memset(passBuff,'\0',128);
         memset(cmdstr,'\0',128);
+
 		//1.destory old mode pid
-		CFG_get_by_name("WAN_MODE",valBuff);
-		if(strcmp(valBuff,"dhcp") == 0)
+		Execute_cmd("cfg -e | grep \"WAN_MODE=\"",valBuff);
+		if(strstr(valBuff,"dhcp") != 0)
 		{
 			//kill udhcpc
-			Execute_cmd("ps aux | grep udhcpc | awk '{print $1}' | xargs kill -9  > /dev/null 2>&1", rspBuff);
+			Execute_cmd("ps aux | grep udhcpc | awk \'{print $1}\' | xargs kill -9  > /dev/null 2>&1", rspBuff);
 		}		
 		//2.save new config to flash 
 		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
@@ -2380,7 +2401,8 @@ int main(int argc,char **argv)
 		strcat(cmdstr,passBuff);
 		Execute_cmd(cmdstr, rspBuff);
 		Execute_cmd("pppoe-start", rspBuff);
-		fprintf(errOut,"\n%s  %d [luodp]PPPOE \n",__func__,__LINE__);		
+		//fprintf(errOut,"\n%s  %d [luodp]PPPOE \n",__func__,__LINE__);		
+		gohome =1;
     }
 	//wan mode l2tp
      if((strcmp(CFG_get_by_name("L2TP",valBuff),"L2TP") == 0 ) ||(strcmp(CFG_get_by_name("L2TPW",valBuff),"L2TPW") == 0 ))
@@ -2400,22 +2422,70 @@ int main(int argc,char **argv)
 		char pChar[128];
 		char mac[128];
 		char channel[128];
+		char valBuff2[128];	
+		char valBuff3[128];	
+		char valBuff4[128];
+		
+		//2.get old config from flash 
+		Execute_cmd("cfg -e | grep \"AP_SECMODE_2=\" |  awk -F \"\"\" \'{print $2}\'",valBuff2);
 		
 		//2.save new config to flash 
 		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
         writeParameters("/tmp/.apcfg","w+",0);
+		//3.do new settings 
+		CFG_get_by_name("AP_SECMODE_2",valBuff3);
+		if((strcmp(valBuff2,valBuff3) != 0)&&(strcmp(valBuff3,"None") != 0))
+		{
+			//AP_SECMODE=WPA
+			//AP_WPA=3 WPA/WPA2
+			//AP_CYPHER="TKIP CCMP"
+			//CFG_set_by_name("AP_RADIO_ID_2","0");
+			CFG_set_by_name("AP_SECMODE_2","WPA");
+			CFG_set_by_name("AP_WPA_2","3");
+			CFG_set_by_name("AP_CYPHER_2","TKIP CCMP");
+			CFG_set_by_name("AP_SECFILE_2","PSK"); 
+		}
+		if((strcmp(valBuff2,valBuff3) != 0)&&(strcmp(valBuff3,"WPA") != 0))
+		{
+			//AP_SECMODE=WPA
+			//AP_WPA=3 WPA/WPA2
+			//AP_CYPHER="TKIP CCMP"
+			//CFG_set_by_name("AP_RADIO_ID_2","0");
+			CFG_set_by_name("AP_SECMODE_2","None");
+		}
+		CFG_set_by_name("AP_STARTMODE","repeater");
+		//4.save new config to flash 
+		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+        writeParameters("/tmp/.apcfg","w+",0);
+		//5.do settings
+		Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
+		Execute_cmd("apup > /dev/null 2>&1", rspBuff);
 		
-		Execute_cmd("wlanconfig ath1 create wlandev wifi0 wlanmode sta nosbeacon", rspBuff);
-		Execute_cmd("iwconfig ath1 essid wds", rspBuff);
+		/*CFG_get_by_name("AP_RADIO_ID_2",valBuff);
+		CFG_get_by_name("AP_SECMODE_2",valBuff2);
+		CFG_get_by_name("AP_SECFILE_2",valBuff3);
+		CFG_get_by_name("WPS_ENABLE_2",valBuff4);
+		sprintf(pChar,"activateVAP ath1:%s br0 %s %s %s",valBuff,valBuff2,valBuff3,valBuff4);
+		
+		Execute_cmd(pChar, rspBuff);*/
+		//maybe can replace by makeVAP
+		/*Execute_cmd("wlanconfig ath1 create wlandev wifi0 wlanmode sta nosbeacon", rspBuff);
+		CFG_get_by_name("AP_SSID_2",valBuff);
+		sprintf(pChar,"iwconfig ath1 essid %s",valBuff);
+		Execute_cmd(pChar, rspBuff);
+		
 		CFG_get_by_name("WDS_MAC",mac);
-		CFG_get_by_name("WDS_CHAN",channel);
 		sprintf(pChar,"iwconfig ath1 ap  %s",mac);
 		Execute_cmd(pChar, rspBuff);
-		sprintf(pChar,"iwconfig ath1 channel  %s",channel);
+		
+		CFG_get_by_name("WDS_CHAN",channel);
+		sprintf(pChar,"iwconfig ath1 channel  %s",channel);	
 		Execute_cmd(pChar, rspBuff);
+		
 		Execute_cmd("iwpriv ath1 wds 1", rspBuff);
 		Execute_cmd("brctl addif br0 ath1", rspBuff);
-		Execute_cmd("ifconfig ath1 up", rspBuff);
+		Execute_cmd("ifconfig ath1 up", rspBuff);*/
+		gohome =1;
     }
 	//wifi settings
      if((strcmp(CFG_get_by_name("WIRELESS",valBuff),"WIRELESS") == 0 ) || (strcmp(CFG_get_by_name("DHCPW",valBuff),"DHCPW") == 0 ) || (strcmp(CFG_get_by_name("SIPW",valBuff),"SIPW") == 0 ) || (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 ) || (strcmp(CFG_get_by_name("L2TPW",valBuff),"L2TPW") == 0 ) || (strcmp(CFG_get_by_name("P2TPW",valBuff),"P2TPW") == 0 ) )
@@ -2427,63 +2497,137 @@ int main(int argc,char **argv)
 		char valBuff3[128];	
 		char valBuff4[128];	
 		char valBuff5[128];	
+		int flag=0;
 
-		//1.destory old mode pid 
-		CFG_get_by_name("WIFION_OFF",valBuff);
-		CFG_get_by_name("AP_SSID",valBuff2);
-		CFG_get_by_name("PSK_KEY",valBuff4);
-		CFG_get_by_name("AP_SECMODE",valBuff5);
+		//1.get old value from flash
+		Execute_cmd("cfg -e | grep \"WIFION_OFF=\" | awk -F \"=\" \'{print $2}\'",valBuff);
+		//TODO bug
+		Execute_cmd("cfg -e | grep \"AP_SSID=\" | awk -F \"AP_SSID=\" '{print $2}'",valBuff2);
+		//Execute_cmd("cfg -e | grep \"PSK_KEY=\" |  awk -F \"\"\" '{print $2}'",valBuff4);
+		//Execute_cmd("cfg -e | grep \"AP_SECMODE=\" |  awk -F \"=\" \'{print $2}\'",valBuff5);;
+		//Execute_cmd("cfg -e | grep \"WIFION_OFF=\"",valBuff);
+		//Execute_cmd("cfg -e | grep \"AP_SSID=\"",valBuff2);
+		//Execute_cmd("iwconfig ath0 | grep \"ESSID\" | awk -F \"\"\" \'{print $2}\'",valBuff2);
+		Execute_cmd("cfg -e | grep \"AP_SECMODE=\"",valBuff5);
+		
+		fprintf(errOut,"[luodp] WIFI: %s",valBuff2);
 		//2.save new config to flash 
 		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
         writeParameters("/tmp/.apcfg","w+",0);
 		//3.do new config pid
-		CFG_get_by_name("AP_SSID",valBuff3);
-		if(strcmp(valBuff2,valBuff3) != 0)
-		{
-			sprintf(pChar,"iwconfig ath0 essid %s",CFG_get_by_name("AP_SSID",valBuff));
-			Execute_cmd(pChar, rspBuff);
-		}
 		//TODO key check
-		CFG_get_by_name("PSK_KEY",valBuff3);
+		/*CFG_get_by_name("PSK_KEY",valBuff3);
+		fprintf(errOut,"[luodp] PSK_KEY %s ",valBuff3);
 		if(strcmp(valBuff3,valBuff4) != 0)
 		{
 			CFG_set_by_name("PSK_KEY",valBuff3);
-		}
+		}*/
 		//TODO SECMODE
 		CFG_get_by_name("AP_SECMODE",valBuff3);
-		if((strcmp(valBuff3,valBuff5) != 0)&&(strcmp(valBuff3,"None") != 0))
+		if((strstr(valBuff5,valBuff3) == 0)&&(strcmp(valBuff3,"None") != 0))
 		{
 			//AP_SECMODE=WPA
-			//AP_WPA=2
+			//AP_WPA=3 WPA/WPA2
 			//AP_CYPHER="TKIP CCMP"
+			//fprintf(errOut,"[luodp] SECMODE here");
 			CFG_set_by_name("AP_SECMODE","WPA");
-			CFG_set_by_name("AP_WPA","2");
+			CFG_set_by_name("AP_WPA","3");
 			CFG_set_by_name("AP_CYPHER","TKIP CCMP");
+			CFG_set_by_name("AP_SECFILE","PSK"); 
+			flag=2;
 		}
-		if((strcmp(valBuff3,valBuff5) != 0)&&(strcmp(valBuff3,"WPA") != 0))
+		if((strstr(valBuff5,valBuff3) == 0)&&(strcmp(valBuff3,"WPA") != 0))
 		{
 			//AP_SECMODE=WPA
-			//AP_WPA=2
+			//AP_WPA=3 WPA/WPA2
 			//AP_CYPHER="TKIP CCMP"
+			//fprintf(errOut,"[luodp] SECMODE here2");
 			CFG_set_by_name("AP_SECMODE","None");
+			flag=2;
 		}
-		
-		CFG_get_by_name("WIFION_OFF",valBuff2);
-		if((strcmp(valBuff,valBuff2) != 0) && (strcmp(valBuff2,"on") == 0) )
+		//4.save new add  to flash 
+		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+        writeParameters("/tmp/.apcfg","w+",0);
+				
+		CFG_get_by_name("WIFION_OFF",valBuff3);
+		if((strstr(valBuff,valBuff3) == 0) && (strcmp(valBuff3,"on") == 0) )
 		{
+			//fprintf(errOut,"[luodp] SECMODE here3");
 			Execute_cmd("apup > /dev/null 2>&1", rspBuff);
+			flag=3;
 		}
-		if((strcmp(valBuff,valBuff2) != 0) && (strcmp(valBuff2,"off") == 0) )
+		if((strstr(valBuff,valBuff3) == 0) && (strcmp(valBuff3,"off") == 0) )
 		{
+			//fprintf(errOut,"[luodp] SECMODE here4");
 			Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
-		}			
+			flag=4;
+		}
+		//ssid [TODO]
+		CFG_get_by_name("AP_SSID",valBuff4);
+		sprintf(valBuff5,"\"%s\"\n<br>",valBuff4);
+		if((strcmp(valBuff2,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0))
+		{
+			fprintf(errOut,"[luodp] SECMODE here6");
+			sprintf(pChar,"iwconfig ath0 essid %s",valBuff4);
+			Execute_cmd(pChar, rspBuff);
+		}
+		if(flag==2)
+		{
+			//fprintf(errOut,"[luodp] SECMODE here5");
+			//CFG_get_by_name("AP_RADIO_ID",valBuff);
+			//CFG_get_by_name("AP_SECMODE",valBuff2);
+			//CFG_get_by_name("AP_SECFILE",valBuff3);
+			//CFG_get_by_name("WPS_ENABLE",valBuff4);
+			//CFG_get_by_name("WPS_VAP_TIE",valBuff5);
+			//sprintf(pChar,"activateVAP ath0:%s br0 %s %s %s %s",valBuff,valBuff2,valBuff3,valBuff4,valBuff5);
+			//Execute_cmd(pChar, rspBuff);
+			Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
+			Execute_cmd("apup > /dev/null 2>&1", rspBuff);
+		}/*else if(flag==2)
+		{
+			//fprintf(errOut,"[luodp] SECMODE here7");
+			//CFG_get_by_name("AP_RADIO_ID",valBuff);
+			//CFG_get_by_name("AP_SECMODE",valBuff2);
+			//sprintf(pChar,"activateVAP ath0:%s br0 %s",valBuff,valBuff2);
+			//Execute_cmd(pChar, rspBuff);
+			Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
+			Execute_cmd("apup > /dev/null 2>&1", rspBuff);
+		}*/
+		gohome =1;
     }
 	//login settings
      if(strcmp(CFG_get_by_name("ADMINSET",valBuff),"ADMINSET") == 0 )
     {
-        fprintf(errOut,"\n%s  %d ADMINSET \n",__func__,__LINE__);
+         fprintf(errOut,"\n%s  %d ADMINSET \n",__func__,__LINE__);
+            
+         char cmdd[128]={0};
+         int qq=0;
+         FILE *fp;
+         if((fp=fopen("/etc/httpd.conf","w+"))==NULL)
+         {
+			fprintf(errOut,"\n----------cannot open file  line:%d\n",__LINE__);
+			exit(0);
+         }
+         memset(cmdd,0x00,128);
+         sprintf(cmdd,"/home.html:admin:%s",CFG_get_by_name("ADMPASS" ,valBuff));
+         fwrite(cmdd,strlen(cmdd),1,fp);
+         fclose(fp);
+         writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+         writeParameters("/tmp/.apcfg","w+",0);
+                
+         //Execute_cmd("ps | grep httpd | awk '{print $1}' | xargs kill  > /dev/null 2>&1", rspBuff);
+		 //fprintf(errOut,"[luodp] httpd result: %s\n",rspBuff);		 
+         //Execute_cmd("httpd -h /usr/www -c /etc/httpd.conf  > /dev/null 2>&1", rspBuff);		
+		//printf(errOut,"[luodp] httpd result: %s\n",rspBuff);		 
+         // fprintf(errOut,"\n----------2kill**********************\n");
+         //printf("<script 
+         // type=\"text/javascript\">window.location.href='map';</script>");
+		 gohome =1;
     }
-
+	if( gohome == 1)
+    {
+            printf("<script type=\"text/javascript\">window.location.href='map';</script>");                
+    }
     #if 0
     if((strcmp(CFG_get_by_name("COMMIT",valBuff),"Commit") == 0)  || (strcmp(CFG_get_by_name("COMMIT",valBuff),"Save") == 0))
     {

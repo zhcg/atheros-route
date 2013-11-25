@@ -448,6 +448,10 @@ int main(int argc, char *argv[])
 						xid = packet.xid;
 						requested_ip = packet.yiaddr;
 
+						/*wangyu add for udhcp test*/
+						LOG(LOG_EMERG, "DHCP Client get a DHCPOFFER");
+						/*wangyu add for udhcp test*/
+
 						/* enter requesting state */
 						state = REQUESTING;
 						timeout = now;

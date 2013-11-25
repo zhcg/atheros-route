@@ -11,7 +11,7 @@
   <message msgid="man introduction" msgstr="您可以在此设置系统的管理者及口令、网络时间、动态域名服务。" />
   <message msgid="man language setting" msgstr="语言设置" />
   <message msgid="man select language" msgstr="选择语言" />
-  <message msgid="man admin setting" msgstr="管理者设置" />
+  <message msgid="man admin setting" msgstr="密码管理" />
   <message msgid="man admin account" msgstr="帐号" />
   <message msgid="man admin passwd" msgstr="口令" />
   <message msgid="man admin watchdog" msgstr="监视者" />
@@ -238,7 +238,7 @@
    <message msgid="admw w5ttitle" msgstr="家长控制" />  
    <message msgid="admw wwtitle" msgstr="外网/无线中继设置" />  
  
-   <message msgid="admw modedes" msgstr="请您选择路由器WAN口的连接方式。" />  
+   <message msgid="admw modedes" msgstr="请您选择路由器WAN口的连接方式。所需参数在开通网络时，由网络运营商（中国电信、中国网通、中国铁通、中国移动、中国联通等）提供。" />  
    <message msgid="admw wifides" msgstr="请设置HBD路由的Wi-Fi账户和密码。您的电脑、PAD、智能手机等将使用以下网络上网。" />  
    <message msgid="admw wirelessdes" msgstr="请选择您要连接的Wi-Fi。" />  
    <message msgid="admw parentdes" msgstr="作为家长，您可以通过在本页进行设置，对孩子的上网时间和访问网页进行控制。" />  
@@ -275,9 +275,36 @@
     <message msgid="admin open" msgstr="不加密" />
     <message msgid="admin jiami" msgstr="加密(推荐使用)" />
 	
+	<message msgid="admw wifiswitch" msgstr="网络开关" />
 	<message msgid="admw onbutton" msgstr="开启" />
     <message msgid="admw offbutton" msgstr="关闭" />
     <message msgid="admw waiting" msgstr="请稍等......" />
 	
-
+    <message msgid="admw ssidrequest" msgstr="  (1-12位中文、字母、数字或下划线)" />
+    <message msgid="admw passwordrequest" msgstr="  (6-12位字母、数字或下划线)" />
+	
+    <message msgid="err ip empty" msgstr="IP地址为空" />
+    <message msgid="err name empty" msgstr="请输入用户名" />
+	<message msgid="err SSID empty" msgstr="请输入网络名称（SSID）" />    
+    <message msgid="err pwd empty" msgstr="请输入密码" />
+	<message msgid="err key" msgstr="请输入密钥" />
+	
+    <message msgid="err pwd mismatch" msgstr="密码前后不一致" />
+	
+	<message msgid="err sRP" msgstr="请指定重播周期" />
+	<message msgid="err sIT" msgstr="请指定空闲时间" />
+	
+	<message msgid="err number" msgstr="请输入0-9之间的数字" />
+	<message msgid="err IPmormat" msgstr="IP地址格式错误" />
+	
+	<message msgid="err keylen" msgstr="密钥长度必须是6-12位" />
+	<message msgid="err keychar" msgstr="密码中存在无效字符" />
+	<message msgid="err IP error" msgstr="WAN IP与本地IP不能位于相同网段，请重新设置" />
+	
+	<message msgid="admw internet" msgstr="互联网" />
+	<message msgid="admw wai" msgstr="外网/无线中继设置" />
+	<message msgid="admw nei" msgstr="内网设置" />
+	<message msgid="password change" msgstr="密码修改成功，重启路由器后生效" />
+	<message msgid="admw securitydes" msgstr="修改路由Web管理页面的登录密码" />
+	
 </po>

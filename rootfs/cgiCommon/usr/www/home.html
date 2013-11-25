@@ -5,6 +5,38 @@
 <script language="JavaScript" type="text/javascript">
 function initLanguage()
 {
+	var cook="no";
+	if (document.cookie.length > 0) {
+		var s = document.cookie.indexOf("language=");
+		//alert("s:"+s);
+		var e = document.cookie.indexOf(";", s);
+		//alert("e:"+e);
+		if (s != -1) 
+		{
+			if (e == -1)
+			{
+				//alert("e=-1:"+e);
+				cook = document.cookie.substring(s+9);
+				//alert("cook:"+cook);
+			}
+			else
+			{
+				//alert("e!=-1:"+e);
+				cook = document.cookie.substring(s+9, e);
+				//alert("cook:"+cook);
+			}
+		}
+	}
+	if((cook != "zhcn")&&(cook != "en"))
+	{
+		//alert("cook:language=zhcn"+cook);
+		document.cookie="language=zhcn; path=/";
+		window.location.reload();
+	}
+
+}
+/*
+{
 	var lang = document.getElementById("Langu").value;
 	var cook = "zhcn";
 	var lang_en = "1";
@@ -70,7 +102,7 @@ function initLanguage()
 		}
 	}
 }
-
+*/
 function onInit()
 {
 	initLanguage();

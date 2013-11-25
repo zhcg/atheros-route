@@ -641,6 +641,10 @@ discovery(PPPoEConnection *conn)
 	}
     } while (conn->discoveryState == STATE_SENT_PADI);
 
+    /*wangyu add for network detect function*/
+    printErr("pppoe discovery state is STATE_RECEIVED_PADO");
+    /*wangyu add for network detect function*/
+
     /* If we're only printing access concentrator names, we're done */
     if (conn->printACNames) {
 	exit(0);
