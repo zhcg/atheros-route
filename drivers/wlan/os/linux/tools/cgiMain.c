@@ -2390,7 +2390,11 @@ int main(int argc,char **argv)
      if((strcmp(CFG_get_by_name("DHCP",valBuff),"DHCP") == 0 )|| (strcmp(CFG_get_by_name("DHCPW",valBuff),"DHCPW")== 0 ))
      {
         fprintf(errOut,"\n%s  %d DHCP \n",__func__,__LINE__);
-		//int flag=0;
+		int flag=0;
+		if(strcmp(CFG_get_by_name("DHCPW",valBuff),"DHCPW")== 0 )
+		{
+			flag=1;
+		}
 		
 		CFG_set_by_name("AP_STARTMODE","standard");
 		//1.destory old mode pid 
@@ -2406,9 +2410,12 @@ int main(int argc,char **argv)
 			Execute_cmd("ps | grep udhcpc | awk \'{print $1}\' | xargs kill -9 > /dev/null 2>&1", rspBuff);	
 			//flag=1;
 		}
-		//2.save new config to flash 
-		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-        writeParameters("/tmp/.apcfg","w+",0);
+		if(flag!=1)
+		{
+			//2.save new config to flash 
+			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+			writeParameters("/tmp/.apcfg","w+",0);
+		}
 		//3.do new config pid
 		//if(flag!=1)
 		Execute_cmd("udhcpc -b -i eth0 -s /etc/udhcpc.script", rspBuff);
@@ -2421,6 +2428,11 @@ int main(int argc,char **argv)
 	
 		char pChar[128];
 		char valBuff2[128];	
+		int flag=0;
+		if(strcmp(CFG_get_by_name("SIPW",valBuff),"SIPW") == 0 )
+		{
+			flag=1;
+		}
 		
 		CFG_set_by_name("AP_STARTMODE","standard");
 		//1.destory old mode pid
@@ -2435,10 +2447,13 @@ int main(int argc,char **argv)
 		{
 			//kill udhcpc
 			Execute_cmd("ps aux | grep udhcpc | awk \'{print $1}\' | xargs kill -9  > /dev/null 2>&1", rspBuff);
-		}		
-		//2.save new config to flash 
-		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-        writeParameters("/tmp/.apcfg","w+",0);
+		}
+		if(flag!=1)
+		{
+			//2.save new config to flash 
+			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+			writeParameters("/tmp/.apcfg","w+",0);
+		}
 		//3.do new config pid
 		CFG_get_by_name("WAN_IPADDR",valBuff);
 		CFG_get_by_name("WAN_NETMASK",valBuff2);
@@ -2459,7 +2474,11 @@ int main(int argc,char **argv)
 		char  usernameBuff[128];
 		char  passBuff[128];
 		char  cmdstr[128];
-
+		int flag=0;
+		if (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 )
+		{
+			flag=1;
+		}
 		memset(usernameBuff,'\0',128);
 		memset(passBuff,'\0',128);
         memset(cmdstr,'\0',128);
@@ -2471,10 +2490,13 @@ int main(int argc,char **argv)
 		{
 			//kill udhcpc
 			Execute_cmd("ps aux | grep udhcpc | awk \'{print $1}\' | xargs kill -9  > /dev/null 2>&1", rspBuff);
-		}		
-		//2.save new config to flash 
-		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-        writeParameters("/tmp/.apcfg","w+",0);
+		}
+		if(flag!=1)
+		{
+			//2.save new config to flash 
+			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+			writeParameters("/tmp/.apcfg","w+",0);
+		}
 		//3.do new config pid
 		CFG_get_by_name("PPPOE_USER",usernameBuff);
 		CFG_get_by_name("PPPOE_PWD",passBuff);
@@ -2595,13 +2617,15 @@ int main(int argc,char **argv)
 		//Execute_cmd("iwconfig ath0 | grep \"ESSID\" | awk -F \"\"\" \'{print $2}\'",valBuff2);
 		Execute_cmd("cfg -e | grep \"AP_SECMODE=\"",valBuff5);
 		
-		//fprintf(errOut,"[luodp] WIFI: %s\n%s\n",valBuff2,valBuff4);
+		//fprintf(errOut,"[luodp] WIFI: %s\n%s%s\n%s\n",valBuff,valBuff2,valBuff5,valBuff4);
 		//2.save new config to flash 
 		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
         writeParameters("/tmp/.apcfg","w+",0);
+		//fprintf(errOut,"[luodp]here\n");
 		//3.do new config pid
 		//TODO key check
 		CFG_get_by_name("PSK_KEY",valBuff3);
+		//fprintf(errOut,"[luodp] %shere\n",valBuff3);
 		sprintf(valBuff6,"%s\n<br>",valBuff3);
 		if(strcmp(valBuff6,valBuff4) != 0)
 		{
@@ -2611,6 +2635,7 @@ int main(int argc,char **argv)
 		}
 		//TODO SECMODE
 		CFG_get_by_name("AP_SECMODE",valBuff3);
+		//fprintf(errOut,"[luodp] %s here2\n",valBuff3);
 		if((strstr(valBuff5,valBuff3) == 0)&&(strcmp(valBuff3,"None") != 0))
 		{
 			//AP_SECMODE=WPA
@@ -2637,6 +2662,7 @@ int main(int argc,char **argv)
         writeParameters("/tmp/.apcfg","w+",0);
 				
 		CFG_get_by_name("WIFION_OFF",valBuff3);
+		//fprintf(errOut,"[luodp] %s here4\n",valBuff3);
 		if((strstr(valBuff,valBuff3) == 0) && (strcmp(valBuff3,"on") == 0) )
 		{
 			//fprintf(errOut,"[luodp] SECMODE here3");
@@ -2651,10 +2677,12 @@ int main(int argc,char **argv)
 		}
 		//ssid [TODO]
 		CFG_get_by_name("AP_SSID",valBuff4);
+		//fprintf(errOut,"[luodp] %s here5\n",valBuff4);
 		sprintf(valBuff5,"\"%s\"\n<br>",valBuff4);
+		//fprintf(errOut,"%d\n%d\n%d\n",strcmp(valBuff2,valBuff5),flag,strcmp(valBuff3,"on"));
 		if((strcmp(valBuff2,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0))
 		{
-			fprintf(errOut,"[luodp] SECMODE here6");
+			//fprintf(errOut,"[luodp] SECMODE here6");
 			sprintf(pChar,"iwconfig ath0 essid %s",valBuff4);
 			Execute_cmd(pChar, rspBuff);
 		}

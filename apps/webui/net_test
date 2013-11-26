@@ -2,6 +2,9 @@
 DOMAIN1=www.baidu.com 
 DOMAIN2=www.google.cn 
   
+while true  
+do
+
 ping -c 2 $DOMAIN1 >/dev/null 
 echo -n $? > /tmp/network-status 
 ping -c 2 $DOMAIN2 >/dev/null 
@@ -14,3 +17,7 @@ else
 	cfg -a INTERNET_ON=on
 fi 
 cfg -c
+
+sleep 5
+
+done

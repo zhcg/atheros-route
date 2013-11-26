@@ -162,7 +162,7 @@ function change_step(offset)
 	}
 	else
 	{
-		window.location.reload();
+		window.location.href="w1";
 	}
 	return true;
 }
@@ -317,7 +317,7 @@ function switch_security_mode()
 	document.getElementById("div_security_key").style.visibility = "visible";
 	document.getElementById("div_security_key").style.display = style_display_on();
 	document.wizard_form.PSK_KEY.disabled = false;
-	if (document.wizard_form.AP_SECMODE.selectedIndex != 0)
+	if ((document.wizard_form.AP_SECMODE.selectedIndex != 0)&&(document.wizard_form.WIFION_OFF[0].checked == true))
 	{
 		document.getElementById("div_security_key").style.visibility = "hidden";
 		document.getElementById("div_security_key").style.display = "none";
@@ -1244,7 +1244,6 @@ function switch_wifi()
 		document.getElementById("div_security_key").style.display = style_display_on();
 		document.getElementById("tt1").style.visibility = "visible";
 		document.getElementById("tt1").style.display = style_display_on();
-		switch_security_mode();
 	}
 	else
 	{
@@ -1635,7 +1634,8 @@ function switch_wifi()
   </td>
 </tr>
 <tr id="div_security_key">
-  <td><span id="wkey"></span><span id="pwdinput"><input type="password" id="pwd" name="PSK_KEY" maxlength="64" size="28"  class="handaer_text_content"  value="~~PSK_KEY~"/></span><input type="checkbox" onClick="showpwd()" /><span id="showp"></span>&nbsp;<span id="passwordrequest"></span></td></tr>
+  <td><span id="wkey"></span><span id="pwdinput"><input type="password" id="pwd" name="PSK_KEY" maxlength="64" size="28"  class="handaer_text_content"  value="~~PSK_KEY~"/></span><input type="checkbox" onClick="showpwd()" /><span id="showp"></span>&nbsp;<span id="passwordrequest"></span></td>
+</tr>
 </table>
 
 <div id="gifshow" style="display:none" align="center">
