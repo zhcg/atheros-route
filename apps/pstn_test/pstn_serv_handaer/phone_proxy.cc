@@ -49,6 +49,8 @@
 
 #include "phone_log.h"
 
+extern bool not_send_ring;
+
 extern volatile int total_receive ;
 extern int phone_ring_volume;
 
@@ -1398,12 +1400,14 @@ int PhoneProxy::handleClient ( cli_info_t *ci_ )
                 pcs->offHook();
                 already_incoming = 0;
                 ring_should_finish = true;
-                usleep ( 1000000 );
+                not_send_ring = true;
+                // usleep ( 1000000 );
+                usleep ( 1500000 );
 
                 //netWrite(phone_proxy_fd[0], "ONHOOK\n", 7);
                 pcs->onHook();
                 usleep ( 10000 );
-                netWrite ( phone_proxy_fd[0], "RINGOFF\n", 8 );
+                // netWrite ( phone_proxy_fd[0], "RINGOFF\n", 8 );
 
                 snprintf ( send_buf, 22,
                            "HEADR0010RINGOFF000\r\n" );
@@ -1421,8 +1425,9 @@ int PhoneProxy::handleClient ( cli_info_t *ci_ )
 
 
 					
-					// usleep(2000000);
+					 usleep(2000000);
 					ring_should_finish = false;
+                    not_send_ring = false;
 
 
 
@@ -2132,6 +2137,7 @@ int PhoneProxy::handlePhoneControlServiceEvent()
 
 
                 // if((ci[i].id != 1 ) || (ci[i].id == 1 &&  !already_incoming )){
+
                 netWrite ( ci[i].client_fd, send_buf, strlen ( send_buf ) );
                 PLOG ( LOG_INFO, "Ringing sent to %s@%s",
                        ci[i].username, ci[i].client_ip );
@@ -2157,12 +2163,12 @@ int PhoneProxy::handlePhoneControlServiceEvent()
 		case INCOMING_NUM:
 		{
 
-        if ( ring_should_finish ) {
-            PLOG ( LOG_INFO, "ring_should_finish" );
-            usleep ( 3000000 );
-            ring_should_finish = false;
-            break;
-        }
+        // if ( ring_should_finish ) {
+        //     PLOG ( LOG_INFO, "ring_should_finish" );
+        //     usleep ( 3000000 );
+        //     ring_should_finish = false;
+        //     break;
+        // }
 
         ring_should_finish = false;
         incoming_call = true;

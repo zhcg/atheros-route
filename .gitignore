@@ -1,12 +1,35 @@
 apps/cacm/src/cacm/cacm
-apps/terminal_dev_register/monitor_application 
+apps/cacm/src/cacm/cacm.o
+apps/cacm/src/cacm/cacm_tools.o
+apps/cacm/src/cacm/exevents.o
+
+
+apps/terminal_dev_register/common_tools.o
+apps/terminal_dev_register/communication_stc.o
+apps/terminal_dev_register/database_management.o
+apps/terminal_dev_register/libcommon_tools.so
+apps/terminal_dev_register/libdatabase_management.so
+apps/terminal_dev_register/libspi_rt.so
+apps/terminal_dev_register/libterminal_register.so
+apps/terminal_dev_register/monitor_application
+
 apps/terminal_dev_register/monitor_application.o
+apps/terminal_dev_register/safe_strategy.o
+apps/terminal_dev_register/spi_rt_interface.o
 apps/terminal_dev_register/spi_rt_main 
 apps/terminal_dev_register/spi_rt_main.o
+apps/terminal_dev_register/swipe_card 
+apps/terminal_dev_register/swipe_card.o
+
 apps/terminal_dev_register/terminal_dev_register
 apps/terminal_dev_register/terminal_dev_register.o
 apps/terminal_dev_register/terminal_init_test 
 apps/terminal_dev_register/terminal_init_test.o
+apps/terminal_dev_register/terminal_register.o
+apps/terminal_dev_register/internetwork_communication.o
+apps/terminal_dev_register/libterminal_authentication.so
+apps/terminal_dev_register/network_config.o
+apps/terminal_dev_register/terminal_authentication.o
 
 
 
