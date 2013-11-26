@@ -32,3 +32,12 @@ busybox-1.01/editors/awk.o
 terminal_dev_register/monitor_application
 terminal_dev_register/spi_rt_main
 terminal_dev_register/terminal_init_test
+cacm/src/cacm/cacm
+terminal_dev_register/monitor_application
+terminal_dev_register/monitor_application.o
+terminal_dev_register/spi_rt_main
+terminal_dev_register/spi_rt_main.o
+terminal_dev_register/terminal_dev_register
+terminal_dev_register/terminal_dev_register.o
+terminal_dev_register/terminal_init_test
+terminal_dev_register/terminal_init_test.o
