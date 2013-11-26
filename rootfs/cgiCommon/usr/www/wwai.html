@@ -1037,10 +1037,16 @@ function  WIFSwitch()
 	if(ssss == "None")
 	{
 		document.wizard_form.PSK_KEY_2.disabled = true;
-	}	
+		document.getElementById("tt2").style.visibility = "hidden";
+		document.getElementById("tt2").style.display = "none";
+
+	}
 	else
 	{
 		document.wizard_form.PSK_KEY_2.disabled = false;
+		document.getElementById("tt2").style.visibility = "visible";
+		document.getElementById("tt2").style.display = style_display_on();
+
 	}
 }
 function refreshwds()
@@ -1098,7 +1104,7 @@ function refreshwds()
   <td class="head">MAC</td>
   <td><input name="ROOTAP_MAC_2" id="ROOTAP_MAC_2" class="handaer_text_content" maxlength=32 size=32 value="~~ROOTAP_MAC_2~"></td>
 </tr>
-<tr>
+<tr id="tt2">
   <td class="head" id="R_pword"></td>
   <td><span id="wrpwd"><input type="password" id="wrpass" name="PSK_KEY_2"  class="handaer_text_content" maxlength="32" size="32" value="~~PSK_KEY_2~" /></span><input type="checkbox" onClick="wrshowpwd()"/><span id="wrshowp"></span></td>
 </tr>
@@ -1108,7 +1114,7 @@ function refreshwds()
   </tr>
   <tr>
 	<td id="Wlisttitle3"></td>
-    <td><select name="WFILIST" id="WFILIST" size="1" onclick="WIFSwitch()">
+    <td><select name="WFILIST" id="WFILIST" size="1" onchange="WIFSwitch()">
 	~LList~</select>
 	</td>
  </tr>

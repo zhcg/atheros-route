@@ -1,0 +1,16 @@
+#!/bin/sh
+DOMAIN1=www.baidu.com 
+DOMAIN2=www.google.cn 
+  
+ping -c 2 $DOMAIN1 >/dev/null 
+echo -n $? > /tmp/network-status 
+ping -c 2 $DOMAIN2 >/dev/null 
+echo -n $? >> /tmp/network-status 
+STATUS=`cat /tmp/network-status` 
+  
+if [ "$STATUS" -eq 11 ];then  
+	cfg -a INTERNET_ON=off
+else
+	cfg -a INTERNET_ON=on
+fi 
+cfg -c

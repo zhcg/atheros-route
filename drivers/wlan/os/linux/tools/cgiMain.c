@@ -591,14 +591,42 @@ char *processSpecial(char *paramStr, char *outBuff)
             {	
 				if(flaglist!=1)
 					break;
-				int num;
+				/*int num;
 				//val1-mac,val2-ssid,val3-security,val4-channel
+				if(strcmp(val3[0],"on")==0)
+					sprintf(val3[0],"WPA");
+				else
+					sprintf(val3[0],"None");
 				outBuff +=sprintf(outBuff,"<option>%s(%s)(%s)(%s)</option>",val2[0],val1[0],val4[0],val3[0]);
 				for(num=1;num<lists;num++)
 				{
+					if(strcmp(val3[num]+4,"on")==0)
+						sprintf(val3[num]+4,"WPA");
+					else
+						sprintf(val3[num]+4,"None");
 					//fprintf(errOut,"[luodp] %s(%s)(%s)(%s) \n",val2[num]+4,val1[num]+4,val3[num]+4,val4[num]+4);
 					outBuff +=sprintf(outBuff,"<option>%s(%s)(%s)(%s)</option>",val2[num]+4,val1[num]+4,val4[num]+4,val3[num]+4);
-				}
+				}*/
+				FILE *fp;
+                int ii;
+                char ch;
+                char tmpc[65536]={0};
+                if((fp=fopen("/tmp/wifilist","r"))==NULL)
+                {
+                    fprintf(errOut,"\n----------cannot open file  line:%d\n",__LINE__);
+                }
+                else
+                {
+                    while ((ch=fgetc(fp))!=EOF)
+                    {
+                        sprintf(tmpc+ii,"%c",ch);
+                        ii++;
+                    }
+                    if(strlen(tmpc)>0)
+                        outBuff += sprintf(outBuff,"%s",tmpc);
+                    fclose(fp);
+                    system("rm /tmp/wifilist");
+                }
 				flaglist=0;
             }								
         break;       
@@ -2119,8 +2147,12 @@ int main(int argc,char **argv)
     strcpy(Page,"../");
     strcat(Page,argv[0]);
     strcat(Page,".html");
-
-   // fprintf(errOut,"%s  %d Page:%s\n",__func__,__LINE__,Page);
+	if(strcmp(Page,"../map.html")==0)
+	{
+		//fprintf(errOut,"[luodp] test net\n");
+		Execute_cmd("net_test > /dev/null 2>&1", rspBuff);
+	}
+	//fprintf(errOut,"%s  %d Page:%s\n",__func__,__LINE__,Page);
     /*
     ** Now to get the environment data.
     ** We parse the input until all parameters are inserted.  If we see a reset, commit,
@@ -2264,6 +2296,33 @@ int main(int argc,char **argv)
 					{
 						fprintf(errOut,"[luodp] %s(%s)(%s)(%s)\n",val2[i]+4,val1[i]+4,val3[i]+4,val4[i]+4);
 					}*/
+					char cmdd[128]={0};
+                    FILE *fp;
+                    if((fp=fopen("/tmp/wifilist","w+"))==NULL)
+                    {
+                        fprintf(errOut,"\n----------cannot open file  line:%d\n",__LINE__);
+                        return;
+                    }
+					//val1-mac,val2-ssid,val3-security,val4-channel
+					if(strcmp(val3[0],"on")==0)
+						sprintf(val3[0],"WPA");
+					else
+						sprintf(val3[0],"None");
+					memset(cmdd,0x00,128);	
+					sprintf(cmdd,"<option>%s(%s)(%s)(%s)</option>",val2[0],val1[0],val4[0],val3[0]);
+					fwrite(cmdd,strlen(cmdd),1,fp);
+					for(i=1;i<lists;i++)
+					{
+						memset(cmdd,0x00,128);
+						if(strcmp(val3[i]+4,"on")==0)
+							sprintf(val3[i]+4,"WPA");
+						else
+							sprintf(val3[i]+4,"None");
+						//fprintf(errOut,"[luodp] %s(%s)(%s)(%s) \n",val2[i]+4,val1[i]+4,val3[i]+4,val4[i]+4);
+						sprintf(cmdd,"<option>%s(%s)(%s)(%s)</option>",val2[i]+4,val1[i]+4,val4[i]+4,val3[i]+4);
+						fwrite(cmdd,strlen(cmdd),1,fp);
+					}
+                    fclose(fp);
 					flaglist=1;
                     lock11 = 1;
                 }
@@ -2312,6 +2371,8 @@ int main(int argc,char **argv)
      {
         fprintf(errOut,"\n%s  %d DHCP \n",__func__,__LINE__);
 		//int flag=0;
+		
+		CFG_set_by_name("AP_STARTMODE","standard");
 		//1.destory old mode pid 
 		Execute_cmd("cfg -e | grep \"WAN_MODE=\"",valBuff);
 		if(strstr(valBuff,"pppoe") != 0)
@@ -2340,6 +2401,8 @@ int main(int argc,char **argv)
 	
 		char pChar[128];
 		char valBuff2[128];	
+		
+		CFG_set_by_name("AP_STARTMODE","standard");
 		//1.destory old mode pid
 		Execute_cmd("cfg -e | grep \"WAN_MODE=\"",valBuff);
 		//fprintf(errOut,"[luodp] WAN_MODE: %s\n",valBuff);
@@ -2381,6 +2444,7 @@ int main(int argc,char **argv)
 		memset(passBuff,'\0',128);
         memset(cmdstr,'\0',128);
 
+		CFG_set_by_name("AP_STARTMODE","standard");
 		//1.destory old mode pid
 		Execute_cmd("cfg -e | grep \"WAN_MODE=\"",valBuff);
 		if(strstr(valBuff,"dhcp") != 0)
@@ -2496,32 +2560,35 @@ int main(int argc,char **argv)
 		char valBuff2[128];	
 		char valBuff3[128];	
 		char valBuff4[128];	
-		char valBuff5[128];	
+		char valBuff5[128];
+		char valBuff6[128];	
 		int flag=0;
 
 		//1.get old value from flash
 		Execute_cmd("cfg -e | grep \"WIFION_OFF=\" | awk -F \"=\" \'{print $2}\'",valBuff);
 		//TODO bug
 		Execute_cmd("cfg -e | grep \"AP_SSID=\" | awk -F \"AP_SSID=\" '{print $2}'",valBuff2);
-		//Execute_cmd("cfg -e | grep \"PSK_KEY=\" |  awk -F \"\"\" '{print $2}'",valBuff4);
+		Execute_cmd("cfg -s | grep \"PSK_KEY:\" | awk -F \"=\" \'{print $2}\'",valBuff4);
 		//Execute_cmd("cfg -e | grep \"AP_SECMODE=\" |  awk -F \"=\" \'{print $2}\'",valBuff5);;
 		//Execute_cmd("cfg -e | grep \"WIFION_OFF=\"",valBuff);
 		//Execute_cmd("cfg -e | grep \"AP_SSID=\"",valBuff2);
 		//Execute_cmd("iwconfig ath0 | grep \"ESSID\" | awk -F \"\"\" \'{print $2}\'",valBuff2);
 		Execute_cmd("cfg -e | grep \"AP_SECMODE=\"",valBuff5);
 		
-		fprintf(errOut,"[luodp] WIFI: %s",valBuff2);
+		//fprintf(errOut,"[luodp] WIFI: %s\n%s\n",valBuff2,valBuff4);
 		//2.save new config to flash 
 		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
         writeParameters("/tmp/.apcfg","w+",0);
 		//3.do new config pid
 		//TODO key check
-		/*CFG_get_by_name("PSK_KEY",valBuff3);
-		fprintf(errOut,"[luodp] PSK_KEY %s ",valBuff3);
-		if(strcmp(valBuff3,valBuff4) != 0)
+		CFG_get_by_name("PSK_KEY",valBuff3);
+		sprintf(valBuff6,"%s\n<br>",valBuff3);
+		if(strcmp(valBuff6,valBuff4) != 0)
 		{
+			//fprintf(errOut,"[luodp] KEY here");
 			CFG_set_by_name("PSK_KEY",valBuff3);
-		}*/
+			flag=2;
+		}
 		//TODO SECMODE
 		CFG_get_by_name("AP_SECMODE",valBuff3);
 		if((strstr(valBuff5,valBuff3) == 0)&&(strcmp(valBuff3,"None") != 0))
@@ -2626,7 +2693,9 @@ int main(int argc,char **argv)
     }
 	if( gohome == 1)
     {
-            printf("<script type=\"text/javascript\">window.location.href='map';</script>");                
+		//fprintf(errOut,"[luodp] map here");
+		//Execute_cmd("net_test > /dev/null 2>&1", rspBuff);
+        printf("<script type=\"text/javascript\">window.location.href='map';</script>");                
     }
     #if 0
     if((strcmp(CFG_get_by_name("COMMIT",valBuff),"Commit") == 0)  || (strcmp(CFG_get_by_name("COMMIT",valBuff),"Save") == 0))

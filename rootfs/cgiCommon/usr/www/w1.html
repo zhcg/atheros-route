@@ -716,7 +716,12 @@ function CheckWirelessValue()
 			document.wizard_form.AP_SSID.select();
 			return false;
 		}
-
+		if (document.wizard_form.AP_SSID.value.length > 24 )
+		{
+			alert(_("err SSID length"));
+			document.wizard_form.AP_SSID.select();
+			return false;
+		}
 		if (document.wizard_form.AP_SECMODE.selectedIndex == 0)
 		{
 			var keyvalue = document.wizard_form.PSK_KEY.value;
@@ -732,11 +737,28 @@ function CheckWirelessValue()
 				document.wizard_form.PSK_KEY.select();
 				return false;
 			}
-			if(checkInjection(keyvalue) == false)
+			/*if(checkInjection(keyvalue) == false)
 			{
 				alert(_("err keychar"));
 				document.wizard_form.PSK_KEY.select();
 				return false;
+			}
+			*/
+			{
+				var xxx=keyvalue;  //用户名（在此赋值）
+
+				var reg  = /^[a-z || A-Z || 0-9]\w+$/;
+				var m = reg.test(xxx);
+				if(m)   
+				{   
+				}   
+				else   
+				{   
+					alert(_("err keychar"));
+					document.wizard_form.PSK_KEY.select();
+					return false;
+				} 
+
 			}
 		}
 	}
@@ -1163,10 +1185,16 @@ function  WIFSwitch()
 	if(ssss == "None")
 	{
 		document.wizard_form.PSK_KEY_2.disabled = true;
-	}	
+		document.getElementById("tt2").style.visibility = "hidden";
+		document.getElementById("tt2").style.display = "none";
+
+	}
 	else
 	{
 		document.wizard_form.PSK_KEY_2.disabled = false;
+		document.getElementById("tt2").style.visibility = "visible";
+		document.getElementById("tt2").style.display = style_display_on();
+
 	}
 }
 function refreshwds()
@@ -1251,7 +1279,7 @@ function switch_wifi()
   </tr>
   <tr>
 	<td id="Wlisttitle3"></td>
-    <td><select name="WFILIST" id="WFILIST" size="1" onclick="WIFSwitch()">
+    <td><select name="WFILIST" id="WFILIST" size="1" onchange="WIFSwitch()">
 	~LList~</select>
 	</td>
  </tr>
@@ -1554,7 +1582,7 @@ function switch_wifi()
 <tr><td class="title" colspan="2" id="wsetingst"></td></tr>
 <tr>
   <td class="head" id="nname"></td>
-  <td><input type="text" name="AP_SSID" size="20" maxlength="32" class="handaer_text_content" value="~~AP_SSID~">&nbsp;<span id="ssidrequest"></span></td>
+  <td><input type="text" name="AP_SSID" size="32" maxlength="32" class="handaer_text_content" value="~~AP_SSID~">&nbsp;<span id="ssidrequest"></span></td>
 </tr>
 
 <tr>

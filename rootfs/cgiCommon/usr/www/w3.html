@@ -66,7 +66,13 @@ function CheckWirelessValue()
 			document.wizard_form.AP_SSID.select();
 			return false;
 		}
-
+		if (document.wizard_form.AP_SSID.value.length > 24 )
+		{
+			alert(_("err SSID length"));
+			document.wizard_form.AP_SSID.select();
+			return false;
+		}
+		
 		if (document.wizard_form.AP_SECMODE.selectedIndex == 0)
 		{
 			var keyvalue = document.wizard_form.PSK_KEY.value;
@@ -82,11 +88,29 @@ function CheckWirelessValue()
 				document.wizard_form.PSK_KEY.select();
 				return false;
 			}
+
+			/*
 			if(checkInjection(keyvalue) == false)
 			{
 				alert(_("err keychar"));
 				document.wizard_form.PSK_KEY.select();
 				return false;
+			}			*/
+			{
+				var xxx=keyvalue;  //用户名（在此赋值）
+
+				var reg  = /^[a-z || A-Z || 0-9]\w+$/;
+				var m = reg.test(xxx);
+				if(m)   
+				{   
+				}   
+				else   
+				{   
+					alert(_("err keychar"));
+					document.wizard_form.PSK_KEY.select();
+					return false;
+				} 
+
 			}
 		}	
 	}
@@ -188,7 +212,7 @@ function switch_wifi()
 <tr><td class="title" colspan="2" id="wsetingst"></td></tr>
 <tr>
   <td class="head" id="nname"></td>
-  <td><input type="text" name="AP_SSID" size="20" maxlength="32" class="handaer_text_content"  value="~~AP_SSID~">&nbsp;<span id="ssidrequest"></span></td>
+  <td><input type="text" name="AP_SSID" size="32" maxlength="32" class="handaer_text_content"  value="~~AP_SSID~">&nbsp;<span id="ssidrequest"></span></td>
 </tr>
 
 <tr>

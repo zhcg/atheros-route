@@ -5,6 +5,17 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
+function style_display_on()
+{
+	if (window.ActiveXObject)
+	{ // IE
+		return "block";
+	}
+	else if (window.XMLHttpRequest)
+	{ // Mozilla, Safari,...
+		return "table-row";
+	}
+}
 
 function initTranslation()
 {
@@ -116,7 +127,7 @@ function  WIFSwitch()
 	var c = myString.lastIndexOf(")(");
 	var d = myString.lastIndexOf(")");
 	
-	var s, ss, sss, ssss;                // 声明变量。
+	var s, ss, sss, ssss;// 声明变量。
 	
     s = myString.substr(0, a); // 获取子字符串。
     ss = myString.substr(a+1, b-a-1); // 获取子字符串。
@@ -131,9 +142,14 @@ function  WIFSwitch()
 	if(ssss == "None")
 	{
 		document.wizard_form.PSK_KEY_2.disabled = true;
+		document.getElementById("tt2").style.visibility = "hidden";
+		document.getElementById("tt2").style.display = "none";
+
 	}
 	else
 	{
+		document.getElementById("tt2").style.visibility = "visible";
+		document.getElementById("tt2").style.display = style_display_on();
 		document.wizard_form.PSK_KEY_2.disabled = false;
 	}
 }
@@ -176,7 +192,7 @@ function refreshwds()
   <td class="head">MAC</td>
   <td><input name="ROOTAP_MAC_2" id="ROOTAP_MAC_2" maxlength=32 size=32 class="handaer_text_content" value="~~ROOTAP_MAC_2~"></td>
 </tr>
-<tr>
+<tr id="tt2">
   <td class="head" id="R_pword"></td>
   <td><span id="pwdinput"><input type="password" id="pwd" name="PSK_KEY_2" maxlength="32" size="32" class="handaer_text_content" value="~~PSK_KEY_2~" /></span><input type="checkbox" onClick="showpwd()"/><span id="showp"></span></td>
 </tr>
@@ -186,14 +202,14 @@ function refreshwds()
   </tr>
   <tr>
 	<td id="Wlisttitle3"></td>
-    <td><select name="WFILIST" id="WFILIST" size="1" onclick="WIFSwitch()">
+    <td><select name="WFILIST" id="WFILIST" size="1" onchange="WIFSwitch()">
 	~LList~</select>
 	</td>
  </tr>
  <tr>
     <td>&nbsp; &nbsp;</td>
-    <td><input type="button" name="refresh" id="fresh" class="handaer_input" value="Fresh" onClick="window.location.href='w4?INDEX=11'"></td>
-    <!--td><input type="button" name="refresh" id="fresh" value="Fresh" onClick="refreshwds()"></td-->
+    <!--td><input type="button" name="refresh" id="fresh" class="handaer_input" value="Fresh" onClick="window.location.href='w4?INDEX=11'"></td-->
+    <td><input type="button" name="refresh" id="fresh" value="Fresh" onClick="refreshwds()"></td>
  </tr>
 </table>
 

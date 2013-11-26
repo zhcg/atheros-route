@@ -171,7 +171,7 @@
   <message msgid="admw opmope" msgstr="工作模式" />  
   
   <message msgid="admw div_wireless_title" msgstr="请设置您的Wi-Fi账户和密码。您的无线设备将使用以下网络上网。" />  
-  <message msgid="admw wsetingst" msgstr="无线设置" />  
+  <message msgid="admw wsetingst" msgstr="内网设置" />  
   <message msgid="admw nname" msgstr="网络名称(SSID)" />  
   <message msgid="admw security" msgstr="安全" />
   <message msgid="admw wkey" msgstr="密钥" />
@@ -278,9 +278,9 @@
 	<message msgid="admw wifiswitch" msgstr="网络开关" />
 	<message msgid="admw onbutton" msgstr="开启" />
     <message msgid="admw offbutton" msgstr="关闭" />
-    <message msgid="admw waiting" msgstr="请稍等......" />
+    <message msgid="admw waiting" msgstr="正在检测,请稍等......" />
 	
-    <message msgid="admw ssidrequest" msgstr="  (1-12位中文、字母、数字或下划线)" />
+    <message msgid="admw ssidrequest" msgstr="  (1-24位字母、数字或下划线)" />
     <message msgid="admw passwordrequest" msgstr="  (6-12位字母、数字或下划线)" />
 	
     <message msgid="err ip empty" msgstr="IP地址为空" />
@@ -290,6 +290,8 @@
 	<message msgid="err key" msgstr="请输入密钥" />
 	
     <message msgid="err pwd mismatch" msgstr="密码前后不一致" />
+	<message msgid="err SSID length" msgstr="SSID长度错误" />
+	<message msgid="err pwd length" msgstr="密码长度错误" />
 	
 	<message msgid="err sRP" msgstr="请指定重播周期" />
 	<message msgid="err sIT" msgstr="请指定空闲时间" />

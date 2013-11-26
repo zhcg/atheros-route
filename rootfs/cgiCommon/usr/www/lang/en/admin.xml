@@ -171,7 +171,7 @@
   <message msgid="admw opmope" msgstr="Operation Mode" />  
   
   <message msgid="admw div_wireless_title" msgstr="Please set your Wi-Fi account and password. Your wireless device will use the following network." />  
-  <message msgid="admw wsetingst" msgstr="Wireless Settings" />  
+  <message msgid="admw wsetingst" msgstr="WIFI Settings" />  
   <message msgid="admw nname" msgstr="Network Name (SSID)" />  
   <message msgid="admw security" msgstr="Security" />
   <message msgid="admw wkey" msgstr="KEY" />
@@ -285,7 +285,7 @@
     <message msgid="admw offbutton" msgstr="OFF" />
     <message msgid="admw waiting" msgstr="Please Wait......" />
 	
-	<message msgid="admw ssidrequest" msgstr="  (1-12 hinese letters, numbers, or underscore)" />
+	<message msgid="admw ssidrequest" msgstr="  (1-24 letters, numbers, or underscore)" />
     <message msgid="admw passwordrequest" msgstr="  (6-12 letters, numbers or underscore)" />
 
 	    <message msgid="err ip empty" msgstr="Error. IP address is empty." />
@@ -295,7 +295,9 @@
 	<message msgid="err key" msgstr="Please input key!" />
 	
     <message msgid="err pwd mismatch" msgstr="Password mismatched!" />
-	
+	<message msgid="err SSID length" msgstr="The length of SSID is error" />
+	<message msgid="err pwd length" msgstr="The length of Password is error" />
+
 	<message msgid="err sRP" msgstr="Please specify Redial Period" />
 	<message msgid="err sIT" msgstr="Please specify Idle Time" />
 	

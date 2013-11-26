@@ -5,15 +5,54 @@
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
-
+function checkInjection(str)
+{
+	var len = str.length;
+	for (var i=0; i<str.length; i++) {
+		if ( str.charAt(i) == '\r' || str.charAt(i) == '\n'){
+				return false;
+		}else
+	        continue;
+	}
+    return true;
+}
 function AdmFormCheck()
 {
 	if (document.Adm.ADMPASS.value.length == 0)
 	{
 		alert(_("err pwd empty"));
-		document.Adm.PPPOE_PWD.select();
+		document.Adm.ADMPASS.select();
 		return false;
 	}
+	if ((document.Adm.ADMPASS.value.length  < 6)||(document.Adm.ADMPASS.value.length > 12))
+	{
+		alert(_("err pwd length"));
+		document.Adm.ADMPASS.select();
+		return false;
+	}
+	//if(checkInjection(document.Adm.ADMPASS.value) == false)
+	//{
+	//	alert(_("err keychar"));
+	//	document.Adm.ADMPASS.select();
+	//	return false;
+	//}
+	{
+		var xxx=document.Adm.ADMPASS.value;  //用户名（在此赋值）
+
+		var reg  = /^[a-z || A-Z || 0-9]\w+$/;
+		var m = reg.test(xxx);
+		if(m)   
+		{   
+		}   
+		else   
+		{   
+			alert(_("err keychar"));
+			document.Adm.ADMPASS.select();
+			return false;
+		} 
+
+	}
+	
 	if (document.Adm.ADMPASS.value != document.Adm.ADMPASS2.value) 
 	{
 		alert(_("err pwd mismatch"));
@@ -44,6 +83,8 @@ function initTranslation()
 	e.innerHTML = _("admw securitydes");	
 	e = document.getElementById("securitytitle");
 	e.innerHTML = _("man admin setting");
+	e = document.getElementById("passwordrequest");
+	e.innerHTML = _("admw passwordrequest");
 }
 function initValue()
 {
@@ -81,7 +122,7 @@ function showpwd()
 
   <tr>
     <td class="head" id="manAdmPasswd"></td>
-    <td><span id="pwdinput"><input type="password" id="pwd" name="ADMPASS" maxlength="32" size="32" class="handaer_text_content" value="~~ADMPASS~" /></span><input type="checkbox" onClick="showpwd()"/><span id="showp"></span></td>
+    <td><span id="pwdinput"><input type="password" id="pwd" name="ADMPASS" maxlength="32" size="32" class="handaer_text_content" value="~~ADMPASS~" /></span><input type="checkbox" onClick="showpwd()"/><span id="showp"></span>&nbsp;<span id="passwordrequest"></span></td>
   </tr>
   <tr>
     <td class="head" id="manAdmPasswd2"></td>
