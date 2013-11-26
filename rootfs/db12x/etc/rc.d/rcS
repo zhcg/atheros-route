@@ -118,10 +118,6 @@ fi
 ##
 /etc/rc.d/rc.modules
 /etc/nat_vlan.sh
-if [ "${IPGW}" != "" ]
-then
-	route add default gw ${IPGW}
-fi
 if [ "${PRIDNS}" != "" ]
 then
 	echo "nameserver ${PRIDNS}" > /etc/resolv.conf

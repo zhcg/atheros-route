@@ -151,6 +151,7 @@ function  WIFSwitch()
 		document.getElementById("tt2").style.visibility = "visible";
 		document.getElementById("tt2").style.display = style_display_on();
 		document.wizard_form.PSK_KEY_2.disabled = false;
+		document.wizard_form.PSK_KEY_2.value="";
 	}
 }
 function refreshwds()
@@ -209,7 +210,7 @@ function refreshwds()
  <tr>
     <td>&nbsp; &nbsp;</td>
     <!--td><input type="button" name="refresh" id="fresh" class="handaer_input" value="Fresh" onClick="window.location.href='w4?INDEX=11'"></td-->
-    <td><input type="button" name="refresh" id="fresh" value="Fresh" onClick="refreshwds()"></td>
+    <td><input type="button" name="refresh" id="fresh" class="handaer_input" value="Fresh" onClick="refreshwds()"></td>
  </tr>
 </table>
 

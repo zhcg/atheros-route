@@ -404,33 +404,44 @@ function isAllNum(str)
 
 function checkIpAddr(field, ismask)
 {
-	if (field.value == "") {
-		alert(_("err ip empty"));
+	if (field.value == "") 
+	{
+		if(ismask)
+		{
+			alert(_("err mask empty"));
+		}
+		else
+		{	
+			alert(_("err ip empty"));
+		}
 		field.value = field.defaultValue;
 		field.focus();
 		return false;
 	}
 
-	if (isAllNum(field.value) == 0) {
+	if (isAllNum(field.value) == 0) 
+	{
 		alert(_("err number"));
 		field.value = field.defaultValue;
 		field.focus();
 		return false;
 	}
 
-	if (ismask) {
+	if (ismask)
+	{
 		if ((!checkRange(field.value, 1, 0, 256)) ||
 				(!checkRange(field.value, 2, 0, 256)) ||
 				(!checkRange(field.value, 3, 0, 256)) ||
 				(!checkRange(field.value, 4, 0, 256)))
 		{
-			alert('IP adress format error.');
+			alert(_("err Maskmormat"));
 			field.value = field.defaultValue;
 			field.focus();
 			return false;
 		}
 	}
-	else {
+	else 
+	{
 		if ((!checkRange(field.value, 1, 0, 255)) ||
 				(!checkRange(field.value, 2, 0, 255)) ||
 				(!checkRange(field.value, 3, 0, 255)) ||
@@ -442,9 +453,27 @@ function checkIpAddr(field, ismask)
 			return false;
 		}
 	}
+	{
+		var exp=/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
+		var reg = field.value.match(exp);
+		if(reg==null)
+		{
+			if(ismask)
+			{
+				alert(_("err Maskmormat"));
+			}
+			else
+			{	
+				alert(_("err IPmormat"));
+			}
+			field.value = field.defaultValue;
+			field.focus();
+			return false;
+		}
+	}
+
 	return true;
 }
-
 function CheckWanValue()
 {
 	if (document.wizard_form.WAN_MODE[2].checked == true)		//STATIC
@@ -1046,7 +1075,7 @@ function  WIFSwitch()
 		document.wizard_form.PSK_KEY_2.disabled = false;
 		document.getElementById("tt2").style.visibility = "visible";
 		document.getElementById("tt2").style.display = style_display_on();
-
+		document.wizard_form.PSK_KEY_2.value="";
 	}
 }
 function refreshwds()
@@ -1430,6 +1459,7 @@ function refreshwds()
     <input type="submit" name="PPP" id="PPP" style="display:none" value="PPP">
     <input type="submit" name="L2TP" id="L2TP" style="display:none" value="L2TP">
     <input type="submit" name="P2TP" id="P2TP" style="display:none" value="P2TP">
+	<input type="submit" name="WIRRE" id="WIRRE" style="display:none" value="WIRRE">
 	<input type="text" style="display:none" name="AUTOTYPE" id="AUTOTYPE" size="20" maxlength="32" value="~~AUTOTYPE~">
 	<input type="text" style="display:none" name="INDEX" id="INDEX" value="~~INDEX~">
     <input type="button" name="AUTOGET" id="AUTOGET" style="display:none" value="AUTOGET" onClick="window.location.href='wwai?INDEX=12'"></td>

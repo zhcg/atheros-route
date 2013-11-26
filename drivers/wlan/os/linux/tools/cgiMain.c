@@ -2147,11 +2147,12 @@ int main(int argc,char **argv)
     strcpy(Page,"../");
     strcat(Page,argv[0]);
     strcat(Page,".html");
+	/*
 	if(strcmp(Page,"../map.html")==0)
 	{
 		//fprintf(errOut,"[luodp] test net\n");
 		Execute_cmd("net_test > /dev/null 2>&1", rspBuff);
-	}
+	}*/
 	//fprintf(errOut,"%s  %d Page:%s\n",__func__,__LINE__,Page);
     /*
     ** Now to get the environment data.
@@ -2329,6 +2330,25 @@ int main(int argc,char **argv)
                 else if((parameterIndex==12)&&(lock12==0))//do wan mode detect
                 {
 					Execute_cmd("net_check", rspBuff);
+				    memset(&config,0,sizeof(config));
+                    f = fopen("/tmp/.apcfg","r");
+                    if ( !f )
+                    {
+                        f = fopen( NVRAM, "r" );
+                        if (!f)
+                        {
+                        fprintf(errOut,"ERROR:  %s not defined on this device\n", NVRAM);
+                        fprintf(errOut,"ERROR:  Cannot store data in flash!!!!\n");
+                        exit(-1);
+                        }
+
+                        fseek(f, NVRAM_OFFSET, SEEK_SET);
+                    }
+                    if ( f )
+                    {
+                        fillParamStruct(f);
+                        fclose(f);
+                    }
                     lock12 = 1;
                 }
                sprintf(Value,"%d",parameterIndex);

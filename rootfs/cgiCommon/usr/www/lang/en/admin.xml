@@ -152,7 +152,7 @@
   <message msgid="admw DHCPdisc" msgstr="Broadband service providers do not provide any parameter, no router can directly access, the computer does not need to do any settings." />
   <message msgid="admw SM" msgstr="Manual settings (static IP)" />
   <message msgid="admw SMdisc" msgstr="The fixed IP address, subnet mask, gateway, DNS server" />
-  <message msgid="admw PPPOE" msgstr="PPPOE (ADSL)" />
+  <message msgid="admw PPPOE" msgstr="PPPoE (ADSL)" />
   <message msgid="admw PPPOEdisc" msgstr="Choose this, user must input a username and password for ISP authenticator." />
   <message msgid="admw L2TPc" msgstr="L2TP Client" />
   <message msgid="admw PPTPc" msgstr="PPTP Client" />
@@ -170,8 +170,8 @@
   <message msgid="admw vpword" msgstr="Verify Password" />  
   <message msgid="admw opmope" msgstr="Operation Mode" />  
   
-  <message msgid="admw div_wireless_title" msgstr="Please set your Wi-Fi account and password. Your wireless device will use the following network." />  
-  <message msgid="admw wsetingst" msgstr="WIFI Settings" />  
+  <message msgid="admw div_wireless_title" msgstr="Please set your WiFi account and password. Your wireless device will use the following network." />  
+  <message msgid="admw wsetingst" msgstr="WiFi Settings" />  
   <message msgid="admw nname" msgstr="Network Name (SSID)" />  
   <message msgid="admw security" msgstr="Security" />
   <message msgid="admw wkey" msgstr="KEY" />
@@ -223,10 +223,10 @@
   <message msgid="admw int" msgstr="Wired Connection" />  
   <message msgid="admw int1" msgstr="Connect to the line into the house" />  
   <message msgid="admw wireless" msgstr="Wireless connection" />  
-  <message msgid="admw int2" msgstr="Connect to an existing router for Wi-Fi network" />  
+  <message msgid="admw int2" msgstr="Connect to an existing router for WiFi network" />  
   
   <message msgid="admw RMd" msgstr="Wireless Relay" />  
-  <message msgid="admw R_uname" msgstr="WIFI Name(SSID)" />  
+  <message msgid="admw R_uname" msgstr="WiFi Name(SSID)" />  
   <message msgid="admw R_pword" msgstr="Password" />  
   
   <message msgid="admw bBACK" msgstr="Back" />  
@@ -235,15 +235,15 @@
   <message msgid="admw bAPPLY" msgstr="Apply" />  
   
    <message msgid="admw w1title" msgstr="Setting wizard" />
-   <message msgid="admw w2title" msgstr="Network Settings" />  
-   <message msgid="admw w3ttitle" msgstr="Wi-Fi Settings" />  
+   <message msgid="admw w2title" msgstr="WAN Settings" />  
+   <message msgid="admw w3ttitle" msgstr="WiFi Settings" />  
    <message msgid="admw w4ttitle" msgstr="Wireless Relay" />  
    <message msgid="admw w5ttitle" msgstr="Parental Control" /> 
 	<message msgid="admw wwtitle" msgstr="Network/Wireless Relay" />     
   
    <message msgid="admw modedes" msgstr="Please select the router WAN connection type." />  
-   <message msgid="admw wifides" msgstr="Please set the HBD routing Wi-Fi account and password. Your computer, PAD, intelligent mobile phone will use the following network." />  
-   <message msgid="admw wirelessdes" msgstr="Please select the Wi-Fi you want to connect to." />  
+   <message msgid="admw wifides" msgstr="Please set the HBD routing WiFi account and password. Your computer, PAD, intelligent mobile phone will use the following network." />  
+   <message msgid="admw wirelessdes" msgstr="Please select the WiFi you want to connect to." />  
    <message msgid="admw parentdes" msgstr="As a parent, you can control child's Internet time and visiting the webpage through the page settings" />  
    
    <message msgid="admw PPMAC" msgstr="The MAC address of parent PC" />
@@ -267,20 +267,20 @@
 	
 	<message msgid="admw auto_dhcp" msgstr="Automatically select DHCP mode" />
 	<message msgid="admw auto_sip" msgstr="Automatically select StaticIP mode" />
-	<message msgid="admw auto_ppp" msgstr="Automatically select PPPOE mode" />
+	<message msgid="admw auto_ppp" msgstr="Automatically select PPPoE mode" />
 	<message msgid="admw auto_l2tp" msgstr="Automatically select L2TP mode" />
 	<message msgid="admw auto_p2tp" msgstr="Automatically select P2TP mode" />
 	<message msgid="admw auto_fail" msgstr="Automatically select fail！,please check the internet connection or select manually " />
 	
 	<message msgid="admw fresh" msgstr="Scanning" />
-	<message msgid="admw Wlisttitle1" msgstr="WIFI list" />
-	<message msgid="admw Wlisttitle2" msgstr="Existing WIFI" />
+	<message msgid="admw Wlisttitle1" msgstr="WiFi list" />
+	<message msgid="admw Wlisttitle2" msgstr="Existing WiFi" />
 	<message msgid="admw Wlisttitle3" msgstr="Drop-down list" />
     <message msgid="toplanguage" msgstr="e" />
     <message msgid="admin open" msgstr="Open" />
 	<message msgid="admin jiami" msgstr="Security（Recommend）" />
 
-    <message msgid="admw wifiswitch" msgstr="WIFI switch" />
+    <message msgid="admw wifiswitch" msgstr="WiFi switch" />
 	<message msgid="admw onbutton" msgstr="ON" />
     <message msgid="admw offbutton" msgstr="OFF" />
     <message msgid="admw waiting" msgstr="Please Wait......" />
@@ -288,7 +288,8 @@
 	<message msgid="admw ssidrequest" msgstr="  (1-24 letters, numbers, or underscore)" />
     <message msgid="admw passwordrequest" msgstr="  (6-12 letters, numbers or underscore)" />
 
-	    <message msgid="err ip empty" msgstr="Error. IP address is empty." />
+	<message msgid="err ip empty" msgstr="Error. IP address is empty." />
+	<message msgid="err mask empty" msgstr="Error. Mask is empty." />
     <message msgid="err name empty" msgstr="Please enter user name!" />
 	<message msgid="err SSID empty" msgstr="Please enter SSID!" />    
     <message msgid="err pwd empty" msgstr="Please enter password!" />
@@ -303,6 +304,8 @@
 	
 	<message msgid="err number" msgstr="It should be a [0-9] number." />
 	<message msgid="err IPmormat" msgstr="IP adress format error." />
+	<message msgid="err Maskmormat" msgstr="Mask format error." />
+
 	<message msgid="err IP error" msgstr="WAN IP and local IP cannot be located in the same network, please reset" />
 	
 	<message msgid="err keylen" msgstr="Please input at least 6 and less than 12 character of key!" />

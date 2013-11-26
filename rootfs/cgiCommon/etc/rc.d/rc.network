@@ -32,6 +32,11 @@ if [ "${WAN_MODE}" != "bridged" ]; then
         ##
 
         ifconfig $WAN_IF $WAN_IPADDR netmask $WAN_NETMASK up
+		if [ "${IPGW}" != "" ]
+		then
+			route add default gw ${IPGW}
+		fi
+
 	elif [ "${WAN_MODE}" = "pppoe" ]; then
         ##
         ## pppoe

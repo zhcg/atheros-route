@@ -364,33 +364,44 @@ function isAllNum(str)
 
 function checkIpAddr(field, ismask)
 {
-	if (field.value == "") {
-		alert(_("err ip empty"));
+	if (field.value == "") 
+	{
+		if(ismask)
+		{
+			alert(_("err mask empty"));
+		}
+		else
+		{	
+			alert(_("err ip empty"));
+		}
 		field.value = field.defaultValue;
 		field.focus();
 		return false;
 	}
 
-	if (isAllNum(field.value) == 0) {
+	if (isAllNum(field.value) == 0) 
+	{
 		alert(_("err number"));
 		field.value = field.defaultValue;
 		field.focus();
 		return false;
 	}
 
-	if (ismask) {
+	if (ismask)
+	{
 		if ((!checkRange(field.value, 1, 0, 256)) ||
 				(!checkRange(field.value, 2, 0, 256)) ||
 				(!checkRange(field.value, 3, 0, 256)) ||
 				(!checkRange(field.value, 4, 0, 256)))
 		{
-			alert(_("err IPmormat"));
+			alert(_("err Maskmormat"));
 			field.value = field.defaultValue;
 			field.focus();
 			return false;
 		}
 	}
-	else {
+	else 
+	{
 		if ((!checkRange(field.value, 1, 0, 255)) ||
 				(!checkRange(field.value, 2, 0, 255)) ||
 				(!checkRange(field.value, 3, 0, 255)) ||
@@ -402,6 +413,25 @@ function checkIpAddr(field, ismask)
 			return false;
 		}
 	}
+	{
+		var exp=/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
+		var reg = field.value.match(exp);
+		if(reg==null)
+		{
+			if(ismask)
+			{
+				alert(_("err Maskmormat"));
+			}
+			else
+			{	
+				alert(_("err IPmormat"));
+			}
+			field.value = field.defaultValue;
+			field.focus();
+			return false;
+		}
+	}
+
 	return true;
 }
 
