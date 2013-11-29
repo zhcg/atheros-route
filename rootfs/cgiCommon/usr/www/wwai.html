@@ -10,19 +10,65 @@ var step_num;
 var pppoecdb = "0";
 var showothers;
 var showoadv0;
-
+var linework;
 function style_display_on()
 {
 	if (window.ActiveXObject)
 	{ // IE
-		return "block";
+		return "inline-block";
 	}
 	else if (window.XMLHttpRequest)
 	{ // Mozilla, Safari,...
 		return "table-row";
 	}
 }
+function butwork(zhi1,zhi2,zhi3,zhi4)
+{
+	if(zhi1 == "false")
+	{
+		document.getElementById("bBACK").style.visibility = "visible";
+		document.getElementById("bBACK").style.display = style_display_on();
+	}
+	else
+	{
+		document.getElementById("bBACK").style.visibility = "hidden";
+		document.getElementById("bBACK").style.display = "none";
+	}
+	
+	if(zhi2 == "false")
+	{
+		document.getElementById("bNEXT").style.visibility = "visible";
+		document.getElementById("bNEXT").style.display = style_display_on();
+	}
+	else
+	{
+		document.getElementById("bNEXT").style.visibility = "hidden";
+		document.getElementById("bNEXT").style.display = "none";
+	}
 
+		if(zhi3 == "false")
+	{
+		document.getElementById("bCANCEL").style.visibility = "visible";
+		document.getElementById("bCANCEL").style.display = style_display_on();
+	}
+	else
+	{
+		document.getElementById("bCANCEL").style.visibility = "hidden";
+		document.getElementById("bCANCEL").style.display = "none";
+	}
+
+		if(zhi4 == "false")
+	{
+		document.getElementById("bAPPLY").style.visibility = "visible";
+		document.getElementById("bAPPLY").style.display = style_display_on();
+	}
+	else
+	{
+		document.getElementById("bAPPLY").style.visibility = "hidden";
+		document.getElementById("bAPPLY").style.display = "none";
+	}
+
+}
 function checkInjection(str)
 {
 	var len = str.length;
@@ -58,14 +104,25 @@ function change_step(offset)
 	{
 		if (document.wizard_form.intType[0].checked == true) 
 		{		
-			document.getElementById("div_wan_opmode").style.visibility = "visible";
-			document.getElementById("div_wan_opmode").style.display = style_display_on();
-			document.getElementById("div_wan_title").style.visibility = "visible";
-			document.getElementById("div_wan_title").style.display = style_display_on();
-			document.wizard_form.back_motion.disabled = false;
-			document.wizard_form.next_motion.disabled = false;
-			document.wizard_form.cancel_motion.disabled = false;
-			document.wizard_form.apply_motion.disabled = true;
+			//document.getElementById("div_wan_opmode").style.visibility = "visible";
+			//document.getElementById("div_wan_opmode").style.display = style_display_on();
+			//document.getElementById("div_wan_title").style.visibility = "visible";
+			//document.getElementById("div_wan_title").style.display = style_display_on();
+			//butwork("false","false","true","true");
+			if(linework == 1)
+			{
+				document.getElementById("div_wan_opmode").style.visibility = "visible";
+				document.getElementById("div_wan_opmode").style.display = style_display_on();
+				document.getElementById("div_wan_title").style.visibility = "visible";
+				document.getElementById("div_wan_title").style.display = style_display_on();
+				butwork("false","false","true","true");
+			}
+			else
+			{
+				document.getElementById("buttontable").style.visibility = "hidden";
+				document.getElementById("buttontable").style.display = "none";	
+				document.getElementById('CHECKLINE').click();
+			}
 		}
 		else if (document.wizard_form.intType[1].checked == true) 
 		{
@@ -73,10 +130,7 @@ function change_step(offset)
 			document.getElementById("div_Router").style.visibility = "visible";
 			document.getElementById("div_Router").style.display = style_display_on();
 			
-			document.wizard_form.back_motion.disabled = false;
-			document.wizard_form.next_motion.disabled = true;
-			document.wizard_form.cancel_motion.disabled = false;
-			document.wizard_form.apply_motion.disabled = false;
+			butwork("false","true","true","false");
 		}
 
 	}
@@ -84,6 +138,7 @@ function change_step(offset)
 	{
 		if(document.wizard_form.intType[1].checked == true)
 		{
+			waitgifshow();
 			document.getElementById('WIRRE').click();
 		}
 		else if (document.wizard_form.WAN_MODE[0].checked == true) 
@@ -98,6 +153,7 @@ function change_step(offset)
 		{
 			document.getElementById("buttontable").style.visibility = "hidden";
 			document.getElementById("buttontable").style.display = "none";
+			waitgifshow();
 			document.getElementById('DHCP').click();
 		}
 		else
@@ -105,32 +161,34 @@ function change_step(offset)
 			document.getElementById("div_wan_title").style.visibility = "visible";
 			document.getElementById("div_wan_title").style.display = style_display_on();
 			connectionTypeSwitch();
-			document.wizard_form.back_motion.disabled = false;
-			document.wizard_form.next_motion.disabled = false;
-			document.wizard_form.cancel_motion.disabled = false;
-			document.wizard_form.apply_motion.disabled = true;
+			butwork("false","false","true","true");
 		}
 	}
 	else if (step_num == 3)
 	{
 		if (document.wizard_form.WAN_MODE[1].checked == true) 
 		{
+			waitgifshow();
 			document.getElementById('DHCP').click();
 		}
 		else if (document.wizard_form.WAN_MODE[2].checked == true) 
 		{
+			waitgifshow();
 			document.getElementById('SIP').click();
 		}
 		else if (document.wizard_form.WAN_MODE[3].checked == true) 
 		{
+			waitgifshow();
 			document.getElementById('PPP').click();
 		}
 		else if (document.wizard_form.WAN_MODE[4].checked == true) 
 		{
+			waitgifshow();
 			document.getElementById('L2TP').click();
 		}
 		else if (document.wizard_form.WAN_MODE[5].checked == true) 
 		{
+			waitgifshow();
 			document.getElementById('P2TP').click();
 		}
 		else 
@@ -873,6 +931,15 @@ function initTranslation()
 	e.innerHTML = _("admw Wlisttitle3");
 	e = document.getElementById("waiting");
 	e.innerHTML = _("admw waiting");	
+	e = document.getElementById("settingwaiting");
+	e.innerHTML = _("admw settingwaiting");	
+	
+	e = document.getElementById("wdsswitch");
+	e.innerHTML = _("admw wdsswitch");	
+	e = document.getElementById("onbutton");
+	e.innerHTML = _("admw onbutton");	
+	e = document.getElementById("offbutton");
+	e.innerHTML = _("admw offbutton");
 
 }
 function initValue()
@@ -881,10 +948,11 @@ function initValue()
 	initTranslation();
 	hideAllTables();
 	disableWanSettings();
-
+	switch_wds();
 	step_num = 0;
 	showothers = 0;
 	showoadv = 0;
+	linework = 0;
 	{
 		if((document.getElementById("INDEX").value == "11") || (document.getElementById("INDEX").value == 11))
 		{
@@ -938,16 +1006,33 @@ function initValue()
 			}
 			return true;
 		}
+		if((document.getElementById("INDEX").value == "13") || (document.getElementById("INDEX").value == 13))
+		{
+			document.getElementById("INDEX").value = "99";
+			document.wizard_form.intType[0].checked = true;
+			
+			var linestatus = document.wizard_form.LINEIN_OUT.value;
+			if(linestatus == "in")
+			{
+				linework = 1;
+				change_step(1);
+			}
+			else
+			{
+				document.getElementById("buttontable").style.visibility = "hidden";
+				document.getElementById("buttontable").style.display = "none";	
+				alert(_("err lineout"));
+				change_step(0);
+			}
+			return true;
+		}
 	}
 	document.getElementById("div_wizard_home").style.visibility = "visible";
 	document.getElementById("div_wizard_home").style.display = style_display_on();
 	document.getElementById("RCMd").style.visibility = "visible";
 	document.getElementById("RCMd").style.display = style_display_on();
 	
-	document.wizard_form.back_motion.disabled = true;
-	document.wizard_form.next_motion.disabled = false;
-	document.wizard_form.cancel_motion.disabled = false;
-	document.wizard_form.apply_motion.disabled = true;
+	butwork("true","false","true","true");
 }
 
 function others() 
@@ -1075,7 +1160,7 @@ function  WIFSwitch()
 		document.wizard_form.PSK_KEY_2.disabled = false;
 		document.getElementById("tt2").style.visibility = "visible";
 		document.getElementById("tt2").style.display = style_display_on();
-		document.wizard_form.PSK_KEY_2.value="";
+		document.getElementById("wrpass").value="";
 	}
 }
 function refreshwds()
@@ -1087,7 +1172,78 @@ function refreshwds()
 	document.getElementById("gifshow").style.display = style_display_on();
 	document.getElementById('REFRESHWFi').click();
 }
+function waitgifshow()
+{
+	hideAllTables();
+	document.getElementById("waitshow").style.visibility = "visible";
+	document.getElementById("waitshow").style.display = style_display_on();
+	document.getElementById("buttontable").style.visibility = "hidden";
+	document.getElementById("buttontable").style.display = "none";
+}
+function switch_wds()
+{
+	if(document.wizard_form.WDSON_OFF[0].checked == true)
+	{
+		document.getElementById("dwsset1").style.visibility = "visible";
+		document.getElementById("dwsset1").style.display = style_display_on();
+		document.getElementById("dwsset2").style.visibility = "visible";
+		document.getElementById("dwsset2").style.display = style_display_on();
+		document.getElementById("dwsset3").style.visibility = "visible";
+		document.getElementById("dwsset3").style.display = style_display_on();
+		document.getElementById("tt2").style.visibility = "visible";
+		document.getElementById("tt2").style.display = style_display_on();
+		document.getElementById("dwsset4").style.visibility = "visible";
+		document.getElementById("dwsset4").style.display = style_display_on();
+		document.getElementById("dwsset5").style.visibility = "visible";
+		document.getElementById("dwsset5").style.display = style_display_on();
 
+	}
+	else
+	{
+		document.getElementById("dwsset1").style.visibility = "hidden";
+		document.getElementById("dwsset1").style.display = "none";
+		document.getElementById("dwsset2").style.visibility = "hidden";
+		document.getElementById("dwsset2").style.display = "none";
+		document.getElementById("dwsset3").style.visibility = "hidden";
+		document.getElementById("dwsset3").style.display = "none";
+		document.getElementById("tt2").style.visibility = "hidden";
+		document.getElementById("tt2").style.display = "none";
+		document.getElementById("dwsset4").style.visibility = "hidden";
+		document.getElementById("dwsset4").style.display = "none";
+		document.getElementById("dwsset5").style.visibility = "hidden";
+		document.getElementById("dwsset5").style.display = "none";
+	}
+}
+function workoutgw()
+{
+	var myString=document.getElementById("WAN_IPADDR").value;	
+	//ip地址
+	var exp=/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
+	var reg = myString.match(exp);
+	if(reg==null)
+	{
+		//document.getElementById("IPGW").value = "";
+	}
+	else
+	{
+		if(document.getElementById("IPGW").value=="")
+		{
+			var a = myString.lastIndexOf(".");
+			var s;
+			s = myString.substr(0, a); // 获取子字符串。
+			document.getElementById("IPGW").value = s+".1";
+		}
+		if(document.getElementById("WAN_NETMASK").value=="")
+		{
+			document.getElementById("WAN_NETMASK").value = "255.255.255.0";
+		}
+		if(document.getElementById("PRIDNS").value=="")
+		{
+			document.getElementById("PRIDNS").value = "8.8.8.8";
+		}
+
+	}
+}
 </script>
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
 </head>
@@ -1125,29 +1281,37 @@ function refreshwds()
 <tr>
   <td class="title" colspan="2" id="RMd"></td>
 </tr>
-<tr>
+
+<td class="head" id="wdsswitch"></td>
+	<td>
+	<input type="radio" ~cWDSON_OFF:on~ name="WDSON_OFF" value="on" onclick="switch_wds();" checked /><span id="onbutton"></span>
+	<input type="radio" ~cWDSON_OFF:off~ name="WDSON_OFF" value="off" onclick="switch_wds();"/><span id="offbutton"></span>
+	</td>
+</tr>
+
+<tr id="dwsset1">
   <td class="head" id="R_uname"></td>
   <td><input name="AP_SSID_2" id="AP_SSID_2"  class="handaer_text_content" maxlength=32 size=32 value="~~AP_SSID_2~"></td>
 </tr>
-<tr>
+<tr id="dwsset2">
   <td class="head">MAC</td>
   <td><input name="ROOTAP_MAC_2" id="ROOTAP_MAC_2" class="handaer_text_content" maxlength=32 size=32 value="~~ROOTAP_MAC_2~"></td>
 </tr>
 <tr id="tt2">
   <td class="head" id="R_pword"></td>
-  <td><span id="wrpwd"><input type="password" id="wrpass" name="PSK_KEY_2"  class="handaer_text_content" maxlength="32" size="32" value="~~PSK_KEY_2~" /></span><input type="checkbox" onClick="wrshowpwd()"/><span id="wrshowp"></span></td>
+  <td><span id="wrpwd"><input type="password" id="wrpass" name="PSK_KEY_2" class="handaer_text_content" maxlength="32" size="32" value="~~PSK_KEY_2~" /></span><input type="checkbox" onClick="wrshowpwd()"/><span id="wrshowp"></span></td>
 </tr>
-<tr>
+<tr id="dwsset3">
     <td id="Wlisttitle1"></td>
     <td id="Wlisttitle2"></td>
   </tr>
-  <tr>
+<tr id="dwsset4">
 	<td id="Wlisttitle3"></td>
     <td><select name="WFILIST" id="WFILIST" size="1" onchange="WIFSwitch()">
 	~LList~</select>
 	</td>
  </tr>
- <tr>
+ <tr id="dwsset5">
     <td>&nbsp; &nbsp;</td>
     <td><input type="button" name="refresh" id="fresh" class="handaer_input" value="Fresh" onClick="refreshwds()"></td>
  </tr>
@@ -1225,21 +1389,21 @@ function refreshwds()
 </tr>
 <tr>
   <td class="head" id="IPA"></td>
-  <td><input name="WAN_IPADDR"  class="handaer_text_content" maxlength=15 value="~~WAN_IPADDR~"></td>
+  <td><input name="WAN_IPADDR" id="WAN_IPADDR"  class="handaer_text_content" maxlength=15 value="~~WAN_IPADDR~"  onblur="workoutgw()"></td>
 </tr>
 <tr>
   <td class="head" id="SubMask"></td>
-  <td><input name="WAN_NETMASK"  class="handaer_text_content" maxlength=15 value="~~WAN_NETMASK~">
+  <td><input name="WAN_NETMASK" id="WAN_NETMASK"  class="handaer_text_content" maxlength=15 value="~~WAN_NETMASK~">
   </td>
 </tr>
 <tr>
   <td class="head" id="defgw"></td>
-  <td><input name="IPGW"  class="handaer_text_content" maxlength=15 value="~~IPGW~">
+  <td><input name="IPGW" id="IPGW"  class="handaer_text_content" maxlength=15 value="~~IPGW~">
   </td>
 </tr>
 <tr>
   <td class="head" id="pDNSserver"></td>
-  <td><input name="PRIDNS"  class="handaer_text_content" maxlength=15 value="~~PRIDNS~"></td>
+  <td><input name="PRIDNS" id="PRIDNS"  class="handaer_text_content" maxlength=15 value="~~PRIDNS~"></td>
 </tr>
 <tr>
   <td class="head" id="sDNSserver"></td>
@@ -1446,6 +1610,10 @@ function refreshwds()
     <p align="center" id="waiting"></p>
 
 </div>
+<div id="waitshow" style="display:none" align="center">
+  <img align="center" src="/images/loading.gif"></img>
+  <p align="center" id="settingwaiting"></p>
+</div>
 
 <table width="540" cellpadding="2" cellspacing="1" id="buttontable">
 <tr align="center">
@@ -1464,6 +1632,10 @@ function refreshwds()
 	<input type="text" style="display:none" name="INDEX" id="INDEX" value="~~INDEX~">
     <input type="button" name="AUTOGET" id="AUTOGET" style="display:none" value="AUTOGET" onClick="window.location.href='wwai?INDEX=12'"></td>
 	<input type="button" name="REFRESHWFi" id="REFRESHWFi" style="display:none" value="REFRESHWFi" onClick="window.location.href='wwai?INDEX=11'">
+    <input type="button" name="CHECKLINE" id="CHECKLINE" style="display:none" value="CHECKLINE" onClick="window.location.href='wwai?INDEX=13'">
+	
+	
+	<input type="text" style="display:none" name="LINEIN_OUT" id="LINEIN_OUT" size="20" maxlength="32" value="~~LINEIN_OUT~">	
 	<input type="text" style="display:none" name="WDS_CHAN" id="WDS_CHAN" size="20" maxlength="32" value="~~WDS_CHAN~">	
 	<input type="text" style="display:none" name="AP_SECMODE_2" id="AP_SECMODE_2" size="20" maxlength="32" value="~~AP_SECMODE_2~">	
 	

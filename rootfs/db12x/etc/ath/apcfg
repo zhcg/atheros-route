@@ -26,6 +26,8 @@ rm /tmp/vars.$$
 ##
 ###################################################################################
 cfg -a ATH_countrycode=${ATH_countrycode:="156"}
+cfg -a HAL_VERSION=${HAL_VERSION:="9344-B6-2"}
+cfg -a SOFT_VERSION=${SOFT_VERSION:="0.9.6"}
 cfg -a AP_IPADDR=${AP_IPADDR:="10.10.10.254"}
 cfg -a AP_NETMASK=${AP_NETMASK:="255.255.255.0"}
 cfg -a WAN_MODE=${WAN_MODE:="dhcp"}

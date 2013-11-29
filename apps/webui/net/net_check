@@ -1,0 +1,61 @@
+#!/bin/sh
+
+#VAL="`ethreg -p 4 0x11 | awk -F' ' '/Read Reg/{print $5}'`"
+VAL="`ethreg -p 4 0x11 | grep "Read Reg" | sed 's/.* //g' `"
+VAL2=0x0400
+#echo $VAL
+VAL=$(($VAL&0x0400))
+#echo $VAL
+ 
+if [ $VAL -eq 1024 ];then
+	echo "WAN link on"
+else
+if [ $VAL -eq 0 ];then
+	echo "WAN link down"
+	cfg -a AUTOTYPE=none
+	cfg -c
+	exit 1
+fi
+fi
+
+#echo "begin"
+/usr/sbin/pppoe-connect > /tmp/log 2>&1 &
+udhcpc -i eth0 > /tmp/log2 2>&1 &
+
+count=0
+while [ $count -le 30 ]
+do
+#pppoe=`grep "CHAP authentication " /tmp/log `
+pppoe=`grep "pppoe discovery state is STATE_RECEIVED_PADO" /tmp/log `
+
+#echo $pppoe
+
+#echo "second"
+if [ ! -z "$pppoe" ];then
+        echo "PPPoE"
+		killall udhcpc pppoe-connect pppoe > /dev/null 2>&1
+		cfg -a AUTOTYPE=PPPoE
+		cfg -c
+        exit 1
+fi
+#echo "third"
+
+dhcp=`grep "DHCP Client get a DHCPOFFER" /tmp/log2`
+#echo $dhcp
+#echo "fourth"
+if [ ! -z "$dhcp" ];then
+	echo "dynamic IP"
+	killall udhcpc pppoe-connect pppoe > /dev/null 2>&1
+	cfg -a AUTOTYPE=dhcp
+	cfg -c
+	exit 2
+fi
+count=`expr $count + 1`
+sleep 1
+done
+
+killall udhcpc pppoe-connect pppoe > /dev/null 2>&1
+cfg -a AUTOTYPE=static
+cfg -c
+
+echo "Static IP"

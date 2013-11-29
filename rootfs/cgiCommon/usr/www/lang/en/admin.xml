@@ -281,13 +281,18 @@
 	<message msgid="admin jiami" msgstr="Security（Recommend）" />
 
     <message msgid="admw wifiswitch" msgstr="WiFi switch" />
+	<message msgid="admw wdsswitch" msgstr="WDS switch" />
+
 	<message msgid="admw onbutton" msgstr="ON" />
     <message msgid="admw offbutton" msgstr="OFF" />
     <message msgid="admw waiting" msgstr="Please Wait......" />
-	
+    <message msgid="admw settingwaiting" msgstr="Setting,Please Wait......" />
+	<message msgid="admw uploadwaiting" msgstr="Upgrading,Please Wait......" />
+
 	<message msgid="admw ssidrequest" msgstr="  (1-24 letters, numbers, or underscore)" />
     <message msgid="admw passwordrequest" msgstr="  (6-12 letters, numbers or underscore)" />
 
+	<message msgid="err lineout" msgstr="The line is out!" />
 	<message msgid="err ip empty" msgstr="Error. IP address is empty." />
 	<message msgid="err mask empty" msgstr="Error. Mask is empty." />
     <message msgid="err name empty" msgstr="Please enter user name!" />
@@ -316,5 +321,15 @@
 	
 	<message msgid="password change" msgstr="Password has been changed,the new password works after reset" />
 	<message msgid="admw securitydes" msgstr="Modify the routing Web management page login password" />
+	
+	<message msgid="admw uploadtitle" msgstr="Firmware upgrade" />
+	<message msgid="admw uploaddes" msgstr="Choose to upgrade using image files, do an in place upgrade" />
+	<message msgid="admw uploadfirware" msgstr="Firmware upgrade" />
+	<message msgid="admw up_selsectfile" msgstr="Please selest image file" />
+	<message msgid="admw Upload" msgstr="Upgrade" />
+	<message msgid="err file empty" msgstr="Please choose the image file!" />
+	<message msgid="upgrade success" msgstr="Upgrade success!" />
+	<message msgid="admw channelchoose" msgstr="Channel select" />
+	<message msgid="admw channelauto" msgstr="AUTO" />
 
 </po>

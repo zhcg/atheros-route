@@ -1,0 +1,18 @@
+#!/bin/sh
+########################################
+#system upgrad tool for web GUI,ap83
+#parameter numbers check and usage
+if [ $# -ne 1 ] ;then
+#        echo "Usage: sysupgrade [SYSTEM-FILENAME]"
+        exit 1
+fi
+
+############################################
+#if file exist
+if [ -e $1 ]; then
+#        echo "file exist!"
+        cp /usr/sbin/__sysupgrade /tmp/
+		mv $1 /tmp/9344version.img 
+		cd /tmp
+        /tmp/__sysupgrade /tmp/9344version.img  2>&1
+fi

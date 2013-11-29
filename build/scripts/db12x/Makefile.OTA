@@ -34,24 +34,24 @@ ROOTFS_SIZE = 0xe30000
 #
 
 PACKED_SIZE = 16M
-PACKED_IMAGE = ota.bin
+PACKED_IMAGE_2 = ota.bin
 
 makeotaimage: check_otaimg
 
 	@echo "Begin Packed OTA Image Size"
 
 # Copy Kernel
-	@cp $(Image_DIR)/$(KERNEL_IMAGE_NAME) $(Image_DIR)/$(PACKED_IMAGE)
+	@cp $(Image_DIR)/$(KERNEL_IMAGE_NAME) $(Image_DIR)/$(PACKED_IMAGE_2)
 
 # Finish Kernel and mib0 and ART Padding
 	@SIZE=`wc -c $(Image_DIR)/$(KERNEL_IMAGE_NAME) | awk '{ print $$1 }'` ; \
 	KERNEL_PART_SIZE=`printf "%d" $(KERNEL_SIZE)` ; \
 	PAD=`expr $$KERNEL_PART_SIZE - $$SIZE` ; \
 	dd if=/dev/zero count=1 bs=$$PAD 2> /dev/null | \
-	tr \\000 \\377 >> $(Image_DIR)/$(PACKED_IMAGE)	
+	tr \\000 \\377 >> $(Image_DIR)/$(PACKED_IMAGE_2)	
 	
 # Copy Rootfs
-	@cat $(Image_DIR)/$(ROOTFS_IMAGE_NAME) >> $(Image_DIR)/$(PACKED_IMAGE)
+	@cat $(Image_DIR)/$(ROOTFS_IMAGE_NAME) >> $(Image_DIR)/$(PACKED_IMAGE_2)
 
 	@echo "End Packed OTA Image Size "
 

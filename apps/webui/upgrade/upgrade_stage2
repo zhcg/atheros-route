@@ -1,0 +1,57 @@
+#!/bin/sh
+
+sync
+/bin/sleep 1
+echo "*** Unmounting existing file systems"
+/bin/umount -f /oldroot/dev/pts
+/bin/umount -f /oldroot/proc
+#/bin/umount /oldroot/etc
+#/bin/umount /oldroot/var
+/bin/umount -f /oldroot/
+
+
+ROOTFS_SIZE=14876672
+KERNEL_SIZE=1441792
+
+SIZE=`wc -c /tmp/9344version.img | cut -c1-7`
+#echo $SIZE
+if [ $SIZE -lt $KERNEL_SIZE ] || [ $SIZE -gt $ROOTFS_SIZE ];then
+	echo "wrong size"
+	exit 1
+fi
+
+PAD=`expr $ROOTFS_SIZE + $KERNEL_SIZE - $SIZE`
+ROOTFSSIZE=`expr $SIZE - $KERNEL_SIZE`
+
+PAD=`expr $PAD / 1024`
+ROOTFSSIZE=`expr $ROOTFSSIZE / 1024`
+
+#echo $PAD
+#echo $ROOTFSSIZE
+
+echo "*** Erasing / Copying kernel image to flash (/dev/mtdblock3)"
+#dd   if=/tmp/$1 of=/dev/mtdblock3 bs=1024  count=1408  skip=14528
+dd   if=/tmp/9344version.img of=/dev/mtdblock3 bs=1024  count=1408
+if [ $? -ne 0 ];
+then
+	echo  "ERROR: failed to copy kernel image"
+	exit 3
+fi
+
+echo "*** Erasing / Copying rootfs image to flash (/dev/mtdblock2)"
+dd   if=/tmp/9344version.img of=/dev/mtdblock2 bs=1024  count=$ROOTFSSIZE skip=1408
+if [ $? -ne 0 ];
+then
+	echo  "ERROR: failed to copy  rootfs image"
+	exit 3
+fi
+echo "rootfs done"
+dd   if=/dev/zero of=/dev/mtdblock2 bs=1024 count=$PAD seek=$ROOTFSSIZE
+if [ $? -ne 0 ];
+then
+        echo  "ERROR: failed to copy  rootfs image l"
+        exit 3
+fi
+
+/sbin/reboot
+sleep 2

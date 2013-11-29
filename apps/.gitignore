@@ -41,3 +41,6 @@ terminal_dev_register/terminal_dev_register
 terminal_dev_register/terminal_dev_register.o
 terminal_dev_register/terminal_init_test
 terminal_dev_register/terminal_init_test.o
+busybox-1.01/coreutils/chroot.o
+busybox-1.01/util-linux/pivot_root.o
+terminal_dev_register/swipe_card
