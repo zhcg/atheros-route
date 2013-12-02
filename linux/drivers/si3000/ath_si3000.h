@@ -164,8 +164,9 @@
 #ifndef USE_SRAM
 //#define NUM_DESC              32
 //#define SLIC_BUF_SIZE         1024
-#define NUM_DESC              5
-#define SLIC_BUF_SIZE         320
+#define NUM_DESC              2
+//#define NUM_DESC              8
+#define SLIC_BUF_SIZE         1024
 #else
 /* For SRAM */
 #define NUM_DESC                4
