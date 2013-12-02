@@ -1856,6 +1856,7 @@ int main(int argc,char **argv)
 
     int             lock11=0;
     int             lock12=0;
+	int             lock13=0;
     int             gohome = 0;
     /*
     ** Code Begins.
@@ -2164,11 +2165,6 @@ int main(int argc,char **argv)
      * At this point we do not know Content-Length, but http 1.0 restricts to
      * add content length so just tell the browser read until connection close
      */
-    printf("HTTP/1.0 200 OK\r\n");
-    printf("Content-type: text/html\r\n");
-    printf("Connection: close\r\n");
-    printf("\r\n");
-    printf("\r\n");
 
     /*
     ** This method allows processing of either "get" or "post" methods.  Post
@@ -2351,6 +2347,30 @@ int main(int argc,char **argv)
                     }
                     lock12 = 1;
                 }
+				else if((parameterIndex==13)&&(lock13==0))//do wan mode detect
+                {
+					Execute_cmd("wan_check", rspBuff);
+				    memset(&config,0,sizeof(config));
+                    f = fopen("/tmp/.apcfg","r");
+                    if ( !f )
+                    {
+                        f = fopen( NVRAM, "r" );
+                        if (!f)
+                        {
+                        fprintf(errOut,"ERROR:  %s not defined on this device\n", NVRAM);
+                        fprintf(errOut,"ERROR:  Cannot store data in flash!!!!\n");
+                        exit(-1);
+                        }
+
+                        fseek(f, NVRAM_OFFSET, SEEK_SET);
+                    }
+                    if ( f )
+                    {
+                        fillParamStruct(f);
+                        fclose(f);
+                    }
+					lock13 = 1;
+				}
                sprintf(Value,"%d",parameterIndex);
             }
              fprintf(errOut,"Name:%s Value:%s\n",Name,Value);
@@ -2367,18 +2387,7 @@ int main(int argc,char **argv)
     ** special strings as required.
     */
    // fprintf(errOut,"%s  %d Page:%s\n",__func__,__LINE__,Page);
-    if(translateFile(Page) < 0)
-    {
-        printf("Content-Type:text/html\n\n");
-        printf("<HTML><HEAD>\r\n");
-        printf("<LINK REL=\"stylesheet\" href=\"../styleSheet.css\" type=\"text/css\">");
-        printf("</head><body>");
-        printf("Page %s Not Found",Page);
-        printf("</body></html>");
-        exit(1);
-    }
-
-    sync();
+   sync();
    // fprintf(errOut,"%s  %d\n",__func__,__LINE__);
 
 
@@ -2390,7 +2399,11 @@ int main(int argc,char **argv)
      if((strcmp(CFG_get_by_name("DHCP",valBuff),"DHCP") == 0 )|| (strcmp(CFG_get_by_name("DHCPW",valBuff),"DHCPW")== 0 ))
      {
         fprintf(errOut,"\n%s  %d DHCP \n",__func__,__LINE__);
-		//int flag=0;
+		int flag=0;
+		if(strcmp(CFG_get_by_name("DHCPW",valBuff),"DHCPW")== 0 )
+		{
+			flag=1;
+		}
 		
 		CFG_set_by_name("AP_STARTMODE","standard");
 		//1.destory old mode pid 
@@ -2398,20 +2411,24 @@ int main(int argc,char **argv)
 		if(strstr(valBuff,"pppoe") != 0)
 		{
 			//kill pppoe
-			Execute_cmd("pppoe-stop", rspBuff);
+			Execute_cmd("pppoe-stop > /dev/null 2>&1", rspBuff);
 		}
 		if(strstr(valBuff,"dhcp") != 0)
 		{
 			//[TODO]kill udhcpc that may slow and httpd: bind: Address already in use
-			Execute_cmd("ps | grep udhcpc | awk \'{print $1}\' | xargs kill -9 > /dev/null 2>&1", rspBuff);	
+			//Execute_cmd("ps | grep udhcpc | awk \'{print $1}\' | xargs kill -9 > /dev/null 2>&1", rspBuff);	
+			Execute_cmd("killall udhcpc > /dev/null 2>&1", rspBuff);
 			//flag=1;
 		}
-		//2.save new config to flash 
-		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-        writeParameters("/tmp/.apcfg","w+",0);
+		if(flag!=1)
+		{
+			//2.save new config to flash 
+			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+			writeParameters("/tmp/.apcfg","w+",0);
+		}
 		//3.do new config pid
 		//if(flag!=1)
-		Execute_cmd("udhcpc -b -i eth0 -s /etc/udhcpc.script", rspBuff);
+		Execute_cmd("udhcpc -b -i eth0 -s /etc/udhcpc.script > /dev/null 2>&1", rspBuff);
 		gohome =1;
     }
 	//wan mode static ip
@@ -2421,6 +2438,11 @@ int main(int argc,char **argv)
 	
 		char pChar[128];
 		char valBuff2[128];	
+		int flag=0;
+		if(strcmp(CFG_get_by_name("SIPW",valBuff),"SIPW") == 0 )
+		{
+			flag=1;
+		}
 		
 		CFG_set_by_name("AP_STARTMODE","standard");
 		//1.destory old mode pid
@@ -2434,21 +2456,30 @@ int main(int argc,char **argv)
 		if(strstr(valBuff,"dhcp") != 0)
 		{
 			//kill udhcpc
-			Execute_cmd("ps aux | grep udhcpc | awk \'{print $1}\' | xargs kill -9  > /dev/null 2>&1", rspBuff);
-		}		
-		//2.save new config to flash 
-		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-        writeParameters("/tmp/.apcfg","w+",0);
+			//Execute_cmd("ps aux | grep udhcpc | awk \'{print $1}\' | xargs kill -9  > /dev/null 2>&1", rspBuff);
+			Execute_cmd("killall udhcpc > /dev/null 2>&1", rspBuff);
+		}
+		if(flag!=1)
+		{
+			//2.save new config to flash 
+			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+			writeParameters("/tmp/.apcfg","w+",0);
+		}
 		//3.do new config pid
 		CFG_get_by_name("WAN_IPADDR",valBuff);
 		CFG_get_by_name("WAN_NETMASK",valBuff2);
-		sprintf(pChar,"ifconfig eth0 %s netmask %s up",valBuff,valBuff2);
+		sprintf(pChar,"ifconfig eth0 %s netmask %s up > /dev/null 2>&1",valBuff,valBuff2);
 		Execute_cmd(pChar, rspBuff);
 		//[TODO] DNS ,use system default dns 8.8.8.8
 		//[TODO] may be this is a bug
 		CFG_get_by_name("IPGW",valBuff);
-		sprintf(pChar,"route add default gw %s dev eth0",valBuff);
-		Execute_cmd(pChar, rspBuff);
+		Execute_cmd("route -n", rspBuff);
+		if(strstr(rspBuff,valBuff) == 0)
+		{
+			//fprintf(errOut,"[luodp] ishere34\n");
+			sprintf(pChar,"route add default gw %s dev eth0 > /dev/null 2>&1",valBuff);
+			Execute_cmd(pChar, rspBuff);
+		}
 		gohome =1;
     }
 	//wan mode pppoe
@@ -2456,25 +2487,42 @@ int main(int argc,char **argv)
     {
         fprintf(errOut,"\n%s  %d PPP \n",__func__,__LINE__);
 		
+		char pChar[128];
 		char  usernameBuff[128];
 		char  passBuff[128];
 		char  cmdstr[128];
-
+		int flag=0;
+		if (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 )
+		{
+			flag=1;
+		}
 		memset(usernameBuff,'\0',128);
 		memset(passBuff,'\0',128);
         memset(cmdstr,'\0',128);
 
 		CFG_set_by_name("AP_STARTMODE","standard");
 		//1.destory old mode pid
+		CFG_get_by_name("IPGW",valBuff);
+		Execute_cmd("route -n", rspBuff);
+		if(strstr(rspBuff,valBuff) != 0)
+		{
+			//fprintf(errOut,"[luodp] ishere35\n");
+			sprintf(pChar,"route del -net %s > /dev/null 2>&1",valBuff);
+			Execute_cmd(pChar, rspBuff);
+		}
 		Execute_cmd("cfg -e | grep \"WAN_MODE=\"",valBuff);
 		if(strstr(valBuff,"dhcp") != 0)
 		{
 			//kill udhcpc
-			Execute_cmd("ps aux | grep udhcpc | awk \'{print $1}\' | xargs kill -9  > /dev/null 2>&1", rspBuff);
-		}		
-		//2.save new config to flash 
-		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-        writeParameters("/tmp/.apcfg","w+",0);
+			//Execute_cmd("ps aux | grep udhcpc | awk \'{print $1}\' | xargs kill -9  > /dev/null 2>&1", rspBuff);
+			Execute_cmd("killall udhcpc > /dev/null 2>&1", rspBuff);
+		}
+		if(flag!=1)
+		{
+			//2.save new config to flash 
+			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+			writeParameters("/tmp/.apcfg","w+",0);
+		}
 		//3.do new config pid
 		CFG_get_by_name("PPPOE_USER",usernameBuff);
 		CFG_get_by_name("PPPOE_PWD",passBuff);
@@ -2484,7 +2532,8 @@ int main(int argc,char **argv)
 		strcat(cmdstr," ");
 		strcat(cmdstr,passBuff);
 		Execute_cmd(cmdstr, rspBuff);
-		Execute_cmd("pppoe-start", rspBuff);
+		
+		Execute_cmd("pppoe-start > /dev/null 2>&1", rspBuff);
 		//fprintf(errOut,"\n%s  %d [luodp]PPPOE \n",__func__,__LINE__);		
 		gohome =1;
     }
@@ -2509,42 +2558,80 @@ int main(int argc,char **argv)
 		char valBuff2[128];	
 		char valBuff3[128];	
 		char valBuff4[128];
+		char valBuff5[128];
+		int flag=0;
 		
 		//2.get old config from flash 
 		Execute_cmd("cfg -e | grep \"AP_SECMODE_2=\" |  awk -F \"\"\" \'{print $2}\'",valBuff2);
+		Execute_cmd("cfg -e | grep \"WDSON_OFF=\" | awk -F \"=\" \'{print $2}\'",valBuff5);
 		
+		
+		CFG_get_by_name("WDSON_OFF",valBuff3);
+		if((strstr(valBuff5,valBuff3) == 0) && (strcmp(valBuff3,"on") == 0) )
+		{
+			CFG_set_by_name("AP_STARTMODE","repeater");
+			flag=1;
+		}
+		if((strstr(valBuff,valBuff3) == 0) && (strcmp(valBuff3,"off") == 0) )
+		{
+			CFG_set_by_name("AP_STARTMODE","standard");
+			flag=2;
+		}
+		if((strstr(valBuff5,valBuff3) != 0) && (strcmp(valBuff3,"on") == 0) )
+		{
+			CFG_set_by_name("AP_STARTMODE","repeater");
+			flag=3;
+		}
+		if((strstr(valBuff,valBuff3) != 0) && (strcmp(valBuff3,"off") == 0) )
+		{
+			CFG_set_by_name("AP_STARTMODE","standard");
+			flag=4;
+		}
 		//2.save new config to flash 
 		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
         writeParameters("/tmp/.apcfg","w+",0);
-		//3.do new settings 
-		CFG_get_by_name("AP_SECMODE_2",valBuff3);
-		if((strcmp(valBuff2,valBuff3) != 0)&&(strcmp(valBuff3,"None") != 0))
-		{
-			//AP_SECMODE=WPA
-			//AP_WPA=3 WPA/WPA2
-			//AP_CYPHER="TKIP CCMP"
-			//CFG_set_by_name("AP_RADIO_ID_2","0");
-			CFG_set_by_name("AP_SECMODE_2","WPA");
-			CFG_set_by_name("AP_WPA_2","3");
-			CFG_set_by_name("AP_CYPHER_2","TKIP CCMP");
-			CFG_set_by_name("AP_SECFILE_2","PSK"); 
+		//3.do new settings
+		if((flag==3)||(flag==1))
+		{		
+			CFG_get_by_name("AP_SECMODE_2",valBuff3);
+			if((strcmp(valBuff2,valBuff3) != 0)&&(strcmp(valBuff3,"None") != 0))
+			{
+				//AP_SECMODE=WPA
+				//AP_WPA=3 WPA/WPA2
+				//AP_CYPHER="TKIP CCMP"
+				//CFG_set_by_name("AP_RADIO_ID_2","0");
+				CFG_set_by_name("AP_SECMODE_2","WPA");
+				CFG_set_by_name("AP_WPA_2","3");
+				CFG_set_by_name("AP_CYPHER_2","TKIP CCMP");
+				CFG_set_by_name("AP_SECFILE_2","PSK"); 
+			}
+			if((strcmp(valBuff2,valBuff3) != 0)&&(strcmp(valBuff3,"WPA") != 0))
+			{
+				//AP_SECMODE=WPA
+				//AP_WPA=3 WPA/WPA2
+				//AP_CYPHER="TKIP CCMP"
+				//CFG_set_by_name("AP_RADIO_ID_2","0");
+				CFG_set_by_name("AP_SECMODE_2","None");
+			}
+			CFG_get_by_name("WDS_CHAN",channel);
+			CFG_set_by_name("AP_PRIMARY_CH",channel);
+			CFG_set_by_name("AP_PRIMARY_CH_2",channel);
+			//4.save new config to flash 
+			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+			writeParameters("/tmp/.apcfg","w+",0);
 		}
-		if((strcmp(valBuff2,valBuff3) != 0)&&(strcmp(valBuff3,"WPA") != 0))
-		{
-			//AP_SECMODE=WPA
-			//AP_WPA=3 WPA/WPA2
-			//AP_CYPHER="TKIP CCMP"
-			//CFG_set_by_name("AP_RADIO_ID_2","0");
-			CFG_set_by_name("AP_SECMODE_2","None");
-		}
-		CFG_set_by_name("AP_STARTMODE","repeater");
-		//4.save new config to flash 
-		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-        writeParameters("/tmp/.apcfg","w+",0);
 		//5.do settings
-		Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
-		Execute_cmd("apup > /dev/null 2>&1", rspBuff);
-		
+		if((flag==1)||(flag==2))
+		{
+			Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
+			Execute_cmd("cfg -e | grep \"WIFION_OFF=\" | awk -F \"=\" \'{print $2}\'",valBuff);
+			if(strstr(valBuff3,"off") == 0)
+			{
+				//fprintf(errOut,"[luodp] SECMODE here3");
+				//[TODO]sta mode
+				Execute_cmd("apup > /dev/null 2>&1", rspBuff);
+			}
+		}
 		/*CFG_get_by_name("AP_RADIO_ID_2",valBuff);
 		CFG_get_by_name("AP_SECMODE_2",valBuff2);
 		CFG_get_by_name("AP_SECFILE_2",valBuff3);
@@ -2560,13 +2647,16 @@ int main(int argc,char **argv)
 		
 		CFG_get_by_name("WDS_MAC",mac);
 		sprintf(pChar,"iwconfig ath1 ap  %s",mac);
-		Execute_cmd(pChar, rspBuff);
+		Execute_cmd(pChar, rspBuff);*/
+		if((flag==1)||(flag==3))
+		{
+			sprintf(pChar,"iwconfig ath0 channel %s",channel);	
+			Execute_cmd(pChar, rspBuff);
+			sprintf(pChar,"iwconfig ath1 channel %s",channel);	
+			Execute_cmd(pChar, rspBuff);
+		}
 		
-		CFG_get_by_name("WDS_CHAN",channel);
-		sprintf(pChar,"iwconfig ath1 channel  %s",channel);	
-		Execute_cmd(pChar, rspBuff);
-		
-		Execute_cmd("iwpriv ath1 wds 1", rspBuff);
+		/*Execute_cmd("iwpriv ath1 wds 1", rspBuff);
 		Execute_cmd("brctl addif br0 ath1", rspBuff);
 		Execute_cmd("ifconfig ath1 up", rspBuff);*/
 		gohome =1;
@@ -2582,6 +2672,7 @@ int main(int argc,char **argv)
 		char valBuff4[128];	
 		char valBuff5[128];
 		char valBuff6[128];	
+		char valBuff7[128];	
 		int flag=0;
 
 		//1.get old value from flash
@@ -2594,16 +2685,19 @@ int main(int argc,char **argv)
 		//Execute_cmd("cfg -e | grep \"AP_SSID=\"",valBuff2);
 		//Execute_cmd("iwconfig ath0 | grep \"ESSID\" | awk -F \"\"\" \'{print $2}\'",valBuff2);
 		Execute_cmd("cfg -e | grep \"AP_SECMODE=\"",valBuff5);
+		Execute_cmd("cfg -e | grep \"AP_PRIMARY_CH=\" | awk -F \"=\" \'{print $2}\'",valBuff7);
 		
-		//fprintf(errOut,"[luodp] WIFI: %s\n%s\n",valBuff2,valBuff4);
+		//fprintf(errOut,"[luodp] WIFI: %s\n%s%s\n%s\n",valBuff,valBuff2,valBuff5,valBuff4);
 		//2.save new config to flash 
 		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
         writeParameters("/tmp/.apcfg","w+",0);
+		//fprintf(errOut,"[luodp]here\n");
 		//3.do new config pid
 		//TODO key check
 		CFG_get_by_name("PSK_KEY",valBuff3);
+		//fprintf(errOut,"[luodp] %shere\n",valBuff3);
 		sprintf(valBuff6,"%s\n<br>",valBuff3);
-		if(strcmp(valBuff6,valBuff4) != 0)
+		if((strcmp(valBuff6,valBuff4) != 0)&&(strcmp(valBuff6,"\n<br>") != 0))
 		{
 			//fprintf(errOut,"[luodp] KEY here");
 			CFG_set_by_name("PSK_KEY",valBuff3);
@@ -2611,6 +2705,7 @@ int main(int argc,char **argv)
 		}
 		//TODO SECMODE
 		CFG_get_by_name("AP_SECMODE",valBuff3);
+		//fprintf(errOut,"[luodp] %s here2\n",valBuff3);
 		if((strstr(valBuff5,valBuff3) == 0)&&(strcmp(valBuff3,"None") != 0))
 		{
 			//AP_SECMODE=WPA
@@ -2637,6 +2732,7 @@ int main(int argc,char **argv)
         writeParameters("/tmp/.apcfg","w+",0);
 				
 		CFG_get_by_name("WIFION_OFF",valBuff3);
+		//fprintf(errOut,"[luodp] %s here4\n",valBuff3);
 		if((strstr(valBuff,valBuff3) == 0) && (strcmp(valBuff3,"on") == 0) )
 		{
 			//fprintf(errOut,"[luodp] SECMODE here3");
@@ -2651,11 +2747,24 @@ int main(int argc,char **argv)
 		}
 		//ssid [TODO]
 		CFG_get_by_name("AP_SSID",valBuff4);
+		//fprintf(errOut,"[luodp] %s here5\n",valBuff4);
 		sprintf(valBuff5,"\"%s\"\n<br>",valBuff4);
+		//fprintf(errOut,"%d\n%d\n%d\n",strcmp(valBuff2,valBuff5),flag,strcmp(valBuff3,"on"));
 		if((strcmp(valBuff2,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0))
 		{
-			fprintf(errOut,"[luodp] SECMODE here6");
+			//fprintf(errOut,"[luodp] SECMODE here6");
 			sprintf(pChar,"iwconfig ath0 essid %s",valBuff4);
+			Execute_cmd(pChar, rspBuff);
+		}
+		//ssid [TODO]
+		CFG_get_by_name("AP_PRIMARY_CH",valBuff4);
+		fprintf(errOut,"[luodp] %s here5 %s\n",valBuff4,valBuff7);
+		sprintf(valBuff5,"\"%s\"\n<br>",valBuff4);
+		//fprintf(errOut,"%d\n%d\n%d\n",strcmp(valBuff2,valBuff5),flag,strcmp(valBuff3,"on"));
+		if((strcmp(valBuff7,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0))
+		{
+			fprintf(errOut,"[luodp] SECMODE here7");
+			sprintf(pChar,"iwconfig ath0 channel %s",valBuff4);
 			Execute_cmd(pChar, rspBuff);
 		}
 		if(flag==2)
@@ -2703,21 +2812,48 @@ int main(int argc,char **argv)
          writeParameters("/tmp/.apcfg","w+",0);
                 
          //Execute_cmd("ps | grep httpd | awk '{print $1}' | xargs kill  > /dev/null 2>&1", rspBuff);
+		 Execute_cmd("killall httpd > /dev/null 2>&1", rspBuff);
 		 //fprintf(errOut,"[luodp] httpd result: %s\n",rspBuff);		 
-         //Execute_cmd("httpd -h /usr/www -c /etc/httpd.conf  > /dev/null 2>&1", rspBuff);		
-		//printf(errOut,"[luodp] httpd result: %s\n",rspBuff);		 
+         Execute_cmd("httpd -h /usr/www -c /etc/httpd.conf  > /dev/null 2>&1", rspBuff);		
+		 //printf(errOut,"[luodp] httpd result: %s\n",rspBuff);		 
          // fprintf(errOut,"\n----------2kill**********************\n");
-         //printf("<script 
-         // type=\"text/javascript\">window.location.href='map';</script>");
 		 gohome =1;
     }
-	if( gohome == 1)
+ 
+	 printf("HTTP/1.0 200 OK\r\n");
+   	 printf("Content-type: text/html\r\n");
+     printf("Connection: close\r\n");
+     printf("\r\n");
+     printf("\r\n");
+    if( gohome == 1)
     {
-		//fprintf(errOut,"[luodp] map here");
-		//Execute_cmd("net_test > /dev/null 2>&1", rspBuff);
-        printf("<script type=\"text/javascript\">window.location.href='map';</script>");                
+         if(translateFile("../map.html") < 0)
+        {
+            printf("Content-Type:text/html\n\n");
+            printf("<HTML><HEAD>\r\n");
+            printf("<LINK REL=\"stylesheet\" href=\"../styleSheet.css\" type=\"text/css\">");
+            printf("</head><body>");
+            printf("Page %s Not Found",Page);
+            printf("</body></html>");
+            exit(1);
+        }
     }
-    #if 0
+    else
+    {
+   	 if(translateFile(Page) < 0)
+     {
+        printf("Content-Type:text/html\n\n");
+        printf("<HTML><HEAD>\r\n");
+        printf("<LINK REL=\"stylesheet\" href=\"../styleSheet.css\" type=\"text/css\">");
+        printf("</head><body>");
+        printf("Page %s Not Found",Page);
+        printf("</body></html>");
+        exit(1);
+     }	
+	}
+
+
+       #if 0
     if((strcmp(CFG_get_by_name("COMMIT",valBuff),"Commit") == 0)  || (strcmp(CFG_get_by_name("COMMIT",valBuff),"Save") == 0))
     {
         //fprintf(errOut,"%s  %d\n",__func__,__LINE__);

@@ -1,0 +1,21 @@
+#!/bin/sh
+
+#VAL="`ethreg -p 4 0x11 | awk -F' ' '/Read Reg/{print $5}'`"
+VAL="`ethreg -p 4 0x11 | grep "Read Reg" | sed 's/.* //g' `"
+VAL2=0x0400
+#echo $VAL
+VAL=$(($VAL&0x0400))
+#echo $VAL
+ 
+if [ $VAL -eq 1024 ];then
+	cfg -a LINEIN_OUT=in
+	cfg -c
+	exit 1
+else
+if [ $VAL -eq 0 ];then
+#	echo "WAN link down"
+	cfg -a LINEIN_OUT=out
+	cfg -c
+	exit 1
+fi
+fi

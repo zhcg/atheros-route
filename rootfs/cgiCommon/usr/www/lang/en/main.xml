@@ -4,11 +4,9 @@
   <message msgid="main apply" msgstr="Apply" />
   <message msgid="main cancel" msgstr="Cancel" />
   <message msgid="toplanguage" msgstr="e" />
-  
-  <message msgid="man simph" msgstr="Simple model" />
-  <message msgid="man simpd" msgstr="simple model applies to………………………………" />
-  <message msgid="man profh" msgstr="Expert Mode" />
-  <message msgid="man profd" msgstr="expert model applies to………………………………" />
+
+
+  <message msgid="top_fast" msgstr="Quick settings" />
   <message msgid="top_adv" msgstr="Advanced settings" />
   <message msgid="top_admin" msgstr="Security settings" />
   <message msgid="top_exit" msgstr="EXIT" />
@@ -20,6 +18,6 @@
   <message msgid="admw m_wifi" msgstr="WiFi settings" />
   <message msgid="admw m_wirere" msgstr="Wireless relay" />
   <message msgid="admw m_parent" msgstr="Parental control" />
-  
+  <message msgid="admw m_upload" msgstr="Firmware upgrade" />
 </po>
 

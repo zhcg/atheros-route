@@ -15,14 +15,60 @@ function style_display_on()
 {
 	if (window.ActiveXObject)
 	{ // IE
-		return "block";
+		return "inline-block";
 	}
 	else if (window.XMLHttpRequest)
 	{ // Mozilla, Safari,...
 		return "table-row";
 	}
 }
+function butwork(zhi1,zhi2,zhi3,zhi4)
+{
+	if(zhi1 == "false")
+	{
+		document.getElementById("bBACK").style.visibility = "visible";
+		document.getElementById("bBACK").style.display = style_display_on();
+	}
+	else
+	{
+		document.getElementById("bBACK").style.visibility = "hidden";
+		document.getElementById("bBACK").style.display = "none";
+	}
+	
+	if(zhi2 == "false")
+	{
+		document.getElementById("bNEXT").style.visibility = "visible";
+		document.getElementById("bNEXT").style.display = style_display_on();
+	}
+	else
+	{
+		document.getElementById("bNEXT").style.visibility = "hidden";
+		document.getElementById("bNEXT").style.display = "none";
+	}
 
+		if(zhi3 == "false")
+	{
+		document.getElementById("bCANCEL").style.visibility = "visible";
+		document.getElementById("bCANCEL").style.display = style_display_on();
+	}
+	else
+	{
+		document.getElementById("bCANCEL").style.visibility = "hidden";
+		document.getElementById("bCANCEL").style.display = "none";
+	}
+
+		if(zhi4 == "false")
+	{
+		document.getElementById("bAPPLY").style.visibility = "visible";
+		document.getElementById("bAPPLY").style.display = style_display_on();
+	}
+	else
+	{
+		document.getElementById("bAPPLY").style.visibility = "hidden";
+		document.getElementById("bAPPLY").style.display = "none";
+	}
+
+}
 function checkInjection(str)
 {
 	var len = str.length;
@@ -65,6 +111,7 @@ function change_step(offset)
 		{
 			document.getElementById("buttontable").style.visibility = "hidden";
 			document.getElementById("buttontable").style.display = "none";	
+			waitgifshow();
 			document.getElementById('DHCP').click();
 		}
 		else
@@ -72,32 +119,34 @@ function change_step(offset)
 			document.getElementById("modedes").style.visibility = "visible";
 			document.getElementById("modedes").style.display = style_display_on();
 			connectionTypeSwitch();
-			document.wizard_form.back_motion.disabled = false;
-			document.wizard_form.next_motion.disabled = true;
-			document.wizard_form.cancel_motion.disabled = false;
-			document.wizard_form.apply_motion.disabled = false;
+			butwork("false","true","true","false");
 		}
 	}
 	else if (step_num == 2)
 	{
 		if (document.wizard_form.WAN_MODE[1].checked == true) 
 		{
+			waitgifshow();
 			document.getElementById('DHCP').click();
 		}
 		else if (document.wizard_form.WAN_MODE[2].checked == true) 
 		{
+			waitgifshow();
 			document.getElementById('SIP').click();
 		}
 		else if (document.wizard_form.WAN_MODE[3].checked == true) 
 		{
+			waitgifshow();
 			document.getElementById('PPP').click();
 		}
 		else if (document.wizard_form.WAN_MODE[4].checked == true) 
 		{
+			waitgifshow();
 			document.getElementById('L2TP').click();
 		}
 		else if (document.wizard_form.WAN_MODE[5].checked == true) 
 		{
+			waitgifshow();
 			document.getElementById('P2TP').click();
 		}
 		else 
@@ -803,6 +852,8 @@ function initTranslation()
 	e.innerHTML = _("admw optionXX");
 	e = document.getElementById("waiting");
 	e.innerHTML = _("admw waiting");	
+	e = document.getElementById("settingwaiting");
+	e.innerHTML = _("admw settingwaiting");	
 	
 }
 function initValue()
@@ -859,10 +910,7 @@ function initValue()
 			document.getElementById("modedes").style.visibility = "visible";
 			document.getElementById("modedes").style.display = style_display_on();
 
-			document.wizard_form.back_motion.disabled = true;
-			document.wizard_form.next_motion.disabled = false;
-			document.wizard_form.cancel_motion.disabled = false;
-			document.wizard_form.apply_motion.disabled = true;
+			butwork("true","false","true","true");
 		}
 		return true;
 	}
@@ -870,11 +918,7 @@ function initValue()
 	document.getElementById("div_wan_opmode").style.display = style_display_on();
 	document.getElementById("modedes").style.visibility = "visible";
 	document.getElementById("modedes").style.display = style_display_on();
-	
-	document.wizard_form.back_motion.disabled = true;
-	document.wizard_form.next_motion.disabled = false;
-	document.wizard_form.cancel_motion.disabled = false;
-	document.wizard_form.apply_motion.disabled = true;
+	butwork("true","false","true","true");
 }
 
 function others() 
@@ -954,6 +998,44 @@ function pppshowpwd()
    document.getElementById("p2tppwdinput").innerHTML='<input type="password" name="pptpPass" id="p2tppass" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
    }
  }
+ function waitgifshow()
+{
+	hideAllTables();
+	document.getElementById("waitshow").style.visibility = "visible";
+	document.getElementById("waitshow").style.display = style_display_on();
+	document.getElementById("buttontable").style.visibility = "hidden";
+	document.getElementById("buttontable").style.display = "none";
+}
+function workoutgw()
+{
+	var myString=document.getElementById("WAN_IPADDR").value;	
+	//ip地址
+	var exp=/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
+	var reg = myString.match(exp);
+	if(reg==null)
+	{
+		//document.getElementById("IPGW").value = "";
+	}
+	else
+	{
+		if(document.getElementById("IPGW").value=="")
+		{
+			var a = myString.lastIndexOf(".");
+			var s;
+			s = myString.substr(0, a); // 获取子字符串。
+			document.getElementById("IPGW").value = s+".1";
+		}
+		if(document.getElementById("WAN_NETMASK").value=="")
+		{
+			document.getElementById("WAN_NETMASK").value = "255.255.255.0";
+		}
+		if(document.getElementById("PRIDNS").value=="")
+		{
+			document.getElementById("PRIDNS").value = "8.8.8.8";
+		}
+
+	}
+}
 </script>
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
 </head>
@@ -1035,21 +1117,21 @@ function pppshowpwd()
 </tr>
 <tr>
   <td class="head" id="IPA"></td>
-  <td><input name="WAN_IPADDR"  class="handaer_text_content" maxlength=15 value="~~WAN_IPADDR~"></td>
+  <td><input name="WAN_IPADDR" id="WAN_IPADDR"  class="handaer_text_content" maxlength=15 value="~~WAN_IPADDR~"  onblur="workoutgw()"></td>
 </tr>
 <tr>
   <td class="head" id="SubMask"></td>
-  <td><input name="WAN_NETMASK"  class="handaer_text_content" maxlength=15 value="~~WAN_NETMASK~">
+  <td><input name="WAN_NETMASK" id="WAN_NETMASK"  class="handaer_text_content" maxlength=15 value="~~WAN_NETMASK~">
   </td>
 </tr>
 <tr>
   <td class="head" id="defgw"></td>
-  <td><input name="IPGW"  class="handaer_text_content" maxlength=15 value="~~IPGW~">
+  <td><input name="IPGW" id="IPGW"  class="handaer_text_content" maxlength=15 value="~~IPGW~">
   </td>
 </tr>
 <tr>
   <td class="head" id="pDNSserver"></td>
-  <td><input name="PRIDNS"  class="handaer_text_content" maxlength=15 value="~~PRIDNS~"></td>
+  <td><input name="PRIDNS" id="PRIDNS"  class="handaer_text_content" maxlength=15 value="~~PRIDNS~"></td>
 </tr>
 <tr>
   <td class="head" id="sDNSserver"></td>
@@ -1253,8 +1335,12 @@ function pppshowpwd()
 
   <img align="center" src="/images/loading.gif"></img>
     <p align="center" id="waiting"></p>
-
 </div>
+<div id="waitshow" style="display:none" align="center">
+  <img align="center" src="/images/loading.gif"></img>
+  <p align="center" id="settingwaiting"></p>
+</div>
+
 <table width="540" cellpadding="2" cellspacing="1" id="buttontable">
 <tr align="center">
   <td>

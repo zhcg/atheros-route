@@ -276,12 +276,19 @@
     <message msgid="admin jiami" msgstr="加密(推荐使用)" />
 	
 	<message msgid="admw wifiswitch" msgstr="网络开关" />
+	<message msgid="admw wdsswitch" msgstr="无线中继开关" />
+
 	<message msgid="admw onbutton" msgstr="开启" />
     <message msgid="admw offbutton" msgstr="关闭" />
     <message msgid="admw waiting" msgstr="正在检测,请稍等......" />
+    <message msgid="admw settingwaiting" msgstr="正在配置,请稍等......" />
+    <message msgid="admw uploadwaiting" msgstr="正在升级,请稍等......" />
 	
     <message msgid="admw ssidrequest" msgstr="  (1-24位字母、数字或下划线)" />
     <message msgid="admw passwordrequest" msgstr="  (6-12位字母、数字或下划线)" />
+	
+    <message msgid="err lineout" msgstr="请插入网线!" />
+	
 	
     <message msgid="err ip empty" msgstr="IP地址为空" />
 	<message msgid="err mask empty" msgstr="掩码为空" />
@@ -312,4 +319,15 @@
 	<message msgid="password change" msgstr="密码修改成功，重启路由器后生效" />
 	<message msgid="admw securitydes" msgstr="修改路由Web管理页面的登录密码" />
 	
+	<message msgid="admw uploadtitle" msgstr="固件升级" />
+	<message msgid="admw uploaddes" msgstr="选择升级用镜像文件，进行本地升级" />
+	<message msgid="admw uploadfirware" msgstr="固件升级" />
+	<message msgid="admw up_selsectfile" msgstr="请选择文件" />
+	<message msgid="admw Upload" msgstr="升级" />
+	<message msgid="err file empty" msgstr="请选择升级文件!" />
+	<message msgid="upgrade success" msgstr="升级成功!" />
+	<message msgid="admw channelchoose" msgstr="信道选择" />
+	<message msgid="admw channelauto" msgstr="自动" />
+
+
 </po>

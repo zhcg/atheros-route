@@ -263,8 +263,12 @@ si3000_build: kernel_build
 	
 webui: 
 	cd ../apps/webui; \
-	cp -f net_check $(INSTALL_ROOT)/bin; \
-	cp -f net_test $(INSTALL_ROOT)/bin;
+	cp -f net/net_check $(INSTALL_ROOT)/bin; \
+	cp -f net/wan_check $(INSTALL_ROOT)/bin; \
+	cp -f net/net_test $(INSTALL_ROOT)/bin;	\
+	cp -f upgrade/sysupgrade $(INSTALL_ROOT)/usr/sbin; \
+	cp -f upgrade/__sysupgrade $(INSTALL_ROOT)/usr/sbin; \
+	cp -f upgrade/upgrade_stage2 $(INSTALL_ROOT)/usr/bin;
 	
 tester: 
 	cd ../apps/tester; \
@@ -423,7 +427,9 @@ cgi: ath_tools_clean
 	@echo makeing cgi;\
 	cd ../drivers/wlan/os/linux/tools;\
 	rm -rf cgiMain;\
-	make cgiMain;
+	rm -rf upload.cgi;\
+	make cgiMain; \
+	make upload.cgi; 
 
 art_mod:
 	@echo Making ART Module
