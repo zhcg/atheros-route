@@ -23,5 +23,7 @@
   <message msgid="admw m_wirere" msgstr="无线中继" />
   <message msgid="admw m_parent" msgstr="家长控制" />
   <message msgid="admw m_upload" msgstr="固件升级" />
+  <message msgid="admw m_factory" msgstr="恢复出厂设置" />
+
 
 </po>

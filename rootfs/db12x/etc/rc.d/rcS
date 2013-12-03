@@ -91,7 +91,7 @@ cd /tmp/tools
 tar -xzvf /sbin/debug.tgz
 
 /usr/sbin/telnetd
-/usr/sbin/httpd -h /usr/www/
+/usr/sbin/httpd -h /usr/www/ -c /etc/httpd.conf
 /bin/factoryreset /dev/freset
 
 # start the page cache/kmem cache cleanup timer in the kernel
@@ -162,3 +162,5 @@ monitor_application  &
 /bin/reset_mips /bin/phone_serv_19200 &
 /bin/server &
 net_test &
+/usr/bin/cal_check
+/usr/bin/version_check

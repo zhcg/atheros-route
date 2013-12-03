@@ -34,7 +34,7 @@ pppoe=`grep "pppoe discovery state is STATE_RECEIVED_PADO" /tmp/log `
 if [ ! -z "$pppoe" ];then
         echo "PPPoE"
 		killall udhcpc pppoe-connect pppoe > /dev/null 2>&1
-		cfg -a AUTOTYPE=PPPoE
+		cfg -a AUTOTYPE=pppoe
 		cfg -c
         exit 1
 fi

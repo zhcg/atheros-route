@@ -1,0 +1,11 @@
+#!/bin/sh
+OLD_VERSION=`cfg -e | grep 'SOFT_VERSION' | awk -F '\"' '{print $2}'`
+NEW_VERSION=`cat /etc/ath/apcfg | grep 'SOFT_VERSION' | awk -F '\"' '{print $2}'`
+if [ $OLD_VERSION != $NEW_VERSION ]; then
+	cfg -x
+	cfg -a UPGRADERESULT=1
+	cfg -c
+else
+	cfg -a UPGRADERESULT=0
+	cfg -c
+fi

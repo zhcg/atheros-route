@@ -58,13 +58,32 @@ function initTranslation()
 	e = document.getElementById("onbutton");
 	e.innerHTML = _("admw onbutton");	
 	e = document.getElementById("offbutton");
-	e.innerHTML = _("admw offbutton");
-
+	e.innerHTML = _("admw offbutton");	
+	
+	e = document.getElementById("offwifides");
+	e.innerHTML = _("admw offwifides");
 }
 function initValue()
 {
 	Butterlate.setTextDomain("admin");
 	initTranslation();
+	if((document.getElementById("INDEX").value == "11") || (document.getElementById("INDEX").value == 11))
+	{
+		document.wizard_form.WDSON_OFF[0].checked = true;
+	}
+	if(document.getElementById("WIFION_OFF").value=="off")
+	{
+		document.getElementById("offwifi").style.visibility = "visible";
+		document.getElementById("offwifi").style.display = style_display_on();
+		document.getElementById("wirelessdes").style.visibility = "hidden";
+		document.getElementById("wirelessdes").style.display = "none";
+		document.getElementById("div_Router").style.visibility = "hidden";
+		document.getElementById("div_Router").style.display = "none";
+		document.getElementById("buttontable").style.visibility = "hidden";
+		document.getElementById("buttontable").style.display = "none";
+		return true;
+	}
+	switch_wds();
 	document.getElementById("gifshow").style.visibility = "hidden";
 	document.getElementById("gifshow").style.display = "none";
 }
@@ -86,8 +105,24 @@ function CheckWirelessValue()
 	{
 		if (document.wizard_form.AP_SSID_2.value.length == 0)
 		{
+			document.wizard_form.AP_SSID_2.select();
 			alert(_("err SSID empty"));
 			return false;
+		}
+		if(document.getElementById("ROOTAP_MAC_2").value =="")
+		{
+			document.wizard_form.ROOTAP_MAC_2.select();
+			alert(_("err mac empty"));
+			return false;
+		}
+		if(document.getElementById("AP_SECMODE_2").value == "WPA")
+		{
+			if(document.getElementById("pwd").value =="")
+			{
+				alert(_("err pwd empty"));
+				return false;
+			}
+
 		}
 	}
 	//var keyvalue = document.wizard_form.PSK_KEY_2.value;
@@ -294,6 +329,10 @@ function switch_wds()
   <p align="center" id="settingwaiting"></p>
 </div>
 
+<div id="offwifi" style="display:none" align="center">
+  <h1 align="center" id="offwifides"></h1>
+</div>
+
 <table cellpadding="2" cellspacing="1" id="buttontable">
 <tr align="center">
   <td>
@@ -309,6 +348,7 @@ function switch_wds()
 <!--/form-->
 <div style="display:none">    
 	<input type="button" name="REFRESHWFi" id="REFRESHWFi" style="display:none" value="REFRESHWFi" onClick="window.location.href='w4?INDEX=11'">
+	<input type="text" style="display:none" name="WIFION_OFF" id="WIFION_OFF" size="20" maxlength="32" value="~~WIFION_OFF~">	
 	
 </div>
 </td></tr></table></div>

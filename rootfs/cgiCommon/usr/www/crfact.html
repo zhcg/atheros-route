@@ -1,0 +1,43 @@
+﻿<html>
+<head>
+<title></title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="/lang/b28n.js"></script>
+<script>
+
+
+function initTranslation()
+{
+
+	var b = document.getElementById("FACTORYRESULT").value;
+
+	if(b == "Atheros_XSpan_2G")
+		alert(_("factory success"));	
+	else
+		alert(_("factory fail"));	
+		
+
+
+	window.location.href="map";
+
+}
+
+function init()
+{
+	Butterlate.setTextDomain("admin");
+	initTranslation();
+}
+
+</script>
+</head>
+
+<body onload=init();>
+
+<table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
+<form method="post" name="wizard_form">  
+</form>
+	<input type="text" style="display:none" name="FACTORYRESULT" id="FACTORYRESULT" size="20" maxlength="32" value="~~AP_SSID~">
+</td></tr>
+</table>
+</body>
+</html>

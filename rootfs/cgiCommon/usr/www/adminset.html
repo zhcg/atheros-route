@@ -16,6 +16,18 @@ function checkInjection(str)
 	}
     return true;
 }
+
+function refresh_all()
+{	
+	top.location.href = "http://10.10.10.254"; 
+} 
+function update()
+{ 
+	self.setTimeout("refresh_all()", 3);
+}
+
+
+
 function AdmFormCheck()
 {
 	if (document.Adm.ADMPASS.value.length == 0)
@@ -24,7 +36,7 @@ function AdmFormCheck()
 		document.Adm.ADMPASS.select();
 		return false;
 	}
-	if ((document.Adm.ADMPASS.value.length  < 6)||(document.Adm.ADMPASS.value.length > 12))
+	if ((document.Adm.ADMPASS.value.length  < 5)||(document.Adm.ADMPASS.value.length > 12))
 	{
 		alert(_("err pwd length"));
 		document.Adm.ADMPASS.select();
@@ -58,7 +70,8 @@ function AdmFormCheck()
 		alert(_("err pwd mismatch"));
 		return false;
 	}
-	alert(_("password change"));
+	//alert(_("password change"));
+	update();
 	document.getElementById('ADMINSET').click();
 	return true;
 }
@@ -84,7 +97,7 @@ function initTranslation()
 	e = document.getElementById("securitytitle");
 	e.innerHTML = _("man admin setting");
 	e = document.getElementById("passwordrequest");
-	e.innerHTML = _("admw passwordrequest");
+	e.innerHTML = _("admw passwordrequest1");
 }
 function initValue()
 {
