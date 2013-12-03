@@ -630,9 +630,6 @@ ssize_t ath_slic_write(struct file * filp, const char __user * buf,
 	int tail = dmabuf->tail;
 	unsigned long desc_p;
 	//	si3000 = 0;
-	if(count%2)
-		count--;
-
 	byte_cnt = count;
 	//	unsigned short test;
 
@@ -1007,13 +1004,13 @@ void ath_slic_request_dma_channel()
 
 void ath_slic_dma_start(unsigned long desc_buf_p, int mode)
 {
-		if (is_ar934x() && !mode) {
+	//	if (is_ar934x() && !mode) {
 	ath_reg_rmw_clear(RST_RESET_ADDRESS, RST_RESET_SLIC_RESET_SET(1));
 	ath_slic_request_dma_channel();
 	ath_reg_wr(ATH_MBOX_SLIC_FIFO_RESET, (ATH_MBOX_SLIC_FIFO_RESET_RX_INIT |
 				ATH_MBOX_SLIC_FIFO_RESET_TX_INIT));
 	ath_slic_enable();
-		}
+	//	}
 
 	/* Set up descriptor start address and Start DMA */
 	if (mode) {
@@ -1021,7 +1018,7 @@ void ath_slic_dma_start(unsigned long desc_buf_p, int mode)
 		ath_reg_wr(ATH_MBOX_DMA_TX_DESCRIPTOR_BASE1, desc_buf_p);
 		ath_reg_wr(ATH_MBOX_DMA_TX_CONTROL1, ATH_MBOX_DMA_START);
 
-		//ath_reg_rmw_set(ATH_SLIC_CTRL, ATH_SLIC_CTRL_EN);
+		ath_reg_rmw_set(ATH_SLIC_CTRL, ATH_SLIC_CTRL_EN);
 	} else {
 		printk("Rx Desc Base 0x%08lx, NUM_DESC %u, SLIC_BUF_SIZE %u ...\n", desc_buf_p, NUM_DESC, ath_slic_buf_size);
 		ath_reg_wr(ATH_MBOX_DMA_RX_DESCRIPTOR_BASE1, desc_buf_p);
@@ -1036,7 +1033,7 @@ void ath_slic_dma_start(unsigned long desc_buf_p, int mode)
 		}
 	}
 	if (is_ar934x()) {
-		//udelay(20);
+		udelay(20);
 	}
 }
 
