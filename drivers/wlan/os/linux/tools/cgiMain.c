@@ -2400,14 +2400,17 @@ int main(int argc,char **argv)
      {
         fprintf(errOut,"\n%s  %d DHCP \n",__func__,__LINE__);
 		int flag=0;
+		//static  char     rspBuff2[65536];
+		
 		if(strcmp(CFG_get_by_name("DHCPW",valBuff),"DHCPW")== 0 )
 		{
 			flag=1;
 		}
 		
-		CFG_set_by_name("AP_STARTMODE","standard");
+		//CFG_set_by_name("AP_STARTMODE","standard");
 		//1.destory old mode pid 
 		Execute_cmd("cfg -e | grep \"WAN_MODE=\"",valBuff);
+		//Execute_cmd("ps | grep udhcpc",rspBuff2);
 		if(strstr(valBuff,"pppoe") != 0)
 		{
 			//kill pppoe
@@ -2428,7 +2431,7 @@ int main(int argc,char **argv)
 		}
 		//3.do new config pid
 		//if(flag!=1)
-		Execute_cmd("udhcpc -b -i eth0 -s /etc/udhcpc.script > /dev/null 2>&1", rspBuff);
+		Execute_cmd("udhcpc -b -i eth0 -h HBD-Router -s /etc/udhcpc.script > /dev/null 2>&1", rspBuff);
 		gohome =1;
     }
 	//wan mode static ip
@@ -2444,14 +2447,14 @@ int main(int argc,char **argv)
 			flag=1;
 		}
 		
-		CFG_set_by_name("AP_STARTMODE","standard");
+		//CFG_set_by_name("AP_STARTMODE","standard");
 		//1.destory old mode pid
 		Execute_cmd("cfg -e | grep \"WAN_MODE=\"",valBuff);
 		//fprintf(errOut,"[luodp] WAN_MODE: %s\n",valBuff);
 		if(strstr(valBuff,"pppoe") != 0)
 		{
 			//kill pppoe
-			Execute_cmd("pppoe-stop", rspBuff);
+			Execute_cmd("pppoe-stop > /dev/null 2>&1", rspBuff);
 		}
 		if(strstr(valBuff,"dhcp") != 0)
 		{
@@ -2492,6 +2495,7 @@ int main(int argc,char **argv)
 		char  passBuff[128];
 		char  cmdstr[128];
 		int flag=0;
+		
 		if (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 )
 		{
 			flag=1;
@@ -2500,16 +2504,16 @@ int main(int argc,char **argv)
 		memset(passBuff,'\0',128);
         memset(cmdstr,'\0',128);
 
-		CFG_set_by_name("AP_STARTMODE","standard");
+		//CFG_set_by_name("AP_STARTMODE","standard");
 		//1.destory old mode pid
-		CFG_get_by_name("IPGW",valBuff);
+		/*CFG_get_by_name("IPGW",valBuff);
 		Execute_cmd("route -n", rspBuff);
 		if(strstr(rspBuff,valBuff) != 0)
 		{
 			//fprintf(errOut,"[luodp] ishere35\n");
 			sprintf(pChar,"route del -net %s > /dev/null 2>&1",valBuff);
 			Execute_cmd(pChar, rspBuff);
-		}
+		}*/
 		Execute_cmd("cfg -e | grep \"WAN_MODE=\"",valBuff);
 		if(strstr(valBuff,"dhcp") != 0)
 		{
@@ -2531,8 +2535,9 @@ int main(int argc,char **argv)
 		strcat(cmdstr,usernameBuff);
 		strcat(cmdstr," ");
 		strcat(cmdstr,passBuff);
+		strcat(cmdstr," > /dev/null 2>&1");
 		Execute_cmd(cmdstr, rspBuff);
-		
+		//fprintf(errOut,"\n%s  %d [luodp]PPPOE %s \n",__func__,__LINE__,rspBuff);		
 		Execute_cmd("pppoe-start > /dev/null 2>&1", rspBuff);
 		//fprintf(errOut,"\n%s  %d [luodp]PPPOE \n",__func__,__LINE__);		
 		gohome =1;
@@ -2562,29 +2567,33 @@ int main(int argc,char **argv)
 		int flag=0;
 		
 		//2.get old config from flash 
-		Execute_cmd("cfg -e | grep \"AP_SECMODE_2=\" |  awk -F \"\"\" \'{print $2}\'",valBuff2);
-		Execute_cmd("cfg -e | grep \"WDSON_OFF=\" | awk -F \"=\" \'{print $2}\'",valBuff5);
+		Execute_cmd("cfg -e | grep 'AP_SECMODE_2=' |  awk -F '\"' '{print $2}'",valBuff2);
+		Execute_cmd("cfg -e | grep 'WDSON_OFF=' | awk -F '=' '{print $2}'",valBuff5);
 		
-		
+		//fprintf(errOut,"[luodp] wds %s,%s\n",valBuff2,valBuff5);
 		CFG_get_by_name("WDSON_OFF",valBuff3);
+		//off->on
 		if((strstr(valBuff5,valBuff3) == 0) && (strcmp(valBuff3,"on") == 0) )
 		{
 			CFG_set_by_name("AP_STARTMODE","repeater");
 			flag=1;
 		}
+		//on->off
 		if((strstr(valBuff,valBuff3) == 0) && (strcmp(valBuff3,"off") == 0) )
 		{
 			CFG_set_by_name("AP_STARTMODE","standard");
 			flag=2;
 		}
+		//on->on
 		if((strstr(valBuff5,valBuff3) != 0) && (strcmp(valBuff3,"on") == 0) )
 		{
-			CFG_set_by_name("AP_STARTMODE","repeater");
+			//CFG_set_by_name("AP_STARTMODE","repeater");
 			flag=3;
 		}
+		//off->off
 		if((strstr(valBuff,valBuff3) != 0) && (strcmp(valBuff3,"off") == 0) )
 		{
-			CFG_set_by_name("AP_STARTMODE","standard");
+			//CFG_set_by_name("AP_STARTMODE","standard");
 			flag=4;
 		}
 		//2.save new config to flash 
@@ -2621,14 +2630,29 @@ int main(int argc,char **argv)
 			writeParameters("/tmp/.apcfg","w+",0);
 		}
 		//5.do settings
-		if((flag==1)||(flag==2))
+		//TODO if close do commit no ath1
+		if(flag==2) //on->off
 		{
-			Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
-			Execute_cmd("cfg -e | grep \"WIFION_OFF=\" | awk -F \"=\" \'{print $2}\'",valBuff);
-			if(strstr(valBuff3,"off") == 0)
+			//Execute_cmd("wlanconfig ath1 destroy > /dev/null 2>&1", rspBuff);
+			Execute_cmd("cfg -e | grep 'WIFION_OFF=' | awk -F \"=\" \'{print $2}\'",valBuff);
+			//wifi on ,then wds on/off
+			if(strstr(valBuff,"off") == 0)
 			{
-				//fprintf(errOut,"[luodp] SECMODE here3");
+				//fprintf(errOut,"[luodp] wds open\n");
 				//[TODO]sta mode
+				Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
+				Execute_cmd("apup > /dev/null 2>&1", rspBuff);
+			}
+		}		
+		if(flag==1) //off->on
+		{
+			Execute_cmd("cfg -e | grep 'WIFION_OFF=' | awk -F \"=\" \'{print $2}\'",valBuff);
+			//wifi on ,then wds on/off
+			if(strstr(valBuff,"off") == 0)
+			{
+				//fprintf(errOut,"[luodp] wds open\n");
+				//[TODO]sta mode
+				Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
 				Execute_cmd("apup > /dev/null 2>&1", rspBuff);
 			}
 		}
@@ -2650,12 +2674,11 @@ int main(int argc,char **argv)
 		Execute_cmd(pChar, rspBuff);*/
 		if((flag==1)||(flag==3))
 		{
-			sprintf(pChar,"iwconfig ath0 channel %s",channel);	
+			sprintf(pChar,"iwconfig ath0 channel %s  > /dev/null 2>&1",channel);	
 			Execute_cmd(pChar, rspBuff);
-			sprintf(pChar,"iwconfig ath1 channel %s",channel);	
+			sprintf(pChar,"iwconfig ath1 channel %s  > /dev/null 2>&1",channel);	
 			Execute_cmd(pChar, rspBuff);
 		}
-		
 		/*Execute_cmd("iwpriv ath1 wds 1", rspBuff);
 		Execute_cmd("brctl addif br0 ath1", rspBuff);
 		Execute_cmd("ifconfig ath1 up", rspBuff);*/
@@ -2673,6 +2696,7 @@ int main(int argc,char **argv)
 		char valBuff5[128];
 		char valBuff6[128];	
 		char valBuff7[128];	
+		char valBuff8[128];	
 		int flag=0;
 
 		//1.get old value from flash
@@ -2686,11 +2710,12 @@ int main(int argc,char **argv)
 		//Execute_cmd("iwconfig ath0 | grep \"ESSID\" | awk -F \"\"\" \'{print $2}\'",valBuff2);
 		Execute_cmd("cfg -e | grep \"AP_SECMODE=\"",valBuff5);
 		Execute_cmd("cfg -e | grep \"AP_PRIMARY_CH=\" | awk -F \"=\" \'{print $2}\'",valBuff7);
+		Execute_cmd("cfg -e | grep \"AP_HIDESSID=\" | awk -F \"=\" \'{print $2}\'",valBuff8);
 		
 		//fprintf(errOut,"[luodp] WIFI: %s\n%s%s\n%s\n",valBuff,valBuff2,valBuff5,valBuff4);
-		//2.save new config to flash 
+		//2.save new config to flash
 		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-        writeParameters("/tmp/.apcfg","w+",0);
+		writeParameters("/tmp/.apcfg","w+",0);			
 		//fprintf(errOut,"[luodp]here\n");
 		//3.do new config pid
 		//TODO key check
@@ -2729,8 +2754,7 @@ int main(int argc,char **argv)
 		}
 		//4.save new add  to flash 
 		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-        writeParameters("/tmp/.apcfg","w+",0);
-				
+		writeParameters("/tmp/.apcfg","w+",0);					
 		CFG_get_by_name("WIFION_OFF",valBuff3);
 		//fprintf(errOut,"[luodp] %s here4\n",valBuff3);
 		if((strstr(valBuff,valBuff3) == 0) && (strcmp(valBuff3,"on") == 0) )
@@ -2753,19 +2777,34 @@ int main(int argc,char **argv)
 		if((strcmp(valBuff2,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0))
 		{
 			//fprintf(errOut,"[luodp] SECMODE here6");
-			sprintf(pChar,"iwconfig ath0 essid %s",valBuff4);
+			sprintf(pChar,"iwconfig ath0 essid %s  > /dev/null 2>&1",valBuff4);
 			Execute_cmd(pChar, rspBuff);
 		}
-		//ssid [TODO]
+		//channel
 		CFG_get_by_name("AP_PRIMARY_CH",valBuff4);
-		fprintf(errOut,"[luodp] %s here5 %s\n",valBuff4,valBuff7);
-		sprintf(valBuff5,"\"%s\"\n<br>",valBuff4);
+		//fprintf(errOut,"[luodp] %s here5 %s\n",valBuff4,valBuff7);
+		sprintf(valBuff5,"%s\n<br>",valBuff4);
 		//fprintf(errOut,"%d\n%d\n%d\n",strcmp(valBuff2,valBuff5),flag,strcmp(valBuff3,"on"));
 		if((strcmp(valBuff7,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0))
 		{
-			fprintf(errOut,"[luodp] SECMODE here7");
-			sprintf(pChar,"iwconfig ath0 channel %s",valBuff4);
+			//fprintf(errOut,"[luodp] SECMODE here7\n");
+			sprintf(pChar,"iwconfig ath0 channel %s  > /dev/null 2>&1",valBuff4);
 			Execute_cmd(pChar, rspBuff);
+		}
+		//hide ssid
+		CFG_get_by_name("AP_HIDESSID",valBuff4);
+		//fprintf(errOut,"[luodp] %s here6 %s\n",valBuff4,valBuff8);
+		sprintf(valBuff5,"%s\n<br>",valBuff4);
+		//fprintf(errOut,"%d\n%d\n%d\n",strcmp(valBuff2,valBuff5),flag,strcmp(valBuff3,"on"));
+		if((strcmp(valBuff8,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0)&&(strcmp(valBuff4,"1") == 0))
+		{
+			//fprintf(errOut,"[luodp] SECMODE here8\n");
+			Execute_cmd("iwpriv ath0 hide_ssid 1  > /dev/null 2>&1", rspBuff);
+		}
+		if((strcmp(valBuff8,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0)&&(strcmp(valBuff4,"0") == 0))
+		{
+			//fprintf(errOut,"[luodp] SECMODE here9\n");
+			Execute_cmd("iwpriv ath0 hide_ssid 0  > /dev/null 2>&1", rspBuff);
 		}
 		if(flag==2)
 		{
@@ -2811,20 +2850,61 @@ int main(int argc,char **argv)
          writeParameters(NVRAM,"w+", NVRAM_OFFSET);
          writeParameters("/tmp/.apcfg","w+",0);
                 
-         //Execute_cmd("ps | grep httpd | awk '{print $1}' | xargs kill  > /dev/null 2>&1", rspBuff);
-		 Execute_cmd("killall httpd > /dev/null 2>&1", rspBuff);
+         //Execute_cmd("ps | grep httpd | awk '{print $1}' | xargs kill -HUP > /dev/null 2>&1", rspBuff);
+		 //system("killhttpd");
+		 //Execute_cmd("killall -TERM httpd > /dev/null 2>&1", rspBuff);
+		 //system("killall -9 httpd > /dev/null 2>&1");
 		 //fprintf(errOut,"[luodp] httpd result: %s\n",rspBuff);		 
-         Execute_cmd("httpd -h /usr/www -c /etc/httpd.conf  > /dev/null 2>&1", rspBuff);		
-		 //printf(errOut,"[luodp] httpd result: %s\n",rspBuff);		 
+         //Execute_cmd("/usr/sbin/httpd -p 80 -h /usr/www -c /etc/httpd.conf", rspBuff);	
+		 //system("httpd -h /usr/www -c /etc/httpd.conf  > /dev/null 2>&1");
+		 //system("httpd -h /usr/www -c /etc/httpd.conf  > /dev/null 2>&1");
+		 //system("httpd -h /usr/www -c /etc/httpd.conf  > /dev/null 2>&1");
+		 fprintf(errOut,"[luodp] httpd result: %s\n",rspBuff);		 
          // fprintf(errOut,"\n----------2kill**********************\n");
 		 gohome =1;
     }
- 
-	 printf("HTTP/1.0 200 OK\r\n");
-   	 printf("Content-type: text/html\r\n");
-     printf("Connection: close\r\n");
-     printf("\r\n");
-     printf("\r\n");
+	if(strcmp(CFG_get_by_name("FACTORY",valBuff),"FACTORY") == 0 )
+	{
+        fprintf(errOut,"\n%s  %d FACTORY \n",__func__,__LINE__);
+		/*Execute_cmd("cfg -e | grep \"WIFION_OFF=\" | awk -F \"=\" \'{print $2}\'",valBuff);
+		if(strstr(valBuff,"on") == 0 )
+		{
+			Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
+		}*/
+        system("cfg -x");
+		system("echo \"/home.html:admin:admin\" > /etc/httpd.conf");
+		//system("/etc/ath/apcfg");
+		//system("apup > /dev/null 2>&1");
+		
+        printf("HTTP/1.0 200 OK\r\n");
+        printf("Content-type: text/html\r\n");
+        printf("Connection: close\r\n");
+        printf("\r\n");
+        printf("\r\n");
+
+        printf("<HTML><HEAD>\r\n");
+        printf("<LINK REL=\"stylesheet\" HREF=\"../style/handaer.css\"  TYPE=\"text/css\" media=\"all\">");
+        printf("<link rel=\"stylesheet\" href=\"../style/normal_ws.css\" type=\"text/css\">");
+        printf("</head><body>");
+        
+        printf("<div class=\"handaer_main\">");
+        printf("<h1>恢复出厂设置</h1>\n");	
+        printf("<div align=\"center\"> <img align=\"center\" src=\"../images/loading.gif\"></img></div>");
+        printf("<p  align=\"center\">恢复出厂设置完成,正在重启BASE..........</p><br>\n");	
+        printf("<p  align=\"center\">Restore factory settings was completed, restartting BASE..........</p><br>\n");	
+        printf("<script  language=javascript>setTimeout(function(){window.location.href=\"crfact\";},60000);</script>");
+        printf("</div>");
+		printf("</body></html>");
+
+
+        system("sleep 1 && reboot &");
+        exit(1);
+    }
+    printf("HTTP/1.0 200 OK\r\n");
+    printf("Content-type: text/html\r\n");
+    printf("Connection: close\r\n");
+    printf("\r\n");
+    printf("\r\n");
     if( gohome == 1)
     {
          if(translateFile("../map.html") < 0)

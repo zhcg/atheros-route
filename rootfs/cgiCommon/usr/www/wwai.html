@@ -22,6 +22,24 @@ function style_display_on()
 		return "table-row";
 	}
 }
+function disablewdsSettings()
+{
+	document.wizard_form.WDS_CHAN.disabled = true;
+	document.wizard_form.AP_SECMODE_2.disabled = true;
+	document.wizard_form.WDSON_OFF.disabled = true;
+	document.getElementById("WDSON_OFF1").disabled = true;
+	document.getElementById("WDSON_OFF2").disabled = true;
+	document.wizard_form.AP_SSID_2.disabled = true;
+	document.wizard_form.ROOTAP_MAC_2.disabled = true;
+	document.wizard_form.PSK_KEY_2.disabled = true;
+}
+function disableunneedSettings()
+{
+	document.wizard_form.AUTOTYPE.disabled = true;
+	document.wizard_form.AP_locatIP.disabled = true;
+	document.getElementById("intType1").disabled = true;
+	document.getElementById("intType2").disabled = true;
+}
 function butwork(zhi1,zhi2,zhi3,zhi4)
 {
 	if(zhi1 == "false")
@@ -69,6 +87,35 @@ function butwork(zhi1,zhi2,zhi3,zhi4)
 	}
 
 }
+function checkwds()
+{			
+	if(document.wizard_form.WDSON_OFF[0].checked == true)
+	{
+		if(document.getElementById("AP_SSID_2").value =="")
+		{
+			document.wizard_form.AP_SSID_2.select();
+			alert(_("err SSID empty"));
+			return false;
+		}
+		if(document.getElementById("ROOTAP_MAC_2").value =="")
+		{
+			document.wizard_form.ROOTAP_MAC_2.select();
+			alert(_("err mac empty"));
+			return false;
+		}
+		if(document.getElementById("AP_SECMODE_2").value == "WPA")
+		{
+			if(document.getElementById("pwd").value =="")
+			{
+				alert(_("err pwd empty"));
+				return false;
+			}
+
+		}
+
+	}
+	return true;
+}
 function checkInjection(str)
 {
 	var len = str.length;
@@ -85,6 +132,14 @@ function change_step(offset)
 {
 	if (offset == 1)
 	{
+		if(step_num == 1)
+		{
+			if (document.wizard_form.intType[1].checked == true) 
+			{
+				if(!checkwds())
+				return false;
+			}
+		}
 		if (step_num == 2)
 		{
 			if (document.wizard_form.intType[0].checked == true) 
@@ -126,7 +181,14 @@ function change_step(offset)
 		}
 		else if (document.wizard_form.intType[1].checked == true) 
 		{
-			
+			if(document.getElementById("WIFION_OFF").value=="off")
+			{
+				document.getElementById("offwifi").style.visibility = "visible";
+				document.getElementById("offwifi").style.display = style_display_on();
+
+				butwork("false","true","true","true");
+				return true;
+			}
 			document.getElementById("div_Router").style.visibility = "visible";
 			document.getElementById("div_Router").style.display = style_display_on();
 			
@@ -158,8 +220,8 @@ function change_step(offset)
 		}
 		else
 		{
-			document.getElementById("div_wan_title").style.visibility = "visible";
-			document.getElementById("div_wan_title").style.display = style_display_on();
+			//document.getElementById("div_wan_title").style.visibility = "visible";
+			//document.getElementById("div_wan_title").style.display = style_display_on();
 			connectionTypeSwitch();
 			butwork("false","false","true","true");
 		}
@@ -169,26 +231,36 @@ function change_step(offset)
 		if (document.wizard_form.WAN_MODE[1].checked == true) 
 		{
 			waitgifshow();
+			disablewdsSettings();
+			disableunneedSettings();
 			document.getElementById('DHCP').click();
 		}
 		else if (document.wizard_form.WAN_MODE[2].checked == true) 
 		{
 			waitgifshow();
+			disablewdsSettings();
+			disableunneedSettings();
 			document.getElementById('SIP').click();
 		}
 		else if (document.wizard_form.WAN_MODE[3].checked == true) 
 		{
 			waitgifshow();
+			disablewdsSettings();
+			disableunneedSettings();
 			document.getElementById('PPP').click();
 		}
 		else if (document.wizard_form.WAN_MODE[4].checked == true) 
 		{
 			waitgifshow();
+			disablewdsSettings();
+			disableunneedSettings();
 			document.getElementById('L2TP').click();
 		}
 		else if (document.wizard_form.WAN_MODE[5].checked == true) 
 		{
 			waitgifshow();
+			disablewdsSettings();
+			disableunneedSettings();
 			document.getElementById('P2TP').click();
 		}
 		else 
@@ -940,12 +1012,18 @@ function initTranslation()
 	e.innerHTML = _("admw onbutton");	
 	e = document.getElementById("offbutton");
 	e.innerHTML = _("admw offbutton");
+	e = document.getElementById("offwifides");
+	e.innerHTML = _("admw offwifides");
 
 }
 function initValue()
 {
 	Butterlate.setTextDomain("admin");
 	initTranslation();
+	if((document.getElementById("INDEX").value == "11") || (document.getElementById("INDEX").value == 11))
+	{
+		document.wizard_form.WDSON_OFF[0].checked = true;
+	}
 	hideAllTables();
 	disableWanSettings();
 	switch_wds();
@@ -1260,7 +1338,7 @@ function workoutgw()
 <h2 id="RCMd"></h2>
 <table id="div_wizard_home" width="100%" border="0" cellpadding="2" cellspacing="1">
 <tr>
-  <td width="15px"><input type="radio" name="intType" value="interner" checked></td>
+  <td width="15px"><input type="radio" name="intType" id="intType1" value="interner" checked></td>
   <th align="left" id="int"></th>
 </tr>
 <tr>
@@ -1268,7 +1346,7 @@ function workoutgw()
   <td id="int1"></td>
 </tr> 
 <tr>
-  <td width="15px"><input type="radio" name="intType" value="router"></td>
+  <td width="15px"><input type="radio" name="intType" id="intType2" value="router"></td>
   <th align="left" id="wireless"></th>
 </tr>
 <tr>
@@ -1284,8 +1362,8 @@ function workoutgw()
 
 <td class="head" id="wdsswitch"></td>
 	<td>
-	<input type="radio" ~cWDSON_OFF:on~ name="WDSON_OFF" value="on" onclick="switch_wds();" checked /><span id="onbutton"></span>
-	<input type="radio" ~cWDSON_OFF:off~ name="WDSON_OFF" value="off" onclick="switch_wds();"/><span id="offbutton"></span>
+	<input type="radio" ~cWDSON_OFF:on~ name="WDSON_OFF" id="WDSON_OFF1" value="on" onclick="switch_wds();" checked /><span id="onbutton"></span>
+	<input type="radio" ~cWDSON_OFF:off~ name="WDSON_OFF" id="WDSON_OFF2" value="off" onclick="switch_wds();"/><span id="offbutton"></span>
 	</td>
 </tr>
 
@@ -1614,7 +1692,9 @@ function workoutgw()
   <img align="center" src="/images/loading.gif"></img>
   <p align="center" id="settingwaiting"></p>
 </div>
-
+<div id="offwifi" style="display:none" align="center">
+  <h1 align="center" id="offwifides"></h1>
+</div>
 <table width="540" cellpadding="2" cellspacing="1" id="buttontable">
 <tr align="center">
   <td>
@@ -1638,6 +1718,7 @@ function workoutgw()
 	<input type="text" style="display:none" name="LINEIN_OUT" id="LINEIN_OUT" size="20" maxlength="32" value="~~LINEIN_OUT~">	
 	<input type="text" style="display:none" name="WDS_CHAN" id="WDS_CHAN" size="20" maxlength="32" value="~~WDS_CHAN~">	
 	<input type="text" style="display:none" name="AP_SECMODE_2" id="AP_SECMODE_2" size="20" maxlength="32" value="~~AP_SECMODE_2~">	
+	<input type="text" style="display:none" name="WIFION_OFF" id="WIFION_OFF" size="20" maxlength="32" value="~~WIFION_OFF~">	
 	
 	<input type="text" style="display:none" name="AP_locatIP" id="AP_locatIP" size="20" maxlength="32" value="~~AP_IPADDR~">	
 

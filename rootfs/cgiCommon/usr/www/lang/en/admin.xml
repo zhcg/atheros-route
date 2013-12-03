@@ -242,6 +242,8 @@
 	<message msgid="admw wwtitle" msgstr="Network/Wireless Relay" />     
   
    <message msgid="admw modedes" msgstr="Please select the router WAN connection type." />  
+   <message msgid="admw modedes1" msgstr="The parameters needed in the opening of the network, the network operators to provide" />  
+
    <message msgid="admw wifides" msgstr="Please set the HBD routing WiFi account and password. Your computer, PAD, intelligent mobile phone will use the following network." />  
    <message msgid="admw wirelessdes" msgstr="Please select the WiFi you want to connect to." />  
    <message msgid="admw parentdes" msgstr="As a parent, you can control child's Internet time and visiting the webpage through the page settings" />  
@@ -274,7 +276,7 @@
 	
 	<message msgid="admw fresh" msgstr="Scanning" />
 	<message msgid="admw Wlisttitle1" msgstr="WiFi list" />
-	<message msgid="admw Wlisttitle2" msgstr="Existing WiFi" />
+	<message msgid="admw Wlisttitle2" msgstr="Existing WiFi:SSID(MAC)(channel)(Encrypting Mode WPA-Security None-Open)" />
 	<message msgid="admw Wlisttitle3" msgstr="Drop-down list" />
     <message msgid="toplanguage" msgstr="e" />
     <message msgid="admin open" msgstr="Open" />
@@ -290,13 +292,16 @@
 	<message msgid="admw uploadwaiting" msgstr="Upgrading,Please Wait......" />
 
 	<message msgid="admw ssidrequest" msgstr="  (1-24 letters, numbers, or underscore)" />
-    <message msgid="admw passwordrequest" msgstr="  (6-12 letters, numbers or underscore)" />
+    <message msgid="admw passwordrequest" msgstr="  (8-12 letters, numbers or underscore)" />
+    <message msgid="admw passwordrequest1" msgstr="  (5-12 letters, numbers or underscore)" />
 
 	<message msgid="err lineout" msgstr="The line is out!" />
 	<message msgid="err ip empty" msgstr="Error. IP address is empty." />
 	<message msgid="err mask empty" msgstr="Error. Mask is empty." />
     <message msgid="err name empty" msgstr="Please enter user name!" />
 	<message msgid="err SSID empty" msgstr="Please enter SSID!" />    
+	<message msgid="err mac empty" msgstr="Please enter MAC!" />   
+
     <message msgid="err pwd empty" msgstr="Please enter password!" />
 	<message msgid="err key" msgstr="Please input key!" />
 	
@@ -313,7 +318,7 @@
 
 	<message msgid="err IP error" msgstr="WAN IP and local IP cannot be located in the same network, please reset" />
 	
-	<message msgid="err keylen" msgstr="Please input at least 6 and less than 12 character of key!" />
+	<message msgid="err keylen" msgstr="Please input at least 8 and less than 12 character of key!" />
 	<message msgid="err keychar" msgstr="Invalid characters in Pass Phrase." />
 	<message msgid="admw internet" msgstr="Internet" />
 	<message msgid="admw wai" msgstr="Internet settings" />
@@ -331,5 +336,22 @@
 	<message msgid="upgrade success" msgstr="Upgrade success!" />
 	<message msgid="admw channelchoose" msgstr="Channel select" />
 	<message msgid="admw channelauto" msgstr="AUTO" />
-
+	
+	<message msgid="factory reset" msgstr="Restore factory settings will be lost the existing configuration, are you sure you want to continue?" />
+	<message msgid="admw factitle" msgstr="Factory Settings" />
+	<message msgid="admw facdes" msgstr="Click on this button will restore all settings to the router's factory default state" />
+	<message msgid="admw defaultset" msgstr="Factory settings" />
+	<message msgid="factory fail" msgstr="Return to factory setting fail!" />
+	<message msgid="factory success" msgstr="Return to factory setting successfully!" />
+	<message msgid="upgrade success" msgstr="upgrade successfully!" />
+	<message msgid="upgrade fail" msgstr="upgrade fail!" />
+	
+	<message msgid="admw offwifides" msgstr="wifi is off so WDS is not work" />
+	<message msgid="admw software" msgstr="Softwsre Version" />
+	<message msgid="admw hardware" msgstr="Hardware Version" />
+	<message msgid="admw hidewifides" msgstr="Hide Wifi" />
+	
+	
+	
+	
 </po>

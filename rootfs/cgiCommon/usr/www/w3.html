@@ -128,7 +128,7 @@ function CheckWirelessValue()
 				document.wizard_form.PSK_KEY.select();
 				return false;
 			}
-			if ((keyvalue.length < 6)||( keyvalue.length > 12))
+			if ((keyvalue.length < 8)||( keyvalue.length > 12))
 			{
 				alert(_("err keylen"));
 				document.wizard_form.PSK_KEY.select();
@@ -211,8 +211,12 @@ function initTranslation()
 	
 	e = document.getElementById("channelchoose");
 	e.innerHTML = _("admw channelchoose");	
-	e = document.getElementById("channelauto");
-	e.innerHTML = _("admw channelauto");	
+	e = document.getElementById("hidewifides");
+	e.innerHTML = _("admw hidewifides");	
+	
+			
+	//e = document.getElementById("channelauto");
+	//e.innerHTML = _("admw channelauto");	
 
 }
 function initValue()
@@ -221,6 +225,7 @@ function initValue()
 	initTranslation();
 	disableWirelessSettings();
 	switch_wifi();
+	inithidewifi();
 }
 function showpwd()
 {
@@ -261,11 +266,31 @@ function waitgifshow()
 {
 	document.getElementById("div_wireless").style.visibility = "hidden";
 	document.getElementById("div_wireless").style.display = "none";
-	
+	document.getElementById("wifides").style.visibility = "hidden";
+	document.getElementById("wifides").style.display = "none";
 	document.getElementById("waitshow").style.visibility = "visible";
 	document.getElementById("waitshow").style.display = style_display_on();
 	document.getElementById("buttontable").style.visibility = "hidden";
 	document.getElementById("buttontable").style.display = "none";
+}
+function inithidewifi()
+{
+	if(document.getElementById("AP_HIDESSID").value=="1")
+	{
+		document.getElementById("hidewifi").checked = true;
+	}
+	else
+	{
+		document.getElementById("hidewifi").checked = false;
+	}
+	
+}
+function hidewififun()
+{
+	if(document.getElementById("hidewifi").checked == true)
+		document.getElementById("AP_HIDESSID").value="1";
+	else
+		document.getElementById("AP_HIDESSID").value="0";
 }
 </script>
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
@@ -284,7 +309,7 @@ function waitgifshow()
 <tr><td class="title" colspan="2" id="wsetingst"></td></tr>
 <tr>
   <td class="head" id="nname"></td>
-  <td><input type="text" name="AP_SSID" size="32" maxlength="32" class="handaer_text_content"  value="~~AP_SSID~">&nbsp;<span id="ssidrequest"></span></td>
+  <td><input type="text" name="AP_SSID" size="32" maxlength="32" class="handaer_text_content"  value="~~AP_SSID~"><input type="checkbox" id="hidewifi" onclick="hidewififun();"/><span id="hidewifides"></span>&nbsp;<span id="ssidrequest"></span></td>
 </tr>
 
 <tr>
@@ -297,25 +322,21 @@ function waitgifshow()
 <tr id="channel">
   <td class="head" id="channelchoose"></td>
   <td>
-    <select name="AP_CHANNEL" size="1">
-	  <option ~sAP_CHANNEL:0~ value="0" id="channelauto"></option>
-	  <option ~sAP_CHANNEL:1~ value="1">1</option>
-      <option ~sAP_CHANNEL:2~ value="2">2</option>
-      <option ~sAP_CHANNEL:3~ value="3">3</option>
-      <option ~sAP_CHANNEL:4~ value="4">4</option>
-      <option ~sAP_CHANNEL:5~ value="5">5</option>
-      <option ~sAP_CHANNEL:6~ value="6">6</option>
-      <option ~sAP_CHANNEL:7~ value="7">7</option>
-      <option ~sAP_CHANNEL:8~ value="8">8</option>
-      <option ~sAP_CHANNEL:9~ value="9">9</option>
-      <option ~sAP_CHANNEL:10~ value="10">10</option>
-      <option ~sAP_CHANNEL:11~ value="11">11</option>
-      <option ~sAP_CHANNEL:12~ value="12">12</option>
-      <option ~sAP_CHANNEL:13~ value="13">13</option>
-      <option ~sAP_CHANNEL:14~ value="14">14</option>
-      <option ~sAP_CHANNEL:15~ value="15">15</option>
-      <option ~sAP_CHANNEL:16~ value="16">16</option>
-
+    <select name="AP_PRIMARY_CH" size="1">
+	  <!--option ~sAP_PRIMARY_CH:0~ value="0" id="channelauto"></option-->
+	  <option ~sAP_PRIMARY_CH:1~ value="1">1</option>
+      <option ~sAP_PRIMARY_CH:2~ value="2">2</option>
+      <option ~sAP_PRIMARY_CH:3~ value="3">3</option>
+      <option ~sAP_PRIMARY_CH:4~ value="4">4</option>
+      <option ~sAP_PRIMARY_CH:5~ value="5">5</option>
+      <option ~sAP_PRIMARY_CH:6~ value="6">6</option>
+      <option ~sAP_PRIMARY_CH:7~ value="7">7</option>
+      <option ~sAP_PRIMARY_CH:8~ value="8">8</option>
+      <option ~sAP_PRIMARY_CH:9~ value="9">9</option>
+      <option ~sAP_PRIMARY_CH:10~ value="10">10</option>
+      <option ~sAP_PRIMARY_CH:11~ value="11">11</option>
+      <option ~sAP_PRIMARY_CH:12~ value="12">12</option>
+      <option ~sAP_PRIMARY_CH:13~ value="13">13</option>
     </select>
   </td>
 </tr>
@@ -347,7 +368,7 @@ function waitgifshow()
     <input type="button" name="cancel_motion" id="bCANCEL" class="handaer_input" value="Cancel" onClick="reloadd();">
     <input type="button" name="apply_motion" id="bAPPLY" class="handaer_input" value="Apply" onClick="CheckWirelessValue();">
 	<input type="submit" name="WIRELESS" id="WIRELESS" style="display:none" value="WIRELESS">
-
+	<input type="text" style="display:none" name="AP_HIDESSID" id="AP_HIDESSID" size="20" maxlength="32" value="~~AP_HIDESSID~">
   </td>
 </tr>
 </table>

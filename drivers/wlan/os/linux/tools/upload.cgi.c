@@ -94,6 +94,24 @@ char *getFileName(unsigned char *req)
 	return psz1;
 }
 
+#define REFRESH_TIMEOUT		"60000"		/* 40000 = 40 secs*/
+
+void javascriptUpdate(int success)
+{
+    printf("<script language=\"JavaScript\" type=\"text/javascript\">");
+    if(success){
+        printf(" \
+function refresh_all(){	\
+  top.location.href = \"http://%s\"; \
+} \
+function update(){ \
+  self.setTimeout(\"refresh_all()\", %s);\
+}", "192.168.4.168", REFRESH_TIMEOUT);
+    }else{
+        printf("function update(){ parent.menu.setLockMenu(0);}");
+    }
+    printf("</script>");
+}
 
 main()
 {
@@ -116,8 +134,8 @@ main()
         errOut = fopen("/dev/ttyS0","w");
 
         
-	printf("Content-type:text/html \r\n\r\n");
-	printf("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=UTF-8\"><script 	type=\"text/javascript\" src=\"/lang/b28n.js\"></script></head>");
+	//printf("Content-type:text/html \r\n\r\n");
+	//printf("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=UTF-8\"><script 	type=\"text/javascript\" src=\"/lang/b28n.js\"></script></head><body>");
 
 	Boundary[0] = '\r';
 	Boundary[1] = '\n';
@@ -261,17 +279,25 @@ error:
 	{
 	    printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");alert('File upload fail!');window.location.reload();</script>");
 
-    }//打印信息到网页的隐藏的iframe中
+    }
+		//打印信息到网页的隐藏的iframe中
 	else 
-	{
+	{		
+            fprintf(errOut,"%s  %d file upload complete !\n",__func__,__LINE__);
 			char cmdd[256];
+            printf("Content-Type:text/html\n\n");
+            printf("<HTML><HEAD>\r\n");
+            printf("</head><body>");
+            
+            printf("<div style=\"font-size: 14pt; font-weight: bold; margin-left: 10px; font-family: 寰蒋闆呴粦, Arial, Helvetica, sans-serif; color: #848484;border-bottom:1px dotted #d0d0d0; padding-bottom:10px; margin-bottom:10px;height:30px; line-height:30px; padding:5px;\">鍥轰欢鍗囩骇</div>\n");	
+            printf("<p align=\"center\" style=\"font-size: 9pt; margin-left: 10px; font-family: 寰蒋闆呴粦, Arial, Helvetica, sans-serif; color: #848484\">鍗囩骇瀹屾垚,姝ｅ湪閲嶅惎BASE..........</p><br>\n");	
+            printf("<p align=\"center\" style=\"font-size: 9pt; margin-left: 10px; font-family: 寰蒋闆呴粦, Arial, Helvetica, sans-serif; color: #848484\">The upgrade was completed, restartting BASE..........</p><br>\n");	
+            printf("<script  language=javascript>setTimeout(function(){window.location.href=\"crupload\";},140000);</script>");
+            printf("</body></html>");	
+			//[TODO]factory default
 			//[TODO] File check
-			sprintf(cmdd,"sysupgrade %s",filePath);
+			sprintf(cmdd,"sleep 1 && sysupgrade %s &",filePath);
 			system(cmdd);
-            fprintf(errOut,"%s  %d file upload success !\n",__func__,__LINE__);
-            printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");");
-            printf("alert(_(\"upgrade success\"));"); 
-            printf("window.location.href=\"map\";</script>");	
 	}
 	return;
 	

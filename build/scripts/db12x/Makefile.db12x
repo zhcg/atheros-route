@@ -268,7 +268,9 @@ webui:
 	cp -f net/net_test $(INSTALL_ROOT)/bin;	\
 	cp -f upgrade/sysupgrade $(INSTALL_ROOT)/usr/sbin; \
 	cp -f upgrade/__sysupgrade $(INSTALL_ROOT)/usr/sbin; \
-	cp -f upgrade/upgrade_stage2 $(INSTALL_ROOT)/usr/bin;
+	cp -f upgrade/upgrade_stage2 $(INSTALL_ROOT)/usr/bin; \
+	cp -f cal_check $(INSTALL_ROOT)/usr/bin;		\
+	cp -f version_check $(INSTALL_ROOT)/usr/bin;
 	
 tester: 
 	cd ../apps/tester; \

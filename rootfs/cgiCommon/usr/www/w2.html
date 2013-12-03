@@ -116,8 +116,8 @@ function change_step(offset)
 		}
 		else
 		{
-			document.getElementById("modedes").style.visibility = "visible";
-			document.getElementById("modedes").style.display = style_display_on();
+			//document.getElementById("modedes").style.visibility = "visible";
+			//document.getElementById("modedes").style.display = style_display_on();
 			connectionTypeSwitch();
 			butwork("false","true","true","false");
 		}
@@ -127,26 +127,31 @@ function change_step(offset)
 		if (document.wizard_form.WAN_MODE[1].checked == true) 
 		{
 			waitgifshow();
+			document.wizard_form.AUTOTYPE.disabled=true;
 			document.getElementById('DHCP').click();
 		}
 		else if (document.wizard_form.WAN_MODE[2].checked == true) 
 		{
 			waitgifshow();
+			document.wizard_form.AUTOTYPE.disabled=true;
 			document.getElementById('SIP').click();
 		}
 		else if (document.wizard_form.WAN_MODE[3].checked == true) 
 		{
 			waitgifshow();
+			document.wizard_form.AUTOTYPE.disabled=true;
 			document.getElementById('PPP').click();
 		}
 		else if (document.wizard_form.WAN_MODE[4].checked == true) 
 		{
 			waitgifshow();
+			document.wizard_form.AUTOTYPE.disabled=true;
 			document.getElementById('L2TP').click();
 		}
 		else if (document.wizard_form.WAN_MODE[5].checked == true) 
 		{
 			waitgifshow();
+			document.wizard_form.AUTOTYPE.disabled=true;
 			document.getElementById('P2TP').click();
 		}
 		else 
@@ -859,6 +864,7 @@ function initTranslation()
 function initValue()
 {
 	initTranslation();
+
 	hideAllTables();
 	disableWanSettings();
 	step_num = 0;

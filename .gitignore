@@ -1136,3 +1136,4 @@ linux/drivers/i2s/ath_i2s.mod.o
 linux/drivers/i2s/ath_i2s.o
 linux/drivers/i2s/modules.order
 apps/pstn_test/speex-1.2rc1/speexdsp.pc
+drivers/wlan/os/linux/tools/upload.cgi

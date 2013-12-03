@@ -19,5 +19,6 @@
   <message msgid="admw m_wirere" msgstr="Wireless relay" />
   <message msgid="admw m_parent" msgstr="Parental control" />
   <message msgid="admw m_upload" msgstr="Firmware upgrade" />
+  <message msgid="admw m_factory" msgstr="Factory Reset" />
 </po>
 

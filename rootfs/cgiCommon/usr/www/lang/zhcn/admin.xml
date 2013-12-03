@@ -238,7 +238,8 @@
    <message msgid="admw w5ttitle" msgstr="家长控制" />  
    <message msgid="admw wwtitle" msgstr="外网/无线中继设置" />  
  
-   <message msgid="admw modedes" msgstr="请您选择路由器WAN口的连接方式。所需参数在开通网络时，由网络运营商（中国电信、中国网通、中国铁通、中国移动、中国联通等）提供。" />  
+   <message msgid="admw modedes" msgstr="请您选择路由器WAN口的连接方式。所需参数在开通网络时，由网络运营商（中国电信、中国联通、中国铁通、中国移动等）提供。" />  
+   <message msgid="admw modedes1" msgstr="所需参数在开通网络时，由网络运营商（中国电信、中国联通、中国铁通、中国移动等）提供。" />  
    <message msgid="admw wifides" msgstr="请设置HBD路由的WiFi账户和密码。您的电脑、PAD、智能手机等将使用以下网络上网。" />  
    <message msgid="admw wirelessdes" msgstr="请选择您要连接的WiFi。" />  
    <message msgid="admw parentdes" msgstr="作为家长，您可以通过在本页进行设置，对孩子的上网时间和访问网页进行控制。" />  
@@ -269,7 +270,7 @@
 	
 	<message msgid="admw fresh" msgstr="扫描" />
 	<message msgid="admw Wlisttitle1" msgstr="WiFi列表" />
-	<message msgid="admw Wlisttitle2" msgstr="目前存在的WiFi" />
+	<message msgid="admw Wlisttitle2" msgstr="目前存在的WiFi:SSID(MAC)(信道)(加密方式 WPA-加密 None-不加密)" />
 	<message msgid="admw Wlisttitle3" msgstr="可下拉选择" />
     <message msgid="toplanguage" msgstr="z" />
     <message msgid="admin open" msgstr="不加密" />
@@ -285,16 +286,19 @@
     <message msgid="admw uploadwaiting" msgstr="正在升级,请稍等......" />
 	
     <message msgid="admw ssidrequest" msgstr="  (1-24位字母、数字或下划线)" />
-    <message msgid="admw passwordrequest" msgstr="  (6-12位字母、数字或下划线)" />
+    <message msgid="admw passwordrequest" msgstr="  (8-12位字母、数字或下划线)" />
+    <message msgid="admw passwordrequest1" msgstr="  (5-12位字母、数字或下划线)" />
 	
-    <message msgid="err lineout" msgstr="请插入网线!" />
+    <message msgid="err lineout" msgstr="请将网线插入WAN口!" />
 	
 	
     <message msgid="err ip empty" msgstr="IP地址为空" />
 	<message msgid="err mask empty" msgstr="掩码为空" />
 
     <message msgid="err name empty" msgstr="请输入用户名" />
-	<message msgid="err SSID empty" msgstr="请输入网络名称（SSID）" />    
+	<message msgid="err SSID empty" msgstr="请输入网络名称（SSID）" />   
+	<message msgid="err mac empty" msgstr="请输入MAC地址" />   
+	
     <message msgid="err pwd empty" msgstr="请输入密码" />
 	<message msgid="err key" msgstr="请输入密钥" />
 	
@@ -309,7 +313,7 @@
 	<message msgid="err IPmormat" msgstr="IP地址格式错误" />
 	<message msgid="err Maskmormat" msgstr="掩码格式错误" />
 	
-	<message msgid="err keylen" msgstr="密钥长度必须是6-12位" />
+	<message msgid="err keylen" msgstr="密钥长度必须是8-12位" />
 	<message msgid="err keychar" msgstr="密码中存在无效字符" />
 	<message msgid="err IP error" msgstr="WAN IP与本地IP不能位于相同网段，请重新设置" />
 	
@@ -328,6 +332,22 @@
 	<message msgid="upgrade success" msgstr="升级成功!" />
 	<message msgid="admw channelchoose" msgstr="信道选择" />
 	<message msgid="admw channelauto" msgstr="自动" />
+
+	<message msgid="factory reset" msgstr="恢复出厂设置将丢失现有的配置，你确定要继续吗?" />
+	<message msgid="admw factitle" msgstr="恢复出厂设置" />
+	<message msgid="admw facdes" msgstr="单击此按钮将使路由器的所有设置恢复到出厂时的默认状态" />
+	<message msgid="admw defaultset" msgstr="恢复出厂设置" />
+	
+	<message msgid="factory fail" msgstr="恢复出厂设置失败!" />
+	<message msgid="factory success" msgstr="恢复出厂设置成功!" />
+	<message msgid="upgrade success" msgstr="固件升级成功!" />
+	<message msgid="upgrade fail" msgstr="固件升级失败!" />
+	
+	<message msgid="admw offwifides" msgstr="WiFi已经关闭,无线中继无法使用" />
+	<message msgid="admw software" msgstr="当前软件版本" />
+	<message msgid="admw hardware" msgstr="硬件版本" />
+	<message msgid="admw hidewifides" msgstr="隐藏网络" />
+
 
 
 </po>

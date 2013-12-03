@@ -22,6 +22,6 @@ else
 fi 
 cfg -c
 
-sleep 3
+sleep 1
 
 done
