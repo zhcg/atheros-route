@@ -861,7 +861,170 @@ ssize_t PhoneProxy::netReadLine ( int fd, void *buffer, size_t maxlen, int i )
 
 // head      id     length       cmd        arg_len      argument (64)       terminator
 // HEADS    1	     022    	DIALING	   012       913146672056         \n
+int PhoneProxy::parseClient ( cli_info_t *ci_ , int i )
+{
 
+//	cout << __FUNCTION__ << " : " << __LINE__ << endl;
+//	cout << "client_fd : " << ci_->client_fd << endl;
+    PDEBUG ( "client_fd : %d ", ci_->client_fd );
+    ssize_t nread;
+    char buff[MAX_LEN_PCLI] = {0};
+    char *pbuf = buff;
+    char *p;
+    int ii = 0, k = 0, m = 0,j = 0;
+    char a[50][1024];
+
+    if ( ci_->client_fd == -1 ) {
+        PLOG ( LOG_ERROR, "%s@%s offline because of client_fd = -1", ci_->username, ci_->client_ip );
+        destroyClient ( ci_ );
+        return ( -1 );
+    } else {
+        CriticalSectionScoped lock ( &_phone_critSect );
+        //nread = netReadLine ( ci_->client_fd, buff, MAX_LEN_PCLI, i );
+        // nread =  netRead(ci_->client_fd, buff, MAX_LEN_PCLI);
+        nread = read ( ci_->client_fd, buff, MAX_LEN_PCLI );
+
+    }
+
+    //nread = read(ci_->client_fd, buff, MAX_LEN_PCLI);
+    //cout << __FUNCTION__ << " : " << __LINE__ << endl;
+    //cout << "nread : " << nread << endl;
+    PDEBUG ( "nread : %d ", nread );
+
+    if ( nread < 0 ) {
+        perror ( "someone offline<0: " );
+        PLOG ( LOG_INFO, "%s@%s offline<0",
+               ci_->username, ci_->client_ip );
+        destroyClient ( ci_ );
+        return ( -1 );
+    }
+
+    if ( nread == 0 ) {
+        perror ( "someone offline=0: " );
+        PLOG ( LOG_INFO, "%s@%s offline=0",
+               ci_->username, ci_->client_ip );
+        destroyClient ( ci_ );
+        return ( -1 );
+    }
+	for(ii = 0; ii <50; ii++)
+	{
+		memset(a[ii],0,sizeof(a[ii]));	
+	}
+    //cout << buff << endl;
+    // PLOG(LOG_INFO, "%s:%d@%s:%s", ci_->username,
+    // 					ci_->id, ci_->client_ip, buff);
+    p = strstr ( buff, "DIALING" );
+
+    if ( p ) {
+        _cli_req.fd = ci_->client_fd;
+        //ci_->id =
+        _cli_req.id = pbuf[5];
+
+        _cli_req.cmd = DIALING;
+        char arg_len[4] = {0};
+        memcpy ( arg_len, p + 7, 3 );
+        _cli_req.arglen = atoi ( arg_len );
+        memcpy ( _cli_req.arg, p + 10, _cli_req.arglen );
+        handleClient ( ci_ );
+        return 0;
+    }
+
+    for ( ii = 0; ii < strlen(buff); ++ii ) {
+        if ( buff[ii] == '\n' ) {
+            a[j][k] = 0;
+            ++j;
+            k = 0;
+        } else	{
+            a[j][k] = buff[ii];
+            ++k;
+        }
+    }
+ for ( ii = 0; ii < j; ++ii ) {
+       printf("------------------------buf[ii]-------------%s\n",a[ii]);
+    }
+    for ( m = 0; m < j; m++ ) {
+        //char *pbuff = a[m];
+        memset ( &_cli_req, 0, sizeof ( cli_request_t ) );
+        memcpy ( _cli_req.head, a[m], 5 );
+
+        if ( strcmp ( _cli_req.head, "HEADS" ) != 0 ) {
+            memset ( &_cli_req, 0, sizeof ( cli_request_t ) );
+            return -1;
+        }
+
+        _cli_req.fd = ci_->client_fd;
+        //ci_->id =
+        _cli_req.id = a[m][5];
+
+
+        char length[4] = {0};
+        char arg_len[4] = {0};
+        memcpy ( length, a[m] + 6, 3 );
+        memcpy ( arg_len, a[m] + 16, 3 );
+
+        _cli_req.length = atoi ( length );
+        _cli_req.arglen = atoi ( arg_len );
+
+        if ( _cli_req.length - _cli_req.arglen != 10 ) {
+            memset ( &_cli_req, 0, sizeof ( cli_request_t ) );
+            return -1;
+        }
+
+        char cmd[8] = {0};
+        memcpy ( cmd, a[m] + 9, 7 );
+        _cli_req.cmd = getCmdtypeFromString ( cmd );
+        // if( _cli_req.cmd != HEARTBEAT)
+        {
+            PLOG ( LOG_INFO, "%s:%d@%s:%d:%s", ci_->username,
+                   ci_->id, ci_->client_ip, ci_->client_fd, buff );
+        }
+
+        if ( _cli_req.cmd == DIALING ) {
+            if ( _cli_req.id != ci_->id + '0' ) {
+                PLOG ( LOG_INFO, "%s:%d:%d@%s:%d:%s", ci_->username,
+                       ci_->id, _cli_req.id, ci_->client_ip, ci_->client_fd, buff );
+
+                _cli_req.cmd = UNDEFINED;
+            }
+
+        }
+
+
+        //cout << "_cli_req.cmd :" <<_cli_req.cmd << endl;
+        if ( _cli_req.cmd == UNDEFINED ) {
+            PLOG ( LOG_INFO, "UNDEFINED" );
+            memset ( &_cli_req, 0, sizeof ( cli_request_t ) );
+            return -1;
+        }
+
+        if ( _cli_req.cmd == LOGIN ) {
+            char usename_len_clt[4] = {0};
+            memcpy ( usename_len_clt, a[m] + 19, 3 );
+            _cli_req.user_name_len = atoi ( usename_len_clt );
+
+            if ( _cli_req.user_name_len >= 19 || _cli_req.user_name_len < 3 ) {
+                memset ( &_cli_req, 0, sizeof ( cli_request_t ) );
+                _cli_req.cmd = UNDEFINED;
+                return -1;
+            }
+
+            memcpy ( _cli_req.username, a[m] + 22, _cli_req.user_name_len );
+            memcpy ( _cli_req.password, a[m] + 22 + _cli_req.user_name_len, 6 );
+            handleClient (ci_ );
+            continue;
+            //return 0;
+        }
+
+
+
+        memcpy ( _cli_req.arg, a[m] + 19, _cli_req.arglen );
+	handleClient (ci_ );
+	//usleep(1000);
+    }
+
+    return 0;
+}
+#if 0
 int PhoneProxy::parseClient(cli_info_t *ci_ , int i){
 
 //	cout << __FUNCTION__ << " : " << __LINE__ << endl;
@@ -999,8 +1162,7 @@ int PhoneProxy::parseClient(cli_info_t *ci_ , int i){
 
     return 0;
 }
-
-
+#endif
 
 
 int PhoneProxy::dispatchClientId ( cli_info_t *cci )
@@ -2552,7 +2714,7 @@ bool PhoneProxy::phoneProxyThreadProcess(){
 					// ci[i].id, ci[i].client_ip, ci[i].client_fd,i);
 
                 parseClient ( &ci[i], i );
-                handleClient ( &ci[i] );
+                //handleClient ( &ci[i] );
             }
         }
 
