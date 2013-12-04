@@ -1,11 +1,14 @@
 #!/bin/sh
 OLD_VERSION=`cfg -e | grep 'SOFT_VERSION' | awk -F '\"' '{print $2}'`
 NEW_VERSION=`cat /etc/ath/apcfg | grep 'SOFT_VERSION' | awk -F '\"' '{print $2}'`
-if [ $OLD_VERSION != $NEW_VERSION ]; then
+if [ "$OLD_VERSION" != "$NEW_VERSION" ]; then
+	echo "check and factory at `date`"  >> /etc/verlog.txt
 	cfg -x
+	/etc/ath/apcfg
 	cfg -a UPGRADERESULT=1
 	cfg -c
 else
+	echo "check and not at `date`"  >> /etc/verlog.txt
 	cfg -a UPGRADERESULT=0
 	cfg -c
 fi

@@ -2697,6 +2697,7 @@ int main(int argc,char **argv)
 		char valBuff6[128];	
 		char valBuff7[128];	
 		char valBuff8[128];	
+		char valBuff9[128];	
 		int flag=0;
 
 		//1.get old value from flash
@@ -2711,6 +2712,7 @@ int main(int argc,char **argv)
 		Execute_cmd("cfg -e | grep \"AP_SECMODE=\"",valBuff5);
 		Execute_cmd("cfg -e | grep \"AP_PRIMARY_CH=\" | awk -F \"=\" \'{print $2}\'",valBuff7);
 		Execute_cmd("cfg -e | grep \"AP_HIDESSID=\" | awk -F \"=\" \'{print $2}\'",valBuff8);
+		
 		
 		//fprintf(errOut,"[luodp] WIFI: %s\n%s%s\n%s\n",valBuff,valBuff2,valBuff5,valBuff4);
 		//2.save new config to flash
@@ -2779,6 +2781,14 @@ int main(int argc,char **argv)
 			//fprintf(errOut,"[luodp] SECMODE here6");
 			sprintf(pChar,"iwconfig ath0 essid %s  > /dev/null 2>&1",valBuff4);
 			Execute_cmd(pChar, rspBuff);
+			Execute_cmd("cfg -e | grep \"AP_SECMODE=\"",valBuff9);
+			if(strstr(valBuff9,"WPA") != 0)
+			{
+				//TODO
+				Execute_cmd("cfg -t0 /etc/ath/PSK.ap_bss ath0 > /tmp/secath0",rspBuff);
+				Execute_cmd("killall hostapd > /dev/null 2>&1",rspBuff);
+				Execute_cmd("hostapd -B /tmp/secath0 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+			}
 		}
 		//channel
 		CFG_get_by_name("AP_PRIMARY_CH",valBuff4);
@@ -2907,8 +2917,9 @@ int main(int argc,char **argv)
     printf("\r\n");
     if( gohome == 1)
     {
+	     system("dd if=/dev/caldata of=/etc/cal.bin   > /dev/null 2>&1");
          if(translateFile("../map.html") < 0)
-        {
+         {
             printf("Content-Type:text/html\n\n");
             printf("<HTML><HEAD>\r\n");
             printf("<LINK REL=\"stylesheet\" href=\"../styleSheet.css\" type=\"text/css\">");
@@ -2933,7 +2944,7 @@ int main(int argc,char **argv)
 	}
 
 
-       #if 0
+    #if 0
     if((strcmp(CFG_get_by_name("COMMIT",valBuff),"Commit") == 0)  || (strcmp(CFG_get_by_name("COMMIT",valBuff),"Save") == 0))
     {
         //fprintf(errOut,"%s  %d\n",__func__,__LINE__);

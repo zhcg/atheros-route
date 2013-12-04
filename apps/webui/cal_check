@@ -1,4 +1,5 @@
 #!/bin/sh
+echo "[luodp] go caldata"
 if [ ! -f /etc/cal.bin ]; then
 	echo "Backup caldata at `date`"  >> /etc/callog.txt 
 	dd if=/dev/caldata of=/etc/cal.bin
