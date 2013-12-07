@@ -841,7 +841,7 @@ static void * oss_thread(void *p){
 						bsize,strerror(errno));
 					}
 				} else {
-					memset(wtmpbuff, 0 , bsize);
+					memset(wtmpbuff, 0x01 , bsize);
 					err=write(d->pcmfd_write,wtmpbuff,bsize);
 					if (err<0){
 						ms_error("Fail to write %i bytes ---0--- from soundcard: %s",

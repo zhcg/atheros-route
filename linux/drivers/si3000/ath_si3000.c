@@ -304,7 +304,7 @@ int si3000_init(void){
 #endif
 };
 	retval = si3000_reg_write((char *)si3000_reg_init_data, sizeof(si3000_reg_init_data));
-	mdelay(10);
+	mdelay(100);
 	ath_reg_rmw_set(RST_RESET_ADDRESS, RST_RESET_SLIC_RESET_SET(1));
 	return retval;
 }
@@ -450,7 +450,7 @@ int ath_slic_init(int mode)
 			   1) *
 			  (sizeof(ath_mbox_dma_desc))));
 		if (mode & FMODE_READ) {
-			desc[tail].OWN = 1;
+			desc[tail].OWN = 0;
 		} else {
 			desc[tail].OWN = 0;
 		}
@@ -1030,7 +1030,7 @@ void ath_slic_dma_start(unsigned long desc_buf_p, int mode)
 			//	while (!(ath_reg_rd(ATH_MBOX_SLIC_FIFO_STATUS) & ATH_MBOX_SLIC_FIFO_STATUS_FULL))
 			{
 				printk("Wait FIFO full\n");
-				mdelay(20);
+				//mdelay(20);
 			}
 			ath_reg_rmw_set(ATH_SLIC_CTRL, ATH_SLIC_CTRL_EN);
 		}
