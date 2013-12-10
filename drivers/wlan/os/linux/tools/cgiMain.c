@@ -2728,7 +2728,8 @@ int main(int argc,char **argv)
 		{
 			//fprintf(errOut,"[luodp] KEY here");
 			CFG_set_by_name("PSK_KEY",valBuff3);
-			flag=2;
+			//flag=2;
+			flag = 5;
 		}
 		//TODO SECMODE
 		CFG_get_by_name("AP_SECMODE",valBuff3);
@@ -2743,7 +2744,8 @@ int main(int argc,char **argv)
 			CFG_set_by_name("AP_WPA","3");
 			CFG_set_by_name("AP_CYPHER","TKIP CCMP");
 			CFG_set_by_name("AP_SECFILE","PSK"); 
-			flag=2;
+			//flag=2;
+			flag = 5;
 		}
 		if((strstr(valBuff5,valBuff3) == 0)&&(strcmp(valBuff3,"WPA") != 0))
 		{
@@ -2838,6 +2840,12 @@ int main(int argc,char **argv)
 			Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
 			Execute_cmd("apup > /dev/null 2>&1", rspBuff);
 		}*/
+		else if(flag == 5)  /*deal password is changed, restart hostapd   by zzw*/
+		{
+			Execute_cmd("cfg -t0 /etc/ath/PSK.ap_bss ath0 > /tmp/secath0",rspBuff);
+			Execute_cmd("killall hostapd > /dev/null 2>&1",rspBuff);
+			Execute_cmd("hostapd -B /tmp/secath0 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+		}
 		gohome =1;
     }
 	//login settings
