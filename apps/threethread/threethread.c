@@ -35,6 +35,16 @@
 #include <unistd.h>
 #include <sys/reboot.h>
 
+#include<time.h>
+#include<pthread.h>
+
+//#include<string.h>
+//#include <stdlib.h>
+//#include <stdio.h>
+
+
+
+
 #ifdef CONFIG_NVRAM
 #define NVRAM  "/dev/nvram"
 #define NVRAM_OFFSET 0
@@ -604,7 +614,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 						sprintf(val3[num]+4,"WPA");
 					else
 						sprintf(val3[num]+4,"None");
-					//fprintf(errOut,"[luodp] %s(%s)(%s)(%s) \n",val2[num]+4,val1[num]+4,val3[num]+4,val4[num]+4);
+					//printf("[luodp] %s(%s)(%s)(%s) \n",val2[num]+4,val1[num]+4,val3[num]+4,val4[num]+4);
 					outBuff +=sprintf(outBuff,"<option>%s(%s)(%s)(%s)</option>",val2[num]+4,val1[num]+4,val4[num]+4,val3[num]+4);
 				}*/
 				FILE *fp;
@@ -613,7 +623,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                 char tmpc[65536]={0};
                 if((fp=fopen("/tmp/wifilist","r"))==NULL)
                 {
-                    fprintf(errOut,"\n----------cannot open file  line:%d\n",__LINE__);
+                    printf("\n----------cannot open file  line:%d\n",__LINE__);
                 }
                 else
                 {
@@ -1768,14 +1778,14 @@ int getRadioID(int index)
     char    valBuff[32];
     int     len;
 
-//    fprintf(errOut,"%s: Index set to %d\n",__func__,parameterIndex);
+//    printf("%s: Index set to %d\n",__func__,parameterIndex);
     if(index > 1)
         sprintf(varname,"AP_RADIO_ID_%d",parameterIndex);
     else
         strcpy(varname,"AP_RADIO_ID");
 
     valBuff[0] = 0;
-//    fprintf(errOut,"%s: Getting %s\n",__func__,varname);
+//    printf("%s: Getting %s\n",__func__,varname);
 
     CFG_get_by_name(varname,valBuff);
 
@@ -1792,14 +1802,14 @@ int getRadioID(int index)
 		return (-1);
 }
 
-
+/*********************************************************************/
 //added by yhl 2013.12.05 below
 int pppoe_setup_func(void)
 {
   char  valBuff[128];
   char rspBuff_setup[128];
  
-	fprintf(errOut,"\n%s  %d PPP\n",__func__,__LINE__);
+	printf("\n%s  %d PPP\n",__func__,__LINE__);
 	
 	char  usernameBuff[128];
 	char  passBuff[128];
@@ -1812,42 +1822,42 @@ int pppoe_setup_func(void)
 	memset(usernameBuff,'\0',128);
 	memset(passBuff,'\0',128);
 	memset(cmdstr,'\0',128);
-	fprintf(errOut,"\n%s  %d PPP1\n",__func__,__LINE__); 
+	printf("\n%s  %d PPP1\n",__func__,__LINE__); 
 
 	CFG_set_by_name("AP_STARTMODE","standard");
-	fprintf(errOut,"\n%s  %d PPP2\n",__func__,__LINE__); 
+	printf("\n%s  %d PPP2\n",__func__,__LINE__); 
 	//1.destory old mode pid
 	//Execute_cmd("cfg -e | grep \"WAN_MODE=\"",valBuff);
-	//fprintf(errOut,"\n%s  %d PPP3\n",__func__,__LINE__); 
+	//printf("\n%s  %d PPP3\n",__func__,__LINE__); 
 	//if(strstr(valBuff,"dhcp") != 0)
 	//{
 	//	//kill udhcpc
 	//	Execute_cmd("ps aux | grep udhcpc | awk \'{print $1}\' | xargs kill -9	> /dev/null 2>&1", rspBuff);
 	//}
-	fprintf(errOut,"\n%s  %d PPP4\n",__func__,__LINE__); 
+	printf("\n%s  %d PPP4\n",__func__,__LINE__); 
 	//if(flag!=1)
 	//{
 	//	//2.save new config to flash 
-	//	fprintf(errOut,"\n%s  %d PPP5\n",__func__,__LINE__); 
+	//	printf("\n%s  %d PPP5\n",__func__,__LINE__); 
 	//	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
 	//	writeParameters("/tmp/.apcfg","w+",0);
 	//}
 	//3.do new config pid
-	fprintf(errOut,"\n%s  %d PPP6\n",__func__,__LINE__); 
+	printf("\n%s  %d PPP6\n",__func__,__LINE__); 
 	CFG_get_by_name("PPPOE_USER",usernameBuff);
 	CFG_get_by_name("PPPOE_PWD",passBuff);
 
-	fprintf(errOut,"\n%s  %d PPP7\n",__func__,__LINE__); 
+	printf("\n%s  %d PPP7\n",__func__,__LINE__); 
 
 	strcat(cmdstr,"pppoe-setup ");
 	strcat(cmdstr,usernameBuff);
 	strcat(cmdstr," ");
 	strcat(cmdstr,passBuff);
-	fprintf(errOut,"\n!!!!<%s> PPP8\n",cmdstr); 
+	printf("\n!!!!<%s> PPP8\n",cmdstr); 
 	//Execute_cmd(cmdstr, rspBuff_setup);
-	fprintf(errOut,"\n%s  %d PPP9\n",__func__,__LINE__); 
+	printf("\n%s  %d PPP9\n",__func__,__LINE__); 
 //	Execute_cmd("pppoe-start", rspBuff);
-//fprintf(errOut,"\n%s	%d [luodp]PPPOE \n",__func__,__LINE__); 	
+//printf("\n%s	%d [luodp]PPPOE \n",__func__,__LINE__); 	
 //gohome =1;
 }
 
@@ -1856,1264 +1866,263 @@ int check_pppoe(void)
 {	Execute_cmd("pppoe-status | grep \"Link is up and running on interface ppp0\" | awk '{print $4}'", rspBuff);
    if(!strncmp(rspBuff,"up",2))
     {
-     fprintf(errOut,"[debug]check_pppoe is up!\n");
+     printf("[debug]check_pppoe is up\n");
 	 return 0;//pppoe status is good
     }
 	else
 	{
-	fprintf(errOut,"[debug]check_pppoe is down!\n");
+	printf("[debug]check_pppoe is down\n");
 	 return 1;
 	}
   }
 
+//auto run on boot
+int * pppoe_demand_thread(void)
+{	    
+        printf("pppoe_demand_thread id is %d.\n",pthread_self());
 
-
-/*****************************************************************************
-**
-** /brief Main
-**
-** This program will read parameterized HTML files and insert the proper
-** strings from the parameter store -- either in flash or temp storage.
-**
-** The specific page to process will be determined by the actual command
-** name returned in argv[0].  Each page name will be linked to the executable
-** in much the same manner as busybox does it's commands.  This will require
-** that each page link be located in the cgi-bin directory since they are ALL
-** being processed as cgi scripts by the httpd daemon.  Actual pages will be
-** located in the /usr/www directory.
-**
-** Other functions are provided to support the command line processing.
-**
-** Options: -a  Add a parameter/value pair to the cache
-**              # cgiMain -a SSID=MySSID
-**
-**          -r  Remove a parameter from the parameter cache
-**              # cgiMain -r AP_THIS_PARAM
-**
-**          -c  Commit parameter cache to flash
-**              # cgiMain -c
-**
-**          -e  Print the export list for use in scripts
-**              `cgiMain -e`
-**
-**          -i  Invalidate the parameter cache by re-reading the flash
-**              values and overriding the parameter cache.  NOTE: this
-**              will loose any changes made to the parameter cache.
-**              # cgiMain -i
-**
-**          -s  Print the contents of the database without translation
-**
-**          -t  Translate File.  This will take the indicated file and
-**              insert parameter data as marked by the ~ markers in the
-**              file.  Uses the same rules as the HTML files.  Normal
-**              output is to stdout, can be redirected to another file.
-**              if the third parameter is specified, it is assumed to be
-**              the interface name.
-**
-**              # cgiMain -t wpapsk.conf ath0 > /tmp/secvap.conf
-**              # cgiMain -t2 wpapsk.conf > /tmp/secvap2.conf
-*/
-
-int main(int argc,char **argv)
-{
-    char            Page[64];
-    char            Name[32];
-    char            Value[70];
-    char            valBuff[128];
-    char            *outPtr;
-    int             i;
-    int             j;
-    int             ret=0;
-    int             holdOutput;
-
-    char            *nextField;
-    char            *update;
-    FILE            *f;
-
-    int             lock11=0;
-    int             lock12=0;
-	int             lock13=0;
-    int             gohome = 0;
-    /*
-    ** Code Begins.
-    ** Zero out the config structure, and read the parameter cache
-    ** (or flash, depending on command)
-    */
-    errOut = fopen("/dev/ttyS0","w");
-
-    memset(&config,0,sizeof(config));
-    
-    //fprintf(errOut,"%s  %d\n",__func__,__LINE__);
-    f = fopen("/tmp/.apcfg","r");
-
-    if ( !f )
-    {
-        /*
-        ** We need to read the parameter data starting at 32K into the calibration
-        ** sector (or) the NVRAM sector.  This is mapped to /dev/nvram or /dev/caldata, so we simply open 
-        ** that device and read until we hit the EOL
-        */
-
-        f = fopen( NVRAM, "r" );
-
-        if (!f)
-        {
-            printf("ERROR:  %s not defined on this device\n", NVRAM);
-            printf("ERROR:  Cannot store data in flash!!!!\n");
-            exit(-1);
-        }
-
-        fseek(f, NVRAM_OFFSET, SEEK_SET);
-    }
-    /*
-    ** At this point the file is either open or not.  If it is, read the 
-    ** parameters as require
-    */
-
-    if ( f )
-    {
-        fillParamStruct(f);
-        fclose(f);
-    }
-
-    /*
-    ** Now we look for options.
-    ** -t means translate the indicated file
-    */
-    //fprintf(errOut,"%s  %d\n",__func__,__LINE__);
-
-    if(argc > 1)
-    {
-        if(!strncmp(argv[1],"-t",2))
-        {
-            /*
-            ** Translate file
-            ** read the file, then output the translated version
-            */
-            parameterIndex = 0;
-
-            if(argv[1][2] != 0) {
-                parameterIndex = argv[1][2] - 0x30;
-            }
-            if(isdigit(argv[1][3])) {
-                parameterIndex = parameterIndex * 10 + (argv[1][3] - 0x30);
-            }
-
-            if(parameterIndex > 16)
-                parameterIndex = 0;
-
-			/*
-			** Get the radio ID, if it exists
-			*/
-
-			radioIndex = getRadioID(parameterIndex);
-			if(radioIndex == -1)
-				radioIndex = 0;	/* set back to default */
-
-            /*
-            ** Input the "extra" parameters that may be included
-            */
-
-            for(i=3,numAdditionalParams=0;i<argc;i++)
-            {
-                strcpy(additionalParams[numAdditionalParams++],argv[i]);
-            }
-
-            /*
-            ** Now, perform the translation
-            */
-
-            ModeFlag = 1;
-            translateFile(argv[2]);
-            exit(0);
-        }
-        else if(!strncmp(argv[1],"-a",2))
-        {
-            char    *vname;
-            char    *vval;
-
-            /*
-            ** Add a parameter.  Argv[2] should contain the parameter=value string.
-            ** Do NOT use extractParam in this case, we need to directly enter
-            ** the value.
-            */
-
-            if(argc < 3)
-            {
-                modePrintf("Invalid argument");
-                exit(-1);
-            }
-
-            ModeFlag = 1;
-            vname = argv[2];
-
-            if(vval=strchr(argv[2],'='))
-                *vval++ = 0;
-            else
-            {
-                modePrintf("Mal formed string %s",argv[2]);
-                exit(-1);
-            }
-
-            /*
-            ** If setting fails, return a -1 (for scripts)
-            */
-
-            if( CFG_set_by_name(vname,vval) )
-                exit(-1);
-
-            writeParameters("/tmp/.apcfg","w+",0);
-            exit(0);
-        }
-        else if(!strncmp(argv[1],"-c",2))
-        {
-            /*
-            ** Write the parameter structure to the flash.  This is
-            ** the "commit" function
-            */
-#ifdef ATH_SINGLE_CFG
-            athcfg_set_default_config_values();
-#endif
-            writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-            writeParameters("/tmp/.apcfg","w+",0);
-            exit(0);
-        }
-        else if(!strncmp(argv[1],"-r",2))
-        {
-            /*
-            ** Remove the parameter from the cache.  This will write the
-            ** cache, but not write to the flash.  Explicit commit required
-            ** to write to flash.
-            */
-
-            CFG_remove_by_name(argv[2]);
-            FactoryDefault = 0;
-            writeParameters("/tmp/.apcfg","w+",0);
-            exit(0);
-        }
-        else if(!strncmp(argv[1],"-h",2))
-        {
-            /*
-            ** We want to check argv[2] to determine if it's a properly formattedRemove the parameter from the cache.  This will write the
-            ** cache, but not write to the flash.  Explicit commit required
-            ** to write to flash.
-            */
-
-            exit(isKeyHex(argv[2],atoi(argv[3])));
-        }
-        else if(!strncmp(argv[1],"-e",2))
-        {
-            /*
-            ** Export the variables
-            ** This is used as part of a shell script to "export" the variables
-            ** to the environment
-            */
-#ifdef ATH_SINGLE_CFG
-            athcfg_set_default_config_values();
-#endif /* ATH_SINGLE_CFG */
-
-            for(i=0;i<config.numParams;i++)
-            {
-                /*
-                ** Check for certain variables -- mostly key values -- that
-                ** we don't want to export due to the "funnies" in their string
-                ** values.  They will still be included in the database, but the
-                ** will not be exported in the script files.
-                **
-                ** Unfortunately, SSID is a parameter that cannot be ignored, but
-                ** can have various issues with shell special characters.  This will
-                ** be a limitation on the SSID string that cannot be avoided
-                */
-
-                if(!strncmp(config.Param[i].Name,"PSK_KEY",7))
-                    continue;
-
-                /*
-                ** We can export this variable.
-                */
-
-                if(shellEncode(config.Param[i].Val,valBuff))
-                    printf("export %s=\"%s\"\n",config.Param[i].Name,valBuff);
-                else
-                    printf("export %s=%s\n",config.Param[i].Name,valBuff);
-
-            }
-            exit(0);
-        }
-        else if(!strncmp(argv[1],"-s",2))
-        {
-            /*
-            ** Show the variables
-            ** This is used as a debug method to dump the variables to the output.
-            ** This dumps ALL variables
-            */
-            for(i=0;i<config.numParams;i++)
-            {
-                printf("%s:=%s\n",config.Param[i].Name,config.Param[i].Val);
-            }
-            exit(0);
-        }
-        else if(!strncmp(argv[1],"-x",2))
-        {
-            /*
-            ** Erase all parameters in flash and cache.
-            ** This is the equivalent of a reset command.
-            */
-
-            memset(&config,0,sizeof(config));
-            FactoryDefault = 1;
-            writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-            writeParameters("/tmp/.apcfg","w+",0);
-#ifndef ATH_SINGLE_CFG
-            /*
-            ** Now, remove WPS files and execute the apcfg script to set the
-            ** values.  This is required for determination of "factory default" state
-            */
-
-            Execute_cmd("rm -rf /etc/wpa2/*.conf;/etc/ath/apcfg", rspBuff);
-#else
-            system("rm -rf /tmp/WSC*.conf");
-#endif /* #ifndef ATH_SINGLE_CFG */
-            exit(0);
-        }
-        else if(!strncmp(argv[1],"-v",2))
-        {
-            /*
-            ** Get the VALUE of the parameter without any processing or other
-            ** stuff.  The form of this command is
-            ** cfg -v NAME index1 index2
-            **
-            ** where NAME is the UNINDEXED name (such as AP_SSID), and index1 (index2)
-            ** are indexes added to the name to get the fully qualified value.  It is
-            ** intended that this can be used in the form
-            &&
-            ** `cfg -v AP_SSID $INDEX`
-            **
-            ** to allow for looping through parameters.  This is similiar to the -t
-            ** function, but is for individual parameters.
-            */
-
-            if(argv[1][2] == '0')
-                ModeFlag = 0;
-            else
-                ModeFlag = 1;
-
-            if(argc > 4)
-                sprintf(Name,"%s_%s_%s",argv[2],argv[3],argv[4]);
-            else if(argc > 3)
-                sprintf(Name,"%s_%s",argv[2],argv[3]);
-            else
-                sprintf(Name,"%s",argv[2]);
-
-            CFG_get_by_name(Name,Value);
-            printf("%s",Value);
-            exit(0);
-        }
-#ifdef ATH_SINGLE_CFG
-        athcfg_process_commandline(argc, argv);
-#endif /* #ifdef ATH_SINGLE_CFG */
-    }
-#ifdef ATH_SINGLE_CFG
-    usage(argv[0]);
-#else
-    /*
-    ** Otherwise, this is processing for an HTML page
-    ** Zero out the config structure, and get the page name
-    */
-
-    strcpy(Page,"../");
-    strcat(Page,argv[0]);
-    strcat(Page,".html");
-	/*
-	if(strcmp(Page,"../map.html")==0)
-	{
-		//fprintf(errOut,"[luodp] test net\n");
-		Execute_cmd("net_test > /dev/null 2>&1", rspBuff);
-	}*/
-	//fprintf(errOut,"%s  %d Page:%s\n",__func__,__LINE__,Page);
-    /*
-    ** Now to get the environment data.
-    ** We parse the input until all parameters are inserted.  If we see a reset, commit,
-    ** or accept/submit label, we do the appropriate action
-    */
-
-    /* if every thing fine, make sure we add 200 OK with proper content type.
-     * At this point we do not know Content-Length, but http 1.0 restricts to
-     * add content length so just tell the browser read until connection close
-     */
-
-    /*
-    ** This method allows processing of either "get" or "post" methods.  Post
-    ** overrides Get.
-    */
-    nextField = getenv("CONTENT_LENGTH");
-
-    if (nextField == NULL)
-    {
-        sprintf(valBuff,"?%s",getenv("QUERY_STRING"));
-        nextField = valBuff;
-    }
-   // fprintf(errOut,"%s  %d nextField:%s\n",__func__,__LINE__ ,nextField);
-
-    if(nextField != NULL)
-    {
-        if(*nextField != '?')
-        {
-            j = atoi(nextField);
-
-            memset(opBuff,0,1024);
-            fgets(opBuff,j+3,stdin);
-            nextField = opBuff;
-        }
-
-        fprintf(errOut,"%s  %d nextField:%s\n",__func__,__LINE__ ,nextField);
-       {
-            char *s="&";
-            strcat(nextField,s);
-        }
-        fprintf(errOut,"%s  %d nextField:%s\n",__func__,__LINE__ ,nextField);
-        /*
-        ** Check for the reboot button
-        ** If hit, we die gloriously
-        */
-
-        update = strstr(nextField,"RebootButton");
-        if(update)
-        {
-            reboot(RB_AUTOBOOT);
-        }
-
-        /*
-        ** We want to read all parameters regardless, and update
-        ** what was read from tmp/flash.  If the commit parameter
-        ** is set, we will write to flash
-        */
-        fprintf(errOut,"\n----------Page:%s parameter :\n",Page);
-        while(nextField)
-        {
-            //memset(Value,0x0,70);
-            //Value[0]='\0';
-            nextField = extractParam(nextField,Name,valBuff);
-            unencode(valBuff,Value);
-
-            if(!strcmp("INDEX",Name))
-            {
-				int num=0;
-				static  char rspBuff1[65536];
-				static  char rspBuff2[65536];
-				static  char rspBuff3[65536];
-				static  char rspBuff4[65536];
-                parameterIndex = atoi(Value);
-                if((parameterIndex==11)&&(lock11==0))//update wifilist
-                {
-					fprintf(errOut,"[luodp] do update wifilist");
-					num=0;
-					//list
-					Execute_cmd("iwlist ath0 scanning > /tmp/scanlist", rspBuff);
-					//mac
-					Execute_cmd("cat /tmp/scanlist | grep Cell | awk '{print $5}'", rspBuff1);
-					//fprintf(errOut,"\n-[luodp] %s\n",rspBuff1);
-					val1[num]=strtok(rspBuff1,"\n");
-					while(val1[num]) {
-						num++;
-						val1[num]=strtok(NULL,"\n"); 
-					}
-					//fprintf(errOut,"[luodp] new20\n");
-					//int i=0;
-					/*for(i=1;i<num-1;i++)
-					{
-						fprintf(errOut,"[luodp] %s\n",val1[i]+4);
-					}*/
-					num=0;
-					//ssid
-					Execute_cmd("cat /tmp/scanlist | grep ESSID | awk '{print $1}' | cut -d \"\\\"\" -f2", rspBuff2);
-					//fprintf(errOut,"\n[luodp] %s\n",rspBuff2);
-					val2[num]=strtok(rspBuff2,"\n");
-					while(val2[num]) {
-						num++;
-						val2[num]=strtok(NULL,"\n"); 
-					}
-					/*for(i=1;i<num-1;i++)
-					{
-						fprintf(errOut,"[luodp] %s\n",val2[i]+4);
-					}*/
-					num=0;
-					//security
-					Execute_cmd("cat /tmp/scanlist | grep Encryption | awk '{print $2}' | cut -d \":\" -f2", rspBuff3);
-					//fprintf(errOut,"\n[luodp] %s\n",rspBuff);
-					val3[num]=strtok(rspBuff3,"\n");
-					while(val3[num]) {
-						num++;
-						val3[num]=strtok(NULL,"\n"); 
-					}
-					/*for(i=1;i<num-1;i++)
-					{
-						fprintf(errOut,"[luodp] %s\n",val3[i]+4);
-					}*/
-					num=0;
-					//channel
-					Execute_cmd("cat /tmp/scanlist | grep Frequency | awk '{print $4}' | cut -d \")\" -f1", rspBuff4);
-					//fprintf(errOut,"\n[luodp] %s\n",rspBuff);
-					val4[num]=strtok(rspBuff4,"\n");
-					while(val4[num]) {
-						num++;
-						val4[num]=strtok(NULL,"\n"); 
-					}
-					
-					/*for(i=1;i<num-1;i++)
-					{
-						fprintf(errOut,"[luodp] %s\n",val4[i]+4);
-					}*/
-					lists=num-1;
-					/*for(i=1;i<lists;i++)
-					{
-						fprintf(errOut,"[luodp] %s(%s)(%s)(%s)\n",val2[i]+4,val1[i]+4,val3[i]+4,val4[i]+4);
-					}*/
-					char cmdd[128]={0};
-                    FILE *fp;
-                    if((fp=fopen("/tmp/wifilist","w+"))==NULL)
-                    {
-                        fprintf(errOut,"\n----------cannot open file  line:%d\n",__LINE__);
-                        return;
-                    }
-					//val1-mac,val2-ssid,val3-security,val4-channel
-					if(strcmp(val3[0],"on")==0)
-						sprintf(val3[0],"WPA");
-					else
-						sprintf(val3[0],"None");
-					memset(cmdd,0x00,128);	
-					sprintf(cmdd,"<option>%s(%s)(%s)(%s)</option>",val2[0],val1[0],val4[0],val3[0]);
-					fwrite(cmdd,strlen(cmdd),1,fp);
-					for(i=1;i<lists;i++)
-					{
-						memset(cmdd,0x00,128);
-						if(strcmp(val3[i]+4,"on")==0)
-							sprintf(val3[i]+4,"WPA");
-						else
-							sprintf(val3[i]+4,"None");
-						//fprintf(errOut,"[luodp] %s(%s)(%s)(%s) \n",val2[i]+4,val1[i]+4,val3[i]+4,val4[i]+4);
-						sprintf(cmdd,"<option>%s(%s)(%s)(%s)</option>",val2[i]+4,val1[i]+4,val4[i]+4,val3[i]+4);
-						fwrite(cmdd,strlen(cmdd),1,fp);
-					}
-                    fclose(fp);
-					flaglist=1;
-                    lock11 = 1;
-                }
-                else if((parameterIndex==12)&&(lock12==0))//do wan mode detect
-                {
-					Execute_cmd("net_check", rspBuff);
-				    memset(&config,0,sizeof(config));
-                    f = fopen("/tmp/.apcfg","r");
-                    if ( !f )
-                    {
-                        f = fopen( NVRAM, "r" );
-                        if (!f)
-                        {
-                        fprintf(errOut,"ERROR:  %s not defined on this device\n", NVRAM);
-                        fprintf(errOut,"ERROR:  Cannot store data in flash!!!!\n");
-                        exit(-1);
-                        }
-
-                        fseek(f, NVRAM_OFFSET, SEEK_SET);
-                    }
-                    if ( f )
-                    {
-                        fillParamStruct(f);
-                        fclose(f);
-                    }
-                    lock12 = 1;
-                }
-				else if((parameterIndex==13)&&(lock13==0))//do wan mode detect
-                {
-					Execute_cmd("wan_check", rspBuff);
-				    memset(&config,0,sizeof(config));
-                    f = fopen("/tmp/.apcfg","r");
-                    if ( !f )
-                    {
-                        f = fopen( NVRAM, "r" );
-                        if (!f)
-                        {
-                        fprintf(errOut,"ERROR:  %s not defined on this device\n", NVRAM);
-                        fprintf(errOut,"ERROR:  Cannot store data in flash!!!!\n");
-                        exit(-1);
-                        }
-
-                        fseek(f, NVRAM_OFFSET, SEEK_SET);
-                    }
-                    if ( f )
-                    {
-                        fillParamStruct(f);
-                        fclose(f);
-                    }
-					lock13 = 1;
-				}
-               sprintf(Value,"%d",parameterIndex);
-            }
-             fprintf(errOut,"Name:%s Value:%s\n",Name,Value);
-             CFG_set_by_name(Name,Value);
-        }
-    if(parameterIndex)
-		radioIndex = getRadioID(parameterIndex);
-
-    }
-        fprintf(errOut,"\n#######-Page:%s parameter .\n",Page);
-        fprintf(errOut,"\n%s  %d valBuff:%s\n \n",__func__,__LINE__,valBuff);
-    /*
-    ** use the "translate file" function to translate the file, inserting the
-    ** special strings as required.
-    */
-   // fprintf(errOut,"%s  %d Page:%s\n",__func__,__LINE__,Page);
-   sync();
-   // fprintf(errOut,"%s  %d\n",__func__,__LINE__);
-
-
-    /*
-    ** Now, look for the update and/or commit strings to send to either
-    ** the temp file or the flash file
-    */
-	//wan mode dhcp
-     if((strcmp(CFG_get_by_name("DHCP",valBuff),"DHCP") == 0 )|| (strcmp(CFG_get_by_name("DHCPW",valBuff),"DHCPW")== 0 ))
-     {
-        fprintf(errOut,"\n%s  %d DHCP \n",__func__,__LINE__);
-		int flag=0;
-		//static  char     rspBuff2[65536];
-		
-		if(strcmp(CFG_get_by_name("DHCPW",valBuff),"DHCPW")== 0 )
-		{
-			flag=1;
-		}
-		
-		//CFG_set_by_name("AP_STARTMODE","standard");
-		//1.destory old mode pid 
-		Execute_cmd("cfg -e | grep \"WAN_MODE=\"",valBuff);
-		//Execute_cmd("ps | grep udhcpc",rspBuff2);
-		if(strstr(valBuff,"pppoe") != 0)
-		{
-			//kill pppoe
-			Execute_cmd("pppoe-stop > /dev/null 2>&1", rspBuff);
-		}
-		if(strstr(valBuff,"dhcp") != 0)
-		{
-			//[TODO]kill udhcpc that may slow and httpd: bind: Address already in use
-			//Execute_cmd("ps | grep udhcpc | awk \'{print $1}\' | xargs kill -9 > /dev/null 2>&1", rspBuff);	
-			Execute_cmd("killall udhcpc > /dev/null 2>&1", rspBuff);
-			//flag=1;
-		}
-		if(flag!=1)
-		{
-			//2.save new config to flash 
-			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-			writeParameters("/tmp/.apcfg","w+",0);
-		}
-		//3.do new config pid
-		//if(flag!=1)
-		Execute_cmd("udhcpc -b -i eth0 -h HBD-Router -s /etc/udhcpc.script > /dev/null 2>&1", rspBuff);
-		gohome =1;
-    }
-	//wan mode static ip
-    if((strcmp(CFG_get_by_name("SIP",valBuff),"SIP") == 0 ) || (strcmp(CFG_get_by_name("SIPW",valBuff),"SIPW") == 0 ))
-    {
-		fprintf(errOut,"\n%s  %d SIP \n",__func__,__LINE__);
+              char pppoe_argu[10];
+			  int  argu_int;
+			  int mac_null_begin_seconds;
+			  char mac_list[10];
+			  char flag=0;
+			  char rspBuff_demand[10];//better use thread own buffer
 	
-		char pChar[128];
-		char valBuff2[128];	
-		int flag=0;
-		if(strcmp(CFG_get_by_name("SIPW",valBuff),"SIPW") == 0 )
+			    memset(pppoe_argu,'\0',10);
+			    memset(mac_list,'\0',10);
+	while(1){
+		if((Execute_cmd("grep \"PPPOE_MODE\" /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-6", rspBuff)=="demand")&&
+			(Execute_cmd("grep \"WAN_MODE\" /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-5", rspBuff)=="pppoe"))//current pppoe,thus demand mode
+	  //printf("CFG_get_by_name(\"PPPOE_MODE\",pppoe_argu) return value is %s.\n",CFG_get_by_name("PPPOE_MODE",pppoe_argu));
+     // printf("CFG_get_by_name(\"WAN_MODE\",pppoe_argu) return value is %s.\n",CFG_get_by_name("WAN_MODE",pppoe_argu));
+      //while(1){
+	  	///if((CFG_get_by_name("PPPOE_MODE",pppoe_argu)=="demand")&&(CFG_get_by_name("WAN_MODE",pppoe_argu)=="pppoe"))
+	  	
 		{
-			flag=1;
-		}
-		
-		//CFG_set_by_name("AP_STARTMODE","standard");
-		//1.destory old mode pid
-		Execute_cmd("cfg -e | grep \"WAN_MODE=\"",valBuff);
-		//fprintf(errOut,"[luodp] WAN_MODE: %s\n",valBuff);
-		if(strstr(valBuff,"pppoe") != 0)
-		{
-			//kill pppoe
-			Execute_cmd("pppoe-stop > /dev/null 2>&1", rspBuff);
-		}
-		if(strstr(valBuff,"dhcp") != 0)
-		{
-			//kill udhcpc
-			//Execute_cmd("ps aux | grep udhcpc | awk \'{print $1}\' | xargs kill -9  > /dev/null 2>&1", rspBuff);
-			Execute_cmd("killall udhcpc > /dev/null 2>&1", rspBuff);
-		}
-		if(flag!=1)
-		{
-			//2.save new config to flash 
-			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-			writeParameters("/tmp/.apcfg","w+",0);
-		}
-		//3.do new config pid
-		CFG_get_by_name("WAN_IPADDR",valBuff);
-		CFG_get_by_name("WAN_NETMASK",valBuff2);
-		sprintf(pChar,"ifconfig eth0 %s netmask %s up > /dev/null 2>&1",valBuff,valBuff2);
-		Execute_cmd(pChar, rspBuff);
-		//[TODO] DNS ,use system default dns 8.8.8.8
-		//[TODO] may be this is a bug
-		CFG_get_by_name("IPGW",valBuff);
-		Execute_cmd("route -n", rspBuff);
-		if(strstr(rspBuff,valBuff) == 0)
-		{
-			//fprintf(errOut,"[luodp] ishere34\n");
-			sprintf(pChar,"route add default gw %s dev eth0 > /dev/null 2>&1",valBuff);
-			Execute_cmd(pChar, rspBuff);
-		}
-		gohome =1;
-    }
-//wan mode pppoe
-//pppoe and advanced options below ,added by yhl 
-			if((strcmp(CFG_get_by_name("PPP",valBuff),"PPP") == 0 ) || (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 ))
-			{	
-				char pppoe_mode[10];						
-				memset(pppoe_mode,'\0',10);
-		
-				CFG_get_by_name("PPPOE_MODE",pppoe_mode);
-				fprintf(errOut,"user select pppoe_mode:%s\n",pppoe_mode);
-				
-			   //save new config to flash 
-			   writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-			   writeParameters("/tmp/.apcfg","w+",0);
-		
-			  if(!strncmp(pppoe_mode,"auto",4))
-						{
-						  pppoe_setup_func();
-						  if(check_pppoe()==0)//if pre pppoe-status is ok,first pppoe-stop,then pppoe-start
-							{
-							Execute_cmd("pppoe-stop", rspBuff);
-							sleep(1);
-							fprintf(errOut,"auto mode,first stop then to pppoe-start\n");
-							Execute_cmd("pppoe-start", rspBuff);
-							}
-						  if(check_pppoe()==1)
-						  	{
-						  	fprintf(errOut,"auto mode,to pppoe-start\n");
-							Execute_cmd("pppoe-start", rspBuff);
-						  	}
+		             printf("enter pppoe_demand_thread loop\n");
+				CFG_get_by_name("PPPOE_DEMAND",pppoe_argu);//pppoe_argu minutes
+
+				argu_int=atoi(pppoe_argu);
+					if(Execute_cmd("wlanconfig ath0 list | grep ADDR |awk '{print $1}'|cut -c1-4",mac_list)!="ADDR")//mac null
+						{	 if((Execute_cmd("wlanconfig ath0 list | grep ADDR |awk '{print $1}'|cut -c1-4",mac_list)!="ADDR")&&flag)
+							    {
+							      mac_null_begin_seconds = time((time_t*)NULL);
+							      printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>mac null start_seconds:%d\n",mac_null_begin_seconds);
+							    }
+			  
+						    if((time((time_t*)NULL)-mac_null_begin_seconds)<=(argu_int*60))
+							  { 
+							  printf("pppoe_demand  < argu_int time\n");
+							   continue;
+						      }
+						    else if((time((time_t*)NULL)-mac_null_begin_seconds)>(argu_int*60))
+							  {
+							  printf("pppoe_demand  > argu_int time\n");
+							   Execute_cmd("pppoe-stop", rspBuff_demand);
+							   continue;
+							  }//timeout
 						}
-			  else if(!strncmp(pppoe_mode,"demand",6))
-			   { 
-				          pppoe_setup_func();
-						  if(check_pppoe()==0)//if pre pppoe-status is ok,first pppoe-stop,then pppoe-start
-							{
-							Execute_cmd("pppoe-stop", rspBuff);
-							sleep(1);
-							fprintf(errOut,"demand mode,first stop then to pppoe-start\n");
-							Execute_cmd("pppoe-start", rspBuff);
-							}
-						  if(check_pppoe()==1)
-						  	{fprintf(errOut,"demand mode,to pppoe-start\n");
-							Execute_cmd("pppoe-start", rspBuff);/*pppoe-start auto*/
-						  	}
-				}//demand mode
-				
-				else if(!strncmp(pppoe_mode,"manual",6))
-				{
-						  pppoe_setup_func();
-						  if(check_pppoe()==0)//if pre pppoe-status is ok,first pppoe-stop,then pppoe-start
-							{
-							Execute_cmd("pppoe-stop", rspBuff);
-							sleep(1);
-							fprintf(errOut,"manual mode,first stop then to pppoe-start\n");
-							Execute_cmd("pppoe-start", rspBuff);
-							}
-						  if(check_pppoe()==1)
-						  	{fprintf(errOut,"manual mode,to pppoe-start\n");
-							Execute_cmd("pppoe-start", rspBuff);/*pppoe-start auto*/
-						  	}
-				}//end manual mode	
-				  
-				else if(!strncmp(pppoe_mode,"timing",6))	
-				{
-							pppoe_setup_func();
-							if(check_pppoe()==0)//if pre pppoe-status is ok,first pppoe-stop,then pppoe-start
-							{
-							Execute_cmd("pppoe-stop", rspBuff);
-							sleep(1);
-							fprintf(errOut,"timing mode,first stop then to pppoe-start\n");
-							Execute_cmd("pppoe-start", rspBuff);
-							}
-						  if(check_pppoe()==1)
-						  	{fprintf(errOut,"timing mode,to pppoe-start\n");
-							Execute_cmd("pppoe-start", rspBuff);/*pppoe-start auto*/
-						  	}
-			   }//end timing mode
+					else if(Execute_cmd("wlanconfig ath0 list | grep ADDR |awk '{print $1}'",mac_list)=="ADDR")//mac not null
+						{ flag=1;
+							if(check_pppoe()==0)
+								 continue;
+							else if(check_pppoe()==1)//pppoe die
+								 {
+								 printf("pppoe_demand  ADDR not null,pppoedie,to pppoe-start\n");
+								 Execute_cmd("pppoe-start", rspBuff_demand);
+								 }
+						}	
 					
 			}
-		//pppoe and advanced options  above
-
-	//wan mode l2tp
-     if((strcmp(CFG_get_by_name("L2TP",valBuff),"L2TP") == 0 ) ||(strcmp(CFG_get_by_name("L2TPW",valBuff),"L2TPW") == 0 ))
-    {
-        fprintf(errOut,"\n%s  %d L2TP \n",__func__,__LINE__);
-    }
-	//wan mode p2tp
-     if((strcmp(CFG_get_by_name("P2TP",valBuff),"P2TP") == 0 ) || (strcmp(CFG_get_by_name("P2TPW",valBuff),"P2TPW") == 0 ))
-    {
-        fprintf(errOut,"\n%s  %d P2TP \n",__func__,__LINE__);
-    }
-	//wds 
-     if(strcmp(CFG_get_by_name("WIRRE",valBuff),"WIRRE") == 0 ) 
-    { 
-		fprintf(errOut,"\n%s  %d WIRRE \n",__func__,__LINE__);
-		
-		char pChar[128];
-		char mac[128];
-		char channel[128];
-		char valBuff2[128];	
-		char valBuff3[128];	
-		char valBuff4[128];
-		char valBuff5[128];
-		int flag=0;
-		
-		//2.get old config from flash 
-		Execute_cmd("cfg -e | grep 'AP_SECMODE_2=' |  awk -F '\"' '{print $2}'",valBuff2);
-		Execute_cmd("cfg -e | grep 'WDSON_OFF=' | awk -F '=' '{print $2}'",valBuff5);
-		
-		//fprintf(errOut,"[luodp] wds %s,%s\n",valBuff2,valBuff5);
-		CFG_get_by_name("WDSON_OFF",valBuff3);
-		//off->on
-		if((strstr(valBuff5,valBuff3) == 0) && (strcmp(valBuff3,"on") == 0) )
-		{
-			CFG_set_by_name("AP_STARTMODE","repeater");
-			flag=1;
-		}
-		//on->off
-		if((strstr(valBuff,valBuff3) == 0) && (strcmp(valBuff3,"off") == 0) )
-		{
-			CFG_set_by_name("AP_STARTMODE","standard");
-			flag=2;
-		}
-		//on->on
-		if((strstr(valBuff5,valBuff3) != 0) && (strcmp(valBuff3,"on") == 0) )
-		{
-			//CFG_set_by_name("AP_STARTMODE","repeater");
-			flag=3;
-		}
-		//off->off
-		if((strstr(valBuff,valBuff3) != 0) && (strcmp(valBuff3,"off") == 0) )
-		{
-			//CFG_set_by_name("AP_STARTMODE","standard");
-			flag=4;
-		}
-		//2.save new config to flash 
-		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-        writeParameters("/tmp/.apcfg","w+",0);
-		//3.do new settings
-		if((flag==3)||(flag==1))
-		{		
-			CFG_get_by_name("AP_SECMODE_2",valBuff3);
-			if((strcmp(valBuff2,valBuff3) != 0)&&(strcmp(valBuff3,"None") != 0))
-			{
-				//AP_SECMODE=WPA
-				//AP_WPA=3 WPA/WPA2
-				//AP_CYPHER="TKIP CCMP"
-				//CFG_set_by_name("AP_RADIO_ID_2","0");
-				CFG_set_by_name("AP_SECMODE_2","WPA");
-				CFG_set_by_name("AP_WPA_2","3");
-				CFG_set_by_name("AP_CYPHER_2","TKIP CCMP");
-				CFG_set_by_name("AP_SECFILE_2","PSK"); 
-			}
-			if((strcmp(valBuff2,valBuff3) != 0)&&(strcmp(valBuff3,"WPA") != 0))
-			{
-				//AP_SECMODE=WPA
-				//AP_WPA=3 WPA/WPA2
-				//AP_CYPHER="TKIP CCMP"
-				//CFG_set_by_name("AP_RADIO_ID_2","0");
-				CFG_set_by_name("AP_SECMODE_2","None");
-			}
-			CFG_get_by_name("WDS_CHAN",channel);
-			CFG_set_by_name("AP_PRIMARY_CH",channel);
-			CFG_set_by_name("AP_PRIMARY_CH_2",channel);
-			//4.save new config to flash 
-			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-			writeParameters("/tmp/.apcfg","w+",0);
-		}
-		//5.do settings
-		//TODO if close do commit no ath1
-		if(flag==2) //on->off
-		{
-			//Execute_cmd("wlanconfig ath1 destroy > /dev/null 2>&1", rspBuff);
-			Execute_cmd("cfg -e | grep 'WIFION_OFF=' | awk -F \"=\" \'{print $2}\'",valBuff);
-			//wifi on ,then wds on/off
-			if(strstr(valBuff,"off") == 0)
-			{
-				//fprintf(errOut,"[luodp] wds open\n");
-				//[TODO]sta mode
-				Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
-				Execute_cmd("apup > /dev/null 2>&1", rspBuff);
-			}
-		}		
-		if(flag==1) //off->on
-		{
-			Execute_cmd("cfg -e | grep 'WIFION_OFF=' | awk -F \"=\" \'{print $2}\'",valBuff);
-			//wifi on ,then wds on/off
-			if(strstr(valBuff,"off") == 0)
-			{
-				//fprintf(errOut,"[luodp] wds open\n");
-				//[TODO]sta mode
-				Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
-				Execute_cmd("apup > /dev/null 2>&1", rspBuff);
-			}
-		}
-		/*CFG_get_by_name("AP_RADIO_ID_2",valBuff);
-		CFG_get_by_name("AP_SECMODE_2",valBuff2);
-		CFG_get_by_name("AP_SECFILE_2",valBuff3);
-		CFG_get_by_name("WPS_ENABLE_2",valBuff4);
-		sprintf(pChar,"activateVAP ath1:%s br0 %s %s %s",valBuff,valBuff2,valBuff3,valBuff4);
-		
-		Execute_cmd(pChar, rspBuff);*/
-		//maybe can replace by makeVAP
-		/*Execute_cmd("wlanconfig ath1 create wlandev wifi0 wlanmode sta nosbeacon", rspBuff);
-		CFG_get_by_name("AP_SSID_2",valBuff);
-		sprintf(pChar,"iwconfig ath1 essid %s",valBuff);
-		Execute_cmd(pChar, rspBuff);
-		
-		CFG_get_by_name("WDS_MAC",mac);
-		sprintf(pChar,"iwconfig ath1 ap  %s",mac);
-		Execute_cmd(pChar, rspBuff);*/
-		if((flag==1)||(flag==3))
-		{
-			sprintf(pChar,"iwconfig ath0 channel %s  > /dev/null 2>&1",channel);	
-			Execute_cmd(pChar, rspBuff);
-			sprintf(pChar,"iwconfig ath1 channel %s  > /dev/null 2>&1",channel);	
-			Execute_cmd(pChar, rspBuff);
-		}
-		/*Execute_cmd("iwpriv ath1 wds 1", rspBuff);
-		Execute_cmd("brctl addif br0 ath1", rspBuff);
-		Execute_cmd("ifconfig ath1 up", rspBuff);*/
-		gohome =1;
-    }
-	//wifi settings
-     if((strcmp(CFG_get_by_name("WIRELESS",valBuff),"WIRELESS") == 0 ) || (strcmp(CFG_get_by_name("DHCPW",valBuff),"DHCPW") == 0 ) || (strcmp(CFG_get_by_name("SIPW",valBuff),"SIPW") == 0 ) || (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 ) || (strcmp(CFG_get_by_name("L2TPW",valBuff),"L2TPW") == 0 ) || (strcmp(CFG_get_by_name("P2TPW",valBuff),"P2TPW") == 0 ) )
-    {
-		fprintf(errOut,"\n%s  %d WIRELESS \n",__func__,__LINE__);
-	
-		char pChar[128];
-		char valBuff2[128];	
-		char valBuff3[128];	
-		char valBuff4[128];	
-		char valBuff5[128];
-		char valBuff6[128];	
-		char valBuff7[128];	
-		char valBuff8[128];	
-		char valBuff9[128];	
-		int flag=0;
-
-		//1.get old value from flash
-		Execute_cmd("cfg -e | grep \"WIFION_OFF=\" | awk -F \"=\" \'{print $2}\'",valBuff);
-		//TODO bug
-		Execute_cmd("cfg -e | grep \"AP_SSID=\" | awk -F \"AP_SSID=\" '{print $2}'",valBuff2);
-		Execute_cmd("cfg -s | grep \"PSK_KEY:\" | awk -F \"=\" \'{print $2}\'",valBuff4);
-		//Execute_cmd("cfg -e | grep \"AP_SECMODE=\" |  awk -F \"=\" \'{print $2}\'",valBuff5);;
-		//Execute_cmd("cfg -e | grep \"WIFION_OFF=\"",valBuff);
-		//Execute_cmd("cfg -e | grep \"AP_SSID=\"",valBuff2);
-		//Execute_cmd("iwconfig ath0 | grep \"ESSID\" | awk -F \"\"\" \'{print $2}\'",valBuff2);
-		Execute_cmd("cfg -e | grep \"AP_SECMODE=\"",valBuff5);
-		Execute_cmd("cfg -e | grep \"AP_PRIMARY_CH=\" | awk -F \"=\" \'{print $2}\'",valBuff7);
-		Execute_cmd("cfg -e | grep \"AP_HIDESSID=\" | awk -F \"=\" \'{print $2}\'",valBuff8);
-		
-		
-		//fprintf(errOut,"[luodp] WIFI: %s\n%s%s\n%s\n",valBuff,valBuff2,valBuff5,valBuff4);
-		//2.save new config to flash
-		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-		writeParameters("/tmp/.apcfg","w+",0);			
-		//fprintf(errOut,"[luodp]here\n");
-		//3.do new config pid
-		//TODO key check
-		CFG_get_by_name("PSK_KEY",valBuff3);
-		//fprintf(errOut,"[luodp] %shere\n",valBuff3);
-		sprintf(valBuff6,"%s\n<br>",valBuff3);
-		if((strcmp(valBuff6,valBuff4) != 0)&&(strcmp(valBuff6,"\n<br>") != 0))
-		{
-			//fprintf(errOut,"[luodp] KEY here");
-			CFG_set_by_name("PSK_KEY",valBuff3);
-			//flag=2;
-			flag = 5;
-		}
-		//TODO SECMODE
-		CFG_get_by_name("AP_SECMODE",valBuff3);
-		//fprintf(errOut,"[luodp] %s here2\n",valBuff3);
-		if((strstr(valBuff5,valBuff3) == 0)&&(strcmp(valBuff3,"None") != 0))
-		{
-			//AP_SECMODE=WPA
-			//AP_WPA=3 WPA/WPA2
-			//AP_CYPHER="TKIP CCMP"
-			//fprintf(errOut,"[luodp] SECMODE here");
-			CFG_set_by_name("AP_SECMODE","WPA");
-			CFG_set_by_name("AP_WPA","3");
-			CFG_set_by_name("AP_CYPHER","TKIP CCMP");
-			CFG_set_by_name("AP_SECFILE","PSK"); 
-			//flag=2;
-			flag = 5;
-		}
-		if((strstr(valBuff5,valBuff3) == 0)&&(strcmp(valBuff3,"WPA") != 0))
-		{
-			//AP_SECMODE=WPA
-			//AP_WPA=3 WPA/WPA2
-			//AP_CYPHER="TKIP CCMP"
-			//fprintf(errOut,"[luodp] SECMODE here2");
-			CFG_set_by_name("AP_SECMODE","None");
-			flag=2;
-		}
-		//4.save new add  to flash 
-		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-		writeParameters("/tmp/.apcfg","w+",0);					
-		CFG_get_by_name("WIFION_OFF",valBuff3);
-		//fprintf(errOut,"[luodp] %s here4\n",valBuff3);
-		if((strstr(valBuff,valBuff3) == 0) && (strcmp(valBuff3,"on") == 0) )
-		{
-			//fprintf(errOut,"[luodp] SECMODE here3");
-			Execute_cmd("apup > /dev/null 2>&1", rspBuff);
-			flag=3;
-		}
-		if((strstr(valBuff,valBuff3) == 0) && (strcmp(valBuff3,"off") == 0) )
-		{
-			//fprintf(errOut,"[luodp] SECMODE here4");
-			Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
-			flag=4;
-		}
-		//ssid [TODO]
-		CFG_get_by_name("AP_SSID",valBuff4);
-		//fprintf(errOut,"[luodp] %s here5\n",valBuff4);
-		sprintf(valBuff5,"\"%s\"\n<br>",valBuff4);
-		//fprintf(errOut,"%d\n%d\n%d\n",strcmp(valBuff2,valBuff5),flag,strcmp(valBuff3,"on"));
-		if((strcmp(valBuff2,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0))
-		{
-			//fprintf(errOut,"[luodp] SECMODE here6");
-			sprintf(pChar,"iwconfig ath0 essid %s  > /dev/null 2>&1",valBuff4);
-			Execute_cmd(pChar, rspBuff);
-			Execute_cmd("cfg -e | grep \"AP_SECMODE=\"",valBuff9);
-			if(strstr(valBuff9,"WPA") != 0)
-			{
-				//TODO
-				Execute_cmd("cfg -t0 /etc/ath/PSK.ap_bss ath0 > /tmp/secath0",rspBuff);
-				Execute_cmd("killall hostapd > /dev/null 2>&1",rspBuff);
-				Execute_cmd("hostapd -B /tmp/secath0 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
-			}
-		}
-		//channel
-		CFG_get_by_name("AP_PRIMARY_CH",valBuff4);
-		//fprintf(errOut,"[luodp] %s here5 %s\n",valBuff4,valBuff7);
-		sprintf(valBuff5,"%s\n<br>",valBuff4);
-		//fprintf(errOut,"%d\n%d\n%d\n",strcmp(valBuff2,valBuff5),flag,strcmp(valBuff3,"on"));
-		if((strcmp(valBuff7,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0))
-		{
-			//fprintf(errOut,"[luodp] SECMODE here7\n");
-			sprintf(pChar,"iwconfig ath0 channel %s  > /dev/null 2>&1",valBuff4);
-			Execute_cmd(pChar, rspBuff);
-		}
-		//hide ssid
-		CFG_get_by_name("AP_HIDESSID",valBuff4);
-		//fprintf(errOut,"[luodp] %s here6 %s\n",valBuff4,valBuff8);
-		sprintf(valBuff5,"%s\n<br>",valBuff4);
-		//fprintf(errOut,"%d\n%d\n%d\n",strcmp(valBuff2,valBuff5),flag,strcmp(valBuff3,"on"));
-		if((strcmp(valBuff8,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0)&&(strcmp(valBuff4,"1") == 0))
-		{
-			//fprintf(errOut,"[luodp] SECMODE here8\n");
-			Execute_cmd("iwpriv ath0 hide_ssid 1  > /dev/null 2>&1", rspBuff);
-		}
-		if((strcmp(valBuff8,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0)&&(strcmp(valBuff4,"0") == 0))
-		{
-			//fprintf(errOut,"[luodp] SECMODE here9\n");
-			Execute_cmd("iwpriv ath0 hide_ssid 0  > /dev/null 2>&1", rspBuff);
-		}
-		if(flag==2)
-		{
-			//fprintf(errOut,"[luodp] SECMODE here5");
-			//CFG_get_by_name("AP_RADIO_ID",valBuff);
-			//CFG_get_by_name("AP_SECMODE",valBuff2);
-			//CFG_get_by_name("AP_SECFILE",valBuff3);
-			//CFG_get_by_name("WPS_ENABLE",valBuff4);
-			//CFG_get_by_name("WPS_VAP_TIE",valBuff5);
-			//sprintf(pChar,"activateVAP ath0:%s br0 %s %s %s %s",valBuff,valBuff2,valBuff3,valBuff4,valBuff5);
-			//Execute_cmd(pChar, rspBuff);
-			Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
-			Execute_cmd("apup > /dev/null 2>&1", rspBuff);
-		}/*else if(flag==2)
-		{
-			//fprintf(errOut,"[luodp] SECMODE here7");
-			//CFG_get_by_name("AP_RADIO_ID",valBuff);
-			//CFG_get_by_name("AP_SECMODE",valBuff2);
-			//sprintf(pChar,"activateVAP ath0:%s br0 %s",valBuff,valBuff2);
-			//Execute_cmd(pChar, rspBuff);
-			Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
-			Execute_cmd("apup > /dev/null 2>&1", rspBuff);
-		}*/
-		else if(flag == 5)  /*deal password is changed, restart hostapd   by zzw*/
-		{
-			Execute_cmd("cfg -t0 /etc/ath/PSK.ap_bss ath0 > /tmp/secath0",rspBuff);
-			Execute_cmd("killall hostapd > /dev/null 2>&1",rspBuff);
-			Execute_cmd("hostapd -B /tmp/secath0 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
-		}
-		gohome =1;
-    }
-	//login settings
-     if(strcmp(CFG_get_by_name("ADMINSET",valBuff),"ADMINSET") == 0 )
-    {
-         fprintf(errOut,"\n%s  %d ADMINSET \n",__func__,__LINE__);
-            
-         char cmdd[128]={0};
-         int qq=0;
-         FILE *fp;
-         if((fp=fopen("/etc/httpd.conf","w+"))==NULL)
-         {
-			fprintf(errOut,"\n----------cannot open file  line:%d\n",__LINE__);
-			exit(0);
-         }
-         memset(cmdd,0x00,128);
-         sprintf(cmdd,"/home.html:admin:%s",CFG_get_by_name("ADMPASS" ,valBuff));
-         fwrite(cmdd,strlen(cmdd),1,fp);
-         fclose(fp);
-         writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-         writeParameters("/tmp/.apcfg","w+",0);
-                
-         //Execute_cmd("ps | grep httpd | awk '{print $1}' | xargs kill -HUP > /dev/null 2>&1", rspBuff);
-		 //system("killhttpd");
-		 //Execute_cmd("killall -TERM httpd > /dev/null 2>&1", rspBuff);
-		 //system("killall -9 httpd > /dev/null 2>&1");
-		 //fprintf(errOut,"[luodp] httpd result: %s\n",rspBuff);		 
-         //Execute_cmd("/usr/sbin/httpd -p 80 -h /usr/www -c /etc/httpd.conf", rspBuff);	
-		 //system("httpd -h /usr/www -c /etc/httpd.conf  > /dev/null 2>&1");
-		 //system("httpd -h /usr/www -c /etc/httpd.conf  > /dev/null 2>&1");
-		 //system("httpd -h /usr/www -c /etc/httpd.conf  > /dev/null 2>&1");
-		 fprintf(errOut,"[luodp] httpd result: %s\n",rspBuff);		 
-         // fprintf(errOut,"\n----------2kill**********************\n");
-		 gohome =1;
-    }
-	if(strcmp(CFG_get_by_name("FACTORY",valBuff),"FACTORY") == 0 )
-	{
-        fprintf(errOut,"\n%s  %d FACTORY \n",__func__,__LINE__);
-		/*Execute_cmd("cfg -e | grep \"WIFION_OFF=\" | awk -F \"=\" \'{print $2}\'",valBuff);
-		if(strstr(valBuff,"on") == 0 )
-		{
-			Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
-		}*/
-        system("cfg -x");
-		system("echo \"/home.html:admin:admin\" > /etc/httpd.conf");
-		//system("/etc/ath/apcfg");
-		//system("apup > /dev/null 2>&1");
-		
-        printf("HTTP/1.0 200 OK\r\n");
-        printf("Content-type: text/html\r\n");
-        printf("Connection: close\r\n");
-        printf("\r\n");
-        printf("\r\n");
-
-        printf("<HTML><HEAD>\r\n");
-        printf("<LINK REL=\"stylesheet\" HREF=\"../style/handaer.css\"  TYPE=\"text/css\" media=\"all\">");
-        printf("<link rel=\"stylesheet\" href=\"../style/normal_ws.css\" type=\"text/css\">");
-        printf("</head><body>");
-        
-        printf("<div class=\"handaer_main\">");
-        printf("<h1>恢复出厂设置</h1>\n");	
-        printf("<div align=\"center\"> <img align=\"center\" src=\"../images/loading.gif\"></img></div>");
-        printf("<p  align=\"center\">恢复出厂设置完成,正在重启BASE..........</p><br>\n");	
-        printf("<p  align=\"center\">Restore factory settings was completed, restartting BASE..........</p><br>\n");	
-        printf("<script  language=javascript>setTimeout(function(){window.location.href=\"crfact\";},60000);</script>");
-        printf("</div>");
-		printf("</body></html>");
-
-
-        system("sleep 1 && reboot &");
-        exit(1);
-    }
-    printf("HTTP/1.0 200 OK\r\n");
-    printf("Content-type: text/html\r\n");
-    printf("Connection: close\r\n");
-    printf("\r\n");
-    printf("\r\n");
-    if( gohome == 1)
-    {
-	     system("dd if=/dev/caldata of=/etc/cal.bin   > /dev/null 2>&1");
-         if(translateFile("../map.html") < 0)
-         {
-            printf("Content-Type:text/html\n\n");
-            printf("<HTML><HEAD>\r\n");
-            printf("<LINK REL=\"stylesheet\" href=\"../styleSheet.css\" type=\"text/css\">");
-            printf("</head><body>");
-            printf("Page %s Not Found",Page);
-            printf("</body></html>");
-            exit(1);
-        }
-    }
-    else
-    {
-   	 if(translateFile(Page) < 0)
-     {
-        printf("Content-Type:text/html\n\n");
-        printf("<HTML><HEAD>\r\n");
-        printf("<LINK REL=\"stylesheet\" href=\"../styleSheet.css\" type=\"text/css\">");
-        printf("</head><body>");
-        printf("Page %s Not Found",Page);
-        printf("</body></html>");
-        exit(1);
-     }	
-	}
-
-
-    #if 0
-    if((strcmp(CFG_get_by_name("COMMIT",valBuff),"Commit") == 0)  || (strcmp(CFG_get_by_name("COMMIT",valBuff),"Save") == 0))
-    {
-        //fprintf(errOut,"%s  %d\n",__func__,__LINE__);
-        writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-        writeParameters("/tmp/.apcfg","w+",0);
-    }
-
-    if(strcmp(CFG_get_by_name("UPDATE",valBuff),"Update") == 0 )
-    {
-       // fprintf(errOut,"%s  %d\n",__func__,__LINE__);
-        writeParameters("/tmp/.apcfg","w+",0);
-    }
-
-    if(strcmp(CFG_get_by_name("StopButton",valBuff),"Stop") == 0 )
-    {
-       // fprintf(errOut,"%s  %d\n",__func__,__LINE__);
-        Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
-    }
-
-    if(strcmp(CFG_get_by_name("StartButton",valBuff),"Start") == 0 )
-    {
-        //fprintf(errOut,"%s  %d\n",__func__,__LINE__);
-        Execute_cmd("apup > /dev/null 2>&1", rspBuff);
-    }
-
-    if(strcmp(CFG_get_by_name("FactoryResetButton",valBuff),"FactoryReset") == 0 )
-    {
-        Execute_cmd("cfg -x", rspBuff);
-        sleep(1);
-        reboot(RB_AUTOBOOT);
-    }
-
-    if(strcmp(CFG_get_by_name("StartPINMethod",valBuff),"StartPINMethod") == 0 )
-    {
-        /* extract the enrollee key and pass it over to the command 
-         */
-        char cmd[256]={0};
-
-        sprintf(cmd, "wpatalk -v ath%c 'configthem pin=%s'", '0'+(parameterIndex-1), CFG_get_by_name("AP_ENROLLEE", valBuff));
-        Execute_cmd(cmd, rspBuff);
-    }
-    if(strcmp(CFG_get_by_name("StartPBC",valBuff),"StartPBC") == 0 )
-    {
-        /* extract the enrollee key and pass it over to the command 
-         */
-        char cmd[256]={0};
-        sprintf(cmd, "wpatalk -v ath0 configthem");
-        Execute_cmd(cmd, rspBuff);
-    }
-     if(strcmp(CFG_get_by_name("w3",valBuff),"w3") == 0 )
-    {
-       // fprintf(errOut,"%s  %d\n",__func__,__LINE__);
-        sleep(1);
-        reboot(RB_AUTOBOOT);
-        
-    }
-     #endif
-#endif /* #ifndef ATH_SINGLE_CFG */
-     //fprintf(errOut,"%s  %d\n",__func__,__LINE__);
-   exit(0);
+		continue;
+  }
+             
 }
+
+
+int * pppoe_manual_thread(void *arg)
+{
+        printf("pppoe_manual_thread id is %d.\n",pthread_self());
+        
+			int mac_null_start_seconds;
+			char pppoe_argu[10];
+			  int  argu_int;
+			  char mac_list[10];
+			  char flag=0;
+			  char rspBuff_manual[10];//better use thread own buffer
+	
+			    memset(pppoe_argu,'\0',10);
+			    memset(mac_list,'\0',10);
+	while(1)
+	{			
+		if((Execute_cmd("grep \"PPPOE_MODE\" /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-6", rspBuff)=="manual")&&
+			(Execute_cmd("grep \"WAN_MODE\" /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-5", rspBuff)=="pppoe"))//current pppoe,thus demand mode
+			//printf("CFG_get_by_name(\"PPPOE_MODE\",pppoe_argu) return value is %s.\n",CFG_get_by_name("PPPOE_MODE",pppoe_argu));
+			//printf("CFG_get_by_name(\"WAN_MODE\",pppoe_argu) return value is %s.\n",CFG_get_by_name("WAN_MODE",pppoe_argu));
+
+			//while(1){
+			 // if((CFG_get_by_name("PPPOE_MODE",pppoe_argu)=="manual")&&(CFG_get_by_name("WAN_MODE",pppoe_argu)=="pppoe"))
+                       {		
+                            printf("enter pppoe_manual_thread loop\n");
+				CFG_get_by_name("PPPOE_MANUAL",pppoe_argu);//pppoe_argu minutes
+				argu_int=atoi(pppoe_argu);
+				
+
+					if(Execute_cmd("wlanconfig ath0 list | grep ADDR |awk '{print $1}'",mac_list)!="ADDR")
+						{
+                                              printf("pppoe_manual_thread  mac null\n");
+						if((Execute_cmd("wlanconfig ath0 list | grep ADDR |awk '{print $1}'",mac_list)!="ADDR")&&flag)
+								 {
+								   mac_null_start_seconds= time((time_t*)NULL);
+								   printf("pppoe_manual  mac_null_start_seconds time:%d\n",mac_null_start_seconds);
+								}
+						     if((time((time_t*)NULL)-mac_null_start_seconds)<=(argu_int*60))
+							     {
+							     printf("pppoe_manual_thread  < argu_int time\n");
+							     continue;
+								 }
+						     else if((time((time_t*)NULL)-mac_null_start_seconds)>(argu_int*60))
+							   {
+							   printf("pppoe_manual_thread  > argu_int time\n");
+							    Execute_cmd("pppoe-stop", rspBuff_manual);//kill pppoe-ok-process
+							   }
+						}
+					else if(Execute_cmd("wlanconfig ath0 list | grep ADDR |awk '{print $1}'",mac_list)=="ADDR")
+						{ 
+						printf("pppoe_manual_thread  mac_list not null,\n");
+						flag=1; 
+						continue;
+						}	
+					
+			}
+			continue;
+	}
+}
+
+int * pppoe_timing_thread(void *arg)
+{
+        printf("pppoe_timing_thread id is %d.\n",pthread_self());
+         int seconds;
+		 int b_time,e_time;
+		 char bh[10],bm[10],eh[10],em[10],pppoe_argu[10];
+		 int bh_int,bm_int,eh_int,em_int;
+		 char rspBuff_timing[10];//better use thread own buffer
+
+		memset(bh,'\0',10);
+		memset(bm,'\0',10);
+		memset(eh,'\0',10);
+		memset(em,'\0',10);
+		memset(pppoe_argu,'\0',10);
+while(1)
+	{			
+		if((Execute_cmd("grep \"PPPOE_MODE\" /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-6", rspBuff)=="timing")&&
+			(Execute_cmd("grep \"WAN_MODE\" /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-5", rspBuff)=="pppoe"))//current pppoe,thus demand mode
+	//printf("CFG_get_by_name(\"PPPOE_MODE\",pppoe_argu) return value is %s.\n",CFG_get_by_name("PPPOE_MODE",pppoe_argu));
+	//printf("CFG_get_by_name(\"WAN_MODE\",pppoe_argu) return value is %s.\n",CFG_get_by_name("WAN_MODE",pppoe_argu));
+
+	//while(1){
+	//	 if((CFG_get_by_name("PPPOE_MODE",pppoe_argu)=="timing")&&(CFG_get_by_name("WAN_MODE",pppoe_argu)=="pppoe"))
+	         {	
+	              printf("enter pppoe_timing_thread loop\n");
+			  CFG_get_by_name("PPPOE_TIMING_BH",bh);//pppoe_argu min s
+				   bh_int=atoi(bh);
+				   
+			  CFG_get_by_name("PPPOE_TIMING_BM",bm);//pppoe_argu min s
+				   bm_int=atoi(bm);
+				   
+			  CFG_get_by_name("PPPOE_TIMING_EH",eh);//pppoe_argu min s
+				   eh_int=atoi(eh);
+				   
+			  CFG_get_by_name("PPPOE_TIMING_EM",em);//pppoe_argu min s
+				   em_int=atoi(em);
+			
+			  b_time=bh_int*3600+bm_int*60;
+			  e_time=eh_int*3600+em_int*60;//b_time<   <e_time
+			  printf("pppoe_timing_thread ,b_time%d--e_time%d\n",b_time,e_time);
+			
+				seconds= time((time_t*)NULL);//get now time
+				if((seconds>=b_time)&&(seconds<=e_time))
+				  { if(check_pppoe()==0)
+					   continue;
+				   else if(check_pppoe()==1)
+					  {
+					  printf("pppoe_timing_thread ,b_time<<e_time,but check_pppoe()==1\n");
+					  Execute_cmd("pppoe-start", rspBuff_timing);
+				      continue;
+					  }
+			      }
+				else
+				   {if(check_pppoe()==1)//pppoe is die
+						  continue;
+					else if(check_pppoe()==0)
+						{
+						printf("pppoe_timing_thread ,out of b_time<<e_time,and check_pppoe()=0,pppoe-stop it\n");
+					   Execute_cmd("pppoe-stop", rspBuff_timing);
+						}
+				   }
+				
+			  }//end while1	
+		continue;
+}
+}
+//added by yhl 2013.12.05 up
+
+
+//auto run,on boot,run all time
+int main()
+{
+
+pthread_t pppoe_demand_tid;
+pthread_t pppoe_manual_tid;
+pthread_t pppoe_timing_tid;
+printf("three-thread!main process\n");
+char pppoe_mode[10];
+memset(pppoe_mode,'\0',10);
+
+
+printf("wan mode%s\n",Execute_cmd("grep \"WAN_MODE\" /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-5", rspBuff));
+//printf("wan mode%s\n",CFG_get_by_name("WAN_MODE",pppoe_mode));
+
+if(!strncmp(Execute_cmd("grep \"WAN_MODE\" /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-5", rspBuff), "pppoe", 5))//check current whether pppoe
+{
+	printf("TO create pppoe_demand_thread\n");
+if(!pthread_create(&pppoe_demand_tid,NULL,(void *)pppoe_demand_thread,NULL))//only 1 thread
+          {
+           printf("succeed!create pppoe_demand_thread\n");
+          }
+else
+          {
+          printf("Fail to Create pppoe_demand_thread");
+          }
+/////
+printf("TO create pppoe_manual_thread\n");
+if(!pthread_create(&pppoe_manual_tid,NULL,(void *)pppoe_demand_thread,NULL))//only 1 thread
+          {
+           printf("succeed!create pppoe_manual_thread\n");
+          }
+else
+          {
+          printf("Fail to Create pppoe_manual_thread");
+          }
+////
+printf("TO create pppoe_timing_thread\n");
+if(!pthread_create(&pppoe_timing_tid,NULL,(void *)pppoe_timing_thread,NULL))
+          {
+           printf("succeed!create pppoe_timing_thread\n");
+          }
+else
+          {
+          printf("Fail to Create pppoe_timing_thread");
+          }
+}
+
+
+{
+      while(1)
+	  usleep(10*1000);//sleep 10ms
+    }//make this process run all the time
+
+}  
 
 /********************************** End of Module *****************************/
 
