@@ -277,27 +277,65 @@ error:
 	}
 	if(error==1)
 	{
-	    printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");alert('File upload fail!');window.location.reload();</script>");
-
+	     printf("Content-Type:text/html\n\n");
+         printf("<HTML><HEAD>\r\n");
+         printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+         printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
+         printf("</head><body>");
+ 	     printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");alert(_(\"err file upload\"));window.location.href=\"ad_man_upgrade\";</script>");
+         printf("</body></html>");
     }
-		//´òÓ¡ĞÅÏ¢µ½ÍøÒ³µÄÒş²ØµÄiframeÖĞ
+	//´òÓ¡ĞÅÏ¢µ½ÍøÒ³µÄÒş²ØµÄiframeÖĞ
 	else 
 	{		
             fprintf(errOut,"%s  %d file upload complete !\n",__func__,__LINE__);
 			char cmdd[256];
-            printf("Content-Type:text/html\n\n");
-            printf("<HTML><HEAD>\r\n");
-            printf("</head><body>");
-            
-            printf("<div style=\"font-size: 14pt; font-weight: bold; margin-left: 10px; font-family: å¾®è½¯é›…é»‘, Arial, Helvetica, sans-serif; color: #848484;border-bottom:1px dotted #d0d0d0; padding-bottom:10px; margin-bottom:10px;height:30px; line-height:30px; padding:5px;\">å›ºä»¶å‡çº§</div>\n");	
-            printf("<p align=\"center\" style=\"font-size: 9pt; margin-left: 10px; font-family: å¾®è½¯é›…é»‘, Arial, Helvetica, sans-serif; color: #848484\">å‡çº§å®Œæˆ,æ­£åœ¨é‡å¯BASE..........</p><br>\n");	
-            printf("<p align=\"center\" style=\"font-size: 9pt; margin-left: 10px; font-family: å¾®è½¯é›…é»‘, Arial, Helvetica, sans-serif; color: #848484\">The upgrade was completed, restartting BASE..........</p><br>\n");	
-            printf("<script  language=javascript>setTimeout(function(){window.location.href=\"crupload\";},140000);</script>");
-            printf("</body></html>");	
-			//[TODO]factory default
-			//[TODO] File check
-			sprintf(cmdd,"sleep 1 && sysupgrade %s &",filePath);
+			int firmware_flag=0;
+			sprintf(cmdd,"firmware_check %s > /tmp/firmware.log",filePath);
 			system(cmdd);
+			FILE *fileBuf2=NULL;
+			if ((fileBuf2= fopen("/tmp/firmware.log", "r")) == NULL)
+			{
+				fprintf(errOut,"%s  %d File open error.Make sure you have the permission.\n",__func__,__LINE__);
+				firmware_flag=1;
+			}else
+			{
+				fgets(cmdd,sizeof(cmdd),fileBuf2);
+				if(strstr(cmdd,"OK")!=NULL)
+				{
+					firmware_flag=2;
+				}else
+				{
+					firmware_flag=1;
+				}
+				fclose(fileBuf2);
+			}
+					
+			if(firmware_flag!=1)
+			{
+				printf("Content-Type:text/html\n\n");
+				printf("<HTML><HEAD>\r\n");
+				printf("</head><body>");
+				
+				printf("<div style=\"font-size: 14pt; font-weight: bold; margin-left: 10px; font-family: å¾®è½¯é›…é»‘, Arial, Helvetica, sans-serif; color: #848484;border-bottom:1px dotted #d0d0d0; padding-bottom:10px; margin-bottom:10px;height:30px; line-height:30px; padding:5px;\">å›ºä»¶å‡çº§</div>\n");	
+				printf("<p align=\"center\" style=\"font-size: 9pt; margin-left: 10px; font-family: å¾®è½¯é›…é»‘, Arial, Helvetica, sans-serif; color: #848484\">å‡çº§å®Œæˆ,æ­£åœ¨é‡å¯BASE..........</p><br>\n");	
+				printf("<p align=\"center\" style=\"font-size: 9pt; margin-left: 10px; font-family: å¾®è½¯é›…é»‘, Arial, Helvetica, sans-serif; color: #848484\">The upgrade was completed, restartting BASE..........</p><br>\n");	
+				printf("<script  language=javascript>setTimeout(function(){window.location.href=\"crupload\";},140000);</script>");
+				printf("</body></html>");	
+				//[TODO]factory default
+				//[TODO] File check
+				sprintf(cmdd,"sleep 1 && sysupgrade %s &",filePath);
+				system(cmdd);
+			}else //error firmware file
+			{	
+				 printf("Content-Type:text/html\n\n");
+				 printf("<HTML><HEAD>\r\n");
+				 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+				 printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
+				 printf("</head><body>");
+				 printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");alert(_(\"err file format\"));window.location.href=\"ad_man_upgrade\";</script>");
+				 printf("</body></html>");
+			}
 	}
 	return;
 	

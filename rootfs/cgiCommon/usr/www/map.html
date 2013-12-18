@@ -12,6 +12,35 @@
 
 <script language="JavaScript" type="text/javascript">
 
+var wv;
+var intTimerID;
+var intTimeout = 100;
+var intStartTime;                                                                                                            
+var objIMG = new Image();                                                 
+objIMG.onload =                                                           
+objIMG.onerror =                                                          
+function()                                                           
+{        
+        clearTimeout(intTimerID);
+		wv = "on";
+        initTranslation();                                                    
+}                                                                                                                          
+function ping()                                                 
+{                
+        intStartTime = +new Date();     
+
+        objIMG.src = "http://www.baidu.com" + "/" + intStartTime;
+
+        intTimerID = setTimeout(timeout, intTimeout);           
+                                                                
+                                                           
+}                                                               
+
+function timeout()
+{
+	wv = "off";
+	initTranslation();
+}
 
 
 function initTranslation()
@@ -64,7 +93,6 @@ function initTranslation()
 
 	var n = document.getElementById("neitu");
 
-	var wv = document.getElementById("waistatus").value;
 
 	var nv = document.getElementById("neistatus").value;
 
@@ -112,9 +140,7 @@ function initValue()
 {
 
 	Butterlate.setTextDomain("admin");	
-
-	initTranslation();
-
+	ping();
 }
 
 
@@ -155,13 +181,13 @@ function initValue()
 	<input type="text" style="display:none" name="neistatus" id="neistatus" size="20" maxlength="32" value="~~WIFION_OFF~">
 
 	<input type="text" style="display:none" name="apssid" id="apssid" size="20" maxlength="32" value="~~AP_SSID~">
-	<!--script language="JavaScript">
+	<script language="JavaScript">
 	function myrefresh()
 	{
 		window.location.href="map";
 	}
 	setTimeout('myrefresh()',7000); //指定1秒刷新一次
-	</script-->
+	</script>
 </body>
 
 

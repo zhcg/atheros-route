@@ -86,6 +86,7 @@ function initValue()
 	switch_wds();
 	document.getElementById("gifshow").style.visibility = "hidden";
 	document.getElementById("gifshow").style.display = "none";
+	hidekeyf();
 }
 function checkInjection(str)
 {
@@ -142,6 +143,7 @@ function CheckWirelessValue()
 	//	return false;
 	//}
 	waitgifshow();
+	document.wizard_form.INDEX.disabled = true;
 	document.getElementById('WIRRE').click();
 	return true;
 }
@@ -151,15 +153,15 @@ function reloadd()
 }
 function showpwd()
 {
- 
- if(document.getElementById("pwd").type=="password"){
-   var pass = document.getElementById("pwd").value;
-   document.getElementById("pwdinput").innerHTML='<input type="text" name="PSK_KEY_2" id="pwd" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
-  }
-  else
-  {
-   var pass = document.getElementById("pwd").value;
-   document.getElementById("pwdinput").innerHTML='<input type="password" name="PSK_KEY_2" id="pwd" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
+    var pass = document.getElementById("pwd").value;
+	
+	if(document.getElementById("cccc").checked == true)
+	{
+		document.getElementById("pwdinput").innerHTML='<input type="text" name="PSK_KEY_2" id="pwd" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
+	}
+	else
+	{
+		document.getElementById("pwdinput").innerHTML='<input type="password" name="PSK_KEY_2" id="pwd" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
    }
  }
 function  WIFSwitch()
@@ -198,7 +200,7 @@ function  WIFSwitch()
 		document.getElementById("tt2").style.visibility = "visible";
 		document.getElementById("tt2").style.display = style_display_on();
 		document.wizard_form.PSK_KEY_2.disabled = false;
-		document.getElementById("wrpass").value="";
+		document.getElementById("pwd").value="";
 	}
 }
 function refreshwds()
@@ -261,6 +263,21 @@ function switch_wds()
 		document.getElementById("dwsset5").style.display = "none";
 	}
 }
+function hidekeyf()
+{
+	if((document.getElementById("AP_SECMODE_2").value == "WPA")&&(document.wizard_form.WDSON_OFF[0].checked == true))
+	{
+		document.getElementById("tt2").style.visibility = "visible";
+		document.getElementById("tt2").style.display = style_display_on();
+		document.wizard_form.PSK_KEY_2.disabled = false;
+	}
+	else
+	{
+		document.getElementById("tt2").style.visibility = "hidden";
+		document.getElementById("tt2").style.display = "none";
+		document.wizard_form.PSK_KEY_2.disabled = true;
+	}
+}
 </script>
 
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
@@ -298,7 +315,7 @@ function switch_wds()
 </tr>
 <tr id="tt2">
   <td class="head" id="R_pword"></td>
-  <td><span id="pwdinput"><input type="password" id="pwd" name="PSK_KEY_2" maxlength="32" size="32" class="handaer_text_content" value="~~PSK_KEY_2~" /></span><input type="checkbox" onClick="showpwd()"/><span id="showp"></span></td>
+  <td><span id="pwdinput"><input type="password" id="pwd" name="PSK_KEY_2" maxlength="32" size="32" class="handaer_text_content" value="~~PSK_KEY_2~" /></span><input type="checkbox" id="cccc" onClick="showpwd()"/><span id="showp"></span></td>
 </tr>
 <tr id="dwsset3">
     <td id="Wlisttitle1"></td>

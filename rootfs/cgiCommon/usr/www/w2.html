@@ -22,6 +22,11 @@ function style_display_on()
 		return "table-row";
 	}
 }
+function widget_hide	(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
+function widget_display	(widgetID){document.getElementById(widgetID).style.visibility = "visible";document.getElementById(widgetID).style.display = style_display_on();}
+
+function widget_enable	(widgetID){document.getElementById(widgetID).disabled = false;}
+function widget_disable	(widgetID){document.getElementById(widgetID).disabled = true;}
 function butwork(zhi1,zhi2,zhi3,zhi4)
 {
 	if(zhi1 == "false")
@@ -205,9 +210,13 @@ function disableWanSettings()
 	document.wizard_form.PPPOE_USER.disabled = true;
 	document.wizard_form.PPPOE_PWD.disabled = true;
 	document.wizard_form.PPPOE_PWD2.disabled = true;
-	document.wizard_form.pppoeOPMode.disabled = true;
-	document.wizard_form.pppoeRedialPeriod.disabled = true;
-	document.wizard_form.pppoeIdleTime.disabled = true;
+	document.wizard_form.PPPOE_MODE.disabled = true;
+	document.wizard_form.PPPOE_DEMAND.disabled = true;
+	document.wizard_form.PPPOE_MANUAL.disabled = true;
+	document.wizard_form.PPPOE_TIMING_BH.disabled = true;
+	document.wizard_form.PPPOE_TIMING_BM.disabled = true;
+	document.wizard_form.PPPOE_TIMING_EH.disabled = true;
+	document.wizard_form.PPPOE_TIMING_EM.disabled = true;
 	document.wizard_form.l2tpServer.disabled = true;
 	document.wizard_form.l2tpUser.disabled = true;
 	document.wizard_form.l2tpPass.disabled = true;
@@ -254,7 +263,7 @@ function connectionTypeSwitch()
 		}
 		else 
 		{
-			document.wizard_form.pppoeOPMode.disabled = false;
+			document.wizard_form.PPPOE_MODE.disabled = false;
 		}
 		pppoeOPModeSwitch();
 	}
@@ -333,8 +342,19 @@ function pptpModeSwitch()
 
 function pppoeOPModeSwitch()
 {
-	document.wizard_form.pppoeRedialPeriod.disabled = true;
-	document.wizard_form.pppoeIdleTime.disabled = true;
+	document.wizard_form.PPPOE_DEMAND.disabled = true;
+	document.wizard_form.PPPOE_MANUAL.disabled = true;
+	
+	document.wizard_form.PPPOE_TIMING_BH.disabled = true;
+	document.wizard_form.PPPOE_TIMING_BM.disabled = true;
+	document.wizard_form.PPPOE_TIMING_EH.disabled = true;
+	document.wizard_form.PPPOE_TIMING_EM.disabled = true;
+	
+	widget_hide("div_pppoe_opmode_setting");	
+	widget_hide("hide1");	
+	widget_hide("hide2");	
+	widget_hide("hide3");
+	
 	if (pppoecdb == "1")
 	{
 		document.getElementById("div_pppoe_opmode_setting").style.visibility = "hidden";
@@ -342,10 +362,27 @@ function pppoeOPModeSwitch()
 	}
 	else
 	{
-		if (document.wizard_form.pppoeOPMode.selectedIndex == 0) 
-			document.wizard_form.pppoeRedialPeriod.disabled = false;
-		else if (document.wizard_form.pppoeOPMode.selectedIndex == 1)
-			document.wizard_form.pppoeIdleTime.disabled = false;
+		if (document.wizard_form.PPPOE_MODE.selectedIndex == 1) 
+		{
+			widget_display("div_pppoe_opmode_setting");	
+			widget_display("hide1");	
+			document.wizard_form.PPPOE_DEMAND.disabled = false;
+		}
+		else if (document.wizard_form.PPPOE_MODE.selectedIndex == 2)
+		{
+			widget_display("div_pppoe_opmode_setting");	
+			widget_display("hide2");	
+			document.wizard_form.PPPOE_MANUAL.disabled = false;
+		}
+		else if (document.wizard_form.PPPOE_MODE.selectedIndex == 3)
+		{
+			widget_display("div_pppoe_opmode_setting");	
+			widget_display("hide3");	
+			document.wizard_form.PPPOE_TIMING_BH.disabled = false;
+			document.wizard_form.PPPOE_TIMING_BM.disabled = false;
+			document.wizard_form.PPPOE_TIMING_EH.disabled = false;
+			document.wizard_form.PPPOE_TIMING_EM.disabled = false;
+		}
 	}
 }
 
@@ -488,6 +525,19 @@ function checkIpAddr(field, ismask)
 
 	return true;
 }
+function checktimerange(value,min,max)
+{
+	var i = parseInt(value);
+	if (isNaN(i))
+	{
+		return false;
+	}
+	else if (i > max || i < min)
+	{
+		return false;
+	}
+	return true;
+}
 
 function CheckWanValue()
 {
@@ -561,23 +611,52 @@ function CheckWanValue()
 		}
 		if (pppoecdb != "1")
 		{
-			if (document.wizard_form.pppoeOPMode.selectedIndex == 0)
+			if (document.wizard_form.PPPOE_MODE.selectedIndex == 1)
 			{
-				if (document.wizard_form.pppoeRedialPeriod.value == "")
+				if (document.wizard_form.PPPOE_DEMAND.value == "")
 				{
 					alert(_("err sRP"));
-					document.wizard_form.pppoeRedialPeriod.select();
+					document.wizard_form.PPPOE_DEMAND.select();
 					return false;
 				}
 			}
-			else if (document.wizard_form.pppoeOPMode.selectedIndex == 1);
+			else if (document.wizard_form.PPPOE_MODE.selectedIndex == 2)
 			{
-				if (document.wizard_form.pppoeIdleTime.value == "")
+				if (document.wizard_form.PPPOE_MANUAL.value == "")
 				{
 					alert(_("err sIT"));
-					document.wizard_form.pppoeIdleTime.select();
+					document.wizard_form.PPPOE_MANUAL.select();
 					return false;
 				}
+			}
+			else if (document.wizard_form.PPPOE_MODE.selectedIndex == 3)
+			{
+				if (checktimerange(document.wizard_form.PPPOE_TIMING_BH.value,0,24)==false)
+				{
+					alert(_("err stiming"));
+					document.wizard_form.PPPOE_TIMING_BH.select();
+					return false;
+				}
+				if (checktimerange(document.wizard_form.PPPOE_TIMING_BM.value,0,59)==false)
+				{
+					alert(_("err stiming"));
+					document.wizard_form.PPPOE_TIMING_BM.select();
+					return false;
+				}
+				if (checktimerange(document.wizard_form.PPPOE_TIMING_EH.value,0,24)==false)
+				{
+					alert(_("err stiming"));
+					document.wizard_form.PPPOE_TIMING_EH.select();
+					return false;
+				}
+				if (checktimerange(document.wizard_form.PPPOE_TIMING_EM.value,0,59)==false)
+				{
+					alert(_("err stiming"));
+					document.wizard_form.PPPOE_TIMING_EM.select();
+					return false;
+				}
+				
+				
 			}
 		}
 	}
@@ -860,6 +939,13 @@ function initTranslation()
 	e = document.getElementById("settingwaiting");
 	e.innerHTML = _("admw settingwaiting");	
 	
+	
+	e = document.getElementById("wPppoeTiming");
+	e.innerHTML = _("admw opmode timing");
+	e = document.getElementById("PPPOE_TIMING");
+	e.innerHTML = _("admw PPPOE_TIMING");
+
+	
 }
 function initValue()
 {
@@ -964,6 +1050,7 @@ function advance()
 		document.getElementById("div_pppoe_opmode_setting").style.visibility = "visible";
 		document.getElementById("div_pppoe_opmode_setting").style.display = style_display_on();
 		showoadv = 1;
+		pppoeOPModeSwitch();
 	}
 	else
 	{
@@ -976,34 +1063,43 @@ function advance()
 }
 function pppshowpwd()
 {
-  if(document.getElementById("ppppass").type=="password"){
    var pass = document.getElementById("ppppass").value;
-   document.getElementById("ppppwdinput").innerHTML='<input type="text" name="PPPOE_PWD" id="ppppass" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
-  }else{
-   var pass = document.getElementById("ppppass").value;
-   document.getElementById("ppppwdinput").innerHTML='<input type="password" name="PPPOE_PWD" id="ppppass" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
-   }
- }
+   
+	if(document.getElementById("aaaa").checked == true)
+	{
+		document.getElementById("ppppwdinput").innerHTML='<input type="text" name="PPPOE_PWD" id="ppppass" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
+	}
+	else
+	{
+		document.getElementById("ppppwdinput").innerHTML='<input type="password" name="PPPOE_PWD" id="ppppass" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
+	}
+}
  function l2tpshowpwd()
 {
-  if(document.getElementById("l2tppass").type=="password"){
-   var pass = document.getElementById("l2tppass").value;
-   document.getElementById("pl2tppwdinput").innerHTML='<input type="text" name="l2tpPass" id="l2tppass" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
-  }else{
-   var pass = document.getElementById("l2tppass").value;
-   document.getElementById("pl2tppwdinput").innerHTML='<input type="password" name="l2tpPass" id="l2tppass" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
-   }
- }
+	var pass = document.getElementById("l2tppass").value;
+
+	if(document.getElementById("bbbb").checked == true)
+	{
+		document.getElementById("pl2tppwdinput").innerHTML='<input type="text" name="l2tpPass" id="l2tppass" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
+	}
+	else
+	{
+		document.getElementById("pl2tppwdinput").innerHTML='<input type="password" name="l2tpPass" id="l2tppass" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
+	}
+}
  function p2tpshowpwd()
 {
-  if(document.getElementById("p2tppass").type=="password"){
-   var pass = document.getElementById("p2tppass").value;
-   document.getElementById("p2tppwdinput").innerHTML='<input type="text" name="pptpPass" id="p2tppass" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
-  }else{
-   var pass = document.getElementById("p2tppass").value;
-   document.getElementById("p2tppwdinput").innerHTML='<input type="password" name="pptpPass" id="p2tppass" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
-   }
- }
+	var pass = document.getElementById("p2tppass").value;
+	
+	if(document.getElementById("cccc").checked == true)
+	{
+		document.getElementById("p2tppwdinput").innerHTML='<input type="text" name="pptpPass" id="p2tppass" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
+	}
+	else
+	{
+		document.getElementById("p2tppwdinput").innerHTML='<input type="password" name="pptpPass" id="p2tppass" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
+	}
+}
  function waitgifshow()
 {
 	hideAllTables();
@@ -1086,7 +1182,7 @@ function workoutgw()
   <td>&nbsp; &nbsp;</td>
   <td id="PPPOEdisc"></td>
 </tr>
-<tr>
+<tr  style="display:none">
   <td>&nbsp; &nbsp;</td>
   <td><input id="otherbutton" type="button" value="其他" class="handaer_small_button" onClick="others()" /></td>
 </tr>
@@ -1156,7 +1252,7 @@ function workoutgw()
 </tr>
 <tr>
   <td class="head" id="pword"></td>
-  <td><span id="ppppwdinput"><input type="password" id="ppppass" name="PPPOE_PWD" class="handaer_text_content" maxlength="32" size="32" value="~~PPPOE_PWD~"/></span><input type="checkbox" onClick="pppshowpwd()"/><span id="pppshowp"></span></td>
+  <td><span id="ppppwdinput"><input type="password" id="ppppass" name="PPPOE_PWD" class="handaer_text_content" maxlength="32" size="32" value="~~PPPOE_PWD~"/></span><input type="checkbox" id="aaaa" onClick="pppshowpwd()"/><span id="pppshowp"></span></td>
 </tr>
 <tr>
   <td class="head" id="vpword"></td>
@@ -1169,18 +1265,24 @@ function workoutgw()
 <tr id="div_pppoe_opmode" style="display:none">
   <td class="head" rowspan="2" id="opmope"></td>
   <td>
-    <select name="pppoeOPMode" size="1" onChange="pppoeOPModeSwitch()">
-      <option value="KeepAlive" id="wPppoeKeepAlive"></option>
-      <option value="OnDemand" id="wPppoeOnDemand"></option>
-      <option value="Manual" id="wPppoeManual"></option>
+    <select name="PPPOE_MODE" size="1" onChange="pppoeOPModeSwitch()">
+      <option ~sPPPOE_MODE:auto~ value="auto" id="wPppoeKeepAlive"></option>
+      <option ~sPPPOE_MODE:demand~ value="demand" id="wPppoeOnDemand"></option>
+      <option ~sPPPOE_MODE:manual~ value="manual" id="wPppoeManual"></option>
+      <option ~sPPPOE_MODE:timing~ value="timing" id="wPppoeTiming"></option>
     </select>
   </td>
 </tr>
 <tr id="div_pppoe_opmode_setting" style="display:none">
-  	<td><span id="PPPOE_KAM"></span><input type="text" name="pppoeRedialPeriod" maxlength="5" size="3" value="60"><span id="PPPOE_seconds"></span>
-	<br />
-  	<span id="PPPOE_ODM"></span><input type="text" name="pppoeIdleTime" maxlength="3" size="2" value="5"><span id="PPPOE_minutes"></span>
-	</td>
+<td>
+	<span id="hide1"><span id="PPPOE_KAM"></span><input type="text" name="PPPOE_DEMAND" maxlength="5" size="3" value="60"/><span id="PPPOE_seconds"></span></br></span>
+  	<span id="hide2"><span id="PPPOE_ODM"></span><input type="text" name="PPPOE_MANUAL" maxlength="3" size="2" value="5"/><span id="PPPOE_minutes"></span></br></span>
+	<span id="hide3"><span id="PPPOE_TIMING"></span>
+	<input type="text" name="PPPOE_TIMING_BH" maxlength="3" size="2" value=""/>:
+	<input type="text" name="PPPOE_TIMING_BM" maxlength="3" size="2" value=""/>-
+	<input type="text" name="PPPOE_TIMING_EH" maxlength="3" size="2" value=""/>:
+	<input type="text" name="PPPOE_TIMING_EM" maxlength="3" size="2" value=""/></span>
+</td>
 </tr>
 </table>
 
@@ -1199,7 +1301,7 @@ function workoutgw()
 </tr>
 <tr>
   <td class="head" id="L2TPpwd"></td>
-  <td><span id="pl2tppwdinput"><input type="password" id="l2tppass" name="l2tpPass"  class="handaer_text_content" maxlength="32" size="32" value="~~l2tpPass~"/></span><input type="checkbox" onClick="l2tpshowpwd()"/><span id="l2tpshowp"></span></td>
+  <td><span id="pl2tppwdinput"><input type="password" id="l2tppass" name="l2tpPass"  class="handaer_text_content" maxlength="32" size="32" value="~~l2tpPass~"/></span><input type="checkbox" id="bbbb" onClick="l2tpshowpwd()"/><span id="l2tpshowp"></span></td>
 </tr>
 <tr>
   <td class="head" id="L2TPAM"></td>
@@ -1216,13 +1318,11 @@ function workoutgw()
 </tr>
 <tr id="div_l2tpNetmask">
   <td class="head" id="L2TPSM"></td>
-  <td><input name="l2tpNetmask"  class="handaer_text_content" maxlength=15 size=15 value="~~l2tpNetmask~">
-  </td>
+  <td><input name="l2tpNetmask"  class="handaer_text_content" maxlength=15 size=15 value="~~l2tpNetmask~"></td>
 </tr>
 <tr id="div_l2tpGateway">
   <td class="head" id="L2TPDG"></td>
-  <td><input name="l2tpGateway"  class="handaer_text_content" maxlength=15 size=15 value="~~l2tpGateway~">
-  </td>
+  <td><input name="l2tpGateway"  class="handaer_text_content" maxlength=15 size=15 value="~~l2tpGateway~"></td>
 </tr>
 <tr>
   <td class="head" rowspan="3" id="L2TPOM"></td>
@@ -1267,7 +1367,7 @@ function workoutgw()
 </tr>
 <tr>
   <td class="head" id="PPpwd"></td>
-  <td><span id="p2tppwdinput"><input type="password" id="p2tppass" name="pptpPass"  class="handaer_text_content" maxlength="32" size="32" value="~~pptpPass~" /></span><input type="checkbox" onClick="p2tpshowpwd()"/><span id="p2tpshowp"></span></td>
+  <td><span id="p2tppwdinput"><input type="password" id="p2tppass" name="pptpPass"  class="handaer_text_content" maxlength="32" size="32" value="~~pptpPass~" /></span><input type="checkbox" id="cccc" onClick="p2tpshowpwd()"/><span id="p2tpshowp"></span></td>
 </tr>
 <tr>
   <td class="head" id="PPAM"></td>
@@ -1284,13 +1384,11 @@ function workoutgw()
 </tr>
 <tr id="div_pptpNetmask">
   <td class="head" id="PPSM"></td>
-  <td><input name="pptpNetmask"  class="handaer_text_content" maxlength=15 size=15 value="~~pptpNetmask~">
-  </td>
+  <td><input name="pptpNetmask"  class="handaer_text_content" maxlength=15 size=15 value="~~pptpNetmask~"></td>
 </tr>
 <tr id="div_pptpGateway">
   <td class="head" id="PPDG"></td>
-  <td><input name="pptpGateway" class="handaer_text_content" maxlength=15 size=15 value="~~pptpGateway~">
-  </td>
+  <td><input name="pptpGateway" class="handaer_text_content" maxlength=15 size=15 value="~~pptpGateway~"></td>
 </tr>
 <tr>
   <td class="head" rowspan="3" id="PPOM"></td>

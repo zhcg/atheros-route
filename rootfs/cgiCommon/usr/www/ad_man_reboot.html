@@ -1,0 +1,49 @@
+﻿<html>
+<head>
+<title></title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="/lang/b28n.js"></script>
+<script>
+function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
+function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
+
+function initTranslation()
+{
+	trans_inner("title","man reboottitle");
+	trans_inner("des","man rebootdes");
+	trans_value("defaultset","man reboot");
+}
+function init()
+{
+	Butterlate.setTextDomain("man");
+	initTranslation();
+}
+
+function factoryset()
+{
+	if(confirm(_("man sysreboot")))
+	{
+		document.getElementById('REBOOT').click();
+	}	
+
+}
+
+</script>
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+</head>
+
+<body onload=init();>
+<div class="handaer_main">
+<table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
+<h1 id="title"></h1>
+<form method="post" name="wizard_form">  
+<h2 id="des"></h2>  
+	<input type="button" name="defaultset" id="defaultset" class="handaer_input"  onclick="factoryset();">
+    <input type="submit" name="REBOOT" id="REBOOT" style="display:none" value="REBOOT">
+</form></td></tr>
+</table>
+</div>
+
+</body>
+</html>

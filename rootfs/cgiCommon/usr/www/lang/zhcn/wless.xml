@@ -1,0 +1,48 @@
+<po>
+  <message msgid="wless bAPPLY" msgstr="应用" />
+  <message msgid="wless bCANCEL" msgstr="取消" />
+  <message msgid="wless enable" msgstr="启用" />
+  <message msgid="wless disable" msgstr="停用" />
+  <message msgid="wless MOD" msgstr="修改" />
+  <message msgid="wless DEL" msgstr="删除" />
+  <message msgid="wless ADD" msgstr="添加" />
+  <message msgid="wless onbutton" msgstr="启用" />
+  <message msgid="wless offbutton" msgstr="禁用" />  
+  <message msgid="wless bSAVE" msgstr="保存" />  
+
+  <message msgid="wless title" msgstr="无线高级设置" />  
+  <message msgid="wless des" msgstr="修改配置无线高级参数" />  
+  <message msgid="wless t1_title" msgstr="无线高级设置" />  
+  <message msgid="wless ti_pow" msgstr="调整发射功率" />  
+  <message msgid="wless t1_high" msgstr="高" />  
+  <message msgid="wless t1_mid" msgstr="中" />  
+  <message msgid="wless t1_low" msgstr="低" />  
+  <message msgid="wless t1_SSIDTime" msgstr="广播SSID时间" />  
+  <message msgid="wless t1_RC" msgstr="RTS/CTS限值" />  
+  <message msgid="wless t1_Pitch" msgstr="分片值" />  
+  <message msgid="wless t1_head" msgstr="报头模式" />  
+  <message msgid="wless t1_long" msgstr="长" />  
+  <message msgid="wless t1_shot" msgstr="短" />  
+
+  <message msgid="wless wifititle" msgstr="基本设置" />
+
+  <message msgid="err MAC empty" msgstr="MAC地址不能为空" />
+  <message msgid="err IP empty" msgstr="IP地址不能为空" />
+  <message msgid="err sub empty" msgstr="掩码地址不能为空" />
+  <message msgid="err user empty" msgstr="用户名不能为空" />
+  <message msgid="err pwd empty" msgstr="密码不能为空" />
+  <message msgid="err time empty" msgstr="时间不能为空" />
+  
+  <message msgid="err MAC format" msgstr="MAC格式错误" />
+  <message msgid="err IP format" msgstr="IP地址格式错误" />
+  <message msgid="err sub format" msgstr="掩码格式错误" />
+  
+  <message msgid="err format" msgstr="参数格式错误" />
+  <message msgid="err range" msgstr="参数范围错误" />
+
+  <message msgid="err SSID empty" msgstr="请输入网络名称（SSID）" />
+<message msgid="err SSID length" msgstr="SSID长度错误" />
+<message msgid="err key" msgstr="请输入密钥" />
+<message msgid="err keylen" msgstr="密钥长度必须是8-12位" />
+<message msgid="err keychar" msgstr="密码中存在无效字符" />
+ </po>

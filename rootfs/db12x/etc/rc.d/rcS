@@ -109,7 +109,7 @@ echo 5 > /proc/sys/vm/dirty_background_ratio
 ## Check for Auto AP Start
 ##
 
-if [ "${WLAN_ON_BOOT}" = "y" ]; then
+if [ "${WLAN_ON_BOOT}" = "y" -a "${WDSON_OFF}" = "on" ]; then
     /etc/ath/apup
 fi
 
@@ -132,7 +132,9 @@ fi
 ## dhcp
 ##
 /etc/rc.d/rc.udhcpd
-/usr/sbin/udhcpd /etc/udhcpd.conf
+if [ "${WDSON_OFF}" != "on" ]; then
+	/usr/sbin/udhcpd /etc/udhcpd.conf
+fi
 ##
 ## add si3000 and spi node
 ##
@@ -153,7 +155,7 @@ insmod /lib/modules/2.6.31/stm32/ath_spi_stm32.ko
 
 mkdir -p /var/terminal_init/log
 
-
+/usr/bin/version_check &
 spi_rt_main & 
 terminal_dev_register &
 swipe_card &

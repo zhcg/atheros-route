@@ -1,0 +1,955 @@
+<html>
+<head>
+<title>Wide Area Network (WAN) Settings</title>
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<script type="text/javascript" src="/lang/b28n.js"></script>
+<script language="JavaScript" type="text/javascript">
+function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "table-row";}}
+function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
+function widget_display(widgetID){document.getElementById(widgetID).style.visibility = "visible";document.getElementById(widgetID).style.display = style_display_on();}
+function widget_enable(widgetID){document.getElementById(widgetID).disabled = false;}
+function widget_disable(widgetID){document.getElementById(widgetID).disabled = true;}
+
+function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
+function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
+function button_commit(buttonID){document.getElementById(buttonID).click();}
+
+function connectionTypeSwitch()
+{
+	widget_hide("static_table");
+	widget_hide("dhcp_table");
+	widget_hide("pppoe_table");
+	widget_hide("l2tp_table");
+	widget_hide("pptp_table");
+
+	if (document.wanCfg.WAN_MODE.options.selectedIndex == 0) 
+		widget_display("static_table");
+
+	else if (document.wanCfg.WAN_MODE.options.selectedIndex == 1)
+	{
+		widget_display("dhcp_table");
+		widget_hide("dhcpname");
+	}
+	else if (document.wanCfg.WAN_MODE.options.selectedIndex == 2) 
+	{
+		widget_display("pppoe_table");
+		pppoeOPModeSwitch();
+	}
+	else if (document.wanCfg.WAN_MODE.options.selectedIndex == 3) 
+	{
+		widget_display("l2tp_table");
+		l2tpModeSwitch();
+		l2tpOPModeSwitch();
+	}
+	else if (document.wanCfg.WAN_MODE.options.selectedIndex == 4) 
+	{
+		widget_display("pptp_table");
+		pptpModeSwitch();
+		pptpOPModeSwitch();
+	}
+	else 
+	{
+		widget_display("static_table");
+	}
+}
+
+function l2tpModeSwitch()
+{
+	if (document.wanCfg.l2tpMode.selectedIndex == 0) {
+		widget_display("l2tpIp");
+		widget_display("l2tpNetmask");
+		widget_display("l2tpGateway");
+	}
+	else 
+	{
+		widget_hide("l2tpIp");
+		widget_hide("l2tpNetmask");
+		widget_hide("l2tpGateway");
+	}
+}
+
+function pptpModeSwitch()
+{
+	if (document.wanCfg.pptpMode.selectedIndex == 0) {
+		widget_display("pptpIp");
+		widget_display("pptpNetmask");
+		widget_display("pptpGateway");
+	}
+	else
+	{
+		widget_hide("pptpIp");
+		widget_hide("pptpNetmask");
+		widget_hide("pptpGateway");
+	}
+}
+
+function pppoeOPModeSwitch()
+{
+	document.wanCfg.PPPOE_DEMAND.disabled = true;
+	document.wanCfg.PPPOE_MANUAL.disabled = true;
+	
+	document.wanCfg.PPPOE_TIMING_BH.disabled = true;
+	document.wanCfg.PPPOE_TIMING_BM.disabled = true;
+	document.wanCfg.PPPOE_TIMING_EH.disabled = true;
+	document.wanCfg.PPPOE_TIMING_EM.disabled = true;
+	widget_hide("hideall");	
+	widget_hide("hide1");	
+	widget_hide("hide2");	
+	widget_hide("hide3");	
+	if (document.wanCfg.PPPOE_MODE.selectedIndex == 1) 
+	{
+		widget_display("hideall");	
+		widget_display("hide1");	
+		document.wanCfg.PPPOE_DEMAND.disabled = false;
+	}
+	else if (document.wanCfg.PPPOE_MODE.selectedIndex == 2)
+	{
+		widget_display("hideall");	
+		widget_display("hide2");	
+		document.wanCfg.PPPOE_MANUAL.disabled = false;
+	}
+	else if (document.wanCfg.PPPOE_MODE.selectedIndex == 3)
+	{
+		widget_display("hideall");	
+		widget_display("hide3");	
+		document.wanCfg.PPPOE_TIMING_BH.disabled = false;
+		document.wanCfg.PPPOE_TIMING_BM.disabled = false;
+		document.wanCfg.PPPOE_TIMING_EH.disabled = false;
+		document.wanCfg.PPPOE_TIMING_EM.disabled = false;
+	}
+}
+
+function l2tpOPModeSwitch()
+{
+	document.wanCfg.l2tpRedialPeriod.disabled = true;
+	// document.wanCfg.l2tpIdleTime.disabled = true;
+	if (document.wanCfg.l2tpOPMode.options.selectedIndex == 0) 
+		document.wanCfg.l2tpRedialPeriod.disabled = false;
+	/*
+	else if (document.wanCfg.l2tpOPMode.options.selectedIndex == 1)
+		document.wanCfg.l2tpIdleTime.disabled = false;
+	*/
+}
+
+function pptpOPModeSwitch()
+{
+	document.wanCfg.pptpRedialPeriod.disabled = true;
+	// document.wanCfg.pptpIdleTime.disabled = true;
+	if (document.wanCfg.pptpOPMode.options.selectedIndex == 0) 
+		document.wanCfg.pptpRedialPeriod.disabled = false;
+	/*
+	else if (document.wanCfg.pptpOPMode.options.selectedIndex == 1)
+		document.wanCfg.pptpIdleTime.disabled = false;
+	*/
+}
+
+/*
+function w3GOPModeSwitch()
+{
+	document.wanCfg.Dev3G.disabled = true;
+	if (document.wanCfg.OPMode3G.options.selectedIndex == 0) 
+		document.wanCfg.Dev3G.disabled = true;
+	else if (document.wanCfg.OPMode3G.options.selectedIndex == 1)
+		document.wanCfg.Dev3G.disabled = false;
+}
+*/
+
+function atoi(str, num)
+{
+	i = 1;
+	if (num != 1) {
+		while (i != num && str.length != 0) {
+			if (str.charAt(0) == '.') {
+				i++;
+			}
+			str = str.substring(1);
+		}
+		if (i != num)
+			return -1;
+	}
+
+	for (i=0; i<str.length; i++) {
+		if (str.charAt(i) == '.') {
+			str = str.substring(0, i);
+			break;
+		}
+	}
+	if (str.length == 0)
+		return -1;
+	return parseInt(str, 10);
+}
+
+function checkRange(str, num, min, max)
+{
+	d = atoi(str, num);
+	if (d > max || d < min)
+		return false;
+	return true;
+}
+
+function isAllNum(str)
+{
+	for (var i=0; i<str.length; i++) {
+		if ((str.charAt(i) >= '0' && str.charAt(i) <= '9') || (str.charAt(i) == '.' ))
+			continue;
+		return 0;
+	}
+	return 1;
+}
+
+function checkIpAddr(field, ismask)
+{
+	if (field.value == "") 
+	{
+		if(ismask)
+		{
+			alert(_("err sub empty"));
+		}
+		else
+		{	
+			alert(_("err IP empty"));
+		}
+		field.value = field.defaultValue;
+		field.focus();
+		return false;
+	}
+
+	if (isAllNum(field.value) == 0) 
+	{
+		alert(_("err format"));
+		field.value = field.defaultValue;
+		field.focus();
+		return false;
+	}
+
+	if (ismask)
+	{
+		if ((!checkRange(field.value, 1, 0, 256)) ||
+				(!checkRange(field.value, 2, 0, 256)) ||
+				(!checkRange(field.value, 3, 0, 256)) ||
+				(!checkRange(field.value, 4, 0, 256)))
+		{
+			alert(_("err sub format"));
+			field.value = field.defaultValue;
+			field.focus();
+			return false;
+		}
+	}
+	else 
+	{
+		if ((!checkRange(field.value, 1, 0, 255)) ||
+				(!checkRange(field.value, 2, 0, 255)) ||
+				(!checkRange(field.value, 3, 0, 255)) ||
+				(!checkRange(field.value, 4, 1, 254)))
+		{
+			alert(_("err IP format"));
+			field.value = field.defaultValue;
+			field.focus();
+			return false;
+		}
+	}
+	{
+		var exp=/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
+		var reg = field.value.match(exp);
+		if(reg==null)
+		{
+			if(ismask)
+			{
+				alert(_("err sub format"));
+			}
+			else
+			{	
+				alert(_("err IP format"));
+			}
+			field.value = field.defaultValue;
+			field.focus();
+			return false;
+		}
+	}
+
+	return true;
+}
+
+function CheckValue()
+{
+	if (document.wanCfg.WAN_MODE.selectedIndex == 0) //STATIC
+	{      
+		if (!checkIpAddr(document.wanCfg.WAN_IPADDR, false))
+			return false;
+		{
+			var myString1=document.wanCfg.WAN_IPADDR.value;
+			var myString2=document.wanCfg.AP_locatIP.value;
+			var a = myString1.lastIndexOf(".");
+			var b = myString2.lastIndexOf(".");
+
+			var s, ss;
+	
+			s = myString1.substr(0, a);
+			ss = myString2.substr(0, b); 
+			if(s == ss)
+			{
+				alert(_("err IP error"));
+				return false;
+			}
+			
+		}
+		if (!checkIpAddr(document.wanCfg.WAN_NETMASK, true))
+			return false;
+		if (document.wanCfg.IPGW.value != "")
+			if (!checkIpAddr(document.wanCfg.IPGW, false))
+				return false;
+		if (document.wanCfg.PRIDNS.value != "")
+			if (!checkIpAddr(document.wanCfg.PRIDNS, false))
+				return false;
+		if (document.wanCfg.SECDNS.value != "")
+			if (!checkIpAddr(document.wanCfg.SECDNS, false))
+				return false;
+	
+		button_commit('STATIC');
+	}
+	else if (document.wanCfg.WAN_MODE.selectedIndex == 1) //DHCP
+	{ 
+		button_commit('DHCP');
+	}
+	else if (document.wanCfg.WAN_MODE.selectedIndex == 2) //PPPOE
+	{ 
+		if (document.wanCfg.PPPOE_USER.value.length == 0)
+		{
+			alert(_("err name empty"));
+			document.wanCfg.PPPOE_USER.select();
+			return false;
+		}
+		if (document.wanCfg.PPPOE_PWD.value.length == 0)
+		{
+			alert(_("err pwd empty"));
+			document.wanCfg.PPPOE_PWD.select();
+			return false;
+		}
+		if (document.wanCfg.PPPOE_PWD.value != document.wanCfg.PPPOE_PWD2.value) 
+		{
+			alert(_("err pwd mismatch"));
+			return false;
+		}
+		if (document.wanCfg.PPPOE_MODE.selectedIndex == 1)
+		{
+			if (document.wanCfg.PPPOE_DEMAND.value == "")
+			{
+				alert(_("err sRP"));
+				document.wanCfg.PPPOE_DEMAND.select();
+				return false;
+			}
+		}
+		else if (document.wanCfg.PPPOE_MODE.selectedIndex == 2)
+		{
+			if (document.wanCfg.PPPOE_MANUAL.value == "")
+			{
+				alert(_("err sIT"));
+				document.wanCfg.PPPOE_MANUAL.select();
+				return false;
+			}
+		}
+		else if (document.wanCfg.PPPOE_MODE.selectedIndex == 3)
+		{
+			if (checktimerange(document.wanCfg.PPPOE_TIMING_BH.value,0,24)==false)
+			{
+				alert(_("err stiming"));
+				document.wanCfg.PPPOE_TIMING_BH.select();
+				return false;
+			}
+			if (checktimerange(document.wanCfg.PPPOE_TIMING_BM.value,0,59)==false)
+			{
+				alert(_("err stiming"));
+				document.wanCfg.PPPOE_TIMING_BM.select();
+				return false;
+			}
+			if (checktimerange(document.wanCfg.PPPOE_TIMING_EH.value,0,24)==false)
+			{
+				alert(_("err stiming"));
+				document.wanCfg.PPPOE_TIMING_EH.select();
+				return false;
+			}
+			if (checktimerange(document.wanCfg.PPPOE_TIMING_EM.value,0,59)==false)
+			{
+				alert(_("err stiming"));
+				document.wanCfg.PPPOE_TIMING_EM.select();
+				return false;
+			}
+		}
+		button_commit('PPPOE');
+	}
+	else if (document.wanCfg.WAN_MODE.selectedIndex == 3) //L2TP
+	{ 
+		if (document.wanCfg.l2tpMode.selectedIndex == 0) 
+		{
+			if (!checkIpAddr(document.wanCfg.l2tpIp, false))
+				return false;
+			if (!checkIpAddr(document.wanCfg.l2tpNetmask, true))
+				return false;
+			if (!checkIpAddr(document.wanCfg.l2tpGateway, false))
+				return false;
+		}
+		if (document.wanCfg.l2tpOPMode.selectedIndex == 0)
+		{
+			if (document.wanCfg.l2tpRedialPeriod.value == "")
+			{
+				alert(_("err sRP"));
+				document.wanCfg.l2tpRedialPeriod.focus();
+				document.wanCfg.l2tpRedialPeriod.select();
+				return false;
+			}
+		}
+		/*
+		else if (document.wanCfg.l2tpOPMode.options.selectedIndex == 1)
+		{
+			if (document.wanCfg.l2tpIdleTime.value == "")
+			{
+				alert("Please specify Idle Time");
+				document.wanCfg.l2tpIdleTime.focus();
+				document.wanCfg.l2tpIdleTime.select();
+				return false;
+			}
+		}
+		*/
+		button_commit('L2TP');
+	}
+	else if (document.wanCfg.WAN_MODE.selectedIndex == 4) //PPTP
+	{ 
+		if (!checkIpAddr(document.wanCfg.pptpServer, false))
+			return false;
+		if (document.wanCfg.pptpMode.selectedIndex == 0) 
+		{
+			if (!checkIpAddr(document.wanCfg.pptpIp, false))
+				return false;
+			if (!checkIpAddr(document.wanCfg.pptpNetmask, true))
+				return false;
+			if (!checkIpAddr(document.wanCfg.pptpGateway, false))
+				return false;
+		}
+		if (document.wanCfg.pptpOPMode.options.selectedIndex == 0)
+		{
+			if (document.wanCfg.pptpRedialPeriod.value == "")
+			{
+				alert(_("err sRP"));
+				document.wanCfg.pptpRedialPeriod.focus();
+				document.wanCfg.pptpRedialPeriod.select();
+				return false;
+			}
+		}
+		/*
+		else if(document.wanCfg.pptpOPMode.options.selectedIndex == 1)
+		{
+			if (document.wanCfg.pptpIdleTime.value == "")
+			{
+				alert("Please specify Idle Time");
+				document.wanCfg.pptpIdleTime.focus();
+				document.wanCfg.pptpIdleTime.select();
+				return false;
+			}
+		}
+		*/
+		button_commit('PPTP');
+	}
+	else
+		return false;
+	return true;
+}
+ 
+function initTranslation()
+{
+	trans_inner("wTitle","wan title");
+	trans_inner("wIntroduction","wan introduction");
+
+	trans_inner("wConnectionType","wan connection type");
+	trans_inner("wConnTypeStatic","wan connection type static");
+	trans_inner("wConnTypeDhcp","wan connection type dhcp");
+	trans_inner("wConnTypePppoe","wan connection type pppoe");
+	//trans_inner("wConnTypeL2tp");
+	//e.innerHTML = _("wan connection type l2tp");
+	//trans_inner("wConnTypePptp");
+	//e.innerHTML = _("wan connection type pptp");
+
+	trans_inner("wStaticMode","wan static mode");
+	trans_inner("wStaticIp","inet ip");
+	trans_inner("wStaticNetmask","inet netmask");
+	trans_inner("wStaticGateway","inet gateway");
+	trans_inner("wStaticPriDns","inet pri dns");
+	trans_inner("wStaticSecDns","inet sec dns");
+
+	trans_inner("wDhcpMode","wan dhcp mode");
+	trans_inner("wDhcpHost","inet hostname");
+
+	trans_inner("wPppoeMode","wan pppoe mode");
+	trans_inner("wPppoeUser","inet user");
+	trans_inner("wPppoePassword","inet password");
+	trans_inner("wPppoePass2","inet pass2");
+	trans_inner("wPppoeOPMode","wan protocol opmode");
+	
+	trans_inner("wPppoeKeepAlive","wan protocol opmode keepalive");
+	trans_inner("wPppoeOnDemand","wan protocol opmode ondemand");
+	trans_inner("wPppoeManual","wan protocol opmode manual");
+	trans_inner("wPppoeTiming","wan protocol opmode timing");
+	
+
+	trans_inner("wL2tpMode","wan l2tp mode");
+	trans_inner("wL2tpServer","inet server");
+	trans_inner("wL2tpUser","inet user");
+	trans_inner("wL2tpPassword","inet password");
+	trans_inner("wL2tpAddrMode","wan address mode");
+	trans_inner("wL2tpAddrModeS","wan address mode static");
+	trans_inner("wL2tpAddrModeD","wan address mode dynamic");
+	trans_inner("wL2tpIp","inet ip");
+	trans_inner("wL2tpNetmask","inet netmask");
+	trans_inner("wL2tpGateway","inet gateway");
+	trans_inner("wL2tpOPMode","wan protocol opmode");
+	trans_inner("wL2tpKeepAlive","wan protocol opmode keepalive");
+
+	
+	trans_inner("wL2tpManual","wan protocol opmode manual");
+
+	trans_inner("wPptpMode","wan pptp mode");
+	trans_inner("wPptpServer","inet server");
+	trans_inner("wPptpUser","inet user");
+	trans_inner("wPptpPassword","inet password");
+	trans_inner("wPptpAddrMode","wan address mode");
+	trans_inner("wPptpAddrModeS","wan address mode static");
+	trans_inner("wPptpAddrModeD","wan address mode dynamic");
+	trans_inner("wPptpIp","inet ip");
+	trans_inner("wPptpNetmask","inet netmask");
+	trans_inner("wPptpGateway","inet gateway");
+	trans_inner("wPptpOPMode","wan protocol opmode");
+	trans_inner("wPptpKeepAlive","wan protocol opmode keepalive");
+	/*
+	trans_inner("wPptpOnDemand","wan protocol opmode ondemand");
+	*/
+	trans_inner("wPptpManual","wan protocol opmode manual");
+
+	trans_value("wApply","inet apply");
+	trans_value("wCancel","inet cancel");
+	
+	trans_inner("PPPOE_KAM","KAM");
+	trans_inner("PPPOE_seconds","seconds");
+	trans_inner("PPPOE_ODM","ODM");
+	trans_inner("PPPOE_TIMING","PPPOE_TIMING");
+	trans_inner("PPPOE_minutes","minutes");
+	trans_inner("L2TP_KAM","KAM");
+	trans_inner("L2TP_seconds","seconds");
+	trans_inner("PPtP_KAM","KAM");
+	trans_inner("PPtP_seconds","seconds");
+
+	trans_inner("pppshowp","inet showp");
+	trans_inner("l2tpshowp","inet showp");
+	trans_inner("p2tpshowp","inet showp");
+	trans_value("autocheck","inet autocheck");
+	
+	
+	trans_inner("settingwaiting","inet settingwaiting");	
+}
+
+function initValue()
+{
+	Butterlate.setTextDomain("wan");
+	{
+		if((document.getElementById("INDEX").value == "12") || (document.getElementById("INDEX").value == 12))
+		{
+			document.getElementById("INDEX").value = "99";
+			var zidong = document.getElementById("AUTOTYPE").value;
+			if(zidong == "static")
+			{
+				document.wanCfg.WAN_MODE.options.selectedIndex = 0;
+				alert(_("admw auto_sip"));
+				change_step(1);
+				
+			}
+			else if(zidong == "dhcp")
+			{
+				document.wanCfg.WAN_MODE.options.selectedIndex = 1;
+				alert(_("admw auto_dhcp"));
+				change_step(1);
+			
+			}
+			else if(zidong == "pppoe")
+			{
+				document.wanCfg.WAN_MODE.options.selectedIndex = 2;
+				alert(_("admw auto_ppp"));
+				change_step(1);
+			
+			}
+			else if(zidong == "l2tp")
+			{
+				document.wanCfg.WAN_MODE.options.selectedIndex = 3;
+				alert(_("admw auto_l2tp"));
+				change_step(1);
+		
+			}
+			else if(zidong == "p2tp")
+			{
+				document.wanCfg.WAN_MODE.options.selectedIndex = 4;
+				alert(_("admw auto_p2tp"));
+				change_step(1);
+			}
+			else
+			{
+				alert(_("admw auto_fail"));
+				document.wanCfg.WAN_MODE.options.selectedIndex = 0;
+			}
+		}
+	}
+
+	initTranslation();
+	connectionTypeSwitch();
+}
+function pppshowpwd()
+{
+   var pass = document.getElementById("ppppass").value;
+   
+	if(document.getElementById("aaaa").checked == true)
+	{
+		document.getElementById("ppppwdinput").innerHTML='<input type="text" name="PPPOE_PWD" id="ppppass" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
+	}
+	else
+	{
+		document.getElementById("ppppwdinput").innerHTML='<input type="password" name="PPPOE_PWD" id="ppppass" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
+	}
+}
+ function l2tpshowpwd()
+{
+	var pass = document.getElementById("l2tppass").value;
+
+	if(document.getElementById("bbbb").checked == true)
+	{
+		document.getElementById("pl2tppwdinput").innerHTML='<input type="text" name="l2tpPass" id="l2tppass" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
+	}
+	else
+	{
+		document.getElementById("pl2tppwdinput").innerHTML='<input type="password" name="l2tpPass" id="l2tppass" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
+	}
+}
+ function p2tpshowpwd()
+{
+	var pass = document.getElementById("p2tppass").value;
+	
+	if(document.getElementById("cccc").checked == true)
+	{
+		document.getElementById("p2tppwdinput").innerHTML='<input type="text" name="pptpPass" id="p2tppass" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
+	}
+	else
+	{
+		document.getElementById("p2tppwdinput").innerHTML='<input type="password" name="pptpPass" id="p2tppass" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
+	}
+}
+function workoutgw()
+{
+	var myString=document.getElementById("WAN_IPADDR").value;	
+	//ip地址
+	var exp=/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
+	var reg = myString.match(exp);
+	if(reg==null)
+	{
+		//document.getElementById("IPGW").value = "";
+	}
+	else
+	{
+		if(document.getElementById("IPGW").value=="")
+		{
+			var a = myString.lastIndexOf(".");
+			var s;
+			s = myString.substr(0, a); // 获取子字符串。
+			document.getElementById("IPGW").value = s+".1";
+		}
+		if(document.getElementById("WAN_NETMASK").value=="")
+		{
+			document.getElementById("WAN_NETMASK").value = "255.255.255.0";
+		}
+		if(document.getElementById("PRIDNS").value=="")
+		{
+			document.getElementById("PRIDNS").value = "8.8.8.8";
+		}
+
+	}
+}
+function waitgifshow()
+{
+	widget_display("waitshow");
+}
+function connecttypecheck()
+{
+	widget_hide("typetable");
+	widget_hide("wIntroduction");
+	
+	widget_hide("static_table");
+	widget_hide("dhcp_table");
+	widget_hide("pppoe_table");
+	widget_hide("l2tp_table");
+	widget_hide("pptp_table");
+	widget_hide("buttontable");
+	waitgifshow();
+	button_commit('AUTOGET');
+	
+}
+</script>
+<LINK REL="stylesheet" HREF="../style/handaer.css" TYPE="text/css">
+</head>
+
+<body onLoad="initValue()" ondragstart="window.event.returnValue=false" oncontextmenu="window.event.returnValue=false" onselectstart="event.returnValue=false">
+<div class="handaer_main">
+<table class="body" cellpadding="0" cellspacing="0" class="handaer_text"><tr><td>
+
+<h1 id="wTitle"></h1>
+<h2 id="wIntroduction"></h2>
+
+<form method="post" name="wanCfg" action="/goform/setWan">
+<table id="typetable" width="100%" cellpadding="0" cellspacing="0" class="handaer_text">
+<tr align="center">
+  <td><b id="wConnectionType"></b>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+  <td>
+    <select name="WAN_MODE" size="1" onChange="connectionTypeSwitch()">
+      <option value="STATIC" id="wConnTypeStatic">Static Mode (fixed IP)</option>
+      <option value="DHCP" id="wConnTypeDhcp">DHCP (Auto Config)</option>
+      <option value="PPPOE" id="wConnTypePppoe">PPPOE (ADSL)</option>
+      <option value="L2TP" id="wConnTypeL2tp">L2TP</option>
+      <option value="PPTP" id="wConnTypePptp">PPTP</option>
+    </select>
+	<input type="button"  value="自动检测" id="autocheck"  class="handaer_small_button" onClick="connecttypecheck()">&nbsp;&nbsp;
+</td>
+</tr>
+</table>
+
+<!-- ================= STATIC Mode ================= -->
+<table id="static_table" width="100%" cellpadding="0" cellspacing="0" class="handaer_text">
+<tr>
+  <td class="title" colspan="2" id="wStaticMode">Static Mode</td>
+</tr>
+<tr>
+  <td class="head" id="wStaticIp">IP Address</td>
+  <td><input name="WAN_IPADDR" id="WAN_IPADDR"  class="handaer_text_content" maxlength=15 value="~~WAN_IPADDR~"  onblur="workoutgw()"></td>
+</tr>
+<tr>
+  <td class="head" id="wStaticNetmask">Subnet Mask</td>
+  <td><input name="WAN_NETMASK" id="WAN_NETMASK"  class="handaer_text_content" maxlength=15 value="~~WAN_NETMASK~">
+  </td>
+</tr>
+<tr>
+  <td class="head" id="wStaticGateway">Default Gateway</td>
+  <td><input name="IPGW" id="IPGW"  class="handaer_text_content" maxlength=15 value="~~IPGW~"></td>
+</tr>
+<tr>
+  <td class="head" id="wStaticPriDns">Primary DNS Server</td>
+  <td><input name="PRIDNS" id="PRIDNS"  class="handaer_text_content" maxlength=15 value="~~PRIDNS~"></td>
+</tr>
+<tr>
+  <td class="head" id="wStaticSecDns">Secondary DNS Server</td>
+  <td><input name="SECDNS"  class="handaer_text_content" maxlength=15 value="~~SECDNS~"/><span id="optionXX"></span></td>
+</tr>
+</table>
+
+<!-- ================= DHCP Mode ================= -->
+<table id="dhcp_table" width="100%" cellpadding="0" cellspacing="0" class="handaer_text">
+<tr>
+  <td class="title" colspan="2" id="wDhcpMode">DHCP Mode</td>
+</tr>
+<tr id="dhcpname">
+  <td class="head"><div id="wDhcpHost">Host Name</div></td>
+  <td><input type=text name="hostname" size=28 maxlength=32 value=""></td>
+</tr>
+</table>
+
+<!-- ================= PPPOE Mode ================= -->
+<table id="pppoe_table" width="100%" cellpadding="0" cellspacing="0" class="handaer_text">
+<tr>
+  <td class="title" colspan="2" id="wPppoeMode">PPPoE Mode</td>
+</tr>
+<tr>
+  <td class="head" id="wPppoeUser">User Name</td>
+  <td><input name="PPPOE_USER"  class="handaer_text_content" maxlength=32 size=32 value="~~PPPOE_USER~"></td>
+</tr>
+<tr>
+  <td class="head" id="wPppoePassword">Password</td>
+  <td><span id="ppppwdinput"><input type="password" id="ppppass" name="PPPOE_PWD" class="handaer_text_content" maxlength="32" size="32" value="~~PPPOE_PWD~"/></span><input type="checkbox" id="aaaa" onClick="pppshowpwd()"/><span id="pppshowp"></span></td>
+</tr>
+<tr>
+  <td class="head" id="wPppoePass2">Verify Password</td>
+  <td><input type="password"  class="handaer_text_content" name="PPPOE_PWD2" maxlength=32 size=32 value="~~PPPOE_PWD2~"></td>
+</tr>
+<tr>
+  <td class="head" rowspan="2" id="wPppoeOPMode">Operation Mode</td>
+  <td>
+     <select name="PPPOE_MODE" size="1" onChange="pppoeOPModeSwitch()">
+      <option ~sPPPOE_MODE:auto~ value="auto" id="wPppoeKeepAlive"></option>
+      <option ~sPPPOE_MODE:demand~ value="demand" id="wPppoeOnDemand"></option>
+      <option ~sPPPOE_MODE:manual~ value="manual" id="wPppoeManual"></option>
+      <option ~sPPPOE_MODE:timing~ value="timing" id="wPppoeTiming"></option>
+    </select>
+  </td>
+</tr>
+<tr id="hideall">
+<td>
+	<span id="hide1"><span id="PPPOE_KAM"></span><input type="text" name="PPPOE_DEMAND" maxlength="5" size="3" value="60"/><span id="PPPOE_seconds"></span></br></span>
+  	<span id="hide2"><span id="PPPOE_ODM"></span><input type="text" name="PPPOE_MANUAL" maxlength="3" size="2" value="5"/><span id="PPPOE_minutes"></span></br></span>
+	<span id="hide3"><span id="PPPOE_TIMING"></span>
+	<input type="text" name="PPPOE_TIMING_BH" maxlength="3" size="2" value=""/>:
+	<input type="text" name="PPPOE_TIMING_BM" maxlength="3" size="2" value=""/>-
+	<input type="text" name="PPPOE_TIMING_EH" maxlength="3" size="2" value=""/>:
+	<input type="text" name="PPPOE_TIMING_EM" maxlength="3" size="2" value=""/></span>
+</td>
+</tr>
+</table>
+
+<!-- ================= L2TP Mode ================= -->
+<table id="l2tp_table" width="100%" cellpadding="0" cellspacing="0" class="handaer_text">
+<tr>
+  <td class="title" colspan="2" id="wL2tpMode">L2TP Mode</td>
+</tr>
+<tr>
+  <td class="head" id="wL2tpServer">L2TP Server IP Address</td>
+  <td><input name="l2tpServer"  class="handaer_text_content" maxlength="15" size=15 value="~~l2tpServer~"></td>
+</tr>
+<tr>
+  <td class="head" id="wL2tpUser">User Name</td>
+  <td><input name="l2tpUser"  class="handaer_text_content" maxlength="20" size=20 value="~~l2tpUser~"></td>
+</tr>
+<tr>
+  <td class="head" id="wL2tpPassword">Password</td>
+  <td><span id="pl2tppwdinput"><input type="password" id="l2tppass" name="l2tpPass"  class="handaer_text_content" maxlength="32" size="32" value="~~l2tpPass~"/></span><input type="checkbox" id="bbbb" onClick="l2tpshowpwd()"/><span id="l2tpshowp"></span></td>
+</tr>
+<tr>
+  <td class="head" id="wL2tpAddrMode">Address Mode</td>
+  <td>
+    <select name="l2tpMode" size="1" onChange="l2tpModeSwitch()">
+      <option value="0" id="wL2tpAddrModeS">Static</option>
+      <option value="1" id="wL2tpAddrModeD">Dynamic</option>
+    </select>
+  </td>
+</tr>
+<tr id="l2tpIp">
+  <td class="head" id="wL2tpIp">IP Address</td>
+  <td><input name="l2tpIp"  class="handaer_text_content" maxlength=15 size=15 value="~~l2tpIp~"></td>
+</tr>
+<tr id="l2tpNetmask">
+  <td class="head" id="wL2tpNetmask">Subnet Mask</td>
+  <td><input name="l2tpNetmask"  class="handaer_text_content" maxlength=15 size=15 value="~~l2tpNetmask~"></td>
+</tr>
+<tr id="l2tpGateway">
+  <td class="head" id="wL2tpGateway">Default Gateway</td>
+  <td><input name="l2tpGateway"  class="handaer_text_content" maxlength=15 size=15 value="~~l2tpGateway~"></td>
+</tr>
+<tr>
+  <td class="head" rowspan="3" id="wL2tpOPMode">Operation Mode</td>
+  <td>
+    <select name="l2tpOPMode" size="1" onChange="l2tpOPModeSwitch()">
+      <option value="KeepAlive" id="wL2tpKeepAlive">Keep Alive</option>
+      <!--
+      <option value="OnDemand" id="wL2tpOnDemand">On Demand</option>
+      -->
+      <option value="Manual" id="wL2tpManual">Manual</option>
+    </select>
+  </td>
+</tr>
+<tr>
+  <td><span id="L2TP_KAM">Keep Alive Mode: Redial Period</span>
+    <input type="text" name="l2tpRedialPeriod" maxlength="5" size="3" value="60">
+    <span id="L2TP_seconds">senconds
+    <!--
+    <br />
+    On demand Mode:  Idle Time
+    <input type="text" name="l2tpIdleTime" maxlength="3" size="2" value="5">
+    minutes
+    -->
+  </span>
+</td>
+</tr>
+</table>
+
+<!-- ================= PPTP Mode ================= -->
+<table id="pptp_table" width="100%"  cellpadding="0" cellspacing="0" class="handaer_text">
+<tr>
+  <td class="title" colspan="2" id="wPptpMode">PPTP Mode</td>
+</tr>
+<tr>
+  <td class="head" id="wPptpServer">PPTP Server IP Address</td>
+  <td><input name="pptpServer"  class="handaer_text_content" maxlength="15" size=15 value="~~pptpServer~"></td>
+</tr>
+<tr>
+  <td class="head" id="wPptpUser">User Name</td>
+  <td><input name="pptpUser"  class="handaer_text_content" maxlength="20" size=20 value="~~pptpUser~"></td>
+</tr>
+<tr>
+  <td class="head" id="wPptpPassword">Password</td>
+  <td><span id="p2tppwdinput"><input type="password" id="p2tppass" name="pptpPass"  class="handaer_text_content" maxlength="32" size="32" value="~~pptpPass~" /></span><input type="checkbox" id="cccc" onClick="p2tpshowpwd()"/><span id="p2tpshowp"></span></td>
+</tr>
+<tr>
+  <td class="head" id="wPptpAddrMode">Address Mode</td>
+  <td>
+    <select name="pptpMode" size="1" onChange="pptpModeSwitch()">
+      <option value="0" id="wPptpAddrModeS">Static</option>
+      <option value="1" id="wPptpAddrModeD">Dynamic</option>
+    </select>
+  </td>
+</tr>
+<tr id="pptpIp">
+  <td class="head" id="wPptpIp">IP Address</td>
+  <td><input name="pptpIp"  class="handaer_text_content" maxlength=15 size=15 value="~~pptpIp~"></td>
+</tr>
+<tr id="pptpNetmask">
+  <td class="head" id="wPptpNetmask">Subnet Mask</td>
+  <td><input name="pptpNetmask"  class="handaer_text_content" maxlength=15 size=15 value="~~pptpNetmask~"></td>
+</tr>
+<tr id="pptpGateway">
+  <td class="head" id="wPptpGateway">Default Gateway</td>
+  <td><input name="pptpGateway" class="handaer_text_content" maxlength=15 size=15 value="~~pptpGateway~"></td>
+</tr>
+<tr>
+  <td class="head" rowspan="3" id="wPptpOPMode">Operation Mode</td>
+  <td>
+    <select name="pptpOPMode" size="1" onChange="pptpOPModeSwitch()">
+      <option value="KeepAlive" id="wPptpKeepAlive">Keep Alive</option>
+      <!--
+      <option value="OnDemand" id="wPptpOnDemand">On Demand</option>
+      -->
+      <option value="Manual" id="wPptpManual">Manual</option>
+    </select>
+  </td>
+</tr>
+<tr>
+  <td><span id="PPtP_KAM">Keep Alive Mode: Redial Period</span>
+    <input type="text" name="pptpRedialPeriod" maxlength="5" size="3" value="60">
+  <span id="PPtP_seconds">senconds
+    <!--
+    <br />
+    On demand Mode:  Idle Time
+    <input type="text" name="pptpIdleTime" maxlength="3" size="2" value="5">
+    minutes
+    -->
+    </span>
+  </td>
+</tr>
+</table>
+
+<table id="buttontable" width="100%" cellpadding="2" cellspacing="1">
+<tr align="center">
+  <td>
+    <input type="reset"  class="handaer_input" value="Cancel" id="wCancel" onClick="window.location.reload()">    
+	<input type="button" class="handaer_input" value="Apply" id="wApply" onClick="CheckValue()">&nbsp;&nbsp;
+	
+    <input type="submit" name="DHCP" id="DHCP" style="display:none" value="DHCP">
+    <input type="submit" name="SIP" id="SIP" style="display:none" value="SIP">
+    <input type="submit" name="PPP" id="PPP" style="display:none" value="PPP">
+    <input type="submit" name="L2TP" id="L2TP" style="display:none" value="L2TP">
+    <input type="submit" name="P2TP" id="P2TP" style="display:none" value="P2TP">
+	<input type="text" style="display:none" name="INDEX" id="INDEX" value="~~INDEX~">	
+	<input type="text" style="display:none" name="AUTOTYPE" id="AUTOTYPE" size="20" maxlength="32" value="~~AUTOTYPE~">	
+	<input type="button" name="AUTOGET" id="AUTOGET" style="display:none" value="AUTOGET" onClick="window.location.href='ad_wan_set?INDEX=12'">
+	<input type="text" style="display:none" name="AP_locatIP" id="AP_locatIP" size="20" maxlength="32" value="~~AP_IPADDR~">		
+  </td>
+</tr>
+</table>
+<div id="waitshow" style="display:none" align="center">
+  <img align="center" src="/images/loading.gif"></img>
+  <p align="center" id="settingwaiting"></p>
+</div>
+</form>
+
+</td></tr></table></div>
+</body>
+</html>
+

@@ -1,0 +1,121 @@
+﻿<html>
+<head>
+<title></title>
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<META http-equiv=Pragma content=no-cache>
+<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+<script type="text/javascript" src="/lang/b28n.js"></script>
+<script type="text/javascript">
+function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "table-row";}}
+function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
+function widget_display(widgetID){document.getElementById(widgetID).style.visibility = "visible";document.getElementById(widgetID).style.display = style_display_on();}
+
+function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
+function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
+function button_commit(buttonID){document.getElementById(buttonID).click();}
+function initTranslation()
+{
+	trans_inner("uploadtitle","admw uploadtitle");
+	trans_inner("uploaddes","admw uploaddes");
+	trans_inner("uploadfirware","admw uploadfirware");
+	trans_inner("up_selsectfile","admw up_selsectfile");
+	trans_value("Upload","admw Upload");
+
+	trans_inner("settingwaiting","admw settingwaiting");	
+	trans_inner("hardware","admw hardware");	
+	trans_inner("software","admw software");	
+	trans_inner("waring","admw waring");	
+}
+
+function waitgifshow()
+{
+	widget_display("waitshow");
+}
+
+function upgradef()
+{ 
+	if(confirm(_("admw sysupgrade")))
+	{
+		Butterlate.setTextDomain("admin");
+
+		if(document.usb_upload.uploadedfile.value == "")
+		{
+			document.usb_upload.uploadedfile.focus();
+			alert(_("err file empty"));
+			return false;
+		}
+		widget_hide("uploaddes");	
+		widget_hide("uploadff");	
+		waitgifshow();
+		button_commit('UPGRADE');
+	}	
+
+
+
+}
+
+function init()
+{
+	Butterlate.setTextDomain("admin");
+	initTranslation();
+}
+
+</script>
+</head>
+
+<body onload=init();>
+<div class="handaer_main">
+<table  border="0" cellpadding="0" cellspacing="0" id="tt1"><tr><td>
+<h1 id="uploadtitle"></h1>
+<form name="usb_upload" enctype="multipart/form-data" action="/cgi-bin/upload.cgi" method="post">
+<h2 id="uploaddes"></h2>
+
+<table id="uploadff" width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
+<tr>
+  <td class="title" colspan="2" id="uploadfirware"></td>
+</tr>
+
+<tr>
+  <td class="head" id="hardware"></td>
+  <td><input type="text" size="35" class="handaer_text" value="~~HAL_VERSION~" readonly></td>
+</tr>
+<tr>
+  <td class="head" id="software"></td>
+  <td><input type="text" size="35" class="handaer_text" value="~~SOFT_VERSION~" readonly></td>
+</tr>
+<tr>
+  <td class="head" id="up_selsectfile"></td>
+  <td>
+	<input type="file" id="uploadedfile" name="uploadedfile">
+  </td>
+</tr>
+<tr>
+  <td>&nbsp; &nbsp;</td>
+  <td>
+  <span align="center" id="waring"></span>
+  </td>
+</tr>
+<tr>
+  <td>&nbsp; &nbsp;</td>
+  <td>
+	<input id="Upload" class="handaer_input" onclick="upgradef()" type="button" name="Upload" value="Upload">
+	<input type="submit" name="UPGRADE" style="display:none" id="UPGRADE" value="UPGRADE">
+  </td>
+</tr>
+</table>
+</form>
+</td>
+</tr>
+</table>
+
+<div id="waitshow" style="display:none" align="center">
+  <img align="center" src="/images/loading.gif"></img>
+  <p align="center" id="settingwaiting"></p>
+
+</div>
+</div>
+
+</body>
+</html>

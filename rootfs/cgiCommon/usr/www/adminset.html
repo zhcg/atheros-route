@@ -71,7 +71,7 @@ function AdmFormCheck()
 		return false;
 	}
 	//alert(_("password change"));
-	update();
+	//update();
 	document.getElementById('ADMINSET').click();
 	return true;
 }
@@ -105,17 +105,17 @@ function initValue()
 }
 function showpwd()
 {
- 
- if(document.getElementById("pwd").type=="password"){
-   var pass = document.getElementById("pwd").value;
-   document.getElementById("pwdinput").innerHTML='<input type="text" name="ADMPASS" id="pwd" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
-  }
-  else
-  {
-   var pass = document.getElementById("pwd").value;
-   document.getElementById("pwdinput").innerHTML='<input type="password" name="ADMPASS" id="pwd" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
-   }
- }
+    var pass = document.getElementById("pwd").value;
+
+	if(document.getElementById("aaaa").checked == true)
+	{
+		document.getElementById("pwdinput").innerHTML='<input type="text" name="ADMPASS" id="pwd" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
+	}
+	else
+	{
+		document.getElementById("pwdinput").innerHTML='<input type="password" name="ADMPASS" id="pwd" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
+	}
+}
 </script>
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
 </head>
@@ -134,7 +134,7 @@ function showpwd()
 
   <tr>
     <td class="head" id="manAdmPasswd"></td>
-    <td><span id="pwdinput"><input type="password" id="pwd" name="ADMPASS" maxlength="32" size="32" class="handaer_text_content" value="~~ADMPASS~" /></span><input type="checkbox" onClick="showpwd()"/><span id="showp"></span>&nbsp;<span id="passwordrequest"></span></td>
+    <td><span id="pwdinput"><input type="password" id="pwd" name="ADMPASS" maxlength="32" size="32" class="handaer_text_content" value="~~ADMPASS~" /></span><input type="checkbox" id="aaaa" onClick="showpwd()"/><span id="showp"></span>&nbsp;<span id="passwordrequest"></span></td>
   </tr>
   <tr>
     <td class="head" id="manAdmPasswd2"></td>

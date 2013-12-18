@@ -229,15 +229,17 @@ function initValue()
 }
 function showpwd()
 {
- 
- if(document.getElementById("pwd").type=="password"){
-   var pass = document.getElementById("pwd").value;
-   document.getElementById("pwdinput").innerHTML='<input type="text" id="pwd" name="PSK_KEY" maxlength="64" size="28" class="handaer_text_content"  value="'+pass+'" />';
-  }else{
-   var pass = document.getElementById("pwd").value;
-   document.getElementById("pwdinput").innerHTML='<input type="password" id="pwd" name="PSK_KEY" maxlength="64" size="28"  class="handaer_text_content" value="'+pass+'" />';
-   }
+	var pass = document.getElementById("pwd").value;
+	if(document.getElementById("cccc").checked == true)
+	{
+        document.getElementById("pwdinput").innerHTML='<input type="text" id="pwd" name="PSK_KEY" maxlength="64" size="28" class="handaer_text_content"  value="'+pass+'" />';
+	}
+	else
+	{
+		document.getElementById("pwdinput").innerHTML='<input type="password" id="pwd" name="PSK_KEY" maxlength="64" size="28"  class="handaer_text_content" value="'+pass+'" />';
+	}
  }
+ 
  
 function switch_wifi()
 {
@@ -353,7 +355,7 @@ function hidewififun()
   </td>
 </tr>
 <tr id="div_security_key">
-  <td><span id="wkey"></span><span id="pwdinput"><input type="password" id="pwd" name="PSK_KEY" maxlength="64" size="28"  class="handaer_text_content"  value="~~PSK_KEY~"/></span><input type="checkbox" onClick="showpwd()" /><span id="showp"></span>&nbsp;<span id="passwordrequest"></span></td>
+  <td><span id="wkey"></span><span id="pwdinput"><input type="password" id="pwd" name="PSK_KEY" maxlength="64" size="28"  class="handaer_text_content"  value="~~PSK_KEY~"/></span><input type="checkbox" id="cccc" onClick="showpwd()" /><span id="showp"></span>&nbsp;<span id="passwordrequest"></span></td>
 							
 </tr>
 </table>

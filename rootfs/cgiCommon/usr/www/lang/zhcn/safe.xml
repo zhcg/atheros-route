@@ -1,0 +1,46 @@
+<po>
+  <message msgid="safe bAPPLY" msgstr="应用" />
+  <message msgid="safe bCANCEL" msgstr="取消" />
+  <message msgid="safe enable" msgstr="启用" />
+  <message msgid="safe disable" msgstr="停用" />
+  <message msgid="safe MOD" msgstr="修改" />
+  <message msgid="safe DEL" msgstr="删除" />
+  <message msgid="safe ADD" msgstr="添加" />
+  <message msgid="safe onbutton" msgstr="启用" />
+  <message msgid="safe offbutton" msgstr="禁用" />  
+  <message msgid="safe des" msgstr="描述" />  
+  <message msgid="safe mac" msgstr="MAC地址" />    
+  <message msgid="safe IP" msgstr="IP地址" />    
+  <message msgid="safe tye" msgstr="绑定" />    
+  <message msgid="safe set" msgstr="配置" />    
+  <message msgid="safe bSAVE" msgstr="保存" />  
+	
+  <message msgid="ipmac title" msgstr="IP/MAC地址绑定" />    
+  <message msgid="ipmac des" msgstr="当前IP地址与MAC绑定列表显示与修改" />    
+  <message msgid="ipmac t1_title" msgstr="IP/MAC地址绑定" />    
+  
+  <message msgid="addIPMAC Stye" msgstr="绑定" />    
+  <message msgid="addIPMAC Snotstye" msgstr="未绑定" />    
+
+  <message msgid="addIPMAC title" msgstr="添加IP/MAC绑定" />    
+  <message msgid="addIPMAC des" msgstr="添加IP/MAC绑定条目" />    
+  <message msgid="addIPMAC t1_title" msgstr="添加IP/MAC绑定" />    
+  <message msgid="addIPMAC t1_MAC" msgstr="MAC地址" />    
+  <message msgid="addIPMAC t1_IP" msgstr="IP地址" />    
+  <message msgid="addIPMAC t1_Tye" msgstr="绑定" />    
+
+  <message msgid="err MAC empty" msgstr="MAC地址不能为空" />
+  <message msgid="err IP empty" msgstr="IP地址不能为空" />
+  <message msgid="err sub empty" msgstr="掩码地址不能为空" />
+  <message msgid="err user empty" msgstr="用户名不能为空" />
+  <message msgid="err pwd empty" msgstr="密码不能为空" />
+  <message msgid="err time empty" msgstr="时间不能为空" />
+  
+  <message msgid="err MAC format" msgstr="MAC格式错误" />
+  <message msgid="err IP format" msgstr="IP地址格式错误" />
+  <message msgid="err sub format" msgstr="掩码格式错误" />
+  
+  <message msgid="err format" msgstr="参数格式错误" />
+  <message msgid="err range" msgstr="参数范围错误" />
+
+</po>

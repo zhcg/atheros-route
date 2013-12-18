@@ -15,7 +15,7 @@ a{text-decoration: none; font-size: 12px;}
 .handaer_top_r_top a{ font-size:12px; color:#FFF; padding:0 10px; cursor:hand}
 .handaer_top_r_top a:hover{text-decoration: underline; color:#CE4034;}
 .handaer_top_r_bottom{ height:42px; line-height:42px; color:#FFF;}
-.handaer_top_r_bottom a{ font-size:14px; color:#FFF; padding:0 10px; cursor:hand}
+.handaer_top_r_bottom a{ font-size:14px; color:#FFF; padding:0 10px; cursor:hand; float:right;}
 .handaer_top_r_bottom a:hover{text-decoration: underline; color:#CE4034;}
 
 /* 头部结束  */
@@ -37,14 +37,14 @@ a{text-decoration: none; font-size: 12px;}
 .handaer_main table h1{ border-bottom:1px dotted #d0d0d0; padding-bottom:10px; margin-bottom:10px;}
 .handaer_main  input{  BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BACKGROUND: none transparent scroll repeat 0% 0%; BORDER-BOTTOM-WIDTH: 0px;  BORDER-RIGHT-WIDTH: 0px; margin-top:10px;}
 .handaer_input{
-width:138px; height:48px; 
+width:138px; height:48px;   
 color: #333; font-weight: 800; background:url(../images/button.gif) 0 0  no-repeat!important; cursor:hand; 
 }
 .handaer_input1{
 width:138px; height:48px; 
 color: #333; font-weight: 800; background:url(../images/button2.gif) 0 0  no-repeat!important; cursor:hand; 
 }
-.handaer_small_button{ width:100px; height:25px; line-height:25px; background-color:#d0d0d0!important;}
+.handaer_small_button{ width:150px; height:25px; line-height:25px; background-color:#d0d0d0!important;}
 .handaer_text{ border:1px solid #d0d0d0;}
 .handaer_text td{  border-bottom:1px solid #d0d0d0;}
 .handaer_text_content{ border:1px solid #d0d0d0!important; height:30px; line-height:30px;}
@@ -58,3 +58,5 @@ color: #333; font-weight: 800; background:url(../images/button2.gif) 0 0  no-rep
 .handaer_txt3{ position:absolute; left:900px; top:108px;}
 .handaer_txt4{ position:absolute; left:302px; top:380px;}
 .handaer_txt5{ position:absolute; left:776px; top:100px;}
+
+ option.selected {color: White;background-color: Cyan;}

@@ -1,4 +1,62 @@
 #!/bin/sh
+#wangyu add for udhcpc function
+if [ -z $ip ];then
+	cfg -a WAN_IPFLAG=none
+	cfg -r WAN_IPADDR
+	cfg -c
+	exit 1
+fi
+if [ $interface = "eth0" ];then
+	if [ ! -z $ip ];then
+		#wangyu add fro dhcp client function
+		#WAN_ADDR=`ifconfig  eth0 | grep 'inet addr:'|  cut -d: -f2 | awk '{ print $1}'|awk 'BEGIN{OFS=FS="."}{print $1,$2,$3}'`
+		WAN_ADDR=`echo $ip | awk 'BEGIN{OFS=FS="."}{print $1,$2,$3}'`
+#		echo $WAN_ADDR
+		if [ ! -z ${WAN_ADDR} ];then
+			#LAN_ADDR=`ifconfig br0 | grep 'inet addr:'|  cut -d: -f2 | awk '{ print $1}'|awk 'BEGIN{OFS=FS="."}{print $1,$2,$3}'`
+			LAN_ADDR=`cfg -e | grep "AP_IPADDR" | awk -F'="' '{print $2}'|awk 'BEGIN{OFS=FS="."}{print $1,$2,$3}'`
+#			echo $LAN_ADDR
+			if [ ${WAN_ADDR} = ${LAN_ADDR} ];then
+				echo "the dhcp apply IP addr has same domain with br0"
+				cfg -a WAN_IPFLAG=unnormal
+#				cfg -a WAN_IPADDR=$ip
+				cfg -c
+				exit 2
+			fi
+		fi
+	fi
+fi
 
-/sbin/ifconfig $interface $ip broadcast $broadcast netmask $subnet up
-route add default gw $router dev $interface 
+cfg -a WAN_IPFLAG=normal
+cfg -a WAN_IPADDR=$ip
+cfg -c
+
+#echo ip : $ip
+#echo broadcast : $broadcast
+#echo subnet : $subnet
+#echo router : $router
+#echo interface : $interface
+
+if [ ! -z $broadcast ];then
+	cflag="broadcast $broadcast"
+else
+	cflag=
+fi
+
+if [ ! -z $subnet ];then
+	nflag="netmask $subnet"
+else
+	nflag=
+fi
+
+if [ ! -z $router ];then
+	rflag="gw $router"
+else
+	rflag=
+fi
+#wangyu add end
+
+#/sbin/ifconfig $interface $ip broadcast $broadcast netmask $subnet up
+/sbin/ifconfig $interface $ip $cflag $nflag up
+#route add default gw $router dev $interface 
+route add default $rflag dev $interface 

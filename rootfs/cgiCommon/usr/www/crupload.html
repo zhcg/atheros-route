@@ -10,6 +10,10 @@ function initTranslation()
 {
 	var a = document.getElementById("UPGRADERESULT").value;	
 
+	if(a == "1")
+		alert(_("upgrade success"));	
+	else
+		alert(_("upgrade fail"));	
 		
 	window.location.href="map";
 

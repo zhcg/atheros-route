@@ -8,5 +8,6 @@ CAL_MSG=`dmesg | grep 'Using Cal data from Driver Default Settings'`
 if [ -n "$CAL_MSG" ]; then
 	echo "Restore caldata at `date`"  >> /etc/callog.txt    
 	dd if=/etc/cal.bin of=/dev/caldata
-	reboot
+	/etc/ath/apdown
+	/etc/ath/apup
 fi

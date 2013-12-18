@@ -1,0 +1,140 @@
+<html>
+<head>
+<title>DHCP</title>
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "table-row";}}
+function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
+function widget_display(widgetID){document.getElementById(widgetID).style.visibility = "visible";document.getElementById(widgetID).style.display = style_display_on();}
+
+function widget_enable(widgetID){document.getElementById(widgetID).disabled = false;}
+function widget_disable(widgetID){document.getElementById(widgetID).disabled = true;}
+
+function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
+function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
+
+function button_commit(buttonID){document.getElementById(buttonID).click();}
+
+function initTranslation()
+{
+	trans_inner("title","rulit title");	
+	trans_inner("des","rulit des");	
+	trans_inner("t1_title","rulit t1_title");	
+	trans_inner("t1_Des","rulit t1_Des");	
+	
+	trans_inner("t1_Sub","rulit t1_Sub");	
+	trans_inner("t1_Gw","rulit t1_Gw");	
+	trans_inner("t1_Intf","rulit t1_Intf");	
+	
+	trans_inner("t2_title","rulit t2_title");	
+	trans_inner("t2_Des","rulit t2_Des");	
+	trans_inner("t2_Sub","rulit t2_Sub");	
+	trans_inner("t2_Gw","rulit t2_Gw");	
+	trans_inner("t2_Inf","rulit t2_Inf");	
+	trans_inner("t2_Modefy","rulit t2_Modefy");	
+
+	//trans_value("MODRUL","lan MODDHCP");	
+	//trans_value("DELRUL","lan DELDHCP");	
+	trans_value("ADDRUL","lan ADDDHCP");
+	
+	trans_value("bCANCEL","lan bCANCEL");	
+	trans_value("bAPPLY","lan bAPPLY");
+}
+
+function initValue()
+{
+	Butterlate.setTextDomain("lan");
+	initTranslation();
+}
+function CheckValue()
+{
+	button_commit("RULIST_SET");
+}
+function listdel(value)
+{
+	document.getElementById("DELXXX").value=value;
+	alert("删除了"+value);
+	button_commit("DEL_RU");
+}
+</script>
+</head>
+
+<body onLoad="initValue()">
+<div class="handaer_main">
+<table  width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td>
+<h1 id="title">路由表设置</h1>
+<p></p>
+
+<FORM method="POST" name="DHCP_FORM">
+<!-- =========== Wireless Settings =========== -->
+<h2 id="des">显示以及配置静态路由表相关信息</h2>
+
+<h1 id="t1line"> </h1>
+<table id="t1"  width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
+  <tr> 
+    <td class="title" colspan="5" id="t1_title">系统路由表</td>
+  </tr>
+  <tr>
+    <td>ID</td>
+    <td id="t1_Des">目的网络地址</td>
+    <td id="t1_Sub">子网掩码</td>
+    <td id="t1_Gw">网关</td>
+    <td id="t1_Intf">接口</td>
+  </tr> 
+  ~Z:sysrulist~ 
+</table>
+<h1 id="t2line">  </h1>
+<table id="t2"  width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
+  <tr> 
+    <td class="title" colspan="6" id="t2_title">静态路由</td>
+  </tr>
+  <tr>
+    <td>ID</td>
+    <td id="t2_Des">目的网络地址</td>
+    <td id="t2_Sub">子网掩码</td>
+    <td id="t2_Gw">网关</td>
+	<td id="t2_Inf">状态</td>
+	<td id="t2_Modefy">编辑</td>
+  </tr>
+  ~Z:routelist~ 
+   <tr>
+	<td>&nbsp; &nbsp;</td>
+	<td>&nbsp; &nbsp;</td>
+	<td>&nbsp; &nbsp;</td>
+	<td>&nbsp; &nbsp;</td>
+	<td>&nbsp; &nbsp;</td>
+    <td>
+		<input type="button"  class="handaer_small_button" name="ADDRUL" id="ADDRUL" value="添加" onClick="window.location.href='ad_local_addru'">
+	</td>
+  </tr>
+
+  
+</table>
+
+
+
+<table id="buttontable">
+<tr align="center">
+  <td>
+    <input type="button" name="bCANCEL" id="bCANCEL" class="handaer_input" value="Cancel" onClick="window.location.reload();">
+    <input type="button" name="bAPPLY" id="bAPPLY" class="handaer_input" value="Apply" onClick="CheckValue();">
+	<input type="submit" name="RULIST_SET" id="RULIST_SET" style="display:none" value="RULIST_SET">
+  </td>
+</tr>
+</table>
+
+</form>
+</form>
+<form method="POST" name="DELLIST">
+	<input style="display:none"  type="text" name="DELXXX" id="DELXXX" size="20" maxlength="32">
+	<input style="display:none" type="submit" name="DEL_RU" id="DEL_RU" value="DEL_RU">
+</form>
+</td></tr></table> 
+</div>
+</body>
+</html>
+

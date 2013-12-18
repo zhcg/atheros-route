@@ -1,0 +1,103 @@
+<html>
+<head>
+<title>DHCP</title>
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
+function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
+function button_commit(buttonID){document.getElementById(buttonID).click();}
+
+function CheckValue()
+{
+	
+	if (document.WORKFORM.MAC.value.length == 0)
+	{
+		alert(_("err MAC empty"));
+		document.WORKFORM.MAC.select();
+		return false;
+	}
+	var re = /[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}/;
+	if (!re.test(document.WORKFORM.MAC.value)||(document.WORKFORM.MAC.value.length > 17))
+	{
+		alert(_("err MAC format"));
+		document.WORKFORM.MAC.select();
+		return false;
+	}
+
+	if (document.WORKFORM.DES.value.length == 0)
+	{
+		alert(_("err des empty"));
+		document.WORKFORM.DES.select();
+		return false;
+	}
+	
+	button_commit("ADD_CONRULE");
+	return true;
+}
+
+function initTranslation()
+{
+	trans_inner("title","addw title");	
+	trans_inner("t1_title","addw t1_title");
+	trans_inner("t1_MAC","addw t1_MAC");	
+	trans_inner("t1_Des","addw t1_Des");
+	
+	trans_value("bCANCEL","conn bCANCEL");
+	trans_value("bSAVE","conn bSAVE");
+}
+
+function initValue()
+{
+	Butterlate.setTextDomain("conn");
+	initTranslation();
+}
+
+</script>
+</head>
+
+<body onLoad="initValue()">
+<div class="handaer_main">
+<table  width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td>
+<h1 id="title">添加无线接入管理的设备信息</h1>
+<p></p>
+
+<FORM method="POST" name="WORKFORM">
+<!-- =========== Wireless Settings =========== -->
+<h2 id="des"></h2>
+
+<table id="t1"  width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
+<tr>
+<td class="title" colspan="2" id="t1_title">添加无线接入管理条目</td>
+</tr>
+<tr>
+  <td class="head" id="t1_MAC">MAC地址</td>
+  <td><input type="text" name="MAC" id="MAC" size="32" maxlength="32" class="handaer_text_content"></td>
+</tr>
+
+<tr id="t1_hide1">
+	<td class="head" id="t1_Des">描述</td>
+	<td><input type="text" name="DES" id="DES" size="32" maxlength="32" class="handaer_text_content"></td>
+	
+</tr>
+</table>
+
+<table id="buttontable">
+<tr align="center">
+  <td>
+    <input type="button" name="cancel_motion" id="bCANCEL" class="handaer_input" onClick="window.location.href='ad_con_manage'">
+    <input type="button" name="bSAVE" id="bSAVE" class="handaer_input" onClick="CheckValue();">
+	<input type="submit" name="ADD_CONRULE" id="ADD_CONRULE" style="display:none" value="ADD_CONRULE">
+  </td>
+</tr>
+</table>
+
+</form>
+</td></tr></table> 
+</div>
+</body>
+</html>
+

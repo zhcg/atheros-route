@@ -14,5 +14,12 @@ if [ -e $1 ]; then
         cp /usr/sbin/__sysupgrade /tmp/
 		mv $1 /tmp/9344version.img 
 		cd /tmp
+	test1=$(/usr/sbin/firmware_check /tmp/9344version.img | grep "OK")
+#	echo $test1
+
+	if [ -z "$test1" ];then
+#		echo "wrong fireware file"
+		exit 1
+	fi
         /tmp/__sysupgrade /tmp/9344version.img  2>&1
 fi

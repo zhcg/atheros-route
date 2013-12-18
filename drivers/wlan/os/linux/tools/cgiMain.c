@@ -321,6 +321,7 @@ char *translateName(char *varName, char *transVarName)
 
     return(transVarName);
 }
+#include <netinet/in.h>
 
 /*****************************************************************************
 **
@@ -629,6 +630,259 @@ char *processSpecial(char *paramStr, char *outBuff)
                 }
 				flaglist=0;
             }								
+        break;       
+
+             case 'Z':
+            {
+                fprintf(errOut,"\n----------secArg:%s\n",secArg);
+                //接入管理(带配置)
+                if(strcmp(secArg,"conmlist")==0)
+                {
+                    outBuff += sprintf(outBuff,"<tr>");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","1");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","456468wqeasd");
+                    outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"1\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
+                    outBuff += sprintf(outBuff,"</tr>");
+                    
+                    outBuff += sprintf(outBuff,"<tr>");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","2");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","456468wqeasd");
+                    outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"2\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
+                    outBuff += sprintf(outBuff,"</tr>");
+
+                    outBuff += sprintf(outBuff,"<tr>");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","3");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","456468wqeasd");
+                    outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"3\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
+                    outBuff += sprintf(outBuff,"</tr>");
+
+                    outBuff += sprintf(outBuff,"<tr>");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","4");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","456468wqeasd");
+                    outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"4\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
+                    outBuff += sprintf(outBuff,"</tr>");
+                }
+                //家长控制(带配置)
+                else if(strcmp(secArg,"parclist")==0)
+                {
+  
+                    outBuff += sprintf(outBuff,"<tr>");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","4");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","www.baidu.com<br>www.qq.com<br>");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","1,2,4");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","12:00-20:00");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","ON");
+                    outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"4\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
+                    outBuff += sprintf(outBuff,"</tr>");
+              }
+                //静态DHCP(带配置)
+                else if(strcmp(secArg,"sdhcplist")==0)
+                {
+                    outBuff += sprintf(outBuff,"<tr>");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","1");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","11:11:11:11:11:11");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.5.25");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","ON");
+                    outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"1\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
+                    outBuff += sprintf(outBuff,"</tr>");
+                    
+                    outBuff += sprintf(outBuff,"<tr>");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","2");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","11:11:11:11:11:11");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.5.25");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","ON");
+                    outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"2\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
+                    outBuff += sprintf(outBuff,"</tr>");
+
+                }
+                //静态路由表(带配置)
+                else if(strcmp(secArg,"routelist")==0)
+                {
+                    outBuff += sprintf(outBuff,"<tr>");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","1");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.5");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","255.255.255.255");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.254");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","ON");
+                    outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"1\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
+                    outBuff += sprintf(outBuff,"</tr>");
+                    
+                    outBuff += sprintf(outBuff,"<tr>");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","2");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.51");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","255.255.255.255");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.254");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","OFF");
+                    outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"2\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
+                    outBuff += sprintf(outBuff,"</tr>");
+
+                }
+                //IPMAC绑定(带配置)
+                else if(strcmp(secArg,"IPMAClist")==0)
+                {
+                    outBuff += sprintf(outBuff,"<tr>");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","1");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");   
+                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.155");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","YES");
+                    outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"1\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
+                    outBuff += sprintf(outBuff,"</tr>");
+                }
+
+                //接入管理有线设备(不带配置)
+                else if(strcmp(secArg,"wiredevlist")==0)
+                {
+                    FILE *fp;
+                    struct dhcpOfferedAddr 
+                    {
+                        unsigned char hostname[16];
+                        unsigned char mac[16];
+                        unsigned long ip;
+                        unsigned long expires;
+                    } lease;
+                    int i;
+                    struct in_addr addr;
+                    unsigned long expires;
+                    unsigned d, h, m;
+                    int num=1;
+
+                    system("killall -q -USR1 udhcpd");
+                    fprintf(errOut,"\n%s  %d  \n",__func__,__LINE__);
+                    fp = fopen("/var/run/udhcpd.leases", "r");
+                    if (NULL == fp)
+                    {
+                        fprintf(errOut,"\n%s  %d  \n",__func__,__LINE__);		
+                               break;   
+                    }
+
+                    while (fread(&lease, 1, sizeof(lease), fp) == sizeof(lease)) 
+                    {
+                        fprintf(errOut,"\n%s  %d  \n",__func__,__LINE__);		
+                        outBuff += sprintf(outBuff,"<tr>");
+                        outBuff += sprintf(outBuff,"<td>%d</td>",num);
+                        num++;         
+
+                        addr.s_addr = lease.ip;
+                        expires = ntohl(lease.expires);
+                        outBuff += sprintf(outBuff,"<td>%s</td>", inet_ntoa(addr));
+                        fprintf(errOut,"\n%s  %d  IP:%s\n",__func__,__LINE__, inet_ntoa(addr));		
+
+                        outBuff += sprintf(outBuff,"<td>%02X", lease.mac[0]);
+                        fprintf(errOut,"\n%s  %d  mac:%02X\n",__func__,__LINE__, lease.mac[0]);		
+
+                        for (i = 1; i < 6; i++)
+                        {
+                            outBuff += sprintf(outBuff,":%02X", lease.mac[i]);
+                            fprintf(errOut,":%02x",lease.mac[i]);		
+                        }
+                        fprintf(errOut,"\n");		
+                      //d = expires / (24*60*60); expires %= (24*60*60);
+                        //h = expires / (60*60); expires %= (60*60);
+                        //m = expires / 60; expires %= 60;
+                        //if (d) websWrite(wp, T("%u days "), d);
+                        //websWrite(wp, T("%02u:%02u:%02u\n"), h, m, (unsigned)expires);
+                        outBuff += sprintf(outBuff,"</td>");
+                        if (strlen(lease.hostname) > 0)
+                        {
+                            //outBuff += sprintf(outBuff,"<td>%-16s</td>",lease.hostname);
+                            outBuff += sprintf(outBuff,"<td>%s</td>",lease.hostname);
+                            fprintf(errOut,"\n%s  %d  name:%s\n",__func__,__LINE__, lease.hostname);		
+                        }
+
+                        else
+                        {
+                            fprintf(errOut,"\n%s  %d  no name:%s\n",__func__,__LINE__, lease.hostname);		
+                            outBuff += sprintf(outBuff,"<td><br /></td>");
+                        }
+
+                        outBuff += sprintf(outBuff,"</tr>");
+                    }
+                    fclose(fp);
+
+
+
+
+                    /*     getDhcpCliList(&outBuff,1);
+
+                    outBuff += sprintf(outBuff,"<tr>");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","1");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.5");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","璁惧1");
+                    outBuff += sprintf(outBuff,"</tr>");
+
+                    outBuff += sprintf(outBuff,"<tr>");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","2");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.5");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","璁惧2");
+                    outBuff += sprintf(outBuff,"</tr>");
+                    */
+                }
+                //接入管理无线设备(不带配置)
+                else if(strcmp(secArg,"wirelessdevlist")==0)
+                {
+                    outBuff += sprintf(outBuff,"<tr>");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","1");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.5");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","璁惧1");
+                    outBuff += sprintf(outBuff,"</tr>");
+                    
+                    outBuff += sprintf(outBuff,"<tr>");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","2");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.5");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","璁惧2");
+                    outBuff += sprintf(outBuff,"</tr>");
+                }
+                 //系统路由表(不带配置)
+                else if(strcmp(secArg,"sysrulist")==0)
+                {
+                    outBuff += sprintf(outBuff,"<tr>");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","1");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.5");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","255.255.255.255");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.254");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","80000");
+                    outBuff += sprintf(outBuff,"</tr>");
+
+                    outBuff += sprintf(outBuff,"<tr>");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","2");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.5");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","255.255.255.255");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.254");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","80000");
+                    outBuff += sprintf(outBuff,"</tr>");
+
+                }
+
+                //DHCP客户端(不带配置)
+                else if(strcmp(secArg,"dhcpclinetlist")==0)
+                {
+                    outBuff += sprintf(outBuff,"<tr>");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","1");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","dev1");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.2");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","2012.1.1-2012.2.2");
+                    outBuff += sprintf(outBuff,"</tr>");
+
+                    outBuff += sprintf(outBuff,"<tr>");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","2");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","dev2");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.2");
+                    outBuff += sprintf(outBuff,"<td>%s</td>","2012.1.1-2012.2.2");
+                    outBuff += sprintf(outBuff,"</tr>");
+
+                }
+              }
         break;       
     }
 
@@ -1793,79 +2047,6 @@ int getRadioID(int index)
 }
 
 
-//added by yhl 2013.12.05 below
-int pppoe_setup_func(void)
-{
-  char  valBuff[128];
-  char rspBuff_setup[128];
- 
-	fprintf(errOut,"\n%s  %d PPP\n",__func__,__LINE__);
-	
-	char  usernameBuff[128];
-	char  passBuff[128];
-	char  cmdstr[128];
-	int flag=0;
-	if (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 )
-	{
-		flag=1;
-	}
-	memset(usernameBuff,'\0',128);
-	memset(passBuff,'\0',128);
-	memset(cmdstr,'\0',128);
-	fprintf(errOut,"\n%s  %d PPP1\n",__func__,__LINE__); 
-
-	CFG_set_by_name("AP_STARTMODE","standard");
-	fprintf(errOut,"\n%s  %d PPP2\n",__func__,__LINE__); 
-	//1.destory old mode pid
-	//Execute_cmd("cfg -e | grep \"WAN_MODE=\"",valBuff);
-	//fprintf(errOut,"\n%s  %d PPP3\n",__func__,__LINE__); 
-	//if(strstr(valBuff,"dhcp") != 0)
-	//{
-	//	//kill udhcpc
-	//	Execute_cmd("ps aux | grep udhcpc | awk \'{print $1}\' | xargs kill -9	> /dev/null 2>&1", rspBuff);
-	//}
-	fprintf(errOut,"\n%s  %d PPP4\n",__func__,__LINE__); 
-	//if(flag!=1)
-	//{
-	//	//2.save new config to flash 
-	//	fprintf(errOut,"\n%s  %d PPP5\n",__func__,__LINE__); 
-	//	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-	//	writeParameters("/tmp/.apcfg","w+",0);
-	//}
-	//3.do new config pid
-	fprintf(errOut,"\n%s  %d PPP6\n",__func__,__LINE__); 
-	CFG_get_by_name("PPPOE_USER",usernameBuff);
-	CFG_get_by_name("PPPOE_PWD",passBuff);
-
-	fprintf(errOut,"\n%s  %d PPP7\n",__func__,__LINE__); 
-
-	strcat(cmdstr,"pppoe-setup ");
-	strcat(cmdstr,usernameBuff);
-	strcat(cmdstr," ");
-	strcat(cmdstr,passBuff);
-	fprintf(errOut,"\n!!!!<%s> PPP8\n",cmdstr); 
-	//Execute_cmd(cmdstr, rspBuff_setup);
-	fprintf(errOut,"\n%s  %d PPP9\n",__func__,__LINE__); 
-//	Execute_cmd("pppoe-start", rspBuff);
-//fprintf(errOut,"\n%s	%d [luodp]PPPOE \n",__func__,__LINE__); 	
-//gohome =1;
-}
-
-//added by yhl,to check pppoe status
-int check_pppoe(void)
-{	Execute_cmd("pppoe-status | grep \"Link is up and running on interface ppp0\" | awk '{print $4}'", rspBuff);
-   if(!strncmp(rspBuff,"up",2))
-    {
-     fprintf(errOut,"[debug]check_pppoe is up!\n");
-	 return 0;//pppoe status is good
-    }
-	else
-	{
-	fprintf(errOut,"[debug]check_pppoe is down!\n");
-	 return 1;
-	}
-  }
-
 
 
 /*****************************************************************************
@@ -2508,7 +2689,34 @@ int main(int argc,char **argv)
 		//3.do new config pid
 		//if(flag!=1)
 		Execute_cmd("udhcpc -b -i eth0 -h HBD-Router -s /etc/udhcpc.script > /dev/null 2>&1", rspBuff);
-		gohome =1;
+		//TODO check the ip address 
+		//unnormal 、none、normal
+		Execute_cmd("cfg -e | grep \"WAN_IPFLAG=\"",valBuff);
+		//get ip fail
+		if(strstr(valBuff,"none") != 0)
+		{
+				 printf("Content-Type:text/html\n\n");
+				 printf("<HTML><HEAD>\r\n");
+				 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+				 printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
+				 printf("</head><body>");			 
+				 printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");alert(_(\"err dhcp null\"));window.location.href=\"map\";</script>");
+				 printf("</body></html>");
+				 exit(1);
+		}
+		//wan ip and gateway in same subnet
+		if(strstr(valBuff,"unnormal") != 0)
+		{
+				 printf("Content-Type:text/html\n\n");
+				 printf("<HTML><HEAD>\r\n");
+				 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+				 printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
+				 printf("</head><body>");
+				 printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");alert(_(\"err dhcp ip\"));window.location.href=\"map\";</script>");
+				 printf("</body></html>");
+				 exit(1);
+		}
+		//gohome =1;
     }
 	//wan mode static ip
     if((strcmp(CFG_get_by_name("SIP",valBuff),"SIP") == 0 ) || (strcmp(CFG_get_by_name("SIPW",valBuff),"SIPW") == 0 ))
@@ -2561,86 +2769,99 @@ int main(int argc,char **argv)
 		}
 		gohome =1;
     }
-//wan mode pppoe
-//pppoe and advanced options below ,added by yhl 
-			if((strcmp(CFG_get_by_name("PPP",valBuff),"PPP") == 0 ) || (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 ))
-			{	
-				char pppoe_mode[10];						
-				memset(pppoe_mode,'\0',10);
-		
-				CFG_get_by_name("PPPOE_MODE",pppoe_mode);
-				fprintf(errOut,"user select pppoe_mode:%s\n",pppoe_mode);
-				
-			   //save new config to flash 
-			   writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-			   writeParameters("/tmp/.apcfg","w+",0);
-		
-			  if(!strncmp(pppoe_mode,"auto",4))
-						{
-						  pppoe_setup_func();
-						  if(check_pppoe()==0)//if pre pppoe-status is ok,first pppoe-stop,then pppoe-start
-							{
-							Execute_cmd("pppoe-stop", rspBuff);
-							sleep(1);
-							fprintf(errOut,"auto mode,first stop then to pppoe-start\n");
-							Execute_cmd("pppoe-start", rspBuff);
-							}
-						  if(check_pppoe()==1)
-						  	{
-						  	fprintf(errOut,"auto mode,to pppoe-start\n");
-							Execute_cmd("pppoe-start", rspBuff);
-						  	}
+	//wan mode pppoe
+	//pppoe and advanced options below ,added by yhl 
+	if((strcmp(CFG_get_by_name("PPP",valBuff),"PPP") == 0 ) || (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 ))
+	{	
+		char pppoe_mode[10];						
+		memset(pppoe_mode,'\0',10);
+		char three_thread_Buff[128];						
+		memset(three_thread_Buff,'\0',128);
+		char tmp_Buff[10];						
+		memset(tmp_Buff,'\0',10);
+		int flag=0; 
+		if (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 ) 
+		{ 
+					flag=1; 
+		}
+		CFG_get_by_name("PPPOE_MODE",pppoe_mode);
+		fprintf(errOut,"user select pppoe_mode:%s\n",pppoe_mode);
+		if(flag!=1)
+		{
+			writeParameters(NVRAM,"w+", NVRAM_OFFSET);//save new config to flash 
+			writeParameters("/tmp/.apcfg","w+",0);
+		}
+		if(!strncmp(pppoe_mode,"auto",4))
+						{  char cgi_auto[128];
+						  char	usernameBuff[128];
+						  char	passBuff[128];
+						  char	cmdstr[128];
+						  
+							CFG_get_by_name("PPPOE_USER",usernameBuff);
+							CFG_get_by_name("PPPOE_PWD",passBuff);
+							strcat(cmdstr,"pppoe-setup ");strcat(cmdstr,usernameBuff);strcat(cmdstr," ");strcat(cmdstr,passBuff);
+							strcat(cmdstr," > /dev/null 2>&1");
+                            Execute_cmd(cmdstr,cgi_auto);
+
+                            Execute_cmd("pppoe-stop", cgi_auto);sleep(5);
+							Execute_cmd("pppoe-start", cgi_auto);sleep(5);
 						}
 			  else if(!strncmp(pppoe_mode,"demand",6))
-			   { 
-				          pppoe_setup_func();
-						  if(check_pppoe()==0)//if pre pppoe-status is ok,first pppoe-stop,then pppoe-start
-							{
-							Execute_cmd("pppoe-stop", rspBuff);
-							sleep(1);
-							fprintf(errOut,"demand mode,first stop then to pppoe-start\n");
-							Execute_cmd("pppoe-start", rspBuff);
-							}
-						  if(check_pppoe()==1)
-						  	{fprintf(errOut,"demand mode,to pppoe-start\n");
-							Execute_cmd("pppoe-start", rspBuff);/*pppoe-start auto*/
-						  	}
-				}//demand mode
-				
-				else if(!strncmp(pppoe_mode,"manual",6))
-				{
-						  pppoe_setup_func();
-						  if(check_pppoe()==0)//if pre pppoe-status is ok,first pppoe-stop,then pppoe-start
-							{
-							Execute_cmd("pppoe-stop", rspBuff);
-							sleep(1);
-							fprintf(errOut,"manual mode,first stop then to pppoe-start\n");
-							Execute_cmd("pppoe-start", rspBuff);
-							}
-						  if(check_pppoe()==1)
-						  	{fprintf(errOut,"manual mode,to pppoe-start\n");
-							Execute_cmd("pppoe-start", rspBuff);/*pppoe-start auto*/
-						  	}
-				}//end manual mode	
-				  
-				else if(!strncmp(pppoe_mode,"timing",6))	
-				{
-							pppoe_setup_func();
-							if(check_pppoe()==0)//if pre pppoe-status is ok,first pppoe-stop,then pppoe-start
-							{
-							Execute_cmd("pppoe-stop", rspBuff);
-							sleep(1);
-							fprintf(errOut,"timing mode,first stop then to pppoe-start\n");
-							Execute_cmd("pppoe-start", rspBuff);
-							}
-						  if(check_pppoe()==1)
-						  	{fprintf(errOut,"timing mode,to pppoe-start\n");
-							Execute_cmd("pppoe-start", rspBuff);/*pppoe-start auto*/
-						  	}
-			   }//end timing mode
-					
-			}
-		//pppoe and advanced options  above
+			           {  char cgi_dem[128];
+						  char	usernameBuff[128];
+						  char	passBuff[128];
+						  char	cmdstr[128];
+						  
+							CFG_get_by_name("PPPOE_USER",usernameBuff);
+							CFG_get_by_name("PPPOE_PWD",passBuff);
+							strcat(cmdstr,"pppoe-setup ");strcat(cmdstr,usernameBuff);strcat(cmdstr," ");strcat(cmdstr,passBuff);
+							strcat(cmdstr," > /dev/null 2>&1");//very important
+                            Execute_cmd(cmdstr,cgi_dem);
+
+							 //Execute_cmd("pppoe-stop", cgi_dem);sleep(5);
+							 system("pppoe-stop");sleep(5);
+							 system("pppoe-start");sleep(5);
+							 //Execute_cmd("pppoe-start", cgi_dem);sleep(5);
+				        }//demand mode
+			 else if(!strncmp(pppoe_mode,"manual",6))
+			            {char cgi_man[128];
+						  char	usernameBuff[128];
+						  char	passBuff[128];
+						  char	cmdstr[128];
+						  
+							CFG_get_by_name("PPPOE_USER",usernameBuff);
+							CFG_get_by_name("PPPOE_PWD",passBuff);
+							strcat(cmdstr,"pppoe-setup ");strcat(cmdstr,usernameBuff);strcat(cmdstr," ");strcat(cmdstr,passBuff);
+							strcat(cmdstr," > /dev/null 2>&1");
+                            Execute_cmd(cmdstr,cgi_man);
+			            
+							Execute_cmd("pppoe-stop", cgi_man);sleep(5);
+							Execute_cmd("pppoe-start", cgi_man);sleep(5);
+				         }//manual mode		
+			else if(!strncmp(pppoe_mode,"timing",6))	
+				        { char cgi_tim[128];
+						  char	usernameBuff[128];
+						  char	passBuff[128];
+						  char	cmdstr[128];
+						  
+							CFG_get_by_name("PPPOE_USER",usernameBuff);
+							CFG_get_by_name("PPPOE_PWD",passBuff);
+							strcat(cmdstr,"pppoe-setup ");strcat(cmdstr,usernameBuff);strcat(cmdstr," ");strcat(cmdstr,passBuff);
+							strcat(cmdstr," > /dev/null 2>&1");
+                            Execute_cmd(cmdstr,cgi_tim);
+
+							Execute_cmd("pppoe-stop", cgi_tim);sleep(5);
+							Execute_cmd("pppoe-start", cgi_tim);sleep(5);
+			             }
+		    //Execute_cmd("ps aux | grep \"threethread\"|awk -F ' ' '{print$5}'|cut -c11-21",three_thread_Buff);
+            //if(!strncmp(three_thread_Buff,"threethread",11))
+			//	{Execute_cmd("killall threethread",tmp_Buff);sleep(2);}
+            //Execute_cmd("/usr/sbin/threethread &",tmp_Buff);sleep(2);
+			//fprintf(errOut,"to gohome\n");
+			gohome =1;
+	
+	}
+	//pppoe and advanced options  above
 
 	//wan mode l2tp
      if((strcmp(CFG_get_by_name("L2TP",valBuff),"L2TP") == 0 ) ||(strcmp(CFG_get_by_name("L2TPW",valBuff),"L2TPW") == 0 ))
@@ -2654,7 +2875,7 @@ int main(int argc,char **argv)
     }
 	//wds 
      if(strcmp(CFG_get_by_name("WIRRE",valBuff),"WIRRE") == 0 ) 
-    { 
+     { 
 		fprintf(errOut,"\n%s  %d WIRRE \n",__func__,__LINE__);
 		
 		char pChar[128];
@@ -2738,18 +2959,28 @@ int main(int argc,char **argv)
 			//wifi on ,then wds on/off
 			if(strstr(valBuff,"off") == 0)
 			{
-				//fprintf(errOut,"[luodp] wds open\n");
 				//[TODO]sta mode
 				Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
 				Execute_cmd("apup > /dev/null 2>&1", rspBuff);
+				//kill udhcpd
+				//[TODO]if dhcp no exist ,then up
+				//Execute_cmd("ps | grep udhcpd",rspBuff);
+				//if(strstr(rspBuff,"udhcpd")==0)
+				//{
+					Execute_cmd("killall udhcpd > /dev/null 2>&1",rspBuff);
+					Execute_cmd("/usr/sbin/udhcpd /etc/udhcpd.conf > /dev/null 2>&1",rspBuff);
+				//}
+				//fprintf(errOut,"[luodp] wds open\n");
 			}
 		}		
-		if(flag==1) //off->on
+		if((flag==1)||(flag==3)) //off->on and on->on 
 		{
 			Execute_cmd("cfg -e | grep 'WIFION_OFF=' | awk -F \"=\" \'{print $2}\'",valBuff);
 			//wifi on ,then wds on/off
 			if(strstr(valBuff,"off") == 0)
 			{
+				//if dhcp exist ,then kill
+				Execute_cmd("killall udhcpd > /dev/null 2>&1",rspBuff);
 				//fprintf(errOut,"[luodp] wds open\n");
 				//[TODO]sta mode
 				Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
@@ -2967,32 +3198,27 @@ int main(int argc,char **argv)
          fclose(fp);
          writeParameters(NVRAM,"w+", NVRAM_OFFSET);
          writeParameters("/tmp/.apcfg","w+",0);
-                
-         //Execute_cmd("ps | grep httpd | awk '{print $1}' | xargs kill -HUP > /dev/null 2>&1", rspBuff);
-		 //system("killhttpd");
-		 //Execute_cmd("killall -TERM httpd > /dev/null 2>&1", rspBuff);
-		 //system("killall -9 httpd > /dev/null 2>&1");
-		 //fprintf(errOut,"[luodp] httpd result: %s\n",rspBuff);		 
-         //Execute_cmd("/usr/sbin/httpd -p 80 -h /usr/www -c /etc/httpd.conf", rspBuff);	
-		 //system("httpd -h /usr/www -c /etc/httpd.conf  > /dev/null 2>&1");
-		 //system("httpd -h /usr/www -c /etc/httpd.conf  > /dev/null 2>&1");
-		 //system("httpd -h /usr/www -c /etc/httpd.conf  > /dev/null 2>&1");
-		 fprintf(errOut,"[luodp] httpd result: %s\n",rspBuff);		 
-         // fprintf(errOut,"\n----------2kill**********************\n");
-		 gohome =1;
+     
+		 printf("HTTP/1.0 200 OK\r\n");
+         printf("Content-type: text/html\r\n");
+         printf("Connection: Close\r\n");
+         printf("\r\n");
+         printf("\r\n");
+
+         printf("<HTML><HEAD>\r\n");
+         printf("<meta http-equiv=\"Content-Type\" content=\"text/html;charset=UTF-8\">");
+         printf("</head><body>");
+         printf("<script  language=javascript>setTimeout(function(){window.opener=null;window.open('http://10.10.10.254','_top');},1000);</script>");
+         printf("</body></html>");
+         exit(1);
     }
 	if(strcmp(CFG_get_by_name("FACTORY",valBuff),"FACTORY") == 0 )
 	{
         fprintf(errOut,"\n%s  %d FACTORY \n",__func__,__LINE__);
-		/*Execute_cmd("cfg -e | grep \"WIFION_OFF=\" | awk -F \"=\" \'{print $2}\'",valBuff);
-		if(strstr(valBuff,"on") == 0 )
-		{
-			Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
-		}*/
         system("cfg -x");
+		//[TODO] reset any args
 		system("echo \"/home.html:admin:admin\" > /etc/httpd.conf");
-		//system("/etc/ath/apcfg");
-		//system("apup > /dev/null 2>&1");
+
 		
         printf("HTTP/1.0 200 OK\r\n");
         printf("Content-type: text/html\r\n");
@@ -3013,10 +3239,36 @@ int main(int argc,char **argv)
         printf("<script  language=javascript>setTimeout(function(){window.location.href=\"crfact\";},60000);</script>");
         printf("</div>");
 		printf("</body></html>");
-
-
+		
+		
         system("sleep 1 && reboot &");
         exit(1);
+    }
+    if(strcmp(CFG_get_by_name("ADD_CONRULE",valBuff),"ADD_CONRULE") == 0 ) 
+    // 添加无线接入处理
+    {		 
+        fprintf(errOut,"\n%s  %d ADD_CONRULE \n",__func__,__LINE__);
+     
+        gohome =1;
+    }
+    if(strcmp(CFG_get_by_name("CONM_WORK",valBuff),"CONM_WORK") == 0 ) 
+    // 添加无线接入生效处理
+    {		 
+        fprintf(errOut,"\n%s  %d CONM_WORK \n",__func__,__LINE__);
+     
+        gohome =1;
+    }
+    if(strcmp(CFG_get_by_name("WIRRE",valBuff),"WIRRE") == 0 ) 
+    {		 
+        gohome =1;
+    }
+    if(strcmp(CFG_get_by_name("WIRRE",valBuff),"WIRRE") == 0 ) 
+    {		 
+        gohome =1;
+    }
+    if(strcmp(CFG_get_by_name("WIRRE",valBuff),"WIRRE") == 0 ) 
+    {		 
+        gohome =1;
     }
     printf("HTTP/1.0 200 OK\r\n");
     printf("Content-type: text/html\r\n");
@@ -3037,10 +3289,26 @@ int main(int argc,char **argv)
             exit(1);
         }
     }
+    else if( gohome == 2)
+    {
+         if(translateFile("../index.html") < 0)
+        {
+            printf("Content-Type:text/html\n\n");
+            printf("<HTML><HEAD>\r\n");
+            printf("<LINK REL=\"stylesheet\" href=\"../styleSheet.css\" type=\"text/css\">");
+            printf("</head><body>");
+            printf("Page home Not Found");
+            printf("</body></html>");
+            exit(1);
+        }
+    }
     else
     {
-   	 if(translateFile(Page) < 0)
-     {
+        fprintf(errOut,"\n%s  %d \n",__func__,__LINE__);
+
+        if(translateFile(Page) < 0)
+        {
+        fprintf(errOut,"\n%s  %d \n",__func__,__LINE__);
         printf("Content-Type:text/html\n\n");
         printf("<HTML><HEAD>\r\n");
         printf("<LINK REL=\"stylesheet\" href=\"../styleSheet.css\" type=\"text/css\">");
@@ -3048,69 +3316,10 @@ int main(int argc,char **argv)
         printf("Page %s Not Found",Page);
         printf("</body></html>");
         exit(1);
-     }	
-	}
-
-
-    #if 0
-    if((strcmp(CFG_get_by_name("COMMIT",valBuff),"Commit") == 0)  || (strcmp(CFG_get_by_name("COMMIT",valBuff),"Save") == 0))
-    {
-        //fprintf(errOut,"%s  %d\n",__func__,__LINE__);
-        writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-        writeParameters("/tmp/.apcfg","w+",0);
+        }	
     }
-
-    if(strcmp(CFG_get_by_name("UPDATE",valBuff),"Update") == 0 )
-    {
-       // fprintf(errOut,"%s  %d\n",__func__,__LINE__);
-        writeParameters("/tmp/.apcfg","w+",0);
-    }
-
-    if(strcmp(CFG_get_by_name("StopButton",valBuff),"Stop") == 0 )
-    {
-       // fprintf(errOut,"%s  %d\n",__func__,__LINE__);
-        Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
-    }
-
-    if(strcmp(CFG_get_by_name("StartButton",valBuff),"Start") == 0 )
-    {
-        //fprintf(errOut,"%s  %d\n",__func__,__LINE__);
-        Execute_cmd("apup > /dev/null 2>&1", rspBuff);
-    }
-
-    if(strcmp(CFG_get_by_name("FactoryResetButton",valBuff),"FactoryReset") == 0 )
-    {
-        Execute_cmd("cfg -x", rspBuff);
-        sleep(1);
-        reboot(RB_AUTOBOOT);
-    }
-
-    if(strcmp(CFG_get_by_name("StartPINMethod",valBuff),"StartPINMethod") == 0 )
-    {
-        /* extract the enrollee key and pass it over to the command 
-         */
-        char cmd[256]={0};
-
-        sprintf(cmd, "wpatalk -v ath%c 'configthem pin=%s'", '0'+(parameterIndex-1), CFG_get_by_name("AP_ENROLLEE", valBuff));
-        Execute_cmd(cmd, rspBuff);
-    }
-    if(strcmp(CFG_get_by_name("StartPBC",valBuff),"StartPBC") == 0 )
-    {
-        /* extract the enrollee key and pass it over to the command 
-         */
-        char cmd[256]={0};
-        sprintf(cmd, "wpatalk -v ath0 configthem");
-        Execute_cmd(cmd, rspBuff);
-    }
-     if(strcmp(CFG_get_by_name("w3",valBuff),"w3") == 0 )
-    {
-       // fprintf(errOut,"%s  %d\n",__func__,__LINE__);
-        sleep(1);
-        reboot(RB_AUTOBOOT);
-        
-    }
-     #endif
-#endif /* #ifndef ATH_SINGLE_CFG */
+	
+	#endif /* #ifndef ATH_SINGLE_CFG */
      //fprintf(errOut,"%s  %d\n",__func__,__LINE__);
    exit(0);
 }

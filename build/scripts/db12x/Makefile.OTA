@@ -46,9 +46,10 @@ makeotaimage: check_otaimg
 # Finish Kernel and mib0 and ART Padding
 	@SIZE=`wc -c $(Image_DIR)/$(KERNEL_IMAGE_NAME) | awk '{ print $$1 }'` ; \
 	KERNEL_PART_SIZE=`printf "%d" $(KERNEL_SIZE)` ; \
-	PAD=`expr $$KERNEL_PART_SIZE - $$SIZE` ; \
+	PAD=`expr $$KERNEL_PART_SIZE - $$SIZE - 16` ; \
 	dd if=/dev/zero count=1 bs=$$PAD 2> /dev/null | \
-	tr \\000 \\377 >> $(Image_DIR)/$(PACKED_IMAGE_2)	
+	tr \\000 \\377 >> $(Image_DIR)/$(PACKED_IMAGE_2); \
+	echo "xxxxxxx9344base" >> $(Image_DIR)/$(PACKED_IMAGE_2)	
 	
 # Copy Rootfs
 	@cat $(Image_DIR)/$(ROOTFS_IMAGE_NAME) >> $(Image_DIR)/$(PACKED_IMAGE_2)
