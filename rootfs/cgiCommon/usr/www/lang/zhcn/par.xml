@@ -1,0 +1,63 @@
+<po>
+  <message msgid="par bAPPLY" msgstr="应用" />
+  <message msgid="par bCANCEL" msgstr="取消" />
+  <message msgid="par enable" msgstr="启用" />
+  <message msgid="par disable" msgstr="停用" />
+  <message msgid="par MOD" msgstr="修改" />
+  <message msgid="par DEL" msgstr="删除" />
+  <message msgid="par ADD" msgstr="添加" />
+  <message msgid="par onbutton" msgstr="启用" />
+  <message msgid="par offbutton" msgstr="禁用" />  
+  <message msgid="par work" msgstr="生效" />
+  <message msgid="par offwork" msgstr="失效" />  
+  <message msgid="par bSAVE" msgstr="保存" />  
+  
+  <message msgid="parset title" msgstr="家长设置" />  
+  <message msgid="parset des" msgstr="通过家长管理，管理孩子PC机上网权限" />  
+  <message msgid="parset t1_title" msgstr="家长设置" />  
+  <message msgid="parset t1_parenable" msgstr="家长控制" />  
+  <message msgid="parset ti_parmac" msgstr="家长PC的MAC地址" />  
+  <message msgid="parset t1_macnow" msgstr="当前管理者PC的MAC地址" />  
+  <message msgid="parset macclone_b" msgstr="设为家长PC" />  
+  
+  <message msgid="pa title" msgstr="访问管理" />  
+  <message msgid="pa des" msgstr="管理孩子PC机访问互联网权限" />  
+  <message msgid="pa t1_Mac" msgstr="MAC地址" />  
+  <message msgid="pa t1_Ns" msgstr="网站列表" />  
+  <message msgid="pa t1_Week" msgstr="星期" />  
+  <message msgid="pa t1_Time" msgstr="时间" />  
+  <message msgid="pa t1_St" msgstr="状态" />  
+  <message msgid="pa t1_Mod" msgstr="配置" />  
+
+  <message msgid="paradd title" msgstr="添加家长控制访问管理条目" />  
+  <message msgid="paradd t1_title" msgstr="添加访问管理条目" />  
+  <message msgid="paradd t1_MAC" msgstr="MAC地址" />  
+  <message msgid="paradd t1_NetL" msgstr="网站列表" />  
+  <message msgid="paradd t1_Week" msgstr="星期" />  
+ 
+  <message msgid="paradd day1" msgstr="星期一" />
+  <message msgid="paradd day2" msgstr="星期二" />
+  <message msgid="paradd day3" msgstr="星期三" />
+  <message msgid="paradd day4" msgstr="星期四" />
+  <message msgid="paradd day5" msgstr="星期五" />
+  <message msgid="paradd day6" msgstr="星期六" />
+  <message msgid="paradd day7" msgstr="星期日" />
+
+  <message msgid="paradd t1_Time" msgstr="时间" />  
+  <message msgid="paradd t1_Status" msgstr="状态" />  
+
+    <message msgid="err MAC empty" msgstr="MAC地址不能为空" />
+  <message msgid="err IP empty" msgstr="IP地址不能为空" />
+  <message msgid="err sub empty" msgstr="掩码地址不能为空" />
+  <message msgid="err user empty" msgstr="用户名不能为空" />
+  <message msgid="err pwd empty" msgstr="密码不能为空" />
+  <message msgid="err time empty" msgstr="时间不能为空" />
+  
+  <message msgid="err MAC format" msgstr="MAC格式错误" />
+  <message msgid="err IP format" msgstr="IP地址格式错误" />
+  <message msgid="err sub format" msgstr="掩码格式错误" />
+  
+  <message msgid="err format" msgstr="参数格式错误" />
+  <message msgid="err range" msgstr="参数范围错误" />
+
+ </po>

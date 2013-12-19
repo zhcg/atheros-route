@@ -1,3 +1,4 @@
+touch	/var/run/udhcpd.leases
 echo "start 10.10.10.101" > /etc/udhcpd.conf
 echo "end 10.10.10.199"  >> /etc/udhcpd.conf
 echo "opt lease   7200" >> /etc/udhcpd.conf
@@ -6,7 +7,7 @@ echo "opt router  ${AP_IPADDR}" >> /etc/udhcpd.conf
 echo "opt subnet  ${AP_NETMASK}" >> /etc/udhcpd.conf
 echo "static_lease `ifconfig br0 | grep HWaddr | awk '{print $5}'` ${AP_IPADDR}" >> /etc/udhcpd.conf
 echo "interface   br0"  >> /etc/udhcpd.conf
-echo "max_leases  99"	>> /etc/udhcpd.conf
+echo "max_leases	98" >> /etc/udhcpd.conf
 echo "auto_time   7200" >> /etc/udhcpd.conf
 echo "lease_file  /var/run/udhcpd.leases" >> /etc/udhcpd.conf
 echo "pidfile /var/run/udhcpd.pid" >> /etc/udhcpd.conf

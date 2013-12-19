@@ -25,13 +25,18 @@ if [ "${WAN_MODE}" != "bridged" ]; then
         ## Run the DHCP client on this interface
         ##
 
-        udhcpc -b -i $WAN_IF -s /etc/udhcpc.script
+        udhcpc -b -i $WAN_IF -h HBD-Router -s /etc/udhcpc.script
     elif [ "${WAN_MODE}" = "static" ]; then
         ##
         ## Static IP address
         ##
 
         ifconfig $WAN_IF $WAN_IPADDR netmask $WAN_NETMASK up
+		if [ "${IPGW}" != "" ]
+		then
+			route add default gw ${IPGW}
+		fi
+
 	elif [ "${WAN_MODE}" = "pppoe" ]; then
         ##
         ## pppoe

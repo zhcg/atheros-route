@@ -1,0 +1,100 @@
+﻿<html>
+<head>
+<title></title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+<script type="text/javascript" src="/lang/b28n.js"></script>
+<script>
+
+function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
+function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
+function button_commit(buttonID){document.getElementById(buttonID).click();}
+function initTranslation()
+{
+	trans_inner("title","pa title");
+	trans_inner("des","pa des");
+	trans_inner("t1_Mac","pa t1_Mac");
+	trans_inner("t1_Ns","pa t1_Ns");
+	trans_inner("t1_Week","pa t1_Week");
+	trans_inner("t1_Time","pa t1_Time");
+	trans_inner("t1_St","pa t1_St");
+	trans_inner("t1_Mod","pa t1_Mod");
+	
+	trans_value("ADDPCR","par ADD");
+	trans_value("bCANCEL","par bCANCEL");
+	trans_value("bAPPLY","par bAPPLY");	
+}
+function init()
+{
+	Butterlate.setTextDomain("par");
+	initTranslation();
+}
+function listdel(value)
+{
+	document.getElementById("DELXXX").value=value;
+	alert("删除了"+value);
+}
+function chackValue()
+{
+	button_commit("PARENTCACC_SET");
+}
+</script>
+
+</head>
+
+<body onload="init()">
+<div class="handaer_main">
+<table  border="0" cellpadding="0" cellspacing="0"><tr><td>
+<h1 id="title">访问管理</h1>
+<form method="POST" name="wirelessconnection">
+<h2 id="des">管理孩子PC机访问互联网权限</h2>
+
+<table id="t1"  width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
+  <tr>
+    <td>ID</td>
+    <td id="t1_Mac">MAC地址</td>
+    <td id="t1_Ns">网站列表</td>
+    <td id="t1_Week">星期</td>
+    <td id="t1_Time">时间</td>
+    <td id="t1_St">状态</td>
+    <td id="t1_Mod">配置</td>
+  </tr>
+   ~Z:parclist~  
+   <tr>
+	<td>&nbsp; &nbsp;</td>
+	<td>&nbsp; &nbsp;</td>
+	<td>&nbsp; &nbsp;</td>
+	<td>&nbsp; &nbsp;</td>
+	<td>&nbsp; &nbsp;</td>
+	<td>&nbsp; &nbsp;</td>
+    <td>
+		<input type="button"  class="handaer_small_button" name="ADDPCR" id="ADDPCR" value="添加" onClick="window.location.href='ad_parentc_add'">
+	</td>
+  </tr>
+
+  
+ <!--~~DHCPLIST~-->
+</table>
+<table id="buttontable">
+<tr align="center">
+  <td>
+    <input type="button" name="cancel_motion" id="bCANCEL" class="handaer_input" onClick="window.location.reload();">
+    <input type="button" name="apply_motion" id="bAPPLY" class="handaer_input" onClick="chackValue();">
+	<input type="submit" name="PARENTCACC_SET" id="PARENTCACC_SET" style="display:none" value="PARENTCACC_SET">
+  </td>
+</tr>
+</table>
+</form>
+
+
+<form method="POST" name="DELLIST">
+	<input style="display:none"  type="text" name="DELXXX" id="DELXXX" size="20" maxlength="32">
+	<input style="display:none" type="submit" name="DEL_PRC" id="DEL_PRC" value="DEL_PRC">
+</form>
+</td></tr>
+</table>
+</div>
+
+</body>
+</html>

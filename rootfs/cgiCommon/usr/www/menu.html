@@ -17,8 +17,7 @@ function initTranslation()
 	e.innerHTML = _("admw m_wifi");
 	e = document.getElementById("m_wirere");
 	e.innerHTML = _("admw m_wirere");
-	//e = document.getElementById("m_parent");
-	//e.innerHTML = _("admw m_parent");
+
 }
 
 function pageInit()
@@ -32,7 +31,6 @@ function hidehead()
   document.getElementById("c2").innerHTML='<a href="cgi-bin/w2" target="pro" id="m_wan"  onclick="showpwd2()"></a>';
   document.getElementById("c3").innerHTML='<a href="cgi-bin/w4" target="pro" id="m_wirere" onclick="showpwd3()"></a>';
   document.getElementById("c4").innerHTML='<a href="cgi-bin/w3" target="pro" id="m_wifi" onclick="showpwd4()"></a>';
-  //document.getElementById("c5").innerHTML='<a href="cgi-bin/w5" target="pro" id="m_parent" onclick="showpwd5()"></a>';
 }
 function showpwd1()
 {
@@ -59,13 +57,7 @@ function showpwd4()
 	initTranslation();
 
 }
-//function showpwd5()
-//{
-//	hidehead();
-// 	document.getElementById("c5").innerHTML='<a href="cgi-bin/w5" target="pro" id="m_parent" onclick="showpwd5()" class="handaer_common"></a>';
-//	initTranslation();
 
-//}
 </script>
 <LINK REL="stylesheet" HREF="style/handaer.css" TYPE="text/css">
 </head>
@@ -76,9 +68,8 @@ function showpwd4()
 	<dd><span id="c1"><a href="cgi-bin/map" target="pro" id="m_normal" onclick="showpwd1()" class="handaer_common"></a></span></dd>
 	<dd><span id="c2"><a href="cgi-bin/w2" target="pro" id="m_wan" onclick="showpwd2()"></a></span></dd>
 	<dd><span id="c3"><a href="cgi-bin/w4" target="pro" id="m_wirere" onclick="showpwd3()"></a></span></dd>
-	<dd><span id="c4"><a href="cgi-bin/w3" target="pro" id="m_wifi" onclick="showpwd4()"></a></span></dd>
-	<!--dd><span id="c5"><a href="cgi-bin/w5" target="pro" id="m_parent" onclick="showpwd5()">家长控制</a></span></dd-->
-    </dl>
+	<dd><span id="c4"><a href="cgi-bin/w3" target="pro" id="m_wifi" onclick="showpwd4()"></a></span></dd>    
+	</dl>
     </div>
     
 </body>

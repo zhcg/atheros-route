@@ -1,0 +1,198 @@
+﻿<html>
+<head>
+<title></title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+<script type="text/javascript" src="/lang/b28n.js"></script>
+<script>
+
+function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
+function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
+function widget_disable	(widgetID){document.getElementById(widgetID).disabled = true;}
+function initTranslation()
+{
+	trans_inner("t1_title","sysinfo t1_title");
+	trans_inner("t1_softv","sysinfo t1_softv");
+	trans_inner("t1_firmv","sysinfo t1_firmv");
+	trans_inner("t2_title","sysinfo t2_title");
+	trans_inner("t2_intnets","sysinfo t2_intnets");
+	trans_inner("t2_mac","sysinfo t2_mac");
+	trans_inner("t2_ip","sysinfo t2_ip");
+	trans_inner("t2_ctpye","sysinfo t2_ctpye");
+	trans_inner("t2_gw","sysinfo t2_gw");
+	trans_inner("t3_title","sysinfo t3_title");
+	trans_inner("t3_mac","sysinfo t3_mac");
+	trans_inner("t3_GW","sysinfo t3_GW");
+	trans_inner("t4_title","sysinfo t4_title");
+	trans_inner("t4_wifis","sysinfo t4_wifis");
+	trans_inner("t4_name","sysinfo t4_name");
+	trans_inner("t4_safes","sysinfo t4_safes");
+	trans_inner("t4_channel","sysinfo t4_channel");
+	trans_inner("t4_wds","sysinfo t4_wds");
+}
+function init()
+{
+	Butterlate.setTextDomain("main");
+	initTranslation();
+	//widget_disable("s1");
+	//widget_disable("s2");
+	//widget_disable("s3");
+	//widget_disable("s4");
+	//widget_disable("s5");
+	//widget_disable("s6");
+	//widget_disable("s7");
+	//widget_disable("s8");
+	//widget_disable("s9");
+	//widget_disable("s10");
+	//widget_disable("s11");
+	//widget_disable("s12");
+	//widget_disable("s13");
+	//widget_disable("s14");
+	valueinit();
+}
+	//上网状态	INTERNET_ON	on提供为可上网，off提示为不可以上网	
+	//无线状态	WIFION_OFF	on提示为开启off提示为未开启	
+	//安全类型	AP_SECMODE	WPA提示为加密None提示为公开	
+	//WDS状态	WDSON_OFF	on提示为开启off提示为未开启	
+function valueinit()
+{
+	document.getElementById("ss1").innerHTML=document.getElementById("s1").value;
+	document.getElementById("ss2").innerHTML=document.getElementById("s2").value;
+	document.getElementById("ss4").innerHTML=document.getElementById("s4").value;
+	document.getElementById("ss6").innerHTML=document.getElementById("s6").value;
+	document.getElementById("ss8").innerHTML=document.getElementById("s8").value;
+	document.getElementById("ss9").innerHTML=document.getElementById("s9").value;
+	document.getElementById("ss11").innerHTML=document.getElementById("s11").value;
+	document.getElementById("ss13").innerHTML=document.getElementById("s13").value;
+
+
+	if(document.getElementById("s3").value == "on")
+		document.getElementById("ss3").innerHTML=_("sysinfo ok");
+	else
+		document.getElementById("ss3").innerHTML=_("sysinfo fail");
+	
+	{
+		if((document.getElementById("s5a").value == "")||(document.getElementById("s5b").value == ""))
+			document.getElementById("ss5").innerHTML=_("sysinfo unset");
+		else
+			document.getElementById("ss5").innerHTML=document.getElementById("s5a").value +"/"+document.getElementById("s5b").value;
+	}
+	
+	if(document.getElementById("s7").value == "")	
+		document.getElementById("ss7").innerHTML=_("sysinfo unset");
+	else
+		document.getElementById("ss7").innerHTML=_("sysinfo unset");
+		
+	if(document.getElementById("s10").value == "on")
+		document.getElementById("ss10").innerHTML=_("sysinfo on");
+	else
+		document.getElementById("ss10").innerHTML=_("sysinfo off");
+		
+	if(document.getElementById("s12").value == "WPA")
+		document.getElementById("ss12").innerHTML=_("sysinfo jiami");
+	else
+		document.getElementById("ss12").innerHTML=_("sysinfo open");
+		
+	if(document.getElementById("s14").value == "on")
+		document.getElementById("ss14").innerHTML=_("sysinfo on");
+	else
+		document.getElementById("ss14").innerHTML=_("sysinfo off");
+}
+</script>
+
+</head>
+
+<body onload="init()">
+<div class="handaer_main">
+<table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
+
+<h1></h1>
+<table width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
+<tr><td class="title" colspan="2" id="t1_title">系统状态</td></tr> 
+<tr>
+  <td class="head" id="t1_softv">当前软件版本</td>
+  <td><span id="ss1" name="ss1"></span>
+  <input size="32" style="display:none" maxlength="64" name="s1" id="s1" value="~~SOFT_VERSION~" type="text" readonly>
+  </td>
+</tr>
+<tr>
+  <td class="head" id="t1_firmv">当前硬件版本</td>
+  <td><span id="ss2" name="ss2"></span>
+  <input size="32" style="display:none" maxlength="64" name="s2" id="s2" value="~~HAL_VERSION~" type="text" readonly></td>
+</tr>
+</table>
+
+<h1></h1>
+<table width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
+<tr><td class="title" colspan="2" id="t2_title">互联网</td></tr>
+<tr>
+  <td class="head" id="t2_intnets">上网状态</td>
+  <td><span name="ss3" id="ss3" ></span><input size="32" style="display:none" maxlength="64" name="s3" id="s3" value="~~INTERNET_ON~" type="text" readonly></td>
+</tr>
+<tr>
+  <td class="head" id="t2_mac">MAC地址</td>
+  <td><span id="ss4" name="ss4"></span><input size="32" style="display:none" maxlength="64" name="s4" id="s4" value="~~ETH0_MAC~" type="text" readonly></td>
+</tr>
+<tr>
+  <td class="head" id="t2_ip">IP地址</td>
+  <td><span id="ss5" name="ss5"></span><input size="32" style="display:none" maxlength="64" name="s5a" id="s5a" value="~~WAN_IPADDR~" type="text" readonly>
+  <input size="32" style="display:none" maxlength="64" name="s5b" id="s5b" value="~~WAN_NETMASK~" type="text" readonly></td>
+</tr>
+<tr>
+  <td class="head" id="t2_ctpye">接入方式</td>
+  <td><span id="ss6" name="ss6"></span><input size="32" style="display:none" maxlength="64" name="s6" id="s6" value="~~WAN_MODE~" type="text" readonly></td>
+</tr>
+<tr>
+  <td class="head" id="t2_gw">网关</td>
+  <td><span id="ss7" name="ss7"></span><input size="32" style="display:none" maxlength="64" name="s7" id="s7" value="~~IPGW~" type="text" readonly></td>
+</tr>
+</table>
+
+<h1></h1>
+<table width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
+<tr><td class="title" colspan="2" id="t3_title">局域网</td></tr>
+<tr>
+  <td class="head" id="t3_mac">MAC</td>
+  <td><span id="ss8" name="ss8"></span><input size="32" style="display:none" maxlength="64" name="s8" id="s8" value="~~BR0_MAC~" type="text" readonly></td>
+</tr>
+<tr>
+  <td class="head" id="t3_GW">网关IP</td>
+  <td><span id="ss9" name="ss9"></span><input size="32" style="display:none" maxlength="64" name="s9" id="s9" value="~~AP_IPADDR~/~~AP_NETMASK~" type="text" readonly></td>
+</tr>
+</table>
+ 
+<h1></h1>
+<table width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
+<tr><td class="title" colspan="2" id="t4_title">无线网络</td></tr>
+<tr>
+  <td class="head" id="t4_wifis">无线状态</td>
+  <td><span name="ss10" id="ss10" ></span><input size="32" style="display:none" maxlength="64" name="s10" id="s10" value="~~WIFION_OFF~" type="text" readonly></td>
+</tr>
+<tr>
+  <td class="head" id="t4_name">网络名称</td>
+  <td><span id="ss11" name="ss11"></span><input size="32" style="display:none" maxlength="64" name="s11" id="s11" value="~~AP_SSID~" type="text" readonly></td>
+</tr>
+<tr>
+  <td class="head" id="t4_safes">安全类型</td>
+  <td><span name="ss12" id="ss12" ></span><input size="32" style="display:none" maxlength="64" name="s12" id="s12" value="~~AP_SECMODE~" type="text" readonly></td>
+</tr>
+<tr>
+  <td class="head" id="t4_channel">无线信道</td>
+  <td><span id="ss13" name="ss13"></span><input size="32" style="display:none" maxlength="64" name="s13" id="s13" value="~~AP_PRIMARY_CH~" type="text" readonly></td>
+</tr>
+<tr>
+  <td class="head" id="t4_wds">WDS状态</td>
+  <td><span  name="ss14" id="ss14" ></span><input size="32" style="display:none" maxlength="64" name="s14" id="s14" value="~~WDSON_OFF~" type="text" readonly></td>
+</tr>
+</table>
+
+
+
+
+</td></tr>
+</table>
+</div>
+
+</body>
+</html>

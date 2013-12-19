@@ -181,7 +181,7 @@ static int hs_configure_fd(int fd, int vol,int bits,int stereo, int rate, int *m
 	TX PGA Gain Control.
 	11111= 12 dB
 	10111= 0 dB
-	00000= “C34.5 dB
+	00000= 每34.5 dB
 	LSB= 1.5 dB
 	1
 	SLM
@@ -273,7 +273,7 @@ static int hs_configure_fd(int fd, int vol,int bits,int stereo, int rate, int *m
 	RX PGA Gain Control.
 	11111= 12 dB
 	10111= 0 dB
-	00000= “C34.5 dB
+	00000= 每34.5 dB
 	LSB= 1.5 dB
 	1
 	LOM
@@ -314,12 +314,13 @@ static int hs_configure_fd(int fd, int vol,int bits,int stereo, int rate, int *m
 #else
 static int hs_configure_fd(int fd, int vol,int bits,int stereo, int rate, int *minsz)
 { 
+	// int min_size=0, blocksize=512;
 	int min_size=0, blocksize=512;
 	/* unset nonblocking mode */
 	/* We wanted non blocking open but now put it back to normal ; thanks Xine !*/
 	fcntl(fd, F_SETFL, fcntl(fd, F_GETFL)&~O_NONBLOCK);
 	 
-	blocksize = blocksize*(rate/8000); // 512
+	blocksize = blocksize*(rate/8000); // 512 ---> 320
 	 
 	min_size = blocksize; 
 #if 0	
@@ -335,9 +336,9 @@ static int hs_configure_fd(int fd, int vol,int bits,int stereo, int rate, int *m
 	3:2
 	LOT
 	Line Out Attenuation.
-	11 = “C18 dB analog attenuation on Line Output.
-	10 = “C12 dB analog attenuation on Line Output.
-	01 = “C6 dB analog attenuation on Line Output.
+	11 = 每18 dB analog attenuation on Line Output.
+	10 = 每12 dB analog attenuation on Line Output.
+	01 = 每6 dB analog attenuation on Line Output.
 	00 = 0 dB analog attenuation on Line Output.
 	*/
 	//01 <==
@@ -354,7 +355,7 @@ static int hs_configure_fd(int fd, int vol,int bits,int stereo, int rate, int *m
 	TX PGA Gain Control.
 	11111= 12 dB
 	10111= 0 dB
-	00000= “C34.5 dB
+	00000= 每34.5 dB
 	LSB= 1.5 dB
 	*/
 	//11000<==
@@ -400,7 +401,7 @@ static int hs_configure_fd(int fd, int vol,int bits,int stereo, int rate, int *m
 	RX PGA Gain Control.
 	11111= 12 dB
 	10111= 0 dB
-	00000= “C34.5 dB
+	00000= 每34.5 dB
 	LSB= 1.5 dB  
 	*/
 	//11000 <==
@@ -754,8 +755,12 @@ static void * oss_thread(void *p){
 	int err;
 	mblk_t *rm=NULL;
 	bool_t did_read=FALSE;
+	int r_count;
 
 	oss_open(d,&bsize);
+
+	ms_error("bsize for soundcard -- %d -- \n",bsize);
+
 	if (d->pcmfd_read>=0){
 		rtmpbuff=(uint8_t*)alloca(bsize);
 	}
@@ -776,7 +781,8 @@ static void * oss_thread(void *p){
 			if (d->read_started){
 				if (rm==NULL) rm=allocb(bsize,0);
 				err=read(d->pcmfd_read,rm->b_wptr,bsize);
-				if (err<0){
+				// err=read(d->pcmfd_read,rm->b_wptr,318);
+				if (err<0) {
 					ms_warning("Fail to read %i bytes from soundcard: %s",
 					bsize,strerror(errno));
 				}else{
@@ -816,9 +822,9 @@ static void * oss_thread(void *p){
 #endif
 			if (d->write_started){
 				//wtmpbuff--data to write
-				ms_mutex_lock(&d->mutex);//add by chen.chunsheng
-				err=ms_bufferizer_read(d->bufferizer,wtmpbuff,bsize); //bsize = 512 bytes
-				ms_mutex_unlock(&d->mutex);//add by chen.chunsheng
+				// ms_mutex_lock(&d->mutex);//add by chen.chunsheng
+				err=ms_bufferizer_read(d->bufferizer,wtmpbuff,bsize); //bsize = 512 bytes --> 320
+				// ms_mutex_unlock(&d->mutex);//add by chen.chunsheng
 
 				//printf("f %s:l %d--bsize=%d\n", __FUNCTION__, __LINE__, bsize);
 				
@@ -834,7 +840,17 @@ static void * oss_thread(void *p){
 						ms_warning("Fail to write %i bytes from soundcard: %s",
 						bsize,strerror(errno));
 					}
+				} else {
+					memset(wtmpbuff, 0x01 , bsize);
+					err=write(d->pcmfd_write,wtmpbuff,bsize);
+					if (err<0){
+						ms_error("Fail to write %i bytes ---0--- from soundcard: %s",
+						bsize,strerror(errno));
+					}
+
 				}
+
+
 			}else {
 				int sz;
 				memset(wtmpbuff,0,bsize);

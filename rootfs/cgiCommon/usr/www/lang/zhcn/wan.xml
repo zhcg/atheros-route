@@ -1,0 +1,94 @@
+<po>
+  <message msgid="inet apply" msgstr="应用" /> 
+  <message msgid="inet cancel" msgstr="取消" />
+  <message msgid="inet enable" msgstr="启用" />
+  <message msgid="inet disable" msgstr="停用" />
+  <message msgid="inet disable" msgstr="停用" />
+  <message msgid="inet showp" msgstr="显示密码" />
+  <message msgid="inet settingwaiting" msgstr="正在检测，请稍等......" />
+  <message msgid="inet autocheck" msgstr="自动检测" />
+  <message msgid="inet bSAVE" msgstr="保存" />  
+  
+  <message msgid="inet mac" msgstr="MAC 地址" />
+  <message msgid="inet ip" msgstr="IP 地址" />
+  <message msgid="inet server" msgstr="服务器 IP" />
+  <message msgid="inet netmask" msgstr="子网掩码" />
+  <message msgid="inet lan2" msgstr="局域网 2" />
+  <message msgid="inet lan2 ip" msgstr="局域网 2 IP 地址" />
+  <message msgid="inet lan2 netmask" msgstr="局域网 2 子网掩码" />
+  <message msgid="inet gateway" msgstr="默认网关" />
+  <message msgid="inet pri dns" msgstr="首选DNS服务器" />
+  <message msgid="inet sec dns" msgstr="备选DNS服务器" />
+  <message msgid="inet user" msgstr="用户名" />
+  <message msgid="inet password" msgstr="密码" />
+  <message msgid="inet pass2" msgstr="确认密码" />
+  <message msgid="inet hostname" msgstr="网络名称(可选)" />
+  <message msgid="inet cmacenable" msgstr="是否允许" />
+
+  <message msgid="wan title" msgstr="WAN口设置" />
+  <message msgid="wan introduction" msgstr="您可以依您的环境选择适当的WAN口连接方式，并针对不同的连接方式设置参数。" />
+  <message msgid="wan connection type" msgstr="WAN口连接方式:" />
+  <message msgid="wan connection type static" msgstr="静态 (固定 IP)" />
+  <message msgid="wan connection type dhcp" msgstr="动态 (自动取得)" />
+  <message msgid="wan connection type pppoe" msgstr="PPPoE (ADSL)" />
+  <message msgid="wan connection type l2tp" msgstr="L2TP" />
+  <message msgid="wan connection type pptp" msgstr="PPTP" />
+  <message msgid="wan protocol opmode" msgstr="工作模式" />
+  <message msgid="wan protocol opmode keepalive" msgstr="自动连接" />
+  <message msgid="wan protocol opmode ondemand" msgstr="按需连接" />
+  <message msgid="wan protocol opmode manual" msgstr="手动连接" />  
+  <message msgid="wan protocol opmode timing" msgstr="定时连接" />
+  
+  
+  <message msgid="wan static mode" msgstr="静态模式" />
+  <message msgid="wan dhcp mode" msgstr="DHCP 模式" />
+  <message msgid="wan pppoe mode" msgstr="PPPoE 模式" />
+  <message msgid="wan l2tp mode" msgstr="L2TP 模式" />
+  <message msgid="wan pptp mode" msgstr="PPTP 模式" />
+  <message msgid="wan 3G mode" msgstr="3G 模式" />
+  <message msgid="wan 3G modem" msgstr="USB 3G 调制解调器" />
+  <message msgid="wan address mode" msgstr="IP 地址模式" />
+  <message msgid="wan address mode static" msgstr="静态" />
+  <message msgid="wan address mode dynamic" msgstr="动态 " />
+  
+  <message msgid="KAM" msgstr="按需连接：自动断线等待时间 " />
+  <message msgid="ODM" msgstr="手动连接：自动断线等待时间 " />
+  <message msgid="PPPOE_TIMING" msgstr="定时连接 ：定时连接时段" />    
+  <message msgid="minutes" msgstr="分钟" />
+  <message msgid="seconds" msgstr="秒" />
+
+  
+  <message msgid="macc title" msgstr="MAC地址克隆" />
+  <message msgid="macc des" msgstr="设置BASE对广域网的MAC地址（  注意：只有局域网中计算机可以使用本功能）" />
+  <message msgid="macc t1_title" msgstr="MAC地址克隆" />
+  <message msgid="macc t1_mac" msgstr="MAC地址" />
+  <message msgid="macc t1_PCmac" msgstr="当前管理者PC的MAC地址" />
+  <message msgid="macc macback_b" msgstr="恢复出厂MAC" />
+  <message msgid="macc macclone_b" msgstr="MAC地址克隆" />
+  
+   <message msgid="err MAC empty" msgstr="MAC地址不能为空" />
+  <message msgid="err IP empty" msgstr="IP地址不能为空" />
+  <message msgid="err sub empty" msgstr="掩码地址不能为空" />
+  <message msgid="err user empty" msgstr="用户名不能为空" />
+  <message msgid="err pwd empty" msgstr="密码不能为空" />
+  <message msgid="err time empty" msgstr="时间不能为空" />
+  
+  <message msgid="err MAC format" msgstr="MAC格式错误" />
+  <message msgid="err IP format" msgstr="IP地址格式错误" />
+  <message msgid="err sub format" msgstr="掩码格式错误" />
+  
+  <message msgid="err format" msgstr="参数格式错误" />
+  <message msgid="err range" msgstr="参数范围错误" />
+ 
+ <message msgid="err pwd mismatch" msgstr="密码前后不一致" />
+<message msgid="err sRP" msgstr="请指定自动断线等待" />
+<message msgid="err sIT" msgstr="请指定自动断线等待" />
+<message msgid="err stiming" msgstr="请指定正确时间" /> 
+
+	<message msgid="wan auto_dhcp" msgstr="自动选择为动态获取模式" />
+	<message msgid="wan auto_sip" msgstr="自动选择为静态模式" />
+	<message msgid="wan auto_ppp" msgstr="自动选择为宽带连接模式" />
+	<message msgid="wan auto_l2tp" msgstr="自动选择为L2TP连接模式" />
+	<message msgid="wan auto_p2tp" msgstr="自动选择为P2TP连接模式" />
+	<message msgid="wan auto_fail" msgstr="自动选择失败,请检查网络连接或者手动选择" />
+ </po>

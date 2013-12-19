@@ -1,0 +1,47 @@
+﻿<html>
+<head>
+<title></title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="/lang/b28n.js"></script>
+<script>
+
+
+function initTranslation()
+{
+	var a = document.getElementById("UPGRADERESULT").value;	
+	var b = document.getElementById("FACTORYRESULT").value;
+
+	if(a == "1")
+		alert(_("upgrade success"));
+	else if(a == "0")
+		alert(_("upgrade fail"));	
+		
+	if(b == "1")
+		alert(_("factory success"));	
+	else if(b == "0")
+		alert(_("factory fail"));	
+
+	window.location.href="cgi-bin/map";
+
+}
+
+function init()
+{
+	initTranslation();
+}
+
+</script>
+</head>
+
+<body onload=init();>
+
+<table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
+<form method="post" name="wizard_form">  
+</form>
+	<input type="text" style="display:none" name="UPGRADERESULT" id="UPGRADERESULT" size="20" maxlength="32" value="~~UPGRADERESULT~">
+	<input type="text" style="display:none" name="FACTORYRESULT" id="FACTORYRESULT" size="20" maxlength="32" value="~~FACTORYRESULT~">
+
+</td></tr>
+</table>
+</body>
+</html>

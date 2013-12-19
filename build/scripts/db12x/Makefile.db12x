@@ -101,7 +101,7 @@ else
 ifeq ($(strip ${ATH_SUPPORT_SPECTRAL}),1)
 db12x_build: common_mainline driver_build usb_build pci_build spectral_app_build $(BUILD_TYPE)_build art_mod
 else
-db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si3000_build si3000_app stm32_build stm32_app phone_9344    pppoe_build channel webui terminal_dev_register cacm tester $(fs_build) makeotaimage makeoneimage 
+db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si3000_build si3000_app stm32_build stm32_app phone_9344    pppoe_build threethread channel webui terminal_dev_register cacm tester $(fs_build) makeotaimage makeoneimage 
 #db12x_build: common_mainline i2s_build athplay_tools_fus usb_build $(fs_build)
 #db12x_build: common_mainline slic_build slic_app i2s_build athplay_tools_fus $(fs_build)
 #db12x_build: common_mainline gateway_build slic_build slic_app $(fs_build)
@@ -149,6 +149,13 @@ pppoe_build:
 	mkdir $(INSTALL_ROOT)/etc/ppp
 	cp -ra $(TOPDIR)/apps/pppoe/rp-pppoe-3.8/configs/* $(INSTALL_ROOT)/etc/ppp
 	cp -ra $(TOPDIR)/apps/pppoe/rp-pppoe-3.8/scripts/* $(INSTALL_ROOT)/usr/sbin
+	
+#
+#threethread added by yhl 2013.10.29
+#
+threethread:
+	cd $(TOPDIR)/apps/threethread && make
+	cp $(TOPDIR)/apps/threethread/threethread $(INSTALL_ROOT)/usr/sbin
 
 iptables_build:
 	@echo making iptables
@@ -263,7 +270,17 @@ si3000_build: kernel_build
 	
 webui: 
 	cd ../apps/webui; \
-	cp -f net_check $(INSTALL_ROOT)/bin;	
+	cp -f net/net_check $(INSTALL_ROOT)/bin; \
+	cp -f net/wan_check $(INSTALL_ROOT)/bin; \
+	cp -f net/net_test $(INSTALL_ROOT)/bin;	\
+	cp -f upgrade/sysupgrade $(INSTALL_ROOT)/usr/sbin; \
+	cp -f upgrade/__sysupgrade $(INSTALL_ROOT)/usr/sbin; \
+	cp -f upgrade/upgrade_stage2 $(INSTALL_ROOT)/usr/bin; \
+	cp -f cal_check $(INSTALL_ROOT)/usr/bin;		\
+	cp -f version_check $(INSTALL_ROOT)/usr/bin;  \
+	cd firmware/; \
+	make; \
+	cp -f firmware_check $(INSTALL_ROOT)/usr/sbin; 
 	
 tester: 
 	cd ../apps/tester; \
@@ -422,7 +439,9 @@ cgi: ath_tools_clean
 	@echo makeing cgi;\
 	cd ../drivers/wlan/os/linux/tools;\
 	rm -rf cgiMain;\
-	make cgiMain;
+	rm -rf upload.cgi;\
+	make cgiMain; \
+	make upload.cgi; 
 
 art_mod:
 	@echo Making ART Module

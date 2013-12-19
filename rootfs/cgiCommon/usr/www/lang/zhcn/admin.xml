@@ -1,7 +1,7 @@
 ﻿<po>
   <message msgid="admin disable" msgstr="停用" />
   <message msgid="admin enable" msgstr="启用" />
-  <message msgid="admin apply" msgstr="确定" />
+  <message msgid="admin apply" msgstr="应用" />
   <message msgid="admin cancel" msgstr="取消" />
   <message msgid="admin reset" msgstr="重设" />
   <message msgid="admin scan" msgstr="搜寻" />
@@ -15,52 +15,7 @@
   <message msgid="man admin account" msgstr="帐号" />
   <message msgid="man admin passwd" msgstr="口令" />
   <message msgid="man admin watchdog" msgstr="监视者" />
-  <message msgid="man ntp setting" msgstr="网络时间设置" />
-  <message msgid="man ntp timezone" msgstr="时区：" />
-  <message msgid="man ntp mid island" msgstr="(GMT-11:00) 中途岛、萨摩亚" />
-  <message msgid="man ntp hawaii" msgstr="(GMT-10:00) 夏威夷" />
-  <message msgid="man ntp alaska" msgstr="(GMT-09:00) 阿拉斯加" />
-  <message msgid="man ntp pacific" msgstr="(GMT-08:00) 太平洋标准时间" />
-  <message msgid="man ntp mountain" msgstr="(GMT-07:00) 落矶山区时间" />
-  <message msgid="man ntp arizona" msgstr="(GMT-07:00) 亚利桑那" />
-  <message msgid="man ntp central" msgstr="(GMT-06:00) 中央时间" />
-  <message msgid="man ntp mid us" msgstr="(GMT-06:00) 中美洲" />
-  <message msgid="man ntp indiana east" msgstr="(GMT-05:00) 印第安纳州（东部）、哥伦比亚" />
-  <message msgid="man ntp eastern" msgstr="(GMT-05:00) 东部时区" />
-  <message msgid="man ntp atlantic" msgstr="(GMT-04:00) 大西洋标准时间、西巴西" />
-  <message msgid="man ntp bolivia" msgstr="(GMT-04:00) 玻利维亚、委内瑞拉" />
-  <message msgid="man ntp guyana" msgstr="(GMT-03:00) 盖亚纳" />
-  <message msgid="man ntp brazil east" msgstr="(GMT-03:00) 东巴西、格陵兰" />
-  <message msgid="man ntp mid atlantic" msgstr="(GMT-02:00) 中大西洋" />
-  <message msgid="man ntp azores islands" msgstr="(GMT-01:00) 亚速尔群岛" />
-  <message msgid="man ntp gambia" msgstr="(GMT) 甘比亚，赖比瑞亚、摩洛哥" />
-  <message msgid="man ntp england" msgstr="(GMT) 英格兰" />
-  <message msgid="man ntp czech republic" msgstr="(GMT+01:00) 捷克、N" />
-  <message msgid="man ntp germany" msgstr="(GMT+01:00) 德国" />
-  <message msgid="man ntp tunisia" msgstr="(GMT+01:00) 突尼西亚" />
-  <message msgid="man ntp greece" msgstr="(GMT+02:00) 希腊、乌克兰、土耳其" />
-  <message msgid="man ntp south africa" msgstr="(GMT+02:00) 南非" />
-  <message msgid="man ntp iraq" msgstr="(GMT+03:00) 伊拉克、约旦、科威特" />
-  <message msgid="man ntp moscow winter" msgstr="(GMT+03:00) 莫斯科冬令时间" />
-  <message msgid="man ntp armenia" msgstr="(GMT+04:00) 亚美尼亚" />
-  <message msgid="man ntp pakistan" msgstr="(GMT+05:00) 巴基斯坦、俄罗斯" />
-  <message msgid="man ntp bangladesh" msgstr="(GMT+06:00) 孟加拉、俄罗斯" />
-  <message msgid="man ntp thailand" msgstr="(GMT+07:00) 泰国、俄罗斯" />
-  <message msgid="man ntp chinacoast" msgstr="(GMT+08:00) 中国沿岸、香港" />
-  <message msgid="man ntp taipei" msgstr="(GMT+08:00) 台北" />
-  <message msgid="man ntp singapore" msgstr="(GMT+08:00) 新加坡" />
-  <message msgid="man ntp australia wa" msgstr="(GMT+08:00) 西澳洲" />
-  <message msgid="man ntp japan" msgstr="(GMT+09:00) 日本、韩国" />
-  <message msgid="man ntp korean" msgstr="(GMT+09:00) 朝鲜时区" />
-  <message msgid="man ntp guam" msgstr="(GMT+10:00) 关岛、俄罗斯" />
-  <message msgid="man ntp australia qld" msgstr="(GMT+10:00) 澳洲（昆士兰、塔斯马尼亚、新南威尔斯、首都特别行政区、维多利亚" />
-  <message msgid="man ntp solomon islands" msgstr="(GMT+11:00) 索罗门群岛" />
-  <message msgid="man ntp fiji" msgstr="(GMT+12:00) 斐济" />
-  <message msgid="man ntp newzealand" msgstr="(GMT+12:00) 新西兰" />
-  <message msgid="man ntp server" msgstr="网络时间服务器" />
-  <message msgid="man ntp sync" msgstr="网络时间校准(小时)" />
-  <message msgid="man ntp current time" msgstr="当前时间" />
-  <message msgid="man ntp sync with host" msgstr="主机同步" />
+  
   <message msgid="man gap title" msgstr="Green AP" />
   <message msgid="man gap time" msgstr="启用期间" />
   <message msgid="man gap action" msgstr="执行项目" />
@@ -170,17 +125,19 @@
   <message msgid="admw vpword" msgstr="确认密码" />  
   <message msgid="admw opmope" msgstr="工作模式" />  
   
-  <message msgid="admw div_wireless_title" msgstr="请设置您的Wi-Fi账户和密码。您的无线设备将使用以下网络上网。" />  
-  <message msgid="admw wsetingst" msgstr="无线设置" />  
+  <message msgid="admw div_wireless_title" msgstr="请设置您的WiFi账户和密码。您的无线设备将使用以下网络上网。" />  
+  <message msgid="admw wsetingst" msgstr="内网设置" />  
   <message msgid="admw nname" msgstr="网络名称(SSID)" />  
   <message msgid="admw security" msgstr="安全" />
   <message msgid="admw wkey" msgstr="密钥" />
   
-  <message msgid="admw opmode keepalive" msgstr="永久连线" />
-  <message msgid="admw opmode ondemand" msgstr="动态需求" />
-  <message msgid="admw opmode manual" msgstr="手动" />
-  <message msgid="KAM" msgstr="持续连接模式：接收周期 " />
-  <message msgid="ODM" msgstr="按需求模式：空闲时间 " />
+  <message msgid="admw opmode keepalive" msgstr="自动连接" />
+  <message msgid="admw opmode ondemand" msgstr="按需连接" />
+  <message msgid="admw opmode manual" msgstr="手动连接" />
+  <message msgid="admw opmode timing" msgstr="定时连接" />
+  
+  <message msgid="KAM" msgstr="按需连接：自动断线等待时间 " />
+  <message msgid="ODM" msgstr="手动连接：自动断线等待时间 " />
   <message msgid="minutes" msgstr="分钟" />
   <message msgid="seconds" msgstr="秒" />
   
@@ -220,7 +177,7 @@
   <message msgid="admw int" msgstr="有线连接" />  
   <message msgid="admw int1" msgstr="（连接进户线）" />  
   <message msgid="admw wireless" msgstr="无线中继" />  
-  <message msgid="admw int2" msgstr="（连接到现有路由器的Wi-Fi网络）" />
+  <message msgid="admw int2" msgstr="（连接到现有路由器的WiFi网络）" />
   
   <message msgid="admw RMd" msgstr="无线中继" />  
   <message msgid="admw R_uname" msgstr="网络名称（SSID）" />  
@@ -238,9 +195,10 @@
    <message msgid="admw w5ttitle" msgstr="家长控制" />  
    <message msgid="admw wwtitle" msgstr="外网/无线中继设置" />  
  
-   <message msgid="admw modedes" msgstr="请您选择路由器WAN口的连接方式。所需参数在开通网络时，由网络运营商（中国电信、中国网通、中国铁通、中国移动、中国联通等）提供。" />  
-   <message msgid="admw wifides" msgstr="请设置HBD路由的Wi-Fi账户和密码。您的电脑、PAD、智能手机等将使用以下网络上网。" />  
-   <message msgid="admw wirelessdes" msgstr="请选择您要连接的Wi-Fi。" />  
+   <message msgid="admw modedes" msgstr="请您选择路由器WAN口的连接方式。所需参数在开通网络时，由网络运营商（中国电信、中国联通、中国铁通、中国移动等）提供。" />  
+   <message msgid="admw modedes1" msgstr="所需参数在开通网络时，由网络运营商（中国电信、中国联通、中国铁通、中国移动等）提供。" />  
+   <message msgid="admw wifides" msgstr="请设置HBD路由的WiFi账户和密码。您的电脑、PAD、智能手机等将使用以下网络上网。" />  
+   <message msgid="admw wirelessdes" msgstr="请选择您要连接的WiFi。" />  
    <message msgid="admw parentdes" msgstr="作为家长，您可以通过在本页进行设置，对孩子的上网时间和访问网页进行控制。" />  
    
    <message msgid="admw PPMAC" msgstr="家长PC的MAC地址" />
@@ -268,36 +226,51 @@
 	<message msgid="admw auto_fail" msgstr="自动选择失败,请检查网络连接或者手动选择" />
 	
 	<message msgid="admw fresh" msgstr="扫描" />
-	<message msgid="admw Wlisttitle1" msgstr="WIFI列表" />
-	<message msgid="admw Wlisttitle2" msgstr="目前存在的WIFI" />
+	<message msgid="admw Wlisttitle1" msgstr="WiFi列表" />
+	<message msgid="admw Wlisttitle2" msgstr="目前存在的WiFi:SSID(MAC)(信道)(加密方式 WPA-加密 None-不加密)" />
 	<message msgid="admw Wlisttitle3" msgstr="可下拉选择" />
     <message msgid="toplanguage" msgstr="z" />
     <message msgid="admin open" msgstr="不加密" />
     <message msgid="admin jiami" msgstr="加密(推荐使用)" />
 	
 	<message msgid="admw wifiswitch" msgstr="网络开关" />
+	<message msgid="admw wdsswitch" msgstr="无线中继开关" />
+
 	<message msgid="admw onbutton" msgstr="开启" />
     <message msgid="admw offbutton" msgstr="关闭" />
-    <message msgid="admw waiting" msgstr="请稍等......" />
+    <message msgid="admw waiting" msgstr="正在检测,请稍等......" />
+    <message msgid="admw settingwaiting" msgstr="正在配置,请稍等......" />
+    <message msgid="admw uploadwaiting" msgstr="正在升级,请稍等......" />
 	
-    <message msgid="admw ssidrequest" msgstr="  (1-12位中文、字母、数字或下划线)" />
-    <message msgid="admw passwordrequest" msgstr="  (6-12位字母、数字或下划线)" />
+    <message msgid="admw ssidrequest" msgstr="  (1-24位字母、数字或下划线)" />
+    <message msgid="admw passwordrequest" msgstr="  (8-12位字母、数字或下划线)" />
+    <message msgid="admw passwordrequest1" msgstr="  (5-12位字母、数字或下划线)" />
+	
+    <message msgid="err lineout" msgstr="请将网线插入WAN口!" />
+	
 	
     <message msgid="err ip empty" msgstr="IP地址为空" />
+	<message msgid="err mask empty" msgstr="掩码为空" />
+
     <message msgid="err name empty" msgstr="请输入用户名" />
-	<message msgid="err SSID empty" msgstr="请输入网络名称（SSID）" />    
+	<message msgid="err SSID empty" msgstr="请输入网络名称（SSID）" />   
+	<message msgid="err mac empty" msgstr="请输入MAC地址" />   
+	
     <message msgid="err pwd empty" msgstr="请输入密码" />
 	<message msgid="err key" msgstr="请输入密钥" />
 	
     <message msgid="err pwd mismatch" msgstr="密码前后不一致" />
+	<message msgid="err SSID length" msgstr="SSID长度错误" />
+	<message msgid="err pwd length" msgstr="密码长度错误" />
 	
-	<message msgid="err sRP" msgstr="请指定重播周期" />
-	<message msgid="err sIT" msgstr="请指定空闲时间" />
+	<message msgid="err sRP" msgstr="请指定自动断线等待" />
+	<message msgid="err sIT" msgstr="请指定自动断线等待" />
 	
 	<message msgid="err number" msgstr="请输入0-9之间的数字" />
 	<message msgid="err IPmormat" msgstr="IP地址格式错误" />
+	<message msgid="err Maskmormat" msgstr="掩码格式错误" />
 	
-	<message msgid="err keylen" msgstr="密钥长度必须是6-12位" />
+	<message msgid="err keylen" msgstr="密钥长度必须是8-12位" />
 	<message msgid="err keychar" msgstr="密码中存在无效字符" />
 	<message msgid="err IP error" msgstr="WAN IP与本地IP不能位于相同网段，请重新设置" />
 	
@@ -307,4 +280,40 @@
 	<message msgid="password change" msgstr="密码修改成功，重启路由器后生效" />
 	<message msgid="admw securitydes" msgstr="修改路由Web管理页面的登录密码" />
 	
+	<message msgid="admw uploadtitle" msgstr="固件升级" />
+	<message msgid="admw uploaddes" msgstr="选择升级用镜像文件，进行本地升级" />
+	<message msgid="admw uploadfirware" msgstr="固件升级" />
+	<message msgid="admw up_selsectfile" msgstr="请选择文件" />
+	<message msgid="admw Upload" msgstr="升级" />
+	<message msgid="err file empty" msgstr="请选择升级文件!" />
+	<message msgid="upgrade success" msgstr="升级成功!" />
+	<message msgid="admw channelchoose" msgstr="信道选择" />
+	<message msgid="admw channelauto" msgstr="自动" />
+
+	<message msgid="factory reset" msgstr="恢复出厂设置将丢失现有的配置，你确定要继续吗?" />
+	<message msgid="admw factitle" msgstr="恢复出厂设置" />
+	<message msgid="admw facdes" msgstr="单击此按钮将使路由器的所有设置恢复到出厂时的默认状态" />
+	<message msgid="admw defaultset" msgstr="恢复出厂设置" />
+	
+	<message msgid="factory fail" msgstr="恢复出厂设置失败!" />
+	<message msgid="factory success" msgstr="恢复出厂设置成功!" />
+	<message msgid="upgrade success" msgstr="固件升级成功!" />
+	<message msgid="upgrade fail" msgstr="版本一致,固件未升级!" />
+	
+	<message msgid="admw offwifides" msgstr="WiFi已经关闭,无线中继无法使用" />
+	<message msgid="admw software" msgstr="当前软件版本" />
+	<message msgid="admw hardware" msgstr="硬件版本" />
+	<message msgid="admw hidewifides" msgstr="隐藏网络" />
+
+	<message msgid="admw PPPOE_TIMING" msgstr="定时连接 ：定时连接时段" />
+
+	<message msgid="err stiming" msgstr="请指定正确时间" />
+	<message msgid="err file format" msgstr="升级包与系统硬件不匹配，请选择正确的升级包" />
+	<message msgid="err file upload" msgstr="文件上传失败" />
+	<message msgid="admw chfile" msgstr="选择文件" />
+    <message msgid="admw waring" msgstr="注意:升级过程完全自动,请不要关闭电源,否则将导致BASE损坏而无法使用,升级过程约130秒,当升级结束后,BASE将自动重新启动" />	
+	<message msgid="admw sysupgrade" msgstr="确认进行固件升级?" />
+	<message msgid="err dhcp null" msgstr="无法通过DHCP获取到WAN IP,请检查是否为DHCP方式连接" />
+	<message msgid="err dhcp ip" msgstr="DHCP获取到WAN IP跟当前路由在同一个网段,请在网关设置里面调整路由的网段" />
+
 </po>

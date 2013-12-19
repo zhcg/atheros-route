@@ -1,0 +1,25 @@
+#!/bin/sh
+########################################
+#system upgrad tool for web GUI,ap83
+#parameter numbers check and usage
+if [ $# -ne 1 ] ;then
+#        echo "Usage: sysupgrade [SYSTEM-FILENAME]"
+        exit 1
+fi
+
+############################################
+#if file exist
+if [ -e $1 ]; then
+#        echo "file exist!"
+        cp /usr/sbin/__sysupgrade /tmp/
+		mv $1 /tmp/9344version.img 
+		cd /tmp
+	test1=$(/usr/sbin/firmware_check /tmp/9344version.img | grep "OK")
+#	echo $test1
+
+	if [ -z "$test1" ];then
+#		echo "wrong fireware file"
+		exit 1
+	fi
+        /tmp/__sysupgrade /tmp/9344version.img  2>&1
+fi

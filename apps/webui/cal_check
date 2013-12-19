@@ -1,0 +1,13 @@
+#!/bin/sh
+echo "[luodp] go caldata"
+if [ ! -f /etc/cal.bin ]; then
+	echo "Backup caldata at `date`"  >> /etc/callog.txt 
+	dd if=/dev/caldata of=/etc/cal.bin
+fi
+CAL_MSG=`dmesg | grep 'Using Cal data from Driver Default Settings'`
+if [ -n "$CAL_MSG" ]; then
+	echo "Restore caldata at `date`"  >> /etc/callog.txt    
+	dd if=/etc/cal.bin of=/dev/caldata
+	/etc/ath/apdown
+	/etc/ath/apup
+fi

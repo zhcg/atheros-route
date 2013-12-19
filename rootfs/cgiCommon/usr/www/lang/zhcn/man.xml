@@ -1,0 +1,101 @@
+<po>
+  <message msgid="man apply" msgstr="应用" />
+  <message msgid="man cancel" msgstr="取消" />
+
+  <message msgid="man onbutton" msgstr="启用" />
+  <message msgid="man offbutton" msgstr="禁用" />
+  <message msgid="man bSAVE" msgstr="保存" />   
+    
+  <message msgid="man ntp title" msgstr="时间设置" />
+  <message msgid="man ntp des" msgstr="配置时间服务器相关选项" />
+  <message msgid="man ntp setting" msgstr="网络时间设置" />
+  <message msgid="man ntp timezone" msgstr="时区：" />
+  <message msgid="man ntp mid island" msgstr="(GMT-11:00) 中途岛、萨摩亚" />
+  <message msgid="man ntp hawaii" msgstr="(GMT-10:00) 夏威夷" />
+  <message msgid="man ntp alaska" msgstr="(GMT-09:00) 阿拉斯加" />
+  <message msgid="man ntp pacific" msgstr="(GMT-08:00) 太平洋标准时间" />
+  <message msgid="man ntp mountain" msgstr="(GMT-07:00) 落矶山区时间" />
+
+  <message msgid="man ntp arizona" msgstr="(GMT-07:00) 亚利桑那" />
+  <message msgid="man ntp central" msgstr="(GMT-06:00) 中央时间" />
+  <message msgid="man ntp mid us" msgstr="(GMT-06:00) 中美洲" />
+  <message msgid="man ntp indiana east" msgstr="(GMT-05:00) 印第安纳州（东部）、哥伦比亚" />
+  <message msgid="man ntp eastern" msgstr="(GMT-05:00) 东部时区" />
+  <message msgid="man ntp atlantic" msgstr="(GMT-04:00) 大西洋标准时间、西巴西" />
+  <message msgid="man ntp bolivia" msgstr="(GMT-04:00) 玻利维亚、委内瑞拉" />
+  <message msgid="man ntp guyana" msgstr="(GMT-03:00) 盖亚纳" />
+  <message msgid="man ntp brazil east" msgstr="(GMT-03:00) 东巴西、格陵兰" />
+  <message msgid="man ntp mid atlantic" msgstr="(GMT-02:00) 中大西洋" />
+  <message msgid="man ntp azores islands" msgstr="(GMT-01:00) 亚速尔群岛" />
+  <message msgid="man ntp gambia" msgstr="(GMT) 甘比亚，赖比瑞亚、摩洛哥" />
+  <message msgid="man ntp england" msgstr="(GMT) 英格兰" />
+  <message msgid="man ntp czech republic" msgstr="(GMT+01:00) 捷克、N" />
+  <message msgid="man ntp germany" msgstr="(GMT+01:00) 德国" />
+  <message msgid="man ntp tunisia" msgstr="(GMT+01:00) 突尼西亚" />
+  <message msgid="man ntp greece" msgstr="(GMT+02:00) 希腊、乌克兰、土耳其" />
+  <message msgid="man ntp south africa" msgstr="(GMT+02:00) 南非" />
+  <message msgid="man ntp iraq" msgstr="(GMT+03:00) 伊拉克、约旦、科威特" />
+  <message msgid="man ntp moscow winter" msgstr="(GMT+03:00) 莫斯科冬令时间" />
+  <message msgid="man ntp armenia" msgstr="(GMT+04:00) 亚美尼亚" />
+  <message msgid="man ntp pakistan" msgstr="(GMT+05:00) 巴基斯坦、俄罗斯" />
+  <message msgid="man ntp bangladesh" msgstr="(GMT+06:00) 孟加拉、俄罗斯" />
+  <message msgid="man ntp thailand" msgstr="(GMT+07:00) 泰国、俄罗斯" />
+  <message msgid="man ntp chinacoast" msgstr="(GMT+08:00) 中国沿岸、香港" />
+  <message msgid="man ntp taipei" msgstr="(GMT+08:00) 台北" />
+  <message msgid="man ntp singapore" msgstr="(GMT+08:00) 新加坡" />
+  <message msgid="man ntp australia wa" msgstr="(GMT+08:00) 西澳洲" />
+  <message msgid="man ntp japan" msgstr="(GMT+09:00) 日本、韩国" />
+  <message msgid="man ntp korean" msgstr="(GMT+09:00) 朝鲜时区" />
+  <message msgid="man ntp guam" msgstr="(GMT+10:00) 关岛、俄罗斯" />
+  <message msgid="man ntp australia qld" msgstr="(GMT+10:00) 澳洲（昆士兰、塔斯马尼亚、新南威尔斯、首都特别行政区、维多利亚" />
+  <message msgid="man ntp solomon islands" msgstr="(GMT+11:00) 索罗门群岛" />
+  <message msgid="man ntp fiji" msgstr="(GMT+12:00) 斐济" />
+  <message msgid="man ntp newzealand" msgstr="(GMT+12:00) 新西兰" />
+  
+  <message msgid="man ntp server1" msgstr="网络时间服务器1" />  
+  <message msgid="man ntp server2" msgstr="网络时间服务器2" />
+  <message msgid="man ntp current time" msgstr="当前时间" />
+  <message msgid="man ntp sync with host" msgstr="主机同步" />
+  <message msgid="man ntpswitch" msgstr="NTP启用" />
+  
+  <message msgid="man ntp err1" msgstr="请指定网络时间服务器。" />
+  
+  <message msgid="man export" msgstr="导出" />
+  <message msgid="man exporttitle" msgstr="配置管理" />
+  <message msgid="man exportdes" msgstr="将系统配置文件导出保存至本地。" />
+  <message msgid="man selsectfile" msgstr="请选择配置文件" />
+  <message msgid="man inportdes" msgstr="将本地文件导入BASE进行系统配置" /> 
+  <message msgid="man inport" msgstr="导入" />
+  <message msgid="man localsave" msgstr="备份" />
+  
+  <message msgid="man reboottitle" msgstr="系统重启" />
+  <message msgid="man rebootdes" msgstr="单击此按钮使BASE重启" />
+  <message msgid="man reboot" msgstr="重启" />
+  
+  <message msgid="man basesavedes" msgstr="BASE备份与恢复" />
+  <message msgid="man basesavetitle" msgstr="BASE备份" />
+  <message msgid="man date" msgstr="日期" />
+  <message msgid="man modify" msgstr="编辑" />
+  <message msgid="man use" msgstr="使用" />
+  <message msgid="man delete" msgstr="删除" />
+
+  <message msgid="err MAC empty" msgstr="MAC地址不能为空" />
+  <message msgid="err IP empty" msgstr="IP地址不能为空" />
+  <message msgid="err sub empty" msgstr="掩码地址不能为空" />
+  <message msgid="err user empty" msgstr="用户名不能为空" />
+  <message msgid="err pwd empty" msgstr="密码不能为空" />
+  <message msgid="err time empty" msgstr="时间不能为空" />
+  
+  <message msgid="err MAC format" msgstr="MAC格式错误" />
+  <message msgid="err IP format" msgstr="IP地址格式错误" />
+  <message msgid="err sub format" msgstr="掩码格式错误" />
+  
+  <message msgid="err format" msgstr="参数格式错误" />
+  <message msgid="err range" msgstr="参数范围错误" />
+
+	<message msgid="err file empty" msgstr="请选择升级文件!" />
+	<message msgid="man chfile" msgstr="选择文件" />
+	
+	<message msgid="man sysreboot" msgstr="确认重新启动BASE?" />
+	
+ </po>

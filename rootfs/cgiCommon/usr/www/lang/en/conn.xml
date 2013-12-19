@@ -1,0 +1,51 @@
+<po>
+  <message msgid="conn bAPPLY" msgstr="Apply" />
+  <message msgid="conn bCANCEL" msgstr="Cancel" />
+  <message msgid="conn enable" msgstr="Enable" />
+  <message msgid="conn disable" msgstr="Disable" />
+  <message msgid="conn MODDHCP" msgstr="Modify" />
+  <message msgid="conn DELDHCP" msgstr="Delete" />
+  <message msgid="conn ADDDHCP" msgstr="Add" />
+  <message msgid="conn onbutton" msgstr="On" />
+  <message msgid="conn offbutton" msgstr="Off" />  
+  <message msgid="conn des" msgstr="Description" />  
+  <message msgid="conn mac" msgstr="MAC" />  
+  <message msgid="conn set" msgstr="IP" />    
+   <message msgid="conn bSAVE" msgstr="Save" />   
+   
+  <message msgid="clist title" msgstr="Accessed devices" />  
+  <message msgid="clist t1_title" msgstr="Cable equipment" />  
+  <message msgid="clist t2_title" msgstr="Wireless devices（Including the suspicious device）" />  
+  <message msgid="clist ip" msgstr="IP" />  
+  <message msgid="clist mac" msgstr="MAC" />  
+  <message msgid="clist name" msgstr="The device name" />  
+  <message msgid="clist rate" msgstr="Rate" />  
+  <message msgid="clist sig" msgstr="Signal strength" />  
+  
+  <message msgid="conm title" msgstr="Wireless access management" />  
+  <message msgid="conm des" msgstr="Management of accessed wireless devices " />  
+  <message msgid="conm t1_title" msgstr="Wireless access management" />  
+  <message msgid="conm t1_switch" msgstr="Wireless Switch" />  
+  
+  <message msgid="conm ADDMRULE" msgstr="Add" />  
+
+  <message msgid="addw title" msgstr="Add wireless access management of equipment information" />  
+  <message msgid="addw t1_title" msgstr="Add wireless access management entry" />  
+  <message msgid="addw t1_MAC" msgstr="MAC" />  
+  <message msgid="addw t1_Des" msgstr="Description" />  
+
+  <message msgid="err MAC empty" msgstr="MAC is empty!" />
+  <message msgid="err IP empty" msgstr="IP is empty!" />
+  <message msgid="err sub empty" msgstr="Subnet mask is empty!" />
+  <message msgid="err user empty" msgstr="User name is empty!" />
+  <message msgid="err pwd empty" msgstr="Password is empty!" />
+  <message msgid="err time empty" msgstr="Time is empty!" />
+  
+  <message msgid="err MAC format" msgstr="MAC format error!" />
+  <message msgid="err IP format" msgstr="IP format error!" />
+  <message msgid="err sub format" msgstr="Subnet mask format error!" />
+  
+  <message msgid="err format" msgstr="Parameter format error!" />
+  <message msgid="err range" msgstr="Parameter range error!" />
+  <message msgid="err des empty" msgstr="Description is empty！" />
+</po>

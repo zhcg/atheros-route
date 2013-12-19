@@ -26,6 +26,10 @@ rm /tmp/vars.$$
 ##
 ###################################################################################
 cfg -a ATH_countrycode=${ATH_countrycode:="156"}
+cfg -a HAL_VERSION=${HAL_VERSION:="HBD-Router-B6-V2"}
+cfg -a SOFT_VERSION=${SOFT_VERSION:="0.9.7.5"}
+cfg -a ADMPASS=${ADMPASS:="admin"}
+cfg -a WDSON_OFF=${WDSON_OFF:="off"}
 cfg -a AP_IPADDR=${AP_IPADDR:="10.10.10.254"}
 cfg -a AP_NETMASK=${AP_NETMASK:="255.255.255.0"}
 cfg -a WAN_MODE=${WAN_MODE:="dhcp"}
@@ -69,7 +73,7 @@ export NUMRADIO_AHB=1
 #                11ng (which means auto-scan in 11ng mode)
 
 cfg -a AP_PRIMARY_CH=${AP_PRIMARY_CH:=6}
-cfg -a AP_CHMODE=${AP_CHMODE:="11NGHT20"}
+cfg -a AP_CHMODE=${AP_CHMODE:="11NGHT40PLUS"}
 
 ##
 ##this is for setting default HIDESSID disable 

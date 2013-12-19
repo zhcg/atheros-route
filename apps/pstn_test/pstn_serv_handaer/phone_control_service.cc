@@ -31,6 +31,10 @@
 using namespace std;
 using namespace webrtc;
 
+
+bool not_send_ring = false;
+
+
 namespace handaer{
 int PhoneControlService::phone_proxy_fd = -1;
 
@@ -475,7 +479,11 @@ int PhoneControlService::parseSerialEvent(char* msg, int msg_len_wanted){
 int PhoneControlService::handleSerialEvent(void *msg, int msg_len){
 	switch(event_type_serial){
 		case RINGON:
-			returnRingOn(msg, msg_len);
+			if(!not_send_ring){
+				returnRingOn(msg, msg_len);
+			} else {
+				not_send_ring = false;
+			}
 			break;
 		case RINGOFF:
 			returnRingOff(msg, msg_len);

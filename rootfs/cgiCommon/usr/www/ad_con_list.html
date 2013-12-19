@@ -1,0 +1,74 @@
+﻿<html>
+<head>
+<title></title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+<script type="text/javascript" src="/lang/b28n.js"></script>
+<script>
+
+function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
+function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
+
+function initTranslation()
+{
+	trans_inner("title","clist title");
+	trans_inner("t1_title","clist t1_title");
+	trans_inner("t1_Ip","clist ip");
+	trans_inner("t1_Mac","clist mac");
+	trans_inner("t1_Name","clist name");
+	trans_inner("t2_title","clist t2_title");
+	trans_inner("t2_Ip","clist ip");
+	trans_inner("t2_Mac","clist mac");
+	trans_inner("t2_Name","clist name");
+	trans_inner("t2_Rate","clist rate");
+	trans_inner("t2_Sig","clist sig");
+}
+function init()
+{
+	Butterlate.setTextDomain("conn");
+	initTranslation();
+}
+
+</script>
+
+</head>
+
+<body onload="init()">
+<div class="handaer_main">
+<table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
+
+<h1 id="title">已接入设备列表</h1>
+<table id="div_wireless"  width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
+<tr><td class="title" colspan="4" id="t1_title">有线设备</td></tr>
+<tr>
+    <td>ID</td>
+    <td id="t1_Name">设备名</td>
+    <td id="t1_Ip">IP地址</td>
+	<td id="t1_Mac">MAC地址</td>
+</tr>
+   ~Z:wiredevlist~
+
+</tr>
+</table>
+
+<h1></h1>
+<table id="div_wireless"  width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
+<tr><td class="title" colspan="6" id="t2_title">无线设备（包括无线可以设备）</td></tr>
+<tr>
+    <td>ID</td>
+    <td id="t2_Name">设备名</td>    
+	<td id="t2_Ip">IP地址</td>
+	<td id="t2_Mac">MAC地址</td>
+	<td id="t2_Rate">速率</td>
+	<td id="t2_Sig">信号强度</td>
+
+</tr>
+   ~Z:wirelessdevlist~
+</table>
+</td></tr>
+</table>
+</div>
+
+</body>
+</html>

@@ -138,7 +138,7 @@ function initValue()
 
 
 
-<div ><img  usemap = "#router" border = "0" id="logoimage"/></div>
+<div style="height:449px;"><img  usemap = "#router" border = "0" id="logoimage"/></div>
 
     <map name = "router">
 
@@ -155,7 +155,13 @@ function initValue()
 	<input type="text" style="display:none" name="neistatus" id="neistatus" size="20" maxlength="32" value="~~WIFION_OFF~">
 
 	<input type="text" style="display:none" name="apssid" id="apssid" size="20" maxlength="32" value="~~AP_SSID~">
-
+	<script language="JavaScript">
+	function myrefresh()
+	{
+		window.location.href="map";
+	}
+	setTimeout('myrefresh()',7000); //指定1秒刷新一次
+	</script>
 </body>
 
 

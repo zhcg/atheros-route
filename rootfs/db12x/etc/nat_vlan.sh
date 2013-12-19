@@ -11,7 +11,7 @@ iptables -A POSTROUTING -t nat -o ppp0 -j MASQUERADE
 echo 1 >  /proc/sys/net/ipv4/ip_forward
 
 # WAN - LAN/WLAN access
-iptables -I PREROUTING -t nat -i eth0 -p tcp --dport 1000:20000 -j DNAT --to 192.168.1.1 -m state --state NEW
-iptables -I PREROUTING -t nat -i ppp0 -p tcp --dport 1000:20000 -j DNAT --to 192.168.1.1 -m state --state NEW
-iptables -I FORWARD -i eth0 -p tcp --dport 1000:20000 -d 192.168.1.1 -j ACCEPT
-iptables -I FORWARD -i ppp0 -p tcp --dport 1000:20000 -d 192.168.1.1 -j ACCEPT
+iptables -I PREROUTING -t nat -i eth0 -p tcp --dport 1000:20000 -j DNAT --to 10.10.10.254 -m state --state NEW
+iptables -I PREROUTING -t nat -i ppp0 -p tcp --dport 1000:20000 -j DNAT --to 10.10.10.254 -m state --state NEW
+iptables -I FORWARD -i eth0 -p tcp --dport 1000:20000 -d 10.10.10.254 -j ACCEPT
+iptables -I FORWARD -i ppp0 -p tcp --dport 1000:20000 -d 10.10.10.254 -j ACCEPT

@@ -1,0 +1,109 @@
+﻿<html>
+<head>
+<title></title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+<script type="text/javascript" src="/lang/b28n.js"></script>
+<script>
+
+function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
+function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
+
+function button_commit(buttonID){document.getElementById(buttonID).click();}
+function initTranslation()
+{
+	trans_inner("title","conm title");
+	trans_inner("des","conm des");
+	trans_inner("t1_title","conm t1_title");
+	trans_inner("t1_switch","conm t1_switch");
+	
+	trans_inner("t1_Des","conn des");
+	trans_inner("t1_Mac","conn mac");
+	trans_inner("t1_Set","conn set");
+	
+	trans_inner("onbutton","conn onbutton");
+	trans_inner("offbutton","conn offbutton");
+	
+	trans_value("ADDMRULE","conm ADDMRULE");	
+	
+	trans_value("bCANCEL","conn bCANCEL");	
+	trans_value("bAPPLY","conn bAPPLY");
+}
+function CheckValue()
+{
+	button_commit("CONM_WORK");
+}
+function init()
+{
+	Butterlate.setTextDomain("conn");
+	initTranslation();
+}
+function listdel(value)
+{
+	document.getElementById("DELXXX").value=value;
+	alert("删除了"+value);
+	button_commit("DEL_CON");
+}
+</script>
+
+</head>
+
+<body onload="init()">
+<div class="handaer_main">
+<table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
+<h1 id="title">无线接入管理</h1>
+<form method="POST" name="wirelessconnection">
+<h2 id="des">管理当前已经接入的无线设备</h2>
+
+<table id="t1"  width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
+<tr>
+<td class="title" colspan="4" id="t1_title">无线接入管理</td>
+</tr>
+  <tr> 
+    <td id="t1_switch">控制开关</td>    
+	<td>
+	<input type="radio"  ~cWCONON_OFF:on~ name="WCONON_OFF" value="on" onclick="switch_dhcp();" checked /><span id="onbutton">启用</span>
+	<input type="radio"  ~cWCONON_OFF:off~ name="WCONON_OFF" value="off" onclick="switch_dhcp();"/><span id="offbutton">不启用</td>
+	<td>&nbsp; &nbsp;</td>
+	<td>&nbsp; &nbsp;</td>
+  </tr>
+  <tr>
+    <td>ID</td>
+    <td id="t1_Mac">MAC地址</td>
+    <td id="t1_Des">描述</td>
+    <td id="t1_Set">配置</td>
+  </tr>  
+ ~Z:conmlist~
+  <tr>
+	<td>&nbsp; &nbsp;</td>
+	<td>&nbsp; &nbsp;</td>
+	<td>&nbsp; &nbsp;</td>
+    <td>
+		<input type="button"  class="handaer_small_button" name="ADDMRULE" id="ADDMRULE" value="添加" onClick="window.location.href='ad_con_add'">
+	</td>
+  </tr>
+
+ <!--~~DHCPLIST~-->
+</table>
+<table id="buttontable">
+<tr align="center">
+  <td>
+    <input type="button" name="bCANCEL" id="bCANCEL" class="handaer_input" value="Cancel" onClick="window.location.reload();">
+    <input type="button" name="bAPPLY" id="bAPPLY" class="handaer_input" value="Apply" onClick="CheckValue();">
+	<input type="submit" name="CONM_WORK" id="CONM_WORK" style="display:none" value="CONM_WORK">
+  </td>
+</tr>
+</table>
+
+<form method="POST" name="DELLIST">
+	<input style="display:none"  type="text" name="DELXXX" id="DELXXX" size="20" maxlength="32">
+	<input style="display:none" type="submit" name="DEL_CON" id="DEL_CON" value="DEL_CON">
+</form>
+</form>
+</td></tr>
+</table>
+</div>
+
+</body>
+</html>

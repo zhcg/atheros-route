@@ -91,7 +91,7 @@ cd /tmp/tools
 tar -xzvf /sbin/debug.tgz
 
 /usr/sbin/telnetd
-/usr/sbin/httpd -h /usr/www/
+/usr/sbin/httpd -h /usr/www/ -c /etc/httpd.conf
 /bin/factoryreset /dev/freset
 
 # start the page cache/kmem cache cleanup timer in the kernel
@@ -109,7 +109,7 @@ echo 5 > /proc/sys/vm/dirty_background_ratio
 ## Check for Auto AP Start
 ##
 
-if [ "${WLAN_ON_BOOT}" = "y" ]; then
+if [ "${WLAN_ON_BOOT}" = "y" -a "${WIFION_OFF}" = "on" ]; then
     /etc/ath/apup
 fi
 
@@ -118,10 +118,6 @@ fi
 ##
 /etc/rc.d/rc.modules
 /etc/nat_vlan.sh
-if [ "${IPGW}" != "" ]
-then
-	route add default gw ${IPGW}
-fi
 if [ "${PRIDNS}" != "" ]
 then
 	echo "nameserver ${PRIDNS}" > /etc/resolv.conf
@@ -136,7 +132,9 @@ fi
 ## dhcp
 ##
 /etc/rc.d/rc.udhcpd
-/usr/sbin/udhcpd /etc/udhcpd.conf
+if [ "${WDSON_OFF}" != "on" ]; then
+	/usr/sbin/udhcpd /etc/udhcpd.conf
+fi
 ##
 ## add si3000 and spi node
 ##
@@ -157,7 +155,7 @@ insmod /lib/modules/2.6.31/stm32/ath_spi_stm32.ko
 
 mkdir -p /var/terminal_init/log
 
-
+/usr/bin/version_check &
 spi_rt_main & 
 terminal_dev_register &
 swipe_card &
@@ -165,3 +163,5 @@ monitor_application  &
 
 /bin/reset_mips /bin/phone_serv_19200 &
 /bin/server &
+/usr/bin/cal_check &
+/usr/sbin/threethread &

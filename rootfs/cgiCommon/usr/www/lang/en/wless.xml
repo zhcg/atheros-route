@@ -1,0 +1,42 @@
+<po>
+  <message msgid="wless bAPPLY" msgstr="Apply" />
+  <message msgid="wless bCANCEL" msgstr="Cancel" />
+  <message msgid="wless enable" msgstr="Enable" />
+  <message msgid="wless disable" msgstr="Disable" />
+  <message msgid="wless MOD" msgstr="Modify" />
+  <message msgid="wless DEL" msgstr="Delete" />
+  <message msgid="wless ADD" msgstr="Add" />
+  <message msgid="wless onbutton" msgstr="On" />
+  <message msgid="wless offbutton" msgstr="Off" />  
+  <message msgid="wless bSAVE" msgstr="Save" />   
+  
+  <message msgid="wless title" msgstr="Wireless advanced settings" />  
+  <message msgid="wless des" msgstr="Modify the configuration of wireless advanced parameters" />  
+  <message msgid="wless t1_title" msgstr="Wireless advanced settings" />  
+  <message msgid="wless ti_pow" msgstr="Adjusting the transmit power" />  
+  <message msgid="wless t1_high" msgstr="High" />  
+  <message msgid="wless t1_mid" msgstr="Middle" />  
+  <message msgid="wless t1_low" msgstr="Low" />  
+  <message msgid="wless t1_SSIDTime" msgstr="SSID time" />  
+  <message msgid="wless t1_RC" msgstr="RTS/CTS limited value" />  
+  <message msgid="wless t1_Pitch" msgstr="Fragmentation value" />  
+  <message msgid="wless t1_head" msgstr="Header mod" />  
+  <message msgid="wless t1_long" msgstr="Long" />  
+  <message msgid="wless t1_shot" msgstr="Short" />  
+  
+  <message msgid="wless wifititle" msgstr="Basic Settings" />
+  
+  <message msgid="err MAC empty" msgstr="MAC is empty!" />
+  <message msgid="err IP empty" msgstr="IP is empty!" />
+  <message msgid="err sub empty" msgstr="Subnet mask is empty!" />
+  <message msgid="err user empty" msgstr="User name is empty!" />
+  <message msgid="err pwd empty" msgstr="Password is empty!" />
+  <message msgid="err time empty" msgstr="Time is empty!" />
+  
+  <message msgid="err MAC format" msgstr="MAC format error!" />
+  <message msgid="err IP format" msgstr="IP format error!" />
+  <message msgid="err sub format" msgstr="Subnet mask format error!" />
+  
+  <message msgid="err format" msgstr="Parameter format error!" />
+  <message msgid="err range" msgstr="Parameter range error!" />
+</po>

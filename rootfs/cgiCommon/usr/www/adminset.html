@@ -5,21 +5,73 @@
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
+function checkInjection(str)
+{
+	var len = str.length;
+	for (var i=0; i<str.length; i++) {
+		if ( str.charAt(i) == '\r' || str.charAt(i) == '\n'){
+				return false;
+		}else
+	        continue;
+	}
+    return true;
+}
+
+function refresh_all()
+{	
+	top.location.href = "http://10.10.10.254"; 
+} 
+function update()
+{ 
+	self.setTimeout("refresh_all()", 3);
+}
+
+
 
 function AdmFormCheck()
 {
 	if (document.Adm.ADMPASS.value.length == 0)
 	{
 		alert(_("err pwd empty"));
-		document.Adm.PPPOE_PWD.select();
+		document.Adm.ADMPASS.select();
 		return false;
 	}
+	if ((document.Adm.ADMPASS.value.length  < 5)||(document.Adm.ADMPASS.value.length > 12))
+	{
+		alert(_("err pwd length"));
+		document.Adm.ADMPASS.select();
+		return false;
+	}
+	//if(checkInjection(document.Adm.ADMPASS.value) == false)
+	//{
+	//	alert(_("err keychar"));
+	//	document.Adm.ADMPASS.select();
+	//	return false;
+	//}
+	{
+		var xxx=document.Adm.ADMPASS.value;  //用户名（在此赋值）
+
+		var reg  = /^[a-z || A-Z || 0-9]\w+$/;
+		var m = reg.test(xxx);
+		if(m)   
+		{   
+		}   
+		else   
+		{   
+			alert(_("err keychar"));
+			document.Adm.ADMPASS.select();
+			return false;
+		} 
+
+	}
+	
 	if (document.Adm.ADMPASS.value != document.Adm.ADMPASS2.value) 
 	{
 		alert(_("err pwd mismatch"));
 		return false;
 	}
-	alert(_("password change"));
+	//alert(_("password change"));
+	//update();
 	document.getElementById('ADMINSET').click();
 	return true;
 }
@@ -44,6 +96,8 @@ function initTranslation()
 	e.innerHTML = _("admw securitydes");	
 	e = document.getElementById("securitytitle");
 	e.innerHTML = _("man admin setting");
+	e = document.getElementById("passwordrequest");
+	e.innerHTML = _("admw passwordrequest1");
 }
 function initValue()
 {
@@ -51,27 +105,26 @@ function initValue()
 }
 function showpwd()
 {
- 
- if(document.getElementById("pwd").type=="password"){
-   var pass = document.getElementById("pwd").value;
-   document.getElementById("pwdinput").innerHTML='<input type="text" name="ADMPASS" id="pwd" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
-  }
-  else
-  {
-   var pass = document.getElementById("pwd").value;
-   document.getElementById("pwdinput").innerHTML='<input type="password" name="ADMPASS" id="pwd" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
-   }
- }
+    var pass = document.getElementById("pwd").value;
+
+	if(document.getElementById("aaaa").checked == true)
+	{
+		document.getElementById("pwdinput").innerHTML='<input type="text" name="ADMPASS" id="pwd" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
+	}
+	else
+	{
+		document.getElementById("pwdinput").innerHTML='<input type="password" name="ADMPASS" id="pwd" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
+	}
+}
 </script>
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
 </head>
 
 <body onLoad="initValue()">
 <div class="handaer_main">
-<p align="left" id="gsset"></p>
+<table  border="0" cellpadding="0" cellspacing="0"><tr><td>
 <!-- ================= Adm Settings ================= -->
 <h1 id="securitytitle"></h1>
-<p></p>
 <form method="post" name="Adm">
 <h2 id="securitydes"></h2>
 <table id="table2" cellpadding="0" cellspacing="0"   class="handaer_text">
@@ -81,7 +134,7 @@ function showpwd()
 
   <tr>
     <td class="head" id="manAdmPasswd"></td>
-    <td><span id="pwdinput"><input type="password" id="pwd" name="ADMPASS" maxlength="32" size="32" class="handaer_text_content" value="~~ADMPASS~" /></span><input type="checkbox" onClick="showpwd()"/><span id="showp"></span></td>
+    <td><span id="pwdinput"><input type="password" id="pwd" name="ADMPASS" maxlength="32" size="32" class="handaer_text_content" value="~~ADMPASS~" /></span><input type="checkbox" id="aaaa" onClick="showpwd()"/><span id="showp"></span>&nbsp;<span id="passwordrequest"></span></td>
   </tr>
   <tr>
     <td class="head" id="manAdmPasswd2"></td>
@@ -96,7 +149,8 @@ function showpwd()
     </td>
   </tr>
 </table>
-<!--/form--></div>
+<!--/form-->
+</td></tr></table></div>
 
 </body>
 </html>

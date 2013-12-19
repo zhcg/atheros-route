@@ -1,0 +1,264 @@
+﻿<html>
+<head>
+<title></title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+<script type="text/javascript" src="/lang/b28n.js"></script>
+<script>
+function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "table-row";}}
+function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
+function widget_display(widgetID){document.getElementById(widgetID).style.visibility = "visible";document.getElementById(widgetID).style.display = style_display_on();}
+function widget_enable(widgetID){document.getElementById(widgetID).disabled = false;}
+function widget_disable(widgetID){document.getElementById(widgetID).disabled = true;}
+
+function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
+function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
+function button_commit(buttonID){document.getElementById(buttonID).click();}
+
+function initTranslation()
+{
+	trans_inner("title","man ntp title");
+	trans_inner("des","man ntp des");
+	
+	trans_inner("manNTPSet","man ntp setting");
+	trans_inner("manNTPTimeZone","man ntp timezone");
+	trans_inner("manNTPMidIsland","man ntp mid island");
+	trans_inner("manNTPHawaii","man ntp hawaii");
+	trans_inner("manNTPAlaska","man ntp alaska");
+	trans_inner("manNTPPacific","man ntp pacific");
+	trans_inner("manNTPMountain","man ntp mountain");
+	trans_inner("manNTPArizona","man ntp arizona");
+	trans_inner("manNTPCentral","man ntp central");
+	trans_inner("manNTPMidUS","man ntp mid us");
+	trans_inner("manNTPIndianaEast","man ntp indiana east");
+	trans_inner("manNTPEastern","man ntp eastern");
+	trans_inner("manNTPAtlantic","man ntp atlantic");
+	trans_inner("manNTPBolivia","man ntp bolivia");
+	trans_inner("manNTPGuyana","man ntp guyana");
+	trans_inner("manNTPBrazilEast","man ntp brazil east");
+	trans_inner("manNTPMidAtlantic","man ntp mid atlantic");
+	trans_inner("manNTPAzoresIslands","man ntp azores islands");
+	trans_inner("manNTPGambia","man ntp gambia");
+	trans_inner("manNTPEngland","man ntp england");
+	trans_inner("manNTPCzechRepublic","man ntp czech republic");
+	trans_inner("manNTPGermany","man ntp germany");
+	trans_inner("manNTPTunisia","man ntp tunisia");
+	trans_inner("manNTPGreece","man ntp greece");
+	trans_inner("manNTPSouthAfrica","man ntp south africa");
+	trans_inner("manNTPIraq","man ntp iraq");
+	trans_inner("manNTPMoscowWinter","man ntp moscow winter");
+	trans_inner("manNTPArmenia","man ntp armenia");
+	trans_inner("manNTPPakistan","man ntp pakistan");
+	trans_inner("manNTPBangladesh","man ntp bangladesh");
+	trans_inner("manNTPThailand","man ntp thailand");
+	trans_inner("manNTPChinaCoast","man ntp chinacoast");
+	trans_inner("manNTPTaipei","man ntp taipei");
+	trans_inner("manNTPSingapore","man ntp singapore");
+	trans_inner("manNTPAustraliaWA","man ntp australia wa");
+	trans_inner("manNTPJapan","man ntp japan");
+	trans_inner("manNTPKorean","man ntp korean");
+	trans_inner("manNTPGuam","man ntp guam");
+	trans_inner("manNTPAustraliaQLD","man ntp australia qld");
+	trans_inner("manNTPSolomonIslands","man ntp solomon islands");
+	trans_inner("manNTPFiji","man ntp fiji");
+	trans_inner("manNTPNewZealand","man ntp newzealand");
+	
+	trans_inner("manNTPCurrentTime","man ntp current time");
+	trans_value("manNTPSyncWithHost","man ntp sync with host");
+	trans_inner("manNTPServer1","man ntp server1");
+	trans_inner("manNTPServer2","man ntp server2");
+	
+	trans_inner("ntpswitch","man ntpswitch");
+	trans_inner("onbutton","man onbutton");	
+	trans_inner("offbutton","man offbutton");	
+	
+	trans_value("manNTPApply","man apply");
+	trans_value("manNTPCancel","man cancel");
+	 
+}
+function init()
+{
+	Butterlate.setTextDomain("man");
+	initTranslation();
+	syncWithHost();
+	switch_ntp();
+}
+
+function NTPFormCheck()
+{
+	if(document.NTP.NTPON_OFF[0].checked == true)
+	{
+		if((document.NTP.NTPServerIP1.value == "")&&(document.NTP.NTPServerIP2.value == ""))
+		{
+			alert(_("man ntp err1"));
+			return false;
+		}
+	}
+	button_commit("TIMEZONE_SET");
+	return true;
+}
+function syncWithHost()
+{
+	var currentTime = new Date();
+
+	var seconds = currentTime.getSeconds();
+	var minutes = currentTime.getMinutes();
+	var hours = currentTime.getHours();
+	var month = currentTime.getMonth() + 1;
+	var day = currentTime.getDate();
+	var year = currentTime.getFullYear();
+
+	var seconds_str = " ";
+	var minutes_str = " ";
+	var hours_str = " ";
+	var month_str = " ";
+	var day_str = " ";
+	var year_str = " ";
+
+	if(seconds < 10)
+		seconds_str = "0" + seconds;
+	else
+		seconds_str = ""+seconds;
+
+	if(minutes < 10)
+		minutes_str = "0" + minutes;
+	else
+		minutes_str = ""+minutes;
+
+	if(hours < 10)
+		hours_str = "0" + hours;
+	else
+		hours_str = ""+hours;
+
+	if(month < 10)
+		month_str = "0" + month;
+	else
+		month_str = ""+month;
+
+	if(day < 10)
+		day_str = "0" + day;
+	else
+		day_str = day;
+
+	var tmp = month_str + day_str + hours_str + minutes_str + year + " ";
+	document.NTP.PCTIME.value=year+'-'+month+'-'+day+'-'+hours+':'+minutes+':'+seconds;
+}
+function switch_ntp()
+{
+	if(document.NTP.NTPON_OFF[0].checked == true)
+	{
+		widget_display("servertr1");
+		widget_display("servertr2");
+		widget_enable("NTPServerIP1");
+		widget_enable("NTPServerIP2");
+	}
+	else
+	{
+		widget_hide("servertr1");
+		widget_hide("servertr2");
+		widget_disable("NTPServerIP1");
+		widget_disable("NTPServerIP2");
+	}
+}
+</script>
+
+</head>
+
+<body onload="init()">
+<div class="handaer_main">
+<table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
+<h1 id="title"></h1>
+
+<form method="post" name="NTP">
+<h2 id="des"></h2>
+<table width="100%" cellpadding="0" cellspacing="0" class="handaer_text">
+<tbody><tr>
+  <td class="title" colspan="2" id="manNTPSet"></td>
+</tr>
+<tr id="div_date">
+	<td class="head"  id="manNTPCurrentTime"></td>
+	<td>
+		<input size="24" name="PCTIME" id="PCTIME" class="handaer_text_content" value="" type="text" readonly>
+		<input type="button"  class="handaer_small_button" value="Sync with host" id="manNTPSyncWithHost" name="manNTPSyncWithHost" onClick="syncWithHost()">
+	</td>
+</tr>
+<tr>
+  <td class="head" id="manNTPTimeZone"></td>
+  <td>
+    <select name="TIME_ZONE">
+      <option value="UCT_-11" id="manNTPMidIsland"></option>
+      <option value="UCT_-10" id="manNTPHawaii"></option>
+      <option value="NAS_-09" id="manNTPAlaska"></option>
+      <option value="PST_-08" id="manNTPPacific"></option>
+      <option value="MST_-07" id="manNTPMountain"></option>
+      <option value="MST_-07" id="manNTPArizona"></option>
+      <option value="CST_-06" id="manNTPCentral"></option>
+      <option value="UCT_-06" id="manNTPMidUS"></option>
+      <option value="UCT_-05" id="manNTPIndianaEast"></option>
+      <option value="EST_-05" id="manNTPEastern"></option>
+      <option value="AST_-04" id="manNTPAtlantic"></option>
+      <option value="UCT_-04" id="manNTPBolivia"></option>
+      <option value="UCT_-03" id="manNTPGuyana"></option>
+      <option value="EBS_-03" id="manNTPBrazilEast"></option>
+      <option value="NOR_-02" id="manNTPMidAtlantic"></option>
+      <option value="EUT_-01" id="manNTPAzoresIslands"></option>
+      <option value="UCT_000" id="manNTPGambia"></option>
+      <option value="GMT_000" id="manNTPEngland"></option>
+      <option value="MET_001" id="manNTPCzechRepublic"></option>
+      <option value="MEZ_001" id="manNTPGermany"></option>
+      <option value="UCT_001" id="manNTPTunisia"></option>
+      <option value="EET_002" id="manNTPGreece"></option>
+      <option value="SAS_002" id="manNTPSouthAfrica"></option>
+      <option value="IST_003" id="manNTPIraq"></option>
+      <option value="MSK_003" id="manNTPMoscowWinter"></option>
+      <option value="UCT_004" id="manNTPArmenia"></option>
+      <option value="UCT_005" id="manNTPPakistan"></option>
+      <option value="UCT_006" id="manNTPBangladesh"></option>
+      <option value="UCT_007" id="manNTPThailand"></option>
+      <option value="CST_008" id="manNTPChinaCoast"></option>
+      <option value="CCT_008" id="manNTPTaipei"></option>
+      <option value="SST_008" id="manNTPSingapore"></option>
+      <option value="AWS_008" id="manNTPAustraliaWA"></option>
+      <option value="JST_009" id="manNTPJapan"></option>
+      <option value="KST_009" id="manNTPKorean"></option>
+      <option value="UCT_010" id="manNTPGuam"></option>
+      <option value="AES_010" id="manNTPAustraliaQLD"></option>
+      <option value="UCT_011" id="manNTPSolomonIslands"></option>
+      <option value="UCT_012" id="manNTPFiji"></option>
+      <option value="NZS_012" id="manNTPNewZealand"></option>
+    </select>
+  </td>
+</tr>
+<tr>
+ <td class="head" id="ntpswitch"></td>
+	<td><input type="radio"  ~cNTPON_OFF:on~ name="NTPON_OFF" value="on" onclick="switch_ntp();" checked /><span id="onbutton"></span>
+	<input type="radio"  ~cNTPON_OFF:off~ name="NTPON_OFF" value="off" onclick="switch_ntp();"/><span id="offbutton"></span>
+	</td>
+</tr>
+<tr id="servertr1">
+  <td class="head" id="manNTPServer1"></td>
+  <td><input size="32" maxlength="64" class="handaer_text_content" name="NTPServerIP1" id="NTPServerIP1" value="" type="text"></td>
+</tr>
+<tr  id="servertr2">
+  <td class="head" id="manNTPServer2"></td>
+  <td><input size="32" maxlength="64" class="handaer_text_content" name="NTPServerIP2" id="NTPServerIP2" value="" type="text"></td>
+</tr>
+
+</tbody></table>
+
+<table cellpadding="0" cellspacing="0" class="handaer_text">
+  <tr align="center">
+    <td>
+      <input type="button"  class="handaer_input" value="Cancel"id="manNTPCancel" onClick="window.location.reload()">&nbsp; &nbsp;
+      <input type="button"  class="handaer_input" value="Apply" id="manNTPApply" onClick="return NTPFormCheck()">
+	  <input type="submit"  name="TIMEZONE_SET" id="TIMEZONE_SET" style="display:none" value="TIMEZONE_SET">	  
+    </td>
+  </tr>
+</table>
+</form></td></tr>
+</table>
+</div>
+
+</body>
+</html>

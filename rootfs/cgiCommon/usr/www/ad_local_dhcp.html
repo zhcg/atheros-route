@@ -1,0 +1,258 @@
+<html>
+<head>
+<title>DHCP</title>
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "table-row";}}
+function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
+function widget_display(widgetID){document.getElementById(widgetID).style.visibility = "visible";document.getElementById(widgetID).style.display = style_display_on();}
+
+function widget_enable(widgetID){document.getElementById(widgetID).disabled = false;}
+function widget_disable(widgetID){document.getElementById(widgetID).disabled = true;}
+
+function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
+function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
+
+function button_commit(buttonID){document.getElementById(buttonID).click();}
+
+function checkValuerange(value,min,max)
+{
+	var i = parseInt(value);
+	if (isNaN(i))
+	{
+		return false;
+	}
+	else if (i > max || i < min)
+	{
+		return false;
+	}
+	return true;
+}
+function CheckValue()
+{
+	if(document.WORKFORM.DHCPON_OFF[0].checked == true)
+	{
+		if (document.WORKFORM.DHCP_BIP.value.length == 0)
+		{
+			alert(_("err IP empty"));
+			document.WORKFORM.DHCP_BIP.select();
+			return false;
+		}
+		if 	(checkValuerange(document.WORKFORM.DHCP_BIP.value,1,254)==false)
+		{
+			alert(_("err range"));
+			document.WORKFORM.DHCP_BIP.select();
+			return false;
+		}
+		if (document.WORKFORM.DHCP_EIP.value.length == 0)
+		{
+			alert(_("err IP empty"));
+			document.WORKFORM.DHCP_EIP.select();
+			return false;
+		}
+		if (checkValuerange(document.WORKFORM.DHCP_EIP.value,1,254)==false)
+		{
+			alert(_("err range"));
+			document.WORKFORM.DHCP_EIP.select();
+			return false;
+		}
+		
+		if(parseInt(document.WORKFORM.DHCP_EIP.value) < parseInt(document.WORKFORM.DHCP_BIP.value))
+		{
+			alert(_("err range"));
+			document.WORKFORM.DHCP_BIP.select();
+			return false;
+		}
+		
+		if (document.WORKFORM.DHCP_TIME.value.length == 0)
+		{
+			alert(_("err time empty"));
+			document.WORKFORM.DHCP_TIME.select();
+			return false;
+		}
+		
+		if (checkValuerange(document.WORKFORM.DHCP_TIME.value,1,2880)==false)
+		{
+			alert(_("err range"));
+			document.WORKFORM.DHCP_TIME.select();
+			return false;
+		}
+	}
+	button_commit("DHCP_SET");
+	return true;
+}
+
+function initTranslation()
+{
+	trans_inner("title","dhcp title");	
+	trans_inner("des","dhcp des");	
+	trans_inner("t1_title","dhcp t1_title");	
+	trans_inner("t1_DHCPON_OFF","dhcp t1_DHCPON_OFF");
+	trans_inner("t1_DHCPIP","dhcp t1_DHCPIP");
+	
+	trans_inner("onbutton","lan onbutton");	
+	trans_inner("offbutton","lan offbutton");	
+	trans_inner("t1_TIME","dhcp t1_TIME");	
+	trans_inner("t1_min","dhcp t1_min");
+	trans_inner("t1_defaut","dhcp t1_defaut");
+	
+	trans_inner("t2_title","dhcp t2_title");	
+	trans_inner("t2_Mac","dhcp t2_Mac");	
+	trans_inner("t2_Ip","dhcp t2_Ip");	
+	trans_inner("t2_Status","dhcp t2_Status");	
+	trans_inner("t2_Modefy","dhcp t2_Modefy");	
+
+	trans_value("ADDDHCP","lan ADDDHCP");
+	trans_inner("t3_title","dhcp t3_title");	
+	trans_inner("t3_Hostname","dhcp t3_Hostname");	
+	trans_inner("t3_Mac","dhcp t3_Mac");	
+	trans_inner("t3_Ip","dhcp t3_Ip");	
+	trans_inner("t3_Expr","dhcp t3_Expr");	
+	trans_value("bCANCEL","lan bCANCEL");	
+	trans_value("bAPPLY","lan bAPPLY");
+}
+function getDHCPrange()
+{
+	var range="10.10.10.";
+
+	trans_inner("IPbegin",range);
+	trans_inner("IPend","-"+range);
+}
+function initValue()
+{
+	Butterlate.setTextDomain("lan");
+	initTranslation();
+	switch_dhcp();
+	getDHCPrange();
+}
+
+function switch_dhcp()
+{
+	if(document.WORKFORM.DHCPON_OFF[0].checked == true)
+	{
+		widget_display("t1_hide1");
+		widget_display("t1_hide2");
+		widget_display("t2");
+		widget_display("t2line");
+		widget_display("t3");
+		widget_display("t3line");
+	}
+	else
+	{
+		widget_hide("t1_hide1");
+		widget_hide("t1_hide2");
+		widget_hide("t2");
+		widget_hide("t2line");
+		widget_hide("t3");
+		widget_hide("t3line");
+	}
+}
+function listdel(value)
+{
+	document.getElementById("DELXXX").value=value;
+	alert("删除了"+value);
+	button_commit("DEL_SDHCP");
+}
+</script>
+</head>
+
+<body onLoad="initValue()">
+<div class="handaer_main">
+<table  width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td>
+<h1 id="title">DHCP服务器</h1>
+<p></p>
+
+<FORM method="POST" name="WORKFORM">
+<!-- =========== Wireless Settings =========== -->
+<h2 id="des">配置DHCP服务器相关选项以及显示DHCP相关信息</h2>
+
+<table id="t1"  width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
+<tr>
+<td class="title" colspan="2" id="t1_title">DHCP</td>
+</tr>
+<tr>
+ <td class="head" id="t1_DHCPON_OFF">DHCP服务器</td>
+	<td><input type="radio"  ~cDHCPON_OFF:on~ name="DHCPON_OFF" value="on" onclick="switch_dhcp();" checked /><span id="onbutton"></span>
+	<input type="radio"  ~cDHCPON_OFF:off~ name="DHCPON_OFF" value="off" onclick="switch_dhcp();"/><span id="offbutton"></span>
+	</td>
+</tr>
+
+<tr id="t1_hide1">
+  <td class="head" id="t1_DHCPIP">IP分配地址</td>
+  <td><span id="IPbegin"></span><input type="text" name="DHCP_BIP" id="DHCP_BIP" size="3" maxlength="3" class="handaer_text_content"  value="">
+  <span id="IPend"></span><input type="text" name="DHCP_EIP" id="DHCP_EIP" size="3" maxlength="3" class="handaer_text_content"  value=""></td>
+</tr>
+
+<tr id="t1_hide2">
+  <td class="head" id="t1_TIME">租用时间</td>
+  <td><input type="text" name="DHCP_TIME" id="DHCP_TIME" size="32" maxlength="32" class="handaer_text_content"  value=""><span id="t1_min">分钟</span><span id="t1_defaut"></span></td>
+</tr>
+</table>
+
+<h1 id="t2line">  </h1>
+<table id="t2"  width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
+  <tr> 
+    <td class="title" colspan="5" id="t2_title">静态分配</td>
+  </tr>
+  <tr>
+    <td>ID</td>
+    <td id="t2_Mac">MAC地址</td>
+    <td id="t2_Ip">IP地址</td>
+    <td id="t2_Status">状态</td>
+    <td id="t2_Modefy">编辑</td>
+  </tr>
+  ~Z:sdhcplist~ 
+   <tr>
+	<td>&nbsp; &nbsp;</td>
+	<td>&nbsp; &nbsp;</td>
+	<td>&nbsp; &nbsp;</td>
+	<td>&nbsp; &nbsp;</td>
+    <td>
+		<input type="button"  class="handaer_small_button" name="ADDDHCP" id="ADDDHCP" value="添加" onClick="window.location.href='ad_local_addsdhcp'">
+	</td>
+  </tr>
+
+  
+</table>
+<h1 id="t3line"> </h1>
+<table id="t3"  width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
+  <tr> 
+    <td class="title" colspan="5" id="t3_title">DHCP客户端</td>
+  </tr>
+  <tr>
+    <td>ID</td>
+    <td id="t3_Hostname">客户端名称</td>
+    <td id="t3_Mac">MAC地址</td>
+    <td id="t3_Ip">IP地址</td>
+    <td id="t3_Expr">有效时间</td>
+  </tr>
+  ~Z:dhcpclinetlist~ 
+</table>
+
+
+<table id="buttontable">
+<tr align="center">
+  <td>
+	<input type="button" name="bCANCEL" id="bCANCEL" class="handaer_input" value="Cancel" onClick="window.location.reload();">
+    <input type="button" name="bAPPLY" id="bAPPLY" class="handaer_input" value="Apply" onClick="CheckValue();">    
+
+	<input type="submit" name="DHCP_SET" id="DHCP_SET" style="display:none" value="DHCP_SET">
+  </td>
+</tr>
+</table>
+
+</form>
+<form method="POST" name="DELLIST">
+	<input style="display:none"  type="text" name="DELXXX" id="DELXXX" size="20" maxlength="32">
+	<input style="display:none" type="submit" name="DEL_SDHCP" id="DEL_SDHCP" value="DEL_SDHCP">
+</form>
+
+</td></tr></table> 
+</div>
+</body>
+</html>
+

@@ -283,6 +283,7 @@ static const char* const suffixTable [] = {
   ".mid.midi", "audio/midi",
   ".mp3", "audio/mpeg",
   ".xml", "text/xml",
+  ".img","multipart/form-data",
 #if 0                        /* unpopular */
   ".au", "audio/basic",
   ".pac", "application/x-ns-proxy-autoconfig",
@@ -1870,6 +1871,7 @@ static int miniHttpd(int server)
 	    /* protect reload config, may be confuse checking */
 	    signal(SIGHUP, SIG_IGN);
 #endif
+           parse_conf(default_path_httpd_conf, FIRST_PARSE);
 	    handleIncoming();
 	    if(!config->debugHttpd)
 		exit(0);
@@ -2079,7 +2081,7 @@ int httpd_main(int argc, char *argv[])
 #ifdef CONFIG_FEATURE_HTTPD_RELOAD_CONFIG_SIGHUP
   sighup_handler(0);
 #else
-  parse_conf(default_path_httpd_conf, FIRST_PARSE);
+ //           parse_conf(default_path_httpd_conf, FIRST_PARSE);
 #endif
 
 #ifndef CONFIG_FEATURE_HTTPD_USAGE_FROM_INETD_ONLY

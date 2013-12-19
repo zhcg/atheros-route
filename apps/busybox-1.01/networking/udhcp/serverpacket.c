@@ -161,7 +161,7 @@ int sendOffer(struct dhcpMessage *oldpacket)
 		return -1;
 	}
 
-	if (!add_lease(packet.chaddr, packet.yiaddr, server_config.offer_time)) {
+	if (!add_lease(get_option(oldpacket, DHCP_HOST_NAME), packet.chaddr, packet.yiaddr, server_config.offer_time)) {
 		LOG(LOG_WARNING, "lease pool is full -- OFFER abandoned");
 		return -1;
 	}
@@ -249,8 +249,7 @@ int sendACK(struct dhcpMessage *oldpacket, uint32_t yiaddr)
 	if (send_packet(&packet, 0) < 0)
 		return -1;
 
-	add_lease(packet.chaddr, packet.yiaddr, lease_time_align);
-
+	add_lease(get_option(oldpacket, DHCP_HOST_NAME), packet.chaddr, packet.yiaddr, lease_time_align);
 	return 0;
 }
 
