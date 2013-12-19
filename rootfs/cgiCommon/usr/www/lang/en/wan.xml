@@ -76,4 +76,12 @@
   
   <message msgid="err format" msgstr="Parameter format error!" />
   <message msgid="err range" msgstr="Parameter range error!" />
+  
+  
+  	<message msgid="wan auto_dhcp" msgstr="Automatically select DHCP mode" />
+	<message msgid="wan auto_sip" msgstr="Automatically select StaticIP mode" />
+	<message msgid="wan auto_ppp" msgstr="Automatically select PPPoE mode" />
+	<message msgid="wan auto_l2tp" msgstr="Automatically select L2TP mode" />
+	<message msgid="wan auto_p2tp" msgstr="Automatically select P2TP mode" />
+	<message msgid="wan auto_fail" msgstr="Automatically select fail！,please check the internet connection or select manually " />
  </po>

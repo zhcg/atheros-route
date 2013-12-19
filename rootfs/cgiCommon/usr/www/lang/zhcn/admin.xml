@@ -298,7 +298,7 @@
 	<message msgid="factory fail" msgstr="恢复出厂设置失败!" />
 	<message msgid="factory success" msgstr="恢复出厂设置成功!" />
 	<message msgid="upgrade success" msgstr="固件升级成功!" />
-	<message msgid="upgrade fail" msgstr="固件升级失败!" />
+	<message msgid="upgrade fail" msgstr="版本一致,固件未升级!" />
 	
 	<message msgid="admw offwifides" msgstr="WiFi已经关闭,无线中继无法使用" />
 	<message msgid="admw software" msgstr="当前软件版本" />
@@ -315,4 +315,5 @@
 	<message msgid="admw sysupgrade" msgstr="确认进行固件升级?" />
 	<message msgid="err dhcp null" msgstr="无法通过DHCP获取到WAN IP,请检查是否为DHCP方式连接" />
 	<message msgid="err dhcp ip" msgstr="DHCP获取到WAN IP跟当前路由在同一个网段,请在网关设置里面调整路由的网段" />
+
 </po>

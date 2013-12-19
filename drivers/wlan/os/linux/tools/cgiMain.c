@@ -635,7 +635,7 @@ char *processSpecial(char *paramStr, char *outBuff)
              case 'Z':
             {
                 fprintf(errOut,"\n----------secArg:%s\n",secArg);
-                //接入管理(带配置)
+                //无线接入管理(带配置)
                 if(strcmp(secArg,"conmlist")==0)
                 {
                     outBuff += sprintf(outBuff,"<tr>");
@@ -680,7 +680,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                     outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"4\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
                     outBuff += sprintf(outBuff,"</tr>");
               }
-                //静态DHCP(带配置)
+                //DHCP-静态分配(带配置)
                 else if(strcmp(secArg,"sdhcplist")==0)
                 {
                     outBuff += sprintf(outBuff,"<tr>");
@@ -737,7 +737,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                 //接入管理有线设备(不带配置)
                 else if(strcmp(secArg,"wiredevlist")==0)
                 {
-                    FILE *fp;
+                    FILE *fp, *flist;
                     struct dhcpOfferedAddr 
                     {
                         unsigned char hostname[16];
@@ -745,101 +745,170 @@ char *processSpecial(char *paramStr, char *outBuff)
                         unsigned long ip;
                         unsigned long expires;
                     } lease;
-                    int i;
+                    char STAbuf[128];
+                    char buf[20], mac_buf[20], rate_buf[10], rssi_buf[10];
+                    int i, j;
                     struct in_addr addr;
                     unsigned long expires;
                     unsigned d, h, m;
                     int num=1;
+                    int shi=0;
 
-                    system("killall -q -USR1 udhcpd");
-                    fprintf(errOut,"\n%s  %d  \n",__func__,__LINE__);
-                    fp = fopen("/var/run/udhcpd.leases", "r");
+                    Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
+                    Execute_cmd("wlanconfig ath0 list sta > /var/run/.STAlist", rspBuff);
+
+                    fp = fopen("/var/run/udhcpd.leases", "r");  /*  /var/run/udhcpd.leases   */
                     if (NULL == fp)
                     {
-                        fprintf(errOut,"\n%s  %d  \n",__func__,__LINE__);		
-                               break;   
+                        fprintf(errOut,"\n%s  %d open udhcpd error\n \n",__func__,__LINE__);
+                        break;
                     }
 
                     while (fread(&lease, 1, sizeof(lease), fp) == sizeof(lease)) 
                     {
-                        fprintf(errOut,"\n%s  %d  \n",__func__,__LINE__);		
-                        outBuff += sprintf(outBuff,"<tr>");
-                        outBuff += sprintf(outBuff,"<td>%d</td>",num);
-                        num++;         
-
-                        addr.s_addr = lease.ip;
-                        expires = ntohl(lease.expires);
-                        outBuff += sprintf(outBuff,"<td>%s</td>", inet_ntoa(addr));
-                        fprintf(errOut,"\n%s  %d  IP:%s\n",__func__,__LINE__, inet_ntoa(addr));		
-
-                        outBuff += sprintf(outBuff,"<td>%02X", lease.mac[0]);
-                        fprintf(errOut,"\n%s  %d  mac:%02X\n",__func__,__LINE__, lease.mac[0]);		
-
-                        for (i = 1; i < 6; i++)
+                        shi=0;
+                        flist = fopen("/var/run/.STAlist", "r");    /*  /var/run/.STAlist   */
+                        if (NULL == flist)
                         {
-                            outBuff += sprintf(outBuff,":%02X", lease.mac[i]);
-                            fprintf(errOut,":%02x",lease.mac[i]);		
-                        }
-                        fprintf(errOut,"\n");		
-                      //d = expires / (24*60*60); expires %= (24*60*60);
-                        //h = expires / (60*60); expires %= (60*60);
-                        //m = expires / 60; expires %= 60;
-                        //if (d) websWrite(wp, T("%u days "), d);
-                        //websWrite(wp, T("%02u:%02u:%02u\n"), h, m, (unsigned)expires);
-                        outBuff += sprintf(outBuff,"</td>");
-                        if (strlen(lease.hostname) > 0)
-                        {
-                            //outBuff += sprintf(outBuff,"<td>%-16s</td>",lease.hostname);
-                            outBuff += sprintf(outBuff,"<td>%s</td>",lease.hostname);
-                            fprintf(errOut,"\n%s  %d  name:%s\n",__func__,__LINE__, lease.hostname);		
+                            fprintf(errOut,"\n%s  %d open STAlist\n \n",__func__,__LINE__);
+                            break;
                         }
 
-                        else
+                        fgets(STAbuf, 128, flist);
+                        while(fgets(STAbuf, 128, flist))
                         {
-                            fprintf(errOut,"\n%s  %d  no name:%s\n",__func__,__LINE__, lease.hostname);		
-                            outBuff += sprintf(outBuff,"<td><br /></td>");
-                        }
+                            /*compare MAC*/
+                            memset(buf, 0, sizeof(buf));
+                            memset(mac_buf, 0, sizeof(mac_buf));
+                            strncpy(buf, STAbuf, 17);
+                            for(i = 0, j = 0 ; i < 6; i++, j+=3)
+                           {
+                                sprintf(&mac_buf[j], "%02x:", lease.mac[i]);
+                           }
+                            fprintf(errOut,"\n%s  %d mac_buf:%s buf:%s\n",__func__,__LINE__,mac_buf,buf);
+                            if(strncmp(buf, mac_buf, 17) == 0)
+                            {//wireless
+                                shi=1;
+                            }
+                            else
+                            {
+                                
+                            }
 
-                        outBuff += sprintf(outBuff,"</tr>");
+                        }
+                        if(shi != 1)
+                        {
+                            outBuff += sprintf(outBuff,"<tr>");
+                            outBuff += sprintf(outBuff,"<td>%d</td>",num);
+                            num++; 
+                            
+                            if (strlen(lease.hostname) > 0)
+                                outBuff += sprintf(outBuff,"<td>%s</td>",lease.hostname);
+                            else
+                                outBuff += sprintf(outBuff,"<td><br /></td>");
+                            
+                            addr.s_addr = lease.ip;
+                            expires = ntohl(lease.expires);
+                            outBuff += sprintf(outBuff,"<td>%s</td>", inet_ntoa(addr));
+                        
+                            outBuff += sprintf(outBuff,"<td>%02X", lease.mac[0]);
+                            for (i = 1; i < 6; i++)
+                                 outBuff += sprintf(outBuff,":%02X", lease.mac[i]);
+                            
+                             outBuff += sprintf(outBuff,"</td>");
+                             outBuff += sprintf(outBuff,"</tr>");
+                        }
+                         fclose(flist);
                     }
                     fclose(fp);
-
-
-
-
-                    /*     getDhcpCliList(&outBuff,1);
-
-                    outBuff += sprintf(outBuff,"<tr>");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","1");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.5");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","璁惧1");
-                    outBuff += sprintf(outBuff,"</tr>");
-
-                    outBuff += sprintf(outBuff,"<tr>");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","2");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.5");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","璁惧2");
-                    outBuff += sprintf(outBuff,"</tr>");
-                    */
                 }
                 //接入管理无线设备(不带配置)
                 else if(strcmp(secArg,"wirelessdevlist")==0)
                 {
-                    outBuff += sprintf(outBuff,"<tr>");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","1");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.5");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","璁惧1");
-                    outBuff += sprintf(outBuff,"</tr>");
-                    
-                    outBuff += sprintf(outBuff,"<tr>");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","2");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.5");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","璁惧2");
-                    outBuff += sprintf(outBuff,"</tr>");
+                    FILE *fp, *flist;
+                    struct dhcpOfferedAddr 
+                    {
+                        unsigned char hostname[16];
+                        unsigned char mac[16];
+                        unsigned long ip;
+                        unsigned long expires;
+                    } lease;
+                    char STAbuf[128];
+                    char buf[20], mac_buf[20], rate_buf[10], rssi_buf[10];
+                    int i, j;
+                    struct in_addr addr;
+                    unsigned long expires;
+                    unsigned d, h, m;
+                    int num=1;
+                    int shi=0;
+
+                    Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
+                    Execute_cmd("wlanconfig ath0 list sta > /var/run/.STAlist", rspBuff);
+
+                    fp = fopen("/var/run/udhcpd.leases", "r");  /*  /var/run/udhcpd.leases   */
+                    if (NULL == fp)
+                    {
+                        fprintf(errOut,"\n%s  %d open udhcpd error\n \n",__func__,__LINE__);
+                        break;
+                    }
+
+                    while (fread(&lease, 1, sizeof(lease), fp) == sizeof(lease)) 
+                    {
+                        shi=0;
+                        flist = fopen("/var/run/.STAlist", "r");    /*  /var/run/.STAlist   */
+                        if (NULL == flist)
+                        {
+                            fprintf(errOut,"\n%s  %d open STAlist error\n \n",__func__,__LINE__);
+                            break;
+                        }
+                        fgets(STAbuf, 128, flist);
+                        while(fgets(STAbuf, 128, flist))
+                        {
+                            /*compare MAC*/
+                            memset(buf, 0, sizeof(buf));
+                            memset(mac_buf, 0, sizeof(mac_buf));
+                            strncpy(buf, STAbuf, 17);
+                            for(i = 0, j = 0 ; i < 6; i++, j+=3)
+                                sprintf(&mac_buf[j], "%02x:", lease.mac[i]);
+                            
+                            fprintf(errOut,"\n%s  %d mac_buf:%s buf:%s\n",__func__,__LINE__,mac_buf,buf);
+                            if(strncmp(buf, mac_buf, 17) == 0)
+                           {//wireless
+                                outBuff += sprintf(outBuff,"<tr>");
+                                outBuff += sprintf(outBuff,"<td>%d</td>",num);
+                                num++; 
+                                
+                                if (strlen(lease.hostname) > 0)
+                                    outBuff += sprintf(outBuff,"<td>%s</td>",lease.hostname);
+                                else
+                                    outBuff += sprintf(outBuff,"<td><br /></td>");
+
+                                addr.s_addr = lease.ip;
+                                expires = ntohl(lease.expires);
+                                outBuff += sprintf(outBuff,"<td>%s</td>", inet_ntoa(addr));
+                            
+                                outBuff += sprintf(outBuff,"<td>%02X", lease.mac[0]);
+                                for (i = 1; i < 6; i++)
+                                     outBuff += sprintf(outBuff,":%02X", lease.mac[i]);
+                                
+                                outBuff += sprintf(outBuff,"</td>");
+
+                                memset(rate_buf, 0, sizeof(rate_buf));
+                                strncpy(rate_buf, &STAbuf[29], 5);
+                                outBuff += sprintf(outBuff,"<td>%sbit/s</td>",rate_buf);
+                                //printf("the sta's rate is %s\n", rate_buf);
+
+                                /*get the Signal strength */
+                                memset(rssi_buf, 0, sizeof(rssi_buf));
+                                strncpy(rssi_buf, &STAbuf[35], 5);
+                                outBuff += sprintf(outBuff,"<td>-%s dBm</td>",rssi_buf);//printf("the RSSI is %s\n", rssi_buf);    
+                                
+                                outBuff += sprintf(outBuff,"</tr>");
+                            }
+                        }
+                         fclose(flist);
+                    }
+                    fclose(fp);
                 }
                  //系统路由表(不带配置)
                 else if(strcmp(secArg,"sysrulist")==0)
@@ -865,22 +934,69 @@ char *processSpecial(char *paramStr, char *outBuff)
                 //DHCP客户端(不带配置)
                 else if(strcmp(secArg,"dhcpclinetlist")==0)
                 {
-                    outBuff += sprintf(outBuff,"<tr>");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","1");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","dev1");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.2");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","2012.1.1-2012.2.2");
-                    outBuff += sprintf(outBuff,"</tr>");
+                    FILE *fp, *flist;
+                    struct dhcpOfferedAddr 
+                    {
+                        unsigned char hostname[16];
+                        unsigned char mac[16];
+                        unsigned long ip;
+                        unsigned long expires;
+                    } lease;
+                    char STAbuf[128];
+                    char buf[20], mac_buf[20], rate_buf[10], rssi_buf[10];
+                    int i, j;
+                    struct in_addr addr;
+                    unsigned long expires;
+                    unsigned d, h, m;
+                    int num=1;
+                    int shi=0;
 
-                    outBuff += sprintf(outBuff,"<tr>");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","2");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","dev2");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.2");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","2012.1.1-2012.2.2");
-                    outBuff += sprintf(outBuff,"</tr>");
+                    Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
+                    Execute_cmd("wlanconfig ath0 list sta > /var/run/.STAlist", rspBuff);
 
+                    fp = fopen("/var/run/udhcpd.leases", "r");  /*  /var/run/udhcpd.leases   */
+                    if (NULL == fp)
+                    {
+                        fprintf(errOut,"\n%s  %d open udhcpd error\n \n",__func__,__LINE__);
+                        break;
+                    }
+
+                    while (fread(&lease, 1, sizeof(lease), fp) == sizeof(lease)) 
+                    {
+                        outBuff += sprintf(outBuff,"<tr>");
+                        outBuff += sprintf(outBuff,"<td>%d</td>",num);
+                        num++; 
+
+                        if (strlen(lease.hostname) > 0)
+                        outBuff += sprintf(outBuff,"<td>%s</td>",lease.hostname);
+                        else
+                        outBuff += sprintf(outBuff,"<td><br /></td>");
+
+                        addr.s_addr = lease.ip;
+                        expires = ntohl(lease.expires);
+                        outBuff += sprintf(outBuff,"<td>%s</td>", inet_ntoa(addr));
+
+                        outBuff += sprintf(outBuff,"<td>%02X", lease.mac[0]);
+                        for (i = 1; i < 6; i++)
+                        outBuff += sprintf(outBuff,":%02X", lease.mac[i]);
+
+                        outBuff += sprintf(outBuff,"</td>");
+                        d = expires / (24*60*60); expires %= (24*60*60);
+                        h = expires / (60*60); expires %= (60*60);
+                        m = expires / 60; expires %= 60;
+                        outBuff += sprintf(outBuff,"<td>");
+                        if (d) 
+                        {
+                            //printf("lease time is %u days ", d);
+                            outBuff += sprintf(outBuff,"%u days ", d);
+                        }
+                         outBuff += sprintf(outBuff,"%02u:%02u:%02u ",  h, m, (unsigned)expires);
+                       //printf("%02u:%02u:%02u\n", h, m, (unsigned)expires);
+                        outBuff += sprintf(outBuff,"</td>");
+                      
+                        outBuff += sprintf(outBuff,"</tr>");
+                    }
+                    fclose(fp);
                 }
               }
         break;       
@@ -2783,7 +2899,7 @@ int main(int argc,char **argv)
 		if (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 ) 
 		{ 
 					flag=1; 
-		}
+		}            
 		CFG_get_by_name("PPPOE_MODE",pppoe_mode);
 		fprintf(errOut,"user select pppoe_mode:%s\n",pppoe_mode);
 		if(flag!=1)
@@ -2792,74 +2908,79 @@ int main(int argc,char **argv)
 			writeParameters("/tmp/.apcfg","w+",0);
 		}
 		if(!strncmp(pppoe_mode,"auto",4))
-						{  char cgi_auto[128];
-						  char	usernameBuff[128];
-						  char	passBuff[128];
-						  char	cmdstr[128];
+		{  
+			char cgi_auto[128];
+			char	usernameBuff[128];
+			char	passBuff[128];
+			char	cmdstr[128];
 						  
-							CFG_get_by_name("PPPOE_USER",usernameBuff);
-							CFG_get_by_name("PPPOE_PWD",passBuff);
-							strcat(cmdstr,"pppoe-setup ");strcat(cmdstr,usernameBuff);strcat(cmdstr," ");strcat(cmdstr,passBuff);
-							strcat(cmdstr," > /dev/null 2>&1");
-                            Execute_cmd(cmdstr,cgi_auto);
+			CFG_get_by_name("PPPOE_USER",usernameBuff);
+			CFG_get_by_name("PPPOE_PWD",passBuff);
+			strcat(cmdstr,"pppoe-setup ");strcat(cmdstr,usernameBuff);strcat(cmdstr," ");strcat(cmdstr,passBuff);
+			strcat(cmdstr," > /dev/null 2>&1");
+            Execute_cmd(cmdstr,cgi_auto);
 
-                            Execute_cmd("pppoe-stop", cgi_auto);sleep(5);
-							Execute_cmd("pppoe-start", cgi_auto);sleep(5);
-						}
-			  else if(!strncmp(pppoe_mode,"demand",6))
-			           {  char cgi_dem[128];
-						  char	usernameBuff[128];
-						  char	passBuff[128];
-						  char	cmdstr[128];
+            Execute_cmd("pppoe-stop > /dev/null 2>&1", cgi_auto);sleep(5);
+			Execute_cmd("pppoe-start > /dev/null 2>&1", cgi_auto);sleep(5);
+		}
+		else if(!strncmp(pppoe_mode,"demand",6))
+		{  
+			char cgi_dem[128];
+			char	usernameBuff[128];
+			char	passBuff[128];
+			char	cmdstr[128];
 						  
-							CFG_get_by_name("PPPOE_USER",usernameBuff);
-							CFG_get_by_name("PPPOE_PWD",passBuff);
-							strcat(cmdstr,"pppoe-setup ");strcat(cmdstr,usernameBuff);strcat(cmdstr," ");strcat(cmdstr,passBuff);
-							strcat(cmdstr," > /dev/null 2>&1");//very important
-                            Execute_cmd(cmdstr,cgi_dem);
+			CFG_get_by_name("PPPOE_USER",usernameBuff);
+			CFG_get_by_name("PPPOE_PWD",passBuff);
+			strcat(cmdstr,"pppoe-setup ");strcat(cmdstr,usernameBuff);strcat(cmdstr," ");strcat(cmdstr,passBuff);
+			strcat(cmdstr," > /dev/null 2>&1");//very important
+            Execute_cmd(cmdstr,cgi_dem);
 
-							 //Execute_cmd("pppoe-stop", cgi_dem);sleep(5);
-							 system("pppoe-stop");sleep(5);
-							 system("pppoe-start");sleep(5);
-							 //Execute_cmd("pppoe-start", cgi_dem);sleep(5);
-				        }//demand mode
-			 else if(!strncmp(pppoe_mode,"manual",6))
-			            {char cgi_man[128];
-						  char	usernameBuff[128];
-						  char	passBuff[128];
-						  char	cmdstr[128];
+			//Execute_cmd("pppoe-stop", cgi_dem);sleep(5);
+			system("pppoe-stop > /dev/null 2>&1");sleep(5);
+			system("pppoe-start > /dev/null 2>&1");sleep(5);
+			//Execute_cmd("pppoe-start", cgi_dem);sleep(5);
+		}//demand mode
+		else if(!strncmp(pppoe_mode,"manual",6))
+		{
+			char cgi_man[128];
+			char	usernameBuff[128];
+			char	passBuff[128];
+			char	cmdstr[128];
 						  
-							CFG_get_by_name("PPPOE_USER",usernameBuff);
-							CFG_get_by_name("PPPOE_PWD",passBuff);
-							strcat(cmdstr,"pppoe-setup ");strcat(cmdstr,usernameBuff);strcat(cmdstr," ");strcat(cmdstr,passBuff);
-							strcat(cmdstr," > /dev/null 2>&1");
-                            Execute_cmd(cmdstr,cgi_man);
+			CFG_get_by_name("PPPOE_USER",usernameBuff);
+			CFG_get_by_name("PPPOE_PWD",passBuff);
+			strcat(cmdstr,"pppoe-setup ");strcat(cmdstr,usernameBuff);strcat(cmdstr," ");strcat(cmdstr,passBuff);
+			strcat(cmdstr," > /dev/null 2>&1");
+            Execute_cmd(cmdstr,cgi_man);
 			            
-							Execute_cmd("pppoe-stop", cgi_man);sleep(5);
-							Execute_cmd("pppoe-start", cgi_man);sleep(5);
-				         }//manual mode		
-			else if(!strncmp(pppoe_mode,"timing",6))	
-				        { char cgi_tim[128];
-						  char	usernameBuff[128];
-						  char	passBuff[128];
-						  char	cmdstr[128];
+			Execute_cmd("pppoe-stop > /dev/null 2>&1", cgi_man);sleep(5);
+			Execute_cmd("pppoe-start > /dev/null 2>&1", cgi_man);sleep(5);
+		}//manual mode		
+		else if(!strncmp(pppoe_mode,"timing",6))	
+		{ 
+			char cgi_tim[128];
+			char	usernameBuff[128];
+			char	passBuff[128];
+			char	cmdstr[128];
 						  
-							CFG_get_by_name("PPPOE_USER",usernameBuff);
-							CFG_get_by_name("PPPOE_PWD",passBuff);
-							strcat(cmdstr,"pppoe-setup ");strcat(cmdstr,usernameBuff);strcat(cmdstr," ");strcat(cmdstr,passBuff);
-							strcat(cmdstr," > /dev/null 2>&1");
-                            Execute_cmd(cmdstr,cgi_tim);
+			CFG_get_by_name("PPPOE_USER",usernameBuff);
+			CFG_get_by_name("PPPOE_PWD",passBuff);
+			strcat(cmdstr,"pppoe-setup ");strcat(cmdstr,usernameBuff);strcat(cmdstr," ");strcat(cmdstr,passBuff);
+			strcat(cmdstr," > /dev/null 2>&1");
+			Execute_cmd(cmdstr,cgi_tim);
 
-							Execute_cmd("pppoe-stop", cgi_tim);sleep(5);
-							Execute_cmd("pppoe-start", cgi_tim);sleep(5);
-			             }
-		    //Execute_cmd("ps aux | grep \"threethread\"|awk -F ' ' '{print$5}'|cut -c11-21",three_thread_Buff);
-            //if(!strncmp(three_thread_Buff,"threethread",11))
-			//	{Execute_cmd("killall threethread",tmp_Buff);sleep(2);}
-            //Execute_cmd("/usr/sbin/threethread &",tmp_Buff);sleep(2);
-			//fprintf(errOut,"to gohome\n");
-			gohome =1;
-	
+			Execute_cmd("pppoe-stop > /dev/null 2>&1", cgi_tim);sleep(5);
+			Execute_cmd("pppoe-start > /dev/null 2>&1", cgi_tim);sleep(5);
+			if(strncmp(Execute_cmd("echo `route -n|grep ppp0|awk -F ' ' '{print$8}'`",cgi_tim),"ppp0 ppp0",9))
+            Execute_cmd("route add default gw `route -n | grep ppp0 |awk -F ' ' '{print$1}'|awk 'NR==1'`",cgi_tim);
+		}
+		//Execute_cmd("ps aux | grep \"threethread\"|awk -F ' ' '{print$5}'|cut -c11-21",three_thread_Buff);
+        //if(!strncmp(three_thread_Buff,"threethread",11))
+		//	{Execute_cmd("killall threethread",tmp_Buff);sleep(2);}
+        //Execute_cmd("/usr/sbin/threethread &",tmp_Buff);sleep(2);
+		//fprintf(errOut,"to gohome\n");
+		gohome =1;
 	}
 	//pppoe and advanced options  above
 
@@ -3216,6 +3337,7 @@ int main(int argc,char **argv)
 	{
         fprintf(errOut,"\n%s  %d FACTORY \n",__func__,__LINE__);
         system("cfg -x");
+		sleep(1);
 		//[TODO] reset any args
 		system("echo \"/home.html:admin:admin\" > /etc/httpd.conf");
 
@@ -3229,6 +3351,7 @@ int main(int argc,char **argv)
         printf("<HTML><HEAD>\r\n");
         printf("<LINK REL=\"stylesheet\" HREF=\"../style/handaer.css\"  TYPE=\"text/css\" media=\"all\">");
         printf("<link rel=\"stylesheet\" href=\"../style/normal_ws.css\" type=\"text/css\">");
+		printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
         printf("</head><body>");
         
         printf("<div class=\"handaer_main\">");
@@ -3244,32 +3367,180 @@ int main(int argc,char **argv)
         system("sleep 1 && reboot &");
         exit(1);
     }
-    if(strcmp(CFG_get_by_name("ADD_CONRULE",valBuff),"ADD_CONRULE") == 0 ) 
-    // 添加无线接入处理
+    /*************************************
+    外网设置     mac克隆
+   *************************************/
+    if(strcmp(CFG_get_by_name("MAC_CLONE",valBuff),"MAC_CLONE") == 0 ) 
     {		 
-        fprintf(errOut,"\n%s  %d ADD_CONRULE \n",__func__,__LINE__);
+        fprintf(errOut,"\n%s  %d MAC_CLONE \n",__func__,__LINE__);
+        gohome =1;
+    }
+    /*************************************
+    内网设置    DHCP服务器
+   *************************************/
+    if(strcmp(CFG_get_by_name("DHCP_SET",valBuff),"DHCP_SET") == 0 ) 
+    {		 
+        fprintf(errOut,"\n%s  %d DHCP_SET \n",__func__,__LINE__);
      
         gohome =1;
     }
+    /*************************************
+    内网设置    DHCP服务器    添加
+   *************************************/
+    if(strcmp(CFG_get_by_name("ADD_STATICDHCP",valBuff),"ADD_STATICDHCP") == 0 ) 
+    {		 
+        fprintf(errOut,"\n%s  %d ADD_STATICDHCP \n",__func__,__LINE__);
+        gohome =1;
+    }
+    
+    /*************************************
+    内网设置    网关设置
+   *************************************/
+    if(strcmp(CFG_get_by_name("GW_SET",valBuff),"GW_SET") == 0 ) 
+    {		 
+        fprintf(errOut,"\n%s  %d GW_SET \n",__func__,__LINE__);
+        gohome =1;
+    }
+    
+    /*************************************
+    内网设置    路由表设置     
+   *************************************/
+    if(strcmp(CFG_get_by_name("RULIST_SET",valBuff),"RULIST_SET") == 0 ) 
+    {		 
+        fprintf(errOut,"\n%s  %d RULIST_SET \n",__func__,__LINE__);
+        gohome =1;
+    }
+    /*************************************
+    内网设置    路由表设置       添加
+   *************************************/
+    if(strcmp(CFG_get_by_name("ADD_STATICR",valBuff),"ADD_STATICR") == 0 ) 
+    {		 
+        fprintf(errOut,"\n%s  %d ADD_STATICR \n",__func__,__LINE__);
+        gohome =1;
+    }
+    
+    /*************************************
+    接入管理    无线接入控制
+    *************************************/
     if(strcmp(CFG_get_by_name("CONM_WORK",valBuff),"CONM_WORK") == 0 ) 
-    // 添加无线接入生效处理
     {		 
         fprintf(errOut,"\n%s  %d CONM_WORK \n",__func__,__LINE__);
-     
         gohome =1;
     }
-    if(strcmp(CFG_get_by_name("WIRRE",valBuff),"WIRRE") == 0 ) 
+    /*************************************
+    接入管理    无线接入控制     添加
+   *************************************/
+    if(strcmp(CFG_get_by_name("ADD_CONRULE",valBuff),"ADD_CONRULE") == 0 ) 
     {		 
+        fprintf(errOut,"\n%s  %d ADD_CONRULE \n",__func__,__LINE__);
         gohome =1;
     }
-    if(strcmp(CFG_get_by_name("WIRRE",valBuff),"WIRRE") == 0 ) 
+    /*************************************
+    无线设置    高级
+   *************************************/
+    if(strcmp(CFG_get_by_name("WIRELESS_ADVSET",valBuff),"WIRELESS_ADVSET") == 0 ) 
     {		 
+        fprintf(errOut,"\n%s  %d WIRELESS_ADVSET \n",__func__,__LINE__);
         gohome =1;
     }
-    if(strcmp(CFG_get_by_name("WIRRE",valBuff),"WIRRE") == 0 ) 
+    /*************************************
+    安全管理      IP/MAC绑定
+   *************************************/
+    if(strcmp(CFG_get_by_name("IPMAC_SET",valBuff),"IPMAC_SET") == 0 ) 
     {		 
+        fprintf(errOut,"\n%s  %d IPMAC_SET \n",__func__,__LINE__);
         gohome =1;
     }
+    
+    /*************************************
+    内网设置    IP/MAC绑定    添加
+   *************************************/
+    if(strcmp(CFG_get_by_name("ADD_IPMACBIND",valBuff),"ADD_IPMACBIND") == 0 ) 
+    {		 
+        fprintf(errOut,"\n%s  %d ADD_IPMACBIND \n",__func__,__LINE__);
+        gohome =1;
+    }
+    
+    /*************************************
+    家长控制    家长设置
+   *************************************/
+    if(strcmp(CFG_get_by_name("PARENTC_SET",valBuff),"PARENTC_SET") == 0 ) 
+    {		 
+        fprintf(errOut,"\n%s  %d PARENTC_SET \n",__func__,__LINE__);
+        gohome =1;
+    }
+    /*************************************
+    家长控制    访问管理
+   *************************************/
+    if(strcmp(CFG_get_by_name("PARENTCACC_SET",valBuff),"PARENTCACC_SET") == 0 ) 
+    {		 
+        fprintf(errOut,"\n%s  %d PARENTCACC_SET \n",__func__,__LINE__);
+        gohome =1;
+    }
+    /*************************************
+    家长控制    访问管理      添加
+   *************************************/
+    if(strcmp(CFG_get_by_name("ADD_PARC",valBuff),"ADD_PARC") == 0 ) 
+    {		 
+        fprintf(errOut,"\n%s  %d ADD_PARC \n",__func__,__LINE__);
+        gohome =1;
+    }
+    
+    /*************************************
+    系统设置    时间设置
+   *************************************/
+    if(strcmp(CFG_get_by_name("TIMEZONE_SET",valBuff),"TIMEZONE_SET") == 0 ) 
+    {		 
+        fprintf(errOut,"\n%s  %d TIMEZONE_SET \n",__func__,__LINE__);
+        gohome =1;
+    }
+    
+    /*************************************
+   系统设置    配置管理     备份
+   *************************************/
+    if(strcmp(CFG_get_by_name("LOCAL_SAVE",valBuff),"LOCAL_SAVE") == 0 ) 
+    {		 
+        fprintf(errOut,"\n%s  %d ADD_IPMACBIND \n",__func__,__LINE__);
+        gohome =1;
+    }
+    /*************************************
+   系统设置    配置管理     使用
+   *************************************/
+    if(strcmp(CFG_get_by_name("CFG_MODIFY_USE",valBuff),"CFG_MODIFY_USE") == 0 ) 
+    {		 
+        fprintf(errOut,"\n%s  %d CFG_MODIFY_USE \n",__func__,__LINE__);
+        gohome =1;
+    }
+    /*************************************
+   系统设置    配置管理     删除
+   *************************************/
+    if(strcmp(CFG_get_by_name("CFG_MODIFY_DEL",valBuff),"CFG_MODIFY_DEL") == 0 ) 
+    {		 
+        fprintf(errOut,"\n%s  %d CFG_MODIFY_DEL \n",__func__,__LINE__);
+        gohome =1;
+    }
+
+    
+    /*************************************
+   网络诊断
+   *************************************/
+    if(strcmp(CFG_get_by_name("NETCHECK",valBuff),"NETCHECK") == 0 ) 
+    {		 
+        fprintf(errOut,"\n%s  %d NETCHECK \n",__func__,__LINE__);
+        gohome =1;
+    }
+	
+	/*************************************
+   重启
+   *************************************/
+    if(strcmp(CFG_get_by_name("REBOOT",valBuff),"REBOOT") == 0 ) 
+    {		 
+        fprintf(errOut,"\n%s  %d REBOOT \n",__func__,__LINE__);
+		//luodp
+		reboot(RB_AUTOBOOT);
+        gohome =1;
+    }
+	
     printf("HTTP/1.0 200 OK\r\n");
     printf("Content-type: text/html\r\n");
     printf("Connection: close\r\n");

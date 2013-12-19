@@ -27,8 +27,13 @@ function exit()
 	if(confirm(_("sset exit")))
 	{
 		//alert(document.authorization);
-		window.opener=null;window.open('','_top');
+		window.opener=null;
+		window.open('','_top');
 		top.close();
+		
+		window.opener=null;
+        window.open("","_self");
+        window.top.close();
 	}
 }
 function zhcn()

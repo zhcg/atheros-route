@@ -1139,3 +1139,6 @@ apps/pstn_test/speex-1.2rc1/speexdsp.pc
 drivers/wlan/os/linux/tools/upload.cgi
 drivers/wlan/os/linux/tools/firmware_check
 apps/webui/firmware/firmware_check
+apps/threethread/threethread
+drivers/wlan/os/linux/tools/download.cgi
+apps/busybox-1.01/networking/udhcp/dumpleases.o

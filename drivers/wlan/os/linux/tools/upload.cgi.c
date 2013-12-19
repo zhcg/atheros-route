@@ -315,8 +315,8 @@ error:
 			{
 				printf("Content-Type:text/html\n\n");
 				printf("<HTML><HEAD>\r\n");
+				printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
 				printf("</head><body>");
-				
 				printf("<div style=\"font-size: 14pt; font-weight: bold; margin-left: 10px; font-family: 微软雅黑, Arial, Helvetica, sans-serif; color: #848484;border-bottom:1px dotted #d0d0d0; padding-bottom:10px; margin-bottom:10px;height:30px; line-height:30px; padding:5px;\">固件升级</div>\n");	
 				printf("<p align=\"center\" style=\"font-size: 9pt; margin-left: 10px; font-family: 微软雅黑, Arial, Helvetica, sans-serif; color: #848484\">升级完成,正在重启BASE..........</p><br>\n");	
 				printf("<p align=\"center\" style=\"font-size: 9pt; margin-left: 10px; font-family: 微软雅黑, Arial, Helvetica, sans-serif; color: #848484\">The upgrade was completed, restartting BASE..........</p><br>\n");	

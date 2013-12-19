@@ -299,8 +299,8 @@
 	<message msgid="admw defaultset" msgstr="Factory settings" />
 	<message msgid="factory fail" msgstr="Return to factory setting fail!" />
 	<message msgid="factory success" msgstr="Return to factory setting successfully!" />
-	<message msgid="upgrade success" msgstr="upgrade successfully!" />
-	<message msgid="upgrade fail" msgstr="upgrade fail!" />
+	<message msgid="upgrade success" msgstr="Upgrade successfully!" />
+	<message msgid="upgrade fail" msgstr="Version of the same, the firmware is not upgraded!" />
 	
 	<message msgid="admw offwifides" msgstr="wifi is off so WDS is not work" />
 	<message msgid="admw software" msgstr="Softwsre Version" />
@@ -314,7 +314,8 @@
 	<message msgid="err file upload" msgstr="Firmware upload fail!" />
 	<message msgid="admw chfile" msgstr="Choose file" />	
     <message msgid="admw waring" msgstr="Note: the upgrade process is completely automatic, please don't turn off the power, otherwise it will result in BASE damage and can not be used, the upgrade process about 130 seconds, when the upgrade is complete, the BASE will automatically restart." />	
-	<message msgid="admw sysupgrade" msgstr="Confirm the firmware upgrade?" />
-	<message msgid="err dhcp null" msgstr="Unable to get WAN IP through DHCP,please check that the dhcp server provider" />
+  <message msgid="admw sysupgrade" msgstr="Confirm the firmware upgrade?" />
+  	<message msgid="err dhcp null" msgstr="Unable to get WAN IP through DHCP,please check that the dhcp server provider?" />
 	<message msgid="err dhcp ip" msgstr="The WAN IP and Route IP are in the same subnet, please set the Route IP in gateway settings" />
+
 </po>

@@ -76,12 +76,10 @@ function resultshow()
 <div class="handaer_main">
 <table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
 <h1 id="title">网络诊断</h1>
-<form method="post" name="NETCHECK">  
+
 <h2 id="des">检测网络连接类型和进行网络PING操作</h2> 
- <span id="checkresultshow" style="display:none;font-family:arial;color:red;font-size:20px;" ></span>
-	<input type="button" name="netc" id="netc" class="handaer_input" onclick="netcheckf();">
-    <input type="submit" name="NETCHECK" id="NETCHECK" style="display:none" value="NETCHECK">
-</form>
+<span id="checkresultshow" style="display:none;font-family:arial;color:red;font-size:20px;" ></span>
+
 
 <div id="waitshow" style="display:none" align="center">
   <img align="center" src="/images/loading.gif"></img>
@@ -110,6 +108,10 @@ function resultshow()
 </tr>
 
 </table>
+<form method="post" name="NETCHECK">  
+	<input type="button" name="netc" id="netc" class="handaer_input" onclick="netcheckf();">
+    <input type="submit" name="NETCHECK" id="NETCHECK" style="display:none" value="NETCHECK">
+</form>
 </td>
 </tr>
 

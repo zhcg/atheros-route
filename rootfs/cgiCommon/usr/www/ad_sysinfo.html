@@ -60,9 +60,7 @@ function valueinit()
 	document.getElementById("ss1").innerHTML=document.getElementById("s1").value;
 	document.getElementById("ss2").innerHTML=document.getElementById("s2").value;
 	document.getElementById("ss4").innerHTML=document.getElementById("s4").value;
-	document.getElementById("ss5").innerHTML=document.getElementById("s5").value;
 	document.getElementById("ss6").innerHTML=document.getElementById("s6").value;
-	document.getElementById("ss7").innerHTML=document.getElementById("s7").value;
 	document.getElementById("ss8").innerHTML=document.getElementById("s8").value;
 	document.getElementById("ss9").innerHTML=document.getElementById("s9").value;
 	document.getElementById("ss11").innerHTML=document.getElementById("s11").value;
@@ -73,6 +71,18 @@ function valueinit()
 		document.getElementById("ss3").innerHTML=_("sysinfo ok");
 	else
 		document.getElementById("ss3").innerHTML=_("sysinfo fail");
+	
+	{
+		if((document.getElementById("s5a").value == "")||(document.getElementById("s5b").value == ""))
+			document.getElementById("ss5").innerHTML=_("sysinfo unset");
+		else
+			document.getElementById("ss5").innerHTML=document.getElementById("s5a").value +"/"+document.getElementById("s5b").value;
+	}
+	
+	if(document.getElementById("s7").value == "")	
+		document.getElementById("ss7").innerHTML=_("sysinfo unset");
+	else
+		document.getElementById("ss7").innerHTML=_("sysinfo unset");
 		
 	if(document.getElementById("s10").value == "on")
 		document.getElementById("ss10").innerHTML=_("sysinfo on");
@@ -126,7 +136,8 @@ function valueinit()
 </tr>
 <tr>
   <td class="head" id="t2_ip">IP地址</td>
-  <td><span id="ss5" name="ss5"></span><input size="32" style="display:none" maxlength="64" name="s5" id="s5" value="~~WAN_IPADDR~/~~WAN_NETMASK~" type="text" readonly></td>
+  <td><span id="ss5" name="ss5"></span><input size="32" style="display:none" maxlength="64" name="s5a" id="s5a" value="~~WAN_IPADDR~" type="text" readonly>
+  <input size="32" style="display:none" maxlength="64" name="s5b" id="s5b" value="~~WAN_NETMASK~" type="text" readonly></td>
 </tr>
 <tr>
   <td class="head" id="t2_ctpye">接入方式</td>

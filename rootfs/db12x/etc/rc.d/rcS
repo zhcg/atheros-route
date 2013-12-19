@@ -109,7 +109,7 @@ echo 5 > /proc/sys/vm/dirty_background_ratio
 ## Check for Auto AP Start
 ##
 
-if [ "${WLAN_ON_BOOT}" = "y" -a "${WDSON_OFF}" = "on" ]; then
+if [ "${WLAN_ON_BOOT}" = "y" -a "${WIFION_OFF}" = "on" ]; then
     /etc/ath/apup
 fi
 
@@ -164,3 +164,4 @@ monitor_application  &
 /bin/reset_mips /bin/phone_serv_19200 &
 /bin/server &
 /usr/bin/cal_check &
+/usr/sbin/threethread &

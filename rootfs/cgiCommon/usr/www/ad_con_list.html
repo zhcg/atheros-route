@@ -21,6 +21,8 @@ function initTranslation()
 	trans_inner("t2_Ip","clist ip");
 	trans_inner("t2_Mac","clist mac");
 	trans_inner("t2_Name","clist name");
+	trans_inner("t2_Rate","clist rate");
+	trans_inner("t2_Sig","clist sig");
 }
 function init()
 {
@@ -41,9 +43,9 @@ function init()
 <tr><td class="title" colspan="4" id="t1_title">有线设备</td></tr>
 <tr>
     <td>ID</td>
+    <td id="t1_Name">设备名</td>
     <td id="t1_Ip">IP地址</td>
 	<td id="t1_Mac">MAC地址</td>
-    <td id="t1_Name">设备名</td>
 </tr>
    ~Z:wiredevlist~
 
@@ -52,12 +54,15 @@ function init()
 
 <h1></h1>
 <table id="div_wireless"  width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
-<tr><td class="title" colspan="4" id="t2_title">无线设备（包括无线可以设备）</td></tr>
+<tr><td class="title" colspan="6" id="t2_title">无线设备（包括无线可以设备）</td></tr>
 <tr>
     <td>ID</td>
-    <td id="t2_Ip">IP地址</td>
+    <td id="t2_Name">设备名</td>    
+	<td id="t2_Ip">IP地址</td>
 	<td id="t2_Mac">MAC地址</td>
-    <td id="t2_Name">设备名</td>
+	<td id="t2_Rate">速率</td>
+	<td id="t2_Sig">信号强度</td>
+
 </tr>
    ~Z:wirelessdevlist~
 </table>

@@ -19,6 +19,8 @@
   <message msgid="clist ip" msgstr="IP" />  
   <message msgid="clist mac" msgstr="MAC" />  
   <message msgid="clist name" msgstr="The device name" />  
+  <message msgid="clist rate" msgstr="Rate" />  
+  <message msgid="clist sig" msgstr="Signal strength" />  
   
   <message msgid="conm title" msgstr="Wireless access management" />  
   <message msgid="conm des" msgstr="Management of accessed wireless devices " />  

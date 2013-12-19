@@ -37,7 +37,7 @@ void clear_lease(uint8_t *chaddr, uint32_t yiaddr)
 
 
 /* add a lease into the table, clearing out any old ones */
-struct dhcpOfferedAddr *add_lease(uint8_t *chaddr, uint32_t yiaddr, unsigned long lease)
+struct dhcpOfferedAddr *add_lease(uint8_t *hostname, uint8_t *chaddr, uint32_t yiaddr, unsigned long lease)
 {
 	struct dhcpOfferedAddr *oldest;
 
@@ -47,6 +47,12 @@ struct dhcpOfferedAddr *add_lease(uint8_t *chaddr, uint32_t yiaddr, unsigned lon
 	oldest = oldest_expired_lease();
 
 	if (oldest) {
+		if (hostname) {
+			uint8_t length = *(hostname-1); 
+			if (length>15) length = 15; 
+			memcpy(oldest->hostname, hostname, length); 
+			oldest->hostname[length] = 0; 
+		}
 		memcpy(oldest->chaddr, chaddr, 16);
 		oldest->yiaddr = yiaddr;
 		oldest->expires = time(0) + lease;
@@ -114,7 +120,7 @@ static int check_ip(uint32_t addr)
 		temp.s_addr = addr;
 		LOG(LOG_INFO, "%s belongs to someone, reserving it for %ld seconds",
 			inet_ntoa(temp), server_config.conflict_time);
-		add_lease(blank_chaddr, addr, server_config.conflict_time);
+		add_lease(blank_chaddr, blank_chaddr, addr, server_config.conflict_time);
 		return 1;
 	} else return 0;
 }
@@ -156,3 +162,55 @@ uint32_t find_address(int check_expired)
 	}
 	return 0;
 }
+
+void deal_offline_sta()
+{
+	uint32_t addr, ret;
+	//struct dhcpOfferedAddr *lease = NULL;
+	int i;
+	
+	for (i = 0; i < server_config.max_leases; i++)
+	{
+		if (leases[i].yiaddr > 0)
+		{
+			addr = ntohl(leases[i].yiaddr);
+			/* ie, 192.168.55.0 */
+			if (!(addr & 0xFF)) 
+				continue;
+
+			/* ie, 192.168.55.255 */
+			if ((addr & 0xFF) == 0xFF) 
+				continue;
+			LOG(LOG_ERR, "+++++++++++the ip is exit++++++++++++++++");
+			if(strlen(leases[i].hostname))
+				LOG(LOG_ERR, "+++++++++++the leases[i].hostname is %s++++++++++++++++", leases[i].hostname);
+			else
+			{
+				LOG(LOG_ERR, "+++++++++++the leases[i].hostname is empty++++++++++++++++");
+				//memset(leases[i].hostname, 0, 16);
+				//memset(leases[i].chaddr, 0, 16);
+				//leases[i].yiaddr = 0;
+				//leases[i].expires = 0;
+				//continue;
+			}
+			ret = htonl(addr);
+			//LOG(LOG_ERR, "+++++++++++zhaozhanwei the sta's ip is %d++++++++++++++++", ret);
+			
+			if (/*it isn't on the network */
+				arpping(ret, server_config.server, server_config.arp, server_config.interface) ||
+				/*it expired and we are checking for expired leases*/
+				lease_expired(leases))
+			{
+				memset(leases[i].hostname, 0, 16);
+				memset(leases[i].chaddr, 0, 16);
+				leases[i].yiaddr = 0;
+				leases[i].expires = 0;
+				continue;
+			}
+		}
+
+		
+	}	
+
+}
+

@@ -549,6 +549,8 @@ function initTranslation()
 function initValue()
 {
 	Butterlate.setTextDomain("wan");
+	initTranslation();
+	connectionTypeSwitch();	
 	{
 		if((document.getElementById("INDEX").value == "12") || (document.getElementById("INDEX").value == 12))
 		{
@@ -556,47 +558,36 @@ function initValue()
 			var zidong = document.getElementById("AUTOTYPE").value;
 			if(zidong == "static")
 			{
+				alert(_("wan auto_sip"));
 				document.wanCfg.WAN_MODE.options.selectedIndex = 0;
-				alert(_("admw auto_sip"));
-				change_step(1);
-				
 			}
 			else if(zidong == "dhcp")
 			{
+				alert(_("wan auto_dhcp"));
 				document.wanCfg.WAN_MODE.options.selectedIndex = 1;
-				alert(_("admw auto_dhcp"));
-				change_step(1);
-			
 			}
 			else if(zidong == "pppoe")
 			{
+				alert(_("wan auto_ppp"));
 				document.wanCfg.WAN_MODE.options.selectedIndex = 2;
-				alert(_("admw auto_ppp"));
-				change_step(1);
-			
 			}
 			else if(zidong == "l2tp")
 			{
+				alert(_("wan auto_l2tp"));
 				document.wanCfg.WAN_MODE.options.selectedIndex = 3;
-				alert(_("admw auto_l2tp"));
-				change_step(1);
-		
 			}
 			else if(zidong == "p2tp")
 			{
+				alert(_("wan auto_p2tp"));
 				document.wanCfg.WAN_MODE.options.selectedIndex = 4;
-				alert(_("admw auto_p2tp"));
-				change_step(1);
 			}
 			else
 			{
-				alert(_("admw auto_fail"));
+				alert(_("wan auto_fail"));
 				document.wanCfg.WAN_MODE.options.selectedIndex = 0;
 			}
 		}
 	}
-
-	initTranslation();
 	connectionTypeSwitch();
 }
 function pppshowpwd()

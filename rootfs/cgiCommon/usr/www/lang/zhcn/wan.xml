@@ -85,4 +85,10 @@
 <message msgid="err sIT" msgstr="请指定自动断线等待" />
 <message msgid="err stiming" msgstr="请指定正确时间" /> 
 
+	<message msgid="wan auto_dhcp" msgstr="自动选择为动态获取模式" />
+	<message msgid="wan auto_sip" msgstr="自动选择为静态模式" />
+	<message msgid="wan auto_ppp" msgstr="自动选择为宽带连接模式" />
+	<message msgid="wan auto_l2tp" msgstr="自动选择为L2TP连接模式" />
+	<message msgid="wan auto_p2tp" msgstr="自动选择为P2TP连接模式" />
+	<message msgid="wan auto_fail" msgstr="自动选择失败,请检查网络连接或者手动选择" />
  </po>

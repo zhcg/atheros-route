@@ -334,7 +334,7 @@ void read_leases(const char *file)
 		if (lease.yiaddr >= server_config.start && lease.yiaddr <= server_config.end) {
 			lease.expires = ntohl(lease.expires);
 			if (!server_config.remaining) lease.expires -= time(0);
-			if (!(add_lease(lease.chaddr, lease.yiaddr, lease.expires))) {
+			if (!(add_lease(lease.hostname, lease.chaddr, lease.yiaddr, lease.expires))) {
 				LOG(LOG_WARNING, "Too many leases while loading %s\n", file);
 				break;
 			}

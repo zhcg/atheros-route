@@ -79,6 +79,7 @@
   <message msgid="sysinfo off" msgstr="OFF" />
   <message msgid="sysinfo jiami" msgstr="Security" />
   <message msgid="sysinfo open" msgstr="Open" />  
+  <message msgid="sysinfo unset" msgstr="Unset" /> 
   
   <message msgid="netcheck title" msgstr="Network check" />
   <message msgid="netcheck des" msgstr="Detection of the type of network connection and the network PING" />

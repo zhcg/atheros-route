@@ -78,7 +78,8 @@
   <message msgid="sysinfo on" msgstr="开启" />
   <message msgid="sysinfo off" msgstr="未开启" />
   <message msgid="sysinfo jiami" msgstr="加密" />
-  <message msgid="sysinfo open" msgstr="开放" />
+  <message msgid="sysinfo open" msgstr="开放" />  
+  <message msgid="sysinfo unset" msgstr="未设置" />
 
   
   <message msgid="netcheck title" msgstr="网络诊断" />

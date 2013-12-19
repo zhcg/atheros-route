@@ -205,6 +205,8 @@ endif
 upload.cgi: upload.cgi.c
 	${CC} -o upload.cgi ${CFLAGS} ${LDFLAGS} upload.cgi.c
 	cp upload.cgi $(INSTALL_ROOT)/usr/www/cgi-bin
+	${CC} -o download.cgi ${CFLAGS} ${LDFLAGS} download.cgi.c
+	cp download.cgi $(INSTALL_ROOT)/usr/www/cgi-bin
 
 athdebug: athdebug.c
 	${CC} -o athdebug ${CFLAGS} ${LDFLAGS} athdebug.c
