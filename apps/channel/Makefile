@@ -7,6 +7,7 @@ CROSS:=$(TOOLPREFIX)
 endif
 
 CC=$(CROSS)gcc
+#LD=$(CROSS)ld
 STRIP           =$(CROSS)strip
 
 ifeq ($(strip ${ATH_WASP_I2S}),1)
@@ -18,7 +19,9 @@ ALL=	server
 all:	${ALL}
 
 server: server.c
-	${CC} -o server server.c 
+#	$(LD) -lpthread server.o -o server
+#server.o:server.c
+	${CC} -pthread $^ -o $@
 
 
 clean: 
