@@ -24,14 +24,14 @@
   
   <message msgid="advmenu treeapp_conm" msgstr="Access management " />
   <message msgid="advmenu treeapp_conm_list" msgstr="Connected Equipment List" />
-  <message msgid="advmenu treeapp_conm_ctrl" msgstr="Wireless Access Control" />
+  <message msgid="advmenu treeapp_conm_ctrl" msgstr="Wireless Access Management" />
   <message msgid="advmenu treeapp_wifi" msgstr="Wireless Settings" />
   <message msgid="advmenu treeapp_wifi_basic" msgstr="Basic Settings" />
   <message msgid="advmenu treeapp_wifi_adv" msgstr="Advanced Settings" />
   <message msgid="advmenu treeapp_wifi_wds" msgstr="WDS" />
   
   <message msgid="advmenu treeapp_safe" msgstr="Safety Management" />
-  <message msgid="advmenu treeapp_safe_ipmac" msgstr="IP/MAC Binding" />
+  <message msgid="advmenu treeapp_safe_ipmac" msgstr="IP/MAC Address Binding" />
   <message msgid="advmenu treeapp_par" msgstr="Parental Control" />
   <message msgid="advmenu treeapp_par_set" msgstr="Parents Settings" />
   <message msgid="advmenu treeapp_par_access" msgstr="Access Management" />
@@ -80,6 +80,12 @@
   <message msgid="sysinfo jiami" msgstr="Security" />
   <message msgid="sysinfo open" msgstr="Open" />  
   <message msgid="sysinfo unset" msgstr="Unset" /> 
+  
+  <message msgid="sysinfo dhcp" msgstr="DHCP" />
+  <message msgid="sysinfo static" msgstr="STATIC IP" />
+  <message msgid="sysinfo pppoe" msgstr="PPPOE(ADSL)" />
+  <message msgid="sysinfo l2tp" msgstr="L2TP" />
+  <message msgid="sysinfo pptp" msgstr="PPTP" />
   
   <message msgid="netcheck title" msgstr="Network check" />
   <message msgid="netcheck des" msgstr="Detection of the type of network connection and the network PING" />

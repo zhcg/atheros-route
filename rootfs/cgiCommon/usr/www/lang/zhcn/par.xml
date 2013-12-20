@@ -13,7 +13,7 @@
   <message msgid="par bSAVE" msgstr="保存" />  
   
   <message msgid="parset title" msgstr="家长设置" />  
-  <message msgid="parset des" msgstr="通过家长管理，管理孩子PC机上网权限" />  
+  <message msgid="parset des" msgstr="设置家长PC" />  
   <message msgid="parset t1_title" msgstr="家长设置" />  
   <message msgid="parset t1_parenable" msgstr="家长控制" />  
   <message msgid="parset ti_parmac" msgstr="家长PC的MAC地址" />  
@@ -21,15 +21,16 @@
   <message msgid="parset macclone_b" msgstr="设为家长PC" />  
   
   <message msgid="pa title" msgstr="访问管理" />  
-  <message msgid="pa des" msgstr="管理孩子PC机访问互联网权限" />  
+  <message msgid="pa des" msgstr="管理非家长PC机访问互联网权限" />  
   <message msgid="pa t1_Mac" msgstr="MAC地址" />  
   <message msgid="pa t1_Ns" msgstr="网站列表" />  
   <message msgid="pa t1_Week" msgstr="星期" />  
   <message msgid="pa t1_Time" msgstr="时间" />  
   <message msgid="pa t1_St" msgstr="状态" />  
-  <message msgid="pa t1_Mod" msgstr="配置" />  
+  <message msgid="pa t1_Mod" msgstr="删除" />  
 
-  <message msgid="paradd title" msgstr="添加家长控制访问管理条目" />  
+  <message msgid="paradd title" msgstr="访问管理" />  
+  <message msgid="paradd des" msgstr="添加家长控制访问管理条目,未加入列表的非家长PC将不能访问网络。" />  
   <message msgid="paradd t1_title" msgstr="添加访问管理条目" />  
   <message msgid="paradd t1_MAC" msgstr="MAC地址" />  
   <message msgid="paradd t1_NetL" msgstr="网站列表" />  

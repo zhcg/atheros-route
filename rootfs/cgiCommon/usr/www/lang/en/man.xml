@@ -71,10 +71,11 @@
   <message msgid="man rebootdes" msgstr="Click this button to restart BASE" />
   <message msgid="man reboot" msgstr="Restart" />
   
-  <message msgid="man basesavedes" msgstr="BASE Backup and restore" />
+  <message msgid="man basesavedes" msgstr="BASE Backup and Restore" />
   <message msgid="man basesavetitle" msgstr="BASE Backup" />
+  <message msgid="man basesavetitle2" msgstr="BASE Restore" />
   <message msgid="man date" msgstr="Date" />
-  <message msgid="man modify" msgstr="Modify" />
+  <message msgid="man modify" msgstr="Delete" />
   
   <message msgid="man use" msgstr="USE" />
   <message msgid="man delete" msgstr="DELETE" />

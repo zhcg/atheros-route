@@ -1621,7 +1621,46 @@ void writeParameters(char *name,char *mode,unsigned long offset)
             ** no value, don't write them out.
             DHCP SIP PPP L2TP P2TP WIRRE WIRELESS DHCPW SIPW PPPW L2TPW P2TPW ADMINSET
             */
-
+            if( !strcmp(config.Param[i].Name,"MAC_CLONE") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"DHCP_SET") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"ADD_STATICDHCP") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"GW_SET") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"RULIST_SET") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"ADD_STATICR") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"CONM_WORK") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"ADD_CONRULE") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"WIRELESS_ADVSET") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"IPMAC_SET") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"ADD_IPMACBIND") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"PARENTC_SET") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"PARENTCACC_SET") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"ADD_PARC") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"TIMEZONE_SET") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"LOCAL_SAVE") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"CFG_MODIFY_USE") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"CFG_MODIFY_DEL") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"NETCHECK") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"REBOOT") )
+                continue;
             if( !strcmp(config.Param[i].Name,"DHCP") )
                 continue;
             if( !strcmp(config.Param[i].Name,"SIP") )
@@ -2603,10 +2642,11 @@ int main(int argc,char **argv)
                 parameterIndex = atoi(Value);
                 if((parameterIndex==11)&&(lock11==0))//update wifilist
                 {
-					fprintf(errOut,"[luodp] do update wifilist");
+					fprintf(errOut,"[luodp] do update wifilist\n");
 					num=0;
-					//list
-					Execute_cmd("iwlist ath0 scanning > /tmp/scanlist", rspBuff);
+					//do check ath0
+					//Execute_cmd("iwlist ath0 scanning > /tmp/scanlist", rspBuff);
+					system("iwlist ath0 scanning > /tmp/scanlist 2>&1");
 					//mac
 					Execute_cmd("cat /tmp/scanlist | grep Cell | awk '{print $5}'", rspBuff1);
 					//fprintf(errOut,"\n-[luodp] %s\n",rspBuff1);
@@ -2656,7 +2696,6 @@ int main(int argc,char **argv)
 						num++;
 						val4[num]=strtok(NULL,"\n"); 
 					}
-					
 					/*for(i=1;i<num-1;i++)
 					{
 						fprintf(errOut,"[luodp] %s\n",val4[i]+4);
@@ -2673,24 +2712,27 @@ int main(int argc,char **argv)
                         fprintf(errOut,"\n----------cannot open file  line:%d\n",__LINE__);
                         return;
                     }
-					//val1-mac,val2-ssid,val3-security,val4-channel
-					if(strcmp(val3[0],"on")==0)
-						sprintf(val3[0],"WPA");
-					else
-						sprintf(val3[0],"None");
-					memset(cmdd,0x00,128);	
-					sprintf(cmdd,"<option>%s(%s)(%s)(%s)</option>",val2[0],val1[0],val4[0],val3[0]);
-					fwrite(cmdd,strlen(cmdd),1,fp);
-					for(i=1;i<lists;i++)
+					if(val3[0]!=NULL)
 					{
-						memset(cmdd,0x00,128);
-						if(strcmp(val3[i]+4,"on")==0)
-							sprintf(val3[i]+4,"WPA");
-						else
-							sprintf(val3[i]+4,"None");
-						//fprintf(errOut,"[luodp] %s(%s)(%s)(%s) \n",val2[i]+4,val1[i]+4,val3[i]+4,val4[i]+4);
-						sprintf(cmdd,"<option>%s(%s)(%s)(%s)</option>",val2[i]+4,val1[i]+4,val4[i]+4,val3[i]+4);
+						//val1-mac,val2-ssid,val3-security,val4-channel
+						if(strcmp(val3[0],"on")==0)
+							sprintf(val3[0],"WPA");
+						else  
+							sprintf(val3[0],"None");
+						memset(cmdd,0x00,128);	
+						sprintf(cmdd,"<option>%s(%s)(%s)(%s)</option>",val2[0],val1[0],val4[0],val3[0]);
 						fwrite(cmdd,strlen(cmdd),1,fp);
+						for(i=1;i<lists;i++)
+						{
+							memset(cmdd,0x00,128);
+							if(strcmp(val3[i]+4,"on")==0)
+								sprintf(val3[i]+4,"WPA");
+							else
+								sprintf(val3[i]+4,"None");
+							//fprintf(errOut,"[luodp] %s(%s)(%s)(%s) \n",val2[i]+4,val1[i]+4,val3[i]+4,val4[i]+4);
+							sprintf(cmdd,"<option>%s(%s)(%s)(%s)</option>",val2[i]+4,val1[i]+4,val4[i]+4,val3[i]+4);
+							fwrite(cmdd,strlen(cmdd),1,fp);
+						}
 					}
                     fclose(fp);
 					flaglist=1;
@@ -3090,6 +3132,7 @@ int main(int argc,char **argv)
 				//{
 					Execute_cmd("killall udhcpd > /dev/null 2>&1",rspBuff);
 					Execute_cmd("/usr/sbin/udhcpd /etc/udhcpd.conf > /dev/null 2>&1",rspBuff);
+					//[TODO] wired device re-assign
 				//}
 				//fprintf(errOut,"[luodp] wds open\n");
 			}
@@ -3368,11 +3411,16 @@ int main(int argc,char **argv)
         exit(1);
     }
     /*************************************
-    外网设置     mac克隆
+    外网设置     恢复初始mac克隆
    *************************************/
     if(strcmp(CFG_get_by_name("MAC_CLONE",valBuff),"MAC_CLONE") == 0 ) 
     {		 
         fprintf(errOut,"\n%s  %d MAC_CLONE \n",__func__,__LINE__);
+		char mymac[128];
+		Execute_cmd("ifconfig eth0 | grep \"HWaddr\" | awk '{print $5}'",mymac);
+		CFG_set_by_name("ETH0_MAC",mymac);
+		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+        writeParameters("/tmp/.apcfg","w+",0);
         gohome =1;
     }
     /*************************************

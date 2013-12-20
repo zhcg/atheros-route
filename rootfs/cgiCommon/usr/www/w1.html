@@ -130,6 +130,15 @@ function checkwds()
 		}
 
 	}
+	else
+	{
+		document.getElementById("AP_SSID_2").disabled = true;	
+		document.getElementById("ROOTAP_MAC_2").disabled = true;	
+		document.getElementById("wrpass").disabled = true;	
+		document.getElementById("WFILIST").disabled = true;	 
+		document.getElementById("WDS_CHAN").disabled = true;	 
+		document.getElementById("AP_SECMODE_2").disabled = true;
+	}
 	return true;
 }
 function change_step(offset)
@@ -1001,6 +1010,12 @@ function CheckWirelessValue()
 			}
 		}
 	}
+	else
+	{
+		document.wizard_form.AP_PRIMARY_CH.disabled = true;
+		document.wizard_form.AP_SECMODE.disabled = true;
+		document.getElementById("pwd").disabled = true;	   
+	}
 	return true;
 }
 function initTranslation()
@@ -1689,7 +1704,7 @@ function hidekeyf()
 </tr>
 <tr id="tt2">
   <td class="head" id="R_pword"></td>
-  <td><span id="wrpwd"><input type="password" id="wrpass" name="PSK_KEY_2" class="handaer_text_content" maxlength="32" size="32" value="~~PSK_KEY_2~" /></span><input type="checkbox" id="aaaa" onClick="wrshowpwd()"/><span id="wrshowp"></span></td>
+  <td><span id="wrpwd"><input type="password" id="wrpass" name="PSK_KEY_2" class="handaer_text_content" maxlength="32" size="32" value="~~PSK_KEY_2~" /></span>&nbsp;<input type="checkbox" id="aaaa" onClick="wrshowpwd()"/>&nbsp;<span id="wrshowp"></span></td>
 </tr>
 <tr id="dwsset3">
     <td id="Wlisttitle1"></td>
@@ -1812,7 +1827,7 @@ function hidekeyf()
 </tr>
 <tr>
   <td class="head" id="pword"></td>
-  <td><span id="ppppwdinput"><input type="password" id="ppppass" name="PPPOE_PWD" class="handaer_text_content" maxlength="32" size="32" value="~~PPPOE_PWD~"/></span><input type="checkbox" id="bbbb" onClick="pppshowpwd()"/><span id="pppshowp"></span></td>
+  <td><span id="ppppwdinput"><input type="password" id="ppppass" name="PPPOE_PWD" class="handaer_text_content" maxlength="32" size="32" value="~~PPPOE_PWD~"/></span>&nbsp;<input type="checkbox" id="bbbb" onClick="pppshowpwd()"/>&nbsp;<span id="pppshowp"></span></td>
 </tr>
 <tr>
   <td class="head" id="vpword"></td>
@@ -1835,13 +1850,13 @@ function hidekeyf()
 </tr>
 <tr id="div_pppoe_opmode_setting" style="display:none">
 <td>
-	<span id="hide1"><span id="PPPOE_KAM"></span><input type="text" name="PPPOE_DEMAND" maxlength="5" size="3" value="60"/><span id="PPPOE_seconds"></span></br></span>
-  	<span id="hide2"><span id="PPPOE_ODM"></span><input type="text" name="PPPOE_MANUAL" maxlength="3" size="2" value="5"/><span id="PPPOE_minutes"></span></br></span>
+	<span id="hide1"><span id="PPPOE_KAM"></span><input type="text" name="PPPOE_DEMAND" class="handaer_text_small_content" maxlength="5" size="3" value="~~PPPOE_DEMAND~"/><span id="PPPOE_seconds"></span></br></span>
+  	<span id="hide2"><span id="PPPOE_ODM"></span><input type="text" name="PPPOE_MANUAL" class="handaer_text_small_content" maxlength="3" size="2" value="~~PPPOE_MANUAL~"/><span id="PPPOE_minutes"></span></br></span>
 	<span id="hide3"><span id="PPPOE_TIMING"></span>
-	<input type="text" name="PPPOE_TIMING_BH" maxlength="3" size="2" value=""/>:
-	<input type="text" name="PPPOE_TIMING_BM" maxlength="3" size="2" value=""/>-
-	<input type="text" name="PPPOE_TIMING_EH" maxlength="3" size="2" value=""/>:
-	<input type="text" name="PPPOE_TIMING_EM" maxlength="3" size="2" value=""/></span>
+	<input type="text" name="PPPOE_TIMING_BH" class="handaer_text_small_content" maxlength="3" size="2" value="~~PPPOE_TIMING_BH~"/>:
+	<input type="text" name="PPPOE_TIMING_BM" class="handaer_text_small_content" maxlength="3" size="2" value="~~PPPOE_TIMING_BM~"/>-
+	<input type="text" name="PPPOE_TIMING_EH" class="handaer_text_small_content" maxlength="3" size="2" value="~~PPPOE_TIMING_EH~"/>:
+	<input type="text" name="PPPOE_TIMING_EM" class="handaer_text_small_content" maxlength="3" size="2" value="~~PPPOE_TIMING_EM~"/></span>
 </td>
 </tr>
 </table>
@@ -1861,7 +1876,7 @@ function hidekeyf()
 </tr>
 <tr>
   <td class="head" id="L2TPpwd"></td>
-  <td><span id="pl2tppwdinput"><input type="password" id="l2tppass" name="l2tpPass"  class="handaer_text_content" maxlength="32" size="32" value="~~l2tpPass~"/></span><input type="checkbox" id="cccc" onClick="l2tpshowpwd()"/><span id="l2tpshowp"></span></td>
+  <td><span id="pl2tppwdinput"><input type="password" id="l2tppass" name="l2tpPass"  class="handaer_text_content" maxlength="32" size="32" value="~~l2tpPass~"/></span>&nbsp;<input type="checkbox" id="cccc" onClick="l2tpshowpwd()"/>&nbsp;<span id="l2tpshowp"></span></td>
 </tr>
 <tr>
   <td class="head" id="L2TPAM"></td>
@@ -2006,7 +2021,7 @@ function hidekeyf()
 <tr><td class="title" colspan="2" id="wsetingst"></td></tr>
 <tr>
   <td class="head" id="nname"></td>
-  <td><input type="text" name="AP_SSID" size="32" maxlength="32" class="handaer_text_content" value="~~AP_SSID~"><input type="checkbox" id="hidewifi" onclick="hidewififun();"/><span id="hidewifides"></span>&nbsp;<span id="ssidrequest"></span></td>
+  <td><input type="text" name="AP_SSID" size="32" maxlength="32" class="handaer_text_content" value="~~AP_SSID~">&nbsp;<input type="checkbox" id="hidewifi" onclick="hidewififun();"/>&nbsp;<span id="hidewifides"></span>&nbsp;<span id="ssidrequest"></span></td>
 </tr>
 
 <tr>
@@ -2049,7 +2064,7 @@ function hidekeyf()
   </td>
 </tr>
 <tr id="div_security_key">
-  <td><span id="wkey"></span><span id="pwdinput"><input type="password" id="pwd" name="PSK_KEY" maxlength="64" size="28"  class="handaer_text_content"  value="~~PSK_KEY~"/></span><input type="checkbox" id="eeee" onClick="showpwd()" /><span id="showp"></span>&nbsp;<span id="passwordrequest"></span></td>
+  <td><span id="wkey"></span><span id="pwdinput"><input type="password" id="pwd" name="PSK_KEY" maxlength="64" size="28"  class="handaer_text_content"  value="~~PSK_KEY~"/></span>&nbsp;<input type="checkbox" id="eeee" onClick="showpwd()" />&nbsp;<span id="showp"></span>&nbsp;<span id="passwordrequest"></span></td>
 </tr>
 </table>
 

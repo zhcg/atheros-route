@@ -160,6 +160,12 @@ function CheckWirelessValue()
 			}
 		}	
 	}
+	else
+	{
+		document.wizard_form.AP_PRIMARY_CH.disabled = true;
+		document.wizard_form.AP_SECMODE.disabled = true;
+		document.getElementById("pwd").disabled = true;	   
+	}
 	waitgifshow();
 	document.getElementById('WIRELESS').click();
 	return true;
@@ -311,7 +317,7 @@ function hidewififun()
 <tr><td class="title" colspan="2" id="wsetingst"></td></tr>
 <tr>
   <td class="head" id="nname"></td>
-  <td><input type="text" name="AP_SSID" size="32" maxlength="32" class="handaer_text_content"  value="~~AP_SSID~"><input type="checkbox" id="hidewifi" onclick="hidewififun();"/><span id="hidewifides"></span>&nbsp;<span id="ssidrequest"></span></td>
+  <td><input type="text" name="AP_SSID" size="32" maxlength="32" class="handaer_text_content"  value="~~AP_SSID~">&nbsp;<input type="checkbox" id="hidewifi" onclick="hidewififun();"/>&nbsp;<span id="hidewifides"></span>&nbsp;<span id="ssidrequest"></span></td>
 </tr>
 
 <tr>
@@ -355,7 +361,7 @@ function hidewififun()
   </td>
 </tr>
 <tr id="div_security_key">
-  <td><span id="wkey"></span><span id="pwdinput"><input type="password" id="pwd" name="PSK_KEY" maxlength="64" size="28"  class="handaer_text_content"  value="~~PSK_KEY~"/></span><input type="checkbox" id="cccc" onClick="showpwd()" /><span id="showp"></span>&nbsp;<span id="passwordrequest"></span></td>
+  <td><span id="wkey"></span><span id="pwdinput"><input type="password" id="pwd" name="PSK_KEY" maxlength="64" size="28"  class="handaer_text_content"  value="~~PSK_KEY~"/></span>&nbsp;<input type="checkbox" id="cccc" onClick="showpwd()" />&nbsp;<span id="showp"></span>&nbsp;<span id="passwordrequest"></span></td>
 							
 </tr>
 </table>

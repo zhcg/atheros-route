@@ -35,20 +35,7 @@ function init()
 {
 	Butterlate.setTextDomain("main");
 	initTranslation();
-	//widget_disable("s1");
-	//widget_disable("s2");
-	//widget_disable("s3");
-	//widget_disable("s4");
-	//widget_disable("s5");
-	//widget_disable("s6");
-	//widget_disable("s7");
-	//widget_disable("s8");
-	//widget_disable("s9");
-	//widget_disable("s10");
-	//widget_disable("s11");
-	//widget_disable("s12");
-	//widget_disable("s13");
-	//widget_disable("s14");
+
 	valueinit();
 }
 	//上网状态	INTERNET_ON	on提供为可上网，off提示为不可以上网	
@@ -60,7 +47,6 @@ function valueinit()
 	document.getElementById("ss1").innerHTML=document.getElementById("s1").value;
 	document.getElementById("ss2").innerHTML=document.getElementById("s2").value;
 	document.getElementById("ss4").innerHTML=document.getElementById("s4").value;
-	document.getElementById("ss6").innerHTML=document.getElementById("s6").value;
 	document.getElementById("ss8").innerHTML=document.getElementById("s8").value;
 	document.getElementById("ss9").innerHTML=document.getElementById("s9").value;
 	document.getElementById("ss11").innerHTML=document.getElementById("s11").value;
@@ -79,6 +65,19 @@ function valueinit()
 			document.getElementById("ss5").innerHTML=document.getElementById("s5a").value +"/"+document.getElementById("s5b").value;
 	}
 	
+	if(document.getElementById("s6").value == "dhcp")	
+		document.getElementById("ss6").innerHTML=_("sysinfo dhcp");
+	else if(document.getElementById("s6").value == "static")	
+		document.getElementById("ss6").innerHTML=_("sysinfo static");
+	else if(document.getElementById("s6").value == "pppoe")	
+		document.getElementById("ss6").innerHTML=_("sysinfo pppoe");
+	else if(document.getElementById("s6").value == "l2tp")	
+		document.getElementById("ss6").innerHTML=_("sysinfo l2tp");
+	else if(document.getElementById("s6").value == "pptp")	
+		document.getElementById("ss6").innerHTML=_("sysinfo pptp");
+	else
+		document.getElementById("ss6").innerHTML="";
+		
 	if(document.getElementById("s7").value == "")	
 		document.getElementById("ss7").innerHTML=_("sysinfo unset");
 	else

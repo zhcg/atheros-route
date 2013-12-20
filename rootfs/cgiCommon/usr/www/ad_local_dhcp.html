@@ -18,7 +18,121 @@ function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID)
 function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
 
 function button_commit(buttonID){document.getElementById(buttonID).click();}
+function atoi(str, num)
+{
+	i = 1;
+	if (num != 1) {
+		while (i != num && str.length != 0) {
+			if (str.charAt(0) == '.') {
+				i++;
+			}
+			str = str.substring(1);
+		}
+		if (i != num)
+			return -1;
+	}
 
+	for (i=0; i<str.length; i++) {
+		if (str.charAt(i) == '.') {
+			str = str.substring(0, i);
+			break;
+		}
+	}
+	if (str.length == 0)
+		return -1;
+	return parseInt(str, 10);
+}
+
+function checkRange(str, num, min, max)
+{
+	d = atoi(str, num);
+	if (d > max || d < min)
+		return false;
+	return true;
+}
+
+function isAllNum(str)
+{
+	for (var i=0; i<str.length; i++) {
+		if ((str.charAt(i) >= '0' && str.charAt(i) <= '9') || (str.charAt(i) == '.' ))
+			continue;
+		return 0;
+	}
+	return 1;
+}
+
+function checkIpAddr(field, ismask)
+{
+	if (field.value == "") 
+	{
+		if(ismask)
+		{
+			alert(_("err sub empty"));
+		}
+		else
+		{	
+			alert(_("err IP empty"));
+		}
+		field.value = field.defaultValue;
+		field.focus();
+		return false;
+	}
+
+	if (isAllNum(field.value) == 0) 
+	{
+		alert(_("err format"));
+		field.value = field.defaultValue;
+		field.focus();
+		return false;
+	}
+
+	if (ismask)
+	{
+		if ((!checkRange(field.value, 1, 0, 256)) ||
+				(!checkRange(field.value, 2, 0, 256)) ||
+				(!checkRange(field.value, 3, 0, 256)) ||
+				(!checkRange(field.value, 4, 0, 256)))
+		{
+			alert(_("err sub format"));
+			field.value = field.defaultValue;
+			field.focus();
+			return false;
+		}
+	}
+	else 
+	{
+		if ((!checkRange(field.value, 1, 0, 255)) ||
+				(!checkRange(field.value, 2, 0, 255)) ||
+				(!checkRange(field.value, 3, 0, 255)) ||
+				(!checkRange(field.value, 4, 1, 254)))
+		{
+			alert(_("err IP format"));
+			field.value = field.defaultValue;
+			field.focus();
+			return false;
+		}
+	}
+	{
+		var exp=/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
+		var reg = field.value.match(exp);
+		if(reg==null)
+		{
+			if(ismask)
+			{
+				alert(_("err sub format"));
+			}
+			else
+			{	
+				alert(_("err IP format"));
+			}
+			field.value = field.defaultValue;
+			field.focus();
+			return false;
+		}
+	}
+
+	return true;
+}
 function checkValuerange(value,min,max)
 {
 	var i = parseInt(value);
@@ -32,41 +146,76 @@ function checkValuerange(value,min,max)
 	}
 	return true;
 }
+function ip2int(ip) 
+{
+    var num = 0;
+    ip = ip.split(".");
+    num = Number(ip[0]) * 256 * 256 * 256 + Number(ip[1]) * 256 * 256 + Number(ip[2]) * 256 + Number(ip[3]);
+    num = num >>> 0;
+    return num;
+}
+
 function CheckValue()
 {
 	if(document.WORKFORM.DHCPON_OFF[0].checked == true)
 	{
-		if (document.WORKFORM.DHCP_BIP.value.length == 0)
+		if (!checkIpAddr(document.WORKFORM.DHCP_BIP, false))
 		{
-			alert(_("err IP empty"));
 			document.WORKFORM.DHCP_BIP.select();
 			return false;
 		}
-		if 	(checkValuerange(document.WORKFORM.DHCP_BIP.value,1,254)==false)
+		if (!checkIpAddr(document.WORKFORM.DHCP_EIP, false))
 		{
-			alert(_("err range"));
-			document.WORKFORM.DHCP_BIP.select();
-			return false;
-		}
-		if (document.WORKFORM.DHCP_EIP.value.length == 0)
-		{
-			alert(_("err IP empty"));
 			document.WORKFORM.DHCP_EIP.select();
 			return false;
 		}
-		if (checkValuerange(document.WORKFORM.DHCP_EIP.value,1,254)==false)
 		{
-			alert(_("err range"));
-			document.WORKFORM.DHCP_EIP.select();
-			return false;
+			var beginip_num=ip2int(document.WORKFORM.DHCP_BIP.value);
+			alert("beginip_num:"+beginip_num);
+			var endip_num=ip2int(document.WORKFORM.DHCP_EIP.value);
+			alert("endip_num:"+endip_num);
+			var mask_num=ip2int(document.WORKFORM.GW_SUB.value);
+			alert("mask_num:"+mask_num);
+			
+			var gwip=document.WORKFORM.GW_IP.value;
+			var gwip_num =ip2int(gwip); 
+			alert("gwip_num:"+gwip_num);
+			
+			yu=gwip_num&mask_num;
+			alert("yu:"+yu);
+			yu1=beginip_num&mask_num;
+			alert("yu1:"+yu1);
+			yu2=endip_num&mask_num;
+			alert("yu2:"+yu2);
+			
+			if(yu1!=yu)
+			{
+				alert(_("err bip"));
+				document.WORKFORM.DHCP_BIP.select();
+				return false;
+			}
+			if(yu2!=yu)
+			{
+				alert(_("err eip"));
+				document.WORKFORM.DHCP_EIP.select();
+				return false;
+			}
+			if((beginip_num<=gwip_num)&&(gwip_num<=endip_num))
+			{
+				alert(_("err iprange"));
+				document.WORKFORM.DHCP_BIP.select();
+				return false;
+				
+			}
+			if(endip_num>=beginip_num)
+			{
+				var tmp=document.WORKFORM.DHCP_BIP.value;
+				document.WORKFORM.DHCP_BIP.value = document.WORKFORM.DHCP_EIP.value;
+				document.WORKFORM.DHCP_EIP.value = tmp;
+			}
 		}
 		
-		if(parseInt(document.WORKFORM.DHCP_EIP.value) < parseInt(document.WORKFORM.DHCP_BIP.value))
-		{
-			alert(_("err range"));
-			document.WORKFORM.DHCP_BIP.select();
-			return false;
-		}
+		
 		
 		if (document.WORKFORM.DHCP_TIME.value.length == 0)
 		{
@@ -81,6 +230,17 @@ function CheckValue()
 			document.WORKFORM.DHCP_TIME.select();
 			return false;
 		}
+	}
+	else
+	{
+		widget_disable("DHCP_BIP");
+		widget_disable("DHCP_EIP");
+		widget_disable("DHCP_TIME");
+	}
+	
+	{
+		widget_disable("GW_IP");
+		widget_disable("GW_SUB");
 	}
 	button_commit("DHCP_SET");
 	return true;
@@ -115,19 +275,12 @@ function initTranslation()
 	trans_value("bCANCEL","lan bCANCEL");	
 	trans_value("bAPPLY","lan bAPPLY");
 }
-function getDHCPrange()
-{
-	var range="10.10.10.";
 
-	trans_inner("IPbegin",range);
-	trans_inner("IPend","-"+range);
-}
 function initValue()
 {
 	Butterlate.setTextDomain("lan");
 	initTranslation();
 	switch_dhcp();
-	getDHCPrange();
 }
 
 function switch_dhcp()
@@ -183,8 +336,10 @@ function listdel(value)
 
 <tr id="t1_hide1">
   <td class="head" id="t1_DHCPIP">IP分配地址</td>
-  <td><span id="IPbegin"></span><input type="text" name="DHCP_BIP" id="DHCP_BIP" size="3" maxlength="3" class="handaer_text_content"  value="">
-  <span id="IPend"></span><input type="text" name="DHCP_EIP" id="DHCP_EIP" size="3" maxlength="3" class="handaer_text_content"  value=""></td>
+  <td>
+  <input type="text" name="DHCP_BIP" id="DHCP_BIP" maxlength="15" class="handaer_text_content" value="">-
+  <input type="text" name="DHCP_EIP" id="DHCP_EIP" maxlength="15" class="handaer_text_content" value="">
+  </td>
 </tr>
 
 <tr id="t1_hide2">
@@ -239,6 +394,8 @@ function listdel(value)
   <td>
 	<input type="button" name="bCANCEL" id="bCANCEL" class="handaer_input" value="Cancel" onClick="window.location.reload();">
     <input type="button" name="bAPPLY" id="bAPPLY" class="handaer_input" value="Apply" onClick="CheckValue();">    
+	<input type="text" name="GW_IP" style="display:none"  id="GW_IP" maxlength="15" class="handaer_text_content" value="192.168.4.100">
+	<input type="text" name="GW_SUB" style="display:none"  id="GW_SUB" maxlength="15" class="handaer_text_content" value="255.255.255.0">
 
 	<input type="submit" name="DHCP_SET" id="DHCP_SET" style="display:none" value="DHCP_SET">
   </td>

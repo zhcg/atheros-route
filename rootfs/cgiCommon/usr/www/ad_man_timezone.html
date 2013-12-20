@@ -95,6 +95,11 @@ function NTPFormCheck()
 			return false;
 		}
 	}
+	else
+	{
+		widget_disable("NTPServerIP1");
+		widget_disable("NTPServerIP2"); 
+	}
 	button_commit("TIMEZONE_SET");
 	return true;
 }
