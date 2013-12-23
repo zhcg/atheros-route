@@ -171,22 +171,25 @@ function CheckValue()
 		}
 		{
 			var beginip_num=ip2int(document.WORKFORM.DHCP_BIP.value);
-			alert("beginip_num:"+beginip_num);
 			var endip_num=ip2int(document.WORKFORM.DHCP_EIP.value);
-			alert("endip_num:"+endip_num);
+			
+			if(beginip_num>=endip_num)
+			{
+				var tmp=document.WORKFORM.DHCP_BIP.value;
+				document.WORKFORM.DHCP_BIP.value = document.WORKFORM.DHCP_EIP.value;
+				document.WORKFORM.DHCP_EIP.value = tmp;
+				beginip_num=ip2int(document.WORKFORM.DHCP_BIP.value);
+				endip_num=ip2int(document.WORKFORM.DHCP_EIP.value);
+			}
+
 			var mask_num=ip2int(document.WORKFORM.GW_SUB.value);
-			alert("mask_num:"+mask_num);
 			
 			var gwip=document.WORKFORM.GW_IP.value;
 			var gwip_num =ip2int(gwip); 
-			alert("gwip_num:"+gwip_num);
 			
 			yu=gwip_num&mask_num;
-			alert("yu:"+yu);
 			yu1=beginip_num&mask_num;
-			alert("yu1:"+yu1);
 			yu2=endip_num&mask_num;
-			alert("yu2:"+yu2);
 			
 			if(yu1!=yu)
 			{
@@ -206,12 +209,6 @@ function CheckValue()
 				document.WORKFORM.DHCP_BIP.select();
 				return false;
 				
-			}
-			if(endip_num>=beginip_num)
-			{
-				var tmp=document.WORKFORM.DHCP_BIP.value;
-				document.WORKFORM.DHCP_BIP.value = document.WORKFORM.DHCP_EIP.value;
-				document.WORKFORM.DHCP_EIP.value = tmp;
 			}
 		}
 		
@@ -290,7 +287,7 @@ function switch_dhcp()
 		widget_display("t1_hide1");
 		widget_display("t1_hide2");
 		widget_display("t2");
-		widget_display("t2line");
+		widget_hide("t2line");
 		widget_display("t3");
 		widget_display("t3line");
 	}
@@ -337,17 +334,27 @@ function listdel(value)
 <tr id="t1_hide1">
   <td class="head" id="t1_DHCPIP">IP分配地址</td>
   <td>
-  <input type="text" name="DHCP_BIP" id="DHCP_BIP" maxlength="15" class="handaer_text_content" value="">-
-  <input type="text" name="DHCP_EIP" id="DHCP_EIP" maxlength="15" class="handaer_text_content" value="">
+  <input type="text" name="DHCP_BIP" id="DHCP_BIP" maxlength="15" class="handaer_text_content" value="~~DHCP_BIP~">-
+  <input type="text" name="DHCP_EIP" id="DHCP_EIP" maxlength="15" class="handaer_text_content" value="~~DHCP_EIP~">
   </td>
 </tr>
 
 <tr id="t1_hide2">
   <td class="head" id="t1_TIME">租用时间</td>
-  <td><input type="text" name="DHCP_TIME" id="DHCP_TIME" size="32" maxlength="32" class="handaer_text_content"  value=""><span id="t1_min">分钟</span><span id="t1_defaut"></span></td>
+  <td><input type="text" name="DHCP_TIME" id="DHCP_TIME" size="32" maxlength="32" class="handaer_text_content"  value="~~DHCP_TIME~"><span id="t1_min">分钟</span><span id="t1_defaut"></span></td>
 </tr>
 </table>
-
+<table id="buttontable">
+<tr align="center">
+  <td>
+	<input type="button" name="bCANCEL" id="bCANCEL" class="handaer_input" value="Cancel" onClick="window.location.reload();">
+    <input type="button" name="bAPPLY" id="bAPPLY" class="handaer_input" value="Apply" onClick="CheckValue();">    
+	<input type="text" name="GW_IP" style="display:none"  id="GW_IP" maxlength="15" class="handaer_text_content" value="~~AP_IPADDR~">
+	<input type="text" name="GW_SUB" style="display:none"  id="GW_SUB" maxlength="15" class="handaer_text_content" value="~~AP_NETMASK~">
+	<input type="submit" name="DHCP_SET" id="DHCP_SET" style="display:none" value="DHCP_SET">
+  </td>
+</tr>
+</table>
 <h1 id="t2line">  </h1>
 <table id="t2"  width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
   <tr> 
@@ -370,7 +377,6 @@ function listdel(value)
 		<input type="button"  class="handaer_small_button" name="ADDDHCP" id="ADDDHCP" value="添加" onClick="window.location.href='ad_local_addsdhcp'">
 	</td>
   </tr>
-
   
 </table>
 <h1 id="t3line"> </h1>
@@ -386,20 +392,6 @@ function listdel(value)
     <td id="t3_Expr">有效时间</td>
   </tr>
   ~Z:dhcpclinetlist~ 
-</table>
-
-
-<table id="buttontable">
-<tr align="center">
-  <td>
-	<input type="button" name="bCANCEL" id="bCANCEL" class="handaer_input" value="Cancel" onClick="window.location.reload();">
-    <input type="button" name="bAPPLY" id="bAPPLY" class="handaer_input" value="Apply" onClick="CheckValue();">    
-	<input type="text" name="GW_IP" style="display:none"  id="GW_IP" maxlength="15" class="handaer_text_content" value="192.168.4.100">
-	<input type="text" name="GW_SUB" style="display:none"  id="GW_SUB" maxlength="15" class="handaer_text_content" value="255.255.255.0">
-
-	<input type="submit" name="DHCP_SET" id="DHCP_SET" style="display:none" value="DHCP_SET">
-  </td>
-</tr>
 </table>
 
 </form>

@@ -222,5 +222,5 @@
   <message msgid="admw sysupgrade" msgstr="Confirm the firmware upgrade?" />
   	<message msgid="err dhcp null" msgstr="Unable to get WAN IP through DHCP,please check that the dhcp server provider?" />
 	<message msgid="err dhcp ip" msgstr="The WAN IP and Route IP are in the same subnet, please set the Route IP in gateway settings" />
-
+	<message msgid="man admin setting" msgstr="Administrator settings" />
 </po>

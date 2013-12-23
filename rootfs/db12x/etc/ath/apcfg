@@ -27,10 +27,16 @@ rm /tmp/vars.$$
 ###################################################################################
 cfg -a ATH_countrycode=${ATH_countrycode:="156"}
 cfg -a HAL_VERSION=${HAL_VERSION:="HBD-Router-B6-V2"}
-cfg -a SOFT_VERSION=${SOFT_VERSION:="0.9.7.5"}
+cfg -a SOFT_VERSION=${SOFT_VERSION:="0.9.7.6"}
 cfg -a ADMPASS=${ADMPASS:="admin"}
 cfg -a WDSON_OFF=${WDSON_OFF:="off"}
+cfg -a DHCPON_OFF=${DHCPON_OFF:="on"}
+cfg -a BEACON_INT=${BEACON_INT:="100"}
+cfg -a WCONON_OFF=${WCONON_OFF:="off"}
 cfg -a AP_IPADDR=${AP_IPADDR:="10.10.10.254"}
+cfg -a DHCP_BIP=${DHCP_BIP:="10.10.10.100"}
+cfg -a DHCP_EIP=${DHCP_EIP:="10.10.10.199"}
+cfg -a DHCP_TIME=${DHCP_TIME:="7200"}
 cfg -a AP_NETMASK=${AP_NETMASK:="255.255.255.0"}
 cfg -a WAN_MODE=${WAN_MODE:="dhcp"}
 #cfg -a WAN_IPADDR=${WAN_IPADDR:="192.168.2.1"}

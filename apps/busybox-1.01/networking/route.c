@@ -492,7 +492,13 @@ void displayroutes(int noresolve, int netstatfmt)
 	int flgs, ref, use, metric, mtu, win, ir;
 	struct sockaddr_in s_addr;
 	struct in_addr mask;
-
+	
+	//luodp for webui
+	FILE *fp2;
+	char outBuff[128]={'\0'};
+	int num=0;
+	//end luodp for webui
+	
 	FILE *fp = bb_xfopen("/proc/net/route", "r");
 
 	bb_printf("Kernel IP routing table\n"
@@ -503,6 +509,12 @@ void displayroutes(int noresolve, int netstatfmt)
 	if (fscanf(fp, "%*[^\n]\n") < 0) { /* Skip the first line. */
 		goto ERROR;		   /* Empty or missing line, or read error. */
 	}
+	//luodp for webui
+    if((fp2=fopen("/tmp/routelist","w+"))==NULL)
+    {
+        return;
+    }
+	//end luodp for webui
 	while (1) {
 		int r;
 		r = fscanf(fp, "%63s%lx%lx%X%d%d%d%lx%d%d%d\n",
@@ -538,13 +550,25 @@ void displayroutes(int noresolve, int netstatfmt)
 					  (noresolve | 0x4000), m);	/* Host instead of net. */
 
 		mask.s_addr = m;
-		bb_printf("%-16s%-16s%-16s%-6s", sdest, sgw, inet_ntoa(mask), flags);
+		bb_printf("%-16s%-16s%-16s%-6s", sdest, sgw, inet_ntoa(mask), flags);		
 		if (netstatfmt) {
 			bb_printf("%5d %-5d %6d %s\n", mtu, win, ir, devname);
 		} else {
 			bb_printf("%-6d %-2d %7d %s\n", metric, ref, use, devname);
 		}
+		//luodp for webui
+		num++;
+		if(strcmp(devname,"eth0")==0)
+		{
+			sprintf(outBuff,"<tr><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td>WAN</td></tr>",num,sdest,inet_ntoa(mask),sgw);
+		}else
+		{
+			sprintf(outBuff,"<tr><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td>LAN&WLAN</td></tr>",num,sdest,inet_ntoa(mask),sgw);
+		}
+		fwrite(outBuff,strlen(outBuff),1,fp2);
+		//end luodp for webui
 	}
+	fclose(fp2);
 }
 
 #ifdef CONFIG_FEATURE_IPV6

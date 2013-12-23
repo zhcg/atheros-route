@@ -21,7 +21,7 @@
   <message msgid="inet user" msgstr="User Name" />
   <message msgid="inet password" msgstr="Password" />
   <message msgid="inet pass2" msgstr="Verify Password" />
-  <message msgid="inet hostname" msgstr="Hostname(optional)" />
+  <message msgid="inet hostname" msgstr="Hostname" />
   <message msgid="inet cmacenable" msgstr="Enable" />
 
   <message msgid="wan title" msgstr="Wide Area Network (WAN) Settings" />
@@ -58,10 +58,10 @@
   <message msgid="macc title" msgstr="Clone MAC address" />
   <message msgid="macc des" msgstr="Set the BASE to the WAN MAC address (Note: only the LAN computer can use this function" />
   <message msgid="macc t1_title" msgstr="Clone MAC address" />
-  <message msgid="macc t1_mac" msgstr="MAC" />
-  <message msgid="macc t1_PCmac" msgstr="The current MAC" />
-  <message msgid="macc macback_b" msgstr="Restore factory MAC" />
-  <message msgid="macc macclone_b" msgstr="Clone MAC address" />
+  <message msgid="macc t1_MACS" msgstr="Select the MAC address source" />
+  <message msgid="macc mactype0" msgstr="Use the default MAC address" />
+  <message msgid="macc mactype1" msgstr="Use the computer MAC address" />
+  <message msgid="macc mactype2" msgstr="Use MAC address" />
 
   <message msgid="err MAC empty" msgstr="MAC is empty!" />
   <message msgid="err IP empty" msgstr="IP is empty!" />
@@ -83,5 +83,5 @@
 	<message msgid="wan auto_ppp" msgstr="Automatically select PPPoE mode" />
 	<message msgid="wan auto_l2tp" msgstr="Automatically select L2TP mode" />
 	<message msgid="wan auto_p2tp" msgstr="Automatically select P2TP mode" />
-	<message msgid="wan auto_fail" msgstr="Automatically select fail！,please check the internet connection or select manually " />
+	<message msgid="wan auto_fail" msgstr="Automatically select fail,please check the internet connection or select manually " />
  </po>

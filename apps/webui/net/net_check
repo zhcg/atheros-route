@@ -33,7 +33,9 @@ pppoe=`grep "pppoe discovery state is STATE_RECEIVED_PADO" /tmp/log `
 #echo "second"
 if [ ! -z "$pppoe" ];then
         echo "PPPoE"
-		killall udhcpc pppoe-connect pppoe > /dev/null 2>&1
+#		killall udhcpc pppoe-connect pppoe > /dev/null 2>&1
+		killall udhcpc > /dev/null 2>&1
+		pppoe-stop > /dev/null 2>&1
 		cfg -a AUTOTYPE=pppoe
 		cfg -c
         exit 1
@@ -45,7 +47,9 @@ dhcp=`grep "DHCP Client get a DHCPOFFER" /tmp/log2`
 #echo "fourth"
 if [ ! -z "$dhcp" ];then
 	echo "dynamic IP"
-	killall udhcpc pppoe-connect pppoe > /dev/null 2>&1
+#	killall udhcpc pppoe-connect pppoe > /dev/null 2>&1
+	killall udhcpc > /dev/null 2>&1
+	pppoe-stop > /dev/null 2>&1
 	cfg -a AUTOTYPE=dhcp
 	cfg -c
 	exit 2
@@ -54,7 +58,9 @@ count=`expr $count + 1`
 sleep 1
 done
 
-killall udhcpc pppoe-connect pppoe > /dev/null 2>&1
+#killall udhcpc pppoe-connect pppoe > /dev/null 2>&1
+killall udhcpc > /dev/null 2>&1
+pppoe-stop > /dev/null 2>&1
 cfg -a AUTOTYPE=static
 cfg -c
 

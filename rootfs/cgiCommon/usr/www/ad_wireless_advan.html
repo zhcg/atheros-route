@@ -35,10 +35,10 @@ function checkValuerange(value,min,max)
 
 function CheckValue()
 {
-	if (checkValuerange(document.WORKFORM.WIFI_ADV_SSIDTIME.value,40,100)==false)
+	if (checkValuerange(document.WORKFORM.BEACON_INT.value,40,1000)==false)
 	{
 		alert(_("err range"));
-		document.WORKFORM.WIFI_ADV_SSIDTIME.select();
+		document.WORKFORM.BEACON_INT.select();
 		return false;
 	}
 	if (checkValuerange(document.WORKFORM.WIFI_ADV_RSTCTS.value,1,2346)==false)
@@ -47,12 +47,8 @@ function CheckValue()
 		document.WORKFORM.WIFI_ADV_RSTCTS.select();
 		return false;
 	}
-	if (checkValuerange(document.WORKFORM.WIFI_ADV_PTICH.value,256,2346)==false)
-	{
-		alert(_("err range"));
-		document.WORKFORM.WIFI_ADV_PTICH.select();
-		return false;
-	}
+
+	widget_disable("WIFI_ADV_POWER");
 	button_commit("WIRELESS_ADVSET");
 	return true;
 }
@@ -68,10 +64,11 @@ function initTranslation()
 	trans_inner("t1_low","wless t1_low");
 	trans_inner("t1_SSIDTime","wless t1_SSIDTime");
 	trans_inner("t1_RC","wless t1_RC");
-	trans_inner("t1_Pitch","wless t1_Pitch");
 	trans_inner("t1_head","wless t1_head");
 	trans_inner("t1_long","wless t1_long");	
 	trans_inner("t1_shot","wless t1_shot");
+	trans_inner("auto","wless auto");
+	
 	
 	trans_value("bCANCEL","wless bCANCEL");
 	trans_value("bAPPLY","wless bAPPLY");
@@ -100,7 +97,7 @@ function initValue()
 <table id="t1"  width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
 <tr><td class="title" colspan="2" id="t1_title">无线高级设置</td></tr>
 
-<tr>
+<tr style="display:none" >
   <td class="head" id="ti_pow">调整发射功率</td>
   <td>
     <select name="WIFI_ADV_POWER" size="1">
@@ -113,22 +110,44 @@ function initValue()
 
 <tr>
   <td class="head" id="t1_SSIDTime">广播SSID时间</td>
-  <td><input type="text" name="WIFI_ADV_SSIDTIME" id="WIFI_ADV_SSIDTIME" size="32" maxlength="32" class="handaer_text_content"  value="~~WIFI_ADV_SSIDTIME~"><span>&nbsp;(40-100)</span></td>
+  <td><input type="text" name="BEACON_INT" id="BEACON_INT" size="32" maxlength="32" class="handaer_text_content"  value="~~BEACON_INT~"><span>&nbsp;(40-1000)</span></td>
 </tr>
 <tr>
   <td class="head" id="t1_RC">RTS/CTS限值</td>
   <td><input type="text" name="WIFI_ADV_RSTCTS" id="WIFI_ADV_RSTCTS" size="32" maxlength="32" class="handaer_text_content"  value="~~WIFI_ADV_RSTCTS~"><span>&nbsp;(1-2346)</span></td>
 </tr>
+
 <tr>
-  <td class="head" id="t1_Pitch">分片值</td>
-  <td><input type="text" name="WIFI_ADV_PTICH" id="WIFI_ADV_PTICH" size="32" maxlength="32" class="handaer_text_content"  value="~~WIFI_ADV_PTICH~"><span>&nbsp;(256-2346)</span></td>
+  <td class="head">MCS</td>
+  <td>
+     <select name="TXRATE" size="1">
+		<option ~sTXRATE:0~ value="0" id="auto">自动</option>
+		<option ~sTXRATE:0x80808080~ value="0x80808080">MCS0</option>
+		<option ~sTXRATE:0x81818181~ value="0x81818181">MCS1</option>
+		<option ~sTXRATE:0x82828282~ value="0x82828282">MCS2</option>
+		<option ~sTXRATE:0x83838383~ value="0x83838383">MCS3</option>
+		<option ~sTXRATE:0x84848484~ value="0x84848484">MCS4</option>
+		<option ~sTXRATE:0x85858585~ value="0x85858585">MCS5</option>
+		<option ~sTXRATE:0x86868686~ value="0x86868686">MCS6</option>
+		<option ~sTXRATE:0x87878787~ value="0x87878787">MCS7</option>
+		<option ~sTXRATE:0x88888888~ value="0x88888888">MCS8</option>
+		<option ~sTXRATE:0x89898989~ value="0x89898989">MCS9</option>
+		<option ~sTXRATE:0x8A8A8A8A~ value="0x8A8A8A8A">MCS10</option>
+		<option ~sTXRATE:0x8B8B8B8B~ value="0x8B8B8B8B">MCS11</option>
+		<option ~sTXRATE:0x8C8C8C8C~ value="0x8C8C8C8C">MCS12</option>
+		<option ~sTXRATE:0x8D8D8D8D~ value="0x8D8D8D8D">MCS13</option>
+		<option ~sTXRATE:0x8E8E8E8E~ value="0x8E8E8E8E">MCS14</option>
+		<option ~sTXRATE:0x8F8F8F8F~ value="0x8F8F8F8F">MCS15</option>
+    </select>
+  </td>
 </tr>
+
 <tr id="channel">
   <td class="head" id="t1_head">报头模式</td>
   <td>
     <select name="SHORTGI" size="1">
-	  <option ~sSHORTGI:1~ value="1" id="t1_long">长</option>
-      <option ~sSHORTGI:0~ value="0" id="t1_shot">短</option>
+	  <option ~sSHORTGI:0~ value="0" id="t1_long">长</option>
+      <option ~sSHORTGI:1~ value="1" id="t1_shot">短</option>
     </select>
   </td>
 </tr>

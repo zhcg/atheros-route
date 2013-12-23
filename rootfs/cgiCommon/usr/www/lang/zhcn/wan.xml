@@ -22,7 +22,7 @@
   <message msgid="inet user" msgstr="用户名" />
   <message msgid="inet password" msgstr="密码" />
   <message msgid="inet pass2" msgstr="确认密码" />
-  <message msgid="inet hostname" msgstr="网络名称(可选)" />
+  <message msgid="inet hostname" msgstr="主机名" />
   <message msgid="inet cmacenable" msgstr="是否允许" />
 
   <message msgid="wan title" msgstr="WAN口设置" />
@@ -61,10 +61,12 @@
   <message msgid="macc title" msgstr="MAC地址克隆" />
   <message msgid="macc des" msgstr="设置BASE的WAN口MAC地址（  注意：只有局域网中的计算机可以使用本功能）" />
   <message msgid="macc t1_title" msgstr="MAC地址克隆" />
-  <message msgid="macc t1_mac" msgstr="MAC地址" />
-  <message msgid="macc t1_PCmac" msgstr="当前管理者PC的MAC地址" />
-  <message msgid="macc macback_b" msgstr="恢复出厂MAC" />
-  <message msgid="macc macclone_b" msgstr="MAC地址克隆" />
+  
+  <message msgid="macc t1_MACS" msgstr="选择MAC地址来源" />
+  <message msgid="macc mactype0" msgstr="使用缺省MAC地址" />
+  <message msgid="macc mactype1" msgstr="使用计算机MAC地址" />
+  <message msgid="macc mactype2" msgstr="使用MAC地址" />
+
   
    <message msgid="err MAC empty" msgstr="MAC地址不能为空" />
   <message msgid="err IP empty" msgstr="IP地址不能为空" />

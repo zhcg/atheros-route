@@ -323,7 +323,8 @@ error:
 				printf("<script  language=javascript>setTimeout(function(){window.location.href=\"crupload\";},140000);</script>");
 				printf("</body></html>");	
 				//[TODO]factory default
-				//[TODO] File check
+				system("cfg -x");
+				sleep(1);
 				sprintf(cmdd,"sleep 1 && sysupgrade %s &",filePath);
 				system(cmdd);
 			}else //error firmware file

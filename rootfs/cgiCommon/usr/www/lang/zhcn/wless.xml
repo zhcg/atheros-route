@@ -19,7 +19,7 @@
   <message msgid="wless t1_low" msgstr="低" />  
   <message msgid="wless t1_SSIDTime" msgstr="广播SSID时间" />  
   <message msgid="wless t1_RC" msgstr="RTS/CTS限值" />  
-  <message msgid="wless t1_Pitch" msgstr="分片值" />  
+  <message msgid="wless auto" msgstr="自动" />  
   <message msgid="wless t1_head" msgstr="报头模式" />  
   <message msgid="wless t1_long" msgstr="长" />  
   <message msgid="wless t1_shot" msgstr="短" />  

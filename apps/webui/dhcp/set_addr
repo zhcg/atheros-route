@@ -1,0 +1,71 @@
+#!/bin/sh
+#if [ $# != 2 ];then
+#        echo "the param number is wrong"
+#        echo "Usage:set_addr 00:03:7F:11:3B:1B 192.168.1.147"
+#        exit 1
+#fi
+
+IP_MAC_FILE=/etc/ip_mac.conf
+UDHCPD_FILE=/etc/udhcpd.conf
+
+if [ ! -f /etc/ip_mac.conf ]; then
+	touch /etc/ip_mac.conf
+fi
+
+cat $IP_MAC_FILE | grep "enable" | awk 'BEGIN{OFS=FS=" "}{print $1,$2,$3}' >> $UDHCPD_FILE
+
+MAC_ADDR=`cfg -e | grep "ADD_MAC" |awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`
+if [ -z $MAC_ADDR ];then
+	exit 1
+fi
+
+IP_ADDR=`cfg -e | grep "ADD_IP" |awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`
+if [ -z $IP_ADDR ];then
+	exit 2
+fi
+
+
+ADDR_STATUS=`cfg -e | grep "ADD_STATUS" |awk -F'=' '{print $2}'`
+if [ -z $ADDR_STATUS ];then
+	exit 3
+fi
+
+str=$(grep -i -E "\<$MAC_ADDR\> | \<$IP_ADDR\> " $IP_MAC_FILE $UDHCPD_FILE)
+#echo $str
+if [ "$str" = "" ];then
+        echo "the address is not exist"
+else
+        echo "the address is exist"
+        exit 1
+fi
+
+high_byte=$(echo "$MAC_ADDR" | sed 's/:[0-9a-fA-F][0-9a-fA-F]//g')
+high_byte=0x$high_byte
+is_mul=$(($high_byte&0x01))
+if [ $is_mul -eq 1 ]; then
+        echo "please input the vaild mac address"
+        exit 2
+fi
+
+#ipzone=$( grep "router" $UDHCPD_FILE | sed 's/.* //g' | cut -c1-10)
+ipzone=$( cfg -e | grep "AP_IPADDR" | awk -F'="' '{print $2}'|awk 'BEGIN{OFS=FS="."}{print $1,$2,$3}' )
+#echo "$ipzone"
+#newipzone=$( echo "$IP_ADDR" | cut -c1-10)
+newipzone=$( echo "$IP_ADDR" | awk 'BEGIN{OFS=FS="."}{print $1,$2,$3}' )
+#echo "$newipzone"
+if [ "$ipzone" != "$newipzone" ];then
+        echo "the ipaddr is different with the subnetwork"
+        exit 3
+fi
+
+if [ "$ADDR_STATUS" -eq "1" ];then
+	addr_status=enable
+	echo "static_lease $MAC_ADDR $IP_ADDR" >>  $UDHCPD_FILE
+else if [ "$ADDR_STATUS" -eq "0" ];then
+	addr_status=disable
+else
+	exit 4
+fi
+fi
+echo "static_lease $MAC_ADDR $IP_ADDR $addr_status" >>  $IP_MAC_FILE
+echo "done"

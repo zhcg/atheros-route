@@ -29,7 +29,7 @@ function connectionTypeSwitch()
 	else if (document.wanCfg.WAN_MODE.options.selectedIndex == 1)
 	{
 		widget_display("dhcp_table");
-		widget_hide("dhcpname");
+		//widget_hide("dhcpname");
 	}
 	else if (document.wanCfg.WAN_MODE.options.selectedIndex == 2) 
 	{
@@ -270,7 +270,19 @@ function checkIpAddr(field, ismask)
 
 	return true;
 }
-
+function checktimerange(value,min,max)
+{
+	var i = parseInt(value);
+	if (isNaN(i))
+	{
+		return false;
+	}
+	else if (i > max || i < min)
+	{
+		return false;
+	}
+	return true;
+}
 function CheckValue()
 {
 	if (document.wanCfg.WAN_MODE.selectedIndex == 0) //STATIC
@@ -741,7 +753,7 @@ function connecttypecheck()
 </tr>
 <tr id="dhcpname">
   <td class="head"><div id="wDhcpHost">Host Name</div></td>
-  <td><input type=text name="hostname" size=28 maxlength=32 value=""></td>
+  <td>HBD-Router<!--input type=text name="hostname" size=28 maxlength=32 value=""--></td>
 </tr>
 </table>
 

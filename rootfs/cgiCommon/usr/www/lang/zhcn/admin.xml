@@ -181,7 +181,7 @@
 	
 	<message msgid="admw internet" msgstr="互联网" />
 	<message msgid="admw wai" msgstr="外网/无线中继设置" />
-	<message msgid="admw nei" msgstr="内网设置" />
+	<message msgid="admw nei" msgstr="WiFi设置" />
 	<message msgid="password change" msgstr="密码修改成功，重启路由器后生效" />
 	<message msgid="admw securitydes" msgstr="修改路由Web管理页面的登录密码" />
 	
@@ -220,5 +220,7 @@
 	<message msgid="admw sysupgrade" msgstr="确认进行固件升级?" />
 	<message msgid="err dhcp null" msgstr="无法通过DHCP获取到WAN IP,请您检查是否为DHCP方式连接" />
 	<message msgid="err dhcp ip" msgstr="DHCP获取到WAN IP跟当前路由在同一个网段,请您在网关设置里面调整路由的网段" />
+	
+	<message msgid="man admin setting" msgstr="密码管理" />
 
 </po>

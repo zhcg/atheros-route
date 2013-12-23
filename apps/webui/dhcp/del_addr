@@ -1,0 +1,24 @@
+#!/bin/sh
+#if [ $# != 2 ];then
+#        echo "the param number is wrong"
+#        echo "Usage:del_addr 00:03:7F:11:3B:1B 192.168.1.147"
+#        exit 1
+#fi
+IP_MAC_FILE=/etc/ip_mac.conf
+UDHCPD_FILE=/etc/udhcpd.conf
+
+IP_ADDR=`cfg -e | grep "DELXXX" |awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`
+if [ -z $IP_ADDR ];then
+	exit 2
+fi
+
+str=$(grep -i -E "\<$IP_ADDR\>" $IP_MAC_FILE $UDHCPD_FILE)
+#echo $str
+if [ -z "$str" ];then
+        echo "the address is not exist"
+        exit 1
+else
+#       echo "the address is exist"
+        sed -i '/'$IP_ADDR'/d' $IP_MAC_FILE $UDHCPD_FILE
+        echo "done"
+fi

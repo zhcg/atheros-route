@@ -9,6 +9,9 @@
 
 function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
 function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
+function widget_enable(widgetID){document.getElementById(widgetID).disabled = false;}
+function widget_disable(widgetID){document.getElementById(widgetID).disabled = true;}
+
 function button_commit(buttonID){document.getElementById(buttonID).click();}
 function atoi(str, num)
 {
@@ -125,6 +128,14 @@ function checkIpAddr(field, ismask)
 
 	return true;
 }
+function ip2int(ip) 
+{
+    var num = 0;
+    ip = ip.split(".");
+    num = Number(ip[0]) * 256 * 256 * 256 + Number(ip[1]) * 256 * 256 + Number(ip[2]) * 256 + Number(ip[3]);
+    num = num >>> 0;
+    return num;
+}
 function CheckValue()
 {
 	
@@ -147,6 +158,27 @@ function CheckValue()
 		document.WORKFORM.ADD_IP.select();
 		return false;
 	}
+	{
+		var mask_num=ip2int(document.getElementById("GW_SUB").value);
+		var ip_num=ip2int(document.WORKFORM.ADD_IP.value);
+		var gwip_num =ip2int(document.getElementById("GW_IP").value); 
+		
+		if(ip_num == gwip_num)
+		{
+			alert(_("err ipsame"));
+			document.WORKFORM.ADD_IP.select();
+			return false;
+		}
+		yu=gwip_num&mask_num;
+		yu1=ip_num&mask_num;
+		if(yu1!=yu)
+		{
+			alert(_("err ip illegal"));
+			document.WORKFORM.ADD_IP.select();
+			return false;
+		}
+	}
+
 	button_commit("ADD_STATICDHCP");
 	return true;
 }
@@ -217,12 +249,16 @@ function initValue()
 	<input type="button" name="bCANCEL" id="bCANCEL" class="handaer_input" value="Cancel" onClick="window.location.href='ad_local_dhcp'">
     <input type="button" name="bSAVE" id="bSAVE" class="handaer_input" value="Apply" onClick="CheckValue();">    
 
+
 	<input type="submit" name="ADD_STATICDHCP" id="ADD_STATICDHCP" style="display:none" value="ADD_STATICDHCP">
+	
   </td>
 </tr>
 </table>
 
 </form>
+	<input type="text" name="GW_IP" style="display:none"  id="GW_IP" maxlength="15" class="handaer_text_content" value="~~AP_IPADDR~">
+	<input type="text" name="GW_SUB" style="display:none"  id="GW_SUB" maxlength="15" class="handaer_text_content" value="~~AP_NETMASK~">
 </td></tr></table> 
 </div>
 </body>

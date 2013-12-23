@@ -26,7 +26,7 @@
   <message msgid="dhcp t2_title" msgstr="Static allocation" />
   <message msgid="dhcp t2_Mac" msgstr="MAC" />
   <message msgid="dhcp t2_Ip" msgstr="IP" />
-  <message msgid="dhcp t2_Status" msgstr="Status" />
+  <message msgid="dhcp t2_Status" msgstr="Enable" />
   <message msgid="dhcp t2_Modefy" msgstr="Delete" />
 
   <message msgid="dhcp t3_title" msgstr="DHCP client" />
@@ -62,7 +62,7 @@
   <message msgid="rulit t2_Des" msgstr="Destination" />
   <message msgid="rulit t2_Sub" msgstr="The subnet mask" />
   <message msgid="rulit t2_Gw" msgstr="Gateway" />
-  <message msgid="rulit t2_Inf" msgstr="Status" />
+  <message msgid="rulit t2_Inf" msgstr="Enable" />
   <message msgid="rulit t2_Modefy" msgstr="Delete" />
   
   <message msgid="addru title" msgstr="Add static routing rules" />
@@ -89,4 +89,8 @@
   <message msgid="err bip" msgstr="The starting address is not valid segment!" />
   <message msgid="err eip" msgstr="The end address is not in the legal network!" />
   <message msgid="err iprange" msgstr="The DHCP address range can't contain gateway IP" />
+  <message msgid="err ip notin" msgstr="IP address must be in the DHCP address range" />
+  <message msgid="err IPMAC exist" msgstr="IP or MAC address has been bound" />
+  <message msgid="err ipsame" msgstr="IP address can not be the same with the gateway IP" />
+  <message msgid="err ip illegal" msgstr="The IP address is not in the valid range" />
  </po>

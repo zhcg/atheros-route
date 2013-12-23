@@ -26,7 +26,7 @@
   <message msgid="dhcp t2_title" msgstr="静态分配" />
   <message msgid="dhcp t2_Mac" msgstr="MAC地址" />
   <message msgid="dhcp t2_Ip" msgstr="IP地址" />
-  <message msgid="dhcp t2_Status" msgstr="状态" />
+  <message msgid="dhcp t2_Status" msgstr="生效" />
   <message msgid="dhcp t2_Modefy" msgstr="删除" />
 
   <message msgid="dhcp t3_title" msgstr="DHCP客户端" />
@@ -62,7 +62,7 @@
   <message msgid="rulit t2_Des" msgstr="目的网络地址" />
   <message msgid="rulit t2_Sub" msgstr="子网掩码" />
   <message msgid="rulit t2_Gw" msgstr="网关" />
-  <message msgid="rulit t2_Inf" msgstr="状态" />
+  <message msgid="rulit t2_Inf" msgstr="生效" />
   <message msgid="rulit t2_Modefy" msgstr="删除" />
   
   <message msgid="addru title" msgstr="路由表设置" />
@@ -90,9 +90,9 @@
   <message msgid="err bip" msgstr="起始地址不在合法网段" />
   <message msgid="err eip" msgstr="结束地址不在合法网段" />
   <message msgid="err iprange" msgstr="DHCP地址范围不能包含网关IP在内" />
-
-  
-  
-  
-  
- </po>
+  <message msgid="err ip notin" msgstr="IP地址必须在DHCP地址范围内" />
+  <message msgid="err IPMAC exist" msgstr="IP或MAC地址已经被绑定" /> 
+  <message msgid="err ipsame" msgstr="IP地址不能与网关IP相同" />
+  <message msgid="err ip illegal" msgstr="IP地址不在合法网段" />
+   
+</po>

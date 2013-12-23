@@ -40,9 +40,6 @@ function initTranslation()
 	//trans_value("MODRUL","lan MODDHCP");	
 	//trans_value("DELRUL","lan DELDHCP");	
 	trans_value("ADDRUL","lan ADDDHCP");
-	
-	trans_value("bCANCEL","lan bCANCEL");	
-	trans_value("bAPPLY","lan bAPPLY");
 }
 
 function initValue()
@@ -50,10 +47,7 @@ function initValue()
 	Butterlate.setTextDomain("lan");
 	initTranslation();
 }
-function CheckValue()
-{
-	button_commit("RULIST_SET");
-}
+
 function listdel(value)
 {
 	document.getElementById("DELXXX").value=value;
@@ -111,20 +105,7 @@ function listdel(value)
 		<input type="button"  class="handaer_small_button" name="ADDRUL" id="ADDRUL" value="添加" onClick="window.location.href='ad_local_addru'">
 	</td>
   </tr>
-
-  
-</table>
-
-
-
-<table id="buttontable">
-<tr align="center">
-  <td>
-    <input type="button" name="bCANCEL" id="bCANCEL" class="handaer_input" value="Cancel" onClick="window.location.reload();">
-    <input type="button" name="bAPPLY" id="bAPPLY" class="handaer_input" value="Apply" onClick="CheckValue();">
-	<input type="submit" name="RULIST_SET" id="RULIST_SET" style="display:none" value="RULIST_SET">
-  </td>
-</tr>
+ 
 </table>
 
 </form>
