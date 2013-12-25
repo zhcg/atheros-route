@@ -1,27 +1,31 @@
 #!/bin/sh
-DOMAIN1=www.baidu.com 
-DOMAIN2=www.google.cn 
-DOMAIN3=8.8.8.8
- 
-while true  
+BAIDU=61.135.169.125
+QQ=182.254.18.159
+
+while true
 do
-ping -c 2 $DOMAIN3 >/dev/null 2>&1
-echo -n $? > /tmp/network-status 
-ping -c 2 $DOMAIN1 >/dev/null 2>&1
-echo -n $? > /tmp/network-status 
-ping -c 2 $DOMAIN2 >/dev/null 2>&1
-echo -n $? >> /tmp/network-status 
-STATUS=`cat /tmp/network-status` 
-  
-if [ "$STATUS" -eq 111 ];then  
-	cfg -a INTERNET_ON=off
-elif [ "$STATUS" -eq 011 ];then
-	echo "nameserver 8.8.8.8" > /etc/resolv.conf
+ping  $BAIDU test
+
+if [ $? -eq 1 ];then
+        cfg -a PING_BD=NO
+        cfg -a INTERNET_ON=off
 else
-	cfg -a INTERNET_ON=on
-fi 
+        cfg -a PING_BD=OK
+        cfg -a INTERNET_ON=on
+
+fi
+
+
+ping  $QQ test
+if [ $? -eq 1 ];then
+        cfg -a PING_QQ=NO
+else
+        cfg -a PING_QQ=OK
+fi
+
+
 cfg -c
 
-sleep 1
+sleep 5
 
 done
