@@ -175,4 +175,5 @@ monitor_application  &
 /bin/reset_mips /bin/phone_serv_19200 &
 /bin/server &
 /usr/bin/cal_check &
+/bin/net_test &
 /usr/sbin/threethread &
