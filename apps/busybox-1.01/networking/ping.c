@@ -68,7 +68,7 @@ static const int PINGINTERVAL = 1;		/* second */
 #define	CLR(bit)	(A(bit) &= (~B(bit)))
 #define	TST(bit)	(A(bit) & B(bit))
 
-static void ping(const char *host);
+static void ping(const char *host, int type);
 
 /* common routines */
 static int in_cksum(unsigned short *buf, int sz)
@@ -159,6 +159,8 @@ static void ping(const char *host)
 
 extern int ping_main(int argc, char **argv)
 {
+	
+	printf("cyj %s %d %s\n",__func__,__LINE__,*argv);
 	argc--;
 	argv++;
 	if (argc < 1)
@@ -183,7 +185,10 @@ struct hostent *hostent;
 static void sendping(int);
 static void pingstats(int);
 static void unpack(char *, int, struct sockaddr_in *);
-
+// add cyj start
+static void unpack(char *, int, struct sockaddr_in *);
+static void unpack_test(char *, int, struct sockaddr_in *);
+// add cyj end
 /**************************************************************************/
 
 static void pingstats(int junk)
@@ -269,6 +274,86 @@ static char *icmp_type_name (int id)
 	}
 }
 
+static void unpack_test(char *buf, int sz, struct sockaddr_in *from)
+{
+        struct icmp *icmppkt;
+        struct iphdr *iphdr;
+        struct timeval tv, *tp;
+        int hlen, dupflag;
+        unsigned long triptime;
+
+
+//      printf("cyj %s %d |%s| %d\n", __func__,__LINE__,buf,sz);
+
+        gettimeofday(&tv, NULL);
+
+        /* check IP header */
+        iphdr = (struct iphdr *) buf;
+        hlen = iphdr->ihl << 2;
+        /* discard if too short */
+
+	 if (sz < (datalen + ICMP_MINLEN))
+        {
+                exit(1);
+        }
+        sz -= hlen;
+        icmppkt = (struct icmp *) (buf + hlen);
+
+        if (icmppkt->icmp_id != myid)
+        {
+                exit(1);
+        }
+        if (icmppkt->icmp_type == ICMP_ECHOREPLY) {
+            ++nreceived;
+                tp = (struct timeval *) icmppkt->icmp_data;
+
+                if ((tv.tv_usec -= tp->tv_usec) < 0) {
+                        --tv.tv_sec;
+                        tv.tv_usec += 1000000;
+                }
+                tv.tv_sec -= tp->tv_sec;
+
+                triptime = tv.tv_sec * 10000 + (tv.tv_usec / 100);
+                tsum += triptime;
+                if (triptime < tmin)
+                        tmin = triptime;
+                if (triptime > tmax)
+                        tmax = triptime;
+
+                if (TST(icmppkt->icmp_seq % MAX_DUP_CHK)) {
+                        ++nrepeats;
+                        --nreceived;
+                        dupflag = 1;
+                } else {
+                        SET(icmppkt->icmp_seq % MAX_DUP_CHK);
+                        dupflag = 0;
+                }
+
+                if (options & O_QUIET)
+                {
+                        exit(1);
+                }
+                        exit(0);
+	/*              printf("%d bytes from %s: icmp_seq=%u", sz,
+                           inet_ntoa(*(struct in_addr *) &from->sin_addr.s_addr),
+                           icmppkt->icmp_seq);
+                printf(" ttl=%d", iphdr->ttl);
+                printf(" time=%lu.%lu ms", triptime / 10, triptime % 10);
+                if (dupflag)
+                        printf(" (DUP!)");
+                printf("\n");
+*/
+        } else
+                if (icmppkt->icmp_type != ICMP_ECHO)
+                        bb_error_msg("Warning: Got ICMP %d (%s)",
+                                        icmppkt->icmp_type, icmp_type_name (icmppkt->icmp_type));
+
+
+
+}
+
+
+
 static void unpack(char *buf, int sz, struct sockaddr_in *from)
 {
 	struct icmp *icmppkt;
@@ -277,6 +362,9 @@ static void unpack(char *buf, int sz, struct sockaddr_in *from)
 	int hlen, dupflag;
 	unsigned long triptime;
 
+
+//	printf("cyj %s %d |%s| %d\n", __func__,__LINE__,buf,sz);
+
 	gettimeofday(&tv, NULL);
 
 	/* check IP header */
@@ -284,14 +372,16 @@ static void unpack(char *buf, int sz, struct sockaddr_in *from)
 	hlen = iphdr->ihl << 2;
 	/* discard if too short */
 	if (sz < (datalen + ICMP_MINLEN))
+	{
 		return;
-
+	}
 	sz -= hlen;
 	icmppkt = (struct icmp *) (buf + hlen);
 
 	if (icmppkt->icmp_id != myid)
-	    return;				/* not our ping */
-
+	{
+		return;
+	}
 	if (icmppkt->icmp_type == ICMP_ECHOREPLY) {
 	    ++nreceived;
 		tp = (struct timeval *) icmppkt->icmp_data;
@@ -319,8 +409,9 @@ static void unpack(char *buf, int sz, struct sockaddr_in *from)
 		}
 
 		if (options & O_QUIET)
+		{
 			return;
-
+		}
 		printf("%d bytes from %s: icmp_seq=%u", sz,
 			   inet_ntoa(*(struct in_addr *) &from->sin_addr.s_addr),
 			   icmppkt->icmp_seq);
@@ -329,13 +420,32 @@ static void unpack(char *buf, int sz, struct sockaddr_in *from)
 		if (dupflag)
 			printf(" (DUP!)");
 		printf("\n");
+
 	} else
 		if (icmppkt->icmp_type != ICMP_ECHO)
 			bb_error_msg("Warning: Got ICMP %d (%s)",
 					icmppkt->icmp_type, icmp_type_name (icmppkt->icmp_type));
 }
 
-static void ping(const char *host)
+
+int timing(int fd)
+{
+	fd_set rdfds;
+	struct timeval tv;
+	int ret;
+	FD_ZERO(&rdfds);    
+	FD_SET(fd, &rdfds);   
+	tv.tv_sec = 1;
+	tv.tv_usec = 0;      
+	ret = select(fd+1, &rdfds, NULL, NULL, &tv);
+	FD_ZERO(&rdfds);
+	return ret;
+}
+
+
+
+
+static void ping(const char *host, int type)
 {
 	char packet[datalen + MAXIPLEN + MAXICMPLEN];
 	int sockopt;
@@ -361,41 +471,92 @@ static void ping(const char *host)
 	setsockopt(pingsock, SOL_SOCKET, SO_RCVBUF, (char *) &sockopt,
 			   sizeof(sockopt));
 
-	printf("PING %s (%s): %d data bytes\n",
-	           hostent->h_name,
-		   inet_ntoa(*(struct in_addr *) &pingaddr.sin_addr.s_addr),
-		   datalen);
+//	printf("cyj %s %d   %s   %d\n",__func__,__LINE__,host, type);
 
-	signal(SIGINT, pingstats);
+	if(type == 1)
+	{
+		
+//		printf("cyj %s %d\n",__func__,__LINE__);
+		
 
-	/* start the ping's going ... */
-	sendping(0);
+                signal(SIGINT, pingstats);
 
-	/* listen for replies */
-	while (1) {
-		struct sockaddr_in from;
-		socklen_t fromlen = (socklen_t) sizeof(from);
-		int c;
+//		printf("cyj %s %d\n",__func__,__LINE__);
+                /* start the ping's going ... */
+                sendping(0);
 
-		if ((c = recvfrom(pingsock, packet, sizeof(packet), 0,
-						  (struct sockaddr *) &from, &fromlen)) < 0) {
-			if (errno == EINTR)
-				continue;
-			bb_perror_msg("recvfrom");
-			continue;
-		}
-		unpack(packet, c, &from);
-		if (pingcount > 0 && nreceived >= pingcount)
-			break;
+//		printf("cyj %s %d\n",__func__,__LINE__);
+                /* listen for replies */
+                        struct sockaddr_in from;
+                        socklen_t fromlen = (socklen_t) sizeof(from);
+                        int c = 0;
+			int timing_return;
+		
+			timing_return = timing(pingsock);    
+			if(timing_return > 0)
+			{
+   //                		   printf("cyj  %s   %d\n", __func__,__LINE__);
+                       		 if ((c = recvfrom(pingsock, packet, sizeof(packet), 0,
+                                                  (struct sockaddr *) &from, &fromlen)) < 0) {
+                        	        bb_perror_msg("recvfrom");
+                        		}
+     //             		    printf("cyj  %s   %d\n", __func__,__LINE__);
+                        	    unpack_test(packet, c, &from);
+       //            		   printf("cyj  %s   %d\n", __func__,__LINE__);
+			}
+			else
+			{
+
+				exit(1);
+			}
+
 	}
-	pingstats(0);
+	else
+	{
+		printf("PING %s (%s): %d data bytes\n",
+	        	   hostent->h_name,
+		  	 inet_ntoa(*(struct in_addr *) &pingaddr.sin_addr.s_addr),
+		  	 datalen);
+
+		signal(SIGINT, pingstats);
+
+		/* start the ping's going ... */
+		sendping(0);
+
+		/* listen for replies */
+		while (1) {
+			struct sockaddr_in from;
+			socklen_t fromlen = (socklen_t) sizeof(from);
+			int c = 0;
+//			printf("cyj  %s   %d\n", __func__,__LINE__);
+			if ((c = recvfrom(pingsock, packet, sizeof(packet), 0,
+						  (struct sockaddr *) &from, &fromlen)) < 0) {
+				if (errno == EINTR)
+					continue;
+				bb_perror_msg("recvfrom");
+				continue;
+			}
+//			printf("cyj  %s   %d\n", __func__,__LINE__);
+//		printf("cyj %s %d |%s| %d\n", __func__,__LINE__,packet,c);
+			unpack(packet, c, &from);
+			if (pingcount > 0 && nreceived >= pingcount)
+				break;
+		}
+		pingstats(0);
+	}
 }
 
 extern int ping_main(int argc, char **argv)
 {
 	char *thisarg;
-
+	int type = 0;
 	datalen = DEFDATALEN; /* initialized here rather than in global scope to work around gcc bug */
+
+	if(argc > 2)
+	{
+		if(strcmp(argv[2], "test") == 0)
+			type = 1;
+	}
 
 	argc--;
 	argv++;
@@ -430,7 +591,7 @@ extern int ping_main(int argc, char **argv)
 		bb_show_usage();
 
 	myid = getpid() & 0xFFFF;
-	ping(*argv);
+	ping(*argv, type);
 	return EXIT_SUCCESS;
 }
 #endif /* ! CONFIG_FEATURE_FANCY_PING */
