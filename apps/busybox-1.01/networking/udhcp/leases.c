@@ -20,6 +20,13 @@
 
 
 uint8_t blank_chaddr[] = {[0 ... 15] = 0};
+struct staList
+{
+	int id;
+	char macAddr[20];
+	char staDesc[80];
+	struct staList *next;
+};
 
 /* clear every lease out that chaddr OR yiaddr matches and is nonzero */
 void clear_lease(uint8_t *chaddr, uint32_t yiaddr)
@@ -212,5 +219,65 @@ void deal_offline_sta()
 		
 	}	
 
+}
+
+/* Find the lease that matches chaddr, NULL if no match */
+struct dhcpOfferedAddr *deal_control_staMac()
+{
+	unsigned int i, j, k, id;
+	FILE *fp, *fpp;
+	struct staList stalist;
+	char mac_buf[20];
+	char buf[10];
+	const char *staFile = "/var/run/.staMac";
+	const char *staFile1 = "/var/run/.staAcl";
+
+	if((fpp = fopen(staFile1, "r")) == NULL)
+	{
+		LOG(LOG_ERR, "Unable to open %s for reading", staFile1);
+		return NULL;
+	}
+	if(fread(buf, 7, 1, fpp) == 1)
+	{
+		//LOG(LOG_ERR, "******the %s's buf is %s", staFile1, buf);
+		if(strncmp(buf, "disable", 7) == 0)
+		{
+			if ((fp = fopen(staFile, "r")) != NULL)
+			{
+				while(fread(&stalist, sizeof stalist, 1, fp) == 1)
+				{
+					for (i = 0; i < server_config.max_leases; i++)
+					{
+						if(strlen(leases[i].hostname) > 0)
+						{
+							for(j = 0, k = 0 ; j < 6; j++, k+=3)
+							{
+			                    sprintf(&mac_buf[k], "%02x:", leases[i].chaddr[j]);
+							}
+							
+							//LOG(LOG_ERR, "******the lease's is %s, the read is %s", mac_buf, stalist.macAddr);
+							
+							if (!strncmp(mac_buf, stalist.macAddr, 17))
+							{
+								//LOG(LOG_ERR, "the MAC %s is exit", stalist.macAddr);
+								leases[i].expires = time(0);
+								/* clean out any old ones */
+								clear_lease(leases[i].chaddr, leases[i].yiaddr);
+							}
+						}
+					}
+				}
+				fclose(fp);
+			}
+		}
+		fclose(fpp);
+	}
+	else
+	{
+		LOG(LOG_ERR, "the read %s for reading is not disable", staFile1);
+		fclose(fpp);
+	}
+
+	return NULL;
 }
 

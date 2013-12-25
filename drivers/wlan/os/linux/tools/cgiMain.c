@@ -659,12 +659,8 @@ char *processSpecial(char *paramStr, char *outBuff)
 					struct staList stalist;
 					char *buf = "<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:20px;\" value=\"×\" onClick=\"listdel(this.name)\"></td>";
 					char buff[5];
-						
-					if( (fp = fopen(staFile, "r")) == NULL)
-					{
-						fprintf(errOut,"\nopen %s error\n", staFile);
-					}
-					else
+					
+					if( (fp = fopen(staFile, "r")) != NULL)
 					{
 						while(fread(&stalist, sizeof stalist, 1, fp) == 1)
 						{
@@ -4086,19 +4082,79 @@ int main(int argc,char **argv)
     Control STA's MAC
     *************************************/
     if(strcmp(CFG_get_by_name("CONM_WORK",valBuff),"CONM_WORK") == 0 ) 
-    {		 
+    {
+    	FILE *fp, *fpp;
+		struct staList stalist;
+		char buf[80];
+		const char *staAcl = "/var/run/.staAcl";
 		if(strcmp(CFG_get_by_name("WCONON_OFF",valBuff),"on") == 0 )
 		{
+			if ((fp = fopen(staAcl, "w")) == NULL)
+			{
+				fprintf(errOut,"\nopen %s error\n", staAcl);
+			}
+			else
+			{
+				fwrite("enable", sizeof("enable"), 1, fp);
+				fclose(fp);
+			}
+
+			Execute_cmd("iptables -t filter -F INPUT", rspBuff);
+			#if 0
+			if ((fpp = fopen(staFile, "r")) == NULL)
+			{
+				fprintf(errOut,"\nopen %s error\n", staFile);
+			}
+			else
+			{
+				while(fread(&stalist, sizeof stalist, 1, fpp) == 1)
+				{
+					sprintf(buf, "iptables -D INPUT -m mac --mac-source %s -j DROP", stalist.macAddr);
+					fprintf(errOut,"\n%s \n", buf);
+					Execute_cmd(buf, rspBuff);
+				}
+				fclose(fpp);
+			}
+			#endif
+			
 			Execute_cmd("iwpriv ath0 maccmd 0",rspBuff);
 			fprintf(errOut,"\n%s  %d --------CONM_WORK on--------- \n",__func__,__LINE__);
 		}
 		else if(strcmp(CFG_get_by_name("WCONON_OFF",valBuff),"off") == 0 )
 		{
+			if ((fp = fopen(staAcl, "w")) == NULL)
+			{
+				fprintf(errOut,"\nopen %s error\n", staAcl);
+			}
+			else
+			{
+				fwrite("disable", sizeof("disable"), 1, fp);
+				fclose(fp);
+			}
+			
+
+			if ((fpp = fopen(staFile, "r")) == NULL)
+			{
+				fprintf(errOut,"\nopen %s error\n", staFile);
+			}
+			else
+			{
+				Execute_cmd("iptables -t filter -F INPUT", rspBuff);
+				while(fread(&stalist, sizeof stalist, 1, fpp) == 1)
+				{
+					sprintf(buf, "iptables -A INPUT -m mac --mac-source %s -j DROP", stalist.macAddr);
+					Execute_cmd(buf, rspBuff);
+				}
+				fclose(fpp);;
+			}
+			
 			Execute_cmd("iwpriv ath0 maccmd 2",rspBuff);
 			Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
 			fprintf(errOut,"\n%s  %d --------CONM_WORK off--------- \n",__func__,__LINE__);
 		}
 		
+		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+		writeParameters("/tmp/.apcfg","w+",0);
 		gohome =1;
 	}
 	
