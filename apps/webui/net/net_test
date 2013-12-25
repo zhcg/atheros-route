@@ -1,6 +1,6 @@
 #!/bin/sh
-BAIDU=61.135.169.125
-QQ=182.254.18.159
+BAIDU=www.baidu.com
+QQ=www.qq.com
 
 while true
 do
