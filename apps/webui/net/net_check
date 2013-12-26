@@ -1,5 +1,10 @@
 #!/bin/sh
 
+cat /tmp/.apcfg | while read LINE
+do
+	if [ $LINE = PING_QQ=NO ];then
+
+
 #VAL="`ethreg -p 4 0x11 | awk -F' ' '/Read Reg/{print $5}'`"
 VAL="`ethreg -p 4 0x11 | grep "Read Reg" | sed 's/.* //g' `"
 VAL2=0x0400
@@ -65,3 +70,9 @@ cfg -a AUTOTYPE=static
 cfg -c
 
 echo "Static IP"
+
+
+fi
+
+done
+
