@@ -11,3 +11,15 @@ if [ -n "$CAL_MSG" ]; then
 	/etc/ath/apdown
 	/etc/ath/apup
 fi
+
+#added by yhl 2013.12.20 below
+echo "mac backup"
+if [ ! -f /etc/mac.bin ]; then
+	echo "Backup mac at `date`"  >> /etc/maclog.txt
+	ifconfig | grep eth0 | awk -F ' ' '{print$5}' > /etc/mac.bin
+	cfg -a ETH0_DFMAC=`cat /etc/mac.bin`
+	cfg -a ETH0_MAC=`cat /etc/mac.bin`
+	cfg -a BR0_MAC=`ifconfig | grep br0 | awk -F ' ' '{print$5}'`
+	cfg -c
+fi
+#added by yhl 2013.12.20 above

@@ -58,25 +58,26 @@
   <message msgid="man ntp sync with host" msgstr="主机同步" />
   <message msgid="man ntpswitch" msgstr="NTP启用" />
   
-  <message msgid="man ntp err1" msgstr="请指定网络时间服务器。" />
+  <message msgid="man ntp err1" msgstr="请您指定网络时间服务器。" />
   
   <message msgid="man export" msgstr="导出" />
   <message msgid="man exporttitle" msgstr="配置管理" />
-  <message msgid="man exportdes" msgstr="将系统配置文件导出保存至本地。" />
-  <message msgid="man selsectfile" msgstr="请选择配置文件" />
-  <message msgid="man inportdes" msgstr="将本地文件导入BASE进行系统配置" /> 
+  <message msgid="man exportdes" msgstr="导出系统配置文件并保存至本地。" />
+  <message msgid="man selsectfile" msgstr="请您选择配置文件" />
+  <message msgid="man inportdes" msgstr="导入本地配置文件并进行系统配置。" /> 
   <message msgid="man inport" msgstr="导入" />
   <message msgid="man localsave" msgstr="备份" />
   
   <message msgid="man reboottitle" msgstr="系统重启" />
   <message msgid="man rebootdes" msgstr="单击此按钮使BASE重启" />
-  <message msgid="man reboot" msgstr="重启" />
+  <message msgid="man reboot" msgstr="重启BASE" />
   
   <message msgid="man basesavedes" msgstr="BASE备份与恢复" />
   <message msgid="man basesavetitle" msgstr="BASE备份" />
+  <message msgid="man basesavetitle2" msgstr="BASE恢复" />
   <message msgid="man date" msgstr="日期" />
-  <message msgid="man modify" msgstr="编辑" />
-  <message msgid="man use" msgstr="使用" />
+  <message msgid="man modify" msgstr="删除" />
+  <message msgid="man use" msgstr="恢复" />
   <message msgid="man delete" msgstr="删除" />
 
   <message msgid="err MAC empty" msgstr="MAC地址不能为空" />
@@ -93,7 +94,7 @@
   <message msgid="err format" msgstr="参数格式错误" />
   <message msgid="err range" msgstr="参数范围错误" />
 
-	<message msgid="err file empty" msgstr="请选择升级文件!" />
+	<message msgid="err file empty" msgstr="请您选择升级文件!" />
 	<message msgid="man chfile" msgstr="选择文件" />
 	
 	<message msgid="man sysreboot" msgstr="确认重新启动BASE?" />

@@ -7,6 +7,7 @@
 <script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
 var input_num=1;
+var day_week=0;
 
 function widget_enable(widgetID){document.getElementById(widgetID).disabled = false;}
 function widget_disable(widgetID){document.getElementById(widgetID).disabled = true;}
@@ -73,6 +74,14 @@ function CheckValue()
 		return false;
 	}
 	document.getElementById("PARC_RU_NUM").value = input_num;
+	widget_disable("x_1");
+	widget_disable("x_2");
+	widget_disable("x_3");
+	widget_disable("x_4");
+	widget_disable("x_5");
+	widget_disable("x_6");
+	widget_disable("x_7");
+	document.getElementById("WEEK").value = day_week;
 	button_commit("ADD_PARC");
 	return true;
 }
@@ -80,6 +89,7 @@ function CheckValue()
 function initTranslation()
 {
 	trans_inner("title","paradd title");	
+	trans_inner("des","paradd des");	
 	trans_inner("t1_title","paradd t1_title");
 	trans_inner("t1_MAC","paradd t1_MAC");	
 	trans_inner("t1_NetL","paradd t1_NetL");
@@ -106,8 +116,10 @@ function initTranslation()
 function initValue()
 {
 	input_num=1;
+	day_week=0;
 	Butterlate.setTextDomain("par");
 	initTranslation();
+	document.getElementById("WEEK").value="0";
 }
 function addnet()
 {
@@ -115,27 +127,42 @@ function addnet()
 	input_num ++;
 	document.getElementById("addinput").innerHTML = orgvalue+'<br><input type="text" name="ADD_NET'+input_num+'" id="ADD_NET'+input_num+'" size="32" maxlength="32" class="handaer_text_content">';
 }
+function daycount()
+{
+	day_week=0;
+	if(document.getElementById("x_1").checked == true)
+		day_week = 1 + day_week;
+	if(document.getElementById("x_2").checked == true)
+		day_week = 10 + day_week;
+	if(document.getElementById("x_3").checked == true)
+		day_week = 100 + day_week;
+	if(document.getElementById("x_4").checked == true)
+		day_week = 1000 + day_week;
+	if(document.getElementById("x_5").checked == true)
+		day_week = 10000 + day_week;
+	if(document.getElementById("x_6").checked == true)
+		day_week = 100000 + day_week;
+	if(document.getElementById("x_7").checked == true)
+		day_week = 1000000 + day_week;
+}
 </script>
 </head>
 
 <body onLoad="initValue()">
 <div class="handaer_main">
 <table  width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td>
-<h1 id="title">添加家长控制访问管理条目</h1>
+<h1 id="title">访问管理</h1>
 <p></p>
 
 <FORM method="POST" name="WORKFORM">
 <!-- =========== Wireless Settings =========== -->
-<h2 id="des"></h2>
+<h2 id="des">添加家长控制访问管理条目</h2>
 
 <table id="t1"  width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
 <tr>
 <td class="title" colspan="2" id="t1_title">添加访问管理条目</td>
 </tr>
-<tr>
-  <td class="head">ID</td>
-  <td><input type="text" size="32" maxlength="32" class="handaer_text_content" readonly></td>
-</tr>
+
 <tr> 
   <td class="head" id="t1_MAC">MAC地址</td>
   <td><input type="text" name="ADD_MAC" id="ADD_MAC" size="32" maxlength="32" class="handaer_text_content"></td>
@@ -152,23 +179,24 @@ function addnet()
 <tr>
 	<td class="head" id="t1_Week">星期</td>
 	<td>
-		<input type="checkbox" name="x_1" id="x_1" value="1"><span id="day1">星期一</span>
-		<input type="checkbox" name="x_2" id="x_2" value="2"><span id="day2">星期二</span> 
-		<input type="checkbox" name="x_3" id="x_3" value="3"><span id="day3">星期三</span> 
-		<input type="checkbox" name="x_4" id="x_4" value="4"><span id="day4">星期四</span>
-		<input type="checkbox" name="x_5" id="x_5" value="5"><span id="day5">星期五</span>
-		<input type="checkbox" name="x_6" id="x_6" value="6"><span id="day6">星期六</span>
-		<input type="checkbox" name="x_7" id="x_7" value="7"><span id="day7">星期日</span>
+		<input type="checkbox" name="x_1" id="x_1" value="1" onclick="daycount()"><span id="day1">星期一</span>&nbsp;
+		<input type="checkbox" name="x_2" id="x_2" value="10" onclick="daycount()"><span id="day2">星期二</span>&nbsp; 
+		<input type="checkbox" name="x_3" id="x_3" value="100" onclick="daycount()"><span id="day3">星期三</span>&nbsp; 
+		<input type="checkbox" name="x_4" id="x_4" value="1000" onclick="daycount()"><span id="day4">星期四</span>&nbsp;
+		<input type="checkbox" name="x_5" id="x_5" value="10000" onclick="daycount()"><span id="day5">星期五</span>&nbsp;
+		<input type="checkbox" name="x_6" id="x_6" value="100000" onclick="daycount()"><span id="day6">星期六</span>&nbsp;
+		<input type="checkbox" name="x_7" id="x_7" value="1000000" onclick="daycount()"><span id="day7">星期日</span>
+		<input type="text" style="display:none" name="WEEK" id="WEEK" size="20" maxlength="32">	
 	</td>
 </tr>
 
 <tr>
 	<td class="head" id="t1_Time">时间</td>
 	<td>
-		<input type="text" name="TIMING_BH" maxlength="3" size="2" value=""/>:
-		<input type="text" name="TIMING_BM" maxlength="3" size="2" value=""/>-
-		<input type="text" name="TIMING_EH" maxlength="3" size="2" value=""/>:
-		<input type="text" name="TIMING_EM" maxlength="3" size="2" value=""/>
+		<input type="text" name="TIMING_BH" class="handaer_text_small_content" maxlength="3" size="2" value=""/>:
+		<input type="text" name="TIMING_BM" class="handaer_text_small_content" maxlength="3" size="2" value=""/>-
+		<input type="text" name="TIMING_EH" class="handaer_text_small_content" maxlength="3" size="2" value=""/>:
+		<input type="text" name="TIMING_EM" class="handaer_text_small_content" maxlength="3" size="2" value=""/>
 	</td>
 </tr>
 

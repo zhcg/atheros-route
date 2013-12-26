@@ -26,10 +26,11 @@
   <message msgid="pa t1_Ns" msgstr="Website list" />  
   <message msgid="pa t1_Week" msgstr="Week" />  
   <message msgid="pa t1_Time" msgstr="Time" />  
-  <message msgid="pa t1_St" msgstr="Status" />  
-  <message msgid="pa t1_Mod" msgstr="Modify" />  
+  <message msgid="pa t1_St" msgstr="Enable" />  
+  <message msgid="pa t1_Mod" msgstr="Delete" />  
 
-  <message msgid="paradd title" msgstr="Parental controls access control entries" />  
+  <message msgid="paradd title" msgstr="Parental control" />  
+  <message msgid="paradd des" msgstr="Parental controls access control entries" />  
   <message msgid="paradd t1_title" msgstr="Add access control entries" />  
   <message msgid="paradd t1_MAC" msgstr="MAC" />  
   <message msgid="paradd t1_NetL" msgstr="Website list" />  

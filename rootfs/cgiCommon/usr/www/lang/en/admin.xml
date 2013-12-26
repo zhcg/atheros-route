@@ -6,101 +6,6 @@
   <message msgid="admin reset" msgstr="Reset" />
   <message msgid="admin scan" msgstr="Scan" />
   <message msgid="admin restart" msgstr="Restart" />
-
-  <message msgid="man title" msgstr="System Management" />
-  <message msgid="man introduction" msgstr="You may configure administrator account and password, NTP settings, and Dynamic DNS settings here." />
-  <message msgid="man language setting" msgstr="Language Settings" />
-  <message msgid="man select language" msgstr="Select Language" />
-  <message msgid="man admin setting" msgstr="Security Settings" />
-  <message msgid="man admin account" msgstr="Account" />
-  <message msgid="man admin passwd" msgstr="Password" />
-  <message msgid="man admin watchdog" msgstr="WatchDog" />
-  
-  <message msgid="man gap title" msgstr="Green AP" />
-  <message msgid="man gap time" msgstr="Duration" />
-  <message msgid="man gap action" msgstr="Action" />
-  <message msgid="man ddns setting" msgstr="DDNS Settings" />
-  <message msgid="man ddns provider" msgstr="Dynamic DNS Provider" />
-  <message msgid="man ddns none" msgstr="None" />
-  <message msgid="man ddns account" msgstr="Account" />
-  <message msgid="man ddns passwd" msgstr="Password" />
-  <message msgid="man ddns" msgstr="DDNS" />
-
-  <message msgid="upload title" msgstr="Upgrade Firmware" />
-  <message msgid="upload introduction1" msgstr="Upgrade the Ralink SoC firmware to obtain new functionality. " />
-  <message msgid="upload introduction2" msgstr="It takes about 1 minute to upload &#160; upgrade flash and be patient please. Caution! A corrupted image will hang up the system." />
-  <message msgid="upload firmware" msgstr="Update Firmware" />
-  <message msgid="upload firmware location" msgstr="Location:" />
-  <message msgid="upload bootloader" msgstr="Update Bootloader" />
-  <message msgid="upload bootloader location" msgstr="Location:" />
-  <message msgid="upload firmware from usb" msgstr="Upgrade firmware from USB" />
-  <message msgid="upload firmware force upgrade via mem" msgstr="Force upgrade firmware via mem " />
-  <message msgid="upload firmware force" msgstr="Force:" />
-
-  <message msgid="setman title" msgstr="Settings Management" />
-  <message msgid="setman introduction" msgstr="You might save system settings by exporting them to a configuration file, restore them by importing the file, or reset them to factory default." />
-  <message msgid="setman export setting" msgstr="Export Settings" />
-  <message msgid="setman export setting button" msgstr="Export Button" />
-  <message msgid="setman export setting export" msgstr="Export" />
-  <message msgid="setman import setting" msgstr="Import Settings" />
-  <message msgid="setman import setting file location" msgstr="Settings file location" />
-  <message msgid="setman import setting import" msgstr="Import" />
-  <message msgid="setman load factory default" msgstr="Load Factory Defaults" />
-  <message msgid="setman load factory default button" msgstr="Load Default Button" />
-  <message msgid="setman load default" msgstr="Load Default" />
-
-  <message msgid="status title" msgstr="Access Point Status" />
-  <message msgid="status introduction" msgstr="Let's take a look at the status of Ralink SoC Platform." />
-  <message msgid="status system information" msgstr="System Info" />
-  <message msgid="status sdk version" msgstr="SDK Version" />
-  <message msgid="status system up time" msgstr="System Up Time" />
-  <message msgid="status system platform" msgstr="System Platform" />
-  <message msgid="status operate mode" msgstr="Operation Mode" />
-  <message msgid="status internet config" msgstr="Internet Configurations" />
-  <message msgid="status connect type" msgstr="Connected Type" />
-  <message msgid="status wan ipaddr" msgstr="WAN IP Address" />
-  <message msgid="status subnet mask" msgstr="Subnet Mask" />
-  <message msgid="status default gateway" msgstr="Default Gateway" />
-  <message msgid="status primary dns" msgstr="Primary Domain Name Server" />
-  <message msgid="status secondary dns" msgstr="Secondary Domain Name Server" />
-  <message msgid="status local network" msgstr="Local Network" />
-  <message msgid="status lan ipaddr" msgstr="Local IP Address" />
-  <message msgid="status local netmask" msgstr="Local Netmask" />
-  <message msgid="status mac" msgstr="MAC Address" />
-  <message msgid="status ethernet port status" msgstr="Ethernet Port Status" />
-
-  <message msgid="statistic title" msgstr="Statistic" />
-  <message msgid="statistic introduction" msgstr=" Take a look at the Ralink SoC statistics " />
-  <message msgid="statistic memory" msgstr="Memory" />
-  <message msgid="statistic memory total" msgstr="Memory total: " />
-  <message msgid="statistic memory left" msgstr="Memory left: " />
-  <message msgid="statistic wanlan" msgstr="WAN/LAN" />
-  <message msgid="statistic wan rx pkt" msgstr="WAN Rx packets: " />
-  <message msgid="statistic wan rx bytes" msgstr="WAN Rx bytes: " />
-  <message msgid="statistic wan tx pkt" msgstr="WAN Tx packets: " />
-  <message msgid="statistic wan tx bytes" msgstr="WAN Tx bytes: " />
-  <message msgid="statistic lan rx pkt" msgstr="LAN Rx packets: " />
-  <message msgid="statistic lan rx bytes" msgstr="LAN Rx bytes: " />
-  <message msgid="statistic lan tx pkt" msgstr="LAN Tx packets: " />
-  <message msgid="statistic lan tx bytes" msgstr="LAN Tx bytes: " />
-  <message msgid="statistic all interface" msgstr="All interfaces" />
-
-  <message msgid="syscommand title" msgstr="System Command" />
-  <message msgid="syscommand introduction" msgstr=" Run a system command as root: " />
-  <message msgid="syscommand system command" msgstr="System command " />
-  <message msgid="syscommand command" msgstr="Command:" />
-
-  <message msgid="syslog title" msgstr="System Log" />
-  <message msgid="syslog introduction" msgstr=" Syslog: " />
-  <message msgid="syslog system log" msgstr="System Log" />
-  <message msgid="syslog clear" msgstr="Clear" />
-  <message msgid="syslog refresh" msgstr="Refresh" />
-  
-  <message msgid="man sysrestart" msgstr="System Restart" />
-  <message msgid="man sysrestartintroduction" msgstr="Click Restart to restart the router, click Cancel to give up" />
-  <message msgid="man sysrestartmessage" msgstr="Now restart the router, please wait......" />
-  <message msgid="sysrestart" msgstr="Sure you want to reboot the router?" />
-  
   
   <message msgid="admw div_wan_title" msgstr="Please select the router WAN port connection." />
   <message msgid="admw DHCP" msgstr="Automatic acquisition (dynamic IP)" />  
@@ -317,5 +222,5 @@
   <message msgid="admw sysupgrade" msgstr="Confirm the firmware upgrade?" />
   	<message msgid="err dhcp null" msgstr="Unable to get WAN IP through DHCP,please check that the dhcp server provider?" />
 	<message msgid="err dhcp ip" msgstr="The WAN IP and Route IP are in the same subnet, please set the Route IP in gateway settings" />
-
+	<message msgid="man admin setting" msgstr="Administrator settings" />
 </po>

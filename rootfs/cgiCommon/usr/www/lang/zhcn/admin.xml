@@ -7,101 +7,6 @@
   <message msgid="admin scan" msgstr="搜寻" />
   <message msgid="admin restart" msgstr="重启" />
   
-  <message msgid="man title" msgstr="系统管理" />
-  <message msgid="man introduction" msgstr="您可以在此设置系统的管理者及口令、网络时间、动态域名服务。" />
-  <message msgid="man language setting" msgstr="语言设置" />
-  <message msgid="man select language" msgstr="选择语言" />
-  <message msgid="man admin setting" msgstr="密码管理" />
-  <message msgid="man admin account" msgstr="帐号" />
-  <message msgid="man admin passwd" msgstr="口令" />
-  <message msgid="man admin watchdog" msgstr="监视者" />
-  
-  <message msgid="man gap title" msgstr="Green AP" />
-  <message msgid="man gap time" msgstr="启用期间" />
-  <message msgid="man gap action" msgstr="执行项目" />
-  <message msgid="man ddns setting" msgstr="动态域名服务设置" />
-  <message msgid="man ddns provider" msgstr="动态域名服务提供商" />
-  <message msgid="man ddns none" msgstr="无" />
-  <message msgid="man ddns account" msgstr="帐号" />
-  <message msgid="man ddns passwd" msgstr="口令" />
-  <message msgid="man ddns" msgstr="动态域名服务" />
-
-  <message msgid="upload title" msgstr="固件更新" />
-  <message msgid="upload introduction1" msgstr="更新Ralink SoC固件获得新功能。" />
-  <message msgid="upload introduction2" msgstr="上传更新Flash需要大约1分钟的时间请耐心等候。警告！不正常的Image将中断系统的运作。" />
-  <message msgid="upload firmware" msgstr="固件更新" />
-  <message msgid="upload firmware location" msgstr="位置：" />
-  <message msgid="upload bootloader" msgstr="启动加载程序更新" />
-  <message msgid="upload bootloader location" msgstr="位置：" />
-  <message msgid="upload firmware from usb" msgstr="由USB Disk更新固件" />
-  <message msgid="upload firmware force upgrade via mem" msgstr="強迫使用内存更新固件" />
-  <message msgid="upload firmware force" msgstr="強迫是否:" />
-  
-  <message msgid="setman title" msgstr="设置管理" />
-  <message msgid="setman introduction" msgstr="您可以藉由汇出设置档来保存系统的设置、或藉由汇入的设置档来恢复系统设置、甚至可以重设回系统默认值。" />
-  <message msgid="setman export setting" msgstr="汇出设置" />
-  <message msgid="setman export setting button" msgstr="汇出按钮" />
-  <message msgid="setman export setting export" msgstr="汇出" />
-  <message msgid="setman import setting" msgstr="汇入设置" />
-  <message msgid="setman import setting file location" msgstr="设置档位置" />
-  <message msgid="setman import setting import" msgstr="汇入" />
-  <message msgid="setman load factory default" msgstr="装入原厂默认值" />
-  <message msgid="setman load factory default button" msgstr="装入默认值按钮" />
-  <message msgid="setman load default" msgstr="装入默认值" />
-
-  <message msgid="status title" msgstr="接入点状态" />
-  <message msgid="status introduction" msgstr="让我们可以看到Ralink SoC平台的状态。" />
-  <message msgid="status system information" msgstr="系统信息" />
-  <message msgid="status sdk version" msgstr="SDK版本" />
-  <message msgid="status system up time" msgstr="系统正常运行时间" />
-  <message msgid="status system platform" msgstr="系统平台" />
-  <message msgid="status operate mode" msgstr="运作模式" />
-  <message msgid="status internet config" msgstr="Internet配置" />
-  <message msgid="status connect type" msgstr="联机型态" />
-  <message msgid="status wan ipaddr" msgstr="广域网络IP地址" />
-  <message msgid="status subnet mask" msgstr="子网络遮罩" />
-  <message msgid="status default gateway" msgstr="默认网关" />
-  <message msgid="status primary dns" msgstr="主要域名服务器" />
-  <message msgid="status secondary dns" msgstr="次要域名服务器" />
-  <message msgid="status local network" msgstr="局域网" />
-  <message msgid="status lan ipaddr" msgstr="本地IP地址" />
-  <message msgid="status local netmask" msgstr="本地网络遮罩" />
-  <message msgid="status mac" msgstr="MAC 位址" />
-  <message msgid="status ethernet port status" msgstr="乙太网络端口状态" />
-
-  <message msgid="statistic title" msgstr="统计资料" />
-  <message msgid="statistic introduction" msgstr="查看Ralink SoC平台的统计资料。" />
-  <message msgid="statistic memory" msgstr="内存" />
-  <message msgid="statistic memory total" msgstr="内存总容量：" />
-  <message msgid="statistic memory left" msgstr="内存剩余量：" />
-  <message msgid="statistic wanlan" msgstr="广域网络/局域网" />
-  <message msgid="statistic wan rx pkt" msgstr="广域网络接收的数据包数：" />
-  <message msgid="statistic wan rx bytes" msgstr="广域网络接收的资料量：" />
-  <message msgid="statistic wan tx pkt" msgstr="广域网络传送的数据包数：" />
-  <message msgid="statistic wan tx bytes" msgstr="广域网络传送的资料量：" />
-  <message msgid="statistic lan rx pkt" msgstr="局域网接收的数据包数：" />
-  <message msgid="statistic lan rx bytes" msgstr="局域网接收的资料量：" />
-  <message msgid="statistic lan tx pkt" msgstr="局域网传送的数据包数：" />
-  <message msgid="statistic lan tx bytes" msgstr="域网传送的资料量：" />
-  <message msgid="statistic all interface" msgstr="所有界面" />
-
-  <message msgid="syscommand title" msgstr="系统指令" />
-  <message msgid="syscommand introduction" msgstr="以root的身分执行一个系统指令。" />
-  <message msgid="syscommand system command" msgstr="系统指令：" />
-  <message msgid="syscommand command" msgstr="指令：" />
-
-  <message msgid="syslog title" msgstr="系统记录" />
-  <message msgid="syslog introduction" msgstr=" 系统记录:" />
-  <message msgid="syslog system log" msgstr="系统记录" />
-  <message msgid="syslog clear" msgstr="清除" />
-  <message msgid="syslog refresh" msgstr="刷新" />  
-  
-  <message msgid="man sysrestart" msgstr="系统重启" />
-  <message msgid="man sysrestartintroduction" msgstr="点击“重启”重新启动路由器，点击“取消”放弃本操作" />
-  <message msgid="man sysrestartmessage" msgstr="系统正在重新启动，请稍等......" />
-  <message msgid="sysrestart" msgstr="确定要重启路由器？" />
-
-  
   <message msgid="admw div_wan_title" msgstr="请您选择路由器WAN口的连接方式。所需参数在开通网络时，由网络运营商（中国电信、中国网通、中国铁通、中国移动、中国联通等）提供。" />
   <message msgid="admw DHCP" msgstr="自动获取(动态IP)" />  
   <message msgid="admw DHCPdisc" msgstr="宽带服务商没有提供任何参数，不用路由器时可直接上网，计算机不需要做任何设置。" />
@@ -125,8 +30,8 @@
   <message msgid="admw vpword" msgstr="确认密码" />  
   <message msgid="admw opmope" msgstr="工作模式" />  
   
-  <message msgid="admw div_wireless_title" msgstr="请设置您的WiFi账户和密码。您的无线设备将使用以下网络上网。" />  
-  <message msgid="admw wsetingst" msgstr="内网设置" />  
+  <message msgid="admw div_wireless_title" msgstr="请您设置您的WiFi账户和密码。您的无线设备将使用以下网络上网。" />  
+  <message msgid="admw wsetingst" msgstr="WiFi设置" />  
   <message msgid="admw nname" msgstr="网络名称(SSID)" />  
   <message msgid="admw security" msgstr="安全" />
   <message msgid="admw wkey" msgstr="密钥" />
@@ -190,15 +95,15 @@
   
    <message msgid="admw w1title" msgstr="设置向导" />
    <message msgid="admw w2title" msgstr="外网设置" />  
-   <message msgid="admw w3ttitle" msgstr="内网设置" />  
+   <message msgid="admw w3ttitle" msgstr="WiFi设置" />  
    <message msgid="admw w4ttitle" msgstr="无线中继" />  
    <message msgid="admw w5ttitle" msgstr="家长控制" />  
    <message msgid="admw wwtitle" msgstr="外网/无线中继设置" />  
  
    <message msgid="admw modedes" msgstr="请您选择路由器WAN口的连接方式。所需参数在开通网络时，由网络运营商（中国电信、中国联通、中国铁通、中国移动等）提供。" />  
    <message msgid="admw modedes1" msgstr="所需参数在开通网络时，由网络运营商（中国电信、中国联通、中国铁通、中国移动等）提供。" />  
-   <message msgid="admw wifides" msgstr="请设置HBD路由的WiFi账户和密码。您的电脑、PAD、智能手机等将使用以下网络上网。" />  
-   <message msgid="admw wirelessdes" msgstr="请选择您要连接的WiFi。" />  
+   <message msgid="admw wifides" msgstr="请您设置HBD路由的WiFi账户和密码。您的电脑、PAD、智能手机等将使用以下网络上网。" />  
+   <message msgid="admw wirelessdes" msgstr="请您选择要连接的WiFi。" />  
    <message msgid="admw parentdes" msgstr="作为家长，您可以通过在本页进行设置，对孩子的上网时间和访问网页进行控制。" />  
    
    <message msgid="admw PPMAC" msgstr="家长PC的MAC地址" />
@@ -223,7 +128,7 @@
 	<message msgid="admw auto_ppp" msgstr="自动选择为宽带连接模式" />
 	<message msgid="admw auto_l2tp" msgstr="自动选择为L2TP连接模式" />
 	<message msgid="admw auto_p2tp" msgstr="自动选择为P2TP连接模式" />
-	<message msgid="admw auto_fail" msgstr="自动选择失败,请检查网络连接或者手动选择" />
+	<message msgid="admw auto_fail" msgstr="自动选择失败,请您检查网络连接或者手动选择" />
 	
 	<message msgid="admw fresh" msgstr="扫描" />
 	<message msgid="admw Wlisttitle1" msgstr="WiFi列表" />
@@ -236,63 +141,63 @@
 	<message msgid="admw wifiswitch" msgstr="网络开关" />
 	<message msgid="admw wdsswitch" msgstr="无线中继开关" />
 
-	<message msgid="admw onbutton" msgstr="开启" />
-    <message msgid="admw offbutton" msgstr="关闭" />
-    <message msgid="admw waiting" msgstr="正在检测,请稍等......" />
-    <message msgid="admw settingwaiting" msgstr="正在配置,请稍等......" />
-    <message msgid="admw uploadwaiting" msgstr="正在升级,请稍等......" />
+	<message msgid="admw onbutton" msgstr="启用" />
+    <message msgid="admw offbutton" msgstr="禁用" />
+    <message msgid="admw waiting" msgstr="正在检测,请您稍等......" />
+    <message msgid="admw settingwaiting" msgstr="正在配置,请您稍等......" />
+    <message msgid="admw uploadwaiting" msgstr="正在升级,请您稍等......" />
 	
     <message msgid="admw ssidrequest" msgstr="  (1-24位字母、数字或下划线)" />
     <message msgid="admw passwordrequest" msgstr="  (8-12位字母、数字或下划线)" />
     <message msgid="admw passwordrequest1" msgstr="  (5-12位字母、数字或下划线)" />
 	
-    <message msgid="err lineout" msgstr="请将网线插入WAN口!" />
+    <message msgid="err lineout" msgstr="请您将网线插入WAN口!" />
 	
 	
     <message msgid="err ip empty" msgstr="IP地址为空" />
 	<message msgid="err mask empty" msgstr="掩码为空" />
 
-    <message msgid="err name empty" msgstr="请输入用户名" />
-	<message msgid="err SSID empty" msgstr="请输入网络名称（SSID）" />   
-	<message msgid="err mac empty" msgstr="请输入MAC地址" />   
+    <message msgid="err name empty" msgstr="请您输入用户名" />
+	<message msgid="err SSID empty" msgstr="请您输入网络名称（SSID）" />   
+	<message msgid="err mac empty" msgstr="请您输入MAC地址" />   
 	
-    <message msgid="err pwd empty" msgstr="请输入密码" />
-	<message msgid="err key" msgstr="请输入密钥" />
+    <message msgid="err pwd empty" msgstr="请您输入密码" />
+	<message msgid="err key" msgstr="请您输入密钥" />
 	
     <message msgid="err pwd mismatch" msgstr="密码前后不一致" />
 	<message msgid="err SSID length" msgstr="SSID长度错误" />
 	<message msgid="err pwd length" msgstr="密码长度错误" />
 	
-	<message msgid="err sRP" msgstr="请指定自动断线等待" />
-	<message msgid="err sIT" msgstr="请指定自动断线等待" />
+	<message msgid="err sRP" msgstr="请您指定自动断线等待" />
+	<message msgid="err sIT" msgstr="请您指定自动断线等待" />
 	
-	<message msgid="err number" msgstr="请输入0-9之间的数字" />
+	<message msgid="err number" msgstr="请您输入0-9之间的数字" />
 	<message msgid="err IPmormat" msgstr="IP地址格式错误" />
 	<message msgid="err Maskmormat" msgstr="掩码格式错误" />
 	
 	<message msgid="err keylen" msgstr="密钥长度必须是8-12位" />
 	<message msgid="err keychar" msgstr="密码中存在无效字符" />
-	<message msgid="err IP error" msgstr="WAN IP与本地IP不能位于相同网段，请重新设置" />
+	<message msgid="err IP error" msgstr="WAN IP与本地IP不能位于相同网段，请您重新设置" />
 	
 	<message msgid="admw internet" msgstr="互联网" />
 	<message msgid="admw wai" msgstr="外网/无线中继设置" />
-	<message msgid="admw nei" msgstr="内网设置" />
+	<message msgid="admw nei" msgstr="WiFi设置" />
 	<message msgid="password change" msgstr="密码修改成功，重启路由器后生效" />
 	<message msgid="admw securitydes" msgstr="修改路由Web管理页面的登录密码" />
 	
 	<message msgid="admw uploadtitle" msgstr="固件升级" />
 	<message msgid="admw uploaddes" msgstr="选择升级用镜像文件，进行本地升级" />
 	<message msgid="admw uploadfirware" msgstr="固件升级" />
-	<message msgid="admw up_selsectfile" msgstr="请选择文件" />
+	<message msgid="admw up_selsectfile" msgstr="请您选择文件" />
 	<message msgid="admw Upload" msgstr="升级" />
-	<message msgid="err file empty" msgstr="请选择升级文件!" />
+	<message msgid="err file empty" msgstr="请您选择升级文件!" />
 	<message msgid="upgrade success" msgstr="升级成功!" />
 	<message msgid="admw channelchoose" msgstr="信道选择" />
 	<message msgid="admw channelauto" msgstr="自动" />
 
 	<message msgid="factory reset" msgstr="恢复出厂设置将丢失现有的配置，你确定要继续吗?" />
 	<message msgid="admw factitle" msgstr="恢复出厂设置" />
-	<message msgid="admw facdes" msgstr="单击此按钮将使路由器的所有设置恢复到出厂时的默认状态" />
+	<message msgid="admw facdes" msgstr="将BASE的所有设置恢复至出厂状态。" />
 	<message msgid="admw defaultset" msgstr="恢复出厂设置" />
 	
 	<message msgid="factory fail" msgstr="恢复出厂设置失败!" />
@@ -300,20 +205,22 @@
 	<message msgid="upgrade success" msgstr="固件升级成功!" />
 	<message msgid="upgrade fail" msgstr="版本一致,固件未升级!" />
 	
-	<message msgid="admw offwifides" msgstr="WiFi已经关闭,无线中继无法使用" />
+	<message msgid="admw offwifides" msgstr="WiFi已经禁用,无线中继无法使用" />
 	<message msgid="admw software" msgstr="当前软件版本" />
 	<message msgid="admw hardware" msgstr="硬件版本" />
 	<message msgid="admw hidewifides" msgstr="隐藏网络" />
 
 	<message msgid="admw PPPOE_TIMING" msgstr="定时连接 ：定时连接时段" />
 
-	<message msgid="err stiming" msgstr="请指定正确时间" />
-	<message msgid="err file format" msgstr="升级包与系统硬件不匹配，请选择正确的升级包" />
+	<message msgid="err stiming" msgstr="请您指定正确时间" />
+	<message msgid="err file format" msgstr="升级包与系统硬件不匹配，请您选择正确的升级包" />
 	<message msgid="err file upload" msgstr="文件上传失败" />
 	<message msgid="admw chfile" msgstr="选择文件" />
-    <message msgid="admw waring" msgstr="注意:升级过程完全自动,请不要关闭电源,否则将导致BASE损坏而无法使用,升级过程约130秒,当升级结束后,BASE将自动重新启动" />	
+    <message msgid="admw waring" msgstr="注意:升级过程完全自动,请您不要关闭电源,否则将导致BASE损坏而无法使用,升级过程约130秒,当升级结束后,BASE将自动重新启动" />	
 	<message msgid="admw sysupgrade" msgstr="确认进行固件升级?" />
-	<message msgid="err dhcp null" msgstr="无法通过DHCP获取到WAN IP,请检查是否为DHCP方式连接" />
-	<message msgid="err dhcp ip" msgstr="DHCP获取到WAN IP跟当前路由在同一个网段,请在网关设置里面调整路由的网段" />
+	<message msgid="err dhcp null" msgstr="无法通过DHCP获取到WAN IP,请您检查是否为DHCP方式连接" />
+	<message msgid="err dhcp ip" msgstr="DHCP获取到WAN IP跟当前路由在同一个网段,请您在网关设置里面调整路由的网段" />
+	
+	<message msgid="man admin setting" msgstr="密码管理" />
 
 </po>

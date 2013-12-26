@@ -1,11 +1,13 @@
 touch	/var/run/udhcpd.leases
-echo "start 10.10.10.101" > /etc/udhcpd.conf
-echo "end 10.10.10.199"  >> /etc/udhcpd.conf
-echo "opt lease   7200" >> /etc/udhcpd.conf
+TIME_DHCP_M=`cfg -e | grep "DHCP_TIME" | awk -F'=' '{print $2}'`
+TIME_DHCP_M2=$(($TIME_DHCP_M*60))
+echo "start `cfg -e | grep "DHCP_BIP" | awk -F'=' '{print $2}'| awk -F'"' '{print $2}'`" > /etc/udhcpd.conf
+echo "end `cfg -e | grep "DHCP_EIP" | awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`"  >> /etc/udhcpd.conf
+echo "opt lease  $TIME_DHCP_M2" >> /etc/udhcpd.conf
 echo "opt dns 8.8.8.8" >> /etc/udhcpd.conf
-echo "opt router  ${AP_IPADDR}" >> /etc/udhcpd.conf
-echo "opt subnet  ${AP_NETMASK}" >> /etc/udhcpd.conf
-echo "static_lease `ifconfig br0 | grep HWaddr | awk '{print $5}'` ${AP_IPADDR}" >> /etc/udhcpd.conf
+echo "opt router  `cfg -e | grep "AP_IPADDR" | awk -F'=' '{print $2}'| awk -F'"' '{print $2}'`" >> /etc/udhcpd.conf
+echo "opt subnet  `cfg -e | grep "AP_NETMASK" | awk -F'=' '{print $2}'| awk -F'"' '{print $2}'`" >> /etc/udhcpd.conf
+echo "static_lease `ifconfig br0 | grep HWaddr | awk '{print $5}'`  `cfg -e | grep "AP_IPADDR" | awk -F'=' '{print $2}'| awk -F'"' '{print $2}'`" >> /etc/udhcpd.conf
 echo "interface   br0"  >> /etc/udhcpd.conf
 echo "max_leases	98" >> /etc/udhcpd.conf
 echo "auto_time   7200" >> /etc/udhcpd.conf

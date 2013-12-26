@@ -29,7 +29,7 @@ function connectionTypeSwitch()
 	else if (document.wanCfg.WAN_MODE.options.selectedIndex == 1)
 	{
 		widget_display("dhcp_table");
-		widget_hide("dhcpname");
+		//widget_hide("dhcpname");
 	}
 	else if (document.wanCfg.WAN_MODE.options.selectedIndex == 2) 
 	{
@@ -270,7 +270,19 @@ function checkIpAddr(field, ismask)
 
 	return true;
 }
-
+function checktimerange(value,min,max)
+{
+	var i = parseInt(value);
+	if (isNaN(i))
+	{
+		return false;
+	}
+	else if (i > max || i < min)
+	{
+		return false;
+	}
+	return true;
+}
 function CheckValue()
 {
 	if (document.wanCfg.WAN_MODE.selectedIndex == 0) //STATIC
@@ -741,7 +753,7 @@ function connecttypecheck()
 </tr>
 <tr id="dhcpname">
   <td class="head"><div id="wDhcpHost">Host Name</div></td>
-  <td><input type=text name="hostname" size=28 maxlength=32 value=""></td>
+  <td>HBD-Router<!--input type=text name="hostname" size=28 maxlength=32 value=""--></td>
 </tr>
 </table>
 
@@ -756,7 +768,7 @@ function connecttypecheck()
 </tr>
 <tr>
   <td class="head" id="wPppoePassword">Password</td>
-  <td><span id="ppppwdinput"><input type="password" id="ppppass" name="PPPOE_PWD" class="handaer_text_content" maxlength="32" size="32" value="~~PPPOE_PWD~"/></span><input type="checkbox" id="aaaa" onClick="pppshowpwd()"/><span id="pppshowp"></span></td>
+  <td><span id="ppppwdinput"><input type="password" id="ppppass" name="PPPOE_PWD" class="handaer_text_content" maxlength="32" size="32" value="~~PPPOE_PWD~"/></span>&nbsp;<input type="checkbox" id="aaaa" onClick="pppshowpwd()"/>&nbsp;<span id="pppshowp"></span></td>
 </tr>
 <tr>
   <td class="head" id="wPppoePass2">Verify Password</td>
@@ -775,13 +787,13 @@ function connecttypecheck()
 </tr>
 <tr id="hideall">
 <td>
-	<span id="hide1"><span id="PPPOE_KAM"></span><input type="text" name="PPPOE_DEMAND" maxlength="5" size="3" value="60"/><span id="PPPOE_seconds"></span></br></span>
-  	<span id="hide2"><span id="PPPOE_ODM"></span><input type="text" name="PPPOE_MANUAL" maxlength="3" size="2" value="5"/><span id="PPPOE_minutes"></span></br></span>
+	<span id="hide1"><span id="PPPOE_KAM"></span><input type="text" name="PPPOE_DEMAND" class="handaer_text_small_content" maxlength="5" size="3" value="~~PPPOE_DEMAND~"/><span id="PPPOE_seconds"></span></br></span>
+  	<span id="hide2"><span id="PPPOE_ODM"></span><input type="text" name="PPPOE_MANUAL" class="handaer_text_small_content" maxlength="3" size="2" value="~~PPPOE_MANUAL~"/><span id="PPPOE_minutes"></span></br></span>
 	<span id="hide3"><span id="PPPOE_TIMING"></span>
-	<input type="text" name="PPPOE_TIMING_BH" maxlength="3" size="2" value=""/>:
-	<input type="text" name="PPPOE_TIMING_BM" maxlength="3" size="2" value=""/>-
-	<input type="text" name="PPPOE_TIMING_EH" maxlength="3" size="2" value=""/>:
-	<input type="text" name="PPPOE_TIMING_EM" maxlength="3" size="2" value=""/></span>
+	<input type="text" name="PPPOE_TIMING_BH" class="handaer_text_small_content" maxlength="3" size="2" value="~~PPPOE_TIMING_BH~"/>:
+	<input type="text" name="PPPOE_TIMING_BM" class="handaer_text_small_content" maxlength="3" size="2" value="~~PPPOE_TIMING_BM~"/>-
+	<input type="text" name="PPPOE_TIMING_EH" class="handaer_text_small_content" maxlength="3" size="2" value="~~PPPOE_TIMING_EH~"/>:
+	<input type="text" name="PPPOE_TIMING_EM" class="handaer_text_small_content" maxlength="3" size="2" value="~~PPPOE_TIMING_EM~"/></span>
 </td>
 </tr>
 </table>
@@ -801,7 +813,7 @@ function connecttypecheck()
 </tr>
 <tr>
   <td class="head" id="wL2tpPassword">Password</td>
-  <td><span id="pl2tppwdinput"><input type="password" id="l2tppass" name="l2tpPass"  class="handaer_text_content" maxlength="32" size="32" value="~~l2tpPass~"/></span><input type="checkbox" id="bbbb" onClick="l2tpshowpwd()"/><span id="l2tpshowp"></span></td>
+  <td><span id="pl2tppwdinput"><input type="password" id="l2tppass" name="l2tpPass"  class="handaer_text_content" maxlength="32" size="32" value="~~l2tpPass~"/></span>&nbsp;<input type="checkbox" id="bbbb" onClick="l2tpshowpwd()"/>&nbsp;<span id="l2tpshowp"></span></td>
 </tr>
 <tr>
   <td class="head" id="wL2tpAddrMode">Address Mode</td>
@@ -838,7 +850,7 @@ function connecttypecheck()
 </tr>
 <tr>
   <td><span id="L2TP_KAM">Keep Alive Mode: Redial Period</span>
-    <input type="text" name="l2tpRedialPeriod" maxlength="5" size="3" value="60">
+    <input type="text" name="l2tpRedialPeriod"  class="handaer_text_small_content" maxlength="5" size="3" value="60">
     <span id="L2TP_seconds">senconds
     <!--
     <br />
@@ -866,7 +878,7 @@ function connecttypecheck()
 </tr>
 <tr>
   <td class="head" id="wPptpPassword">Password</td>
-  <td><span id="p2tppwdinput"><input type="password" id="p2tppass" name="pptpPass"  class="handaer_text_content" maxlength="32" size="32" value="~~pptpPass~" /></span><input type="checkbox" id="cccc" onClick="p2tpshowpwd()"/><span id="p2tpshowp"></span></td>
+  <td><span id="p2tppwdinput"><input type="password" id="p2tppass" name="pptpPass"  class="handaer_text_content" maxlength="32" size="32" value="~~pptpPass~" /></span>&nbsp;<input type="checkbox" id="cccc" onClick="p2tpshowpwd()"/>&nbsp;<span id="p2tpshowp"></span></td>
 </tr>
 <tr>
   <td class="head" id="wPptpAddrMode">Address Mode</td>
@@ -903,7 +915,7 @@ function connecttypecheck()
 </tr>
 <tr>
   <td><span id="PPtP_KAM">Keep Alive Mode: Redial Period</span>
-    <input type="text" name="pptpRedialPeriod" maxlength="5" size="3" value="60">
+    <input type="text" name="pptpRedialPeriod"  class="handaer_text_small_content" maxlength="5" size="3" value="60">
   <span id="PPtP_seconds">senconds
     <!--
     <br />

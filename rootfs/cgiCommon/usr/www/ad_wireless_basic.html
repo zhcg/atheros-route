@@ -140,6 +140,12 @@ function CheckWirelessValue()
 			}
 		}	
 	}
+	else
+	{
+		document.wizard_form.AP_PRIMARY_CH.disabled = true;
+		document.wizard_form.AP_SECMODE.disabled = true;
+		document.getElementById("pwd").disabled = true;	   
+	}
 	waitgifshow();
 	button_commit("WIRELESS");
 	return true;
@@ -148,9 +154,9 @@ function initTranslation()
 {
 	Butterlate.setTextDomain("wless");
 	trans_inner("qsettitle","wless wifititle");
+	trans_inner("wsetingst","wless wifititle");	
 	Butterlate.setTextDomain("admin");	
 	trans_inner("wifides","admw wifides");
-	trans_inner("wsetingst","admw wsetingst");
 	trans_inner("nname","admw nname");
 	trans_inner("security","admw security");
 	trans_inner("wkey","admw wkey");
@@ -234,12 +240,12 @@ function hidewififun()
 <tr><td class="title" colspan="2" id="wsetingst"></td></tr>
 <tr>
   <td class="head" id="nname"></td>
-  <td><input type="text" name="AP_SSID" id="AP_SSID" size="32" maxlength="32" class="handaer_text_content"  value="~~AP_SSID~"><input type="checkbox" id="hidewifi" onclick="hidewififun();"/><span id="hidewifides"></span>&nbsp;<span id="ssidrequest"></span></td>
+  <td><input type="text" name="AP_SSID" id="AP_SSID" size="32" maxlength="32" class="handaer_text_content"  value="~~AP_SSID~">&nbsp;<input type="checkbox" id="hidewifi" onclick="hidewififun();"/>&nbsp;<span id="hidewifides"></span>&nbsp;<span id="ssidrequest"></span></td>
 </tr>
 
 <tr>
  <td class="head" id="wifiswitch"></td>
-	<td><input type="radio"  ~cWIFION_OFF:on~ name="WIFION_OFF" value="on" onclick="switch_wifi();" checked /><span id="onbutton"></span>
+	<td>&nbsp;<input type="radio"  ~cWIFION_OFF:on~ name="WIFION_OFF" value="on" onclick="switch_wifi();" checked /><span id="onbutton"></span>&nbsp;
 	<input type="radio"  ~cWIFION_OFF:off~ name="WIFION_OFF" value="off" onclick="switch_wifi();"/><span id="offbutton"></span>
 	</td>
 </tr>
@@ -278,7 +284,7 @@ function hidewififun()
   </td>
 </tr>
 <tr id="div_security_key">
-  <td><span id="wkey"></span><span id="pwdinput"><input type="password" id="pwd" name="PSK_KEY" maxlength="64" size="28"  class="handaer_text_content"  value="~~PSK_KEY~"/></span><input type="checkbox" id="cccc" /><span id="showp"></span>&nbsp;<span id="passwordrequest"></span></td>
+  <td><span id="wkey"></span><span id="pwdinput"><input type="password" id="pwd" name="PSK_KEY" maxlength="64" size="28"  class="handaer_text_content"  value="~~PSK_KEY~"/></span>&nbsp;<input type="checkbox" id="cccc" />&nbsp;<span id="showp"></span>&nbsp;<span id="passwordrequest"></span></td>
 							
 </tr>
 </table>

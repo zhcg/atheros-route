@@ -1,0 +1,20 @@
+#!/bin/sh
+
+ROUTE_FILE=/etc/route.conf
+
+DES_IP_ADDR=`cfg -e | grep "DELXXX" |awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`
+if [ -z $DES_IP_ADDR ];then
+	exit 2
+fi
+
+str=$(grep -i -E "\<$DES_IP_ADDR\>" $ROUTE_FILE)
+#echo $str
+if [ -z "$str" ];then
+        echo "the route destination address is not exist"
+        exit 1
+else
+		echo "the route destination address is exist"
+        sed -i '/'$DES_IP_ADDR'/d' $ROUTE_FILE
+		route del -net DES_IP_ADDR
+        echo "done"
+fi

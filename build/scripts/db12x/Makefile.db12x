@@ -278,6 +278,10 @@ webui:
 	cp -f upgrade/upgrade_stage2 $(INSTALL_ROOT)/usr/bin; \
 	cp -f cal_check $(INSTALL_ROOT)/usr/bin;		\
 	cp -f version_check $(INSTALL_ROOT)/usr/bin;  \
+	cp -f dhcp/set_addr $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f dhcp/del_addr $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f route/set_route $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f route/del_route $(INSTALL_ROOT)/usr/sbin;  \
 	cd firmware/; \
 	make; \
 	cp -f firmware_check $(INSTALL_ROOT)/usr/sbin; 

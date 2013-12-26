@@ -10,6 +10,7 @@ function style_display_on(){if (window.ActiveXObject){return "inline-block";}els
 function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
 function widget_display(widgetID){document.getElementById(widgetID).style.visibility = "visible";document.getElementById(widgetID).style.display = style_display_on();}
 
+
 function initTranslation()
 {
 	trans_inner("title","netcheck title");
@@ -38,6 +39,11 @@ function init()
 	initTranslation();
 	netcheckf();
 	doStuff();
+	document.getElementById("ss1").innerHTML=document.getElementById("s1").value;
+	document.getElementById("ss2").innerHTML=document.getElementById("s2").value;
+	document.getElementById("ss3").innerHTML=document.getElementById("s3").value;
+	document.getElementById("ss4").innerHTML=document.getElementById("s4").value;
+	
 
 }
 
@@ -76,10 +82,12 @@ function resultshow()
 <div class="handaer_main">
 <table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
 <h1 id="title">网络诊断</h1>
-
+<form method="post" name="NETCHECK">  
 <h2 id="des">检测网络连接类型和进行网络PING操作</h2> 
-<span id="checkresultshow" style="display:none;font-family:arial;color:red;font-size:20px;" ></span>
-
+ <span id="checkresultshow" style="display:none;font-family:arial;color:red;font-size:20px;" ></span>
+	<input type="button" name="netc" id="netc" class="handaer_input" onclick="netcheckf();">
+    <input type="submit" name="NETCHECK" id="NETCHECK" style="display:none" value="NETCHECK">
+</form>
 
 <div id="waitshow" style="display:none" align="center">
   <img align="center" src="/images/loading.gif"></img>
@@ -91,27 +99,28 @@ function resultshow()
 	<td class="title" colspan="2" id="Result">诊断结果</td></tr>
 <tr>
 	<td class="head" id="t1_wantype">自动检测WAN口类型</td>
-	<td><input size="32" maxlength="64" name="NTPServerIP1" id="NTPServerIP1" value="" type="text" readonly></td>
+	<td><span id="ss1" name="ss1"></span>
+	<input size="32" style="display:none" maxlength="64" name="s1" id="s1" value="~~AUTOTYPE~" type="text" readonly>
+
 </tr>
 <tr>
 	<td class="head" id="t1_basetype">BASE路由设置类型</td>
-	<td><input size="32" maxlength="64" name="NTPServerIP2" id="NTPServerIP2" value="" type="text" readonly></td>
+	<td><span id="ss2" name="ss2"></span>
+	<input size="32" style="display:none" maxlength="64" name="s2" id="s2" value="~~WAN_MODE~" type="text" readonly>
 </tr>
 
 <tr>
   <td class="head" id="t1_pngBD">PING百度结果</td>
-  <td><input size="32" maxlength="64" name="NTPServerIP2" id="NTPServerIP2" value="" type="text" readonly></td>
+  	<td><span id="ss3" name="ss3"></span>
+	<input size="32" style="display:none" maxlength="64" name="s3" id="s3" value="~~PING_BD~" type="text" readonly>
 </tr>
 <tr>
   <td class="head" id="t1_pingQQ">PING腾讯结果</td>
-  <td><input size="32" maxlength="64" name="NTPServerIP2" id="NTPServerIP2" value="" type="text" readonly></td>
+  	<td><span id="ss4" name="ss4"></span>
+	<input size="32" style="display:none" maxlength="64" name="s4" id="s4" value="~~PING_QQ~" type="text" readonly>
 </tr>
 
 </table>
-<form method="post" name="NETCHECK">  
-	<input type="button" name="netc" id="netc" class="handaer_input" onclick="netcheckf();">
-    <input type="submit" name="NETCHECK" id="NETCHECK" style="display:none" value="NETCHECK">
-</form>
 </td>
 </tr>
 

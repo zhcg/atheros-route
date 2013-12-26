@@ -62,6 +62,14 @@ insmod /lib/modules/2.6.31/net/athrs_gmac.ko
 export WAN_IF=eth0
 export LAN_IF=eth1
 
+
+#yuhaolei for mac default display
+ETH0_MAC_2=`cfg -e | grep "ETH0_MAC" | awk -F "\"" '{print $2}'`
+if [ ETH0_MAC_2 != NULL ]; then
+	ifconfig eth0 hw ether $ETH0_MAC_2
+fi
+#yuhaolei
+
 ifconfig $WAN_IF up
 ifconfig $LAN_IF up
 /etc/rc.d/rc.network
@@ -132,7 +140,10 @@ fi
 ## dhcp
 ##
 /etc/rc.d/rc.udhcpd
-if [ "${WDSON_OFF}" != "on" ]; then
+if [ -f /etc/ip_mac.conf ]; then
+	cat /etc/ip_mac.conf | grep "enable" | awk 'BEGIN{OFS=FS=" "}{print $1,$2,$3}' >> /etc/udhcpd.conf
+fi
+if [ "${WDSON_OFF}" != "on" -a "${DHCPON_OFF}" != "off" ]; then
 	/usr/sbin/udhcpd /etc/udhcpd.conf
 fi
 ##
@@ -164,4 +175,5 @@ monitor_application  &
 /bin/reset_mips /bin/phone_serv_19200 &
 /bin/server &
 /usr/bin/cal_check &
+/bin/net_test &
 /usr/sbin/threethread &

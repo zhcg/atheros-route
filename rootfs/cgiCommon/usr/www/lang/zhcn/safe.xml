@@ -12,7 +12,7 @@
   <message msgid="safe mac" msgstr="MAC地址" />    
   <message msgid="safe IP" msgstr="IP地址" />    
   <message msgid="safe tye" msgstr="绑定" />    
-  <message msgid="safe set" msgstr="配置" />    
+  <message msgid="safe set" msgstr="删除" />    
   <message msgid="safe bSAVE" msgstr="保存" />  
 	
   <message msgid="ipmac title" msgstr="IP/MAC地址绑定" />    

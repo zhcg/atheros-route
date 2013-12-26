@@ -63,8 +63,8 @@ function listdel(value)
   <tr> 
     <td id="t1_switch">控制开关</td>    
 	<td>
-	<input type="radio"  ~cWCONON_OFF:on~ name="WCONON_OFF" value="on" onclick="switch_dhcp();" checked /><span id="onbutton">启用</span>
-	<input type="radio"  ~cWCONON_OFF:off~ name="WCONON_OFF" value="off" onclick="switch_dhcp();"/><span id="offbutton">不启用</td>
+	<input type="radio"  ~cWCONON_OFF:on~ name="WCONON_OFF" value="on" /><span id="onbutton">启用</span>
+	<input type="radio"  ~cWCONON_OFF:off~ name="WCONON_OFF" value="off" /><span id="offbutton">不启用</td>
 	<td>&nbsp; &nbsp;</td>
 	<td>&nbsp; &nbsp;</td>
   </tr>
@@ -95,12 +95,12 @@ function listdel(value)
   </td>
 </tr>
 </table>
-
+</form>
 <form method="POST" name="DELLIST">
 	<input style="display:none"  type="text" name="DELXXX" id="DELXXX" size="20" maxlength="32">
 	<input style="display:none" type="submit" name="DEL_CON" id="DEL_CON" value="DEL_CON">
 </form>
-</form>
+
 </td></tr>
 </table>
 </div>

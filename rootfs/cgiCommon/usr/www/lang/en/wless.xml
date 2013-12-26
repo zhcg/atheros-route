@@ -19,7 +19,7 @@
   <message msgid="wless t1_low" msgstr="Low" />  
   <message msgid="wless t1_SSIDTime" msgstr="SSID time" />  
   <message msgid="wless t1_RC" msgstr="RTS/CTS limited value" />  
-  <message msgid="wless t1_Pitch" msgstr="Fragmentation value" />  
+  <message msgid="wless auto" msgstr="Auto" />  
   <message msgid="wless t1_head" msgstr="Header mod" />  
   <message msgid="wless t1_long" msgstr="Long" />  
   <message msgid="wless t1_shot" msgstr="Short" />  

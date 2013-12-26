@@ -126,6 +126,16 @@ function CheckWirelessValue()
 
 		}
 	}
+	else
+	{
+		document.getElementById("AP_SSID_2").disabled = true;	
+		document.getElementById("ROOTAP_MAC_2").disabled = true;	
+		document.getElementById("pwd").disabled = true;	
+		document.getElementById("WFILIST").disabled = true;	 
+		document.getElementById("WDS_CHAN").disabled = true;	 
+		document.getElementById("AP_SECMODE_2").disabled = true;	 
+ 	}
+	document.getElementById("WIFION_OFF").disabled = true;	 
 	//var keyvalue = document.wizard_form.PSK_KEY_2.value;
 	//if (keyvalue.length == 0)
 	//{
@@ -315,7 +325,7 @@ function hidekeyf()
 </tr>
 <tr id="tt2">
   <td class="head" id="R_pword"></td>
-  <td><span id="pwdinput"><input type="password" id="pwd" name="PSK_KEY_2" maxlength="32" size="32" class="handaer_text_content" value="~~PSK_KEY_2~" /></span><input type="checkbox" id="cccc" onClick="showpwd()"/><span id="showp"></span></td>
+  <td><span id="pwdinput"><input type="password" id="pwd" name="PSK_KEY_2" maxlength="32" size="32" class="handaer_text_content" value="~~PSK_KEY_2~" /></span>&nbsp;<input type="checkbox" id="cccc" onClick="showpwd()"/>&nbsp;<span id="showp"></span></td>
 </tr>
 <tr id="dwsset3">
     <td id="Wlisttitle1"></td>

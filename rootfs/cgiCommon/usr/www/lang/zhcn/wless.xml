@@ -10,8 +10,8 @@
   <message msgid="wless offbutton" msgstr="禁用" />  
   <message msgid="wless bSAVE" msgstr="保存" />  
 
-  <message msgid="wless title" msgstr="无线高级设置" />  
-  <message msgid="wless des" msgstr="修改配置无线高级参数" />  
+  <message msgid="wless title" msgstr="高级设置" />  
+  <message msgid="wless des" msgstr="配置无线高级设置参数" />  
   <message msgid="wless t1_title" msgstr="无线高级设置" />  
   <message msgid="wless ti_pow" msgstr="调整发射功率" />  
   <message msgid="wless t1_high" msgstr="高" />  
@@ -19,7 +19,7 @@
   <message msgid="wless t1_low" msgstr="低" />  
   <message msgid="wless t1_SSIDTime" msgstr="广播SSID时间" />  
   <message msgid="wless t1_RC" msgstr="RTS/CTS限值" />  
-  <message msgid="wless t1_Pitch" msgstr="分片值" />  
+  <message msgid="wless auto" msgstr="自动" />  
   <message msgid="wless t1_head" msgstr="报头模式" />  
   <message msgid="wless t1_long" msgstr="长" />  
   <message msgid="wless t1_shot" msgstr="短" />  
@@ -40,9 +40,9 @@
   <message msgid="err format" msgstr="参数格式错误" />
   <message msgid="err range" msgstr="参数范围错误" />
 
-  <message msgid="err SSID empty" msgstr="请输入网络名称（SSID）" />
+  <message msgid="err SSID empty" msgstr="请您输入网络名称（SSID）" />
 <message msgid="err SSID length" msgstr="SSID长度错误" />
-<message msgid="err key" msgstr="请输入密钥" />
+<message msgid="err key" msgstr="请您输入密钥" />
 <message msgid="err keylen" msgstr="密钥长度必须是8-12位" />
 <message msgid="err keychar" msgstr="密码中存在无效字符" />
  </po>

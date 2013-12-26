@@ -141,7 +141,11 @@ int main(int argc, char *argv[])
 		switch (udhcp_sp_read(&rfds)) {
 		case SIGUSR1:
 			LOG(LOG_INFO, "Received a SIGUSR1");
+
+			deal_control_staMac();
+			
 			//deal_offline_sta();
+			
 			write_leases();
 			/* why not just reset the timeout, eh */
 			timeout_end = time(0) + server_config.auto_time;

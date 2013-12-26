@@ -1,0 +1,48 @@
+#!/bin/sh
+
+ROUTE_FILE=/etc/route.conf
+
+if [ ! -f /etc/route.conf ]; then
+	touch /etc/route.conf
+fi
+
+SR_DESIP=`cfg -e | grep "SR_DESIP" |awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`
+if [ -z $SR_DESIP ];then
+	exit 1
+fi
+
+SR_SUB=`cfg -e | grep "SR_SUB" |awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`
+if [ -z $SR_SUB ];then
+	exit 2
+fi
+
+SR_GW=`cfg -e | grep "SR_GW" |awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`
+if [ -z $SR_GW ];then
+	exit 3
+fi
+
+SR_STATUS=`cfg -e | grep "SR_STATUS" |awk -F'=' '{print $2}'`
+if [ -z $SR_STATUS ];then
+	exit 4
+fi
+
+str=$(grep -i -E "\<$SR_DESIP\> | \<$SR_SUB\> | \<$SR_GW\> " $ROUTE_FILE)
+#echo $str
+if [ "$str" = "" ];then
+        echo "the route rule is not exist"
+else
+        echo "the route rule is exist"
+        exit 1
+fi
+
+if [ "$SR_STATUS" -eq "1" ];then
+	addr_status=enable
+	route add -net $SR_DESIP mask $SR_SUB gw $SR_GW
+else if [ "$SR_STATUS" -eq "0" ];then
+	addr_status=disable
+else
+	exit 4
+fi
+fi
+echo "$SR_DESIP $SR_SUB $SR_GW $addr_status" >>  $ROUTE_FILE
+echo "route rule add done"

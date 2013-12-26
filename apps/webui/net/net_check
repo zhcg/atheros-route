@@ -1,5 +1,10 @@
 #!/bin/sh
 
+cat /tmp/.apcfg | while read LINE
+do
+	if [ $LINE = PING_QQ=NO ];then
+
+
 #VAL="`ethreg -p 4 0x11 | awk -F' ' '/Read Reg/{print $5}'`"
 VAL="`ethreg -p 4 0x11 | grep "Read Reg" | sed 's/.* //g' `"
 VAL2=0x0400
@@ -33,7 +38,9 @@ pppoe=`grep "pppoe discovery state is STATE_RECEIVED_PADO" /tmp/log `
 #echo "second"
 if [ ! -z "$pppoe" ];then
         echo "PPPoE"
-		killall udhcpc pppoe-connect pppoe > /dev/null 2>&1
+#		killall udhcpc pppoe-connect pppoe > /dev/null 2>&1
+		killall udhcpc > /dev/null 2>&1
+		pppoe-stop > /dev/null 2>&1
 		cfg -a AUTOTYPE=pppoe
 		cfg -c
         exit 1
@@ -45,7 +52,9 @@ dhcp=`grep "DHCP Client get a DHCPOFFER" /tmp/log2`
 #echo "fourth"
 if [ ! -z "$dhcp" ];then
 	echo "dynamic IP"
-	killall udhcpc pppoe-connect pppoe > /dev/null 2>&1
+#	killall udhcpc pppoe-connect pppoe > /dev/null 2>&1
+	killall udhcpc > /dev/null 2>&1
+	pppoe-stop > /dev/null 2>&1
 	cfg -a AUTOTYPE=dhcp
 	cfg -c
 	exit 2
@@ -54,8 +63,16 @@ count=`expr $count + 1`
 sleep 1
 done
 
-killall udhcpc pppoe-connect pppoe > /dev/null 2>&1
+#killall udhcpc pppoe-connect pppoe > /dev/null 2>&1
+killall udhcpc > /dev/null 2>&1
+pppoe-stop > /dev/null 2>&1
 cfg -a AUTOTYPE=static
 cfg -c
 
 echo "Static IP"
+
+
+fi
+
+done
+

@@ -23,14 +23,14 @@
   
   <message msgid="advmenu treeapp_conm" msgstr="接入管理" />
   <message msgid="advmenu treeapp_conm_list" msgstr="已接入设备列表" />
-  <message msgid="advmenu treeapp_conm_ctrl" msgstr="无线接入控制" />
+  <message msgid="advmenu treeapp_conm_ctrl" msgstr="无线接入管理" />
   <message msgid="advmenu treeapp_wifi" msgstr="无线设置" />
   <message msgid="advmenu treeapp_wifi_basic" msgstr="基本设置" />
   <message msgid="advmenu treeapp_wifi_adv" msgstr="高级设置" />
   <message msgid="advmenu treeapp_wifi_wds" msgstr="无线中继" />
   
   <message msgid="advmenu treeapp_safe" msgstr="安全管理" />
-  <message msgid="advmenu treeapp_safe_ipmac" msgstr="IP/MAC绑定" />
+  <message msgid="advmenu treeapp_safe_ipmac" msgstr="IP/MAC地址绑定" />
   <message msgid="advmenu treeapp_par" msgstr="家长控制" />
   <message msgid="advmenu treeapp_par_set" msgstr="家长设置" />
   <message msgid="advmenu treeapp_par_access" msgstr="访问管理" />
@@ -48,7 +48,7 @@
   <message msgid="admw m_fast" msgstr="快速设置" />
   <message msgid="admw m_normal" msgstr="设置向导" />
   <message msgid="admw m_wan" msgstr="外网设置" />
-  <message msgid="admw m_wifi" msgstr="内网设置" />
+  <message msgid="admw m_wifi" msgstr="WiFi设置" />
   <message msgid="admw m_wirere" msgstr="无线中继" />
   <message msgid="admw m_parent" msgstr="家长控制" />
   <message msgid="admw m_upload" msgstr="固件升级" />
@@ -80,12 +80,18 @@
   <message msgid="sysinfo jiami" msgstr="加密" />
   <message msgid="sysinfo open" msgstr="开放" />  
   <message msgid="sysinfo unset" msgstr="未设置" />
+  
+  <message msgid="sysinfo dhcp" msgstr="动态获取" />
+  <message msgid="sysinfo static" msgstr="静态IP" />
+  <message msgid="sysinfo pppoe" msgstr="PPPOE(ADSL)" />
+  <message msgid="sysinfo l2tp" msgstr="L2TP" />
+  <message msgid="sysinfo pptp" msgstr="PPTP" />
 
   
   <message msgid="netcheck title" msgstr="网络诊断" />
   <message msgid="netcheck des" msgstr="检测网络连接类型和进行网络PING操作" />
   <message msgid="netcheck netc" msgstr="开始诊断" />
-  <message msgid="netcheck checkingwaiting" msgstr="正在进行检测请稍候......" />
+  <message msgid="netcheck checkingwaiting" msgstr="正在进行检测请您稍候......" />
   <message msgid="netcheck Result" msgstr="诊断结果" />
   <message msgid="netcheck t1_wantype" msgstr="自动检测WAN口类型" />
   <message msgid="netcheck t1_basetype" msgstr="BASE路由设置类型" />
@@ -94,9 +100,9 @@
   
   <message msgid="netcheck renetc" msgstr="重新诊断" />
 
-  <message msgid="netcheck r1" msgstr="访问互联网失败,请检查外网设置是否正确" />
+  <message msgid="netcheck r1" msgstr="互联网连接失败,请您检查网线连接及网络设置状态" />
   <message msgid="netcheck r2" msgstr="可以访问互联网,网络正常" />
-  <message msgid="netcheck r3" msgstr="请检查WAN网线" />
+  <message msgid="netcheck r3" msgstr="请您检查WAN网线" />
   
   <message msgid="err MAC empty" msgstr="MAC地址不能为空" />
   <message msgid="err IP empty" msgstr="IP地址不能为空" />

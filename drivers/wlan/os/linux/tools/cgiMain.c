@@ -68,6 +68,16 @@ char    Name[32];
 char    Val[70];
 } t_singleParam;
 
+struct staList
+{
+	int id;
+	char macAddr[20];
+	char staDesc[80];
+	struct staList *next;
+};
+
+static struct staList *staHostList;
+static int staId = 0;
 #define MAX_WLAN_ELEMENT    1024
 
 typedef struct {
@@ -126,7 +136,8 @@ static char  *val3[100];
 static char  *val4[100];
 int lists=0;
 static int flaglist;
-
+static int flaglist_route;
+static char *httpreferer=NULL;
 
 /*
 ** Internal Prototypes
@@ -140,6 +151,11 @@ void htmlEncode(char *src, char *dest);
 int	isKeyHex(char *key,int flags);
 
 int  CFG_set_by_name(char *name,char *val);
+struct staList *getSta(struct staList *list, char *maddr);
+struct staList *getSta1(struct staList *list, char *maddr);
+void addSta(char *maddr, char *desc, int id);
+void delSta(char *maddr);
+struct staList *scan_staList(struct staList *list);
 
 /******************************************************************************/
 /*!
@@ -638,6 +654,30 @@ char *processSpecial(char *paramStr, char *outBuff)
                 //无线接入管理(带配置)
                 if(strcmp(secArg,"conmlist")==0)
                 {
+					FILE *fp;
+					const char *staFile = "/var/run/.staMac";
+					struct staList stalist;
+					char *buf = "<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>";
+					char buff[5];
+					
+					if( (fp = fopen(staFile, "r")) != NULL)
+					{
+						while(fread(&stalist, sizeof stalist, 1, fp) == 1)
+						{
+							outBuff += sprintf(outBuff, "<tr>");
+							sprintf(buff, "%d", stalist.id);
+							outBuff += sprintf(outBuff, "<td>%s</td>",buff);
+							outBuff += sprintf(outBuff, "<td>%s</td>",stalist.macAddr);
+							outBuff += sprintf(outBuff, "<td>%s</td>",stalist.staDesc);
+							buf = malloc(sizeof(buf) + sizeof(stalist.macAddr));
+							sprintf(buf, "<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>", stalist.macAddr);
+							outBuff += sprintf(outBuff, buf);
+	                    	outBuff += sprintf(outBuff, "</tr>");
+							free(buf);
+						}
+						fclose(fp);
+					}
+					#if 0
                     outBuff += sprintf(outBuff,"<tr>");
                     outBuff += sprintf(outBuff,"<td>%s</td>","1");
                     outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");
@@ -665,6 +705,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                     outBuff += sprintf(outBuff,"<td>%s</td>","456468wqeasd");
                     outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"4\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
                     outBuff += sprintf(outBuff,"</tr>");
+					#endif
                 }
                 //家长控制(带配置)
                 else if(strcmp(secArg,"parclist")==0)
@@ -683,6 +724,44 @@ char *processSpecial(char *paramStr, char *outBuff)
                 //DHCP-静态分配(带配置)
                 else if(strcmp(secArg,"sdhcplist")==0)
                 {
+                	/*wangyu add for ipmac list*/
+					unsigned int id ,num ;	
+					char addr_buf[1024];
+					FILE *f = fopen("/etc/ip_mac.conf","r");
+					
+					if ( !f )
+					{
+						 fprintf(errOut,"\n%s  %d open udhcpd error\n \n",__func__,__LINE__);
+						 break;
+					}
+					char addr_mac[17],addr_ip[15],addr_status[10];		
+					id = 1;
+
+					memset(addr_buf,0,1024);
+					
+					while ( fgets(addr_buf,1024,f) != NULL )
+					{
+						sscanf(addr_buf,"static_lease %s %s %s",addr_mac,addr_ip,addr_status);
+					#ifdef MESSAGE
+						fprintf(errOut,"\n%s  %d addr_mac, %s addr_ip, %s addr_status %s \n \n",
+								__func__,__LINE__,addr_mac,addr_ip,addr_status);
+					#endif
+						outBuff += sprintf(outBuff,"<tr>");
+	                    outBuff += sprintf(outBuff,"<td>%d</td>",id);
+	                    outBuff += sprintf(outBuff,"<td>%s</td>",addr_mac);   
+	                    outBuff += sprintf(outBuff,"<td>%s</td>",addr_ip);
+						if ( memcmp ( addr_status , "enable" ,6) == 0)
+		                    outBuff += sprintf(outBuff,"<td>%s</td>","YES");
+						if ( memcmp ( addr_status , "disable" ,7) == 0)
+		                    outBuff += sprintf(outBuff,"<td>%s</td>","NO");	 
+						outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>",addr_mac);
+	                    outBuff += sprintf(outBuff,"</tr>");
+						id ++;						
+						memset(addr_buf,0,1024);
+					}
+					fclose(f);
+					/*wangyu add end*/
+					#if 0
                     outBuff += sprintf(outBuff,"<tr>");
                     outBuff += sprintf(outBuff,"<td>%s</td>","1");
                     outBuff += sprintf(outBuff,"<td>%s</td>","11:11:11:11:11:11");
@@ -690,28 +769,48 @@ char *processSpecial(char *paramStr, char *outBuff)
                     outBuff += sprintf(outBuff,"<td>%s</td>","ON");
                     outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"1\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
                     outBuff += sprintf(outBuff,"</tr>");
-                    
-                    outBuff += sprintf(outBuff,"<tr>");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","2");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","11:11:11:11:11:11");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.5.25");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","ON");
-                    outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"2\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
-                    outBuff += sprintf(outBuff,"</tr>");
-
+                    #endif
                 }
                 //静态路由表(带配置)
                 else if(strcmp(secArg,"routelist")==0)
                 {
-                    outBuff += sprintf(outBuff,"<tr>");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","1");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.5");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","255.255.255.255");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.254");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","ON");
-                    outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"1\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
-                    outBuff += sprintf(outBuff,"</tr>");
-                    
+                	/*luodp add for ipmac list*/
+					unsigned int id=1;	
+					char buf[1024];
+					char des_ip[15],de_mask[15],gw_ip[15],rule_status[10];		
+					
+					FILE *f = fopen("/etc/route.conf","r");
+					if ( !f )
+					{
+						 fprintf(errOut,"\n%s  %d open /etc/route.conf error\n \n",__func__,__LINE__);
+						 break;
+					}
+					memset(buf,0,1024);
+					
+					while ( fgets(buf,1024,f) != NULL )
+					{
+						sscanf(buf,"%s %s %s %s",des_ip,de_mask,gw_ip,rule_status);
+					//#ifdef MESSAGE
+						fprintf(errOut,"\n%s  %d des_ip, %s de_mask, %s gw_ip %s rule_status %s\n \n",
+								__func__,__LINE__,des_ip,de_mask,gw_ip,rule_status);
+					//#endif
+						outBuff += sprintf(outBuff,"<tr>");
+	                    outBuff += sprintf(outBuff,"<td>%d</td>",id);
+	                    outBuff += sprintf(outBuff,"<td>%s</td>",des_ip);   
+	                    outBuff += sprintf(outBuff,"<td>%s</td>",de_mask);
+						outBuff += sprintf(outBuff,"<td>%s</td>",gw_ip);
+						if ( memcmp ( rule_status , "enable" ,6) == 0)
+		                    outBuff += sprintf(outBuff,"<td>%s</td>","YES");
+						if ( memcmp ( rule_status , "disable" ,7) == 0)
+		                    outBuff += sprintf(outBuff,"<td>%s</td>","NO");	 
+						outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>",des_ip);
+	                    outBuff += sprintf(outBuff,"</tr>");
+						id ++;						
+						memset(buf,0,1024);
+					}
+					fclose(f);
+					/*luodp add end*/
+                    #if 0
                     outBuff += sprintf(outBuff,"<tr>");
                     outBuff += sprintf(outBuff,"<td>%s</td>","2");
                     outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.51");
@@ -720,7 +819,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                     outBuff += sprintf(outBuff,"<td>%s</td>","OFF");
                     outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"2\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
                     outBuff += sprintf(outBuff,"</tr>");
-
+					#endif
                 }
                 //IPMAC绑定(带配置)
                 else if(strcmp(secArg,"IPMAClist")==0)
@@ -913,22 +1012,34 @@ char *processSpecial(char *paramStr, char *outBuff)
                  //系统路由表(不带配置)
                 else if(strcmp(secArg,"sysrulist")==0)
                 {
-                    outBuff += sprintf(outBuff,"<tr>");
+                    /*outBuff += sprintf(outBuff,"<tr>");
                     outBuff += sprintf(outBuff,"<td>%s</td>","1");
                     outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.5");
                     outBuff += sprintf(outBuff,"<td>%s</td>","255.255.255.255");
                     outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.254");
                     outBuff += sprintf(outBuff,"<td>%s</td>","80000");
-                    outBuff += sprintf(outBuff,"</tr>");
-
-                    outBuff += sprintf(outBuff,"<tr>");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","2");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.5");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","255.255.255.255");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.254");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","80000");
-                    outBuff += sprintf(outBuff,"</tr>");
-
+                    outBuff += sprintf(outBuff,"</tr>");*/
+					system("route -n > /dev/null 2>&1"); 
+					FILE *fp;
+					int ii;
+					char ch;
+					char tmpc[65536]={0};
+					if((fp=fopen("/tmp/routelist","r"))==NULL)
+					{
+						fprintf(errOut,"\n----------cannot open file  line:%d\n",__LINE__);
+					}
+					else
+					{
+						while ((ch=fgetc(fp))!=EOF)
+						{
+							sprintf(tmpc+ii,"%c",ch);
+							ii++;
+						}
+						if(strlen(tmpc)>0)
+							outBuff += sprintf(outBuff,"%s",tmpc);
+						fclose(fp);
+						system("rm /tmp/routelist");
+					}
                 }
 
                 //DHCP客户端(不带配置)
@@ -998,6 +1109,57 @@ char *processSpecial(char *paramStr, char *outBuff)
                     }
                     fclose(fp);
                 }
+              }
+        break;     
+
+        case 'B':
+        /*
+        ** Direct Insertion.  If no value, insert default
+        */
+
+        {
+                     FILE *fp, *flist;
+                    struct dhcpOfferedAddr 
+                    {
+                        unsigned char hostname[16];
+                        unsigned char mac[16];
+                        unsigned long ip;
+                        unsigned long expires;
+                    } lease;
+                    char STAbuf[128];
+                    char buf[20], mac_buf[20], rate_buf[10], rssi_buf[10];
+                    int i, j;
+                    struct in_addr addr;
+                    unsigned long expires;
+                    unsigned d, h, m;
+                    int num=1;
+                    int shi=0;
+
+                    Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
+                    Execute_cmd("wlanconfig ath0 list sta > /var/run/.STAlist", rspBuff);
+
+                    fp = fopen("/var/run/udhcpd.leases", "r");  /*  /var/run/udhcpd.leases   */
+                    if (NULL == fp)
+                    {
+                        fprintf(errOut,"\n%s  %d open udhcpd error\n \n",__func__,__LINE__);
+                        break;
+                    }
+
+                    while (fread(&lease, 1, sizeof(lease), fp) == sizeof(lease)) 
+                    {
+                            addr.s_addr = lease.ip;
+                            fprintf(errOut,"\nhttpreferer:%s  inet_ntoa(addr) :%s\n",httpreferer,inet_ntoa(addr));
+                            if(httpreferer)
+                             {
+                                if(!strcmp(httpreferer,(char *)inet_ntoa(addr)))
+                                {
+                                    outBuff += sprintf(outBuff,"%02X", lease.mac[0]);
+                                    for (i = 1; i < 6; i++)
+                                        outBuff += sprintf(outBuff,":%02X", lease.mac[i]);
+                                }
+                              }
+                    }
+                    fclose(fp);
               }
         break;       
     }
@@ -1615,13 +1777,65 @@ void writeParameters(char *name,char *mode,unsigned long offset)
 
         for(i=0;i<config.numParams;i++)
         {
+			//case luodp
             /*
             ** We don't want to store the "update" or "commit" parameters, so
             ** remove them if we get here.  Also, if we have values that have
             ** no value, don't write them out.
             DHCP SIP PPP L2TP P2TP WIRRE WIRELESS DHCPW SIPW PPPW L2TPW P2TPW ADMINSET
             */
-
+            if( !strcmp(config.Param[i].Name,"DEL_PRC") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"DEL_CON") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"DEL_RU") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"DEL_IPMAC") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"MAC_CLONE") )
+                continue;
+			if( !strcmp(config.Param[i].Name,"MAC_BACK") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"DHCP_SET") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"ADD_STATICDHCP") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"GW_SET") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"RULIST_SET") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"ADD_STATICR") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"CONM_WORK") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"ADD_CONRULE") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"WIRELESS_ADVSET") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"IPMAC_SET") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"ADD_IPMACBIND") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"PARENTC_SET") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"PARENTCACC_SET") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"ADD_PARC") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"TIMEZONE_SET") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"LOCAL_SAVE") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"CFG_MODIFY_USE") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"CFG_MODIFY_DEL") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"NETCHECK") )
+                continue;
+			if( !strcmp(config.Param[i].Name,"DEL_SDHCP") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"REBOOT") )
+                continue;
             if( !strcmp(config.Param[i].Name,"DHCP") )
                 continue;
             if( !strcmp(config.Param[i].Name,"SIP") )
@@ -2163,7 +2377,238 @@ int getRadioID(int index)
 }
 
 
+/*begin :  wangyu add for dhcp server operation */
+/*
+**dhcp server setting function
+*/
+int set_dhcp(void)
+{ 
+		fprintf(errOut,"\n%s  %d WIRRE \n",__func__,__LINE__);		
+		char valBuff1[128]; 
+				
+		CFG_get_by_name("DHCPON_OFF",valBuff1);
+		//save new config to flash 
+		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+		writeParameters("/tmp/.apcfg","w+",0);
+		//off
+		if(strcmp(valBuff1,"off") == 0 )
+		{
+			//if( CFG_set_by_name(valBuff2,"off") )
+			//exit(-1);
+			Execute_cmd("killall udhcpd > /dev/null 2>&1",rspBuff);
+		}
+		else if(strcmp(valBuff1,"on") == 0 ) //on
+		{
+			Execute_cmd("killall udhcpd > /dev/null 2>&1",rspBuff);
+			//Execute_cmd("/etc/ath/apcfg ; /etc/rc.d/rc.udhcpd",rspBuff);
+			//Execute_cmd("/etc/ath/apcfg",rspBuff);
+			system("/etc/rc.d/rc.udhcpd");
+			Execute_cmd("/etc/rc.d/rc.udhcpd",rspBuff);
+			Execute_cmd("/usr/sbin/udhcpd /etc/udhcpd.conf",rspBuff);
+		}
+		return 0;
+}
+/*
+**dhcp server ip and mac address bonding  add function
+*/
 
+
+int set_addr_bind(void)
+{ 
+		#ifdef MESSAGE
+			fprintf(errOut,"\n%s  %d set_addr_bind \n",__func__,__LINE__);
+		#endif		
+		char valBuff1[128]; 
+		char valBuff2[128]; 
+		char valBuff3[128];
+		char valBuff4[128];		
+		int result = 0;		
+				
+		CFG_get_by_name("ADD_MAC",valBuff1);
+		CFG_get_by_name("ADD_IP",valBuff2);
+		CFG_get_by_name("ADD_STATUS",valBuff3);
+		//off
+		
+		#ifdef MESSAGE
+		fprintf(errOut,"%s  %d  valBuff1 %s valBuff2 %s valBuff3 %s\n",__func__,__LINE__,
+				valBuff1,valBuff2,valBuff3);
+		#endif
+		//save new config to flash 
+		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+		writeParameters("/tmp/.apcfg","w+",0);
+		//TODO if close do commit no ath1
+		
+		Execute_cmd("killall udhcpd > /dev/null 2>&1",rspBuff);
+		//Execute_cmd("/etc/ath/apcfg ; /etc/rc.d/rc.udhcpd",rspBuff);
+		//Execute_cmd("/etc/ath/apcfg",rspBuff);
+		//system("/etc/rc.d/rc.udhcpd");
+		Execute_cmd("/etc/rc.d/rc.udhcpd",rspBuff);
+		
+		Execute_cmd("/usr/sbin/set_addr > /tmp/set_addr.log 2>&1",rspBuff);
+		
+		FILE *fileBuf2=NULL;
+		if ((fileBuf2= fopen("/tmp/set_addr.log", "r")) == NULL)
+		{
+			fprintf(errOut,"%s	%d File open error.Make sure you have the permission.\n",__func__,__LINE__);
+		}else
+		{
+			fgets(valBuff4,sizeof(valBuff4),fileBuf2);
+			if(strstr(valBuff4,"the address is exist")!=NULL)
+			{
+				fprintf(errOut,"%s	%d	the address is exist...\n",__func__,__LINE__);///sjin
+                printf("Content-Type:text/html\n\n");
+                printf("<HTML><HEAD>\r\n");
+                printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+                printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
+                printf("</head><body>");
+                printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"lan\");alert(_(\"err IPMAC exist\"));window.location.href=\"ad_local_addsdhcp\";</script>");
+                printf("</body></html>");
+                result = 1;
+			}
+			fclose(fileBuf2);
+		}
+		Execute_cmd("/usr/sbin/udhcpd /etc/udhcpd.conf",rspBuff);
+		return result;
+}
+
+int del_addr_bind(void)
+{
+	fprintf(errOut,"\n%s  %d del_addr_bind \n",__func__,__LINE__);
+
+	char valBuff1[128]; 
+	char valBuff2[128]; 
+	char valBuff3[128]; 
+
+	//CFG_get_by_name("DELXXX",valBuff1);
+	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+	writeParameters("/tmp/.apcfg","w+",0);
+
+	Execute_cmd("/usr/sbin/del_addr > /dev/null 2>&1",rspBuff);
+	return 0;
+}
+/*end :  wangyu add for dhcp server operation */
+
+//luodp route rule
+void add_route_rule(void)
+{
+	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+	writeParameters("/tmp/.apcfg","w+",0);	
+	Execute_cmd("/usr/sbin/set_route > /dev/null 2>&1",rspBuff);
+	return ;
+} 
+void del_route_rule(void)
+{
+	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+	writeParameters("/tmp/.apcfg","w+",0);
+	Execute_cmd("/usr/sbin/del_route > /dev/null 2>&1",rspBuff);
+	return ;
+}
+//luodp end  route rule 
+//zhao zhanwei
+
+struct staList *getSta(struct staList *list, char *maddr)
+{
+	struct staList *p;
+
+	if(list != NULL)
+		p = list->next;
+	while(p != NULL)
+	{
+		if(!strcmp(p->macAddr, maddr))
+			return p;
+		else
+			p = p->next;
+	}
+	return NULL;
+}
+
+/*get the prev one*/
+struct staList *getSta1(struct staList *list, char *maddr)
+{
+	struct staList *p, *s;
+
+	if(!list)
+		return NULL;
+	
+	p = list->next;
+	s = list;
+
+	while(p != NULL)
+	{
+		if(!strcmp(p->macAddr, maddr))
+			return s;
+		else
+		{
+			p = p->next;
+			s = s->next;
+		}
+	}
+	return NULL;
+	
+}
+
+void addSta(char *maddr, char *desc, int id)
+{          
+    struct staList *list, *p;
+          
+    list = (struct staList *)malloc( sizeof(struct staList) );
+    if(list == NULL)
+    { 
+		return; 
+    }
+
+    strcpy(list->macAddr, maddr);
+    strcpy(list->staDesc, desc);
+    list->id = id;
+    list->next = NULL;
+
+	if(staHostList != NULL)
+		p = staHostList;
+    if(p != NULL) 
+    {
+        while(p->next != NULL)
+                p = p->next;
+
+        list->next = p->next;
+        p->next = list;
+    }
+    else
+    {
+		p = (struct staList *)malloc( sizeof(struct staList) );
+		memset(p->macAddr, 0, sizeof p->macAddr);
+		memset(p->staDesc, 0, sizeof p->staDesc);
+		p->id = 0;
+		staHostList = p;
+		p->next = list;
+	}
+
+}
+
+
+void delSta(char *maddr)
+{
+	struct staList *p, *pre;
+	p = getSta(staHostList, maddr);
+	if(!p)
+		return;
+	pre = getSta1(staHostList, maddr);
+
+	pre->next = p->next;
+	free(p);
+}
+
+struct staList *scan_staList(struct staList *list)
+{
+	struct staList *stalist;
+	if(!list)
+		return NULL;
+	stalist = list->next;
+
+	return stalist;
+	
+}
+
+//end zhaozhanwei
 
 /*****************************************************************************
 **
@@ -2528,6 +2973,19 @@ int main(int argc,char **argv)
 		Execute_cmd("net_test > /dev/null 2>&1", rspBuff);
 	}*/
 	//fprintf(errOut,"%s  %d Page:%s\n",__func__,__LINE__,Page);
+    {
+
+        httpreferer=getenv("REMOTE_ADDR");
+        if(httpreferer)
+        {
+            fprintf(errOut,"\n----------REMOTE_ADDR:%s success\n",httpreferer);
+        }
+        else
+        {
+            fprintf(errOut,"\n----------REMOTE_ADDR:fail\n",httpreferer);
+        }
+
+    }
     /*
     ** Now to get the environment data.
     ** We parse the input until all parameters are inserted.  If we see a reset, commit,
@@ -2603,10 +3061,11 @@ int main(int argc,char **argv)
                 parameterIndex = atoi(Value);
                 if((parameterIndex==11)&&(lock11==0))//update wifilist
                 {
-					fprintf(errOut,"[luodp] do update wifilist");
+					fprintf(errOut,"[luodp] do update wifilist\n");
 					num=0;
-					//list
-					Execute_cmd("iwlist ath0 scanning > /tmp/scanlist", rspBuff);
+					//do check ath0
+					//Execute_cmd("iwlist ath0 scanning > /tmp/scanlist", rspBuff);
+					system("iwlist ath0 scanning > /tmp/scanlist 2>&1");
 					//mac
 					Execute_cmd("cat /tmp/scanlist | grep Cell | awk '{print $5}'", rspBuff1);
 					//fprintf(errOut,"\n-[luodp] %s\n",rspBuff1);
@@ -2656,7 +3115,6 @@ int main(int argc,char **argv)
 						num++;
 						val4[num]=strtok(NULL,"\n"); 
 					}
-					
 					/*for(i=1;i<num-1;i++)
 					{
 						fprintf(errOut,"[luodp] %s\n",val4[i]+4);
@@ -2673,24 +3131,27 @@ int main(int argc,char **argv)
                         fprintf(errOut,"\n----------cannot open file  line:%d\n",__LINE__);
                         return;
                     }
-					//val1-mac,val2-ssid,val3-security,val4-channel
-					if(strcmp(val3[0],"on")==0)
-						sprintf(val3[0],"WPA");
-					else
-						sprintf(val3[0],"None");
-					memset(cmdd,0x00,128);	
-					sprintf(cmdd,"<option>%s(%s)(%s)(%s)</option>",val2[0],val1[0],val4[0],val3[0]);
-					fwrite(cmdd,strlen(cmdd),1,fp);
-					for(i=1;i<lists;i++)
+					if(val3[0]!=NULL)
 					{
-						memset(cmdd,0x00,128);
-						if(strcmp(val3[i]+4,"on")==0)
-							sprintf(val3[i]+4,"WPA");
-						else
-							sprintf(val3[i]+4,"None");
-						//fprintf(errOut,"[luodp] %s(%s)(%s)(%s) \n",val2[i]+4,val1[i]+4,val3[i]+4,val4[i]+4);
-						sprintf(cmdd,"<option>%s(%s)(%s)(%s)</option>",val2[i]+4,val1[i]+4,val4[i]+4,val3[i]+4);
+						//val1-mac,val2-ssid,val3-security,val4-channel
+						if(strcmp(val3[0],"on")==0)
+							sprintf(val3[0],"WPA");
+						else  
+							sprintf(val3[0],"None");
+						memset(cmdd,0x00,128);	
+						sprintf(cmdd,"<option>%s(%s)(%s)(%s)</option>",val2[0],val1[0],val4[0],val3[0]);
 						fwrite(cmdd,strlen(cmdd),1,fp);
+						for(i=1;i<lists;i++)
+						{
+							memset(cmdd,0x00,128);
+							if(strcmp(val3[i]+4,"on")==0)
+								sprintf(val3[i]+4,"WPA");
+							else
+								sprintf(val3[i]+4,"None");
+							//fprintf(errOut,"[luodp] %s(%s)(%s)(%s) \n",val2[i]+4,val1[i]+4,val3[i]+4,val4[i]+4);
+							sprintf(cmdd,"<option>%s(%s)(%s)(%s)</option>",val2[i]+4,val1[i]+4,val4[i]+4,val3[i]+4);
+							fwrite(cmdd,strlen(cmdd),1,fp);
+						}
 					}
                     fclose(fp);
 					flaglist=1;
@@ -2896,6 +3357,13 @@ int main(int argc,char **argv)
 		char tmp_Buff[10];						
 		memset(tmp_Buff,'\0',10);
 		int flag=0; 
+		Execute_cmd("cfg -e | grep \"WAN_MODE=\"",valBuff);              
+		if(strstr(valBuff,"dhcp") != 0)
+		{
+			//kill udhcpc                       
+			//Execute_cmd("ps aux | grep udhcpc | awk \'{print $1}\' | xargs kill -9  > /dev/null 2>&1", rspBuff);                      
+			Execute_cmd("killall udhcpc > /dev/null 2>&1", rspBuff);               
+		}
 		if (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 ) 
 		{ 
 					flag=1; 
@@ -3090,6 +3558,7 @@ int main(int argc,char **argv)
 				//{
 					Execute_cmd("killall udhcpd > /dev/null 2>&1",rspBuff);
 					Execute_cmd("/usr/sbin/udhcpd /etc/udhcpd.conf > /dev/null 2>&1",rspBuff);
+					//[TODO] wired device re-assign
 				//}
 				//fprintf(errOut,"[luodp] wds open\n");
 			}
@@ -3149,7 +3618,8 @@ int main(int argc,char **argv)
 		char valBuff6[128];	
 		char valBuff7[128];	
 		char valBuff8[128];	
-		char valBuff9[128];	
+		char valBuff9[128];
+		char valBuff10[128];			
 		int flag=0;
 
 		//1.get old value from flash
@@ -3164,7 +3634,7 @@ int main(int argc,char **argv)
 		Execute_cmd("cfg -e | grep \"AP_SECMODE=\"",valBuff5);
 		Execute_cmd("cfg -e | grep \"AP_PRIMARY_CH=\" | awk -F \"=\" \'{print $2}\'",valBuff7);
 		Execute_cmd("cfg -e | grep \"AP_HIDESSID=\" | awk -F \"=\" \'{print $2}\'",valBuff8);
-		
+		Execute_cmd("cfg -e | grep \"AP_CHMODE=\" | awk -F \"=\" \'{print $2}\'",valBuff10);
 		
 		//fprintf(errOut,"[luodp] WIFI: %s\n%s%s\n%s\n",valBuff,valBuff2,valBuff5,valBuff4);
 		//2.save new config to flash
@@ -3251,6 +3721,25 @@ int main(int argc,char **argv)
 		//fprintf(errOut,"%d\n%d\n%d\n",strcmp(valBuff2,valBuff5),flag,strcmp(valBuff3,"on"));
 		if((strcmp(valBuff7,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0))
 		{
+			//fprintf(errOut,"[luodp] %d",atoi(valBuff4));
+			//11NGHT40PLUS/11NGHT40MINUS
+			if(strstr(valBuff10,"11NGHT40PLUS")!=0)
+			{
+				if(atoi(valBuff4)>=10)
+				{
+					Execute_cmd("iwpriv ath0 mode 11NGHT40MINUS", rspBuff);
+					CFG_set_by_name("AP_CHMODE","11NGHT40MINUS");
+				}
+			}else if(strstr(valBuff10,"11NGHT40MINUS")!=0)
+			{
+				if(atoi(valBuff4)<=4)
+				{
+					Execute_cmd("iwpriv ath0 mode 11NGHT40PLUS", rspBuff);
+					CFG_set_by_name("AP_CHMODE","11NGHT40PLUS");
+				}
+			}
+			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+			writeParameters("/tmp/.apcfg","w+",0);	
 			//fprintf(errOut,"[luodp] SECMODE here7\n");
 			sprintf(pChar,"iwconfig ath0 channel %s  > /dev/null 2>&1",valBuff4);
 			Execute_cmd(pChar, rspBuff);
@@ -3368,11 +3857,40 @@ int main(int argc,char **argv)
         exit(1);
     }
     /*************************************
-    外网设置     mac克隆
+    外网设置     恢复初始mac克隆
    *************************************/
     if(strcmp(CFG_get_by_name("MAC_CLONE",valBuff),"MAC_CLONE") == 0 ) 
     {		 
         fprintf(errOut,"\n%s  %d MAC_CLONE \n",__func__,__LINE__);
+		char mymac[128];
+		char str[128];
+		char *mymac2;	
+		char tmp[128];
+		char tmp2[128];
+		
+		Execute_cmd("cat /etc/mac.bin",mymac);
+		mymac2=strtok(mymac,"\n");
+		
+		CFG_get_by_name("MACTYPE",tmp);
+		//0 -factory mac ,1-pc mac,2 -user input
+		if(atoi(tmp)==0)
+		{
+			//fprintf(errOut,"[luodp] %s",mymac2);
+			CFG_set_by_name("ETH0_MAC",mymac2);
+			sprintf(str,"ifconfig eth0 hw ether %s",mymac2);
+			system("ifconfig eth0 down");
+			system(str);
+			system("ifconfig eth0 up");
+		}else if((atoi(tmp)==1)||(atoi(tmp)==2))
+		{
+			CFG_get_by_name("ETH0_MAC",tmp2);
+			sprintf(str,"ifconfig eth0 hw ether %s",tmp2);
+			system("ifconfig eth0 down");
+			system(str);
+			system("ifconfig eth0 up");
+		}
+		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+        writeParameters("/tmp/.apcfg","w+",0);
         gohome =1;
     }
     /*************************************
@@ -3381,8 +3899,8 @@ int main(int argc,char **argv)
     if(strcmp(CFG_get_by_name("DHCP_SET",valBuff),"DHCP_SET") == 0 ) 
     {		 
         fprintf(errOut,"\n%s  %d DHCP_SET \n",__func__,__LINE__);
-     
-        gohome =1;
+ 		set_dhcp();   
+		gohome =1;
     }
     /*************************************
     内网设置    DHCP服务器    添加
@@ -3390,9 +3908,26 @@ int main(int argc,char **argv)
     if(strcmp(CFG_get_by_name("ADD_STATICDHCP",valBuff),"ADD_STATICDHCP") == 0 ) 
     {		 
         fprintf(errOut,"\n%s  %d ADD_STATICDHCP \n",__func__,__LINE__);
+		if(set_addr_bind()==1)
+        {
+            gohome =2;
+        }
+        else
+        {
+            sprintf(Page,"%s","../ad_local_dhcp.html");
+            gohome =0;
+        }
+    }
+   /*************************************
+    内网设置    DHCP服务器    删除
+   *************************************/
+    if(strcmp(CFG_get_by_name("DEL_SDHCP",valBuff),"DEL_SDHCP") == 0 ) 
+    {		 
+        fprintf(errOut,"\n%s  %d DEL_SDHCP \n",__func__,__LINE__);
+		del_addr_bind();
         gohome =1;
     }
-    
+
     /*************************************
     内网设置    网关设置
    *************************************/
@@ -3403,38 +3938,227 @@ int main(int argc,char **argv)
     }
     
     /*************************************
-    内网设置    路由表设置     
-   *************************************/
-    if(strcmp(CFG_get_by_name("RULIST_SET",valBuff),"RULIST_SET") == 0 ) 
-    {		 
-        fprintf(errOut,"\n%s  %d RULIST_SET \n",__func__,__LINE__);
-        gohome =1;
-    }
-    /*************************************
     内网设置    路由表设置       添加
    *************************************/
     if(strcmp(CFG_get_by_name("ADD_STATICR",valBuff),"ADD_STATICR") == 0 ) 
     {		 
         fprintf(errOut,"\n%s  %d ADD_STATICR \n",__func__,__LINE__);
+		add_route_rule();
+        gohome =1;
+    }
+    /*************************************
+    内网设置    路由表设置       删除
+   *************************************/
+    if(strcmp(CFG_get_by_name("DEL_RU",valBuff),"DEL_RU") == 0 ) 
+    {		 
+        fprintf(errOut,"\n%s  %d DEL_RU \n",__func__,__LINE__);
+		del_route_rule();
         gohome =1;
     }
     
     /*************************************
     接入管理    无线接入控制
+   
+    Access mangement   STA Control
+   *************************************/
+
+	/*ADD STA's MAC*/
+	const char *staFile = "/var/run/.staMac";
+    if(strcmp(CFG_get_by_name("ADD_CONRULE",valBuff),"ADD_CONRULE") == 0 ) 
+    {
+    	FILE *fp;
+    	struct staList stalist;
+		int same = 0, id = 0;
+    	char staMac[20];
+		char staDesc[50];
+		char buf[50] = "iwpriv ath0 addmac %s";
+
+		memset(staMac, 0, sizeof staMac);
+		memset(staDesc, 0, sizeof staDesc);
+		if ((fp = fopen(staFile, "r")) == NULL)
+		{
+			if ((fp = fopen(staFile, "w+")) == NULL) 
+			{
+				fprintf(errOut,"\nUnable to open /var/run/.staMac for writing\n");
+			}
+			else
+			{
+				CFG_get_by_name("MAC",staMac);
+				CFG_get_by_name("DES",staDesc);
+				strcpy(stalist.macAddr, staMac);
+				strcpy(stalist.staDesc, staDesc);
+				stalist.id = id + 1;
+				fwrite(&stalist, sizeof(struct staList), 1, fp);
+				fclose(fp);
+				
+				sprintf(buf, "iwpriv ath0 addmac %s", staMac);
+				Execute_cmd(buf, rspBuff);
+			}
+		}
+		else
+		{
+			
+			CFG_get_by_name("MAC",staMac);
+			CFG_get_by_name("DES",staDesc);
+			while(fread(&stalist, sizeof stalist, 1, fp) == 1)
+			{
+				id = stalist.id;
+				if( strcmp(stalist.macAddr, staMac) == 0)
+				{
+					fprintf(errOut,"\n the %s is exit\n", staMac);
+					fclose(fp);
+					same = 1;
+					break;
+				}
+				else
+					same = 0;
+			}
+			if(same == 0)
+			{
+				fp = fopen(staFile, "at");
+				strcpy(stalist.macAddr, staMac);
+				strcpy(stalist.staDesc, staDesc);
+				stalist.id = id + 1;
+				fwrite(&stalist, sizeof(struct staList), 1, fp);
+				fclose(fp);
+				
+				sprintf(buf, "iwpriv ath0 addmac %s", staMac);
+				Execute_cmd(buf, rspBuff);
+			}
+			
+		}    	
+		
+        fprintf(errOut,"\n%s  %d ADD_CONRULE \n",__func__,__LINE__);
+        gohome =3;
+    }
+
+	/*DEL STA's MAC*/
+	if(strcmp(CFG_get_by_name("DEL_CON",valBuff),"DEL_CON") == 0 ) 
+    {	
+    	FILE *fp;
+    	struct staList stalist, *p;
+    	char staMac[20];
+		char buf[50] = "iwpriv ath0 delmac %s";
+
+		if( (fp = fopen(staFile, "r")) == NULL)
+			fprintf(errOut,"\nopen %s error\n", staFile);
+		else
+		{
+			while(fread(&stalist, sizeof stalist, 1, fp) == 1)
+			{
+				addSta(stalist.macAddr, stalist.staDesc, stalist.id);
+			}
+			fclose(fp);
+		}
+
+		if(CFG_get_by_name("DELXXX",staMac))
+    	{
+			
+			delSta(staMac);
+			if( (fp = fopen(staFile, "w")) == NULL)
+				fprintf(errOut,"\nopen %s error\n", staFile);
+			else
+			{
+				p = scan_staList(staHostList);
+				while(p)
+				{
+					fwrite(p, sizeof(struct staList), 1, fp);
+					p = p->next;
+				}
+				fclose(fp);
+			}
+
+			sprintf(buf, "iwpriv ath0 delmac %s", staMac);
+			Execute_cmd(buf, rspBuff);
+    	}
+		
+        fprintf(errOut,"\n%s  %d DEL_CON \n",__func__,__LINE__);
+        gohome =3;
+    }
+
+	/*************************************
+    接入管理    无线接入控制
+
+    Control STA's MAC
     *************************************/
     if(strcmp(CFG_get_by_name("CONM_WORK",valBuff),"CONM_WORK") == 0 ) 
-    {		 
-        fprintf(errOut,"\n%s  %d CONM_WORK \n",__func__,__LINE__);
-        gohome =1;
-    }
-    /*************************************
-    接入管理    无线接入控制     添加
-   *************************************/
-    if(strcmp(CFG_get_by_name("ADD_CONRULE",valBuff),"ADD_CONRULE") == 0 ) 
-    {		 
-        fprintf(errOut,"\n%s  %d ADD_CONRULE \n",__func__,__LINE__);
-        gohome =1;
-    }
+    {
+    	FILE *fp, *fpp;
+		struct staList stalist;
+		char buf[80];
+		const char *staAcl = "/var/run/.staAcl";
+		if(strcmp(CFG_get_by_name("WCONON_OFF",valBuff),"on") == 0 )
+		{
+			if ((fp = fopen(staAcl, "w")) == NULL)
+			{
+				fprintf(errOut,"\nopen %s error\n", staAcl);
+			}
+			else
+			{
+				fwrite("enable", sizeof("enable"), 1, fp);
+				fclose(fp);
+			}
+
+			Execute_cmd("iptables -t filter -F INPUT", rspBuff);
+			#if 0
+			if ((fpp = fopen(staFile, "r")) == NULL)
+			{
+				fprintf(errOut,"\nopen %s error\n", staFile);
+			}
+			else
+			{
+				while(fread(&stalist, sizeof stalist, 1, fpp) == 1)
+				{
+					sprintf(buf, "iptables -D INPUT -m mac --mac-source %s -j DROP", stalist.macAddr);
+					fprintf(errOut,"\n%s \n", buf);
+					Execute_cmd(buf, rspBuff);
+				}
+				fclose(fpp);
+			}
+			#endif
+			
+			Execute_cmd("iwpriv ath0 maccmd 0",rspBuff);
+			fprintf(errOut,"\n%s  %d --------CONM_WORK on--------- \n",__func__,__LINE__);
+		}
+		else if(strcmp(CFG_get_by_name("WCONON_OFF",valBuff),"off") == 0 )
+		{
+			if ((fp = fopen(staAcl, "w")) == NULL)
+			{
+				fprintf(errOut,"\nopen %s error\n", staAcl);
+			}
+			else
+			{
+				fwrite("disable", sizeof("disable"), 1, fp);
+				fclose(fp);
+			}
+			
+
+			if ((fpp = fopen(staFile, "r")) == NULL)
+			{
+				fprintf(errOut,"\nopen %s error\n", staFile);
+			}
+			else
+			{
+				Execute_cmd("iptables -t filter -F INPUT", rspBuff);
+				while(fread(&stalist, sizeof stalist, 1, fpp) == 1)
+				{
+					sprintf(buf, "iptables -A INPUT -m mac --mac-source %s -j DROP", stalist.macAddr);
+					Execute_cmd(buf, rspBuff);
+				}
+				fclose(fpp);;
+			}
+			
+			Execute_cmd("iwpriv ath0 maccmd 2",rspBuff);
+			Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
+			fprintf(errOut,"\n%s  %d --------CONM_WORK off--------- \n",__func__,__LINE__);
+		}
+		
+		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+		writeParameters("/tmp/.apcfg","w+",0);
+		gohome =1;
+	}
+	
+
     /*************************************
     无线设置    高级
    *************************************/
@@ -3461,6 +4185,16 @@ int main(int argc,char **argv)
         gohome =1;
     }
     
+    
+    /*************************************
+    内网设置    IP/MAC绑定    删除
+   *************************************/
+    if(strcmp(CFG_get_by_name("DEL_IPMAC",valBuff),"DEL_IPMAC") == 0 ) 
+    {		 
+        fprintf(errOut,"\n%s  %d DEL_IPMAC \n",__func__,__LINE__);
+        gohome =1;
+    }
+    
     /*************************************
     家长控制    家长设置
    *************************************/
@@ -3483,6 +4217,14 @@ int main(int argc,char **argv)
     if(strcmp(CFG_get_by_name("ADD_PARC",valBuff),"ADD_PARC") == 0 ) 
     {		 
         fprintf(errOut,"\n%s  %d ADD_PARC \n",__func__,__LINE__);
+        gohome =1;
+    }
+    /*************************************
+    家长控制    访问管理      删除
+   *************************************/
+    if(strcmp(CFG_get_by_name("DEL_PRC",valBuff),"DEL_PRC") == 0 ) 
+    {		 
+        fprintf(errOut,"\n%s  %d DEL_PRC \n",__func__,__LINE__);
         gohome =1;
     }
     
@@ -3525,10 +4267,28 @@ int main(int argc,char **argv)
    网络诊断
    *************************************/
     if(strcmp(CFG_get_by_name("NETCHECK",valBuff),"NETCHECK") == 0 ) 
-    {		 
-        fprintf(errOut,"\n%s  %d NETCHECK \n",__func__,__LINE__);
-        gohome =1;
-    }
+    {		
+
+	Execute_cmd("net_check > /dev/null 2>&1", rspBuff); 
+    	     printf("HTTP/1.0 200 OK\r\n");
+        printf("Content-type: text/html\r\n");
+        printf("Connection: close\r\n");
+        printf("\r\n");
+        printf("\r\n");
+
+        printf("<HTML><HEAD>\r\n");
+        printf("</head><body>");
+ 
+        printf("<script language=javascript>window.location.href=\"ad_netcheck?INDEX=14\";</script>");
+        printf("</body></html>");
+        gohome =2;
+	
+     }
+     else if(gohome == 2)
+     {
+
+	exit(0);
+     }
 	
 	/*************************************
    重启
@@ -3562,7 +4322,12 @@ int main(int argc,char **argv)
     }
     else if( gohome == 2)
     {
-         if(translateFile("../index.html") < 0)
+        exit(0);
+    }
+	else if( gohome == 3)
+    {
+    	fprintf(errOut,"\n%s  %d gohome == 3\n",__func__,__LINE__);
+         if(translateFile("../ad_con_manage.html") < 0)
         {
             printf("Content-Type:text/html\n\n");
             printf("<HTML><HEAD>\r\n");

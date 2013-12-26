@@ -59,6 +59,11 @@ function chackMAC()
 			return false;
 		}
 	}
+	else
+	{
+		widget_disable("PPCMAC");
+		widget_disable("CURRENT_PCMAC"); 
+	}
 	button_commit("PARENTC_SET");
 }
 
