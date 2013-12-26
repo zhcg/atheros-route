@@ -4267,10 +4267,28 @@ int main(int argc,char **argv)
    Õ¯¬Á’Ô∂œ
    *************************************/
     if(strcmp(CFG_get_by_name("NETCHECK",valBuff),"NETCHECK") == 0 ) 
-    {		 
-        fprintf(errOut,"\n%s  %d NETCHECK \n",__func__,__LINE__);
-        gohome =1;
-    }
+    {		
+
+	Execute_cmd("net_check > /dev/null 2>&1", rspBuff); 
+    	     printf("HTTP/1.0 200 OK\r\n");
+        printf("Content-type: text/html\r\n");
+        printf("Connection: close\r\n");
+        printf("\r\n");
+        printf("\r\n");
+
+        printf("<HTML><HEAD>\r\n");
+        printf("</head><body>");
+ 
+        printf("<script language=javascript>window.location.href=\"ad_netcheck?INDEX=14\";</script>");
+        printf("</body></html>");
+        gohome =2;
+	
+     }
+     else if(gohome == 2)
+     {
+
+	exit(0);
+     }
 	
 	/*************************************
    ÷ÿ∆Ù
