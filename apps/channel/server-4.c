@@ -85,7 +85,7 @@ void *recv_sock()
 						if(ret != 0)
 						{
 							printf("Create pthread error!\n");
-							return;
+							exit(1);
 						}
 				
 					}
@@ -94,28 +94,12 @@ void *recv_sock()
 			}
 				else if(buff[3] == 0x02000000)
 				{	
-					if(val >= 10)
-					{	
-						printf("MINUS MODE!!!!!\n");
-						system("iwpriv ath0 mode 11NGHT40MINUS");
-						system("cfg -a AP_CHMODE 11NGHT40MINUS");
-						system("cfg -c");
-					}
-					else if(val <= 4)
-					{	
-						printf("PLUS MODE!!!!!");
-						system("iwpriv ath0 mode 11NGHT40PLUS");
-						system("cfg -a AP_CHMODE 11NGHT40PLUS");
-						system("cfg -c");
-					}
-					
 					sprintf(cmd, "iwconfig ath0 freq %d", val);
-					printf("OK,change chanel now !!!!!!!\n");
-					
+					printf("change chanel now !!!!!!!\n");
 					if (system(cmd) < 0)
 					{
 						printf("try it angin\n");
-						sleep(2);
+						sleep(1);
 						system(cmd);
 					}
 					val = 0;
