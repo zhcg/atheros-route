@@ -15,23 +15,21 @@ function initTranslation()
 {
 	trans_inner("title","ipmac title");
 	trans_inner("des","ipmac des");
+
+	trans_inner("t0_title","ipmac t0_title");
+	trans_inner("t0_Mac","safe mac");
+	trans_inner("t0_IP","safe IP");
+	trans_inner("t0_Tye","safe tye");	
+	
 	trans_inner("t1_title","ipmac t1_title");
 	
 	trans_inner("t1_Mac","safe mac");
 	trans_inner("t1_IP","safe IP");
 	trans_inner("t1_Tye","safe tye");
 	trans_inner("t1_Set","safe set");
-
 	trans_value("ADDRULE","safe ADD");	
-	
-	trans_value("bCANCEL","safe bCANCEL");	
-	trans_value("bAPPLY","safe bAPPLY");
 }
-function CheckValue()
-{
-	button_commit("IPMAC_SET");
 
-}
 function init()
 {
 	Butterlate.setTextDomain("safe");
@@ -43,6 +41,23 @@ function listdel(value)
 	alert("删除了"+value);
 	button_commit("DEL_IPMAC");
 }
+
+function lismod(value)
+{
+	if(document.getElementById(value).checked == true)
+	{
+		document.getElementById("ON_OFF").value="ON";	
+	}
+	else
+	{
+		document.getElementById("ON_OFF").value="OFF";	
+	}
+	
+	document.getElementById("MODXXX").value=value;
+	alert("修改了"+value +"  "+document.getElementById("ON_OFF").value);
+	
+	button_commit("MOD_IPMAC");
+}
 </script>
 </head>
 
@@ -50,12 +65,25 @@ function listdel(value)
 <div class="handaer_main">
 <table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
 <h1 id="title">IP/MAC地址绑定</h1>
-<form method="POST" name="wirelessconnection">
+
 <h2 id="des">当前IP地址与MAC绑定列表显示与修改</h2>
 
+<table id="t0"  width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
+<tr>
+<td class="title" colspan="5" id="t0_title">系统ARP映射表</td>
+</tr>
+  <tr>
+    <td>ID</td>
+    <td id="t0_Mac">MAC地址</td>
+    <td id="t0_IP">IP地址</td>
+    <td id="t0_Tye">绑定</td>
+  </tr>  
+~Z:IPMAClistshow~
+</table>
+<h1> </h1>
 <table id="t1"  width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
 <tr>
-<td class="title" colspan="5" id="t1_title">IP/MAC地址绑定</td>
+<td class="title" colspan="5" id="t1_title">IP/MAC地址静态绑定</td>
 </tr>
   <tr>
     <td>ID</td>
@@ -64,7 +92,7 @@ function listdel(value)
     <td id="t1_Tye">绑定</td>
     <td id="t1_Set">配置</td>
   </tr>  
- ~Z:IPMAClist~
+~Z:IPMAClist~
   <tr>
 	<td>&nbsp; &nbsp;</td>
 	<td>&nbsp; &nbsp;</td>
@@ -74,27 +102,17 @@ function listdel(value)
 		<input type="button"  class="handaer_small_button" name="ADDRULE" id="ADDRULE" value="添加" onClick="window.location.href='ad_safe_addIPMAC'">
 	</td>
   </tr>
-
- <!--~~DHCPLIST~-->
 </table>
-<table id="buttontable">
-<tr align="center">
-  <td>
-    <input type="button" name="bCANCEL" id="bCANCEL" class="handaer_input" value="Cancel" onClick="window.location.reload();">
-    <input type="button" name="bAPPLY" id="bAPPLY" class="handaer_input" value="Apply" onClick="CheckValue();">
-	<input type="submit" name="IPMAC_SET" id="IPMAC_SET" style="display:none" value="IPMAC_SET">
-	<input type="text" style="display:none" name="AP_HIDESSID" id="AP_HIDESSID" size="20" maxlength="32" value="~~AP_HIDESSID~">
-  </td>
-</tr>
-</table>
-</form>
-
 
 <form method="POST" name="DELLIST">
 	<input style="display:none"  type="text" name="DELXXX" id="DELXXX" size="20" maxlength="32">
 	<input style="display:none" type="submit" name="DEL_IPMAC" id="DEL_IPMAC" value="DEL_IPMAC">
 </form>
-
+<form method="POST" name="MODLIST">
+	<input style="display:none"  type="text" name="MODXXX" id="MODXXX" size="20" maxlength="32">
+	<input style="display:none"  type="text" name="ON_OFF" id="ON_OFF" size="20" maxlength="32">
+	<input style="display:none" type="submit" name="MOD_IPMAC" id="MOD_IPMAC" value="MOD_IPMAC">
+</form>
 
 </td></tr>
 </table>

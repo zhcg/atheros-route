@@ -1,52 +1,53 @@
 <po>
-  <message msgid="conn bAPPLY" msgstr="应用" />
-  <message msgid="conn bCANCEL" msgstr="取消" />
-  <message msgid="conn enable" msgstr="启用" />
-  <message msgid="conn disable" msgstr="停用" />
-  <message msgid="conn MODDHCP" msgstr="修改" />
-  <message msgid="conn DELDHCP" msgstr="删除" />
-  <message msgid="conn ADDDHCP" msgstr="添加" />
-  <message msgid="conn onbutton" msgstr="启用" />
-  <message msgid="conn offbutton" msgstr="禁用" />  
-  <message msgid="conn des" msgstr="描述" />  
-  <message msgid="conn mac" msgstr="MAC地址" />  
-  <message msgid="conn set" msgstr="设置" />    
-  <message msgid="conn bSAVE" msgstr="保存" />   
-  
-  <message msgid="clist title" msgstr="已接入设备列表" />  
-  <message msgid="clist t1_title" msgstr="有线设备" />  
-  <message msgid="clist t2_title" msgstr="无线设备（包括无线可疑设备）" />  
-  <message msgid="clist ip" msgstr="IP地址" />  
-  <message msgid="clist mac" msgstr="MAC地址" />  
-  <message msgid="clist name" msgstr="设备名" />  
-  <message msgid="clist rate" msgstr="速率" />  
-  <message msgid="clist sig" msgstr="信号强度" />  
-  
-  <message msgid="conm title" msgstr="无线接入管理" />  
-  <message msgid="conm des" msgstr="管理当前已经接入的无线设备" />  
-  <message msgid="conm t1_title" msgstr="无线接入管理" />  
-  <message msgid="conm t1_switch" msgstr="无线接入开关" />  
-  
-  <message msgid="conm ADDMRULE" msgstr="添加" />  
+	<message msgid="conn bAPPLY" msgstr="应用" />
+	<message msgid="conn bCANCEL" msgstr="取消" />
+	<message msgid="conn enable" msgstr="启用" />
+	<message msgid="conn disable" msgstr="停用" />
+	<message msgid="conn MODDHCP" msgstr="修改" />
+	<message msgid="conn DELDHCP" msgstr="删除" />
+	<message msgid="conn ADDDHCP" msgstr="添加" />
+	<message msgid="conn onbutton" msgstr="启用" />
+	<message msgid="conn offbutton" msgstr="禁用" />  
+	<message msgid="conn des" msgstr="描述" />  
+	<message msgid="conn mac" msgstr="MAC地址" />  
+	<message msgid="conn set" msgstr="设置" />    
+	<message msgid="conn bSAVE" msgstr="保存" />   
 
-  <message msgid="addw title" msgstr="添加无线接入管理的设备信息" />  
-  <message msgid="addw t1_title" msgstr="添加无线接入管理条目" />  
-  <message msgid="addw t1_MAC" msgstr="MAC地址" />  
-  <message msgid="addw t1_Des" msgstr="描述" />  
+	<message msgid="clist title" msgstr="已接入设备列表" />  
+	<message msgid="clist t1_title" msgstr="有线设备" />  
+	<message msgid="clist t2_title" msgstr="无线设备（包括无线可疑设备）" />  
+	<message msgid="clist ip" msgstr="IP地址" />  
+	<message msgid="clist mac" msgstr="MAC地址" />  
+	<message msgid="clist name" msgstr="设备名" />  
+	<message msgid="clist rate" msgstr="速率" />  
+	<message msgid="clist sig" msgstr="信号强度" />  
 
-  <message msgid="err MAC empty" msgstr="MAC地址不能为空" />
-  <message msgid="err IP empty" msgstr="IP地址不能为空" />
-  <message msgid="err sub empty" msgstr="掩码地址不能为空" />
-  <message msgid="err user empty" msgstr="用户名不能为空" />
-  <message msgid="err pwd empty" msgstr="密码不能为空" />
-  <message msgid="err time empty" msgstr="时间不能为空" />
-  
-  <message msgid="err MAC format" msgstr="MAC格式错误" />
-  <message msgid="err IP format" msgstr="IP地址格式错误" />
-  <message msgid="err sub format" msgstr="掩码格式错误" />
-  
-  <message msgid="err format" msgstr="参数格式错误" />
-  <message msgid="err range" msgstr="参数范围错误" />
-  <message msgid="err des empty" msgstr="描述不能为空" />
+	<message msgid="conm title" msgstr="无线接入管理" />  
+	<message msgid="conm des" msgstr="管理当前已经接入的无线设备" />  
+	<message msgid="conm t1_title" msgstr="无线接入管理" />  
+	<message msgid="conm t1_switch" msgstr="无线接入开关" />  
 
+	<message msgid="conm ADDMRULE" msgstr="添加" />  
+
+	<message msgid="addw title" msgstr="添加无线接入管理的设备信息" />  
+	<message msgid="addw t1_title" msgstr="添加无线接入管理条目" />  
+	<message msgid="addw t1_MAC" msgstr="MAC地址" />  
+	<message msgid="addw t1_Des" msgstr="描述" />  
+
+	<message msgid="err MAC empty" msgstr="MAC地址不能为空" />
+	<message msgid="err user empty" msgstr="用户名不能为空" />
+	<message msgid="err pwd empty" msgstr="密码不能为空" />
+	<message msgid="err time empty" msgstr="时间不能为空" />
+	<message msgid="err MAC format" msgstr="MAC格式错误,请按照XX:XX:XX:XX:XX:XX的格式输入" />
+	<message msgid="err format" msgstr="参数不合法" />
+	<message msgid="err range" msgstr="参数范围错误" />
+	<message msgid="err des empty" msgstr="描述不能为空" />
+	<message msgid="err IP empty" msgstr="IP地址不能为空" />
+	<message msgid="err sub empty" msgstr="掩码不能为空" />
+	<message msgid="err gw empty" msgstr="网关不能为空" />
+	<message msgid="err DNS empty" msgstr="DNS不能为空" />
+	<message msgid="err IP format" msgstr="IP地址不合法" />
+	<message msgid="err sub format" msgstr="掩码地址不合法" />	
+	<message msgid="err gw format" msgstr="网关地址不合法" />
+	<message msgid="err DNS format" msgstr="DNS地址不合法" />
 </po>

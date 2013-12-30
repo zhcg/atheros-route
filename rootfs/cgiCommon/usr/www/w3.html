@@ -18,53 +18,7 @@ function style_display_on()
 		return "table-row";
 	}
 }
-function butwork(zhi1,zhi2,zhi3,zhi4)
-{
-	if(zhi1 == "false")
-	{
-		document.getElementById("bBACK").style.visibility = "visible";
-		document.getElementById("bBACK").style.display = style_display_on();
-	}
-	else
-	{
-		document.getElementById("bBACK").style.visibility = "hidden";
-		document.getElementById("bBACK").style.display = "none";
-	}
-	
-	if(zhi2 == "false")
-	{
-		document.getElementById("bNEXT").style.visibility = "visible";
-		document.getElementById("bNEXT").style.display = style_display_on();
-	}
-	else
-	{
-		document.getElementById("bNEXT").style.visibility = "hidden";
-		document.getElementById("bNEXT").style.display = "none";
-	}
 
-		if(zhi3 == "false")
-	{
-		document.getElementById("bCANCEL").style.visibility = "visible";
-		document.getElementById("bCANCEL").style.display = style_display_on();
-	}
-	else
-	{
-		document.getElementById("bCANCEL").style.visibility = "hidden";
-		document.getElementById("bCANCEL").style.display = "none";
-	}
-
-		if(zhi4 == "false")
-	{
-		document.getElementById("bAPPLY").style.visibility = "visible";
-		document.getElementById("bAPPLY").style.display = style_display_on();
-	}
-	else
-	{
-		document.getElementById("bAPPLY").style.visibility = "hidden";
-		document.getElementById("bAPPLY").style.display = "none";
-	}
-
-}
 function checkInjection(str)
 {
 	var len = str.length;
@@ -352,11 +306,9 @@ function hidewififun()
 <tr  id="tt1">
   <td class="head" rowspan="2" id="security"></td>
   <td>
-    <select name="AP_SECMODE" size="1" onChange="switch_security_mode();">
-	  <option ~sAP_SECMODE:WPA~ value="WPA" id="Senable" ></option>
+    <select name="AP_SECMODE" style="width:150px" size="1" onChange="switch_security_mode();">
+	  <option ~sAP_SECMODE:WPA~ value="WPA" id="Senable"></option>
       <option ~sAP_SECMODE:None~  value="None" id="Sdisable"></option>
-      <!--option value="WEPAUTO">WEP</option>
-      <option value="WPAPSKWPA2PSK">WPA-PSK/WPA2-PSK</option-->
     </select>
   </td>
 </tr>

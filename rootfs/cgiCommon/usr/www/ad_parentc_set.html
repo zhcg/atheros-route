@@ -40,6 +40,7 @@ function init()
 {
 	Butterlate.setTextDomain("par");
 	initTranslation();
+	switch_parc();
 }
 function chackMAC()
 {
@@ -113,12 +114,12 @@ function switch_parc()
 </tr>
 <tr id="t1">
   <td class="head" id="ti_parmac">家长PC的MAC地址</td>
-  <td><input size="32" maxlength="64" class="handaer_text_content" name="PPCMAC" id="PPCMAC" value="11:22:33:44:55:66" type="text"></td>
+  <td><input size="32" maxlength="64" class="handaer_text_content" name="PPCMAC" id="PPCMAC" value="~~PPCMAC~" type="text"></td>
   <td>&nbsp; &nbsp;</td>
 </tr>
 <tr  id="t2">
   <td class="head" id="t1_macnow">当前管理者PC的MAC地址</td>
-  <td><input size="32" maxlength="64" name="CURRENT_PCMAC" class="handaer_text_content" id="CURRENT_PCMAC" value="11:11:11:11:11:11" type="text" readonly></td>
+  <td><input size="32" maxlength="64" name="CURRENT_PCMAC" class="handaer_text_content" id="CURRENT_PCMAC" value="~~Bmac~" type="text" readonly></td>
   <td><input type="button"  class="handaer_small_button" name="macclone_b" id="macclone_b" onClick="macclone_f();"></td>
 </tr>
 

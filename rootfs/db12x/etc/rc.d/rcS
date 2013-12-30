@@ -65,7 +65,7 @@ export LAN_IF=eth1
 
 #yuhaolei for mac default display
 ETH0_MAC_2=`cfg -e | grep "ETH0_MAC" | awk -F "\"" '{print $2}'`
-if [ ETH0_MAC_2 != NULL ]; then
+if [ "${ETH0_MAC_2}" != "" ]; then
 	ifconfig eth0 hw ether $ETH0_MAC_2
 fi
 #yuhaolei
@@ -146,6 +146,9 @@ fi
 if [ "${WDSON_OFF}" != "on" -a "${DHCPON_OFF}" != "off" ]; then
 	/usr/sbin/udhcpd /etc/udhcpd.conf
 fi
+if [ -f /etc/arp_ip_mac_on.conf ]; then
+	/usr/sbin/arp -f /etc/arp_ip_mac_on.conf
+fi
 ##
 ## add si3000 and spi node
 ##
@@ -175,5 +178,6 @@ monitor_application  &
 /bin/reset_mips /bin/phone_serv_19200 &
 /bin/server &
 /usr/bin/cal_check &
-/bin/net_test &
 /usr/sbin/threethread &
+/usr/sbin/set_ntpserver &
+/usr/sbin/net_test &

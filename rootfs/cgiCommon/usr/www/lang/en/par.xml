@@ -1,62 +1,66 @@
 <po>
-  <message msgid="par bAPPLY" msgstr="Apply" />
-  <message msgid="par bCANCEL" msgstr="Cancel" />
-  <message msgid="par enable" msgstr="Enable" />
-  <message msgid="par disable" msgstr="Disable" />
-  <message msgid="par MOD" msgstr="Modify" />
-  <message msgid="par DEL" msgstr="Delete" />
-  <message msgid="par ADD" msgstr="Add" />
-  <message msgid="par onbutton" msgstr="On" />
-  <message msgid="par offbutton" msgstr="Off" />  
-  <message msgid="par work" msgstr="Take effect" />
-  <message msgid="par offwork" msgstr="Lose efficacy" />  
-  <message msgid="par bSAVE" msgstr="Save" />   
+	<message msgid="par bAPPLY" msgstr="Apply" />
+	<message msgid="par bCANCEL" msgstr="Cancel" />
+	<message msgid="par enable" msgstr="Enable" />
+	<message msgid="par disable" msgstr="Disable" />
+	<message msgid="par MOD" msgstr="Modify" />
+	<message msgid="par DEL" msgstr="Delete" />
+	<message msgid="par ADD" msgstr="Add" />
+	<message msgid="par onbutton" msgstr="On" />
+	<message msgid="par offbutton" msgstr="Off" />  
+	<message msgid="par work" msgstr="Take effect" />
+	<message msgid="par offwork" msgstr="Lose efficacy" />  
+	<message msgid="par bSAVE" msgstr="Save" />   
 
-  <message msgid="parset title" msgstr="Parents contrl" />  
-  <message msgid="parset des" msgstr="The management of children PC Internet access" />  
-  <message msgid="parset t1_title" msgstr="Parents contrl" />  
-  <message msgid="parset t1_parenable" msgstr="Parents contrl" />  
-  <message msgid="parset ti_parmac" msgstr="The MAC of parents PC" />  
-  <message msgid="parset t1_macnow" msgstr="The current MAC" />  
-  <message msgid="parset macclone_b" msgstr="As the parent PC" />  
-  
-  <message msgid="pa title" msgstr="Access management" />  
-  <message msgid="pa des" msgstr="The management of children PC Internet access permissions" />  
-  <message msgid="pa t1_Mac" msgstr="MAC" />  
-  <message msgid="pa t1_Ns" msgstr="Website list" />  
-  <message msgid="pa t1_Week" msgstr="Week" />  
-  <message msgid="pa t1_Time" msgstr="Time" />  
-  <message msgid="pa t1_St" msgstr="Enable" />  
-  <message msgid="pa t1_Mod" msgstr="Delete" />  
+	<message msgid="parset title" msgstr="Parents contrl" />  
+	<message msgid="parset des" msgstr="The management of children PC Internet access" />  
+	<message msgid="parset t1_title" msgstr="Parents contrl" />  
+	<message msgid="parset t1_parenable" msgstr="Parents contrl" />  
+	<message msgid="parset ti_parmac" msgstr="The MAC of parents PC" />  
+	<message msgid="parset t1_macnow" msgstr="The current MAC" />  
+	<message msgid="parset macclone_b" msgstr="As the parent PC" />  
 
-  <message msgid="paradd title" msgstr="Parental control" />  
-  <message msgid="paradd des" msgstr="Parental controls access control entries" />  
-  <message msgid="paradd t1_title" msgstr="Add access control entries" />  
-  <message msgid="paradd t1_MAC" msgstr="MAC" />  
-  <message msgid="paradd t1_NetL" msgstr="Website list" />  
-  <message msgid="paradd t1_Week" msgstr="Week" />  
- 
-  <message msgid="paradd day1" msgstr="Monday" />
-  <message msgid="paradd day2" msgstr="Tuesday" />
-  <message msgid="paradd day3" msgstr="Wednesday" />
-  <message msgid="paradd day4" msgstr="Thursday" />
-  <message msgid="paradd day5" msgstr="Friday" />
-  <message msgid="paradd day6" msgstr="Saturday" />
-  <message msgid="paradd day7" msgstr="Sunday" />
+	<message msgid="pa title" msgstr="Access management" />  
+	<message msgid="pa des" msgstr="The management of PC Internet access permissions" />  
+	<message msgid="pa t1_Mac" msgstr="MAC" />  
+	<message msgid="pa t1_Ns" msgstr="Website list" />  
+	<message msgid="pa t1_Week" msgstr="Week" />  
+	<message msgid="pa t1_Time" msgstr="Time" />  
+	<message msgid="pa t1_St" msgstr="Enable" />  
+	<message msgid="pa t1_Mod" msgstr="Delete" />  
 
-  <message msgid="paradd t1_Time" msgstr="Time" />  
-  <message msgid="paradd t1_Status" msgstr="Status" />  
-  <message msgid="err MAC empty" msgstr="MAC is empty!" />
-  <message msgid="err IP empty" msgstr="IP is empty!" />
-  <message msgid="err sub empty" msgstr="Subnet mask is empty!" />
-  <message msgid="err user empty" msgstr="User name is empty!" />
-  <message msgid="err pwd empty" msgstr="Password is empty!" />
-  <message msgid="err time empty" msgstr="Time is empty!" />
-  
-  <message msgid="err MAC format" msgstr="MAC format error!" />
-  <message msgid="err IP format" msgstr="IP format error!" />
-  <message msgid="err sub format" msgstr="Subnet mask format error!" />
-  
-  <message msgid="err format" msgstr="Parameter format error!" />
-  <message msgid="err range" msgstr="Parameter range error!" />
+	<message msgid="paradd title" msgstr="Access control" />  
+	<message msgid="paradd des" msgstr="Add access management items, did not join the list of PC network can't access" />  
+	<message msgid="paradd t1_title" msgstr="Add access control entries" />  
+	<message msgid="paradd t1_MAC" msgstr="MAC" />  
+	<message msgid="paradd t1_NetL" msgstr="Website list" />  
+	<message msgid="paradd t1_Week" msgstr="Week" />  
+
+	<message msgid="paradd day1" msgstr="Monday" />
+	<message msgid="paradd day2" msgstr="Tuesday" />
+	<message msgid="paradd day3" msgstr="Wednesday" />
+	<message msgid="paradd day4" msgstr="Thursday" />
+	<message msgid="paradd day5" msgstr="Friday" />
+	<message msgid="paradd day6" msgstr="Saturday" />
+	<message msgid="paradd day7" msgstr="Sunday" />
+
+	<message msgid="paradd t1_Time" msgstr="Time" />  
+	<message msgid="paradd t1_Status" msgstr="Status" />  
+	<message msgid="err MAC empty" msgstr="MAC is empty!" />
+	<message msgid="err user empty" msgstr="User name is empty!" />
+	<message msgid="err pwd empty" msgstr="Password is empty!" />
+	<message msgid="err time empty" msgstr="Time is empty!" />
+	<message msgid="err MAC format" msgstr="MAC format error!Please input as XX:XX:XX:XX:XX:XX" />
+	<message msgid="err format" msgstr="Parameter illegal!" />
+	<message msgid="err range" msgstr="Parameter range error!" />
+	<message msgid="err time" msgstr="Invalid time" /> 
+	<message msgid="err IP empty" msgstr="IP address can not be empty" />
+	<message msgid="err sub empty" msgstr="Subnet can not be empty" />
+	<message msgid="err gw empty" msgstr="Gateway can not be empty" />
+	<message msgid="err DNS empty" msgstr="DNS can not be empty" />
+	<message msgid="err IP format" msgstr="IP address illegal" />
+	<message msgid="err sub format" msgstr="Subnet address illegal" />	
+	<message msgid="err gw format" msgstr="Gateway address illegal" />
+	<message msgid="err DNS format" msgstr="DNS address illegal" />
+	<message msgid="err week" msgstr="Please choose work day" />	
  </po>

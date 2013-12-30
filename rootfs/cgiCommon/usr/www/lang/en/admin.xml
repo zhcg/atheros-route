@@ -1,193 +1,193 @@
 ﻿<po>
-  <message msgid="admin disable" msgstr="Disable" />
-  <message msgid="admin enable" msgstr="Enable" />
-  <message msgid="admin apply" msgstr="Apply" />
-  <message msgid="admin cancel" msgstr="Cancel" />
-  <message msgid="admin reset" msgstr="Reset" />
-  <message msgid="admin scan" msgstr="Scan" />
-  <message msgid="admin restart" msgstr="Restart" />
-  
-  <message msgid="admw div_wan_title" msgstr="Please select the router WAN port connection." />
-  <message msgid="admw DHCP" msgstr="Automatic acquisition (dynamic IP)" />  
-  <message msgid="admw DHCPdisc" msgstr="Broadband service providers do not provide any parameter, no router can directly access, the computer does not need to do any settings." />
-  <message msgid="admw SM" msgstr="Manual settings (static IP)" />
-  <message msgid="admw SMdisc" msgstr="The fixed IP address, subnet mask, gateway, DNS server" />
-  <message msgid="admw PPPOE" msgstr="PPPoE (ADSL)" />
-  <message msgid="admw PPPOEdisc" msgstr="Choose this, user must input a username and password for ISP authenticator." />
-  <message msgid="admw L2TPc" msgstr="L2TP Client" />
-  <message msgid="admw PPTPc" msgstr="PPTP Client" />
-  
-  <message msgid="admw SMD" msgstr="Static Mode" />
-  <message msgid="admw IPA" msgstr="IP Address" />  
-  <message msgid="admw SubMask" msgstr="Subnet Mask" />  
-  <message msgid="admw defgw" msgstr="Default Gateway" />  
-  <message msgid="admw pDNSserver" msgstr="Primary DNS Server" />  
-  <message msgid="admw sDNSserver" msgstr="Secondary DNS Server" />
-  
-  <message msgid="admw pppoemod" msgstr="PPPoE Mode" />  
-  <message msgid="admw uname" msgstr="User Name" />  
-  <message msgid="admw pword" msgstr="Password" />  
-  <message msgid="admw vpword" msgstr="Verify Password" />  
-  <message msgid="admw opmope" msgstr="Operation Mode" />  
-  
-  <message msgid="admw div_wireless_title" msgstr="Please set your WiFi account and password. Your wireless device will use the following network." />  
-  <message msgid="admw wsetingst" msgstr="WiFi Settings" />  
-  <message msgid="admw nname" msgstr="Network Name (SSID)" />  
-  <message msgid="admw security" msgstr="Security" />
-  <message msgid="admw wkey" msgstr="KEY" />
-  
-  <message msgid="admw opmode keepalive" msgstr="Auto" />
-  <message msgid="admw opmode ondemand" msgstr="On Demand" />
-  <message msgid="admw opmode manual" msgstr="Manual" />
-  <message msgid="admw opmode timing" msgstr="Timing" />
-  <message msgid="KAM" msgstr="On Demand: waiting Period " />
-  <message msgid="ODM" msgstr="Manual: waiting Period " />
-  <message msgid="minutes" msgstr="minutes" />
-  <message msgid="seconds" msgstr="seconds" />
+	<message msgid="admin disable" msgstr="Disable" />
+	<message msgid="admin enable" msgstr="Enable" />
+	<message msgid="admin apply" msgstr="Apply" />
+	<message msgid="admin cancel" msgstr="Cancel" />
+	<message msgid="admin reset" msgstr="Reset" />
+	<message msgid="admin scan" msgstr="Scan" />
+	<message msgid="admin restart" msgstr="Restart" />
 
-  <message msgid="minutes" msgstr="minutes" />
-  <message msgid="seconds" msgstr="seconds" />
-  
-<message msgid="adminw L2TPM" msgstr="L2TP Mode" />
-<message msgid="adminw L2TPSIP" msgstr="L2TP Server IP Address" />
-<message msgid="adminw L2TPname" msgstr="User Name" />
-<message msgid="adminw L2TPpwd" msgstr="Password" />
-<message msgid="adminw L2TPAM" msgstr="Address Mode" />
-<message msgid="adminw l2tpMs" msgstr="Static" />
-<message msgid="adminw l2tpMd" msgstr="Dynamic" />
-<message msgid="adminw L2TPIP" msgstr="IP Address" />
-<message msgid="adminw L2TPSM" msgstr="Subnet Mask" />
-<message msgid="adminw L2TPDG" msgstr="Default Gateway" />
-<message msgid="adminw L2TPOM" msgstr="Operation Mode" />
-<message msgid="adminw L2TPka" msgstr="Keep Alive" />
-<message msgid="adminw L2TPMa" msgstr="Manual" />
-<message msgid="adminw L2TP_KAM" msgstr="Keep Alive Mode: Redial Period" />
-<message msgid="adminw L2TP_seconds" msgstr="senconds" />
+	<message msgid="admw div_wan_title" msgstr="Please select the router WAN port connection." />
+	<message msgid="admw DHCP" msgstr="Automatic acquisition (dynamic IP)" />  
+	<message msgid="admw DHCPdisc" msgstr="Broadband service providers do not provide any parameter, no router can directly access, the computer does not need to do any settings." />
+	<message msgid="admw SM" msgstr="Manual settings (static IP)" />
+	<message msgid="admw SMdisc" msgstr="The fixed IP address, subnet mask, gateway, DNS server" />
+	<message msgid="admw PPPOE" msgstr="PPPoE (ADSL)" />
+	<message msgid="admw PPPOEdisc" msgstr="Choose this, user must input a username and password for ISP authenticator." />
+	<message msgid="admw L2TPc" msgstr="L2TP Client" />
+	<message msgid="admw PPTPc" msgstr="PPTP Client" />
 
-<message msgid="adminw PPM" msgstr="PPTP Mode" />
-<message msgid="adminw PPSIP" msgstr="PPTP Server IP Address" />
-<message msgid="adminw PPuname" msgstr="User Name" />
-<message msgid="adminw PPpwd" msgstr="Password" />
-<message msgid="adminw PPAM" msgstr="Address Mode" />
-<message msgid="adminw PPS" msgstr="Static" />
-<message msgid="adminw PPD" msgstr="Dynamic" />
-<message msgid="adminw PPIP" msgstr="IP Address" />
-<message msgid="adminw PPSM" msgstr="Subnet Mask" />
-<message msgid="adminw PPDG" msgstr="Default Gateway" />
-<message msgid="adminw PPOM" msgstr="Operation Mode" />
-<message msgid="adminw PPKA" msgstr="Keep Alive" />
-<message msgid="adminw PPma" msgstr="Manual" />
-<message msgid="adminw PPtP_KAM" msgstr="Keep Alive Mode: Redial Period" />
-<message msgid="adminw PPtP_seconds" msgstr="senconds" />
+	<message msgid="admw SMD" msgstr="Static Mode" />
+	<message msgid="admw IPA" msgstr="IP Address" />  
+	<message msgid="admw SubMask" msgstr="Subnet Mask" />  
+	<message msgid="admw defgw" msgstr="Default Gateway" />  
+	<message msgid="admw pDNSserver" msgstr="Primary DNS Server" />  
+	<message msgid="admw sDNSserver" msgstr="Secondary DNS Server" />
 
-  <message msgid="admw RCMd" msgstr="Please select the HBD router (Base) access mode. To set the WAN parameters, which can access the external network router." />  
-  <message msgid="admw int" msgstr="Wired Connection" />  
-  <message msgid="admw int1" msgstr="Connect to the line into the house" />  
-  <message msgid="admw wireless" msgstr="Wireless connection" />  
-  <message msgid="admw int2" msgstr="Connect to an existing router for WiFi network" />  
-  
-  <message msgid="admw RMd" msgstr="Wireless Relay" />  
-  <message msgid="admw R_uname" msgstr="WiFi Name(SSID)" />  
-  <message msgid="admw R_pword" msgstr="Password" />  
-  
-  <message msgid="admw bBACK" msgstr="Back" />  
-  <message msgid="admw bNEXT" msgstr="Next" />  
-  <message msgid="admw bCANCEL" msgstr="Cancel" />  
-  <message msgid="admw bAPPLY" msgstr="Apply" />  
-  
-   <message msgid="admw w1title" msgstr="Setting wizard" />
-   <message msgid="admw w2title" msgstr="WAN Settings" />  
-   <message msgid="admw w3ttitle" msgstr="WiFi Settings" />  
-   <message msgid="admw w4ttitle" msgstr="Wireless Relay" />  
-   <message msgid="admw w5ttitle" msgstr="Parental Control" /> 
+	<message msgid="admw pppoemod" msgstr="PPPoE Mode" />  
+	<message msgid="admw uname" msgstr="User Name" />  
+	<message msgid="admw pword" msgstr="Password" />  
+	<message msgid="admw vpword" msgstr="Verify Password" />  
+	<message msgid="admw opmope" msgstr="Operation Mode" />  
+
+	<message msgid="admw div_wireless_title" msgstr="Please set your WiFi account and password. Your wireless device will use the following network." />  
+	<message msgid="admw wsetingst" msgstr="WiFi Settings" />  
+	<message msgid="admw nname" msgstr="Network Name (SSID)" />  
+	<message msgid="admw security" msgstr="Security" />
+	<message msgid="admw wkey" msgstr="KEY" />
+
+	<message msgid="admw opmode keepalive" msgstr="Auto" />
+	<message msgid="admw opmode ondemand" msgstr="On Demand" />
+	<message msgid="admw opmode manual" msgstr="Manual" />
+	<message msgid="admw opmode timing" msgstr="Timing" />
+	<message msgid="KAM" msgstr="On Demand: waiting Period " />
+	<message msgid="ODM" msgstr="Manual: waiting Period " />
+	<message msgid="minutes" msgstr="minutes" />
+	<message msgid="seconds" msgstr="seconds" />
+
+	<message msgid="minutes" msgstr="minutes" />
+	<message msgid="seconds" msgstr="seconds" />
+
+	<message msgid="adminw L2TPM" msgstr="L2TP Mode" />
+	<message msgid="adminw L2TPSIP" msgstr="L2TP Server IP Address" />
+	<message msgid="adminw L2TPname" msgstr="User Name" />
+	<message msgid="adminw L2TPpwd" msgstr="Password" />
+	<message msgid="adminw L2TPAM" msgstr="Address Mode" />
+	<message msgid="adminw l2tpMs" msgstr="Static" />
+	<message msgid="adminw l2tpMd" msgstr="Dynamic" />
+	<message msgid="adminw L2TPIP" msgstr="IP Address" />
+	<message msgid="adminw L2TPSM" msgstr="Subnet Mask" />
+	<message msgid="adminw L2TPDG" msgstr="Default Gateway" />
+	<message msgid="adminw L2TPOM" msgstr="Operation Mode" />
+	<message msgid="adminw L2TPka" msgstr="Keep Alive" />
+	<message msgid="adminw L2TPMa" msgstr="Manual" />
+	<message msgid="adminw L2TP_KAM" msgstr="Keep Alive Mode: Redial Period" />
+	<message msgid="adminw L2TP_seconds" msgstr="senconds" />
+
+	<message msgid="adminw PPM" msgstr="PPTP Mode" />
+	<message msgid="adminw PPSIP" msgstr="PPTP Server IP Address" />
+	<message msgid="adminw PPuname" msgstr="User Name" />
+	<message msgid="adminw PPpwd" msgstr="Password" />
+	<message msgid="adminw PPAM" msgstr="Address Mode" />
+	<message msgid="adminw PPS" msgstr="Static" />
+	<message msgid="adminw PPD" msgstr="Dynamic" />
+	<message msgid="adminw PPIP" msgstr="IP Address" />
+	<message msgid="adminw PPSM" msgstr="Subnet Mask" />
+	<message msgid="adminw PPDG" msgstr="Default Gateway" />
+	<message msgid="adminw PPOM" msgstr="Operation Mode" />
+	<message msgid="adminw PPKA" msgstr="Keep Alive" />
+	<message msgid="adminw PPma" msgstr="Manual" />
+	<message msgid="adminw PPtP_KAM" msgstr="Keep Alive Mode: Redial Period" />
+	<message msgid="adminw PPtP_seconds" msgstr="senconds" />
+
+	<message msgid="admw RCMd" msgstr="Please select the HBD router (Base) access mode. To set the WAN parameters, which can access the external network router." />  
+	<message msgid="admw int" msgstr="Wired Connection" />  
+	<message msgid="admw int1" msgstr="Connect to the line into the house" />  
+	<message msgid="admw wireless" msgstr="Wireless connection" />  
+	<message msgid="admw int2" msgstr="Connect to an existing router for WiFi network" />  
+
+	<message msgid="admw RMd" msgstr="Wireless Relay" />  
+	<message msgid="admw R_uname" msgstr="WiFi Name(SSID)" />  
+	<message msgid="admw R_pword" msgstr="Password" />  
+
+	<message msgid="admw bBACK" msgstr="Back" />  
+	<message msgid="admw bNEXT" msgstr="Next" />  
+	<message msgid="admw bCANCEL" msgstr="Cancel" />  
+	<message msgid="admw bAPPLY" msgstr="Apply" />  
+
+	<message msgid="admw w1title" msgstr="Setting wizard" />
+	<message msgid="admw w2title" msgstr="WAN Settings" />  
+	<message msgid="admw w3ttitle" msgstr="WiFi Settings" />  
+	<message msgid="admw w4ttitle" msgstr="Wireless Relay" />  
+	<message msgid="admw w5ttitle" msgstr="Parental Control" /> 
 	<message msgid="admw wwtitle" msgstr="Network/Wireless Relay" />     
-  
-   <message msgid="admw modedes" msgstr="Please select the router WAN connection type." />  
-   <message msgid="admw modedes1" msgstr="The parameters needed in the opening of the network, the network operators to provide" />  
 
-   <message msgid="admw wifides" msgstr="Please set the HBD routing WiFi account and password. Your computer, PAD, intelligent mobile phone will use the following network." />  
-   <message msgid="admw wirelessdes" msgstr="Please select the WiFi you want to connect to." />  
-   <message msgid="admw parentdes" msgstr="As a parent, you can control child's Internet time and visiting the webpage through the page settings" />  
-   
-   <message msgid="admw PPMAC" msgstr="The MAC address of parent PC" />
-   <message msgid="admw MPMAC" msgstr="The MAC address of management PC" />
-   <message msgid="admw maccopy" msgstr="Set to parent PC" />
-   
-    <message msgid="admin gsset" msgstr="Basic Settings" />    
+	<message msgid="admw modedes" msgstr="Please select the router WAN connection type." />  
+	<message msgid="admw modedes1" msgstr="The parameters needed in the opening of the network, the network operators to provide" />  
+
+	<message msgid="admw wifides" msgstr="Please set the HBD routing WiFi account and password. Your computer, PAD, intelligent mobile phone will use the following network." />  
+	<message msgid="admw wirelessdes" msgstr="Please select the WiFi you want to connect to." />  
+	<message msgid="admw parentdes" msgstr="As a parent, you can control child's Internet time and visiting the webpage through the page settings" />  
+
+	<message msgid="admw PPMAC" msgstr="The MAC address of parent PC" />
+	<message msgid="admw MPMAC" msgstr="The MAC address of management PC" />
+	<message msgid="admw maccopy" msgstr="Set to parent PC" />
+
+	<message msgid="admin gsset" msgstr="Basic Settings" />    
 	<message msgid="admin gback" msgstr="Home Page" />    
 	<message msgid="admin gexit" msgstr="EXIT" />   
-	
+
 	<message msgid="admw otherbutton" msgstr="Others" />    
 	<message msgid="admw advbutton" msgstr="Advanced" />
-	
+
 	<message msgid="admw AutoMode" msgstr="Internet router automatically (recommended)" />    
 	<message msgid="admw Autodisc" msgstr="Choose this, this device will select the connection type automatically." />
-	
+
 	<message msgid="admw m_bset" msgstr="Start" />
-	
+
 	<message msgid="admw showp" msgstr="show password" />
 	<message msgid="admw optionXX" msgstr="(optional)" />
-	
+
 	<message msgid="admw auto_dhcp" msgstr="Automatically select DHCP mode" />
 	<message msgid="admw auto_sip" msgstr="Automatically select StaticIP mode" />
 	<message msgid="admw auto_ppp" msgstr="Automatically select PPPoE mode" />
 	<message msgid="admw auto_l2tp" msgstr="Automatically select L2TP mode" />
 	<message msgid="admw auto_p2tp" msgstr="Automatically select P2TP mode" />
 	<message msgid="admw auto_fail" msgstr="Automatically select fail！,please check the internet connection or select manually " />
-	
+
 	<message msgid="admw fresh" msgstr="Scanning" />
 	<message msgid="admw Wlisttitle1" msgstr="WiFi list" />
 	<message msgid="admw Wlisttitle2" msgstr="Existing WiFi:SSID(MAC)(channel)(Encrypting Mode WPA-Security None-Open)" />
 	<message msgid="admw Wlisttitle3" msgstr="Drop-down list" />
-    <message msgid="toplanguage" msgstr="e" />
-    <message msgid="admin open" msgstr="Open" />
+	<message msgid="toplanguage" msgstr="e" />
+	<message msgid="admin open" msgstr="Open" />
 	<message msgid="admin jiami" msgstr="Security（Recommend）" />
 
-    <message msgid="admw wifiswitch" msgstr="WiFi switch" />
+	<message msgid="admw wifiswitch" msgstr="WiFi switch" />
 	<message msgid="admw wdsswitch" msgstr="WDS switch" />
 
 	<message msgid="admw onbutton" msgstr="ON" />
-    <message msgid="admw offbutton" msgstr="OFF" />
-    <message msgid="admw waiting" msgstr="Please Wait......" />
-    <message msgid="admw settingwaiting" msgstr="Setting,Please Wait......" />
+	<message msgid="admw offbutton" msgstr="OFF" />
+	<message msgid="admw waiting" msgstr="Please Wait......" />
+	<message msgid="admw settingwaiting" msgstr="Setting,Please Wait......" />
 	<message msgid="admw uploadwaiting" msgstr="Upgrading,Please Wait......" />
 
 	<message msgid="admw ssidrequest" msgstr="  (1-24 letters, numbers, or underscore)" />
-    <message msgid="admw passwordrequest" msgstr="  (8-12 letters, numbers or underscore)" />
-    <message msgid="admw passwordrequest1" msgstr="  (5-12 letters, numbers or underscore)" />
+	<message msgid="admw passwordrequest" msgstr="  (8-12 letters, numbers or underscore)" />
+	<message msgid="admw passwordrequest1" msgstr="  (5-12 letters, numbers or underscore)" />
 
 	<message msgid="err lineout" msgstr="The line is out!" />
 	<message msgid="err ip empty" msgstr="Error. IP address is empty." />
 	<message msgid="err mask empty" msgstr="Error. Mask is empty." />
-    <message msgid="err name empty" msgstr="Please enter user name!" />
+	<message msgid="err name empty" msgstr="Please enter user name!" />
 	<message msgid="err SSID empty" msgstr="Please enter SSID!" />    
 	<message msgid="err mac empty" msgstr="Please enter MAC!" />   
 
-    <message msgid="err pwd empty" msgstr="Please enter password!" />
+	<message msgid="err pwd empty" msgstr="Please enter password!" />
 	<message msgid="err key" msgstr="Please input key!" />
-	
-    <message msgid="err pwd mismatch" msgstr="Password mismatched!" />
+
+	<message msgid="err pwd mismatch" msgstr="Password mismatched!" />
 	<message msgid="err SSID length" msgstr="The length of SSID is error" />
 	<message msgid="err pwd length" msgstr="The length of Password is error" />
 
 	<message msgid="err sRP" msgstr="Please specify the automatic disconnection waiting" />
 	<message msgid="err sIT" msgstr="Please specify the automatic disconnection waiting" />
-	
+
 	<message msgid="err number" msgstr="It should be a [0-9] number." />
-	<message msgid="err IPmormat" msgstr="IP adress format error." />
-	<message msgid="err Maskmormat" msgstr="Mask format error." />
+	<message msgid="err IPmormat" msgstr="IP adress illegal." />
+	<message msgid="err Maskmormat" msgstr="Mask illegal." />
 
 	<message msgid="err IP error" msgstr="WAN IP and local IP cannot be located in the same network, please reset" />
-	
+
 	<message msgid="err keylen" msgstr="Please input at least 8 and less than 12 character of key!" />
 	<message msgid="err keychar" msgstr="Invalid characters in Pass Phrase." />
 	<message msgid="admw internet" msgstr="Internet" />
 	<message msgid="admw wai" msgstr="Internet settings" />
 	<message msgid="admw nei" msgstr="Wifi settings" />
-	
+
 	<message msgid="password change" msgstr="Password has been changed,the new password works after reset" />
 	<message msgid="admw securitydes" msgstr="Modify the routing Web management page login password" />
-	
+
 	<message msgid="admw uploadtitle" msgstr="Firmware upgrade" />
 	<message msgid="admw uploaddes" msgstr="Choose to upgrade using image files, do an in place upgrade" />
 	<message msgid="admw uploadfirware" msgstr="Firmware upgrade" />
@@ -197,7 +197,7 @@
 	<message msgid="upgrade success" msgstr="Upgrade success!" />
 	<message msgid="admw channelchoose" msgstr="Channel select" />
 	<message msgid="admw channelauto" msgstr="AUTO" />
-	
+
 	<message msgid="factory reset" msgstr="Restore factory settings will be lost the existing configuration, are you sure you want to continue?" />
 	<message msgid="admw factitle" msgstr="Factory Settings" />
 	<message msgid="admw facdes" msgstr="Click on this button will restore all settings to the router's factory default state" />
@@ -206,21 +206,30 @@
 	<message msgid="factory success" msgstr="Return to factory setting successfully!" />
 	<message msgid="upgrade success" msgstr="Upgrade successfully!" />
 	<message msgid="upgrade fail" msgstr="Version of the same, the firmware is not upgraded!" />
-	
+
 	<message msgid="admw offwifides" msgstr="wifi is off so WDS is not work" />
 	<message msgid="admw software" msgstr="Softwsre Version" />
 	<message msgid="admw hardware" msgstr="Hardware Version" />
 	<message msgid="admw hidewifides" msgstr="Hide Wifi" />
-	
+
 	<message msgid="admw PPPOE_TIMING" msgstr="Timing ：Timing Period" />
 	<message msgid="err stiming" msgstr="Please set right time" />
-	
+
 	<message msgid="err file format" msgstr="Upgrade package and system hardware does not match, please select the correct upgrade package! " />
 	<message msgid="err file upload" msgstr="Firmware upload fail!" />
 	<message msgid="admw chfile" msgstr="Choose file" />	
-    <message msgid="admw waring" msgstr="Note: the upgrade process is completely automatic, please don't turn off the power, otherwise it will result in BASE damage and can not be used, the upgrade process about 130 seconds, when the upgrade is complete, the BASE will automatically restart." />	
-  <message msgid="admw sysupgrade" msgstr="Confirm the firmware upgrade?" />
-  	<message msgid="err dhcp null" msgstr="Unable to get WAN IP through DHCP,please check that the dhcp server provider?" />
-	<message msgid="err dhcp ip" msgstr="The WAN IP and Route IP are in the same subnet, please set the Route IP in gateway settings" />
+	<message msgid="admw waring" msgstr="Note: the upgrade process is completely automatic, please don't turn off the power, otherwise it will result in BASE damage and can not be used, the upgrade process about 130 seconds, when the upgrade is complete, the BASE will automatically restart." />	
+	<message msgid="admw sysupgrade" msgstr="Confirm the firmware upgrade?" />
+	<message msgid="err dhcp null" msgstr="Unable to get WAN IP through DHCP,please check that the dhcp server provider?" />
+	<message msgid="err dhcp ip" msgstr="The WAN IP and Route IP are in the same subnet, please set the Route IP in Advanced Settings - Network Settings - Gateway Settings" />
 	<message msgid="man admin setting" msgstr="Administrator settings" />
+
+	<message msgid="err IP empty" msgstr="IP address can not be empty" />
+	<message msgid="err sub empty" msgstr="Subnet can not be empty" />
+	<message msgid="err gw empty" msgstr="Gateway can not be empty" />
+	<message msgid="err DNS empty" msgstr="DNS can not be empty" />
+	<message msgid="err IP format" msgstr="IP address illegal" />
+	<message msgid="err sub format" msgstr="Subnet address illegal" />	
+	<message msgid="err gw format" msgstr="Gateway address illegal" />
+	<message msgid="err DNS format" msgstr="DNS address illegal" />
 </po>

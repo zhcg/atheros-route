@@ -2,7 +2,56 @@
 <head>
 <title>Router Setting</title>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<script language="JavaScript" type="text/javascript">
+function initLanguage()
+{
+	var cook="no";
+	if (document.cookie.length > 0) {
+		var s = document.cookie.indexOf("language=");
+		//alert("s:"+s);
+		var e = document.cookie.indexOf(";", s);
+		//alert("e:"+e);
+		if (s != -1) 
+		{
+			if (e == -1)
+			{
+				//alert("e=-1:"+e);
+				cook = document.cookie.substring(s+9);
+				//alert("cook:"+cook);
+			}
+			else
+			{
+				//alert("e!=-1:"+e);
+				cook = document.cookie.substring(s+9, e);
+				//alert("cook:"+cook);
+			}
+		}
+	}
+	if((cook != "zhcn")&&(cook != "en"))
+	{
+		//alert("cook:language=zhcn"+cook);
+		document.cookie="language=zhcn; path=/";
+		window.location.reload();
+	}
+
+}
+
+function onInit()
+{
+	initLanguage();
+}
+</script>
 </head>
-<body onload="window.location.href='home.html'">
-</body>
+<frameset rows="72,*" cols="*" framespacing="0" frameborder="yes" border="0" onLoad="onInit()">
+	<frame src="top.html" noresize="noresize" frameborder="0" name="topFrame" marginwidth="0" marginheight="0" scrolling="no">
+		<frameset rows="*" cols="200,*" id="frame" framespacing="0" frameborder="yes" border="0">
+			<frame src="menu.html" name="menu" noresize="noresize" marginwidth="0" marginheight="0" frameborder="0" scrolling="auto">
+			<frame src="cgi-bin/map" name="pro" noresize="noresize"marginwidth="0" marginheight="0" frameborder="0" scrolling="auto">
+		</frameset>
+<noframes>
+	<body>您的浏览器无法处理框架！
+	<input type="text" style="display:none" name="Langu" id="Langu" size="20" maxlength="32" value="~~Lang~">
+	</body>
+</noframes>
+</frameset>
 </html>

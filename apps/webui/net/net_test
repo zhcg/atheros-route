@@ -1,28 +1,16 @@
 #!/bin/sh
 BAIDU=www.baidu.com
-QQ=www.qq.com
 
 while true
 do
+
 ping  $BAIDU test
 
-if [ $? -eq 1 ];then
-        cfg -a PING_BD=NO
-        cfg -a INTERNET_ON=off
-else
-        cfg -a PING_BD=OK
+if [ $? -eq 1 ]; then
         cfg -a INTERNET_ON=on
-
-fi
-
-
-ping  $QQ test
-if [ $? -eq 1 ];then
-        cfg -a PING_QQ=NO
 else
-        cfg -a PING_QQ=OK
+        cfg -a INTERNET_ON=off
 fi
-
 
 cfg -c
 

@@ -1,0 +1,13 @@
+#!/bin/sh
+
+PCTIME=PCTIME
+
+YEAR=`cfg -e | grep $PCTIME|awk -F'"' '{print $2}'| awk -F'-' '{print $1}'`
+MONTH=`cfg -e | grep $PCTIME|awk -F'"' '{print $2}'| awk -F'-' '{print $2}'`
+DAY=`cfg -e | grep $PCTIME|awk -F'"' '{print $2}'| awk -F'-' '{print $3}'`
+HOUR=`cfg -e | grep $PCTIME|awk -F'"' '{print $2}'| awk -F'-' '{print $4}'| awk -F':' '{print $1}'`
+MINUTE=`cfg -e | grep $PCTIME|awk -F'"' '{print $2}'| awk -F'-' '{print $4}'| awk -F':' '{print $2}'`
+SECOND=`cfg -e | grep $PCTIME|awk -F'"' '{print $2}'| awk -F'-' '{print $4}'| awk -F':' '{print $3}'`
+
+date -u $MONTH$DAY$HOUR$MINUTE$YEAR.$SECOND
+

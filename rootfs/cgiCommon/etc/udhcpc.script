@@ -2,7 +2,9 @@
 #wangyu add for udhcpc function
 if [ -z $ip ];then
 	cfg -a WAN_IPFLAG=none
-	cfg -r WAN_IPADDR
+	cfg -r WAN_IPADDR2
+	cfg -r AP_NETMASK2
+	cfg -r IPGW2
 	cfg -c
 	exit 1
 fi
@@ -19,7 +21,7 @@ if [ $interface = "eth0" ];then
 			if [ ${WAN_ADDR} = ${LAN_ADDR} ];then
 				echo "the dhcp apply IP addr has same domain with br0"
 				cfg -a WAN_IPFLAG=unnormal
-#				cfg -a WAN_IPADDR=$ip
+#				cfg -a WAN_IPADDR2=$ip
 				cfg -c
 				exit 2
 			fi
@@ -28,7 +30,7 @@ if [ $interface = "eth0" ];then
 fi
 
 cfg -a WAN_IPFLAG=normal
-cfg -a WAN_IPADDR=$ip
+cfg -a WAN_IPADDR2=$ip
 cfg -c
 
 #echo ip : $ip
@@ -45,13 +47,21 @@ fi
 
 if [ ! -z $subnet ];then
 	nflag="netmask $subnet"
+	cfg -a AP_NETMASK2=$subnet
+	cfg -c
 else
+	cfg -r AP_NETMASK2
+	cfg -c
 	nflag=
 fi
 
 if [ ! -z $router ];then
 	rflag="gw $router"
+	cfg -a IPGW2=$router
+	cfg -c
 else
+	cfg -r IPGW2
+	cfg -c
 	rflag=
 fi
 #wangyu add end

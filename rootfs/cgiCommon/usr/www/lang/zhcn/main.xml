@@ -1,123 +1,122 @@
 ﻿<po>
-  <message msgid="main disable" msgstr="停用" />
-  <message msgid="main enable" msgstr="启用" />
-  <message msgid="main apply" msgstr="应用" />
-  <message msgid="main cancel" msgstr="取消" />
-  <message msgid="toplanguage" msgstr="z" />
+	<message msgid="main disable" msgstr="停用" />
+	<message msgid="main enable" msgstr="启用" />
+	<message msgid="main apply" msgstr="应用" />
+	<message msgid="main cancel" msgstr="取消" />
+	<message msgid="toplanguage" msgstr="z" />
 
-  <message msgid="top_fast" msgstr="快速设置" />
-  <message msgid="top_adv" msgstr="高级设置" />
-  <message msgid="top_admin" msgstr="密码管理" />
-  <message msgid="top_exit" msgstr="退出" />
+	<message msgid="top_fast" msgstr="快速设置" />
+	<message msgid="top_adv" msgstr="高级设置" />
+	<message msgid="top_admin" msgstr="密码管理" />
+	<message msgid="top_exit" msgstr="退出" />
 
-  <message msgid="advmenu treeapp_title" msgstr="高级设置" />
-  <message msgid="advmenu treeapp_sysstatus" msgstr="系统状态" />
-  <message msgid="advmenu treeapp_wan" msgstr="外网设置" />
-  <message msgid="advmenu treeapp_wan_set" msgstr="WAN口设置" />
-  <message msgid="advmenu treeapp_wan_macclone" msgstr="MAC地址克隆" />
-  
-  <message msgid="advmenu treeapp_local" msgstr="内网设置" />
-  <message msgid="advmenu treeapp_local_dhcp" msgstr="DHCP服务器" />
-  <message msgid="advmenu treeapp_local_gwset" msgstr="网关设置" />
-  <message msgid="advmenu treeapp_local_rulist" msgstr="路由表设置" />
-  
-  <message msgid="advmenu treeapp_conm" msgstr="接入管理" />
-  <message msgid="advmenu treeapp_conm_list" msgstr="已接入设备列表" />
-  <message msgid="advmenu treeapp_conm_ctrl" msgstr="无线接入管理" />
-  <message msgid="advmenu treeapp_wifi" msgstr="无线设置" />
-  <message msgid="advmenu treeapp_wifi_basic" msgstr="基本设置" />
-  <message msgid="advmenu treeapp_wifi_adv" msgstr="高级设置" />
-  <message msgid="advmenu treeapp_wifi_wds" msgstr="无线中继" />
-  
-  <message msgid="advmenu treeapp_safe" msgstr="安全管理" />
-  <message msgid="advmenu treeapp_safe_ipmac" msgstr="IP/MAC地址绑定" />
-  <message msgid="advmenu treeapp_par" msgstr="家长控制" />
-  <message msgid="advmenu treeapp_par_set" msgstr="家长设置" />
-  <message msgid="advmenu treeapp_par_access" msgstr="访问管理" />
-  
-  <message msgid="advmenu treeapp_man" msgstr="系统管理" />
-  <message msgid="advmenu treeapp_man_tz" msgstr="时间设置" />
-  <message msgid="advmenu treeapp_man_cfgm" msgstr="配置管理" />
-  <message msgid="advmenu treeapp_man_upgrade" msgstr="固件升级" />
-  <message msgid="advmenu treeapp_man_factory" msgstr="恢复出厂" />
-  <message msgid="advmenu treeapp_man_reboot" msgstr="重启" />
-  <message msgid="advmenu treeapp_netcheck" msgstr="网络诊断" />
-  
-	
-  <message msgid="sset exit" msgstr="你确定要退出吗？" />  
-  <message msgid="admw m_fast" msgstr="快速设置" />
-  <message msgid="admw m_normal" msgstr="设置向导" />
-  <message msgid="admw m_wan" msgstr="外网设置" />
-  <message msgid="admw m_wifi" msgstr="WiFi设置" />
-  <message msgid="admw m_wirere" msgstr="无线中继" />
-  <message msgid="admw m_parent" msgstr="家长控制" />
-  <message msgid="admw m_upload" msgstr="固件升级" />
-  <message msgid="admw m_factory" msgstr="恢复出厂设置" />
+	<message msgid="advmenu treeapp_title" msgstr="高级设置" />
+	<message msgid="advmenu treeapp_sysstatus" msgstr="系统状态" />
+	<message msgid="advmenu treeapp_wan" msgstr="外网设置" />
+	<message msgid="advmenu treeapp_wan_set" msgstr="WAN口设置" />
+	<message msgid="advmenu treeapp_wan_macclone" msgstr="MAC地址克隆" />
 
-  <message msgid="sysinfo t1_title" msgstr="系统状态" />
-  <message msgid="sysinfo t1_softv" msgstr="当前软件版本" />
-  <message msgid="sysinfo t1_firmv" msgstr="当前硬件版本" />
-  <message msgid="sysinfo t2_title" msgstr="互联网" />
-  <message msgid="sysinfo t2_intnets" msgstr="上网状态" />
-  <message msgid="sysinfo t2_mac" msgstr="MAC地址" />
-  <message msgid="sysinfo t2_ip" msgstr="IP地址" />
-  <message msgid="sysinfo t2_ctpye" msgstr="接入方式" />
-  <message msgid="sysinfo t2_gw" msgstr="网关" />
-  <message msgid="sysinfo t3_title" msgstr="局域网" />
-  <message msgid="sysinfo t3_mac" msgstr="MAC地址" />
-  <message msgid="sysinfo t3_GW" msgstr="网关IP" />
-  <message msgid="sysinfo t4_title" msgstr="无线网络" />
-  <message msgid="sysinfo t4_wifis" msgstr="无线状态" />
-  <message msgid="sysinfo t4_name" msgstr="网络名称" />
-  <message msgid="sysinfo t4_safes" msgstr="安全类型" />
-  <message msgid="sysinfo t4_channel" msgstr="无线信道" />
-  <message msgid="sysinfo t4_wds" msgstr="WDS状态" />
-  
-  <message msgid="sysinfo ok" msgstr="可上网" />
-  <message msgid="sysinfo fail" msgstr="不可上网" />
-  <message msgid="sysinfo on" msgstr="开启" />
-  <message msgid="sysinfo off" msgstr="未开启" />
-  <message msgid="sysinfo jiami" msgstr="加密" />
-  <message msgid="sysinfo open" msgstr="开放" />  
-  <message msgid="sysinfo unset" msgstr="未设置" />
-  
-  <message msgid="sysinfo dhcp" msgstr="动态获取" />
-  <message msgid="sysinfo static" msgstr="静态IP" />
-  <message msgid="sysinfo pppoe" msgstr="PPPOE(ADSL)" />
-  <message msgid="sysinfo l2tp" msgstr="L2TP" />
-  <message msgid="sysinfo pptp" msgstr="PPTP" />
+	<message msgid="advmenu treeapp_local" msgstr="内网设置" />
+	<message msgid="advmenu treeapp_local_dhcp" msgstr="DHCP服务器" />
+	<message msgid="advmenu treeapp_local_gwset" msgstr="网关设置" />
+	<message msgid="advmenu treeapp_local_rulist" msgstr="路由表设置" />
 
-  
-  <message msgid="netcheck title" msgstr="网络诊断" />
-  <message msgid="netcheck des" msgstr="检测网络连接类型和进行网络PING操作" />
-  <message msgid="netcheck netc" msgstr="开始诊断" />
-  <message msgid="netcheck checkingwaiting" msgstr="正在进行检测请您稍候......" />
-  <message msgid="netcheck Result" msgstr="诊断结果" />
-  <message msgid="netcheck t1_wantype" msgstr="自动检测WAN口类型" />
-  <message msgid="netcheck t1_basetype" msgstr="BASE路由设置类型" />
-  <message msgid="netcheck t1_pngBD" msgstr="PING百度结果" />
-  <message msgid="netcheck t1_pingQQ" msgstr="PING腾讯结果" />
-  
-  <message msgid="netcheck renetc" msgstr="重新诊断" />
+	<message msgid="advmenu treeapp_conm" msgstr="接入管理" />
+	<message msgid="advmenu treeapp_conm_list" msgstr="已接入设备列表" />
+	<message msgid="advmenu treeapp_conm_ctrl" msgstr="无线接入管理" />
+	<message msgid="advmenu treeapp_wifi" msgstr="无线设置" />
+	<message msgid="advmenu treeapp_wifi_basic" msgstr="基本设置" />
+	<message msgid="advmenu treeapp_wifi_adv" msgstr="高级设置" />
+	<message msgid="advmenu treeapp_wifi_wds" msgstr="无线中继" />
 
-  <message msgid="netcheck r1" msgstr="互联网连接失败,请您检查网线连接及网络设置状态" />
-  <message msgid="netcheck r2" msgstr="可以访问互联网,网络正常" />
-  <message msgid="netcheck r3" msgstr="请您检查WAN网线" />
-  
-  <message msgid="err MAC empty" msgstr="MAC地址不能为空" />
-  <message msgid="err IP empty" msgstr="IP地址不能为空" />
-  <message msgid="err sub empty" msgstr="掩码地址不能为空" />
-  <message msgid="err user empty" msgstr="用户名不能为空" />
-  <message msgid="err pwd empty" msgstr="密码不能为空" />
-  <message msgid="err time empty" msgstr="时间不能为空" />
-  
-  <message msgid="err MAC format" msgstr="MAC格式错误" />
-  <message msgid="err IP format" msgstr="IP地址格式错误" />
-  <message msgid="err sub format" msgstr="掩码格式错误" />
-  
-  <message msgid="err format" msgstr="参数格式错误" />
-  <message msgid="err range" msgstr="参数范围错误" />
-  
-  
+	<message msgid="advmenu treeapp_safe" msgstr="安全管理" />
+	<message msgid="advmenu treeapp_safe_ipmac" msgstr="IP/MAC地址绑定" />
+	<message msgid="advmenu treeapp_par" msgstr="访问控制" />
+	<message msgid="advmenu treeapp_par_set" msgstr="家长设置" />
+	<message msgid="advmenu treeapp_par_access" msgstr="访问管理" />
 
+	<message msgid="advmenu treeapp_man" msgstr="系统管理" />
+	<message msgid="advmenu treeapp_man_tz" msgstr="时间设置" />
+	<message msgid="advmenu treeapp_man_cfgm" msgstr="配置管理" />
+	<message msgid="advmenu treeapp_man_upgrade" msgstr="固件升级" />
+	<message msgid="advmenu treeapp_man_factory" msgstr="恢复出厂" />
+	<message msgid="advmenu treeapp_man_reboot" msgstr="系统重启" />
+	<message msgid="advmenu treeapp_netcheck" msgstr="网络诊断" />
+
+
+	<message msgid="sset exit" msgstr="你确定要退出吗？" />  
+	<message msgid="admw m_fast" msgstr="快速设置" />
+	<message msgid="admw m_normal" msgstr="设置向导" />
+	<message msgid="admw m_wan" msgstr="外网设置" />
+	<message msgid="admw m_wifi" msgstr="WiFi设置" />
+	<message msgid="admw m_wirere" msgstr="无线中继" />
+	<message msgid="admw m_parent" msgstr="家长控制" />
+	<message msgid="admw m_upload" msgstr="固件升级" />
+	<message msgid="admw m_factory" msgstr="恢复出厂设置" />
+
+	<message msgid="sysinfo t1_title" msgstr="系统状态" />
+	<message msgid="sysinfo t1_softv" msgstr="当前软件版本" />
+	<message msgid="sysinfo t1_firmv" msgstr="当前硬件版本" />
+	<message msgid="sysinfo t2_title" msgstr="互联网" />
+	<message msgid="sysinfo t2_intnets" msgstr="上网状态" />
+	<message msgid="sysinfo t2_mac" msgstr="MAC地址" />
+	<message msgid="sysinfo t2_ip" msgstr="IP地址" />
+	<message msgid="sysinfo t2_ctpye" msgstr="接入方式" />
+	<message msgid="sysinfo t2_gw" msgstr="网关" />
+	<message msgid="sysinfo t3_title" msgstr="局域网" />
+	<message msgid="sysinfo t3_mac" msgstr="MAC地址" />
+	<message msgid="sysinfo t3_GW" msgstr="网关IP" />
+	<message msgid="sysinfo t4_title" msgstr="无线网络" />
+	<message msgid="sysinfo t4_wifis" msgstr="无线状态" />
+	<message msgid="sysinfo t4_name" msgstr="网络名称" />
+	<message msgid="sysinfo t4_safes" msgstr="安全类型" />
+	<message msgid="sysinfo t4_channel" msgstr="无线信道" />
+	<message msgid="sysinfo t4_wds" msgstr="WDS状态" />
+
+	<message msgid="sysinfo ok" msgstr="可上网" />
+	<message msgid="sysinfo fail" msgstr="不可上网" />
+	<message msgid="sysinfo on" msgstr="开启" />
+	<message msgid="sysinfo off" msgstr="未开启" />
+	<message msgid="sysinfo jiami" msgstr="加密" />
+	<message msgid="sysinfo open" msgstr="开放" />  
+	<message msgid="sysinfo unset" msgstr="未设置" />
+
+	<message msgid="sysinfo dhcp" msgstr="动态获取" />
+	<message msgid="sysinfo static" msgstr="静态IP" />
+	<message msgid="sysinfo pppoe" msgstr="PPPOE(ADSL)" />
+	<message msgid="sysinfo l2tp" msgstr="L2TP" />
+	<message msgid="sysinfo pptp" msgstr="PPTP" />
+
+
+	<message msgid="netcheck title" msgstr="网络诊断" />
+	<message msgid="netcheck des" msgstr="检测网络连接类型和进行网络PING操作" />
+	<message msgid="netcheck netc" msgstr="开始诊断" />
+	<message msgid="netcheck checkingwaiting" msgstr="正在进行检测请您稍候......" />
+	<message msgid="netcheck Result" msgstr="诊断结果" />
+	<message msgid="netcheck t1_wantype" msgstr="自动检测WAN口类型" />
+	<message msgid="netcheck t1_basetype" msgstr="BASE路由设置类型" />
+	<message msgid="netcheck t1_pngBD" msgstr="PING百度结果" />
+	<message msgid="netcheck t1_pingQQ" msgstr="PING腾讯结果" />
+
+	<message msgid="netcheck renetc" msgstr="重新诊断" />
+
+	<message msgid="netcheck r1" msgstr="互联网连接失败,请您检查网线连接及网络设置状态" />
+	<message msgid="netcheck r2" msgstr="可以访问互联网,网络正常" />
+	<message msgid="netcheck r3" msgstr="请您检查WAN网线" />
+
+	<message msgid="err MAC empty" msgstr="MAC地址不能为空" />
+	<message msgid="err user empty" msgstr="用户名不能为空" />
+	<message msgid="err pwd empty" msgstr="密码不能为空" />
+	<message msgid="err time empty" msgstr="时间不能为空" />
+	<message msgid="err MAC format" msgstr="MAC格式错误,请按照XX:XX:XX:XX:XX:XX的格式输入" />
+	<message msgid="err format" msgstr="参数不合法" />
+	<message msgid="err range" msgstr="参数范围错误" />
+	<message msgid="err IP empty" msgstr="IP地址不能为空" />
+	<message msgid="err sub empty" msgstr="掩码不能为空" />
+	<message msgid="err gw empty" msgstr="网关不能为空" />
+	<message msgid="err DNS empty" msgstr="DNS不能为空" />
+	<message msgid="err IP format" msgstr="IP地址不合法" />
+	<message msgid="err sub format" msgstr="掩码地址不合法" />	
+	<message msgid="err gw format" msgstr="网关地址不合法" />
+	<message msgid="err DNS format" msgstr="DNS地址不合法" />
 </po>

@@ -1142,3 +1142,5 @@ apps/webui/firmware/firmware_check
 apps/threethread/threethread
 drivers/wlan/os/linux/tools/download.cgi
 apps/busybox-1.01/networking/udhcp/dumpleases.o
+drivers/wlan/os/linux/tools/cfgupload.cgi
+apps/webui/firmware/firmware_check2

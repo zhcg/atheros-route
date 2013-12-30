@@ -35,20 +35,31 @@ function checkValuerange(value,min,max)
 
 function CheckValue()
 {
-	if (checkValuerange(document.WORKFORM.BEACON_INT.value,40,1000)==false)
+	if(document.WORKFORM.BEACON_INT.value=="")
 	{
-		alert(_("err range"));
+		alert(_("err ssidtime empty"));
 		document.WORKFORM.BEACON_INT.select();
 		return false;
 	}
-	if (checkValuerange(document.WORKFORM.WIFI_ADV_RSTCTS.value,1,2346)==false)
+	if (checkValuerange(document.WORKFORM.BEACON_INT.value,40,1000)==false)
 	{
-		alert(_("err range"));
+		alert(_("err ssidtime"));
+		document.WORKFORM.BEACON_INT.select();
+		return false;
+	}
+	if(document.WORKFORM.WIFI_ADV_RSTCTS.value=="")
+	{
+		alert(_("err rstcts empty"));
+		document.WORKFORM.WIFI_ADV_RSTCTS.select();
+		return false;
+	}
+	if (checkValuerange(document.WORKFORM.WIFI_ADV_RSTCTS.value,256,2346)==false)
+	{
+		alert(_("err rstcts"));
 		document.WORKFORM.WIFI_ADV_RSTCTS.select();
 		return false;
 	}
 
-	widget_disable("WIFI_ADV_POWER");
 	button_commit("WIRELESS_ADVSET");
 	return true;
 }
@@ -58,10 +69,10 @@ function initTranslation()
 	trans_inner("title","wless title");
 	trans_inner("des","wless des");
 	trans_inner("t1_title","wless t1_title");
-	trans_inner("ti_pow","wless ti_pow");
-	trans_inner("t1_high","wless t1_high");
-	trans_inner("t1_mid","wless t1_mid");
-	trans_inner("t1_low","wless t1_low");
+	//trans_inner("ti_pow","wless ti_pow");
+	//trans_inner("t1_high","wless t1_high");
+	//trans_inner("t1_mid","wless t1_mid");
+	//trans_inner("t1_low","wless t1_low");
 	trans_inner("t1_SSIDTime","wless t1_SSIDTime");
 	trans_inner("t1_RC","wless t1_RC");
 	trans_inner("t1_head","wless t1_head");
@@ -97,7 +108,7 @@ function initValue()
 <table id="t1"  width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
 <tr><td class="title" colspan="2" id="t1_title">无线高级设置</td></tr>
 
-<tr style="display:none" >
+<!--tr style="display:none" >
   <td class="head" id="ti_pow">调整发射功率</td>
   <td>
     <select name="WIFI_ADV_POWER" size="1">
@@ -106,7 +117,7 @@ function initValue()
       <option ~sWIFI_ADV_POWER:2~ value="3" id="t1_low">低</option>
     </select>
   </td>
-</tr>
+</tr-->
 
 <tr>
   <td class="head" id="t1_SSIDTime">广播SSID时间</td>
@@ -114,7 +125,7 @@ function initValue()
 </tr>
 <tr>
   <td class="head" id="t1_RC">RTS/CTS限值</td>
-  <td><input type="text" name="WIFI_ADV_RSTCTS" id="WIFI_ADV_RSTCTS" size="32" maxlength="32" class="handaer_text_content"  value="~~WIFI_ADV_RSTCTS~"><span>&nbsp;(1-2346)</span></td>
+  <td><input type="text" name="WIFI_ADV_RSTCTS" id="WIFI_ADV_RSTCTS" size="32" maxlength="32" class="handaer_text_content"  value="~~WIFI_ADV_RSTCTS~"><span>&nbsp;(256-2346)</span></td>
 </tr>
 
 <tr>

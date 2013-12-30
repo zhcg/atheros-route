@@ -22,6 +22,7 @@ export SQUASHFSLZMADIR=$(TOPDIR)/build/squashfs-lzma
 export SQUASHFSFILE=$(BOARD_TYPE)$(BUILD_CONFIG)-squashfs
 export SSDK_DIR=$(ENETDIR)/s17_ssdk
 export NTFS_3G_DIR=$(TOPDIR)/apps/ntfs-3g-2010.10.2
+export NTP_ARMDIR=$(TOPDIR)/apps/ntpclient_arm
 #
 # Makefile for WASP Fusion build.  It has dependancies for both
 # the "common" build and the "jffs2" build.  This is unique for
@@ -101,7 +102,7 @@ else
 ifeq ($(strip ${ATH_SUPPORT_SPECTRAL}),1)
 db12x_build: common_mainline driver_build usb_build pci_build spectral_app_build $(BUILD_TYPE)_build art_mod
 else
-db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si3000_build si3000_app stm32_build stm32_app phone_9344    pppoe_build threethread channel webui terminal_dev_register cacm tester $(fs_build) makeotaimage makeoneimage 
+db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si3000_build si3000_app stm32_build stm32_app phone_9344  ntpclient_arm  pppoe_build threethread channel webui terminal_dev_register cacm tester $(fs_build) makeotaimage makeoneimage 
 #db12x_build: common_mainline i2s_build athplay_tools_fus usb_build $(fs_build)
 #db12x_build: common_mainline slic_build slic_app i2s_build athplay_tools_fus $(fs_build)
 #db12x_build: common_mainline gateway_build slic_build slic_app $(fs_build)
@@ -150,6 +151,17 @@ pppoe_build:
 	cp -ra $(TOPDIR)/apps/pppoe/rp-pppoe-3.8/configs/* $(INSTALL_ROOT)/etc/ppp
 	cp -ra $(TOPDIR)/apps/pppoe/rp-pppoe-3.8/scripts/* $(INSTALL_ROOT)/usr/sbin
 	
+#
+#ntp_build add by wangyu
+#
+ntpclient_arm:
+	@echo "staring compile ntpclient. "
+	cd  ${NTP_ARMDIR} && make
+	chmod 744 ${NTP_ARMDIR}/ntpclient
+	chmod 744 ${NTP_ARMDIR}/adjtimex
+	cp ${NTP_ARMDIR}/ntpclient $(INSTALL_ROOT)/usr/sbin
+	cp ${NTP_ARMDIR}/adjtimex $(INSTALL_ROOT)/usr/sbin
+
 #
 #threethread added by yhl 2013.10.29
 #
@@ -282,9 +294,21 @@ webui:
 	cp -f dhcp/del_addr $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f route/set_route $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f route/del_route $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f arp/set_arp $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f arp/del_arp $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f backup/set_backup $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f backup/del_backup $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f backup/var_backup $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f ntp/set_pctime $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f ntp/set_ntpserver $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f net/network_diagnostics $(INSTALL_ROOT)/usr/sbin;  \
 	cd firmware/; \
 	make; \
-	cp -f firmware_check $(INSTALL_ROOT)/usr/sbin; 
+	cp -f firmware_check $(INSTALL_ROOT)/usr/sbin; \
+	cp -f firmware_check2 $(INSTALL_ROOT)/usr/sbin; \
+	cd ./../arp; \
+	make; \
+	cp -f arp $(INSTALL_ROOT)/usr/sbin;
 	
 tester: 
 	cd ../apps/tester; \

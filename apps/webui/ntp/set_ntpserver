@@ -1,0 +1,20 @@
+#!/bin/sh
+ntp_switch=`cfg -e | grep "NTPON_OFF"|awk -F'=' '{print $2}'`
+echo $ntp_switch
+if [ "$ntp_switch" = "off" ];then
+	echo "the ntp switch is off"
+	killall ntpclient > /dev/null 2>&1
+	exit 1
+fi
+if [ "$ntp_switch" = "on" ];then
+	timezone=`cfg -e | grep "TIME_ZONE"| awk -F'=' '{print $2}'| cut -c6-8`
+	echo $timezone
+	ntpserverip1=`cfg -e | grep "NTPServerIP1"|awk -F'"' '{print $2}'`
+	echo $ntpserverip1
+	ntpserverip2=`cfg -e | grep "NTPServerIP1"|awk -F'"' '{print $2}'`
+	echo $ntpserverip2
+	
+	if [ ! -z $ntpserverip1 -a ! -z $timezone ];then
+		/usr/sbin/ntpclient -s -h $ntpserverip1 -t  $timezone &
+	fi
+fi

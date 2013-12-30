@@ -61,19 +61,27 @@ function isAllNum(str)
 	}
 	return 1;
 }
-
-function checkIpAddr(field, ismask)
+function checkIpAddr(field, ismask)//1447
 {
 	if (field.value == "") 
 	{
-		if(ismask)
+		if(ismask == 1)
+		{
+			alert(_("err IP empty"));
+		}
+		else if(ismask == 2)
 		{
 			alert(_("err sub empty"));
 		}
-		else
+		else if(ismask == 3)
 		{	
-			alert(_("err IP empty"));
+			alert(_("err gw empty"));
 		}
+		else if(ismask == 4)
+		{	
+			alert(_("err DNS empty"));
+		}
+
 		field.value = field.defaultValue;
 		field.focus();
 		return false;
@@ -81,18 +89,46 @@ function checkIpAddr(field, ismask)
 
 	if (isAllNum(field.value) == 0) 
 	{
-		alert(_("err format"));
+		if(ismask == 1)
+		{
+			alert(_("err IP format"));
+		}
+		else if(ismask == 2)
+		{	
+			alert(_("err sub format"));
+		}
+		else if(ismask == 3)
+		{	
+			alert(_("err gw format"));
+		}
+		else if(ismask == 4)
+		{
+			alert(_("err DNS format"));
+		}
 		field.value = field.defaultValue;
 		field.focus();
 		return false;
 	}
 
-	if (ismask)
+	if (ismask == 1)
 	{
-		if ((!checkRange(field.value, 1, 0, 256)) ||
-				(!checkRange(field.value, 2, 0, 256)) ||
-				(!checkRange(field.value, 3, 0, 256)) ||
-				(!checkRange(field.value, 4, 0, 256)))
+		if ((!checkRange(field.value, 1, 0, 255)) ||
+				(!checkRange(field.value, 2, 0, 255)) ||
+				(!checkRange(field.value, 3, 0, 255)) ||
+				(!checkRange(field.value, 4, 0, 255)))
+		{
+			alert(_("err IP format"));
+			field.value = field.defaultValue;
+			field.focus();
+			return false;
+		}
+	}
+	else if (ismask == 2)
+	{
+		if ((!checkRange(field.value, 1, 0, 255)) ||
+				(!checkRange(field.value, 2, 0, 255)) ||
+				(!checkRange(field.value, 3, 0, 255)) ||
+				(!checkRange(field.value, 4, 0, 254)))
 		{
 			alert(_("err sub format"));
 			field.value = field.defaultValue;
@@ -100,14 +136,27 @@ function checkIpAddr(field, ismask)
 			return false;
 		}
 	}
-	else 
+	else if(ismask == 3)
 	{
 		if ((!checkRange(field.value, 1, 0, 255)) ||
 				(!checkRange(field.value, 2, 0, 255)) ||
 				(!checkRange(field.value, 3, 0, 255)) ||
-				(!checkRange(field.value, 4, 1, 254)))
+				(!checkRange(field.value, 4, 1, 255)))
 		{
-			alert(_("err IP format"));
+			alert(_("err gw format"));
+			field.value = field.defaultValue;
+			field.focus();
+			return false;
+		}
+	}
+	else if(ismask == 4)
+	{
+		if ((!checkRange(field.value, 1, 0, 255)) ||
+				(!checkRange(field.value, 2, 0, 255)) ||
+				(!checkRange(field.value, 3, 0, 255)) ||
+				(!checkRange(field.value, 4, 1, 255)))
+		{
+			alert(_("err DNS format"));
 			field.value = field.defaultValue;
 			field.focus();
 			return false;
@@ -118,13 +167,21 @@ function checkIpAddr(field, ismask)
 		var reg = field.value.match(exp);
 		if(reg==null)
 		{
-			if(ismask)
+			if(ismask == 1)
 			{
+				alert(_("err IP format"));
+			}
+			else if(ismask == 2)
+			{	
 				alert(_("err sub format"));
 			}
-			else
+			else if(ismask == 3)
 			{	
-				alert(_("err IP format"));
+				alert(_("err gw format"));
+			}
+			else if(ismask == 4)
+			{
+				alert(_("err DNS format"));
 			}
 			field.value = field.defaultValue;
 			field.focus();
@@ -134,33 +191,102 @@ function checkIpAddr(field, ismask)
 
 	return true;
 }
+function ip2int(ip) 
+{
+    var num = 0;
+    ip = ip.split(".");
+    num = Number(ip[0]) * 256 * 256 * 256 + Number(ip[1]) * 256 * 256 + Number(ip[2]) * 256 + Number(ip[3]);
+    num = num >>> 0;
+    return num;
+}
+
 function CheckValue()
 {
-	
-	//if (document.WORKFORM.GW_MAC.value.length == 0)
-	//{
-	//	alert(_("err MAC empty"));
-	//	document.WORKFORM.GW_MAC.select();
-	//	return false;
-	//}
-	//var re = /[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}/;
-	//if (!re.test(document.WORKFORM.GW_MAC.value))
-	//{
-	//	alert(_("err MAC format"));
-	//	document.WORKFORM.GW_MAC.select();
-	//	return false;
-	//}
-	if (!checkIpAddr(document.WORKFORM.GW_IP, false))
+	if (!checkIpAddr(document.WORKFORM.AP_IPADDR, 1))
 	{
-		document.WORKFORM.GW_IP.select();
+		document.WORKFORM.AP_IPADDR.select();
 		return false;
 	}
-	if (!checkIpAddr(document.WORKFORM.GW_SUB, true))
+	if (!checkIpAddr(document.WORKFORM.AP_NETMASK, 2))
 	{
-		document.WORKFORM.GW_SUB.select();
+		document.WORKFORM.AP_NETMASK.select();
 		return false;
 	}
+	var ipwai;
+	var subwai;
+	var wtype;	
+	var ipwai_num; var subwai_num; var ipnei_num; var subnei_num; var yu; var yu1;
+	wtype = document.getElementById("mode").value;
 	
+	if(wtype=="static")
+	{
+		ipwai = document.getElementById("ip1").value;
+		subwai = document.getElementById("sub1").value;
+		
+		ipwai_num=ip2int(ipwai);
+		subwai_num=ip2int(subwai);
+		
+		ipnei_num=ip2int(document.WORKFORM.AP_IPADDR.value);
+		subnei_num=ip2int(document.WORKFORM.AP_NETMASK.value);
+		
+		yu=ipwai_num&subwai_num;
+		yu1=ipnei_num&subnei_num;
+		
+		if(yu == yu1)
+		{
+			alert(_("err WANsame"));
+			document.WORKFORM.AP_IPADDR.select();
+			return false;
+		}
+	}		
+	else if(wtype == "dhcp")
+	{
+		ipwai = document.getElementById("ip2").value;
+		subwai = document.getElementById("sub2").value;
+		
+		ipwai_num=ip2int(ipwai);
+		subwai_num=ip2int(subwai);
+		
+		ipnei_num=ip2int(document.WORKFORM.AP_IPADDR.value);
+		subnei_num=ip2int(document.WORKFORM.AP_NETMASK.value);
+		
+		yu=ipwai_num&subwai_num;
+		yu1=ipnei_num&subnei_num;
+		
+		if(yu == yu1)
+		{
+			alert(_("err WANsame"));
+			document.WORKFORM.AP_IPADDR.select();
+			return false;
+		}
+	}
+	else if(wtype == "pppoe")
+	{
+		ipwai = document.getElementById("ip3").value;
+		subwai = document.getElementById("sub3").value;
+		ipwai_num=ip2int(ipwai);
+		subwai_num=ip2int(subwai);
+		
+		ipnei_num=ip2int(document.WORKFORM.AP_IPADDR.value);
+		subnei_num=ip2int(document.WORKFORM.AP_NETMASK.value);
+		
+		yu=ipwai_num&subwai_num;
+		yu1=ipnei_num&subnei_num;
+		
+		if(yu == yu1)
+		{
+			alert(_("err WANsame"));
+			document.WORKFORM.AP_IPADDR.select();
+			return false;
+		}
+	}
+
+	if (!checkRange(document.WORKFORM.AP_NETMASK.value,4, 0, 252))
+	{
+		document.WORKFORM.AP_NETMASK.select();
+		alert(_("err sub format"));
+		return false;
+	}
 	button_commit("GW_SET");
 	return true;
 }
@@ -182,7 +308,7 @@ function initValue()
 {
 	Butterlate.setTextDomain("lan");
 	initTranslation();
-	widget_disable("GW_MAC");
+	widget_disable("BR0_MAC");
 }
 
 </script>
@@ -204,15 +330,15 @@ function initValue()
 </tr>
 <tr>
   <td class="head" id="t1_MAC">MAC地址</td>
-  <td><input type="text" name="GW_MAC" id="GW_MAC" size="32" maxlength="32" class="handaer_text_content"  value="~~BR0_MAC~"></td>
+  <td><input type="text" name="BR0_MAC" id="BR0_MAC" size="32" maxlength="32" class="handaer_text_content"  value="~~BR0_MAC~"></td>
 </tr>
 <tr>
   <td class="head" id="t1_IP">IP地址</td>
-  <td><input type="text" name="GW_IP" id="GW_IP" size="32" maxlength="32" class="handaer_text_content"  value="~~AP_IPADDR~"></td>
+  <td><input type="text" name="AP_IPADDR" id="AP_IPADDR" size="32" maxlength="32" class="handaer_text_content"  value="~~AP_IPADDR~"></td>
 </tr>
 <tr>
   <td class="head" id="t1_SUB">子网掩码</td>
-  <td><input type="text" name="GW_SUB" id="GW_SUB" size="32" maxlength="32" class="handaer_text_content"  value="~~AP_NETMASK~"></td>
+  <td><input type="text" name="AP_NETMASK" id="AP_NETMASK" size="32" maxlength="32" class="handaer_text_content"  value="~~AP_NETMASK~"></td>
 </tr>
 </table>
 
@@ -229,6 +355,14 @@ function initValue()
 </form>
 </td></tr></table> 
 </div>
+	<input size="32" style="display:none" maxlength="64" name="mode" id="mode" value="~~WAN_MODE~" type="text" readonly>
+	<input size="32" style="display:none" maxlength="64" name="ip1" id="ip1" value="~~WAN_IPADDR~" type="text" readonly>
+	<input size="32" style="display:none" maxlength="64" name="ip2" id="ip2" value="~~WAN_IPADDR2~" type="text" readonly>
+	<input size="32" style="display:none" maxlength="64" name="ip3" id="ip3" value="~~WAN_IPADDR3~" type="text" readonly>
+
+	<input size="32" style="display:none" maxlength="64" name="sub1" id="sub1" value="~~WAN_NETMASK~" type="text" readonly>  
+	<input size="32" style="display:none" maxlength="64" name="sub2" id="sub2" value="~~WAN_NETMASK2~" type="text" readonly>
+	<input size="32" style="display:none" maxlength="64" name="sub3" id="sub3" value="~~WAN_NETMASK3~" type="text" readonly>
 </body>
 </html>
 

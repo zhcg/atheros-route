@@ -651,13 +651,13 @@ char *processSpecial(char *paramStr, char *outBuff)
              case 'Z':
             {
                 fprintf(errOut,"\n----------secArg:%s\n",secArg);
-                //无线接入管理(带配置)
+                //接入管理(带配置)
                 if(strcmp(secArg,"conmlist")==0)
                 {
 					FILE *fp;
 					const char *staFile = "/var/run/.staMac";
 					struct staList stalist;
-					char *buf = "<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>";
+					char *buf = "<td><input type=\"button\" name=\"%s\" style=\"color:red;font-size:30px;cursor:hand;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>";
 					char buff[5];
 					
 					if( (fp = fopen(staFile, "r")) != NULL)
@@ -670,58 +670,33 @@ char *processSpecial(char *paramStr, char *outBuff)
 							outBuff += sprintf(outBuff, "<td>%s</td>",stalist.macAddr);
 							outBuff += sprintf(outBuff, "<td>%s</td>",stalist.staDesc);
 							buf = malloc(sizeof(buf) + sizeof(stalist.macAddr));
-							sprintf(buf, "<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>", stalist.macAddr);
+							sprintf(buf, "<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:30px;cursor:hand;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>", stalist.macAddr);
 							outBuff += sprintf(outBuff, buf);
 	                    	outBuff += sprintf(outBuff, "</tr>");
 							free(buf);
 						}
 						fclose(fp);
 					}
-					#if 0
-                    outBuff += sprintf(outBuff,"<tr>");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","1");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","456468wqeasd");
-                    outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"1\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
-                    outBuff += sprintf(outBuff,"</tr>");
-                    
-                    outBuff += sprintf(outBuff,"<tr>");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","2");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","456468wqeasd");
-                    outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"2\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
-                    outBuff += sprintf(outBuff,"</tr>");
 
-                    outBuff += sprintf(outBuff,"<tr>");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","3");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","456468wqeasd");
-                    outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"3\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
-                    outBuff += sprintf(outBuff,"</tr>");
-
-                    outBuff += sprintf(outBuff,"<tr>");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","4");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","456468wqeasd");
-                    outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"4\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
-                    outBuff += sprintf(outBuff,"</tr>");
-					#endif
                 }
                 //家长控制(带配置)
                 else if(strcmp(secArg,"parclist")==0)
                 {
-  
                     outBuff += sprintf(outBuff,"<tr>");
                     outBuff += sprintf(outBuff,"<td>%s</td>","4");
                     outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");
                     outBuff += sprintf(outBuff,"<td>%s</td>","www.baidu.com<br>www.qq.com<br>");
                     outBuff += sprintf(outBuff,"<td>%s</td>","1,2,4");
                     outBuff += sprintf(outBuff,"<td>%s</td>","12:00-20:00");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","ON");
-                    outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"4\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
+                    if(1)
+                      outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"22:22:22:22:22:22\" id=\"22:22:22:22:22:22\" onclick=\"lismod(this.name)\" checked</td>");
+                    else
+                      outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"22:22:22:22:22:22\" id=\"22:22:22:22:22:22\" onclick=\"lismod(this.name)\"</td>");
+                      
+                    outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"4\"  style=\"color:red;font-size:30px;cursor:hand;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
                     outBuff += sprintf(outBuff,"</tr>");
               }
-                //DHCP-静态分配(带配置)
+                //静态DHCP(带配置)
                 else if(strcmp(secArg,"sdhcplist")==0)
                 {
                 	/*wangyu add for ipmac list*/
@@ -750,26 +725,18 @@ char *processSpecial(char *paramStr, char *outBuff)
 	                    outBuff += sprintf(outBuff,"<td>%d</td>",id);
 	                    outBuff += sprintf(outBuff,"<td>%s</td>",addr_mac);   
 	                    outBuff += sprintf(outBuff,"<td>%s</td>",addr_ip);
-						if ( memcmp ( addr_status , "enable" ,6) == 0)
-		                    outBuff += sprintf(outBuff,"<td>%s</td>","YES");
-						if ( memcmp ( addr_status , "disable" ,7) == 0)
-		                    outBuff += sprintf(outBuff,"<td>%s</td>","NO");	 
-						outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>",addr_mac);
+
+                          if ( memcmp ( addr_status , "enable" ,6) == 0)
+                            outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%s\" id=\"%s\" onclick=\"lismod(this.name)\" checked</td>",addr_mac,addr_mac);
+                          if ( memcmp ( addr_status , "disable" ,7) == 0)
+                            outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%s\" id=\"%s\" onclick=\"lismod(this.name)\"</td>",addr_mac,addr_mac);
+						outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:30px;cursor:hand;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>",addr_mac);
 	                    outBuff += sprintf(outBuff,"</tr>");
 						id ++;						
 						memset(addr_buf,0,1024);
 					}
 					fclose(f);
 					/*wangyu add end*/
-					#if 0
-                    outBuff += sprintf(outBuff,"<tr>");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","1");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","11:11:11:11:11:11");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.5.25");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","ON");
-                    outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"1\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
-                    outBuff += sprintf(outBuff,"</tr>");
-                    #endif
                 }
                 //静态路由表(带配置)
                 else if(strcmp(secArg,"routelist")==0)
@@ -800,37 +767,97 @@ char *processSpecial(char *paramStr, char *outBuff)
 	                    outBuff += sprintf(outBuff,"<td>%s</td>",de_mask);
 						outBuff += sprintf(outBuff,"<td>%s</td>",gw_ip);
 						if ( memcmp ( rule_status , "enable" ,6) == 0)
-		                    outBuff += sprintf(outBuff,"<td>%s</td>","YES");
+		                   outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%s\" id=\"%s\" onclick=\"lismod(this.name)\" checked</td>",des_ip,des_ip);
 						if ( memcmp ( rule_status , "disable" ,7) == 0)
-		                    outBuff += sprintf(outBuff,"<td>%s</td>","NO");	 
-						outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>",des_ip);
+		                    outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%s\" id=\"%s\" onclick=\"lismod(this.name)\" checked</td>",des_ip,des_ip);
+						outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:30px;cursor:hand;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>",des_ip);
 	                    outBuff += sprintf(outBuff,"</tr>");
 						id ++;						
 						memset(buf,0,1024);
 					}
 					fclose(f);
 					/*luodp add end*/
-                    #if 0
-                    outBuff += sprintf(outBuff,"<tr>");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","2");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.51");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","255.255.255.255");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.254");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","OFF");
-                    outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"2\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
-                    outBuff += sprintf(outBuff,"</tr>");
-					#endif
                 }
                 //IPMAC绑定(带配置)
                 else if(strcmp(secArg,"IPMAClist")==0)
                 {
-                    outBuff += sprintf(outBuff,"<tr>");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","1");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");   
-                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.155");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","YES");
-                    outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"1\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
-                    outBuff += sprintf(outBuff,"</tr>");
+					/*luodp add for ipmac list*/
+					unsigned int id=1;	
+					char buf[1024];
+					char arp_ip[15],arp_mac[17];		
+					
+					FILE *f = fopen("/etc/arp_ip_mac_on.conf","r");
+					if ( !f )
+					{
+						 fprintf(errOut,"\n%s  %d open /etc/arp_ip_mac_on.conf error\n \n",__func__,__LINE__);
+						 break;
+					}
+					memset(buf,0,1024);
+					
+					while ( fgets(buf,1024,f) != NULL )
+					{
+						sscanf(buf,"%s %s",arp_ip,arp_mac);
+						outBuff += sprintf(outBuff,"<tr>");
+	                    outBuff += sprintf(outBuff,"<td>%d</td>",id);
+	                    outBuff += sprintf(outBuff,"<td>%s</td>",arp_mac);   
+	                    outBuff += sprintf(outBuff,"<td>%s</td>",arp_ip);
+		                outBuff += sprintf(outBuff,"<td>%s</td>","YES");
+						outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:30px;cursor:hand;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>",arp_mac);
+	                    outBuff += sprintf(outBuff,"</tr>");
+						id ++;						
+						memset(buf,0,1024);
+					}
+					fclose(f);
+					
+					f = fopen("/etc/arp_ip_mac_off.conf","r");
+					if ( !f )
+					{
+						 fprintf(errOut,"\n%s  %d open /etc/arp_ip_mac_off.conf error\n \n",__func__,__LINE__);
+						 break;
+					}
+					memset(buf,0,1024);
+					
+					while ( fgets(buf,1024,f) != NULL )
+					{
+						sscanf(buf,"%s %s",arp_mac,arp_ip);
+						outBuff += sprintf(outBuff,"<tr>");
+	                    outBuff += sprintf(outBuff,"<td>%d</td>",id);
+	                    outBuff += sprintf(outBuff,"<td>%s</td>",arp_mac);   
+	                    outBuff += sprintf(outBuff,"<td>%s</td>",arp_ip);
+		                outBuff += sprintf(outBuff,"<td>%s</td>","NO");
+						outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:30px;cursor:hand;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>",arp_ip);
+	                    outBuff += sprintf(outBuff,"</tr>");
+						id ++;						
+						memset(buf,0,1024);
+					}
+					fclose(f);
+					/*luodp add end*/
+
+                }
+                //系统ARP映射表(不带配置)
+                else if(strcmp(secArg,"IPMAClistshow")==0)
+                {
+					system("arp -a > /dev/null 2>&1"); 
+					FILE *fp;
+					int ii;
+					char ch;
+					char tmpc[65536]={0};
+					if((fp=fopen("/tmp/arplist","r"))==NULL)
+					{
+						fprintf(errOut,"\n----------cannot open file  line:%d\n",__LINE__);
+					}
+					else
+					{
+						while ((ch=fgetc(fp))!=EOF)
+						{
+							sprintf(tmpc+ii,"%c",ch);
+							ii++;
+						}
+						if(strlen(tmpc)>0)
+							outBuff += sprintf(outBuff,"%s",tmpc);
+						fclose(fp);
+						system("rm /tmp/arplist");
+					}
                 }
 
                 //接入管理有线设备(不带配置)
@@ -1012,13 +1039,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                  //系统路由表(不带配置)
                 else if(strcmp(secArg,"sysrulist")==0)
                 {
-                    /*outBuff += sprintf(outBuff,"<tr>");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","1");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.5");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","255.255.255.255");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","192.168.4.254");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","80000");
-                    outBuff += sprintf(outBuff,"</tr>");*/
+
 					system("route -n > /dev/null 2>&1"); 
 					FILE *fp;
 					int ii;
@@ -1162,6 +1183,15 @@ char *processSpecial(char *paramStr, char *outBuff)
                     fclose(fp);
               }
         break;       
+        case 'D':
+        {
+            char *result;
+			char rspBuff1[128];
+            Execute_cmd("date +'%Y-%m-%d %H:%M:%S'",rspBuff1);
+			result=strtok(rspBuff1,"\n");
+            outBuff += sprintf(outBuff,"%s",result);
+        }
+        break;
     }
 
     return outBuff;
@@ -1784,6 +1814,24 @@ void writeParameters(char *name,char *mode,unsigned long offset)
             ** no value, don't write them out.
             DHCP SIP PPP L2TP P2TP WIRRE WIRELESS DHCPW SIPW PPPW L2TPW P2TPW ADMINSET
             */
+		    if( !strcmp(config.Param[i].Name,"MOD_SDHCP") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"MOD_RU") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"MOD_IPMAC") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"MOD_PRC") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"ON_OFF") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"MODXXX") )
+                continue;
+			if( !strcmp(config.Param[i].Name,"TIME_SYNC") )
+                continue;
+			if( !strcmp(config.Param[i].Name,"SAV") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"ACT") )
+                continue;
             if( !strcmp(config.Param[i].Name,"DEL_PRC") )
                 continue;
             if( !strcmp(config.Param[i].Name,"DEL_CON") )
@@ -2402,7 +2450,7 @@ int set_dhcp(void)
 			Execute_cmd("killall udhcpd > /dev/null 2>&1",rspBuff);
 			//Execute_cmd("/etc/ath/apcfg ; /etc/rc.d/rc.udhcpd",rspBuff);
 			//Execute_cmd("/etc/ath/apcfg",rspBuff);
-			system("/etc/rc.d/rc.udhcpd");
+			//system("/etc/rc.d/rc.udhcpd");
 			Execute_cmd("/etc/rc.d/rc.udhcpd",rspBuff);
 			Execute_cmd("/usr/sbin/udhcpd /etc/udhcpd.conf",rspBuff);
 		}
@@ -2494,14 +2542,71 @@ void add_route_rule(void)
 	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
 	writeParameters("/tmp/.apcfg","w+",0);	
 	Execute_cmd("/usr/sbin/set_route > /dev/null 2>&1",rspBuff);
-	return ;
 } 
 void del_route_rule(void)
 {
 	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
 	writeParameters("/tmp/.apcfg","w+",0);
 	Execute_cmd("/usr/sbin/del_route > /dev/null 2>&1",rspBuff);
-	return ;
+}
+
+void add_arp(void)
+{
+	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+	writeParameters("/tmp/.apcfg","w+",0);
+	Execute_cmd("/usr/sbin/set_arp > /dev/null 2>&1",rspBuff);
+}
+void del_arp(void)
+{
+	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+	writeParameters("/tmp/.apcfg","w+",0);
+	Execute_cmd("/usr/sbin/del_arp > /dev/null 2>&1",rspBuff);
+}
+
+void add_backup(void)
+{
+	char pChar[128];
+	char valBuff1[128];
+	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+	writeParameters("/tmp/.apcfg","w+",0);
+	CFG_get_by_name("SAV",valBuff1);
+	sprintf(pChar,"/usr/sbin/set_backup %s > /dev/null 2>&1",valBuff1);
+	Execute_cmd(pChar,rspBuff);
+}
+void del_backup(void)
+{
+	char pChar[128];
+	char valBuff1[128];
+	CFG_get_by_name("ACT",valBuff1);
+	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+	writeParameters("/tmp/.apcfg","w+",0);
+	sprintf(pChar,"/usr/sbin/del_backup %s > /dev/null 2>&1",valBuff1);
+	Execute_cmd(pChar,rspBuff);
+	CFG_set_by_name(valBuff1,"");
+	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+	writeParameters("/tmp/.apcfg","w+",0);
+}
+void use_backup(void)
+{
+	char valBuff1[128];
+	char cmdd[128];	
+	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+	writeParameters("/tmp/.apcfg","w+",0);
+	CFG_get_by_name("ACT",valBuff1);
+	
+	printf("Content-Type:text/html\n\n");
+	printf("<HTML><HEAD>\r\n");
+	printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+	printf("</head><body>");
+	printf("<div style=\"font-size: 14pt; font-weight: bold; margin-left: 10px; font-family: 寰蒋闆呴粦, Arial, Helvetica, sans-serif; color: #848484;border-bottom:1px dotted #d0d0d0; padding-bottom:10px; margin-bottom:10px;height:30px; line-height:30px; padding:5px;\">閰嶇疆绠＄悊</div>\n");	
+	printf("<p align=\"center\" style=\"font-size: 9pt; margin-left: 10px; font-family: 寰蒋闆呴粦, Arial, Helvetica, sans-serif; color: #848484\">鎭㈠閰嶇疆瀹屾垚,姝ｅ湪閲嶅惎BASE..........</p><br>\n");	
+	printf("<p align=\"center\" style=\"font-size: 9pt; margin-left: 10px; font-family: 寰蒋闆呴粦, Arial, Helvetica, sans-serif; color: #848484\">Import the configuration file was completed, restartting BASE..........</p><br>\n");	
+	printf("<script  language=javascript>setTimeout(function(){window.top.location.href=\"index.html\";},140000);</script>");
+	printf("</body></html>");	
+	//reconfig
+	sprintf(cmdd,"dd if=/etc/backup/%s.bin of=/dev/caldata   > /dev/null 2>&1",valBuff1);
+	system(cmdd);
+	system("sleep 1 && reboot"); 
 }
 //luodp end  route rule 
 //zhao zhanwei
@@ -2609,6 +2714,185 @@ struct staList *scan_staList(struct staList *list)
 }
 
 //end zhaozhanwei
+/******ADDED BY YHL BELOW  DATE:2013.12.23********/
+//#include <stdlib.h>
+//#include <string.h>
+//#include <stdio.h>
+/*
+**FUNCTION: to do ip string process
+**
+**
+**/
+int MyAtoi(const char* str,int *val)
+{
+	int tmp[20];
+	int c , i,j, x;
+	 
+	i = 0;
+	x = 1;
+	j = 0;
+	while ((c = (*str++)) != '\0')
+	{
+		if ((c > 0x2F) && (c < 0x3A))
+			tmp[i++] = c - 0x30;
+		else
+			break;
+		j++;
+	}
+
+	c = 0;
+	for (i--; i >= 0; i--)
+	{ 
+		c += tmp[i] * x;
+		x = x * 10;
+	}
+	*val = c;
+	return j;
+}
+
+/**********************************************************************
+**input:ip string
+**output and process results
+**added by yhl, date : 2013.12.23
+*/
+
+void IPV4AndAsStr(char *pip1,char *pip2,char *pout_str,unsigned char *pout_hex)
+{
+	unsigned char ip1_hex[4];
+	unsigned char ip2_hex[4];
+	unsigned char ip3_hex[4];
+	int i,j,val;
+	j = 0;
+	for(i = 0;i < 4;i++)
+	{
+		j += MyAtoi(&pip1[j],&val);
+		ip1_hex[i] = (unsigned char)(val);
+		j++;
+	}
+	j = 0;
+	for(i = 0;i < 4;i++)
+	{
+		j += MyAtoi(&pip2[j],&val);
+		ip2_hex[i] = (unsigned char)(val);
+		j++;
+	}
+	for(i = 0;i < 4;i++)
+	{
+		ip3_hex[i] = ip1_hex[i] & ip2_hex[i];
+	}
+	if(pout_hex != 0)
+	{
+		for(i = 0;i < 4;i++)
+		{
+			pout_hex[i] = ip3_hex[i];
+		}		
+	}
+
+	if(pout_str != 0)
+	{
+		pout_str[0] = '\0';	
+		j = 0;
+		for(i = 0;i < 4;i++)
+		{
+			sprintf(&pout_str[j],"%d",ip3_hex[i]);
+			if(i != 3)
+			{	
+				j = strlen(pout_str);
+				pout_str[j++] = '.';
+				pout_str[j] = '\0';
+			}
+		}
+	}
+}
+
+//add by wangyu
+int set_ntp_server( void)
+{
+	
+#ifdef MESSAGE
+	fprintf(errOut,"\n%s  %d TIMEZONE_SET \n",__func__,__LINE__);
+#endif		
+	char valBuff1[128]; 
+	char valBuff2[128]; 
+	char valBuff3[128]; 
+	char valBuff4[128]; 
+	int  set_ntp_flag;
+
+
+	CFG_get_by_name("NTPON_OFF",valBuff1);
+	CFG_get_by_name("TIME_ZONE",valBuff2);
+	CFG_get_by_name("NTPServerIP1",valBuff3);
+	CFG_get_by_name("NTPServerIP2",valBuff4);
+	//off
+	
+#ifdef MESSAGE
+	fprintf(errOut,"%s	%d	valBuff1 %s valBuff2 %s valBuff3 %s\n",__func__,__LINE__,
+			valBuff1,valBuff2,valBuff3);
+#endif
+	//save new config to flash 
+	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+	writeParameters("/tmp/.apcfg","w+",0);
+
+	Execute_cmd("/usr/sbin/set_ntpserver > /tmp/ntpserver.log 2>&1",rspBuff);
+#if 1
+	FILE *fileBuf2=NULL;
+	if ((fileBuf2= fopen("/tmp/ntpserver.log", "r")) == NULL)
+	{
+		fprintf(errOut,"%s	%d File open error.Make sure you have the permission.\n",__func__,__LINE__);
+		set_ntp_flag=1;
+	}else
+	{
+		while(fgets(valBuff4,sizeof(valBuff4),fileBuf2) != NULL){
+			if(strstr(valBuff4,"Network is unreachable")!=NULL)
+			{
+				set_ntp_flag=2;
+			}			
+			if(strstr(valBuff4,"Unknown host")!=NULL)
+			{
+				set_ntp_flag=3;
+			}
+			if(strstr(valBuff4,"Connection refused")!=NULL)
+			{
+				set_ntp_flag=4;
+			}
+			else
+			{
+				set_ntp_flag=5;
+			}
+		}
+		fclose(fileBuf2);
+	}
+	return set_ntp_flag;
+#endif
+}
+int set_pctime(void)
+{
+	
+#ifdef MESSAGE
+	fprintf(errOut,"\n%s  %d TIMEZONE_SET \n",__func__,__LINE__);
+#endif		
+	
+	char valBuff1[128]; 
+	char valBuff2[128]; 
+	char valBuff3[128]; 
+	char valBuff4[128]; 
+	
+	CFG_get_by_name("PCTIME",valBuff1);
+
+	
+#ifdef MESSAGE
+	fprintf(errOut,"%s	%d	valBuff1 %s \n",__func__,__LINE__,valBuff1);
+#endif
+
+	//save new config to flash 
+	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+	writeParameters("/tmp/.apcfg","w+",0);
+
+	Execute_cmd("/usr/sbin/set_pctime > /dev/null 2>&1",rspBuff);
+
+	return 0;
+}
+
 
 /*****************************************************************************
 **
@@ -3293,7 +3577,7 @@ int main(int argc,char **argv)
 				 printf("</body></html>");
 				 exit(1);
 		}
-		//gohome =1;
+		gohome =1;
     }
 	//wan mode static ip
     if((strcmp(CFG_get_by_name("SIP",valBuff),"SIP") == 0 ) || (strcmp(CFG_get_by_name("SIPW",valBuff),"SIPW") == 0 ))
@@ -3352,9 +3636,11 @@ int main(int argc,char **argv)
 	{	
 		char pppoe_mode[10];						
 		memset(pppoe_mode,'\0',10);
-		char three_thread_Buff[128];						
-		memset(three_thread_Buff,'\0',128);
-		char tmp_Buff[10];						
+		char three_thread_buf[128];						
+		memset(three_thread_buf,'\0',128);
+		char tmp_Buff[10];	
+		char tmp2[128];
+		
 		memset(tmp_Buff,'\0',10);
 		int flag=0; 
 		Execute_cmd("cfg -e | grep \"WAN_MODE=\"",valBuff);              
@@ -3440,14 +3726,36 @@ int main(int argc,char **argv)
 
 			Execute_cmd("pppoe-stop > /dev/null 2>&1", cgi_tim);sleep(5);
 			Execute_cmd("pppoe-start > /dev/null 2>&1", cgi_tim);sleep(5);
-			if(strncmp(Execute_cmd("echo `route -n|grep ppp0|awk -F ' ' '{print$8}'`",cgi_tim),"ppp0 ppp0",9))
-            Execute_cmd("route add default gw `route -n | grep ppp0 |awk -F ' ' '{print$1}'|awk 'NR==1'`",cgi_tim);
 		}
-		//Execute_cmd("ps aux | grep \"threethread\"|awk -F ' ' '{print$5}'|cut -c11-21",three_thread_Buff);
-        //if(!strncmp(three_thread_Buff,"threethread",11))
-		//	{Execute_cmd("killall threethread",tmp_Buff);sleep(2);}
-        //Execute_cmd("/usr/sbin/threethread &",tmp_Buff);sleep(2);
-		//fprintf(errOut,"to gohome\n");
+		if(strncmp(Execute_cmd("echo `route -n|grep ppp0|awk -F ' ' '{print$8}'`",tmp2),"ppp0 ppp0",9))
+        Execute_cmd("route add default gw `route -n | grep ppp0 |awk -F ' ' '{print$1}'|awk 'NR==1'`",tmp2);
+		// user select pppoe,then start threethread
+		Execute_cmd("ps aux | grep \"threethread\"|awk -F ' ' '{print$5}'|cut -c11-21 | awk 'NR==1'",three_thread_buf);
+        if(!strncmp(three_thread_buf,"threethread",11))
+		{
+			Execute_cmd("killall threethread > /dev/null 2>&1",tmp_Buff);sleep(5);
+		    Execute_cmd("killall threethread > /dev/null 2>&1",tmp_Buff);sleep(5);//ensure kill old threethread
+		}
+        Execute_cmd("/usr/sbin/threethread & > /dev/null 2>&1",tmp_Buff);sleep(2);
+		//fprintf(errOut,"\nfprintf__user select pppoe,start /usr/sbin/threethread & > /dev/null 2>&1\n");
+
+		//for pppoe show yhlnew
+		char pppoe_ip[20];
+		char pppoe_gw[20];
+		char pppoe_mask[20];
+		
+		Execute_cmd("ifconfig | grep P-t-P | awk -F ' ' '{print$2}'| awk -F ':' '{print$2}'", pppoe_ip);
+		Execute_cmd("ifconfig | grep P-t-P | awk -F ' ' '{print$3}'| awk -F ':' '{print$2}'", pppoe_gw);
+		Execute_cmd("ifconfig | grep P-t-P | awk -F ' ' '{print$4}'| awk -F ':' '{print$2}'", pppoe_mask);
+
+		CFG_set_by_name("WAN_IPADDR3",pppoe_ip);
+		CFG_set_by_name("AP_NETMASK3",pppoe_mask);
+		CFG_set_by_name("IPGW3",pppoe_gw);
+		if(flag!=1)
+		{
+			writeParameters(NVRAM,"w+", NVRAM_OFFSET);//save new config to flash 
+			writeParameters("/tmp/.apcfg","w+",0);
+		}
 		gohome =1;
 	}
 	//pppoe and advanced options  above
@@ -3803,7 +4111,7 @@ int main(int argc,char **argv)
 			exit(0);
          }
          memset(cmdd,0x00,128);
-         sprintf(cmdd,"/home.html:admin:%s",CFG_get_by_name("ADMPASS" ,valBuff));
+         sprintf(cmdd,"/:admin:%s",CFG_get_by_name("ADMPASS" ,valBuff));
          fwrite(cmdd,strlen(cmdd),1,fp);
          fclose(fp);
          writeParameters(NVRAM,"w+", NVRAM_OFFSET);
@@ -3828,8 +4136,9 @@ int main(int argc,char **argv)
         system("cfg -x");
 		sleep(1);
 		//[TODO] reset any args
-		system("echo \"/home.html:admin:admin\" > /etc/httpd.conf");
-
+		system("echo \"/:admin:admin\" > /etc/httpd.conf");
+		//MAC and BACKUP
+		system("/usr/sbin/var_backup");
 		
         printf("HTTP/1.0 200 OK\r\n");
         printf("Content-type: text/html\r\n");
@@ -3891,7 +4200,7 @@ int main(int argc,char **argv)
 		}
 		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
         writeParameters("/tmp/.apcfg","w+",0);
-        gohome =1;
+        gohome =2;
     }
     /*************************************
     内网设置    DHCP服务器
@@ -3900,7 +4209,7 @@ int main(int argc,char **argv)
     {		 
         fprintf(errOut,"\n%s  %d DHCP_SET \n",__func__,__LINE__);
  		set_dhcp();   
-		gohome =1;
+		gohome =2;
     }
     /*************************************
     内网设置    DHCP服务器    添加
@@ -3914,6 +4223,7 @@ int main(int argc,char **argv)
         }
         else
         {
+			memset(Page,0,64);
             sprintf(Page,"%s","../ad_local_dhcp.html");
             gohome =0;
         }
@@ -3925,8 +4235,17 @@ int main(int argc,char **argv)
     {		 
         fprintf(errOut,"\n%s  %d DEL_SDHCP \n",__func__,__LINE__);
 		del_addr_bind();
-        gohome =1;
+        gohome =0;
     }
+	   /*************************************
+    内网设置    DHCP服务器    修改
+   *************************************/
+    if(strcmp(CFG_get_by_name("MOD_SDHCP",valBuff),"MOD_SDHCP") == 0 ) 
+    {		 
+        fprintf(errOut,"\n%s  %d MOD_SDHCP \n",__func__,__LINE__);
+	 gohome =0;
+    }
+
 
     /*************************************
     内网设置    网关设置
@@ -3934,7 +4253,69 @@ int main(int argc,char **argv)
     if(strcmp(CFG_get_by_name("GW_SET",valBuff),"GW_SET") == 0 ) 
     {		 
         fprintf(errOut,"\n%s  %d GW_SET \n",__func__,__LINE__);
-        gohome =1;
+
+		char br0_ip[20],br0_mac[20],br0_sub[20];
+		char dhcp_b[20],dhcp_hb[20], dhcp_e[20],dhcpTime[20],tmp[20];
+		char eth0_ip[10],eth0_ip2[10];
+		char* pChar;
+		char* pEth0Ip;
+		char*pBr0Ip;
+		int num,i=0;
+		char dhcp_flag[20];
+		
+	   	CFG_get_by_name("BR0_MAC",br0_mac);
+		CFG_get_by_name("AP_IPADDR",br0_ip);
+		CFG_get_by_name("AP_NETMASK",br0_sub);
+		//get eth0 ip
+		//TODO　check wan and br0 ,use web check now but it use IP value in cfg if no internet
+		Execute_cmd("ifconfig eth0|grep \"inet addr:\"|awk -F ' ' '{print$2}'|awk -F ':' '{print$2}'", eth0_ip);
+		pEth0Ip=strtok(eth0_ip,"\n");
+		pBr0Ip=strtok(br0_ip,"\n");
+		//eth0_ip!=br0_ip
+		if(strcmp(pEth0Ip,pBr0Ip)!=0)
+		{
+		   sprintf(pChar,"ifconfig br0 %s netmask %s up > /dev/null 2>&1",br0_ip,br0_sub);
+		   Execute_cmd(pChar, rspBuff);
+			//update nat_vlan.sh
+		   Execute_cmd("cat /etc/nat_vlan.sh | grep \"ppp0\"|grep \"DNAT --to\"|awk -F ' ' '{print$15}'", tmp);//get old DNAT value
+		   sprintf(pChar,"sed -i 's/%s/%s/g' /etc/nat_vlan.sh",tmp,pBr0Ip);//combine replacement cmd
+		   Execute_cmd(pChar, rspBuff);
+		   Execute_cmd("/etc/nat_vlan.sh > /dev/null 2>&1", rspBuff);
+
+		   sprintf(pChar," ifconfig br0 hw ether %s up > /dev/null 2>&1",br0_mac);
+		   Execute_cmd(pChar, rspBuff);
+		
+		   IPV4AndAsStr(br0_ip,br0_sub,dhcp_b,dhcp_hb);//output dhcp_b,dhcp_hb
+		   CFG_set_by_name("DHCP_BIP",dhcp_b);
+		   //fprintf(errOut,"\nDHCP_BIP:%s\n",dhcp_b);
+		   //TODO
+		   pChar=dhcp_b;
+		   num=sizeof(dhcp_b);
+           for(i=num;i>0;i--)
+           { 
+				if(pChar[i]=='.')   
+                {
+                     pChar[i+1]='\0';
+			         strcat(dhcp_e,"255");
+			         break;
+			    }
+    	   }
+		   CFG_set_by_name("DHCP_EIP",dhcp_e); 
+		   CFG_get_by_name("DHCPON_OFF",dhcp_flag);
+		   writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+           writeParameters("/tmp/.apcfg","w+",0);
+		   if(strcmp(dhcp_flag,"on")==0)
+		   {	
+				Execute_cmd("killall udhcpd > /dev/null 2>&1",rspBuff);
+				Execute_cmd("/etc/rc.d/rc.udhcpd",rspBuff);
+				Execute_cmd("/usr/sbin/udhcpd /etc/udhcpd.conf",rspBuff);
+		   }
+		}
+		else
+		{
+			fprintf(errOut,"\nBR0_IP IS EQUAL TO ETH0,please try another br0_ip\n");
+		}
+        gohome =2;
     }
     
     /*************************************
@@ -3944,7 +4325,9 @@ int main(int argc,char **argv)
     {		 
         fprintf(errOut,"\n%s  %d ADD_STATICR \n",__func__,__LINE__);
 		add_route_rule();
-        gohome =1;
+        memset(Page,0,64);
+        sprintf(Page,"%s","../ad_local_rulist.html");
+        gohome =0;
     }
     /*************************************
     内网设置    路由表设置       删除
@@ -3953,9 +4336,16 @@ int main(int argc,char **argv)
     {		 
         fprintf(errOut,"\n%s  %d DEL_RU \n",__func__,__LINE__);
 		del_route_rule();
-        gohome =1;
+        gohome =0;
     }
-    
+        /*************************************
+    内网设置    路由表设置      修改
+   *************************************/
+    if(strcmp(CFG_get_by_name("MOD_RU",valBuff),"MOD_RU") == 0 ) 
+    {		 
+        fprintf(errOut,"\n%s  %d MOD_RU \n",__func__,__LINE__);
+        gohome =0;
+    }
     /*************************************
     接入管理    无线接入控制
    
@@ -4029,7 +4419,9 @@ int main(int argc,char **argv)
 		}    	
 		
         fprintf(errOut,"\n%s  %d ADD_CONRULE \n",__func__,__LINE__);
-        gohome =3;
+        memset(Page,0,64);
+        sprintf(Page,"%s","../ad_con_manage.html");
+        gohome =0;
     }
 
 	/*DEL STA's MAC*/
@@ -4073,7 +4465,7 @@ int main(int argc,char **argv)
     	}
 		
         fprintf(errOut,"\n%s  %d DEL_CON \n",__func__,__LINE__);
-        gohome =3;
+        gohome =2;
     }
 
 	/*************************************
@@ -4155,44 +4547,124 @@ int main(int argc,char **argv)
 		
 		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
 		writeParameters("/tmp/.apcfg","w+",0);
-		gohome =1;
+		gohome =2;
 	}
 	
-
-    /*************************************
+   /*************************************
     无线设置    高级
    *************************************/
     if(strcmp(CFG_get_by_name("WIRELESS_ADVSET",valBuff),"WIRELESS_ADVSET") == 0 ) 
     {		 
         fprintf(errOut,"\n%s  %d WIRELESS_ADVSET \n",__func__,__LINE__);
-        gohome =1;
+            
+		char pChar[128];
+		char valTxPwrCfg[128];	
+		char valBintCfg[128];	
+		char valRtsCfg[128];	
+		//char valFragCfg[128];
+		char valRateCfg[128];
+		char valShorGiCfg[128];
+		char valBuffTemp1[128];
+		char valBuffTemp2[128];
+
+	//	Execute_cmd("cfg -e | grep \"WIFI_ADV_POWER\" | awk -F \"=\" \'{print $2}\'",valTxPwrCfg);
+		Execute_cmd("cfg -e | grep \"BEACON_INT\" | awk -F \"AP_SSID=\" '{print $2}'",valBintCfg);
+		Execute_cmd("cfg -s | grep \"WIFI_ADV_RSTCTS\" | awk -F \"=\" \'{print $2}\'",valRtsCfg);
+		//Execute_cmd("cfg -s | grep \"WIFI_ADV_PTICH\" | awk -F \"=\" \'{print $2}\'",valFragCfg);
+		Execute_cmd("cfg -s | grep \"TXRATE\" | awk -F \"=\" \'{print $2}\'",valRateCfg);
+		Execute_cmd("cfg -s | grep \"SHORTGI\" | awk -F \"=\" \'{print $2}\'",valShorGiCfg);
+
+    //set Beacon Intval
+		CFG_get_by_name("BEACON_INT",valBuffTemp1);
+		sprintf(valBuffTemp2,"%s\n<br>",valBuffTemp1);
+		if((strcmp(valBuffTemp2,valBintCfg) != 0)&&(strcmp(valBuffTemp2,"\n<br>") != 0))
+		{
+			sprintf(pChar,"iwpriv ath0 bintval %s  > /dev/null 2>&1",valBuffTemp2);
+			fprintf(errOut,"\n%s  %d BEACON_INT:%s \n",__func__,__LINE__, pChar);
+			Execute_cmd(pChar, rspBuff);
+		}
+
+    //set RTS
+		CFG_get_by_name("WIFI_ADV_RSTCTS",valBuffTemp1);
+		sprintf(valBuffTemp2,"%s\n<br>",valBuffTemp1);
+		if((strcmp(valBuffTemp2,valRtsCfg) != 0)&&(strcmp(valBuffTemp2,"\n<br>") != 0))
+		{
+			sprintf(pChar,"iwconfig ath0 rts %s  > /dev/null 2>&1",valBuffTemp2);
+        fprintf(errOut,"\n%s  %d WIFI_ADV_RSTCTS:%s \n",__func__,__LINE__, pChar);
+			Execute_cmd(pChar, rspBuff);
+
+		}
+
+    // set Rate
+		CFG_get_by_name("TXRATE",valBuffTemp1);
+		sprintf(valBuffTemp2,"%s\n<br>",valBuffTemp1);
+		if((strcmp(valBuffTemp2,valRateCfg) != 0)&&(strcmp(valBuffTemp2,"\n<br>") != 0))
+		{
+
+            if(strncmp(valBuffTemp2,"0x",2))
+            {
+		           CFG_set_by_name("RATECTL","auto");
+            }
+            else
+            {
+		           CFG_set_by_name("RATECTL","manual");
+            }
+
+		    CFG_set_by_name("MANRATE",valBuffTemp2);
+			sprintf(pChar,"iwpriv ath0 set11NRates %s  > /dev/null 2>&1",valBuffTemp2);
+        fprintf(errOut,"\n%s  %d TXRATE:%s \n",__func__,__LINE__, pChar);
+			Execute_cmd(pChar, rspBuff);
+
+		}
+
+        //set Short GI
+		CFG_get_by_name("SHORTGI",valBuffTemp1);
+		sprintf(valBuffTemp2,"%s\n<br>",valBuffTemp1);
+		if((strcmp(valBuffTemp2,valShorGiCfg) != 0)&&(strcmp(valBuffTemp2,"\n<br>") != 0))
+		{
+			sprintf(pChar,"iwpriv ath0 shortgi %s  > /dev/null 2>&1",valBuffTemp2);
+			fprintf(errOut,"\n%s  %d SHORTGI:%s \n",__func__,__LINE__, pChar);
+			Execute_cmd(pChar, rspBuff);
+
+		}
+		
+		//save new config to flash
+		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+		writeParameters("/tmp/.apcfg","w+",0);			
+
+        gohome =2;
     }
+
+
     /*************************************
-    安全管理      IP/MAC绑定
-   *************************************/
-    if(strcmp(CFG_get_by_name("IPMAC_SET",valBuff),"IPMAC_SET") == 0 ) 
-    {		 
-        fprintf(errOut,"\n%s  %d IPMAC_SET \n",__func__,__LINE__);
-        gohome =1;
-    }
-    
-    /*************************************
-    内网设置    IP/MAC绑定    添加
+    安全管理    IP/MAC绑定    添加
    *************************************/
     if(strcmp(CFG_get_by_name("ADD_IPMACBIND",valBuff),"ADD_IPMACBIND") == 0 ) 
     {		 
         fprintf(errOut,"\n%s  %d ADD_IPMACBIND \n",__func__,__LINE__);
-        gohome =1;
+		add_arp();
+        memset(Page,0,64);
+        sprintf(Page,"%s","../ad_safe_IPMAC.html");
+        gohome =0;
     }
     
     
     /*************************************
-    内网设置    IP/MAC绑定    删除
+    安全管理    IP/MAC绑定    删除
    *************************************/
     if(strcmp(CFG_get_by_name("DEL_IPMAC",valBuff),"DEL_IPMAC") == 0 ) 
     {		 
         fprintf(errOut,"\n%s  %d DEL_IPMAC \n",__func__,__LINE__);
-        gohome =1;
+		del_arp();
+        gohome =0;
+    }
+    /*************************************
+    内网设置    IP/MAC绑定    修改
+   *************************************/
+    if(strcmp(CFG_get_by_name("MOD_IPMAC",valBuff),"MOD_IPMAC") == 0 ) 
+    {		 
+        fprintf(errOut,"\n%s  %d MOD_IPMAC \n",__func__,__LINE__);
+        gohome =0;
     }
     
     /*************************************
@@ -4201,7 +4673,7 @@ int main(int argc,char **argv)
     if(strcmp(CFG_get_by_name("PARENTC_SET",valBuff),"PARENTC_SET") == 0 ) 
     {		 
         fprintf(errOut,"\n%s  %d PARENTC_SET \n",__func__,__LINE__);
-        gohome =1;
+        gohome =2;
     }
     /*************************************
     家长控制    访问管理
@@ -4209,7 +4681,7 @@ int main(int argc,char **argv)
     if(strcmp(CFG_get_by_name("PARENTCACC_SET",valBuff),"PARENTCACC_SET") == 0 ) 
     {		 
         fprintf(errOut,"\n%s  %d PARENTCACC_SET \n",__func__,__LINE__);
-        gohome =1;
+        gohome =2;
     }
     /*************************************
     家长控制    访问管理      添加
@@ -4217,7 +4689,9 @@ int main(int argc,char **argv)
     if(strcmp(CFG_get_by_name("ADD_PARC",valBuff),"ADD_PARC") == 0 ) 
     {		 
         fprintf(errOut,"\n%s  %d ADD_PARC \n",__func__,__LINE__);
-        gohome =1;
+        memset(Page,0,64);
+        sprintf(Page,"%s","../ad_parentc_accept.html");
+        gohome =0;
     }
     /*************************************
     家长控制    访问管理      删除
@@ -4225,16 +4699,37 @@ int main(int argc,char **argv)
     if(strcmp(CFG_get_by_name("DEL_PRC",valBuff),"DEL_PRC") == 0 ) 
     {		 
         fprintf(errOut,"\n%s  %d DEL_PRC \n",__func__,__LINE__);
-        gohome =1;
+        gohome =2;
+    }
+    /*************************************
+    家长控制    访问管理      修改
+   *************************************/
+    if(strcmp(CFG_get_by_name("MOD_PRC",valBuff),"MOD_PRC") == 0 ) 
+    {		 
+        fprintf(errOut,"\n%s  %d MOD_PRC \n",__func__,__LINE__);
+        gohome =0;
     }
     
+	/*************************************
+    系统设置    时间设置
+   *************************************/
+    if(strcmp(CFG_get_by_name("TIME_SYNC",valBuff),"TIME_SYNC") == 0 ) 
+    {		 
+        fprintf(errOut,"\n%s  %d TIME_SYNC \n",__func__,__LINE__);
+		set_pctime();
+        memset(Page,0,64);
+        sprintf(Page,"%s","../ad_man_timezone.html");
+        gohome =0;
+    }
+	
     /*************************************
     系统设置    时间设置
    *************************************/
     if(strcmp(CFG_get_by_name("TIMEZONE_SET",valBuff),"TIMEZONE_SET") == 0 ) 
     {		 
         fprintf(errOut,"\n%s  %d TIMEZONE_SET \n",__func__,__LINE__);
-        gohome =1;
+		set_ntp_server();
+        gohome =2;
     }
     
     /*************************************
@@ -4242,8 +4737,11 @@ int main(int argc,char **argv)
    *************************************/
     if(strcmp(CFG_get_by_name("LOCAL_SAVE",valBuff),"LOCAL_SAVE") == 0 ) 
     {		 
-        fprintf(errOut,"\n%s  %d ADD_IPMACBIND \n",__func__,__LINE__);
-        gohome =1;
+        fprintf(errOut,"\n%s  %d ADD_IPMACBIND \n",__func__,__LINE__);	
+		add_backup();
+        memset(Page,0,64);
+        sprintf(Page,"%s","../ad_man_cfgsave.html");
+        gohome =0;
     }
     /*************************************
    系统设置    配置管理     使用
@@ -4251,7 +4749,8 @@ int main(int argc,char **argv)
     if(strcmp(CFG_get_by_name("CFG_MODIFY_USE",valBuff),"CFG_MODIFY_USE") == 0 ) 
     {		 
         fprintf(errOut,"\n%s  %d CFG_MODIFY_USE \n",__func__,__LINE__);
-        gohome =1;
+		use_backup();
+        gohome =2;
     }
     /*************************************
    系统设置    配置管理     删除
@@ -4259,7 +4758,10 @@ int main(int argc,char **argv)
     if(strcmp(CFG_get_by_name("CFG_MODIFY_DEL",valBuff),"CFG_MODIFY_DEL") == 0 ) 
     {		 
         fprintf(errOut,"\n%s  %d CFG_MODIFY_DEL \n",__func__,__LINE__);
-        gohome =1;
+		del_backup();
+        memset(Page,0,64);
+        sprintf(Page,"%s","../ad_man_cfgsave.html");
+        gohome =0;
     }
 
     
@@ -4268,9 +4770,9 @@ int main(int argc,char **argv)
    *************************************/
     if(strcmp(CFG_get_by_name("NETCHECK",valBuff),"NETCHECK") == 0 ) 
     {		
-
-	Execute_cmd("net_check > /dev/null 2>&1", rspBuff); 
-    	     printf("HTTP/1.0 200 OK\r\n");
+		Execute_cmd("network_diagnostics > /dev/null 2>&1", rspBuff); 
+        fprintf(errOut,"\n%s  %d NETCHECK \n",__func__,__LINE__);
+        printf("HTTP/1.0 200 OK\r\n");
         printf("Content-type: text/html\r\n");
         printf("Connection: close\r\n");
         printf("\r\n");
@@ -4282,13 +4784,7 @@ int main(int argc,char **argv)
         printf("<script language=javascript>window.location.href=\"ad_netcheck?INDEX=14\";</script>");
         printf("</body></html>");
         gohome =2;
-	
-     }
-     else if(gohome == 2)
-     {
-
-	exit(0);
-     }
+    }
 	
 	/*************************************
    重启
@@ -4296,9 +4792,32 @@ int main(int argc,char **argv)
     if(strcmp(CFG_get_by_name("REBOOT",valBuff),"REBOOT") == 0 ) 
     {		 
         fprintf(errOut,"\n%s  %d REBOOT \n",__func__,__LINE__);
+
+        printf("HTTP/1.0 200 OK\r\n");
+        printf("Content-type: text/html\r\n");
+        printf("Connection: close\r\n");
+        printf("\r\n");
+        printf("\r\n");
+
+        printf("<HTML><HEAD>\r\n");
+        printf("<LINK REL=\"stylesheet\" HREF=\"../style/handaer.css\"  TYPE=\"text/css\" media=\"all\">");
+        printf("<link rel=\"stylesheet\" href=\"../style/normal_ws.css\" type=\"text/css\">");
+		printf("<meta http-equiv=\"Content-Type\" content=\"text/html;charset=UTF-8\">");
+        printf("</head><body>");
+        
+        printf("<div class=\"handaer_main\">");
+        printf("<h1>绯荤粺閲嶅惎</h1>\n");	
+        printf("<div align=\"center\"> <img align=\"center\" src=\"../images/loading.gif\"></img></div>");
+        printf("<p  align=\"center\">姝ｅ湪閲嶅惎BASE..........璇风◢绛?...........</p><br>\n");	
+        printf("<p  align=\"center\">Restartting BASE............Please wait............</p><br>\n");	
+        printf("<script language=javascript>setTimeout(function(){window.location.href=\"map\";},60000);</script>");
+        printf("</div>");
+        printf("</body></html>");
+	
+        system("sleep 1 && reboot &");
+        exit(1);
 		//luodp
-		reboot(RB_AUTOBOOT);
-        gohome =1;
+		//reboot(RB_AUTOBOOT);
     }
 	
     printf("HTTP/1.0 200 OK\r\n");
@@ -4323,35 +4842,20 @@ int main(int argc,char **argv)
     else if( gohome == 2)
     {
         exit(0);
-    }
-	else if( gohome == 3)
-    {
-    	fprintf(errOut,"\n%s  %d gohome == 3\n",__func__,__LINE__);
-         if(translateFile("../ad_con_manage.html") < 0)
-        {
-            printf("Content-Type:text/html\n\n");
-            printf("<HTML><HEAD>\r\n");
-            printf("<LINK REL=\"stylesheet\" href=\"../styleSheet.css\" type=\"text/css\">");
-            printf("</head><body>");
-            printf("Page home Not Found");
-            printf("</body></html>");
-            exit(1);
-        }
-    }
-    else
+    }else
     {
         fprintf(errOut,"\n%s  %d \n",__func__,__LINE__);
-
+		system("dd if=/dev/caldata of=/etc/cal.bin   > /dev/null 2>&1");
         if(translateFile(Page) < 0)
         {
-        fprintf(errOut,"\n%s  %d \n",__func__,__LINE__);
-        printf("Content-Type:text/html\n\n");
-        printf("<HTML><HEAD>\r\n");
-        printf("<LINK REL=\"stylesheet\" href=\"../styleSheet.css\" type=\"text/css\">");
-        printf("</head><body>");
-        printf("Page %s Not Found",Page);
-        printf("</body></html>");
-        exit(1);
+			fprintf(errOut,"\n%s  %d \n",__func__,__LINE__);
+			printf("Content-Type:text/html\n\n");
+			printf("<HTML><HEAD>\r\n");
+			printf("<LINK REL=\"stylesheet\" href=\"../styleSheet.css\" type=\"text/css\">");
+			printf("</head><body>");
+			printf("Page %s Not Found",Page);
+			printf("</body></html>");
+			exit(1);
         }	
     }
 	

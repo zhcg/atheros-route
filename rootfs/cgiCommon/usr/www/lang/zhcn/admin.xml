@@ -172,8 +172,8 @@
 	<message msgid="err sIT" msgstr="请您指定自动断线等待" />
 	
 	<message msgid="err number" msgstr="请您输入0-9之间的数字" />
-	<message msgid="err IPmormat" msgstr="IP地址格式错误" />
-	<message msgid="err Maskmormat" msgstr="掩码格式错误" />
+	<message msgid="err IPmormat" msgstr="IP地址不合法" />
+	<message msgid="err Maskmormat" msgstr="掩码不合法" />
 	
 	<message msgid="err keylen" msgstr="密钥长度必须是8-12位" />
 	<message msgid="err keychar" msgstr="密码中存在无效字符" />
@@ -219,8 +219,19 @@
     <message msgid="admw waring" msgstr="注意:升级过程完全自动,请您不要关闭电源,否则将导致BASE损坏而无法使用,升级过程约130秒,当升级结束后,BASE将自动重新启动" />	
 	<message msgid="admw sysupgrade" msgstr="确认进行固件升级?" />
 	<message msgid="err dhcp null" msgstr="无法通过DHCP获取到WAN IP,请您检查是否为DHCP方式连接" />
-	<message msgid="err dhcp ip" msgstr="DHCP获取到WAN IP跟当前路由在同一个网段,请您在网关设置里面调整路由的网段" />
+	<message msgid="err dhcp ip" msgstr="DHCP获取到WAN IP跟当前路由在同一个网段,请您在高级设置-内网设置-网关设置里面修改路由的网段" />
 	
 	<message msgid="man admin setting" msgstr="密码管理" />
+	
+	<message msgid="err IP empty" msgstr="IP地址不能为空" />
+	<message msgid="err sub empty" msgstr="掩码不能为空" />
+	<message msgid="err gw empty" msgstr="网关不能为空" />
+	<message msgid="err DNS empty" msgstr="DNS不能为空" />
+	
+	<message msgid="err IP format" msgstr="IP地址不合法" />
+	<message msgid="err sub format" msgstr="掩码地址不合法" />	
+	<message msgid="err gw format" msgstr="网关地址不合法" />
+	<message msgid="err DNS format" msgstr="DNS地址不合法" />
+	
 
 </po>

@@ -8,6 +8,7 @@ RM:=rm -rf
 
 all:clean
 	$(CC) $(CFLAGS) -o firmware_check firmware_check.c
+	$(CC) $(CFLAGS) -o firmware_check2 firmware_check2.c
 clean:
 	$(RM) firmware_check *.o
 

@@ -44,7 +44,7 @@ color: #333; font-weight: 800; background:url(../images/button.gif) 0 0  no-repe
 width:138px; height:48px; 
 color: #333; font-weight: 800; background:url(../images/button2.gif) 0 0  no-repeat!important; cursor:hand; 
 }
-.handaer_small_button{ width:150px; height:25px; line-height:25px; background:url(../images/sbutton.png) 0 0  no-repeat!important; }
+.handaer_small_button{ width:150px; height:25px; line-height:25px; background:url(../images/sbutton.png) 0 0  no-repeat!important; cursor:hand; }
 .handaer_text{ border:1px solid #d0d0d0;}
 .handaer_text td{  border-bottom:1px solid #d0d0d0;}
 .handaer_text_content{ border:1px solid #d0d0d0!important; height:30px; line-height:30px;}

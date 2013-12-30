@@ -1,98 +1,101 @@
 ﻿<po>
-  <message msgid="lan bAPPLY" msgstr="应用" />
-  <message msgid="lan bCANCEL" msgstr="取消" />
-  <message msgid="lan enable" msgstr="启用" />
-  <message msgid="lan disable" msgstr="停用" />
-  <message msgid="lan MODDHCP" msgstr="修改" />
-  <message msgid="lan DELDHCP" msgstr="删除" />
-  <message msgid="lan ADDDHCP" msgstr="添加" />
-  <message msgid="lan onbutton" msgstr="启用" />
-  <message msgid="lan offbutton" msgstr="禁用" />  
-  <message msgid="lan work" msgstr="生效" />
-  <message msgid="lan offwork" msgstr="失效" />  
-  <message msgid="lan bSAVE" msgstr="保存" />   
-  
-  <message msgid="dhcp title" msgstr="DHCP服务器" />
-  <message msgid="dhcp des" msgstr="配置DHCP服务器并显示其相关信息" />
-  <message msgid="dhcp t1_title" msgstr="DHCP服务器" />
-  <message msgid="dhcp t1_GWIP" msgstr="网关IP" />
-  <message msgid="dhcp t1_DHCPON_OFF" msgstr="DHCP服务器" />
-  <message msgid="dhcp t1_DHCPIP" msgstr="IP分配地址" />
-  <message msgid="dhcp t1_TIME" msgstr="租用时间" />
-  <message msgid="dhcp t1_hour" msgstr="小时" />
-  <message msgid="dhcp t1_min" msgstr="分钟" />
-  <message msgid="dhcp t1_defaut" msgstr="（1-2880分钟,缺省值120分钟）" />
+	<message msgid="lan bAPPLY" msgstr="应用" />
+	<message msgid="lan bCANCEL" msgstr="取消" />
+	<message msgid="lan enable" msgstr="启用" />
+	<message msgid="lan disable" msgstr="停用" />
+	<message msgid="lan MODDHCP" msgstr="修改" />
+	<message msgid="lan DELDHCP" msgstr="删除" />
+	<message msgid="lan ADDDHCP" msgstr="添加" />
+	<message msgid="lan onbutton" msgstr="启用" />
+	<message msgid="lan offbutton" msgstr="禁用" />  
+	<message msgid="lan work" msgstr="生效" />
+	<message msgid="lan offwork" msgstr="失效" />  
+	<message msgid="lan bSAVE" msgstr="保存" />   
 
-  <message msgid="dhcp t2_title" msgstr="静态分配" />
-  <message msgid="dhcp t2_Mac" msgstr="MAC地址" />
-  <message msgid="dhcp t2_Ip" msgstr="IP地址" />
-  <message msgid="dhcp t2_Status" msgstr="生效" />
-  <message msgid="dhcp t2_Modefy" msgstr="删除" />
+	<message msgid="dhcp title" msgstr="DHCP服务器" />
+	<message msgid="dhcp des" msgstr="配置DHCP服务器并显示其相关信息" />
+	<message msgid="dhcp t1_title" msgstr="DHCP服务器" />
+	<message msgid="dhcp t1_GWIP" msgstr="网关IP" />
+	<message msgid="dhcp t1_DHCPON_OFF" msgstr="DHCP服务器" />
+	<message msgid="dhcp t1_DHCPIP" msgstr="IP分配地址" />
+	<message msgid="dhcp t1_TIME" msgstr="租用时间" />
+	<message msgid="dhcp t1_hour" msgstr="小时" />
+	<message msgid="dhcp t1_min" msgstr="分钟" />
+	<message msgid="dhcp t1_defaut" msgstr="（1-2880分钟,缺省值120分钟）" />
 
-  <message msgid="dhcp t3_title" msgstr="DHCP客户端" />
-  <message msgid="dhcp t3_Hostname" msgstr="客户端名称" />
-  <message msgid="dhcp t3_Mac" msgstr="MAC地址" />
-  <message msgid="dhcp t3_Ip" msgstr="IP地址" />
-  <message msgid="dhcp t3_Expr" msgstr="有效时间" />
-  
-  <message msgid="dhcpadd title" msgstr="DHCP服务器" />
-  <message msgid="dhcpadd des" msgstr="添加静态DHCP条目" />
-  <message msgid="dhcpadd t1_title" msgstr="添加静态DHCP条目" />
-  <message msgid="dhcpadd t1_MAC" msgstr="MAC地址" />
-  <message msgid="dhcpadd t1_IP" msgstr="IP地址" />
-  <message msgid="dhcpadd t1_Status" msgstr="状态" />
+	<message msgid="dhcp t2_title" msgstr="静态分配" />
+	<message msgid="dhcp t2_Mac" msgstr="MAC地址" />
+	<message msgid="dhcp t2_Ip" msgstr="IP地址" />
+	<message msgid="dhcp t2_Status" msgstr="生效" />
+	<message msgid="dhcp t2_Modefy" msgstr="删除" />
 
-  <message msgid="gw title" msgstr="网关设置" />
-  <message msgid="gw des" msgstr="配置网关选项" />
-  <message msgid="gw t1_title" msgstr="网关设置" />
-  <message msgid="gw t1_MAC" msgstr="MAC地址" />
-  <message msgid="gw t1_IP" msgstr="IP地址" />
-  <message msgid="gw t1_SUB" msgstr="子网掩码" />
-  
-  <message msgid="rulit title" msgstr="路由表设置" />
-  <message msgid="rulit des" msgstr="显示以及配置静态路由表相关信息" />
-  
-  <message msgid="rulit t1_title" msgstr="系统路由表" />
-  <message msgid="rulit t1_Des" msgstr="目的网络地址" />
-  <message msgid="rulit t1_Sub" msgstr="子网掩码" />
-  <message msgid="rulit t1_Gw" msgstr="网关" />
-  <message msgid="rulit t1_Intf" msgstr="接口" />
-	
-  <message msgid="rulit t2_title" msgstr="静态路由" />
-  <message msgid="rulit t2_Des" msgstr="目的网络地址" />
-  <message msgid="rulit t2_Sub" msgstr="子网掩码" />
-  <message msgid="rulit t2_Gw" msgstr="网关" />
-  <message msgid="rulit t2_Inf" msgstr="生效" />
-  <message msgid="rulit t2_Modefy" msgstr="删除" />
-  
-  <message msgid="addru title" msgstr="路由表设置" />
-  <message msgid="addru des" msgstr="添加静态路由规则并控制其是否生效" />
-  <message msgid="addru t1_title" msgstr="添加静态路由规则" />
-  <message msgid="addru t1_Des" msgstr="目的网络地址" />
-  <message msgid="addru t1_Sub" msgstr="子网掩码" />
-  <message msgid="addru t1_Gw" msgstr="网关" />
-  <message msgid="addru t1_St" msgstr="状态" />
+	<message msgid="dhcp t3_title" msgstr="DHCP客户端" />
+	<message msgid="dhcp t3_Hostname" msgstr="客户端名称" />
+	<message msgid="dhcp t3_Mac" msgstr="MAC地址" />
+	<message msgid="dhcp t3_Ip" msgstr="IP地址" />
+	<message msgid="dhcp t3_Expr" msgstr="有效时间" />
 
-  <message msgid="err MAC empty" msgstr="MAC地址不能为空" />
-  <message msgid="err IP empty" msgstr="IP地址不能为空" />
-  <message msgid="err sub empty" msgstr="掩码地址不能为空" />
-  <message msgid="err user empty" msgstr="用户名不能为空" />
-  <message msgid="err pwd empty" msgstr="密码不能为空" />
-  <message msgid="err time empty" msgstr="时间不能为空" />
-  
-  <message msgid="err MAC format" msgstr="MAC格式错误" />
-  <message msgid="err IP format" msgstr="IP地址格式错误" />
-  <message msgid="err sub format" msgstr="掩码格式错误" />
-  
-  <message msgid="err format" msgstr="参数格式错误" />
-  <message msgid="err range" msgstr="参数范围错误" />
-  
-  <message msgid="err bip" msgstr="起始地址不在合法网段" />
-  <message msgid="err eip" msgstr="结束地址不在合法网段" />
-  <message msgid="err iprange" msgstr="DHCP地址范围不能包含网关IP在内" />
-  <message msgid="err ip notin" msgstr="IP地址必须在DHCP地址范围内" />
-  <message msgid="err IPMAC exist" msgstr="IP或MAC地址已经被绑定" /> 
-  <message msgid="err ipsame" msgstr="IP地址不能与网关IP相同" />
-  <message msgid="err ip illegal" msgstr="IP地址不在合法网段" />
-   
+	<message msgid="dhcpadd title" msgstr="DHCP服务器" />
+	<message msgid="dhcpadd des" msgstr="添加静态DHCP条目" />
+	<message msgid="dhcpadd t1_title" msgstr="添加静态DHCP条目" />
+	<message msgid="dhcpadd t1_MAC" msgstr="MAC地址" />
+	<message msgid="dhcpadd t1_IP" msgstr="IP地址" />
+	<message msgid="dhcpadd t1_Status" msgstr="状态" />
+
+	<message msgid="gw title" msgstr="网关设置" />
+	<message msgid="gw des" msgstr="配置网关选项" />
+	<message msgid="gw t1_title" msgstr="网关设置" />
+	<message msgid="gw t1_MAC" msgstr="MAC地址" />
+	<message msgid="gw t1_IP" msgstr="IP地址" />
+	<message msgid="gw t1_SUB" msgstr="子网掩码" />
+
+	<message msgid="rulit title" msgstr="路由表设置" />
+	<message msgid="rulit des" msgstr="显示以及配置静态路由表相关信息" />
+
+	<message msgid="rulit t1_title" msgstr="系统路由表" />
+	<message msgid="rulit t1_Des" msgstr="目的网络IP地址" />
+	<message msgid="rulit t1_Sub" msgstr="子网掩码" />
+	<message msgid="rulit t1_Gw" msgstr="网关" />
+	<message msgid="rulit t1_Intf" msgstr="接口" />
+
+	<message msgid="rulit t2_title" msgstr="静态路由" />
+	<message msgid="rulit t2_Des" msgstr="目的网络IP地址" />
+	<message msgid="rulit t2_Sub" msgstr="子网掩码" />
+	<message msgid="rulit t2_Gw" msgstr="网关" />
+	<message msgid="rulit t2_Inf" msgstr="生效" />
+	<message msgid="rulit t2_Modefy" msgstr="删除" />
+
+	<message msgid="addru title" msgstr="路由表设置" />
+	<message msgid="addru des" msgstr="添加静态路由规则并控制其是否生效" />
+	<message msgid="addru t1_title" msgstr="添加静态路由规则" />
+	<message msgid="addru t1_Des" msgstr="目的网络IP地址" />
+	<message msgid="addru t1_Sub" msgstr="子网掩码" />
+	<message msgid="addru t1_Gw" msgstr="网关" />
+	<message msgid="addru t1_St" msgstr="状态" />
+
+	<message msgid="err MAC empty" msgstr="MAC地址不能为空" />
+	<message msgid="err user empty" msgstr="用户名不能为空" />
+	<message msgid="err pwd empty" msgstr="密码不能为空" />
+	<message msgid="err time empty" msgstr="时间不能为空" />
+	<message msgid="err MAC format" msgstr="MAC格式错误,请按照XX:XX:XX:XX:XX:XX的格式输入" />
+	<message msgid="err format" msgstr="参数不合法" />
+	<message msgid="err range" msgstr="参数范围错误" />
+	<message msgid="err bip" msgstr="起始地址不在合法网段" />
+	<message msgid="err eip" msgstr="结束地址不在合法网段" />
+	<message msgid="err iprange" msgstr="DHCP地址范围不能包含网关IP在内" />
+	<message msgid="err ip notin" msgstr="IP地址必须在DHCP地址范围内" />
+	<message msgid="err IPMAC exist" msgstr="IP或MAC地址已经被绑定" /> 
+	<message msgid="err ipsame" msgstr="IP地址不能与网关IP相同" />
+	<message msgid="err ip illegal" msgstr="IP地址不在合法网段" />  
+	<message msgid="err sub allone" msgstr="掩码不能为255.255.255.255" />
+	<message msgid="err time" msgstr="时间无效" />
+	<message msgid="err IP empty" msgstr="IP地址不能为空" />
+	<message msgid="err sub empty" msgstr="掩码不能为空" />
+	<message msgid="err gw empty" msgstr="网关不能为空" />
+	<message msgid="err DNS empty" msgstr="DNS不能为空" />
+	<message msgid="err IP format" msgstr="IP地址不合法" />
+	<message msgid="err sub format" msgstr="掩码地址不合法" />	
+	<message msgid="err gw format" msgstr="网关地址不合法" />
+	<message msgid="err DNS format" msgstr="DNS地址不合法" />
+	<message msgid="err WANsame" msgstr="网关IP不能与WAN口IP位于相同网段" />	
 </po>

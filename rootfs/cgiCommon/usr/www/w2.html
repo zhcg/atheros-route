@@ -453,18 +453,27 @@ function isAllNum(str)
 	return 1;
 }
 
-function checkIpAddr(field, ismask)
+function checkIpAddr(field, ismask)//1447
 {
 	if (field.value == "") 
 	{
-		if(ismask)
+		if(ismask == 1)
 		{
-			alert(_("err mask empty"));
+			alert(_("err IP empty"));
 		}
-		else
+		else if(ismask == 2)
+		{
+			alert(_("err sub empty"));
+		}
+		else if(ismask == 3)
 		{	
-			alert(_("err ip empty"));
+			alert(_("err gw empty"));
 		}
+		else if(ismask == 4)
+		{	
+			alert(_("err DNS empty"));
+		}
+
 		field.value = field.defaultValue;
 		field.focus();
 		return false;
@@ -472,33 +481,74 @@ function checkIpAddr(field, ismask)
 
 	if (isAllNum(field.value) == 0) 
 	{
-		alert(_("err number"));
+		if(ismask == 1)
+		{
+			alert(_("err IP format"));
+		}
+		else if(ismask == 2)
+		{	
+			alert(_("err sub format"));
+		}
+		else if(ismask == 3)
+		{	
+			alert(_("err gw format"));
+		}
+		else if(ismask == 4)
+		{
+			alert(_("err DNS format"));
+		}
 		field.value = field.defaultValue;
 		field.focus();
 		return false;
 	}
 
-	if (ismask)
+	if (ismask == 1)
 	{
-		if ((!checkRange(field.value, 1, 0, 256)) ||
-				(!checkRange(field.value, 2, 0, 256)) ||
-				(!checkRange(field.value, 3, 0, 256)) ||
-				(!checkRange(field.value, 4, 0, 256)))
+		if ((!checkRange(field.value, 1, 0, 255)) ||
+				(!checkRange(field.value, 2, 0, 255)) ||
+				(!checkRange(field.value, 3, 0, 255)) ||
+				(!checkRange(field.value, 4, 0, 255)))
 		{
-			alert(_("err Maskmormat"));
+			alert(_("err IP format"));
 			field.value = field.defaultValue;
 			field.focus();
 			return false;
 		}
 	}
-	else 
+	else if (ismask == 2)
 	{
 		if ((!checkRange(field.value, 1, 0, 255)) ||
 				(!checkRange(field.value, 2, 0, 255)) ||
 				(!checkRange(field.value, 3, 0, 255)) ||
-				(!checkRange(field.value, 4, 1, 254)))
+				(!checkRange(field.value, 4, 0, 254)))
 		{
-			alert(_("err IPmormat"));
+			alert(_("err sub format"));
+			field.value = field.defaultValue;
+			field.focus();
+			return false;
+		}
+	}
+	else if(ismask == 3)
+	{
+		if ((!checkRange(field.value, 1, 0, 255)) ||
+				(!checkRange(field.value, 2, 0, 255)) ||
+				(!checkRange(field.value, 3, 0, 255)) ||
+				(!checkRange(field.value, 4, 1, 255)))
+		{
+			alert(_("err gw format"));
+			field.value = field.defaultValue;
+			field.focus();
+			return false;
+		}
+	}
+	else if(ismask == 4)
+	{
+		if ((!checkRange(field.value, 1, 0, 255)) ||
+				(!checkRange(field.value, 2, 0, 255)) ||
+				(!checkRange(field.value, 3, 0, 255)) ||
+				(!checkRange(field.value, 4, 1, 255)))
+		{
+			alert(_("err DNS format"));
 			field.value = field.defaultValue;
 			field.focus();
 			return false;
@@ -509,13 +559,21 @@ function checkIpAddr(field, ismask)
 		var reg = field.value.match(exp);
 		if(reg==null)
 		{
-			if(ismask)
+			if(ismask == 1)
 			{
-				alert(_("err Maskmormat"));
+				alert(_("err IP format"));
 			}
-			else
+			else if(ismask == 2)
 			{	
-				alert(_("err IPmormat"));
+				alert(_("err sub format"));
+			}
+			else if(ismask == 3)
+			{	
+				alert(_("err gw format"));
+			}
+			else if(ismask == 4)
+			{
+				alert(_("err DNS format"));
 			}
 			field.value = field.defaultValue;
 			field.focus();
@@ -543,7 +601,7 @@ function CheckWanValue()
 {
 	if (document.wizard_form.WAN_MODE[2].checked == true)		//STATIC
 	{      
-		if (!checkIpAddr(document.wizard_form.WAN_IPADDR, false))
+		if (!checkIpAddr(document.wizard_form.WAN_IPADDR, 1))
 		{
 			document.wizard_form.WAN_IPADDR.select();
 			return false;
@@ -565,26 +623,26 @@ function CheckWanValue()
 			}
 		
 		}
-		if (!checkIpAddr(document.wizard_form.WAN_NETMASK, true))
+		if (!checkIpAddr(document.wizard_form.WAN_NETMASK, 2))
 		{
 			document.wizard_form.WAN_NETMASK.select();
 			return false;
 		}
 
 		if (document.wizard_form.IPGW.value != "")
-			if (!checkIpAddr(document.wizard_form.IPGW, false))
+			if (!checkIpAddr(document.wizard_form.IPGW, 3))
 			{
 				document.wizard_form.IPGW.select();
 				return false;
 			}
 		if (document.wizard_form.PRIDNS.value != "")
-			if (!checkIpAddr(document.wizard_form.PRIDNS, false))
+			if (!checkIpAddr(document.wizard_form.PRIDNS, 4))
 			{
 				document.wizard_form.PRIDNS.select();
 				return false;
 			}
 		if (document.wizard_form.SECDNS.value != "")
-			if (!checkIpAddr(document.wizard_form.SECDNS, false))
+			if (!checkIpAddr(document.wizard_form.SECDNS, 4))
 			{
 				document.wizard_form.PRIDNS.select();
 				return false;
@@ -662,7 +720,7 @@ function CheckWanValue()
 	}
 	else if (document.wizard_form.WAN_MODE[4].checked == true) 	//L2TP
 	{ 
-		if (!checkIpAddr(document.wizard_form.l2tpServer, false))
+		if (!checkIpAddr(document.wizard_form.l2tpServer, 1))
 		{
 			document.wizard_form.l2tpServer.select();
 			return false;
@@ -681,17 +739,17 @@ function CheckWanValue()
 		}
 		if (document.wizard_form.l2tpMode.selectedIndex == 0)
 		{
-			if (!checkIpAddr(document.wizard_form.l2tpIp, false))
+			if (!checkIpAddr(document.wizard_form.l2tpIp, 1))
 			{
 				document.wizard_form.WAN_IPADDR.select();
 				return false;
 			}
-			if (!checkIpAddr(document.wizard_form.l2tpNetmask, true))
+			if (!checkIpAddr(document.wizard_form.l2tpNetmask, 2))
 			{
 				document.wizard_form.l2tpNetmask.select();
 				return false;
 			}
-			if (!checkIpAddr(document.wizard_form.l2tpGateway, false))
+			if (!checkIpAddr(document.wizard_form.l2tpGateway, 3))
 			{
 				document.wizard_form.l2tpGateway.select();
 				return false;
@@ -721,7 +779,7 @@ function CheckWanValue()
 	}
 	else if (document.wizard_form.WAN_MODE[5].checked == true) 	//PPTP
 	{ 
-		if (!checkIpAddr(document.wizard_form.pptpServer, false))
+		if (!checkIpAddr(document.wizard_form.pptpServer, 1))
 		{
 			document.wizard_form.pptpServer.select();
 			return false;
@@ -740,17 +798,17 @@ function CheckWanValue()
 		}
 		if (document.wizard_form.pptpMode.selectedIndex == 0) 
 		{
-			if (!checkIpAddr(document.wizard_form.pptpIp, false))
+			if (!checkIpAddr(document.wizard_form.pptpIp, 1))
 			{
 				document.wizard_form.pptpIp.select();
 				return false;
 			}
-			if (!checkIpAddr(document.wizard_form.pptpNetmask, true))
+			if (!checkIpAddr(document.wizard_form.pptpNetmask, 2))
 			{
 				document.wizard_form.pptpNetmask.select();
 				return false;
 			}
-			if (!checkIpAddr(document.wizard_form.pptpGateway, false))
+			if (!checkIpAddr(document.wizard_form.pptpGateway, 3))
 			{
 				document.wizard_form.pptpGateway.select();
 				return false;
@@ -843,7 +901,7 @@ function initTranslation()
 	e = document.getElementById("PPPOE_KAM");
 	e.innerHTML = _("KAM");
 	e = document.getElementById("PPPOE_seconds");
-	e.innerHTML = _("seconds");
+	e.innerHTML = _("minutes");
 	e = document.getElementById("PPPOE_ODM");
 	e.innerHTML = _("ODM");
 	e = document.getElementById("PPPOE_minutes");

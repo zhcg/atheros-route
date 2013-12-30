@@ -5,8 +5,8 @@
 	#include<unistd.h>
 
 	#define MAX_FILE_LEN  (1024*30)
-	#define DOWNLOAD_FILE_PATH	"/etc/"
-	#define DOWNLOAD_FILE_NAME	"httpd.conf"
+	#define DOWNLOAD_FILE_PATH	"/tmp/"
+	#define DOWNLOAD_FILE_NAME	"cal.bin"
 
 	int main(){
 		
@@ -14,6 +14,8 @@
 		char filebuf[MAX_FILE_LEN];
 		char cmd[512];
 		struct stat sb;
+		
+		system("dd if=/dev/caldata of=/tmp/cal.bin  > /dev/null 2>&1");
 		
 		sprintf(cmd, "%s%s", DOWNLOAD_FILE_PATH, DOWNLOAD_FILE_NAME);
 		stat(cmd, &sb); //取待下载文件的大小

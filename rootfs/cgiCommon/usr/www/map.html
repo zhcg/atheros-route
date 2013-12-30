@@ -22,23 +22,18 @@ objIMG.onload =
 objIMG.onerror =                                                          
 function()                                                           
 {        
-        clearTimeout(intTimerID);
-		if(bolIsTimeout)
+	clearTimeout(intTimerID);
+	if(bolIsTimeout)
 		return;
-		wv = "on";
-        initTranslation();                                                    
+	wv = "on";
+	initTranslation();                                                    
 }                                                                                                                          
 function ping()                                                 
 {                
-        intStartTime = +new Date();     
-
-        objIMG.src = "http://www.baidu.com" + "/" + intStartTime;
-		
-		bolIsTimeout=false;
-
-        intTimerID = setTimeout(timeout, intTimeout);           
-                                                                
-                                                           
+	intStartTime = +new Date();     
+    objIMG.src = "http://www.baidu.com" + "/" + intStartTime;
+	bolIsTimeout=false;
+	intTimerID = setTimeout(timeout, intTimeout);           
 }                                                               
 
 function timeout()
@@ -47,150 +42,70 @@ function timeout()
 	bolIsTimeout=true;
 	initTranslation();
 }
-
-
-
-
 function initTranslation()
-
 {
-
 	var e = document.getElementById("m_bset");
-
 	e.value = _("admw m_bset");
-
-	
-
 	e = document.getElementById("internet");
-
 	e.innerHTML = _("admw internet");
-	
-
 	e = document.getElementById("wai");
-
 	e.innerHTML = _("admw wai");
-
-	
 	e = document.getElementById("nei");
-
 	e.innerHTML = _("admw nei")+ "("+document.getElementById("apssid").value + ")";
-	
-	
-
 	var bg = document.getElementById("logoimage");
-
 	if (_("toplanguage")=="e")
-
 	{
-
 		bg.src = "/images/luyou_e.gif";
-
 	}
-
 	else
-
 	{
-
 		bg.src = "/images/luyou.gif";
-
 	}
-
-
-
 	var w = document.getElementById("waitu");
-
 	var n = document.getElementById("neitu");
-
-
 	var nv = document.getElementById("neistatus").value;
 
-
 	if (wv=="on")
-
 	{
-
 		w.src = "/images/lianjie.gif";
-
 	}
-
 	else
-
 	{
-
 		w.src = "/images/weilianjie.gif";
-
 	}
-
 	
-
 	if (nv=="on")
-
 	{
-
 		n.src = "/images/qidong.gif";
-
 	}
-
 	else
-
 	{
-
 		n.src = "/images/weiqidong.gif";
-
 	}
-
-		
-
 }
-
 function initValue()
-
 {
-
 	Butterlate.setTextDomain("admin");	
-
-	
 	ping();
-
 }
-
 
 </script>
-
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
-
 </head>
-
-
-
 <body onLoad="initValue()">
-
 <div class="handaer_main2">
-
 <span class="handaer_txt1" id="internet"></span><span class="handaer_txt2" id="wai"></span><span class="handaer_txt3" id="nei"></span>
-
-
-
-<span class="handaer_txt4"><img id="waitu"/></span><span class="handaer_txt5"><img id="neitu"/></span>
-
-
-
+<span class="handaer_txt4"><img usemap = "#wais" border = "0" id="waitu"/></span><span class="handaer_txt5"><img  usemap = "#neis" border = "0" id="neitu"/></span>
+    <map name = "wais"><area shape="rect" coords="0,0,100,100" href="wwai" target="pro" alt="网络设置"></map>    
+	<map name = "neis"><area shape="rect" coords="0,0,100,100" href="w3" target="pro" alt="wifi设置"></map>
 <div style="height:449px;"><img  usemap = "#router" border = "0" id="logoimage"/></div>
-
     <map name = "router">
-
       <area shape="rect" coords="20,250,400,500" href="wwai" target="pro" alt="网络设置">
-
       <area shape="rect" coords="700,10,1100,300" href="w3" target="pro" alt="wifi设置">
-
     </map>
-
  <p align="center"><input  name="m_normal" class="handaer_input" type="button" id="m_bset" onClick="window.location.href='w1'"/></p></div>
-
  	<input type="text" style="display:none" name="waistatus" id="waistatus" size="20" maxlength="32" value="~~INTERNET_ON~">
-
 	<input type="text" style="display:none" name="neistatus" id="neistatus" size="20" maxlength="32" value="~~WIFION_OFF~">
-
 	<input type="text" style="display:none" name="apssid" id="apssid" size="20" maxlength="32" value="~~AP_SSID~">
 	<script language="JavaScript">
 	function myrefresh()

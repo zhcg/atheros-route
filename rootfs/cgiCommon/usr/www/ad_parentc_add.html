@@ -7,7 +7,7 @@
 <script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
 var input_num=1;
-var day_week=0;
+var day_week;
 
 function widget_enable(widgetID){document.getElementById(widgetID).disabled = false;}
 function widget_disable(widgetID){document.getElementById(widgetID).disabled = true;}
@@ -49,30 +49,43 @@ function CheckValue()
 	     
 	if 	(checkValuerange(document.WORKFORM.TIMING_BH.value,0,23)==false)
 	{
-		alert(_("err range"));
+		alert(_("err time"));
 		document.WORKFORM.TIMING_BH.select();
 		return false;
 	}
 	if 	(checkValuerange(document.WORKFORM.TIMING_BM.value,0,59)==false)
 	{
-		alert(_("err range"));
+		alert(_("err time"));
 		document.WORKFORM.TIMING_BM.select();
 		return false;
 	}
 
 	if 	(checkValuerange(document.WORKFORM.TIMING_EH.value,0,23)==false)
 	{
-		alert(_("err range"));
+		alert(_("err time"));
 		document.WORKFORM.TIMING_EH.select();
 		return false;
 	}
 
 	if 	(checkValuerange(document.WORKFORM.TIMING_EM.value,0,59)==false)
 	{
-		alert(_("err range"));
+		alert(_("err time"));
 		document.WORKFORM.TIMING_EM.select();
 		return false;
 	}
+	if ((document.getElementById("x_1").checked == false)
+	&&(document.getElementById("x_2").checked == false)
+	&&(document.getElementById("x_3").checked == false)
+	&&(document.getElementById("x_4").checked == false)
+	&&(document.getElementById("x_5").checked == false)
+	&&(document.getElementById("x_6").checked == false)
+	&&(document.getElementById("x_7").checked == false)
+	)
+	{
+		alert(_("err week"));
+		return false;
+	}
+	
 	document.getElementById("PARC_RU_NUM").value = input_num;
 	widget_disable("x_1");
 	widget_disable("x_2");
@@ -116,7 +129,6 @@ function initTranslation()
 function initValue()
 {
 	input_num=1;
-	day_week=0;
 	Butterlate.setTextDomain("par");
 	initTranslation();
 	document.getElementById("WEEK").value="0";
@@ -129,21 +141,22 @@ function addnet()
 }
 function daycount()
 {
-	day_week=0;
 	if(document.getElementById("x_1").checked == true)
-		day_week = 1 + day_week;
+		day_week = "1,";
 	if(document.getElementById("x_2").checked == true)
-		day_week = 10 + day_week;
+		day_week = day_week + "2,";
 	if(document.getElementById("x_3").checked == true)
-		day_week = 100 + day_week;
+		day_week = day_week + "3,";
 	if(document.getElementById("x_4").checked == true)
-		day_week = 1000 + day_week;
+		day_week = day_week + "4,";
 	if(document.getElementById("x_5").checked == true)
-		day_week = 10000 + day_week;
+		day_week = day_week + "5,";
 	if(document.getElementById("x_6").checked == true)
-		day_week = 100000 + day_week;
+		day_week = day_week + "6,";
 	if(document.getElementById("x_7").checked == true)
-		day_week = 1000000 + day_week;
+		day_week = day_week + "7,";
+		
+	day_week = day_week.substring(0,day_week.length-1);   
 }
 </script>
 </head>

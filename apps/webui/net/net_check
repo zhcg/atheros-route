@@ -1,10 +1,5 @@
 #!/bin/sh
 
-cat /tmp/.apcfg | while read LINE
-do
-	if [ $LINE = PING_QQ=NO ];then
-
-
 #VAL="`ethreg -p 4 0x11 | awk -F' ' '/Read Reg/{print $5}'`"
 VAL="`ethreg -p 4 0x11 | grep "Read Reg" | sed 's/.* //g' `"
 VAL2=0x0400
@@ -24,7 +19,10 @@ fi
 fi
 
 #echo "begin"
+pppoe-stop > /dev/null 2>&1
 /usr/sbin/pppoe-connect > /tmp/log 2>&1 &
+
+killall udhcpc > /dev/null 2>&1
 udhcpc -i eth0 > /tmp/log2 2>&1 &
 
 count=0
@@ -41,6 +39,7 @@ if [ ! -z "$pppoe" ];then
 #		killall udhcpc pppoe-connect pppoe > /dev/null 2>&1
 		killall udhcpc > /dev/null 2>&1
 		pppoe-stop > /dev/null 2>&1
+		killall pppoe-connect pppoe > /dev/null 2>&1
 		cfg -a AUTOTYPE=pppoe
 		cfg -c
         exit 1
@@ -55,8 +54,9 @@ if [ ! -z "$dhcp" ];then
 #	killall udhcpc pppoe-connect pppoe > /dev/null 2>&1
 	killall udhcpc > /dev/null 2>&1
 	pppoe-stop > /dev/null 2>&1
+	killall pppoe-connect pppoe > /dev/null 2>&1
 	cfg -a AUTOTYPE=dhcp
-	cfg -c
+	cfg -c	
 	exit 2
 fi
 count=`expr $count + 1`
@@ -66,13 +66,10 @@ done
 #killall udhcpc pppoe-connect pppoe > /dev/null 2>&1
 killall udhcpc > /dev/null 2>&1
 pppoe-stop > /dev/null 2>&1
+killall pppoe-connect pppoe > /dev/null 2>&1
 cfg -a AUTOTYPE=static
 cfg -c
 
 echo "Static IP"
 
-
-fi
-
-done
 

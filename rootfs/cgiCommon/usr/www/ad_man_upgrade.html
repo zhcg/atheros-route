@@ -36,16 +36,16 @@ function waitgifshow()
 
 function upgradef()
 { 
+	if(document.usb_upload.uploadedfile.value == "")
+	{
+		document.usb_upload.uploadedfile.focus();
+		alert(_("err file empty"));
+		return false;
+	}
+
 	if(confirm(_("admw sysupgrade")))
 	{
 		Butterlate.setTextDomain("admin");
-
-		if(document.usb_upload.uploadedfile.value == "")
-		{
-			document.usb_upload.uploadedfile.focus();
-			alert(_("err file empty"));
-			return false;
-		}
 		widget_hide("uploaddes");	
 		widget_hide("uploadff");	
 		waitgifshow();

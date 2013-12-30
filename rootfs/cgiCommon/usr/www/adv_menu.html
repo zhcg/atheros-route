@@ -60,7 +60,7 @@ function initTranslation()
 	trans_inner("treeapp_safe","advmenu treeapp_safe");
 	trans_inner("treeapp_safe_ipmac","advmenu treeapp_safe_ipmac");
 	trans_inner("treeapp_par","advmenu treeapp_par");
-	trans_inner("treeapp_par_set","advmenu treeapp_par_set");
+	//trans_inner("treeapp_par_set","advmenu treeapp_par_set");
 	trans_inner("treeapp_par_access","advmenu treeapp_par_access");
 	trans_inner("treeapp_man","advmenu treeapp_man");
 	trans_inner("treeapp_man_tz","advmenu treeapp_man_tz");
@@ -79,7 +79,7 @@ function pageInit()
 }
 
 </script>
-<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css">
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
 </head>
 <body onload="pageInit()" ondragstart="window.event.returnValue=false" oncontextmenu="window.event.returnValue=false" onselectstart="event.returnValue=false">
 <!--	<tr><td height="8"></td></tr>-->
@@ -128,17 +128,6 @@ function pageInit()
             </td>
         </tr>
 		<tr><td height="8"></td></tr>
-	    <tr>
-            <td>
-                <div class="box1"><font id="treeapp_conm">接入管理</font></div>
-                <div class="section">
-					<div class="box2"><a href="cgi-bin/ad_con_list" target="pro" id="treeapp_conm_list">已接入设备列表</a></div>
-					<div class="box2"><a href="cgi-bin/ad_con_manage" target="pro" id="treeapp_conm_ctrl">无线接入控制</a></div>
-                </div>
-            </td>
-        </tr>
-		
-        <tr id="wirea1"><td height="8"></td></tr>
         <tr id="wirea2">
             <td>
                 <div class="box1"><font id="treeapp_wifi">无线设置</font></div>
@@ -146,6 +135,16 @@ function pageInit()
                     <div class="box2"><a href="cgi-bin/ad_wireless_basic" target="pro" id="treeapp_wifi_basic">基本设置</a></div>
 					<div class="box2"><a href="cgi-bin/ad_wireless_advan" target="pro" id="treeapp_wifi_adv">高级设置</a></div>
 					<div class="box2"><a href="cgi-bin/w4" target="pro" id="treeapp_wifi_wds">无线中继</a></div>
+                </div>
+            </td>
+        </tr>
+        <tr id="wirea1"><td height="8"></td></tr>
+			    <tr>
+            <td>
+                <div class="box1"><font id="treeapp_conm">接入管理</font></div>
+                <div class="section">
+					<div class="box2"><a href="cgi-bin/ad_con_list" target="pro" id="treeapp_conm_list">已接入设备列表</a></div>
+					<div class="box2"><a href="cgi-bin/ad_con_manage" target="pro" id="treeapp_conm_ctrl">无线接入控制</a></div>
                 </div>
             </td>
         </tr>
@@ -163,7 +162,7 @@ function pageInit()
             <td>
                 <div class="box1"><font id="treeapp_par">家长控制</font></div>
                 <div class="section">
-					<div class="box2"><a href="cgi-bin/ad_parentc_set" target="pro" id="treeapp_par_set">家长设置</a></div>
+					<!--div class="box2"><a href="cgi-bin/ad_parentc_set" target="pro" id="treeapp_par_set">家长设置</a></div-->
 					<div class="box2"><a href="cgi-bin/ad_parentc_accept" target="pro" id="treeapp_par_access">访问管理</a></div>
                 </div>
             </td>

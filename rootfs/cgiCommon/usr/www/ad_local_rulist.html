@@ -54,6 +54,22 @@ function listdel(value)
 	alert("删除了"+value);
 	button_commit("DEL_RU");
 }
+function lismod(value)
+{
+	if(document.getElementById(value).checked == true)
+	{
+		document.getElementById("ON_OFF").value="ON";	
+	}
+	else
+	{
+		document.getElementById("ON_OFF").value="OFF";	
+	}
+	
+	document.getElementById("MODXXX").value=value;
+	alert("修改了"+value +"  "+document.getElementById("ON_OFF").value);
+	
+	button_commit("MOD_RU");
+}
 </script>
 </head>
 
@@ -113,6 +129,11 @@ function listdel(value)
 <form method="POST" name="DELLIST">
 	<input style="display:none"  type="text" name="DELXXX" id="DELXXX" size="20" maxlength="32">
 	<input style="display:none" type="submit" name="DEL_RU" id="DEL_RU" value="DEL_RU">
+</form>
+<form method="POST" name="MODLIST">
+	<input style="display:none"  type="text" name="MODXXX" id="MODXXX" size="20" maxlength="32">
+	<input style="display:none"  type="text" name="ON_OFF" id="ON_OFF" size="20" maxlength="32">
+	<input style="display:none" type="submit" name="MOD_RU" id="MOD_RU" value="MOD_RU">
 </form>
 </td></tr></table> 
 </div>
