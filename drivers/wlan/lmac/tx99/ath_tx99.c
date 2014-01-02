@@ -435,7 +435,6 @@ u_int8_t tx99_ioctl(struct net_device *dev, struct ath_softc *sc, int cmd, void 
             break;
         case TX99_WCMD_SET_POWER:
             adf_os_print("tx99_ioctl command : pwr %d\n",i_req.data.power);
-            moon
             tx99->txpower = (i_req.data.power*2);
             break;
         case TX99_WCMD_SET_TXMODE:
