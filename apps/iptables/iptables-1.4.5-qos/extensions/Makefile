@@ -5,7 +5,7 @@
 # header files are present in the include/linux directory of this iptables
 # package (HW)
 #
-PF_EXT_SLIB:=addrtype ah CLUSTERIP DNAT ecn ECN icmp LOG MASQUERADE MIRROR NETMAP realm REDIRECT REJECT SAME set SET SNAT ttl TTL ULOG unclean
+PF_EXT_SLIB:=addrtype ah CLUSTERIP DNAT ecn ECN icmp LOG MASQUERADE MIRROR NETMAP multiurl realm REDIRECT REJECT SAME set SET SNAT ttl TTL ULOG unclean
 PF6_EXT_SLIB:=ah dst eui64 frag hbh hl HL icmp6 ipv6header LOG mh REJECT rt
 PFX_EXT_SLIB:=CLASSIFY cluster comment connbytes connlimit connmark CONNMARK CONNSECMARK conntrack dccp dscp DSCP esp hashlimit helper iprange length limit mac mark MARK multiport NFLOG NFQUEUE NOTRACK owner physdev pkttype policy quota rateest recent sctp SECMARK socket standard state statistic string tcp tcpmss TCPMSS TCPOPTSTRIP time tos TOS TPROXY TRACE u32 udp IMQ webstr NATTYPE 
 

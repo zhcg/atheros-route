@@ -15,3 +15,10 @@ iptables -I PREROUTING -t nat -i eth0 -p tcp --dport 1000:20000 -j DNAT --to 10.
 iptables -I PREROUTING -t nat -i ppp0 -p tcp --dport 1000:20000 -j DNAT --to 10.10.10.254 -m state --state NEW
 iptables -I FORWARD -i eth0 -p tcp --dport 1000:20000 -d 10.10.10.254 -j ACCEPT
 iptables -I FORWARD -i ppp0 -p tcp --dport 1000:20000 -d 10.10.10.254 -j ACCEPT
+
+# parent control and access control
+iptables -N FORWARD_ACCESSCTRL 
+iptables -I FORWARD -p tcp --dport 80 -j FORWARD_ACCESSCTRL
+#iptables -I FORWARD -p tcp --dport 53 -j ACCEPT
+iptables -I FORWARD -p udp --dport 53 -j ACCEPT
+sh /etc/ath/iptables/parc

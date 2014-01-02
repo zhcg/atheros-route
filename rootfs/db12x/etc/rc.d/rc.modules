@@ -13,7 +13,7 @@ insmod /lib/modules/2.6.31/kernel/xt_mac.ko
 insmod /lib/modules/2.6.31/kernel/xt_multiport.ko
 insmod /lib/modules/2.6.31/kernel/xt_string.ko
 insmod /lib/modules/2.6.31/kernel/xt_time.ko
-#insmod /lib/modules/2.6.31/kernel/ipt_multiurl.ko 
+insmod /lib/modules/2.6.31/kernel/ipt_multiurl.ko 
 
 insmod /lib/modules/2.6.31/kernel/nf_conntrack.ko
 insmod /lib/modules/2.6.31/kernel/nf_conntrack_proto_gre.ko

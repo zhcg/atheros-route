@@ -51,6 +51,8 @@
 #define NVRAM_OFFSET (32 * 1024)
 #endif
 #endif
+
+#define PARC_PATH "/etc/ath/iptables/parc"
 /*
 ** local definitions
 *****************
@@ -682,19 +684,65 @@ char *processSpecial(char *paramStr, char *outBuff)
                 //家长控制(带配置)
                 else if(strcmp(secArg,"parclist")==0)
                 {
-                    outBuff += sprintf(outBuff,"<tr>");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","4");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","www.baidu.com<br>www.qq.com<br>");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","1,2,4");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","12:00-20:00");
-                    if(1)
-                      outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"22:22:22:22:22:22\" id=\"22:22:22:22:22:22\" onclick=\"lismod(this.name)\" checked</td>");
+                    FILE *f_parc;
+                    int id = 1;
+                    char cmd_buffer[512];
+                    char mac[240];
+                    char url[128];
+                    char *url_tmp;
+                    char weekdays[30];
+                    char time_start[30];
+                    char time_stop[30];
+
+                    int i=0;
+                    int ret;
+
+                    int url_num = 0;
+
+                    f_parc = fopen(PARC_PATH,"r");
+
+                    if(f_parc)
+                    {
+                        while(1)
+                        {
+                            ret = fscanf(f_parc,"iptables -A FORWARD_ACCESSCTRL -i br0 -m mac --mac-source %s -m multiurl --url %s -m time --timestart %s --timestop %s --weekdays %s -j RETURN\n",mac, url, time_start, time_stop, weekdays);
+                            if(ret < 2)
+                                break;
+
+                                outBuff += sprintf(outBuff,"<tr>");
+                                outBuff += sprintf(outBuff,"<td>%d</td>",id);
+                                outBuff += sprintf(outBuff,"<td>%s</td>",mac);
+                                //outBuff += sprintf(outBuff,"<td>%s</td>","www.baidu.com<br>www.qq.com<br>");
+                                outBuff += sprintf(outBuff,"<td>");
+                           //     outBuff += sprintf(outBuff,"%s<br>",url);
+                                url_tmp = strtok(url,",");
+                                while(url_tmp != NULL)
+                                {
+                                    if(strncmp(url_tmp,"return",6)==0)
+                                        break;
+
+                                     outBuff += sprintf(outBuff,"%s<br>",url_tmp);
+                                     url_tmp = strtok(NULL,",");
+                                }
+                                outBuff += sprintf(outBuff,"</td>");
+                                outBuff += sprintf(outBuff,"<td>%s</td>",weekdays);
+                                outBuff += sprintf(outBuff,"<td>%s-%s</td>", time_start, time_stop);
+                                outBuff += sprintf(outBuff,"<td>%s</td>","ON");
+                                outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"%d\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>", id);
+                                outBuff += sprintf(outBuff,"</tr>");
+
+                                //ret = fscanf(f_parc,"iptables -A FORWARD_ACCESSCTRL -i br0 -m mac --mac-source %s -j DROP\n",mac);
+                                id++;
+                        }
+
+                    }
                     else
-                      outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"22:22:22:22:22:22\" id=\"22:22:22:22:22:22\" onclick=\"lismod(this.name)\"</td>");
-                      
-                    outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"4\"  style=\"color:red;font-size:30px;cursor:hand;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
-                    outBuff += sprintf(outBuff,"</tr>");
+                    {
+                        printf("fopen error\n");
+                    }
+
+                    fclose(f_parc);
+
               }
                 //静态DHCP(带配置)
                 else if(strcmp(secArg,"sdhcplist")==0)
@@ -4688,18 +4736,135 @@ int main(int argc,char **argv)
    *************************************/
     if(strcmp(CFG_get_by_name("ADD_PARC",valBuff),"ADD_PARC") == 0 ) 
     {		 
+        FILE *f_parc;
+        int parc_id = 1;
+        char cmd_buffer_w[512];
+        char cmd_buffer_r[512];
+        char cmd_sed_buff[512];
+
+        char parc_mac[64] = {0};
+        char parc_url[128] ={0};
+        int url_num = 0;
+        char url_num_str[10] = {0};
+        char url_arg[10]={0};
+        //char url_tmp[10][100]={0};
+        char url_tmp[100]={0};
+        char weekdays[32] ={0};
+        char time_start_h[32] = {0};
+        char time_start_m[32] = {0};
+        char time_stop_h[32] = {0};
+        char time_stop_m[32] = {0};
+        char add_cmd_err[100] = {0};
+
+        int i=0;
+        int parc_line=0;
+        char *parc_ret;
+        int parc_flag = 0;
+        int parc_mode_flag = 0;
+
+
+        CFG_get_by_name("ADD_MAC",parc_mac);
+        CFG_get_by_name("PARC_RU_NUM",url_num_str);
+        CFG_get_by_name("WEEK",weekdays);
+        CFG_get_by_name("TIMING_BH",time_start_h);
+        CFG_get_by_name("TIMING_BM",time_start_m);
+        CFG_get_by_name("TIMING_EH",time_stop_h);
+        CFG_get_by_name("TIMING_EM",time_stop_m);
+
+        url_num = atoi(url_num_str);
+        for (i = 1; i <= url_num; i++) 
+        {
+            sprintf(url_arg, "ADD_NET%d", i);
+            CFG_get_by_name(url_arg,url_tmp);
+            strcat(parc_url,url_tmp);
+            strcat(parc_url,",");
+        }
+        strcat(parc_url,"return1");
+
+        f_parc = fopen(PARC_PATH,"a+");
+
+        if(f_parc)
+        {
+            memset(cmd_buffer_w,0,512);
+            sprintf(cmd_buffer_w ,"iptables -A FORWARD_ACCESSCTRL -i br0 -m mac --mac-source %s -m multiurl --url %s -m time --timestart %s:%s --timestop %s:%s --weekdays %s -j RETURN\n", parc_mac, parc_url, time_start_h, time_start_m, time_stop_h, time_stop_m, weekdays);
+            while(1)
+            {
+                parc_ret = fgets(cmd_buffer_r,500,f_parc);
+                if(parc_ret == NULL)
+                    break;
+                if(strcmp(cmd_buffer_w, cmd_buffer_r) == 0)
+                {
+                    fprintf(errOut,"\n%s  %d there is a same rule exist\n",__func__,__LINE__);
+                   // printf("there is a same rule exist\n");
+                    parc_flag=1;
+                }
+                parc_line++;
+            }
+            if(!parc_flag)
+            {
+                sprintf(cmd_sed_buff ,"sed -i '%da\\%s' %s",parc_line/2, cmd_buffer_w, PARC_PATH);
+                //Execute_cmd(cmd_sed_buff , add_cmd_err);
+                if(!parc_line)
+                    fprintf(f_parc,"%s",cmd_buffer_w);
+                //else
+                 //   system(cmd_sed_buff);
+                    
+                memset(cmd_buffer_w,0,512);
+                sprintf(cmd_buffer_w ,"iptables -A FORWARD_ACCESSCTRL -i br0 -m mac --mac-source %s -j DROP\n", parc_mac);
+                fprintf(f_parc,"%s",cmd_buffer_w);
+            }
+        }
+        else
+        {
+            fprintf(errOut,"\n%s  %d open %s error \n",__func__,__LINE__,PARC_PATH);
+        }
+
         fprintf(errOut,"\n%s  %d ADD_PARC \n",__func__,__LINE__);
+        fclose(f_parc);
+
+        if(parc_line)
+            system(cmd_sed_buff);
+        Execute_cmd("iptables -F FORWARD_ACCESSCTRL" , add_cmd_err);
+        Execute_cmd("sh /etc/ath/iptables/parc" , add_cmd_err);
+
         memset(Page,0,64);
         sprintf(Page,"%s","../ad_parentc_accept.html");
         gohome =0;
+        //gohome =1;
+
     }
     /*************************************
     家长控制    访问管理      删除
    *************************************/
     if(strcmp(CFG_get_by_name("DEL_PRC",valBuff),"DEL_PRC") == 0 ) 
     {		 
-        fprintf(errOut,"\n%s  %d DEL_PRC \n",__func__,__LINE__);
-        gohome =2;
+        int del_id = 0;
+        int del_line = 0;
+        char del_id_str[10] = {0};
+        char del_sed_cmd[100] = {0};
+        char del_sed_err[100] = {0};
+
+        CFG_get_by_name("DELXXX",del_id_str);
+        del_id = atoi(del_id_str);
+
+
+        Execute_cmd("awk 'END{print NR}' /etc/ath/iptables/parc" , del_sed_err);
+        del_line=atoi(del_sed_err);
+
+        sprintf(del_sed_cmd,"sed -i '%dd' %s", del_id, PARC_PATH);
+        Execute_cmd(del_sed_cmd , del_sed_err);
+
+        sprintf(del_sed_cmd,"sed -i '%dd' %s", del_line/2+del_id-1, PARC_PATH);
+        fprintf(errOut,"\n%s  %d DEL_PRC sed_cmd :%s \n",__func__,__LINE__,del_sed_cmd);
+
+        Execute_cmd(del_sed_cmd , del_sed_err);
+        Execute_cmd("iptables -F FORWARD_ACCESSCTRL" , del_sed_err);
+        Execute_cmd("sh /etc/ath/iptables/parc" , del_sed_err);
+
+        memset(Page,0,64);
+        sprintf(Page,"%s","../ad_parentc_accept.html");
+        gohome =0;
+        //gohome =2;
     }
     /*************************************
     家长控制    访问管理      修改
