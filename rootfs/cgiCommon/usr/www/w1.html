@@ -208,6 +208,9 @@ function change_step(offset)
 				return true;
 			}
 
+			document.getElementById("wirelessdes").style.visibility = "visible";
+			document.getElementById("wirelessdes").style.display = style_display_on();
+
 			document.getElementById("div_Router").style.visibility = "visible";
 			document.getElementById("div_Router").style.display = style_display_on();
 			hidekeyf();
@@ -315,6 +318,9 @@ function hideAllTables()
 	document.getElementById("RCMd").style.visibility = "hidden";
 	document.getElementById("RCMd").style.display = "none";
 	
+	document.getElementById("wirelessdes").style.visibility = "hidden";
+	document.getElementById("wirelessdes").style.display = "none";
+
 	document.getElementById("div_Router").style.visibility = "hidden";
 	document.getElementById("div_Router").style.display = "none";
 	
@@ -1274,8 +1280,6 @@ function initTranslation()
 	e.innerHTML = _("admw Wlisttitle1");
 	e = document.getElementById("Wlisttitle2");
 	e.innerHTML = _("admw Wlisttitle2");
-	e = document.getElementById("Wlisttitle3");
-	e.innerHTML = _("admw Wlisttitle3");
 	
 	e = document.getElementById("wifionbutton");
 	e.innerHTML = _("admw onbutton");	
@@ -1317,7 +1321,8 @@ function initTranslation()
 	e = document.getElementById("PPPOE_TIMING");
 	e.innerHTML = _("admw PPPOE_TIMING");
 
-
+	e = document.getElementById("wirelessdes");
+	e.innerHTML = _("admw wirelessdes");
 }
 
 function inithidewifi()
@@ -1558,7 +1563,7 @@ function  WIFSwitch()
 	var obj=document.getElementById("WFILIST");
 	var index=obj.selectedIndex; //序号，取当前选中选项的序号
 	
-	var myString=obj.options[index].text;
+	var myString=obj.options[index].id;
 	
 	var a = myString.indexOf("(");
 	var b = myString.indexOf(")(");
@@ -1596,6 +1601,11 @@ function refreshwds()
 	hideAllTables();
 	document.getElementById("buttontable").style.visibility = "hidden";
 	document.getElementById("buttontable").style.display = "none";
+	{
+		Butterlate.setTextDomain("other");
+		var z = document.getElementById("waiting");
+		z.innerHTML = _("wait");
+	}
 	document.getElementById("gifshow").style.visibility = "visible";
 	document.getElementById("gifshow").style.display = style_display_on();
 	document.getElementById('REFRESHWFi').click();
@@ -1643,9 +1653,6 @@ function switch_wds()
 		document.getElementById("tt2").style.display = style_display_on();
 		document.getElementById("dwsset4").style.visibility = "visible";
 		document.getElementById("dwsset4").style.display = style_display_on();
-		document.getElementById("dwsset5").style.visibility = "visible";
-		document.getElementById("dwsset5").style.display = style_display_on();
-
 	}
 	else
 	{
@@ -1659,8 +1666,6 @@ function switch_wds()
 		document.getElementById("tt2").style.display = "none";
 		document.getElementById("dwsset4").style.visibility = "hidden";
 		document.getElementById("dwsset4").style.display = "none";
-		document.getElementById("dwsset5").style.visibility = "hidden";
-		document.getElementById("dwsset5").style.display = "none";
 	}
 }
 function workoutgw()
@@ -1723,16 +1728,16 @@ function hidekeyf()
 <h2 id="RCMd"></h2>
 <table id="div_wizard_home" width="100%" border="0" cellpadding="2" cellspacing="1">
 <tr>
-  <td width="15px"><input type="radio" name="intType" id="intType1" value="interner" checked></td>
-  <th align="left" id="int"></th>
+  <td width="15px"><input id="wrad_1" type="radio" name="intType" id="intType1" value="interner" checked></td>
+  <label for="wrad_1"><th align="left" id="int"></th></label>
 </tr>
 <tr>
   <td>&nbsp; &nbsp;</td>
   <td id="int1"></td>
 </tr> 
 <tr>
-  <td width="15px"><input type="radio" name="intType" id="intType2" value="router"></td>
-  <th align="left" id="wireless"></th>
+  <td width="15px"><input id="wrad_2" type="radio" name="intType" id="intType2" value="router"></td>
+  <label for="wrad_2"><th align="left" id="wireless"></th></label>
 </tr>
 <tr>
   <td>&nbsp; &nbsp;</td>
@@ -1740,6 +1745,7 @@ function hidekeyf()
 </tr>
 </table>
 <!-- ================= Router Mode ================= -->
+<h2 id="wirelessdes"></h2>
 <table id="div_Router"  cellpadding="0" cellspacing="0"   class="handaer_text">
 <tr>
   <td class="title" colspan="2" id="RMd"></td>
@@ -1747,8 +1753,8 @@ function hidekeyf()
 
 <td class="head" id="wdsswitch"></td>
 	<td>
-	<input type="radio" ~cWDSON_OFF:on~ name="WDSON_OFF" id="WDSON_OFF1" value="on" onclick="switch_wds();" checked /><span id="onbutton"></span>
-	<input type="radio" ~cWDSON_OFF:off~ name="WDSON_OFF" id="WDSON_OFF2" value="off" onclick="switch_wds();"/><span id="offbutton"></span>
+	<input type="radio" ~cWDSON_OFF:on~ id="rad_1" name="WDSON_OFF" id="WDSON_OFF1" value="on" onclick="switch_wds();" checked /><label for="rad_1" id="onbutton"></label>
+	<input type="radio" ~cWDSON_OFF:off~ id="rad_2" name="WDSON_OFF" id="WDSON_OFF2" value="off" onclick="switch_wds();"/><label for="rad_2" id="offbutton"></label>
 	</td>
 </tr>
 
@@ -1762,21 +1768,16 @@ function hidekeyf()
 </tr>
 <tr id="tt2">
   <td class="head" id="R_pword"></td>
-  <td><span id="wrpwd"><input type="password" id="wrpass" name="PSK_KEY_2" class="handaer_text_content" maxlength="32" size="32" value="~~PSK_KEY_2~" /></span>&nbsp;<input type="checkbox" id="aaaa" onClick="wrshowpwd()"/>&nbsp;<span id="wrshowp"></span></td>
+  <td><span id="wrpwd"><input type="password" id="wrpass" name="PSK_KEY_2" class="handaer_text_content" maxlength="32" size="32" value="~~PSK_KEY_2~" /></span>&nbsp;<input type="checkbox" id="aaaa" onClick="wrshowpwd()"/>&nbsp;<label for="aaaa" id="wrshowp"></label></td>
 </tr>
 <tr id="dwsset3">
-    <td id="Wlisttitle1"></td>
-    <td id="Wlisttitle2"></td>
-  </tr>
+    <td class="head" id="Wlisttitle1"></td>
+	<td><span id="Wlisttitle2"></span>&nbsp;&nbsp;<select name="WFILIST" id="WFILIST" size="1" onchange="WIFSwitch()">~LList~</select></td>  
+</tr>
   <tr id="dwsset4">
-	<td id="Wlisttitle3"></td>
-    <td><select name="WFILIST" id="WFILIST" size="1" onchange="WIFSwitch()">
-	~LList~</select>
+	<td class="head"></td>
+    <td><input type="button" name="refresh" id="fresh" class="handaer_small_button" value="Fresh" onClick="refreshwds()">
 	</td>
- </tr>
- <tr id="dwsset5">
-    <td>&nbsp; &nbsp;</td>
-    <td><input type="button" name="refresh" id="fresh" class="handaer_input" value="Fresh" onClick="refreshwds()"></td>
  </tr>
 </table>
 
@@ -1784,8 +1785,8 @@ function hidekeyf()
 <!-- ============= Internet OP Mode ============= -->
 <table id="div_wan_opmode" width="640" border="0" cellpadding="2" cellspacing="1">
 <tr>
-  <td width="15px"><input type="radio" name="WAN_MODE" value="auto" checked></td>
-  <th align="left" id="AutoMode"></th>
+  <td width="15px"><input id="wrad_3" type="radio" name="WAN_MODE" value="auto" checked></td>
+  <label for="wrad_3"><th align="left" id="AutoMode"></th></label>
 </tr>
 <tr>
   <td>&nbsp; &nbsp;</td>
@@ -1793,23 +1794,23 @@ function hidekeyf()
 </tr> 
 
 <tr>
-  <td width="15px"><input type="radio" name="WAN_MODE" value="dhcp"></td>
-  <th align="left" id="DHCP"></th>
+  <td width="15px"><input id="wrad_4" type="radio" name="WAN_MODE" value="dhcp"></td>
+  <label for="wrad_4"><th align="left" id="DHCPac"></th></label>
 </tr>
 <tr>
   <td>&nbsp; &nbsp;</td>
   <td id="DHCPdisc"></td>
 </tr> 
 <tr>
-  <td width="15px"><input type="radio" name="WAN_MODE" value="static"></td>
-  <th align="left" id="SM"></th>
+  <td width="15px"><input id="wrad_5" type="radio" name="WAN_MODE" value="static"></td>
+  <label for="wrad_5"><th align="left" id="SM"></th></label>
 </tr>
 <tr>
   <td>&nbsp; &nbsp;</td>
   <td id="SMdisc"></td>
 </tr>
-  <td width="15px"><input type="radio" name="WAN_MODE" value="pppoe"></td>
-  <th align="left" id="PPPOE"></th>
+  <td width="15px"><input id="wrad_6" type="radio" name="WAN_MODE" value="pppoe"></td>
+  <label for="wrad_6"><th align="left" id="PPPOE"></th></label>
 </tr>
 <tr>
   <td>&nbsp; &nbsp;</td>
@@ -1820,24 +1821,24 @@ function hidekeyf()
   <td><input id="otherbutton" type="button" value="其他" class="handaer_small_button" onClick="others()" /></td>
 </tr>
 <tr id="l2tptr1" style="display:none">
-  <td width="15px"><input type="radio" name="WAN_MODE" value="l2tp"></td>
-  <th align="left">L2TP</th>
+  <td width="15px"><input id="wrad_7" type="radio" name="WAN_MODE" value="l2tp"></td>
+  <label for="wrad_7"><th align="left">L2TP</th></label>
 </tr>
 <tr id="l2tptr2" style="display:none">
   <td>&nbsp; &nbsp;</td>
   <td id="L2TPc"></th>
 </tr>
 <tr id="pptptr1" style="display:none">
-  <td width="15px"><input type="radio" name="WAN_MODE" value="pptp"></td>
-  <th align="left">PPTP</th>
+  <td width="15px"><input id="wrad_8" type="radio" name="WAN_MODE" value="pptp"></td>
+  <label for="wrad_8"><th align="left">PPTP</th></label>
 </tr>
 <tr id="pptptr2" style="display:none">
   <td>&nbsp; &nbsp;</td>
   <td id="PPTPc"></td>
 </tr>
 <tr style="display:none">
-  <td width="15px"><input type="radio" name="WAN_MODE" value="3g"></td>
-  <th align="left">3G</th>
+  <td width="15px"><input id="wrad_9" type="radio" name="WAN_MODE" value="3g"></td>
+  <label for="wrad_9"><th align="left">3G</th></label>
 </tr>
 <tr style="display:none">
   <td>&nbsp; &nbsp;</td>
@@ -1885,14 +1886,14 @@ function hidekeyf()
 </tr>
 <tr>
   <td class="head" id="pword"></td>
-  <td><span id="ppppwdinput"><input type="password" id="ppppass" name="PPPOE_PWD" class="handaer_text_content" maxlength="32" size="32" value="~~PPPOE_PWD~"/></span>&nbsp;<input type="checkbox" id="bbbb" onClick="pppshowpwd()"/>&nbsp;<span id="pppshowp"></span></td>
+  <td><span id="ppppwdinput"><input type="password" id="ppppass" name="PPPOE_PWD" class="handaer_text_content" maxlength="32" size="32" value="~~PPPOE_PWD~"/></span>&nbsp;<input type="checkbox" id="bbbb" onClick="pppshowpwd()"/>&nbsp;<label for="bbbb" id="pppshowp"></label></td>
 </tr>
 <tr>
   <td class="head" id="vpword"></td>
   <td><input type="password" name="PPPOE_PWD2"  class="handaer_text_content" maxlength=32 size=32 value="~~PPPOE_PWD2~"></td>
 </tr>
 <tr>
-  <td><input id="advbutton" type="button" onClick="advance()" /></td>
+  <td><input id="advbutton" type="button"  class="handaer_small_button" onClick="advance()" /></td>
   <td>&nbsp; &nbsp;</td>
 </tr>
 <tr id="div_pppoe_opmode" style="display:none">
@@ -1934,7 +1935,7 @@ function hidekeyf()
 </tr>
 <tr>
   <td class="head" id="L2TPpwd"></td>
-  <td><span id="pl2tppwdinput"><input type="password" id="l2tppass" name="l2tpPass"  class="handaer_text_content" maxlength="32" size="32" value="~~l2tpPass~"/></span>&nbsp;<input type="checkbox" id="cccc" onClick="l2tpshowpwd()"/>&nbsp;<span id="l2tpshowp"></span></td>
+  <td><span id="pl2tppwdinput"><input type="password" id="l2tppass" name="l2tpPass"  class="handaer_text_content" maxlength="32" size="32" value="~~l2tpPass~"/></span>&nbsp;<input type="checkbox" id="cccc" onClick="l2tpshowpwd()"/>&nbsp;<label for="cccc" id="l2tpshowp"></label></td>
 </tr>
 <tr>
   <td class="head" id="L2TPAM"></td>
@@ -2002,7 +2003,7 @@ function hidekeyf()
 </tr>
 <tr>
   <td class="head" id="PPpwd"></td>
-  <td><span id="p2tppwdinput"><input type="password" id="p2tppass" name="pptpPass"  class="handaer_text_content" maxlength="32" size="32" value="~~pptpPass~" /></span><input type="checkbox" id="dddd" onClick="p2tpshowpwd()"/><span id="p2tpshowp"></span></td>
+  <td><span id="p2tppwdinput"><input type="password" id="p2tppass" name="pptpPass"  class="handaer_text_content" maxlength="32" size="32" value="~~pptpPass~" /></span><input type="checkbox" id="dddd" onClick="p2tpshowpwd()"/><label for="dddd" id="p2tpshowp"></label></td>
 </tr>
 <tr>
   <td class="head" id="PPAM"></td>
@@ -2079,13 +2080,13 @@ function hidekeyf()
 <tr><td class="title" colspan="2" id="wsetingst"></td></tr>
 <tr>
   <td class="head" id="nname"></td>
-  <td><input type="text" name="AP_SSID" size="32" maxlength="32" class="handaer_text_content" value="~~AP_SSID~">&nbsp;<input type="checkbox" id="hidewifi" onclick="hidewififun();"/>&nbsp;<span id="hidewifides"></span>&nbsp;<span id="ssidrequest"></span></td>
+  <td><input type="text" name="AP_SSID" size="32" maxlength="32" class="handaer_text_content" value="~~AP_SSID~">&nbsp;<input type="checkbox" id="hidewifi" onclick="hidewififun();"/>&nbsp;<label for="hidewifi" id="hidewifides"></label>&nbsp;<span id="ssidrequest"></span></td>
 </tr>
 
 <tr>
  <td class="head" id="wifiswitch"></td>
-	<td><input type="radio" ~cWIFION_OFF:on~ name="WIFION_OFF" value="on" onclick="switch_wifi();" checked /><span id="wifionbutton"></span>
-	<input type="radio" ~cWIFION_OFF:off~ name="WIFION_OFF" value="off"  onclick="switch_wifi();"/><span id="wifioffbutton"></span>
+	<td><input type="radio" ~cWIFION_OFF:on~ id="rad_3" name="WIFION_OFF" value="on" onclick="switch_wifi();" checked /><label for="rad_3"  id="wifionbutton"></label>
+	<input type="radio" ~cWIFION_OFF:off~  id="rad_4" name="WIFION_OFF" value="off"  onclick="switch_wifi();"/><label for="rad_4"  id="wifioffbutton"></label>
 	</td>
 </tr>
 <tr id="channel">
@@ -2122,7 +2123,7 @@ function hidekeyf()
   </td>
 </tr>
 <tr id="div_security_key">
-  <td><span id="wkey"></span><span id="pwdinput"><input type="password" id="pwd" name="PSK_KEY" maxlength="64" size="28"  class="handaer_text_content"  value="~~PSK_KEY~"/></span>&nbsp;<input type="checkbox" id="eeee" onClick="showpwd()" />&nbsp;<span id="showp"></span>&nbsp;<span id="passwordrequest"></span></td>
+  <td><span id="wkey"></span><span id="pwdinput"><input type="password" id="pwd" name="PSK_KEY" maxlength="64" size="28"  class="handaer_text_content"  value="~~PSK_KEY~"/></span>&nbsp;<input type="checkbox" id="eeee" onClick="showpwd()" />&nbsp;<label for="eeee" id="showp"></label>&nbsp;<span id="passwordrequest"></span></td>
 </tr>
 </table>
 

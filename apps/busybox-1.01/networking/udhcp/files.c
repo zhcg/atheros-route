@@ -229,6 +229,52 @@ static const struct config_keyword keywords[] = {
 };
 
 
+int deal_offline_sta(uint8_t *hostname, uint8_t *chaddr, uint32_t yiaddr)
+{
+	#if 0
+	uint32_t addr, ret;
+	struct in_addr addr2;
+	//struct dhcpOfferedAddr *lease = NULL;
+	int i, j, k;
+	char mac_buf[20];
+
+	for(j = 0, k = 0 ; j < 6; j++, k+=3)
+	{
+        sprintf(&mac_buf[k], "%02x:", chaddr[j]);
+	}
+
+	addr2.s_addr = yiaddr;
+	LOG(LOG_INFO, "[deal_offline_sta] hostname is %s ip is %s", hostname, inet_ntoa(addr2));
+	LOG(LOG_INFO, "[deal_offline_sta] the mac is %s", mac_buf);
+
+	addr = ntohl(yiaddr);
+	/* ie, 192.168.55.0 */
+	if (!(addr & 0xFF)) 
+		return 1;
+	/* ie, 192.168.55.255 */
+	if ((addr & 0xFF) == 0xFF) 
+		return 1;
+
+	ret = htonl(addr);
+	#endif
+
+	uint32_t ret;
+	struct in_addr addr;
+	addr.s_addr = yiaddr;
+	LOG(LOG_INFO, "[deal_offline_sta] hostname is %s ip is %s", hostname, inet_ntoa(addr));
+	
+	//ret = yiaddr;
+	if (/*it isn't on the network */
+		(arpping(yiaddr, server_config.server, server_config.arp, server_config.interface) == 0) //&&
+		/*it expired and we are checking for expired leases*/
+		/*(!lease_expired(leases))*/ )
+	{
+		return 0;
+	}
+	return 1;
+
+}
+
 int read_config(const char *file)
 {
 	FILE *in;
@@ -280,11 +326,13 @@ int read_config(const char *file)
 
 void write_leases(void)
 {
-	FILE *fp;
+	FILE *fp, *fpp;
 	unsigned int i;
 	char buf[255];
 	time_t curr = time(0);
 	unsigned long tmp_time;
+	int ret;
+	const char *Write_flag = "/var/run/.staWriteFlag";
 
 	if (!(fp = fopen(server_config.lease_file, "w"))) {
 		LOG(LOG_ERR, "Unable to open %s for writing", server_config.lease_file);
@@ -303,6 +351,14 @@ void write_leases(void)
 				else leases[i].expires -= curr;
 			} /* else stick with the time we got */
 			leases[i].expires = htonl(leases[i].expires);
+			
+			//LOG(LOG_INFO, "[write_leases]leases[i].hostname is %s", leases[i].hostname);
+			/*if the ip is not using, do not write to file*/
+			//ret = deal_offline_sta(leases[i].hostname, leases[i].chaddr, leases[i].yiaddr);
+			//LOG(LOG_INFO, "[write_leases]the return is %d", ret);
+			//if(ret)
+			//	continue;
+			
 			fwrite(&leases[i], sizeof(struct dhcpOfferedAddr), 1, fp);
 
 			/* Then restore it when done. */
@@ -315,6 +371,14 @@ void write_leases(void)
 		sprintf(buf, "%s %s", server_config.notify_file, server_config.lease_file);
 		system(buf);
 	}
+
+	/*set a flag to make web read udhcpd.relases
+	if ( fpp = fopen(Write_flag, "w")) 
+	{
+		fwrite("writeok", sizeof("writeok"), 1, fpp);
+		fclose(fpp);
+	}*/
+	LOG(LOG_INFO, "write OK");
 }
 
 

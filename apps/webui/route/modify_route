@@ -1,0 +1,39 @@
+#!/bin/sh
+
+ROUTE_FILE=/etc/route.conf
+
+MOD_IP_ADDR=`cfg -e | grep "MODXXX" |awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`
+if [ -z $MOD_IP_ADDR ];then
+	exit 2
+fi
+
+if [ x$1 = x ]; then
+	exit 1
+fi
+
+MOD_STATUS=$1
+
+str=$(grep -i -E "\<$MOD_IP_ADDR\>" $ROUTE_FILE)
+if [ -z "$str" ];then
+        echo "the route destination address is not exist"
+        exit 1
+else
+		echo "the route destination address is exist"
+		if [ "$MOD_STATUS" = "ON" ];then
+			sed -i '/'$MOD_IP_ADDR'/s/disable/enable/' $ROUTE_FILE
+			SR_SUB=`cat $ROUTE_FILE | grep $MOD_IP_ADDR | awk '{print $2}'`
+			SR_GW=`cat $ROUTE_FILE | grep $MOD_IP_ADDR | awk '{print $3}'`		
+			route add -net $MOD_IP_ADDR mask $SR_SUB gw $SR_GW
+		else if [ "$MOD_STATUS" = "OFF" ];then
+			sed -i '/'$MOD_IP_ADDR'/s/enable/disable/' $ROUTE_FILE
+			route del -net $MOD_IP_ADDR			
+		else
+			exit 4
+		fi
+		fi
+fi
+echo "modify route rule done"
+
+
+
+

@@ -18,7 +18,7 @@ if [ -z "$str" ];then
         echo "the address is not exist"
         exit 1
 else
-#       echo "the address is exist"
+		echo "the address is exist"
         sed -i '/'$IP_ADDR'/d' $IP_MAC_FILE $UDHCPD_FILE
         echo "done"
 fi

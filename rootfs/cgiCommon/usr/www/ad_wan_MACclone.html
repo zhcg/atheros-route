@@ -96,9 +96,9 @@ function switch_mac()
 <tr>
  <td class="head" id="t1_MACS">选择MAC地址来源</td>
 	<td>
-	<input type="radio"  ~cMACTYPE:0~ name="MACTYPE" value="0" onclick="switch_mac();" checked /><span id="mactype0">使用缺省MAC地址</span>
-	<input type="radio"  ~cMACTYPE:1~ name="MACTYPE" value="1" onclick="switch_mac();"/><span id="mactype1">使用计算机MAC地址</span>
-	<input type="radio"  ~cMACTYPE:2~ name="MACTYPE" value="2" onclick="switch_mac();"/><span id="mactype2">使用MAC地址</span>
+	<input type="radio"  ~cMACTYPE:0~ name="MACTYPE" id="rad_1" value="0" onclick="switch_mac();" checked /><label for="rad_1" id="mactype0">使用缺省MAC地址</label>
+	<input type="radio"  ~cMACTYPE:1~ name="MACTYPE" id="rad_2" value="1" onclick="switch_mac();"/><label for="rad_2" id="mactype1">使用计算机MAC地址</label>
+	<input type="radio"  ~cMACTYPE:2~ name="MACTYPE" id="rad_3" value="2" onclick="switch_mac();"/><label for="rad_3" id="mactype2">使用MAC地址</label>
 	<br>
 		<input type="text" name="ETH0_MAC" id="ETH0_MAC" maxlength="17" class="handaer_text_content" value="">
 	</td>

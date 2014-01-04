@@ -9,7 +9,7 @@
 
 	<message msgid="admw div_wan_title" msgstr="Please select the router WAN port connection." />
 	<message msgid="admw DHCP" msgstr="Automatic acquisition (dynamic IP)" />  
-	<message msgid="admw DHCPdisc" msgstr="Broadband service providers do not provide any parameter, no router can directly access, the computer does not need to do any settings." />
+	<message msgid="admw DHCPdisc" msgstr="Broadband service providers do not provide any parameter,BASE will get IP from Broadband service providers" />
 	<message msgid="admw SM" msgstr="Manual settings (static IP)" />
 	<message msgid="admw SMdisc" msgstr="The fixed IP address, subnet mask, gateway, DNS server" />
 	<message msgid="admw PPPOE" msgstr="PPPoE (ADSL)" />
@@ -82,7 +82,7 @@
 
 	<message msgid="admw RCMd" msgstr="Please select the HBD router (Base) access mode. To set the WAN parameters, which can access the external network router." />  
 	<message msgid="admw int" msgstr="Wired Connection" />  
-	<message msgid="admw int1" msgstr="Connect to the line into the house" />  
+	<message msgid="admw int1" msgstr="Connect to the net line into the house" />  
 	<message msgid="admw wireless" msgstr="Wireless connection" />  
 	<message msgid="admw int2" msgstr="Connect to an existing router for WiFi network" />  
 
@@ -106,7 +106,7 @@
 	<message msgid="admw modedes1" msgstr="The parameters needed in the opening of the network, the network operators to provide" />  
 
 	<message msgid="admw wifides" msgstr="Please set the HBD routing WiFi account and password. Your computer, PAD, intelligent mobile phone will use the following network." />  
-	<message msgid="admw wirelessdes" msgstr="Please select the WiFi you want to connect to." />  
+	<message msgid="admw wirelessdes" msgstr="Please select to connect to the WiFi. Note: after WDS, please use the static IP connected login Web." />  
 	<message msgid="admw parentdes" msgstr="As a parent, you can control child's Internet time and visiting the webpage through the page settings" />  
 
 	<message msgid="admw PPMAC" msgstr="The MAC address of parent PC" />
@@ -125,7 +125,7 @@
 
 	<message msgid="admw m_bset" msgstr="Start" />
 
-	<message msgid="admw showp" msgstr="show password" />
+	<message msgid="admw showp" msgstr="Show Password" />
 	<message msgid="admw optionXX" msgstr="(optional)" />
 
 	<message msgid="admw auto_dhcp" msgstr="Automatically select DHCP mode" />
@@ -136,8 +136,8 @@
 	<message msgid="admw auto_fail" msgstr="Automatically select fail！,please check the internet connection or select manually " />
 
 	<message msgid="admw fresh" msgstr="Scanning" />
-	<message msgid="admw Wlisttitle1" msgstr="WiFi list" />
-	<message msgid="admw Wlisttitle2" msgstr="Existing WiFi:SSID(MAC)(channel)(Encrypting Mode WPA-Security None-Open)" />
+	<message msgid="admw Wlisttitle1" msgstr="WiFi list（Drop-down list）" />
+	<message msgid="admw Wlisttitle2" msgstr="Existing WiFi:SSID(Signal strength)" />
 	<message msgid="admw Wlisttitle3" msgstr="Drop-down list" />
 	<message msgid="toplanguage" msgstr="e" />
 	<message msgid="admin open" msgstr="Open" />
@@ -232,4 +232,7 @@
 	<message msgid="err sub format" msgstr="Subnet address illegal" />	
 	<message msgid="err gw format" msgstr="Gateway address illegal" />
 	<message msgid="err DNS format" msgstr="DNS address illegal" />
+	
+	<message msgid="err Ruleexist" msgstr="This rule is already exist!" />	
+
 </po>

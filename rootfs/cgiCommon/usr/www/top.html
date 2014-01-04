@@ -13,8 +13,6 @@ function initTranslation()
 	e.innerHTML =  _("top_adv");
 	e = document.getElementById("top_admin");
 	e.innerHTML = _("top_admin");
-	e = document.getElementById("top_exit");
-	e.innerHTML = _("top_exit");
 	
 	e = document.getElementById("logoimage");
 	if (_("toplanguage")=="e")
@@ -22,19 +20,7 @@ function initTranslation()
 	else
 		e.src = "images/logo.gif";
 }
-function exit()
-{
-	if(confirm(_("sset exit")))
-	{
-		window.opener=null;
-		window.open('','_top');
-		top.close();
-		
-		window.opener=null;
-        window.open("","_self");
-        window.top.close();
-	}
-}
+
 function zhcn()
 {
 	document.cookie="language="+"zhcn"+"; path=/";
@@ -91,7 +77,6 @@ function switchas()//adv to quick
 <a href="javascript:void(0)" id="top_en" onClick="en()">English</a> 
 </div>
 <div class="handaer_top_r_bottom">   
-<a href="javascript:void(0)" id="top_exit" onClick="exit()"></a>
 <a href="cgi-bin/adminset" target="pro" id="top_admin"></a>
 <a href="cgi-bin/map" target="pro" id="top_fast" onclick="switchsa()" style="display:none" ></a>
 <a href="cgi-bin/ad_sysinfo" target="pro" id="top_adv" onclick="switchas()"></a> 

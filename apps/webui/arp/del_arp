@@ -11,10 +11,10 @@ fi
 str=$(grep -i -E "\<$IP_ADDR\>" $ARP_IP_MAC_ON_FILE $ARP_IP_MAC_OFF_FILE)
 #echo $str
 if [ -z "$str" ];then
-        echo "the address is not exist"
+        echo "the arp bind is not exist"
         exit 1
 else
-		echo "the address is exist"
+		echo "the arp bind is exist"
         sed -i '/'$IP_ADDR'/d' $ARP_IP_MAC_ON_FILE $ARP_IP_MAC_OFF_FILE
 		arp -d $IP_ADDR
         echo "delete IP/MAC bind done"

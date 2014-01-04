@@ -7,7 +7,7 @@
 <script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
 var input_num=1;
-var day_week;
+var day_week="";
 
 function widget_enable(widgetID){document.getElementById(widgetID).disabled = false;}
 function widget_disable(widgetID){document.getElementById(widgetID).disabled = true;}
@@ -141,7 +141,7 @@ function addnet()
 }
 function daycount()
 {
-    day_week = "";
+	day_week="";
 	if(document.getElementById("x_1").checked == true)
 		day_week = "1,";
 	if(document.getElementById("x_2").checked == true)
@@ -193,13 +193,13 @@ function daycount()
 <tr>
 	<td class="head" id="t1_Week">星期</td>
 	<td>
-		<input type="checkbox" name="x_1" id="x_1" value="1" onclick="daycount()"><span id="day1">星期一</span>&nbsp;
-		<input type="checkbox" name="x_2" id="x_2" value="10" onclick="daycount()"><span id="day2">星期二</span>&nbsp; 
-		<input type="checkbox" name="x_3" id="x_3" value="100" onclick="daycount()"><span id="day3">星期三</span>&nbsp; 
-		<input type="checkbox" name="x_4" id="x_4" value="1000" onclick="daycount()"><span id="day4">星期四</span>&nbsp;
-		<input type="checkbox" name="x_5" id="x_5" value="10000" onclick="daycount()"><span id="day5">星期五</span>&nbsp;
-		<input type="checkbox" name="x_6" id="x_6" value="100000" onclick="daycount()"><span id="day6">星期六</span>&nbsp;
-		<input type="checkbox" name="x_7" id="x_7" value="1000000" onclick="daycount()"><span id="day7">星期日</span>
+		<input type="checkbox" name="x_1" id="x_1" value="1" onclick="daycount()"><label for="x_1" id="day1">星期一</label>&nbsp;
+		<input type="checkbox" name="x_2" id="x_2" value="10" onclick="daycount()"><label for="x_2" id="day2">星期二</label>&nbsp; 
+		<input type="checkbox" name="x_3" id="x_3" value="100" onclick="daycount()"><label for="x_3" id="day3">星期三</label>&nbsp; 
+		<input type="checkbox" name="x_4" id="x_4" value="1000" onclick="daycount()"><label for="x_4" id="day4">星期四</label>&nbsp;
+		<input type="checkbox" name="x_5" id="x_5" value="10000" onclick="daycount()"><label for="x_5" id="day5">星期五</label>&nbsp;
+		<input type="checkbox" name="x_6" id="x_6" value="100000" onclick="daycount()"><label for="x_6" id="day6">星期六</label>&nbsp;
+		<input type="checkbox" name="x_7" id="x_7" value="1000000" onclick="daycount()"><label for="x_7" id="day7">星期日</label>
 		<input type="text" style="display:none" name="WEEK" id="WEEK" size="20" maxlength="32">	
 	</td>
 </tr>

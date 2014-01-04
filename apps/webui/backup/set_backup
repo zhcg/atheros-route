@@ -11,7 +11,7 @@ if [ ! -f "$BACKUP_LIST" ]; then
 	touch "$BACKUP_LIST"
 fi
 
-if [ x$1 == x ]; then
+if [ x$1 = x ]; then
 	exit 1
 fi
 

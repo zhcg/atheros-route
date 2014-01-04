@@ -38,8 +38,10 @@ function init()
 function listdel(value)
 {
 	document.getElementById("DELXXX").value=value;
-	alert("删除了"+value);
-	button_commit("DEL_IPMAC");
+	if(confirm(_("safe delit1")+"IP="+value+_("safe delit2")))
+	{
+		button_commit("DEL_IPMAC");
+	}
 }
 
 function lismod(value)
@@ -54,7 +56,7 @@ function lismod(value)
 	}
 	
 	document.getElementById("MODXXX").value=value;
-	alert("修改了"+value +"  "+document.getElementById("ON_OFF").value);
+	//alert("修改了"+value +"  "+document.getElementById("ON_OFF").value);
 	
 	button_commit("MOD_IPMAC");
 }

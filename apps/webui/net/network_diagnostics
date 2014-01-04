@@ -3,31 +3,30 @@
 BAIDU=www.baidu.com
 QQ=www.qq.com
 
-ping  $BAIDU test
+ping $BAIDU test
 
 if [ $? -eq 1 ]; then
-        cfg -a PING_BD=NO
-		FLAG=no
+        PING_BD=NO
 else
-        cfg -a PING_BD=OK
-		FLAG=yes
+        PING_BD=OK
 fi
 
-if [ "$FLAG" = "no" ]; then
-	ping  $QQ test
+if [ "$PING_BD" = "NO" ]; then
+	ping $QQ test
 	if [ $? -eq 1 ]; then
-		cfg -a PING_QQ=NO
+		PING_QQ=NO
 	else
-		cfg -a PING_QQ=OK
+		PING_QQ=OK
 	fi	
 fi
 
-if [ "$PING_QQ" = "NO" -a "PING_BD" = "NO" ]; then
+if [ "$PING_QQ" = "NO" -a "$PING_BD" = "NO" ]; then
 	 cfg -a INTERNET_ON=off
 	 cfg -a PING_BD=NO
 	 cfg -a PING_QQ=NO
 	 NCHECK=no
 else
+	 cfg -a AUTOTYPE=`cfg -e | grep "WAN_MODE" |awk -F'=' '{print $2}'`
 	 cfg -a INTERNET_ON=on
 	 cfg -a PING_BD=OK
 	 cfg -a PING_QQ=OK

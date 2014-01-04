@@ -362,8 +362,11 @@ function switch_dhcp()
 function listdel(value)
 {
 	document.getElementById("DELXXX").value=value;
-	alert("删除了"+value);
-	button_commit("DEL_SDHCP");
+	if(confirm(_("dhcp delit1")+"MAC="+value+_("dhcp delit2")))
+	{
+		button_commit("DEL_SDHCP");
+	}
+	
 }
 function lismod(value)
 {
@@ -377,7 +380,7 @@ function lismod(value)
 	}
 	
 	document.getElementById("MODXXX").value=value;
-	alert("修改了"+value +"  "+document.getElementById("ON_OFF").value);
+	//alert("修改了"+value +"  "+document.getElementById("ON_OFF").value);
 	
 	button_commit("MOD_SDHCP");
 }
@@ -400,8 +403,8 @@ function lismod(value)
 </tr>
 <tr>
  <td class="head" id="t1_DHCPON_OFF">DHCP服务器</td>
-	<td><input type="radio"  ~cDHCPON_OFF:on~ name="DHCPON_OFF" value="on" onclick="switch_dhcp();" checked /><span id="onbutton"></span>
-	<input type="radio"  ~cDHCPON_OFF:off~ name="DHCPON_OFF" value="off" onclick="switch_dhcp();"/><span id="offbutton"></span>
+	<td><input type="radio"  ~cDHCPON_OFF:on~ name="DHCPON_OFF" id="DHCPON_OFF1" value="on" onclick="switch_dhcp();" checked /><label for="DHCPON_OFF1"  id="onbutton"></label>
+	<input type="radio"  ~cDHCPON_OFF:off~ name="DHCPON_OFF" id="DHCPON_OFF2" value="off" onclick="switch_dhcp();"/><label for="DHCPON_OFF2"  id="offbutton"></label>
 	</td>
 </tr>
 

@@ -207,7 +207,12 @@ int main(int argc, char *argv[])
 			if (requested) memcpy(&requested_align, requested, 4);
 			if (server_id) memcpy(&server_id_align, server_id, 4);
 
+			//addr.s_addr = requested_align;
+			//LOG(LOG_ERR, "the host ip is %s", inet_ntoa(addr));
+			//deal_addIp(&packet);
+
 			if (lease) {
+				DEBUG(LOG_INFO, "case DHCPREQUEST: the lease is exit");
 				if (server_id) {
 					/* SELECTING State */
 					DEBUG(LOG_INFO, "server_id = %08x", ntohl(server_id_align));
@@ -234,9 +239,11 @@ int main(int argc, char *argv[])
 
 			/* what to do if we have no record of the client */
 			} else if (server_id) {
+				DEBUG(LOG_INFO, "case DHCPREQUEST: the server id is %08x", server_id);
 				/* SELECTING State */
 
 			} else if (requested) {
+				DEBUG(LOG_INFO, "case DHCPREQUEST: the requested is exit");
 				/* INIT-REBOOT State */
 				if ((lease = find_lease_by_yiaddr(requested_align))) {
 					if (lease_expired(lease)) {
@@ -248,8 +255,16 @@ int main(int argc, char *argv[])
 					   requested_align > server_config.end) {
 					sendNAK(&packet);
 				} /* else remain silent */
+				else 
+				{/*if the client has ip, make it send request again*/
+					if (requested)
+					{
+						sendNAK(&packet);
+					}
+				}
 
 			} else {
+				DEBUG(LOG_INFO, "do nothing");
 				 /* RENEWING or REBINDING State */
 			}
 			break;
@@ -262,6 +277,8 @@ int main(int argc, char *argv[])
 			break;
 		case DHCPRELEASE:
 			DEBUG(LOG_INFO,"received RELEASE");
+			/*if receive RELEASE, clear the host*/
+			clear_dhcpIp(&packet);
 			if (lease) lease->expires = time(0);
 			break;
 		case DHCPINFORM:

@@ -105,6 +105,44 @@ function BarMenu(id) {
                 document.getElementById(id).className = "box1-open";
             }
         }
+		//alert(id);
+		if(id=="bar-menu2-0")
+		{
+			parent.pro.location.href="cgi-bin/ad_sysinfo";
+		}
+		if(id=="bar-menu2-1")
+		{
+			parent.pro.location.href="cgi-bin/ad_wan_set";
+		}
+
+		if(id=="bar-menu2-2")
+		{
+			parent.pro.location.href="cgi-bin/ad_local_dhcp";
+		}
+		if(id=="bar-menu2-3")
+		{
+			parent.pro.location.href="cgi-bin/ad_wireless_basic";
+		}
+		if(id=="bar-menu2-4")
+		{
+			parent.pro.location.href="cgi-bin/ad_con_list";
+		}
+		if(id=="bar-menu2-5")
+		{
+			parent.pro.location.href="cgi-bin/ad_safe_IPMAC";
+		}
+		if(id=="bar-menu2-6")
+		{
+			parent.pro.location.href="cgi-bin/ad_parentc_accept";
+		}
+		if(id=="bar-menu2-7")
+		{
+			parent.pro.location.href="cgi-bin/ad_man_timezone";
+		}
+		if(id=="bar-menu2-8")
+		{
+			parent.pro.location.href="cgi-bin/ad_netcheck";
+		}
     }
 
     this.box2over = function(id, className) {

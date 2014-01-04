@@ -12,6 +12,8 @@
 	<message msgid="conn mac" msgstr="MAC地址" />  
 	<message msgid="conn set" msgstr="设置" />    
 	<message msgid="conn bSAVE" msgstr="保存" />   
+	<message msgid="conn delit1" msgstr="确定要删除" /> 
+	<message msgid="conn delit2" msgstr="的管理条目?" /> 
 
 	<message msgid="clist title" msgstr="已接入设备列表" />  
 	<message msgid="clist t1_title" msgstr="有线设备" />  

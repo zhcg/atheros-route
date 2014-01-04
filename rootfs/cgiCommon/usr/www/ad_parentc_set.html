@@ -108,8 +108,8 @@ function switch_parc()
 <td class="title" colspan="3" id="t1_title">家长设置</td></tr>
 <tr>
  <td class="head" id="t1_parenable">家长控制</td>
-	<td><input type="radio"  ~cPARCON_OFF:on~ name="PARCON_OFF" value="on" onclick="switch_parc();" checked /><span id="onbutton">启用</span>
-	<input type="radio"  ~cPARCON_OFF:off~ name="PARCON_OFF" value="off" onclick="switch_parc();"/><span id="offbutton">不启用</span></td>
+	<td><input type="radio"  ~cPARCON_OFF:on~ name="PARCON_OFF" id="rad_1" value="on" onclick="switch_parc();" checked /><label for="rad_1" id="onbutton">启用</label>
+	<input type="radio"  ~cPARCON_OFF:off~ name="PARCON_OFF" id="rad_2" value="off" onclick="switch_parc();"/><label for="rad_2" id="offbutton">不启用</label></td>
   <td>&nbsp; &nbsp;</td>
 </tr>
 <tr id="t1">

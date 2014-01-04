@@ -35,6 +35,9 @@
 	<message msgid="dhcp t3_Ip" msgstr="IP" />
 	<message msgid="dhcp t3_Expr" msgstr="Effective time" />
 
+	<message msgid="dhcp delit1" msgstr="Are you sure to delete " />
+	<message msgid="dhcp delit2" msgstr=" static DHCP rule?" />
+	
 	<message msgid="dhcpadd title" msgstr="DHCP Server" />
 	<message msgid="dhcpadd des" msgstr="Add static DHCP entries" />
 	<message msgid="dhcpadd t1_title" msgstr="Add static DHCP entries" />
@@ -64,6 +67,9 @@
 	<message msgid="rulit t2_Gw" msgstr="Gateway" />
 	<message msgid="rulit t2_Inf" msgstr="Enable" />
 	<message msgid="rulit t2_Modefy" msgstr="Delete" />
+
+	<message msgid="rulit delit1" msgstr="Are you sure to delete " />
+	<message msgid="rulit delit2" msgstr=" static routing rule?" />
 
 	<message msgid="addru title" msgstr="Add static routing rules" />
 	<message msgid="addru des" msgstr="Add static routing rules" />

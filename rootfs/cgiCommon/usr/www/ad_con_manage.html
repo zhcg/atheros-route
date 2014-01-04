@@ -42,8 +42,10 @@ function init()
 function listdel(value)
 {
 	document.getElementById("DELXXX").value=value;
-	alert("删除了"+value);
-	button_commit("DEL_CON");
+	if(confirm(_("conn delit1")+"MAC="+value+_("conn delit2")))
+	{
+		button_commit("DEL_CON");
+	}
 }
 </script>
 
@@ -63,8 +65,8 @@ function listdel(value)
   <tr> 
     <td id="t1_switch">控制开关</td>    
 	<td>
-	<input type="radio"  ~cWCONON_OFF:on~ name="WCONON_OFF" value="on" /><span id="onbutton">启用</span>
-	<input type="radio"  ~cWCONON_OFF:off~ name="WCONON_OFF" value="off" /><span id="offbutton">不启用</td>
+	<input type="radio"  ~cWCONON_OFF:on~ name="WCONON_OFF" id="WDSON_OFF1" value="on" /><label for="WDSON_OFF1"  id="onbutton">启用</label>
+	<input type="radio"  ~cWCONON_OFF:off~ name="WCONON_OFF" id="WDSON_OFF2" value="off" /><label for="WDSON_OFF2"  id="offbutton">不启用</label></td>
 	<td>&nbsp; &nbsp;</td>
 	<td>&nbsp; &nbsp;</td>
   </tr>

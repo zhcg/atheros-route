@@ -170,56 +170,50 @@ uint32_t find_address(int check_expired)
 	return 0;
 }
 
-void deal_offline_sta()
+#if 0
+int deal_offline_sta(uint8_t *hostname, uint8_t *chaddr, uint32_t yiaddr)
 {
+	#if 0
 	uint32_t addr, ret;
+	struct in_addr addr2;
 	//struct dhcpOfferedAddr *lease = NULL;
-	int i;
-	
-	for (i = 0; i < server_config.max_leases; i++)
+	int i, j, k;
+	char mac_buf[20];
+
+	for(j = 0, k = 0 ; j < 6; j++, k+=3)
 	{
-		if (leases[i].yiaddr > 0)
-		{
-			addr = ntohl(leases[i].yiaddr);
-			/* ie, 192.168.55.0 */
-			if (!(addr & 0xFF)) 
-				continue;
+        sprintf(&mac_buf[k], "%02x:", chaddr[j]);
+	}
 
-			/* ie, 192.168.55.255 */
-			if ((addr & 0xFF) == 0xFF) 
-				continue;
-			LOG(LOG_ERR, "+++++++++++the ip is exit++++++++++++++++");
-			if(strlen(leases[i].hostname))
-				LOG(LOG_ERR, "+++++++++++the leases[i].hostname is %s++++++++++++++++", leases[i].hostname);
-			else
-			{
-				LOG(LOG_ERR, "+++++++++++the leases[i].hostname is empty++++++++++++++++");
-				//memset(leases[i].hostname, 0, 16);
-				//memset(leases[i].chaddr, 0, 16);
-				//leases[i].yiaddr = 0;
-				//leases[i].expires = 0;
-				//continue;
-			}
-			ret = htonl(addr);
-			//LOG(LOG_ERR, "+++++++++++zhaozhanwei the sta's ip is %d++++++++++++++++", ret);
-			
-			if (/*it isn't on the network */
-				arpping(ret, server_config.server, server_config.arp, server_config.interface) ||
-				/*it expired and we are checking for expired leases*/
-				lease_expired(leases))
-			{
-				memset(leases[i].hostname, 0, 16);
-				memset(leases[i].chaddr, 0, 16);
-				leases[i].yiaddr = 0;
-				leases[i].expires = 0;
-				continue;
-			}
-		}
+	addr2.s_addr = yiaddr;
+	LOG(LOG_INFO, "[deal_offline_sta] hostname is %s ip is %s", hostname, inet_ntoa(addr2));
+	LOG(LOG_INFO, "[deal_offline_sta] the mac is %s", mac_buf);
 
-		
-	}	
+	addr = ntohl(yiaddr);
+	/* ie, 192.168.55.0 */
+	if (!(addr & 0xFF)) 
+		return 1;
+	/* ie, 192.168.55.255 */
+	if ((addr & 0xFF) == 0xFF) 
+		return 1;
+
+	ret = htonl(addr);
+	#endif
+
+	uint32_t ret;
+	
+	ret = yiaddr;
+	if (/*it isn't on the network */
+		(arpping(ret, server_config.server, server_config.arp, server_config.interface) == 0) &&
+		/*it expired and we are checking for expired leases*/
+		(!lease_expired(leases)) )
+	{
+		return 0;
+	}
+	return 1;
 
 }
+#endif
 
 /* Find the lease that matches chaddr, NULL if no match */
 struct dhcpOfferedAddr *deal_control_staMac()

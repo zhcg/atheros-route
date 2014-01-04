@@ -14,7 +14,9 @@
 	<message msgid="safe tye" msgstr="Bunding" />    
 	<message msgid="safe set" msgstr="Settings" />    
 	<message msgid="safe bSAVE" msgstr="Save" />       
-
+	<message msgid="safe delit1" msgstr="Are you sure to delete " />  
+	<message msgid="safe delit2" msgstr=" bunding rule?" />  
+	
 	<message msgid="ipmac title" msgstr="IP/MAC address bunding" />    
 	<message msgid="ipmac des" msgstr="Display the current system ARP mapping table, and you can display and modify the IP address and MAC static bindings settings" /> 
 	<message msgid="ipmac t0_title" msgstr="System ARP mapping table" />   

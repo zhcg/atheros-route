@@ -14,7 +14,9 @@
 	<message msgid="safe tye" msgstr="绑定" />    
 	<message msgid="safe set" msgstr="删除" />    
 	<message msgid="safe bSAVE" msgstr="保存" />  
-
+	<message msgid="safe delit1" msgstr="确定要删除" />  
+	<message msgid="safe delit2" msgstr="的绑定规则?" />  
+	
 	<message msgid="ipmac title" msgstr="IP/MAC地址绑定" />    
 	<message msgid="ipmac des" msgstr="显示当前系统ARP映射表,并且可以显示和修改IP地址与MAC静态绑定设置" />    
 	<message msgid="ipmac t0_title" msgstr="系统ARP映射表" /> 

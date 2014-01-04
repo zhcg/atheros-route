@@ -19,7 +19,7 @@ struct dhcpOfferedAddr *oldest_expired_lease(void);
 struct dhcpOfferedAddr *find_lease_by_chaddr(uint8_t *chaddr);
 struct dhcpOfferedAddr *find_lease_by_yiaddr(uint32_t yiaddr);
 uint32_t find_address(int check_expired);
-void deal_offline_sta();
+//int deal_offline_sta(uint8_t *hostname, uint8_t *chaddr, uint32_t yiaddr);
 struct dhcpOfferedAddr *deal_control_staMac();
 
 

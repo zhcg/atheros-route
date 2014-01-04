@@ -14,9 +14,6 @@ h1 {font-size: 24px;}
 .bar-menu {}
 
 .bar-menu .box1 {width:170px;height:35px; line-height:35px;display:block;font-weight:800;color:#848484;background-color:#e6e6e6;}
-.bar-menu .box4 {width:170px;height:35px; line-height:35px;}
-.bar-menu .box4 a{width:170px;height:35px; font-size: 14px;line-height: 35px; display:block; font-weight:800;color:#848484;background-color:#e6e6e6; text-indent: 10px;font-family: 微软雅黑,arial;cursor: pointer;}
-.bar-menu .box4 a:hover{color: #ECEDEF; background-color:#CE4034;}
 
 .bar-menu .box1-hover {background-color:#CE4034;font-weight:800;}
 .bar-menu .box1-open {font-weight:800;color: #FFEBA9;background-color:#CE4034;border-bottom:1px  solid #fff;}
@@ -103,7 +100,8 @@ function pageInit()
         </tr>  
 		<tr>
             <td>
-                 <div class="box1"><div class="box4"><a href="cgi-bin/ad_sysinfo" target="pro" id="treeapp_sysstatus" >系统状态</a></div></div>
+				<div class="box1"><font id="treeapp_sysstatus">系统状态</font></div>
+				<div class="section"></div>
            </td>
         </tr>      
 		<tr><td height="8"></td></tr>
@@ -134,7 +132,7 @@ function pageInit()
                 <div class="section">
                     <div class="box2"><a href="cgi-bin/ad_wireless_basic" target="pro" id="treeapp_wifi_basic">基本设置</a></div>
 					<div class="box2"><a href="cgi-bin/ad_wireless_advan" target="pro" id="treeapp_wifi_adv">高级设置</a></div>
-					<div class="box2"><a href="cgi-bin/w4" target="pro" id="treeapp_wifi_wds">无线中继</a></div>
+					<div class="box2"><a href="cgi-bin/ad_wireless_wds" target="pro" id="treeapp_wifi_wds">无线中继</a></div>
                 </div>
             </td>
         </tr>
@@ -160,9 +158,8 @@ function pageInit()
         <tr id="par1"><td height="8"></td></tr>
         <tr id="par2">
             <td>
-                <div class="box1"><font id="treeapp_par">家长控制</font></div>
+                <div class="box1"><font id="treeapp_par">访问控制</font></div>
                 <div class="section">
-					<!--div class="box2"><a href="cgi-bin/ad_parentc_set" target="pro" id="treeapp_par_set">家长设置</a></div-->
 					<div class="box2"><a href="cgi-bin/ad_parentc_accept" target="pro" id="treeapp_par_access">访问管理</a></div>
                 </div>
             </td>
@@ -185,7 +182,8 @@ function pageInit()
 		<tr id="adma1"><td height="8"></td></tr>       
  		<tr>
             <td>
-                 <div class="box1"><div class="box4"><a href="cgi-bin/ad_netcheck" target="pro" id="treeapp_netcheck" >网络诊断</a></div></div>
+                 <div class="box1"><font id="treeapp_netcheck" >网络诊断</font></div>
+				 <div class="section"></div>
            </td>
         </tr> 	
         </table>

@@ -36,7 +36,7 @@ fi
 
 if [ "$BIND_STATUS" -eq "1" ];then
 	echo "$IP_ADDR $MAC_ADDR" >>  $ARP_IP_MAC_ON_FILE
-	arp -s $MAC_ADDR $IP_ADDR
+	arp -s $IP_ADDR $MAC_ADDR
 else if [ "$BIND_STATUS" -eq "0" ];then
 	echo "$IP_ADDR $MAC_ADDR" >>  $ARP_IP_MAC_OFF_FILE
 else

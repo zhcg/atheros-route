@@ -28,7 +28,10 @@
 	<message msgid="pa t1_Time" msgstr="时间" />  
 	<message msgid="pa t1_St" msgstr="生效" />  
 	<message msgid="pa t1_Mod" msgstr="删除" />  
-
+	
+	<message msgid="pa delit1" msgstr="确定要删除" />  	
+	<message msgid="pa delit2" msgstr="的管理条目?" />  	
+	
 	<message msgid="paradd title" msgstr="访问管理" />  
 	<message msgid="paradd des" msgstr="添加访问管理条目,未加入列表的PC将不能访问网络" />  
 	<message msgid="paradd t1_title" msgstr="添加访问管理条目" />  

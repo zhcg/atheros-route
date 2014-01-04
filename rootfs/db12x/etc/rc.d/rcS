@@ -180,4 +180,4 @@ monitor_application  &
 /usr/bin/cal_check &
 /usr/sbin/threethread &
 /usr/sbin/set_ntpserver &
-/usr/sbin/net_test &
+net_test &

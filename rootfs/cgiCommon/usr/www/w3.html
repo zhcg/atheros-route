@@ -271,13 +271,13 @@ function hidewififun()
 <tr><td class="title" colspan="2" id="wsetingst"></td></tr>
 <tr>
   <td class="head" id="nname"></td>
-  <td><input type="text" name="AP_SSID" size="32" maxlength="32" class="handaer_text_content"  value="~~AP_SSID~">&nbsp;<input type="checkbox" id="hidewifi" onclick="hidewififun();"/>&nbsp;<span id="hidewifides"></span>&nbsp;<span id="ssidrequest"></span></td>
+  <td><input type="text" name="AP_SSID" size="32" maxlength="32" class="handaer_text_content"  value="~~AP_SSID~">&nbsp;<input type="checkbox" id="hidewifi" onclick="hidewififun();"/>&nbsp;<label for="hidewifi" id="hidewifides"></label>&nbsp;<span id="ssidrequest"></span></td>
 </tr>
 
 <tr>
  <td class="head" id="wifiswitch"></td>
-	<td><input type="radio"  ~cWIFION_OFF:on~ name="WIFION_OFF" value="on" onclick="switch_wifi();" checked /><span id="onbutton"></span>
-	<input type="radio"  ~cWIFION_OFF:off~ name="WIFION_OFF" value="off" onclick="switch_wifi();"/><span id="offbutton"></span>
+	<td><input type="radio"  ~cWIFION_OFF:on~ id="rad_1" name="WIFION_OFF" value="on" onclick="switch_wifi();" checked /><label for="rad_1"  id="onbutton"></label>
+	<input type="radio"  ~cWIFION_OFF:off~ id="rad_2" name="WIFION_OFF" value="off" onclick="switch_wifi();"/><label for="rad_2"  id="offbutton"></label>
 	</td>
 </tr>
 
@@ -313,7 +313,7 @@ function hidewififun()
   </td>
 </tr>
 <tr id="div_security_key">
-  <td><span id="wkey"></span><span id="pwdinput"><input type="password" id="pwd" name="PSK_KEY" maxlength="64" size="28"  class="handaer_text_content"  value="~~PSK_KEY~"/></span>&nbsp;<input type="checkbox" id="cccc" onClick="showpwd()" />&nbsp;<span id="showp"></span>&nbsp;<span id="passwordrequest"></span></td>
+  <td><span id="wkey"></span><span id="pwdinput"><input type="password" id="pwd" name="PSK_KEY" maxlength="64" size="28"  class="handaer_text_content"  value="~~PSK_KEY~"/></span>&nbsp;<input type="checkbox" id="cccc" onClick="showpwd()" />&nbsp;<label for="cccc" id="showp"></label>&nbsp;<span id="passwordrequest"></span></td>
 							
 </tr>
 </table>

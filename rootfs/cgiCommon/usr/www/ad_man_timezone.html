@@ -309,8 +309,8 @@ function switch_ntp()
 </tr>
 <tr>
  <td class="head" id="ntpswitch"></td>
-	<td><input type="radio"  ~cNTPON_OFF:on~ name="NTPON_OFF" value="on" onclick="switch_ntp();" checked /><span id="onbutton"></span>
-	<input type="radio"  ~cNTPON_OFF:off~ name="NTPON_OFF" value="off" onclick="switch_ntp();"/><span id="offbutton"></span>
+	<td><input type="radio"  ~cNTPON_OFF:on~ id="NTPON_OFF1" name="NTPON_OFF" value="on" onclick="switch_ntp();" checked /><label for="NTPON_OFF1" id="onbutton"></label>
+	<input type="radio"  ~cNTPON_OFF:off~ id="NTPON_OFF2" name="NTPON_OFF" value="off" onclick="switch_ntp();"/><label for="NTPON_OFF2" id="offbutton"></label>
 	</td>
 </tr>
 <tr id="servertr1">

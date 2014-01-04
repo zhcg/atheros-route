@@ -270,8 +270,8 @@ CONFIG_FEATURE_SHADOWPASSWDS=y
 # Miscellaneous Utilities
 #
 # CONFIG_ADJTIMEX is not set
-CONFIG_CROND=y
-CONFIG_CRONTAB=y
+# CONFIG_CROND is not set
+# CONFIG_CRONTAB is not set
 # CONFIG_DC is not set
 # CONFIG_DEVFSD is not set
 # CONFIG_LAST is not set

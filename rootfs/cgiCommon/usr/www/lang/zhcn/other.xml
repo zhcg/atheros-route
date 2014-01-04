@@ -1,0 +1,5 @@
+<po>
+	<message msgid="wait" msgstr="正在扫描,请稍等............" />
+	<message msgid="R_SUCCESS" msgstr="设置成功!" />
+	<message msgid="R_FAIL" msgstr="设置失败!" />
+</po>

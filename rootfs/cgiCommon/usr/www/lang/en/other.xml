@@ -1,0 +1,5 @@
+<po>
+	<message msgid="wait" msgstr="Searching,Please wait............" />
+	<message msgid="R_SUCCESS" msgstr="Config Success!" />
+	<message msgid="R_FAIL" msgstr="Config Fail!" />
+</po>

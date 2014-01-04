@@ -31,8 +31,11 @@ function init()
 function listdel(value)
 {
 	document.getElementById("DELXXX").value=value;
-	alert("删除了"+value);
-	button_commit("DEL_PRC");
+	if(confirm(_("pa delit1")+"MAC="+value+_("pa delit2")))
+	{
+		button_commit("DEL_PRC");
+	}
+	
 }
 function lismod(value)
 {
@@ -46,7 +49,7 @@ function lismod(value)
 	}
 	
 	document.getElementById("MODXXX").value=value;
-	alert("修改了"+value +"  "+document.getElementById("ON_OFF").value);
+	//alert("修改了"+value +"  "+document.getElementById("ON_OFF").value);
 	
 	button_commit("MOD_PRC");
 }

@@ -13,5 +13,6 @@ struct config_keyword {
 int read_config(const char *file);
 void write_leases(void);
 void read_leases(const char *file);
+int deal_offline_sta(uint8_t *hostname, uint8_t *chaddr, uint32_t yiaddr);
 
 #endif

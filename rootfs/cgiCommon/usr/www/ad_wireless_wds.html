@@ -45,6 +45,8 @@ function initTranslation()
 	e.innerHTML = _("admw Wlisttitle1");
 	e = document.getElementById("Wlisttitle2");
 	e.innerHTML = _("admw Wlisttitle2");
+	e = document.getElementById("Wlisttitle3");
+	e.innerHTML = _("admw Wlisttitle3");
 	e = document.getElementById("waiting");
 	e.innerHTML = _("admw waiting");	
 	
@@ -310,8 +312,8 @@ function hidekeyf()
 <tr>
 <td class="head" id="wdsswitch"></td>
 	<td>
-	<input type="radio" ~cWDSON_OFF:on~  id="rad_1" name="WDSON_OFF" value="on" onclick="switch_wds();" checked /><label for="rad_1" id="onbutton"></label>
-	<input type="radio" ~cWDSON_OFF:off~  id="rad_2" name="WDSON_OFF" value="off" onclick="switch_wds();"/><label for="rad_2" id="offbutton"></label>
+	<input type="radio" ~cWDSON_OFF:on~ id="rad_1" name="WDSON_OFF" value="on" onclick="switch_wds();" checked /><label for="rad_1" id="onbutton"></label>
+	<input type="radio" ~cWDSON_OFF:off~ id="rad_2" name="WDSON_OFF" value="off" onclick="switch_wds();"/><label for="rad_2" id="offbutton"></label>
 	</td>
 </tr>
 
@@ -361,14 +363,14 @@ function hidekeyf()
     <input type="button" name="apply_motion" id="bAPPLY" class="handaer_input" value="Apply" onClick="CheckWirelessValue();">
 	<input type="submit" name="WIRRE" id="WIRRE" style="display:none" value="WIRRE">
 	<input type="text" style="display:none" name="INDEX" id="INDEX" value="~~INDEX~">
-	<input type="text" style="display:none" name="WDS_CHAN" id="WDS_CHAN" size="20" maxlength="32" value="~~WDS_CHAN~">
+	<input type="text" style="display:none" name="WDS_CHAN" id="WDS_CHAN" size="20" maxlength="32" value="~~WDS_CHAN~">	
 	<input type="text" style="display:none" name="AP_SECMODE_2" id="AP_SECMODE_2" size="20" maxlength="32" value="~~AP_SECMODE_2~">	
   </td>
 </tr>
 </table>
 <!--/form-->
 <div style="display:none">    
-	<input type="button" name="REFRESHWFi" id="REFRESHWFi" style="display:none" value="REFRESHWFi" onClick="window.location.href='w4?INDEX=11'">
+	<input type="button" name="REFRESHWFi" id="REFRESHWFi" style="display:none" value="REFRESHWFi" onClick="window.location.href='ad_wireless_wds?INDEX=11'">
 	<input type="text" style="display:none" name="WIFION_OFF" id="WIFION_OFF" size="20" maxlength="32" value="~~WIFION_OFF~">	
 	
 </div>

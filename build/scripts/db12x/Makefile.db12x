@@ -292,10 +292,13 @@ webui:
 	cp -f version_check $(INSTALL_ROOT)/usr/bin;  \
 	cp -f dhcp/set_addr $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f dhcp/del_addr $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f dhcp/modify_addr $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f route/set_route $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f route/del_route $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f route/modify_route $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f arp/set_arp $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f arp/del_arp $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f arp/modify_arp $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f backup/set_backup $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f backup/del_backup $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f backup/var_backup $(INSTALL_ROOT)/usr/sbin;  \

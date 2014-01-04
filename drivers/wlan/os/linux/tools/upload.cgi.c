@@ -322,9 +322,10 @@ error:
 				printf("<p align=\"center\" style=\"font-size: 9pt; margin-left: 10px; font-family: 微软雅黑, Arial, Helvetica, sans-serif; color: #848484\">The upgrade was completed, restartting BASE..........</p><br>\n");	
 				printf("<script  language=javascript>setTimeout(function(){window.location.href=\"crupload\";},140000);</script>");
 				printf("</body></html>");	
-				//[TODO]factory default
+				
 				system("cfg -x");
 				sleep(1);
+		
 				sprintf(cmdd,"sleep 1 && sysupgrade %s &",filePath);
 				system(cmdd);
 			}else //error firmware file

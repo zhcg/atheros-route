@@ -4,7 +4,7 @@ BACKUP_DIR="/etc/backup/"
 BACKUP_LIST="/etc/backup/backup_list.conf"
 
 
-if [ x$1 == x ]; then
+if [ x$1 = x ]; then
 	exit 1
 fi
 

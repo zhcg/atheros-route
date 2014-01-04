@@ -102,7 +102,7 @@
 
 	<message msgid="netcheck r1" msgstr="互联网连接失败,请您检查网线连接及网络设置状态" />
 	<message msgid="netcheck r2" msgstr="可以访问互联网,网络正常" />
-	<message msgid="netcheck r3" msgstr="请您检查WAN网线" />
+	<message msgid="netcheck r3" msgstr="请您检查WAN口网线" />
 
 	<message msgid="err MAC empty" msgstr="MAC地址不能为空" />
 	<message msgid="err user empty" msgstr="用户名不能为空" />

@@ -1,2 +1,0 @@
-iptables -A FORWARD_ACCESSCTRL -i br0 -m mac --mac-source 00:23:24:46:D9:0B -m multiurl --url www.163.com,return1 -m time --timestart 0:12 --timestop 18:0 --weekdays 4,5 -j RETURN
-iptables -A FORWARD_ACCESSCTRL -i br0 -m mac --mac-source 00:23:24:46:D9:0B -j DROP
