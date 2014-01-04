@@ -719,6 +719,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                     char weekdays[30];
                     char time_start[30];
                     char time_stop[30];
+                    char enable_flag[10];
 
                     int i=0;
                     int ret;
@@ -731,8 +732,8 @@ char *processSpecial(char *paramStr, char *outBuff)
                     {
                         while(1)
                         {
-                            ret = fscanf(f_parc,"iptables -A FORWARD_ACCESSCTRL -i br0 -m mac --mac-source %s -m multiurl --url %s -m time --timestart %s --timestop %s --weekdays %s -j RETURN\n",mac, url, time_start, time_stop, weekdays);
-                            if(ret < 2)
+                            ret = fscanf(f_parc,"%s -A FORWARD_ACCESSCTRL -i br0 -m mac --mac-source %s -m multiurl --url %s -m time --timestart %s --timestop %s --weekdays %s -j RETURN\n",enable_flag, mac, url, time_start, time_stop, weekdays);
+                            if(ret < 3)
                                 break;
 
                                 outBuff += sprintf(outBuff,"<tr>");
@@ -753,8 +754,14 @@ char *processSpecial(char *paramStr, char *outBuff)
                                 outBuff += sprintf(outBuff,"</td>");
                                 outBuff += sprintf(outBuff,"<td>%s</td>",weekdays);
                                 outBuff += sprintf(outBuff,"<td>%s-%s</td>", time_start, time_stop);
-                                outBuff += sprintf(outBuff,"<td>%s</td>","ON");
-                                outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:20px;\" value=\"×\" onClick=\"listdel(this.name)\"></td>", mac);
+
+                                if(strncmp(enable_flag,"##",2)==0)
+		                            outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%d\" id=\"%d\" onclick=\"lismod(this.name)\"></td>",id,id);
+                                else
+		                            outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%d\" id=\"%d\" onclick=\"lismod(this.name)\" checked></td>",id,id);
+                        //        outBuff += sprintf(outBuff,"<td>%s</td>","ON");
+                        
+                                outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"%d\"  style=\"color:red;font-size:20px;\" value=\"×\" onClick=\"listdel(this.name)\"></td>", id);
                                 outBuff += sprintf(outBuff,"</tr>");
 
                                 //ret = fscanf(f_parc,"iptables -A FORWARD_ACCESSCTRL -i br0 -m mac --mac-source %s -j DROP\n",mac);
@@ -5063,6 +5070,7 @@ int main(int argc,char **argv)
         char cmd_buffer_w[512];
         char cmd_buffer_r[512];
         char cmd_sed_buff[512];
+        char *cmd_buffer_p;
 
         char parc_mac[64] = {0};
         char parc_url[128] ={0};
@@ -5077,6 +5085,9 @@ int main(int argc,char **argv)
         char time_stop_h[32] = {0};
         char time_stop_m[32] = {0};
         char add_cmd_err[100] = {0};
+        char enable_status[10] = {0};
+        char enable_cmd[10] = {0};
+
 
         int i=0;
         int parc_line=0;
@@ -5092,6 +5103,12 @@ int main(int argc,char **argv)
         CFG_get_by_name("TIMING_BM",time_start_m);
         CFG_get_by_name("TIMING_EH",time_stop_h);
         CFG_get_by_name("TIMING_EM",time_stop_m);
+        CFG_get_by_name("PARC_STATUS",enable_status);
+
+        if(strncmp(enable_status,"1",1)==0)
+            strcpy(enable_cmd,"iptables");
+        else
+            strcpy(enable_cmd,"##");
 
         url_num = atoi(url_num_str);
         for (i = 1; i <= url_num; i++) 
@@ -5108,13 +5125,14 @@ int main(int argc,char **argv)
         if(f_parc)
         {
             memset(cmd_buffer_w,0,512);
-            sprintf(cmd_buffer_w ,"iptables -A FORWARD_ACCESSCTRL -i br0 -m mac --mac-source %s -m multiurl --url %s -m time --timestart %s:%s --timestop %s:%s --weekdays %s -j RETURN\n", parc_mac, parc_url, time_start_h, time_start_m, time_stop_h, time_stop_m, weekdays);
+            sprintf(cmd_buffer_w ,"-A FORWARD_ACCESSCTRL -i br0 -m mac --mac-source %s -m multiurl --url %s -m time --timestart %s:%s --timestop %s:%s --weekdays %s -j RETURN\n", parc_mac, parc_url, time_start_h, time_start_m, time_stop_h, time_stop_m, weekdays);
             while(1)
             {
                 parc_ret = fgets(cmd_buffer_r,500,f_parc);
                 if(parc_ret == NULL)
                     break;
-                if(strcmp(cmd_buffer_w, cmd_buffer_r) == 0)
+                cmd_buffer_p = strstr(cmd_buffer_r, "-A");
+                if(strcmp(cmd_buffer_w, cmd_buffer_p) == 0)
                 {
                     fprintf(errOut,"\n%s  %d there is a same rule exist\n",__func__,__LINE__);
                    // printf("there is a same rule exist\n");				   
@@ -5124,15 +5142,12 @@ int main(int argc,char **argv)
             }
             if(!parc_flag)
             {
-                sprintf(cmd_sed_buff ,"sed -i '%da\\%s' %s",parc_line/2, cmd_buffer_w, PARC_PATH);
-                //Execute_cmd(cmd_sed_buff , add_cmd_err);
+                sprintf(cmd_sed_buff ,"sed -i '%da\\%s %s' %s",parc_line/2, enable_cmd, cmd_buffer_w, PARC_PATH);
                 if(!parc_line)
-                    fprintf(f_parc,"%s",cmd_buffer_w);
-                //else
-                 //   system(cmd_sed_buff);
+                    fprintf(f_parc,"%s %s",enable_cmd, cmd_buffer_w);
                     
                 memset(cmd_buffer_w,0,512);
-                sprintf(cmd_buffer_w ,"iptables -A FORWARD_ACCESSCTRL -i br0 -m mac --mac-source %s -j DROP\n", parc_mac);
+                sprintf(cmd_buffer_w ,"%s -A FORWARD_ACCESSCTRL -i br0 -m mac --mac-source %s -j DROP\n", enable_cmd, parc_mac);
                 fprintf(f_parc,"%s",cmd_buffer_w);
             }
         }
@@ -5149,7 +5164,8 @@ int main(int argc,char **argv)
 			if(parc_line)
 				system(cmd_sed_buff);
 			Execute_cmd("iptables -F FORWARD_ACCESSCTRL" , add_cmd_err);
-			Execute_cmd("/etc/ath/iptables/parc > /dev/null 2>&1" , add_cmd_err);
+			Execute_cmd("sh /etc/ath/iptables/parc" , add_cmd_err);
+
 			memset(Page,0,64);
 			sprintf(Page,"%s","../ad_parentc_accept.html");
 			gohome =0;
@@ -5211,7 +5227,48 @@ int main(int argc,char **argv)
     if(strcmp(CFG_get_by_name("MOD_PRC",valBuff),"MOD_PRC") == 0 ) 
     {		 
         fprintf(errOut,"\n%s  %d MOD_PRC \n",__func__,__LINE__);
+
+        int mod_id = 0;
+        int mod_line = 0;
+        char mod_id_str[10] = {0};
+        char mod_sed_cmd[100] = {0};
+        char mod_sed_err[100] = {0};
+        char enable_flag[10];
+
+        CFG_get_by_name("MODXXX",mod_id_str);
+        CFG_get_by_name("ON_OFF",enable_flag);
+        mod_id = atoi(mod_id_str);
+
+
+        Execute_cmd("awk 'END{print NR}' /etc/ath/iptables/parc" , mod_sed_err);
+        mod_line=atoi(mod_sed_err);
+
+        if(strncmp(enable_flag,"ON",2)==0)
+        {
+            sprintf(mod_sed_cmd,"sed -i '%ds/##/iptables/' %s", mod_id, PARC_PATH);
+            Execute_cmd(mod_sed_cmd , mod_sed_err);
+            sprintf(mod_sed_cmd,"sed -i '%ds/##/iptables/' %s", mod_line/2+mod_id, PARC_PATH);
+            Execute_cmd(mod_sed_cmd , mod_sed_err);
+
+        }
+        else
+        {
+            sprintf(mod_sed_cmd,"sed -i '%ds/iptables/##/' %s", mod_id, PARC_PATH);
+            Execute_cmd(mod_sed_cmd , mod_sed_err);
+            sprintf(mod_sed_cmd,"sed -i '%ds/iptables/##/' %s", mod_line/2+mod_id, PARC_PATH);
+            Execute_cmd(mod_sed_cmd , mod_sed_err);
+
+        }
+        fprintf(errOut,"\n%s  %d MOD_PRC sed_cmd :%s \n",__func__,__LINE__,mod_sed_cmd);
+
+        Execute_cmd("iptables -F FORWARD_ACCESSCTRL" , mod_sed_err);
+        Execute_cmd("sh /etc/ath/iptables/parc" , mod_sed_err);
+
+        memset(Page,0,64);
+        sprintf(Page,"%s","../ad_parentc_accept.html");
         gohome =0;
+
+//        gohome =0;
     }
     
 	/*************************************
