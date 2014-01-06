@@ -80,6 +80,8 @@ struct staList
 
 static struct staList *staHostList;
 static int staId = 0;
+#define OLD_STAFILE  "/var/run/.OldStaList"
+#define UDHCPD_FILE  "/var/run/udhcpd.leases"
 #define MAX_WLAN_ELEMENT    1024
 
 typedef struct {
@@ -658,7 +660,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                 if(strcmp(secArg,"conmlist")==0)
                 {
 					FILE *fp;
-					const char *staFile = "/var/run/.staMac";
+					const char *staFile = "/etc/.staMac";
 					struct staList stalist;
 					char buf[150];
 					char buff[5];
@@ -946,7 +948,8 @@ char *processSpecial(char *paramStr, char *outBuff)
                 //接入管理有线设备(不带配置)
                 else if(strcmp(secArg,"wiredevlist")==0)
                 {
-                    FILE *fp, *flist, *fWriteOk;
+                    FILE *fp, *fp1, *flist, *fWriteOk;
+    				struct staList oldstalist, *p;
                     struct dhcpOfferedAddr 
                     {
                         unsigned char hostname[16];
@@ -962,72 +965,96 @@ char *processSpecial(char *paramStr, char *outBuff)
                     unsigned d, h, m;
                     int num=1;
                     int shi=0;
-					int ret = 0;
+					int add = 0;
 
                     Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
                     Execute_cmd("wlanconfig ath0 list sta > /var/run/.STAlist", rspBuff);
 
-					/*wait for dhcp write over*/
-					#if 0
-					system("rm -rf /var/run/.staWriteFlag >/dev/null");
-					while(1)
-					{
-						fWriteOk = fopen("/var/run/.staWriteFlag", "r");
-						if(fWriteOk)
-						{
-							memset(buf, 0, sizeof buf);
-							fgets(buf, 8, fWriteOk);
-							if(strncmp(buf, "writeok", 7) == 0)
-							{
-								//fprintf(errOut,"\n%s  %d  to open /var/run/.staWriteFlag OK\n",__func__,__LINE__);
-								fclose(fWriteOk);
-								system("rm /var/run/.staWriteFlag");
-								break;
-							}
-							//fclose(fWriteOk);
-						}
-						
-						//fprintf(errOut, "Unable to open [/var/run/.staWriteFlag] for writing\n");
-						usleep(500);
-					}
-					#endif
-					fprintf(errOut,"\n%s  %d  to open [dhcpclinetlist] ret is %d\n",__func__,__LINE__, ret);
+					fprintf(errOut,"\n%s  %d  to open [dhcpclinetlist]\n",__func__,__LINE__);
 
-                    fp = fopen("/var/run/udhcpd.leases", "r");  /*  /var/run/udhcpd.leases   */
+					/*if the /var/run/.OldStaList is not exit, creat it*/
+					if((fp1 = fopen(OLD_STAFILE, "r")) == NULL)     /*  /var/run/.OldStaList  */
+					{
+						fp1 = fopen(OLD_STAFILE, "at");
+						flist = fopen("/var/run/.STAlist", "r");    /*  /var/run/.STAlist   */
+                        fgets(STAbuf, 128, flist);
+                        while(fgets(STAbuf, 128, flist))
+                        {
+                        	memset(&oldstalist, 0, sizeof(oldstalist));
+                        	strncpy(oldstalist.macAddr, STAbuf, 17);
+							fwrite(&oldstalist, sizeof(oldstalist), 1, fp1);
+                        }
+						fclose(flist);
+						fclose(fp1);
+					}
+					flist = fopen("/var/run/.STAlist", "r");    /*  /var/run/.STAlist   */
+					fgets(STAbuf, 128, flist);
+                    while(fgets(STAbuf, 128, flist))
+                    {
+                    	int ret = 0;
+                    	memset(buf, 0, sizeof buf);
+						strncpy(buf, STAbuf, 17);
+						
+						fp1 = fopen(OLD_STAFILE, "r");			/*  /var/run/.OldStaList  */
+						
+						while(fread(&oldstalist, sizeof oldstalist, 1, fp1) == 1)
+						{
+							//fprintf(errOut,"buf is [%s],oldstalist.macAddr is [%s]\n\n", buf, oldstalist.macAddr);
+							if(strcmp(buf, oldstalist.macAddr) == 0)
+							{
+								ret = 1;
+								continue;
+							}
+						}
+						if(ret == 0)
+						{
+							addSta(buf, oldstalist.staDesc, oldstalist.id);
+							add = 1;
+						}
+						fclose(fp1);
+                    }
+					fclose(flist);
+					if((add == 1) && (fp1 = fopen(OLD_STAFILE, "at")))			/*  /var/run/.OldStaList  */
+					{
+						p = scan_staList(staHostList);
+						while(p)
+						{fprintf(errOut,"fwrite 22222");
+							fwrite(p, sizeof(struct staList), 1, fp1);
+							p = p->next;
+						}
+						fclose(fp1);
+					}
+					
+                    fp = fopen(UDHCPD_FILE, "r");  /*  /var/run/udhcpd.leases   */
                     if (NULL == fp)
                     {
                         fprintf(errOut,"\n%s  %d open udhcpd error\n \n",__func__,__LINE__);
                         break;
                     }
-
-                    while (fread(&lease, sizeof(lease), 1, fp) == 1) 
+                    while (fread(&lease, sizeof(lease), 1, fp) == 1)
                     {
                         shi=0;
-                        flist = fopen("/var/run/.STAlist", "r");    /*  /var/run/.STAlist   */
-                        if (NULL == flist)
+						memset(mac_buf, 0, sizeof(mac_buf));
+						for(i = 0, j = 0 ; i < 6; i++, j+=3)
                         {
-                            fprintf(errOut,"\n%s  %d open STAlist\n \n",__func__,__LINE__);
-                            break;
+                            sprintf(&mac_buf[j], "%02x:", lease.mac[i]);
                         }
-
-                        fgets(STAbuf, 128, flist);
-                        while(fgets(STAbuf, 128, flist))
-                        {
-                            /*compare MAC*/
-                            memset(buf, 0, sizeof(buf));
-                            memset(mac_buf, 0, sizeof(mac_buf));
-                            strncpy(buf, STAbuf, 17);
-                            for(i = 0, j = 0 ; i < 6; i++, j+=3)
-                           {
-                                sprintf(&mac_buf[j], "%02x:", lease.mac[i]);
-                            }
-                            //fprintf(errOut,"\n%s  %d mac_buf:%s buf:%s\n",__func__,__LINE__,mac_buf,buf);
-                            if(strncmp(buf, mac_buf, 17) == 0)
-                            {//wireless
-                                shi=1;
-                            }
-                        }
-						fclose(flist);
+						
+                        /*compare MAC*/
+						if((fp1 = fopen(OLD_STAFILE, "r")) != NULL)		/*  /var/run/.OldStaList  */
+						{
+							while(fread(&oldstalist, sizeof(struct staList), 1, fp1) == 1)
+							{
+								//fprintf(errOut,"\n%s  %d oldstalist.macAddr:%s mac_buf:%s\n",__func__,__LINE__,oldstalist.macAddr,mac_buf);
+								if(!strncmp(oldstalist.macAddr, mac_buf, 17))
+	                            {
+	                                shi=1;  //wireless
+	                                break;
+	                            }
+							}
+							fclose(fp1);
+						}
+                        //fprintf(errOut,"\n%s  %d mac_buf:%s buf:%s\n",__func__,__LINE__,mac_buf,buf);
 						
                         if(shi == 0)
                         {
@@ -1079,7 +1106,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                     //Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
                     //Execute_cmd("wlanconfig ath0 list sta > /var/run/.STAlist", rspBuff);
 
-                    fp = fopen("/var/run/udhcpd.leases", "r");  /*  /var/run/udhcpd.leases   */
+                    fp = fopen(UDHCPD_FILE, "r");  /*  /var/run/udhcpd.leases   */
                     if (NULL == fp)
                     {
                         fprintf(errOut,"\n%s  %d open udhcpd error\n \n",__func__,__LINE__);
@@ -1105,7 +1132,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                             for(i = 0, j = 0 ; i < 6; i++, j+=3)
                                 sprintf(&mac_buf[j], "%02x:", lease.mac[i]);
                             
-                            fprintf(errOut,"\n%s  %d mac_buf:%s buf:%s\n",__func__,__LINE__,mac_buf,buf);
+                            //fprintf(errOut,"\n%s  %d mac_buf:%s buf:%s\n",__func__,__LINE__,mac_buf,buf);
                             if(strncmp(buf, mac_buf, 17) == 0)
                            {//wireless
                                 outBuff += sprintf(outBuff,"<tr>");
@@ -1225,7 +1252,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 					#endif
 					fprintf(errOut,"\n%s  %d  to open [dhcpclinetlist] ret is %d\n",__func__,__LINE__, ret);
 
-                    fp = fopen("/var/run/udhcpd.leases", "r");  /*  /var/run/udhcpd.leases   */
+                    fp = fopen(UDHCPD_FILE, "r");  /*  /var/run/udhcpd.leases   */
                     if (NULL == fp)
                     {
                         fprintf(errOut,"\n%s  %d open udhcpd error\n \n",__func__,__LINE__);
@@ -1298,7 +1325,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                     Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
                     Execute_cmd("wlanconfig ath0 list sta > /var/run/.STAlist", rspBuff);
 
-                    fp = fopen("/var/run/udhcpd.leases", "r");  /*  /var/run/udhcpd.leases   */
+                    fp = fopen(UDHCPD_FILE, "r");  /*  /var/run/udhcpd.leases   */
                     if (NULL == fp)
                     {
                         fprintf(errOut,"\n%s  %d open udhcpd error\n \n",__func__,__LINE__);
@@ -4738,15 +4765,16 @@ int main(int argc,char **argv)
    *************************************/
 
 	/*ADD STA's MAC*/
-	const char *staFile = "/var/run/.staMac";
+	const char *staFile = "/etc/.staMac";
     if(strcmp(CFG_get_by_name("ADD_CONRULE",valBuff),"ADD_CONRULE") == 0 ) 
     {
-    	FILE *fp;
+    	FILE *fp, *fp1;
     	struct staList stalist;
 		int same = 0, id = 0;
     	char staMac[20];
 		char staDesc[50];
-		char buf[50] = "iwpriv ath0 addmac %s";
+		char con_buf[10];
+		char buf[50];
 
 		memset(staMac, 0, sizeof staMac);
 		memset(staDesc, 0, sizeof staDesc);
@@ -4754,7 +4782,7 @@ int main(int argc,char **argv)
 		{
 			if ((fp = fopen(staFile, "w+")) == NULL) 
 			{
-				fprintf(errOut,"\nUnable to open /var/run/.staMac for writing\n");
+				fprintf(errOut,"\nUnable to open /etc/.staMac for writing\n");
 			}
 			else
 			{
@@ -4765,6 +4793,19 @@ int main(int argc,char **argv)
 				stalist.id = id + 1;
 				fwrite(&stalist, sizeof(struct staList), 1, fp);
 				fclose(fp);
+
+				
+				if ((fp1 = fopen("/etc/.staAcl", "r")) != NULL)
+				{
+					memset(con_buf, 0, 20);
+					fgets(con_buf, 8, fp1);
+					if(!strcmp(con_buf, "disable"))
+					{
+						sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
+						Execute_cmd(buf, rspBuff);
+					}
+					fclose(fp1);
+				}
 				
 				sprintf(buf, "iwpriv ath0 addmac %s", staMac);
 				Execute_cmd(buf, rspBuff);
@@ -4796,7 +4837,22 @@ int main(int argc,char **argv)
 				stalist.id = id + 1;
 				fwrite(&stalist, sizeof(struct staList), 1, fp);
 				fclose(fp);
-				
+
+				if ((fp1 = fopen("/etc/.staAcl", "r")) != NULL)
+				{
+					memset(con_buf, 0, 20);
+					fgets(con_buf, 8, fp1);
+					//fprintf(errOut,"\n the con_buf is %s\n", con_buf);
+					if(!strncmp(con_buf, "disable", 7))
+					{
+						memset(buf, 0, sizeof buf);
+						sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
+						Execute_cmd(buf, rspBuff);
+					}
+					fclose(fp1);
+				}
+
+				memset(buf, 0, sizeof buf);
 				sprintf(buf, "iwpriv ath0 addmac %s", staMac);
 				Execute_cmd(buf, rspBuff);
 			}
@@ -4812,22 +4868,57 @@ int main(int argc,char **argv)
 	/*DEL STA's MAC*/
 	if(strcmp(CFG_get_by_name("DEL_CON",valBuff),"DEL_CON") == 0 ) 
     {	
-    	FILE *fp;
+    	FILE *fp, *fp1;
     	struct staList stalist, *p;
     	char staMac[20];
-		char buf[50] = "iwpriv ath0 delmac %s";
+		char con_buf[10];
+		char buf[50];
 
-		if( (fp = fopen(staFile, "r")) == NULL)
-			fprintf(errOut,"\nopen %s error\n", staFile);
-		else
+		if(CFG_get_by_name("DELXXX",staMac))
 		{
-			while(fread(&stalist, sizeof stalist, 1, fp) == 1)
+			if( (fp = fopen(staFile, "r")) == NULL)
+				fprintf(errOut,"\nopen %s error\n", staFile);
+			else
 			{
-				addSta(stalist.macAddr, stalist.staDesc, stalist.id);
+				while(fread(&stalist, sizeof stalist, 1, fp) == 1)
+				{
+					if(!strcmp(stalist.macAddr, staMac))
+					{
+						if ((fp1 = fopen("/etc/.staAcl", "r")) != NULL)
+						{
+							memset(con_buf, 0, 20);
+							fgets(con_buf, 8, fp1);
+							if(!strcmp(con_buf, "disable"))
+							{
+								sprintf(buf, "iptables -D control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
+								Execute_cmd(buf, rspBuff);
+							}
+							fclose(fp1);
+						}
+						sprintf(buf, "iwpriv ath0 delmac %s", staMac);
+						Execute_cmd(buf, rspBuff);
+						continue;
+					}
+					addSta(stalist.macAddr, stalist.staDesc, stalist.id);
+				}
+				fclose(fp);
 			}
-			fclose(fp);
+
+			if( (fp = fopen(staFile, "w")) == NULL)
+				fprintf(errOut,"\nopen %s error\n", staFile);
+			else
+			{
+				p = scan_staList(staHostList);
+				while(p)
+				{
+					fwrite(p, sizeof(struct staList), 1, fp);
+					p = p->next;
+				}
+				fclose(fp);
+			}
 		}
 
+		#if 0
 		if(CFG_get_by_name("DELXXX",staMac))
     	{
 			
@@ -4848,6 +4939,7 @@ int main(int argc,char **argv)
 			sprintf(buf, "iwpriv ath0 delmac %s", staMac);
 			Execute_cmd(buf, rspBuff);
     	}
+		#endif
 		
         fprintf(errOut,"\n%s  %d DEL_CON \n",__func__,__LINE__);
         gohome =0;
@@ -4863,70 +4955,55 @@ int main(int argc,char **argv)
     	FILE *fp, *fpp;
 		struct staList stalist;
 		char buf[80];
-		const char *staAcl = "/var/run/.staAcl";
+		const char *staAcl = "/etc/.staAcl";
 		if(strcmp(CFG_get_by_name("WCONON_OFF",valBuff),"on") == 0 )
 		{
-			if ((fp = fopen(staAcl, "w")) == NULL)
-			{
-				fprintf(errOut,"\nopen %s error\n", staAcl);
-			}
-			else
+			if ((fp = fopen(staAcl, "w")) != NULL)
 			{
 				fwrite("enable", sizeof("enable"), 1, fp);
 				fclose(fp);
 			}
 
-			Execute_cmd("iptables -t filter -F INPUT", rspBuff);
-			#if 0
-			if ((fpp = fopen(staFile, "r")) == NULL)
-			{
-				fprintf(errOut,"\nopen %s error\n", staFile);
-			}
-			else
+			Execute_cmd("iptables -t filter -F control_sta", rspBuff);
+			if ((fpp = fopen(staFile, "r")) != NULL)
 			{
 				while(fread(&stalist, sizeof stalist, 1, fpp) == 1)
 				{
-					sprintf(buf, "iptables -D INPUT -m mac --mac-source %s -j DROP", stalist.macAddr);
-					fprintf(errOut,"\n%s \n", buf);
+					memset(buf, 0, sizeof buf);
+					sprintf(buf, "iwpriv ath0 delmac %s", stalist.macAddr);
 					Execute_cmd(buf, rspBuff);
 				}
 				fclose(fpp);
 			}
-			#endif
 			
 			Execute_cmd("iwpriv ath0 maccmd 0",rspBuff);
 			fprintf(errOut,"\n%s  %d --------CONM_WORK on--------- \n",__func__,__LINE__);
 		}
 		else if(strcmp(CFG_get_by_name("WCONON_OFF",valBuff),"off") == 0 )
 		{
-			if ((fp = fopen(staAcl, "w")) == NULL)
-			{
-				fprintf(errOut,"\nopen %s error\n", staAcl);
-			}
-			else
+			if ((fp = fopen(staAcl, "w")) != NULL)
 			{
 				fwrite("disable", sizeof("disable"), 1, fp);
 				fclose(fp);
 			}
 			
-
-			if ((fpp = fopen(staFile, "r")) == NULL)
+			Execute_cmd("iptables -t filter -F control_sta", rspBuff);
+			if ((fpp = fopen(staFile, "r")) != NULL)
 			{
-				fprintf(errOut,"\nopen %s error\n", staFile);
-			}
-			else
-			{
-				Execute_cmd("iptables -t filter -F INPUT", rspBuff);
 				while(fread(&stalist, sizeof stalist, 1, fpp) == 1)
 				{
-					sprintf(buf, "iptables -A INPUT -m mac --mac-source %s -j DROP", stalist.macAddr);
+					memset(buf, 0, sizeof buf);
+					sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
+					Execute_cmd(buf, rspBuff);
+					memset(buf, 0, sizeof buf);
+					sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
 					Execute_cmd(buf, rspBuff);
 				}
-				fclose(fpp);;
+				fclose(fpp);
 			}
 			
 			Execute_cmd("iwpriv ath0 maccmd 2",rspBuff);
-			Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
+			//Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
 			fprintf(errOut,"\n%s  %d --------CONM_WORK off--------- \n",__func__,__LINE__);
 		}
 		

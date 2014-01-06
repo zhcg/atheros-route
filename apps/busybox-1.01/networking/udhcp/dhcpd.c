@@ -52,6 +52,71 @@ struct dhcpOfferedAddr *leases;
 struct server_config_t server_config;
 
 
+void deal_staControl()
+{
+	struct staList
+	{
+		int id;
+		char macAddr[20];
+		char staDesc[80];
+		struct staList *next;
+	};
+	struct staList stalist;
+	FILE *fp, *fp1;
+	char con_buf[10];
+	char buf[50];
+	
+	pid_t pid = fork();
+    if (pid < 0)
+    {
+        DEBUG(LOG_ERROR, "fork error");
+    }
+    else if( 0 == pid )
+    {
+    	system("iptables -N control_sta");
+		system("iptables -A INPUT -j control_sta");
+        if ((fp = fopen("/etc/.staAcl", "r")) == NULL)
+			exit(0);
+		else
+		{
+			memset(con_buf, 0, 20);
+			fgets(con_buf, 8, fp);
+			if(!strncmp(con_buf, "enable", 6))
+			{
+				fclose(fp);
+				exit(0);
+			}
+			else if(!strncmp(con_buf, "disable", 7))
+			{
+				fclose(fp);
+				if ((fp1 = fopen("/etc/.staMac", "r")) == NULL) 
+				{
+					DEBUG(LOG_ERROR,"\nUnable to open /etc/.staMac for writing\n");
+				}
+				else
+				{
+					while(fread(&stalist, sizeof stalist, 1, fp1) == 1)
+					{
+						memset(buf, 0, sizeof buf);
+						sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
+						system(buf);
+						memset(buf, 0, sizeof buf);
+						sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
+						system(buf);
+					}
+					system("iwpriv ath0 maccmd 2");
+					fclose(fp1);
+				}
+			}
+			
+		}
+    }
+    else
+    {
+        return;
+    }
+}
+
 #ifdef COMBINED_BINARY
 int udhcpd_main(int argc, char *argv[])
 #else
@@ -77,6 +142,9 @@ int main(int argc, char *argv[])
 
 	memset(&server_config, 0, sizeof(struct server_config_t));
 	read_config(argc < 2 ? DHCPD_CONF_FILE : argv[1]);
+
+	/*deal staControl*/
+	deal_staControl();
 
 	/* Start the log, sanitize fd's, and write a pid file */
 	start_log_and_pid("udhcpd", server_config.pidfile);
