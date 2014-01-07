@@ -4803,7 +4803,7 @@ int main(int argc,char **argv)
 				{
 					memset(con_buf, 0, 20);
 					fgets(con_buf, 8, fp1);
-					if(!strcmp(con_buf, "disable"))
+					if(!strncmp(con_buf, "enable", 6))
 					{
 						sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
 						Execute_cmd(buf, rspBuff);
@@ -4847,7 +4847,7 @@ int main(int argc,char **argv)
 					memset(con_buf, 0, 20);
 					fgets(con_buf, 8, fp1);
 					//fprintf(errOut,"\n the con_buf is %s\n", con_buf);
-					if(!strncmp(con_buf, "disable", 7))
+					if(!strncmp(con_buf, "enable", 6))
 					{
 						memset(buf, 0, sizeof buf);
 						sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
@@ -4892,7 +4892,7 @@ int main(int argc,char **argv)
 						{
 							memset(con_buf, 0, 20);
 							fgets(con_buf, 8, fp1);
-							if(!strcmp(con_buf, "disable"))
+							if(!strcmp(con_buf, "enable"))
 							{
 								sprintf(buf, "iptables -D control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
 								Execute_cmd(buf, rspBuff);
@@ -4976,13 +4976,17 @@ int main(int argc,char **argv)
 				while(fread(&stalist, sizeof stalist, 1, fpp) == 1)
 				{
 					memset(buf, 0, sizeof buf);
-					sprintf(buf, "iwpriv ath0 delmac %s", stalist.macAddr);
+					sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
+					Execute_cmd(buf, rspBuff);
+					memset(buf, 0, sizeof buf);
+					sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
 					Execute_cmd(buf, rspBuff);
 				}
 				fclose(fpp);
 			}
 			
-			Execute_cmd("iwpriv ath0 maccmd 0",rspBuff);
+			Execute_cmd("iwpriv ath0 maccmd 2",rspBuff);
+
 			fprintf(errOut,"\n%s  %d --------CONM_WORK on--------- \n",__func__,__LINE__);
 		}
 		else if(strcmp(CFG_get_by_name("WCONON_OFF",valBuff),"off") == 0 )
@@ -4999,16 +5003,13 @@ int main(int argc,char **argv)
 				while(fread(&stalist, sizeof stalist, 1, fpp) == 1)
 				{
 					memset(buf, 0, sizeof buf);
-					sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
-					Execute_cmd(buf, rspBuff);
-					memset(buf, 0, sizeof buf);
-					sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
+					sprintf(buf, "iwpriv ath0 delmac %s", stalist.macAddr);
 					Execute_cmd(buf, rspBuff);
 				}
 				fclose(fpp);
 			}
 			
-			Execute_cmd("iwpriv ath0 maccmd 2",rspBuff);
+			Execute_cmd("iwpriv ath0 maccmd 0",rspBuff);
 			//Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
 			fprintf(errOut,"\n%s  %d --------CONM_WORK off--------- \n",__func__,__LINE__);
 		}
