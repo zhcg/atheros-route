@@ -1265,19 +1265,23 @@ char *processSpecial(char *paramStr, char *outBuff)
                         outBuff += sprintf(outBuff,"<td>%d</td>",num);
                         num++; 
 
+						/*hostname*/
                         if (strlen(lease.hostname) > 0)
-                        outBuff += sprintf(outBuff,"<td>%s</td>",lease.hostname);
+                        	outBuff += sprintf(outBuff,"<td>%s</td>",lease.hostname);
                         else
-                        outBuff += sprintf(outBuff,"<td><br /></td>");
+                        	outBuff += sprintf(outBuff,"<td><br /></td>");
 
+						/*mac*/
+						outBuff += sprintf(outBuff,"<td>%02x", lease.mac[0]);
+                        for (i = 1; i < 6; i++)
+                        	outBuff += sprintf(outBuff,":%02x", lease.mac[i]);
+
+						/*ip*/
                         addr.s_addr = lease.ip;
                         expires = ntohl(lease.expires);
                         outBuff += sprintf(outBuff,"<td>%s</td>", inet_ntoa(addr));
 
-                        outBuff += sprintf(outBuff,"<td>%02x", lease.mac[0]);
-                        for (i = 1; i < 6; i++)
-                        outBuff += sprintf(outBuff,":%02x", lease.mac[i]);
-
+						/*lease*/
                         outBuff += sprintf(outBuff,"</td>");
                         d = expires / (24*60*60); expires %= (24*60*60);
                         h = expires / (60*60); expires %= (60*60);
@@ -1288,11 +1292,11 @@ char *processSpecial(char *paramStr, char *outBuff)
                             //printf("lease time is %u days ", d);
                             outBuff += sprintf(outBuff,"%u days ", d);
                         }
-                         outBuff += sprintf(outBuff,"%02u:%02u:%02u ",  h, m, (unsigned)expires);
-                       //printf("%02u:%02u:%02u\n", h, m, (unsigned)expires);
-                        outBuff += sprintf(outBuff,"</td>");
+                        outBuff += sprintf(outBuff,"%02u:%02u:%02u ",  h, m, (unsigned)expires);
+                       	//printf("%02u:%02u:%02u\n", h, m, (unsigned)expires);
+                       	outBuff += sprintf(outBuff,"</td>");
                       
-                        outBuff += sprintf(outBuff,"</tr>");
+                       	outBuff += sprintf(outBuff,"</tr>");
                     }
                     fclose(fp);
                 }
@@ -4942,6 +4946,8 @@ int main(int argc,char **argv)
 		#endif
 		
         fprintf(errOut,"\n%s  %d DEL_CON \n",__func__,__LINE__);
+		memset(Page,0,64);
+        sprintf(Page,"%s","../ad_con_manage.html");
         gohome =0;
     }
 
@@ -5009,7 +5015,10 @@ int main(int argc,char **argv)
 		
 		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
 		writeParameters("/tmp/.apcfg","w+",0);
-        Result_tiaozhuan("yes",argv[0]);   
+		memset(Page,0,64);
+        sprintf(Page,"%s","ad_con_manage");
+        //Result_tiaozhuan("yes",argv[0]);
+		Result_tiaozhuan("yes", Page);
 		gohome =2;
 	}
 	
