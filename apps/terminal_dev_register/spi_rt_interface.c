@@ -37,6 +37,11 @@ static int send_repeat_cmd();
 static int recv_data(unsigned char uart, char *data, unsigned short len);
 
 /**
+ * spi 接收数据(应用程序接口)
+ */
+static int recv_data2(unsigned char uart, char *data, unsigned short len, struct timeval *timeout);
+
+/**
  * spi 发送数据(STUB应用程序调用接口)
  */
 static int spi_send(struct s_spi_rt_cmd *spi_rt_cmd);
@@ -51,6 +56,10 @@ static int send_spi_rt_cmd_msg(int fd, struct s_spi_rt_cmd *spi_rt_cmd, struct t
  */
 static int recv_spi_rt_cmd_msg(int fd, struct s_spi_rt_cmd *spi_rt_cmd, struct timeval *tv);
 
+/*
+ * 清空指定的接收或者发送缓冲区
+ */
+static int spi_flush(unsigned char uart, unsigned char flag);
 
 struct class_spi_rt_interface spi_rt_interface = 
 {
@@ -59,12 +68,14 @@ struct class_spi_rt_interface spi_rt_interface =
     .send_data = send_data,
     .send_repeat_cmd = send_repeat_cmd,
     .recv_data = recv_data,
+    .recv_data2 = recv_data2,
     .spi_send = spi_send,
     .send_spi_rt_cmd_msg = send_spi_rt_cmd_msg,
     .recv_spi_rt_cmd_msg = recv_spi_rt_cmd_msg,
     .read_spi_rt_para = read_spi_rt_para,
     .write_spi_rt_para = write_spi_rt_para,
-    
+    .spi_flush = spi_flush,
+     
     .spi_uart_sem_key = 0x55, 
     
     .spi_uart1_recv_shared_mem_key = 0x10,
@@ -383,7 +394,7 @@ int init_spi()
     
     // 建立本地服务器
     #if LOCAL_SOCKET
-    if ((spi_rt_interface.spi_server_fd = internetwork_communication.make_local_socket_server_link(SPI_LOCAL_SOCKET_NAME)) < 0)
+    if ((spi_rt_interface.spi_server_fd = communication_network.make_local_socket_server_link(SPI_LOCAL_SOCKET_NAME)) < 0)
     {
         PERROR("make_local_socket_server_link failed!\n");         
         res = spi_rt_interface.spi_server_fd;
@@ -391,7 +402,7 @@ int init_spi()
     }
     PRINT("The server is established successfully! SPI_LOCAL_SOCKET_NAME = %s\n", SPI_LOCAL_SOCKET_NAME);    
     #else
-    if ((spi_rt_interface.spi_server_fd = internetwork_communication.make_server_link(SPI_SERVER_PORT)) < 0)
+    if ((spi_rt_interface.spi_server_fd = communication_network.make_server_link(SPI_SERVER_PORT)) < 0)
     {
         PERROR("make_server_link failed!\n");         
         res = spi_rt_interface.spi_server_fd;
@@ -1544,14 +1555,14 @@ int send_data(unsigned char uart, char *data, unsigned short len)
     
     #if LOCAL_SOCKET
     // 创建客户端连接
-    if ((spi_client_fd = internetwork_communication.make_local_socket_client_link(SPI_LOCAL_SOCKET_NAME)) < 0)
+    if ((spi_client_fd = communication_network.make_local_socket_client_link(SPI_LOCAL_SOCKET_NAME)) < 0)
     {
         PERROR("make_client_link failed!\n");
         return spi_client_fd;
     }
     #else
     // 创建客户端连接
-    if ((spi_client_fd = internetwork_communication.make_client_link(SPI_SERVER_IP, SPI_SERVER_PORT)) < 0)
+    if ((spi_client_fd = communication_network.make_client_link(SPI_SERVER_IP, SPI_SERVER_PORT)) < 0)
     {
         PERROR("make_client_link failed!\n");
         return spi_client_fd;
@@ -2009,7 +2020,7 @@ int send_data(unsigned char uart, char *data, unsigned short len)
     
     #if LOCAL_SOCKET
     // 创建客户端连接
-    if ((spi_client_fd = internetwork_communication.make_local_socket_client_link(SPI_LOCAL_SOCKET_NAME)) < 0)
+    if ((spi_client_fd = communication_network.make_local_socket_client_link(SPI_LOCAL_SOCKET_NAME)) < 0)
     {
         PERROR("make_client_link failed!\n");
         res = spi_client_fd;
@@ -2017,7 +2028,7 @@ int send_data(unsigned char uart, char *data, unsigned short len)
     }
     #else
     // 创建客户端连接
-    if ((spi_client_fd = internetwork_communication.make_client_link(SPI_SERVER_IP, SPI_SERVER_PORT)) < 0)
+    if ((spi_client_fd = communication_network.make_client_link(SPI_SERVER_IP, SPI_SERVER_PORT)) < 0)
     {
         PERROR("make_client_link failed!\n");
         res = spi_client_fd;
@@ -2265,6 +2276,427 @@ int recv_data(unsigned char uart, char *data, unsigned short len)
         return DATA_ERR;
 	}
 	
+    // 获取8个信号
+    if ((spi_rt_interface.spi_uart_sem_id = semget(spi_rt_interface.spi_uart_sem_key, 8, IPC_CREAT | 0666)) < 0)
+    {
+        PERROR("semget failed!\n");
+        return SEMGET_ERR;
+    }
+    
+    memset(&semopbuf, 0, sizeof(struct sembuf));
+    semopbuf.sem_op = -1;
+    semopbuf.sem_flg = SEM_UNDO;
+    
+    /* 根据不同的串口（uart）解析共享内存区，当内存区数据长度大于等于需要读取的长度时，把共享区的数据
+     * 拷贝到buf，然后清空共享内存区，释放资源返回，读取的长度
+     */
+	switch (uart)
+    {
+        case UART1:
+        {
+            semopbuf.sem_num = 4;
+            sem_num = 4;
+            //PRINT("semopbuf.sem_num = %d semopbuf.sem_op = %d\n", semopbuf.sem_num, semopbuf.sem_op);
+            //PRINT("before spi_select\n");
+            // 判断接收缓冲区是否有数据可读
+            if ((res = spi_select(uart, &tv)) < 0)
+            {
+                PERROR("spi_select failed!\n");
+                return res;
+            }
+            //PRINT("after spi_select\n");
+            // 信号量减一
+            if (semop(spi_rt_interface.spi_uart_sem_id, &semopbuf, 1) < 0)
+            {
+                PERROR("semop failed!\n");
+                return SEMOP_ERR;
+            }
+            
+            if ((res = read_spi_rt_para(sem_num)) < 0)
+            {
+                PERROR("read_spi_rt_para failed!\n");
+                break;
+            }
+            //PRINT("spi_rt_interface.uart1_recv_count = %d\n", spi_rt_interface.uart1_recv_count);
+            
+            if (spi_rt_interface.uart1_recv_count > 0)
+            {
+                if ((spi_rt_interface.spi_uart1_recv_shared_mem_id = shmget(spi_rt_interface.spi_uart1_recv_shared_mem_key, SHARED_MEM_SIZE, IPC_CREAT | 0666)) < 0)
+                {
+                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "shmget failed!", res);
+                    res = SHMGET_ERR;
+                    break;
+                }
+                if ((spi_rt_interface.spi_uart1_recv_shared_mem_buf = shmat(spi_rt_interface.spi_uart1_recv_shared_mem_id, NULL, 0)) < 0)
+                {
+                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "shmget failed!", res);
+                    res = SHMGET_ERR;
+                    break;
+                }
+                release_flag = 1;
+                //PRINT_BUF_BY_HEX(spi_rt_interface.spi_uart1_recv_shared_mem_buf, NULL, spi_rt_interface.uart1_recv_count, __FILE__, __FUNCTION__, __LINE__);
+                //PRINT("len = %d spi_rt_interface.uart1_recv_count = %d\n", len, spi_rt_interface.uart1_recv_count);
+                if (len == spi_rt_interface.uart1_recv_count)
+                {
+                    memcpy(data, spi_rt_interface.spi_uart1_recv_shared_mem_buf, len);
+                    memset(spi_rt_interface.spi_uart1_recv_shared_mem_buf, 0, spi_rt_interface.uart1_recv_count);
+                    spi_rt_interface.uart1_recv_count = 0;
+                    res = len;
+                    break;
+                }
+                else if (len < spi_rt_interface.uart1_recv_count)
+                {
+                    memcpy(data, spi_rt_interface.spi_uart1_recv_shared_mem_buf, len);
+                    spi_rt_interface.uart1_recv_count -= len;
+                    memcpy(spi_rt_interface.spi_uart1_recv_shared_mem_buf, spi_rt_interface.spi_uart1_recv_shared_mem_buf + len, spi_rt_interface.uart1_recv_count);
+                    memset(spi_rt_interface.spi_uart1_recv_shared_mem_buf + spi_rt_interface.uart1_recv_count, 0, len);
+                    res = len;
+                    break;
+                }
+                else if (len > spi_rt_interface.uart1_recv_count)
+                {
+                    memcpy(data, spi_rt_interface.spi_uart1_recv_shared_mem_buf, spi_rt_interface.uart1_recv_count);
+                    res = spi_rt_interface.uart1_recv_count;
+                    memset(spi_rt_interface.spi_uart1_recv_shared_mem_buf, 0, spi_rt_interface.uart1_recv_count);
+                    len -= spi_rt_interface.uart1_recv_count;
+                    spi_rt_interface.uart1_recv_count = 0;
+                    break;
+                }
+            }
+            break;
+        }
+        case UART2:
+        {
+            semopbuf.sem_num = 5;
+            sem_num = 5;
+            PRINT("semopbuf.sem_num = %d semopbuf.sem_op = %d\n", semopbuf.sem_num, semopbuf.sem_op);
+            
+            // 判断接收缓冲区是否有数据可读
+            if ((res = spi_select(uart, &tv)) < 0)
+            {
+                PERROR("spi_select failed!\n");
+                return res;
+            }
+            
+            // 信号量减一
+            if (semop(spi_rt_interface.spi_uart_sem_id, &semopbuf, 1) < 0)
+            {
+                PERROR("semop failed!\n");
+                return SEMOP_ERR;
+            }
+            
+            if ((res = read_spi_rt_para(sem_num)) < 0)
+            {
+                PERROR("read_spi_rt_para failed!\n");
+                break;
+            }
+            PRINT("spi_rt_interface.uart2_recv_count = %d\n", spi_rt_interface.uart2_recv_count);
+            
+            if (spi_rt_interface.uart2_recv_count > 0)
+            {
+                if ((spi_rt_interface.spi_uart2_recv_shared_mem_id = shmget(spi_rt_interface.spi_uart2_recv_shared_mem_key, SHARED_MEM_SIZE, IPC_CREAT | 0666)) < 0)
+                {
+                    res = SHMGET_ERR;
+                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "shmget failed!", res);
+                    break;
+                }
+                
+                if ((spi_rt_interface.spi_uart2_recv_shared_mem_buf = shmat(spi_rt_interface.spi_uart2_recv_shared_mem_id, NULL, 0)) < 0)
+                {
+                    res = SHMGET_ERR;
+                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "shmget failed!", res);
+                    break;
+                }
+                release_flag = 2;
+                
+                if (len == spi_rt_interface.uart2_recv_count)
+                {
+                    memcpy(data, spi_rt_interface.spi_uart2_recv_shared_mem_buf, len);
+                    memset(spi_rt_interface.spi_uart2_recv_shared_mem_buf, 0, spi_rt_interface.uart2_recv_count);
+                    spi_rt_interface.uart2_recv_count = 0;
+                    res = len;
+                    break;
+                }
+                else if (len < spi_rt_interface.uart2_recv_count)
+                {
+                    memcpy(data, spi_rt_interface.spi_uart2_recv_shared_mem_buf, len);
+                    spi_rt_interface.uart2_recv_count -= len;
+                    memcpy(spi_rt_interface.spi_uart2_recv_shared_mem_buf, spi_rt_interface.spi_uart2_recv_shared_mem_buf + len, spi_rt_interface.uart2_recv_count);
+                    memset(spi_rt_interface.spi_uart2_recv_shared_mem_buf + spi_rt_interface.uart2_recv_count, 0, len);
+                    res = len;
+                    break;
+                }
+                else if (len > spi_rt_interface.uart2_recv_count)
+                {
+                    memcpy(data, spi_rt_interface.spi_uart2_recv_shared_mem_buf, spi_rt_interface.uart2_recv_count);
+                    res = spi_rt_interface.uart2_recv_count;
+                    memset(spi_rt_interface.spi_uart2_recv_shared_mem_buf, 0, spi_rt_interface.uart2_recv_count);
+                    len -= spi_rt_interface.uart2_recv_count;
+                    spi_rt_interface.uart2_recv_count = 0;
+                    break;
+                }
+            }
+            break;
+        }   
+        case UART3:
+        {
+            semopbuf.sem_num = 6;
+            sem_num = 6;
+            PRINT("semopbuf.sem_num = %d semopbuf.sem_op = %d\n", semopbuf.sem_num, semopbuf.sem_op);
+            
+            // 判断接收缓冲区是否有数据可读
+            if ((res = spi_select(uart, &tv)) < 0)
+            {
+                PERROR("spi_select failed!\n");
+                return res;
+            }
+            
+            // 信号量减一
+            if (semop(spi_rt_interface.spi_uart_sem_id, &semopbuf, 1) < 0)
+            {
+                PERROR("semop failed!\n");
+                return SEMOP_ERR;
+            }
+            
+            if ((res = read_spi_rt_para(sem_num)) < 0)
+            {
+                PERROR("read_spi_rt_para failed!\n");
+                break;
+            }
+            PRINT("spi_rt_interface.uart3_recv_count = %d\n", spi_rt_interface.uart3_recv_count);
+            
+            if (spi_rt_interface.uart3_recv_count > 0)
+            {
+                if ((spi_rt_interface.spi_uart3_recv_shared_mem_id = shmget(spi_rt_interface.spi_uart3_recv_shared_mem_key, SHARED_MEM_SIZE, IPC_CREAT | 0666)) < 0)
+                {
+                    PERROR("shmget failed!");
+                    res = SHMGET_ERR;
+                    break;
+                }
+                
+                if ((spi_rt_interface.spi_uart3_recv_shared_mem_buf = shmat(spi_rt_interface.spi_uart3_recv_shared_mem_id, NULL, 0)) < 0)
+                {
+                    PERROR("shmget failed!");
+                    res = SHMGET_ERR;
+                    break;
+                }
+                release_flag = 3;
+    
+                if (len == spi_rt_interface.uart3_recv_count)
+                {
+                    memcpy(data, spi_rt_interface.spi_uart3_recv_shared_mem_buf, len);
+                    memset(spi_rt_interface.spi_uart3_recv_shared_mem_buf, 0, spi_rt_interface.uart3_recv_count);
+                    spi_rt_interface.uart3_recv_count = 0;
+                    res = len;
+                    break;
+                }
+                else if (len < spi_rt_interface.uart3_recv_count)
+                {
+                    memcpy(data, spi_rt_interface.spi_uart3_recv_shared_mem_buf, len);
+                    spi_rt_interface.uart3_recv_count -= len;
+                    memcpy(spi_rt_interface.spi_uart3_recv_shared_mem_buf, spi_rt_interface.spi_uart3_recv_shared_mem_buf + len, spi_rt_interface.uart3_recv_count);
+                    memset(spi_rt_interface.spi_uart3_recv_shared_mem_buf + spi_rt_interface.uart3_recv_count, 0, len);
+                    res = len;
+                    break;
+                }
+                else if (len > spi_rt_interface.uart3_recv_count)
+                {
+                    memcpy(data, spi_rt_interface.spi_uart3_recv_shared_mem_buf, spi_rt_interface.uart3_recv_count);
+                    res = spi_rt_interface.uart3_recv_count;
+                    memset(spi_rt_interface.spi_uart3_recv_shared_mem_buf, 0, spi_rt_interface.uart3_recv_count);
+                    len -= spi_rt_interface.uart3_recv_count;
+                    spi_rt_interface.uart3_recv_count = 0;
+                    break;
+                }
+            }
+            break;
+        }
+        case EXPAND:
+        {
+            semopbuf.sem_num = 7;
+            sem_num = 7;
+            //PRINT("semopbuf.sem_num = %d semopbuf.sem_op = %d\n", semopbuf.sem_num, semopbuf.sem_op);
+            
+            // 判断接收缓冲区是否有数据可读
+            if ((res = spi_select(uart, &tv)) < 0)
+            {
+                PERROR("spi_select failed!\n");
+                return res;
+            }
+            // 信号量减一
+            if (semop(spi_rt_interface.spi_uart_sem_id, &semopbuf, 1) < 0)
+            {
+                PERROR("semop failed!\n");
+                return SEMOP_ERR;
+            }
+            
+            if ((res = read_spi_rt_para(sem_num)) < 0)
+            {
+                PERROR("read_spi_rt_para failed!\n");
+                break;
+            }
+            //PRINT("spi_rt_interface.uart1_recv_count = %d\n", spi_rt_interface.uart1_recv_count);
+            
+            if (spi_rt_interface.expand_recv_count > 0)
+            {
+                if ((spi_rt_interface.spi_expand_recv_shared_mem_id = shmget(spi_rt_interface.spi_expand_recv_shared_mem_key, SHARED_MEM_SIZE, IPC_CREAT | 0666)) < 0)
+                {
+                    res = SHMGET_ERR;
+                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "shmget failed!", res);
+                    break;
+                }
+                if ((spi_rt_interface.spi_expand_recv_shared_mem_buf = shmat(spi_rt_interface.spi_expand_recv_shared_mem_id, NULL, 0)) < 0)
+                {
+                    res = SHMGET_ERR;
+                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "shmget failed!", res);
+                    break;
+                }
+                release_flag = 4;
+                //PRINT_BUF_BY_HEX(spi_rt_interface.spi_expand_recv_shared_mem_buf, NULL, spi_rt_interface.expand_recv_count, __FILE__, __FUNCTION__, __LINE__);
+                //PRINT("len = %d spi_rt_interface.expand_recv_count = %d\n", len, spi_rt_interface.expand_recv_count);
+                if (len == spi_rt_interface.expand_recv_count)
+                {
+                    memcpy(data, spi_rt_interface.spi_expand_recv_shared_mem_buf, len);
+                    memset(spi_rt_interface.spi_expand_recv_shared_mem_buf, 0, spi_rt_interface.expand_recv_count);
+                    spi_rt_interface.expand_recv_count = 0;
+                    res = len;
+                    break;
+                }
+                else if (len < spi_rt_interface.expand_recv_count)
+                {
+                    memcpy(data, spi_rt_interface.spi_expand_recv_shared_mem_buf, len);
+                    spi_rt_interface.expand_recv_count -= len;
+                    memcpy(spi_rt_interface.spi_expand_recv_shared_mem_buf, spi_rt_interface.spi_expand_recv_shared_mem_buf + len, spi_rt_interface.expand_recv_count);
+                    memset(spi_rt_interface.spi_expand_recv_shared_mem_buf + spi_rt_interface.expand_recv_count, 0, len);
+                    res = len;
+                    break;
+                }
+                else if (len > spi_rt_interface.expand_recv_count)
+                {
+                    memcpy(data, spi_rt_interface.spi_expand_recv_shared_mem_buf, spi_rt_interface.expand_recv_count);
+                    res = spi_rt_interface.expand_recv_count;
+                    memset(spi_rt_interface.spi_expand_recv_shared_mem_buf, 0, spi_rt_interface.expand_recv_count);
+                    len -= spi_rt_interface.expand_recv_count;
+                    spi_rt_interface.expand_recv_count = 0;
+                    break;
+                }
+            }
+            break;
+        }
+        default:
+        {
+            PRINT("option does not mismatch!");
+            res = MISMATCH_ERR;
+            break;
+        }
+    }
+    
+    if (res >= 0)
+    {
+        if ((ret = write_spi_rt_para(sem_num)) < 0)
+        {
+            PERROR("write_spi_rt_para failed!\n");
+            res = ret;
+        }
+    }
+    
+    //PRINT("release_flag = %d\n", release_flag);
+    switch (release_flag)
+    {
+        case 4:
+        {
+            if (shmdt(spi_rt_interface.spi_expand_recv_shared_mem_buf) < 0)
+            {
+                PERROR("shmdt failed!\n");
+                res = SHMDT_ERR;
+            }
+            break;
+        }
+        case 3:
+        {
+            if (shmdt(spi_rt_interface.spi_uart3_recv_shared_mem_buf) < 0)
+            {
+                PERROR("shmdt failed!\n");
+                res = SHMDT_ERR;
+            }
+            break;
+        }
+        case 2:
+        {
+            if (shmdt(spi_rt_interface.spi_uart2_recv_shared_mem_buf) < 0)
+            {
+                PERROR("shmdt failed!\n");
+                res = SHMDT_ERR;
+            }
+            break;
+        }
+        case 1:
+        {
+            if (shmdt(spi_rt_interface.spi_uart1_recv_shared_mem_buf) < 0)
+            {
+                PERROR("shmdt failed!\n");
+                res = SHMDT_ERR;
+            }
+            break;
+        }
+        default:
+            break;
+    }
+    
+    semopbuf.sem_op = 1;
+    semopbuf.sem_num = sem_num;
+    //PRINT("semopbuf.sem_num = %d semopbuf.sem_op = %d\n", semopbuf.sem_num, semopbuf.sem_op);
+    if (semop(spi_rt_interface.spi_uart_sem_id, &semopbuf, 1) < 0)
+    {
+        PERROR("semop failed!\n");
+        return SEMOP_ERR;
+    }
+     
+    // 当res小于0时，说明以上处理出现错误，大于0时，此时res为要返回的数据长度
+    //PRINT("res = %d\n", res);
+    return res;
+}
+
+/**
+ * spi 接收数据
+ */
+int recv_data2(unsigned char uart, char *data, unsigned short len, struct timeval *timeout)
+{
+    //PRINT("[uart = %d, len = %d]\n", uart, len);
+    int i = 0;
+    int res = 0, ret = 0;
+    char release_flag = 0;            // 资源释放标识
+    unsigned char sem_num = 0;        // 信号量序号
+    
+    int spi_client_fd = 0;            // 客户端套接字
+    struct sembuf semopbuf;           // 信号量结构
+    
+    struct s_spi_rt_cmd spi_rt_cmd;   // spi接收发送命令结构
+    memset(&spi_rt_cmd, 0, sizeof(struct s_spi_rt_cmd));
+    
+    fd_set fdset;
+    struct timeval tv = {0, 0};
+    
+	if (data == NULL)
+	{
+	    PRINT("data is NULL!\n");
+        return NULL_ERR;
+	}
+	
+	if (len == 0)
+	{
+	    PRINT("len is zero!\n");
+        return DATA_ERR;
+	}
+	
+	if (timeout == NULL)
+	{
+	    tv.tv_sec = 15;
+	}
+	else
+	{
+	    memcpy(&tv, timeout, sizeof(struct timeval));
+	}
     // 获取8个信号
     if ((spi_rt_interface.spi_uart_sem_id = semget(spi_rt_interface.spi_uart_sem_key, 8, IPC_CREAT | 0666)) < 0)
     {
@@ -3435,4 +3867,84 @@ int recv_spi_rt_cmd_msg(int fd, struct s_spi_rt_cmd *spi_rt_cmd, struct timeval 
     }
     PRINT("data buf recv success!\n");
     return 0;
+}
+
+/*
+ * 清空指定的接收或者发送缓冲区
+ */
+int spi_flush(unsigned char uart, unsigned char flag)
+{
+    int res = 0;
+    struct sembuf semopbuf;      // 信号量结构
+    unsigned char sem_num = 0;   // 信号量序号
+    
+    // 获取8个信号
+    if ((spi_rt_interface.spi_uart_sem_id = semget(spi_rt_interface.spi_uart_sem_key, 8, IPC_CREAT | 0666)) < 0)
+    {
+        PERROR("semget failed!\n");
+        return SEMGET_ERR;
+    }
+    
+    semopbuf.sem_flg = SEM_UNDO;
+    // 默认接收缓冲区
+    if (flag == 0)
+    {
+        switch (uart)
+        {
+            case UART1:
+            {
+                semopbuf.sem_num = 4;
+                spi_rt_interface.uart1_recv_count = 0;
+                break;
+            }
+            case UART2:
+            {
+                semopbuf.sem_num = 5;
+                spi_rt_interface.uart2_recv_count = 0;
+                break;
+            }
+            case UART3:
+            {
+                semopbuf.sem_num = 6;
+                spi_rt_interface.uart3_recv_count = 0;
+                break;
+            }
+            case EXPAND:
+            {
+                semopbuf.sem_num = 7;
+                spi_rt_interface.expand_recv_count = 0;
+                break;
+            }
+            default:
+            {
+                PERROR("option does not mismatch!\n");
+                return MISMATCH_ERR;
+            }
+        }
+    }
+    else if (flag == 1) // 发送缓冲区
+    {
+        return 0;
+    }
+        
+    semopbuf.sem_op = -1;
+    if (semop(spi_rt_interface.spi_uart_sem_id, &semopbuf, 1) < 0)
+    {
+        PERROR("semop failed!\n");
+        return SEMOP_ERR;
+    }
+    
+    if ((res = write_spi_rt_para(semopbuf.sem_num)) < 0)
+    {
+        PERROR("read_spi_rt_para failed!\n");
+    }
+     
+    semopbuf.sem_op = 1;
+    if (semop(spi_rt_interface.spi_uart_sem_id, &semopbuf, 1) < 0)
+    {
+        PERROR("semop failed!\n");
+        return SEMOP_ERR;
+    }
+    
+    return res;
 }

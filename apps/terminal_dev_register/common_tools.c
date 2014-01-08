@@ -289,7 +289,7 @@ int get_config()
         "DB", 
         "OLD_ROUTE_CONFIG", 
         
-        "PPPOE_STATE_FILE", "WAN_STATE_FILE", 
+        "PPPOE_STATE_FILE", "SPI_PARA_FILE", "WAN_STATE_FILE", 
         
         #if BOARDTYPE == 6410
         "SERIAL_STC", "SERIAL_PAD", 
@@ -298,8 +298,8 @@ int get_config()
         "SERIAL_PAD_BAUD", "SERIAL_5350_BAUD", 
         #endif
         
-        "CENTERPHONE", "CENTERIP", 
-        "CENTERPORT", "BASE_IP", "PAD_IP", "PAD_SERVER_PORT", "PAD_SERVER_PORT2", "PAD_CLIENT_PORT", 
+        "CENTERPHONE", "CENTERIP", "CENTERPORT", 
+        "BASE_IP", "PAD_IP", "PAD_SERVER_PORT", "PAD_SERVER_PORT2", "PAD_CLIENT_PORT", 
         "TOTALTIMEOUT", "ONE_BYTE_TIMEOUT_SEC", "ONE_BYTE_TIMEOUT_USEC", 
         
         #if BOARDTYPE == 6410
@@ -422,6 +422,22 @@ int get_config()
                         }
                         memset(print_buf, 0, sizeof(print_buf));
                         sprintf(print_buf, "pppoe_state = %s", g_config.pppoe_state);
+                        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
+                        k++;
+                        break;
+                    }
+                    case SPI_PARA_FILE:
+                    {
+                        for (j = 0; j < sizeof(g_config.spi_para_file); j++)
+                        {
+                            if (*(tmp + strlen(config_options[i]) + 1 + j) == '\n')
+                            {
+                                break;
+                            }
+                            g_config.spi_para_file[j] = *(tmp + strlen(config_options[i]) + j + 1);
+                        }
+                        memset(print_buf, 0, sizeof(print_buf));
+                        sprintf(print_buf, "spi_para_file = %s", g_config.spi_para_file);
                         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
                         k++;
                         break;
@@ -1719,6 +1735,7 @@ int get_user_prompt(int error_num, char **out_buf)
         case BIND_ERR:              // 绑定错误 
         case BCD_TO_STR_ERR:        // BCD码转字符串错误
         case CONNECT_ERR:           // 连接错误
+        case L_DATA_ERR:            // 本地数据内容错误 
         case DATA_ERR:              // 数据内容错误
         case DATA_DIFF_ERR:         // 数据不相同错误
         case EXEC_ERR:              // 加载应用失败
@@ -1770,6 +1787,7 @@ int get_user_prompt(int error_num, char **out_buf)
 	    case SEMCTL_ERR:            // 信号量设置失败  
 	    case SEMOP_ERR:             // 信号量操作失败 
 	    case STRSTR_ERR:            // strstr错误
+	    case SN_BASE_ERR:           // base序列号错误     
         {            
             state_num = 13;  //状态码
             memcpy(prompt, "终端底座内部错误！", sizeof(prompt) - 1);  // 提示信息
@@ -1829,6 +1847,27 @@ int get_user_prompt(int error_num, char **out_buf)
         {
             state_num = 21;  //状态码
             memcpy(prompt, "没有此记录！", sizeof(prompt) - 1);  // 提示信息
+            len = strlen(prompt);
+            break;
+        }
+        case PHONE_LINE_ERR: // 电话线状态异常错误
+        {
+            state_num = 22;  //状态码
+            memcpy(prompt, "电话线状态异常，并机或电话线拔出！", sizeof(prompt) - 1);  // 提示信息
+            len = strlen(prompt);
+            break;
+        }
+        case SN_PAD_ERR: // PAD序列号错误
+        {
+            state_num = 23;  //状态码
+            memcpy(prompt, "数据库找不到次PAD序列号！", sizeof(prompt) - 1);  // 提示信息
+            len = strlen(prompt);
+            break;
+        }
+        case POSITION_AUTH_ERR: // 位置认证失败
+        {
+            state_num = 24;  //状态码
+            memcpy(prompt, "位置认证失败！", sizeof(prompt) - 1);  // 提示信息
             len = strlen(prompt);
             break;
         }
@@ -1981,6 +2020,7 @@ int get_MAC(int src, char *MAC)
     return 0;
 }
 
+#if BOARDTYPE == 5350
 /**
  * 获取WAN口的MAC地址
  */
@@ -2040,6 +2080,34 @@ int get_wan_mac(char *mac)
     return 0;
 }
 
+#elif BOARDTYPE == 9344
+/**
+ * 获取WAN口的MAC地址
+ */
+int get_wan_mac(char *mac)
+{
+    int res = 0;
+    
+    // 获取ath00的mac
+    char *cmd = "ifconfig | grep ath0 | awk '{print $5}'";
+    char buf[18] = {0};
+    
+    if (mac == NULL)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "mac is NULL!", NULL_ERR);
+        return NULL_ERR;
+    }
+    
+    if ((res = common_tools.get_cmd_out(cmd, buf, sizeof(buf))) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_cmd_out failed!", res);
+        return res;
+    }
+    memcpy(mac, buf, sizeof(buf));
+    PRINT("mac = %s buf = %s\n", mac, buf);
+    return 0;
+}
+#endif
 /*******************************************************************************/
 /************************        以下为项目无关代码         ********************/
 /*******************************************************************************/
@@ -2930,6 +2998,8 @@ int recv_data(unsigned int fd, unsigned char *data, struct s_data_list *a_data_l
 {
     int i = 0;
     int res = 0;
+    struct timeval time;
+    
     if (data == NULL)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data is NULL!", NULL_ERR);
@@ -2941,9 +3011,19 @@ int recv_data(unsigned int fd, unsigned char *data, struct s_data_list *a_data_l
         return LENGTH_ERR;
     }
     
+    if (tv == NULL)
+    {
+        time.tv_sec = 0;
+        time.tv_usec = 0;
+    }
+    else
+    {
+        memcpy(&time, tv, sizeof(struct timeval));
+    }
+    
     for (i = 0; i < data_len; i++)
     {        
-        if ((res = recv_one_byte(fd, &data[i], tv)) != 0)
+        if ((res = recv_one_byte(fd, &data[i], &time)) != 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "recv_one_byte failed!", res);
             return res;
@@ -3094,6 +3174,7 @@ int send_data(unsigned int fd, unsigned char *data, struct s_data_list *a_data_l
     
     if ((data != NULL) && (data_len != 0))
     {
+        #if 0
         for (i = 0; i < data_len; i++)
         {        
             if ((res = send_one_byte(fd, &data[i], &time)) != 0)
@@ -3102,6 +3183,13 @@ int send_data(unsigned int fd, unsigned char *data, struct s_data_list *a_data_l
                 return res;
             }
         }
+        #else
+        if (write(fd, data, data_len) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "write failed!", WRITE_ERR);
+            return WRITE_ERR;
+        }
+        #endif
     }
     else if (a_data_list != NULL)
     {
@@ -3140,22 +3228,6 @@ long get_rand_num(unsigned long start, unsigned long end, unsigned short type_le
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "open failed!", OPEN_ERR);
         return OPEN_ERR;
     }
-    #if 0
-    while (1)
-    {        
-        if (read(fd, &value, type_len) != type_len)
-        {
-            close(fd);
-            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "read failed!", READ_ERR);
-            return READ_ERR;
-        }
-        if ((value >= start) && (value <= end))
-        {
-            //PRINT("value = %d\n", value);
-            break;
-        }
-    }
-    #else
     if (read(fd, &value, type_len) != type_len)
     {
         close(fd);
@@ -3163,9 +3235,13 @@ long get_rand_num(unsigned long start, unsigned long end, unsigned short type_le
         return READ_ERR;
     }
     
+    #if BOARDTYPE == 5350 
     value = 'A' + value % ('Z' - 'A' + 1); 
+    #else
+    value = start + value % (end - start + 1);
     #endif
     close(fd);
+    PRINT("value = %08X %02X\n", value, (char)value);
     return value;
 }
 
@@ -3550,7 +3626,7 @@ int get_cmd_out(char *cmd, char *buf, unsigned short buf_len)
 	}
 	
 	gettimeofday(&tv, NULL);	
-	sprintf(file_name, "/var/terminal_init/log/.%d%d", tv.tv_sec, tv.tv_usec);
+	sprintf(file_name, "/var/terminal_dev_register/log/.%d%d", (int)tv.tv_sec, (int)tv.tv_usec);
 	sprintf(rm_buf, "rm -rf %s", file_name);
 	
 	if ((cmd_buf = (char *)malloc(strlen(cmd) + 64)) == NULL)
@@ -3589,7 +3665,7 @@ int get_cmd_out(char *cmd, char *buf, unsigned short buf_len)
 	    close(fd);
     	return FSTAT_ERR;
 	}
-	PRINT("file_stat.st_size = %d\n", file_stat.st_size);
+	PRINT("file_stat.st_size = %d\n", (int)file_stat.st_size);
 	if (file_stat.st_size == 0)
 	{
 	    memset(buf, 0, buf_len);
@@ -3904,7 +3980,7 @@ int print_buf_by_hex(const void *buf, struct s_data_list *data_list, const unsig
         }
         memset(log_buf, 0, len * 2 + 1 + 25);
         
-        sprintf(log_buf, "[len = %5d][data = ", len);
+        sprintf(log_buf, "[len = %5ld][data = ", len);
         len_tmp = strlen(log_buf);
         
         if ((res = BCD_to_string((char *)buf, (int)len, log_buf + len_tmp, (int)len * 2)) < 0)
@@ -3949,7 +4025,7 @@ int print_buf_by_hex(const void *buf, struct s_data_list *data_list, const unsig
         return NULL_ERR;
     }
     printf("[%s]%s[%s][%s][%05d]%s\n", common_tools.argv0, common_tools.get_datetime_buf(), file_name, function_name, line_num, log_buf);    
-    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, log_buf, 0); 
+    //OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, log_buf, 0); 
     
     if (log_buf != NULL)
     {

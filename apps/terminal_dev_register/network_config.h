@@ -2,14 +2,15 @@
 #define _NETWORK_CONFIG_H_
 
 #include "common_tools.h"
-#include "internetwork_communication.h"
+#include "communication_network.h"
 #include "terminal_register.h"
 #if BOARDTYPE == 9344
 #include "database_management.h"
+#include "communication_usb.h"
 #endif
 
 #define READONLY_ROOTFS 1
-#define USER_REGISTER 0
+#define USER_REGISTER 1 // 1：做终端认证流程
 #define USB_NODE ""
 
 // pad和6410交互包结构
@@ -64,7 +65,7 @@ struct class_network_config
     void (* init_cmd_list)();
     #endif
     int (* init_env)();
-    int (* send_msg_to_pad)(int fd, char cmd, char *data);
+    int (* send_msg_to_pad)(int fd, char cmd, char *data, unsigned short data_len);
     int (* recv_msg_from_pad)(int fd, struct s_pad_and_6410_msg *a_pad_and_6410_msg);
     int (* network_settings)(int fd, int cmd_count, char cmd_word);
     
@@ -89,7 +90,7 @@ struct class_network_config
     char base_sn[35];
     char base_mac[18];
     char base_ip[16];
-    struct s_cmd cmd_list[37];
+    struct s_cmd cmd_list[40];
 };
 #pragma pop()
 extern struct class_network_config network_config;

@@ -84,3 +84,5 @@
 /dev/freset	c	666	0	0	10	129
 /dev/otp	c	666	0	0	10	132
 /dev/i2s	c	666	0	0	253	0
+/dev/ram1	b	666	0	0	1	1	1	4
+/dev/usb0	c	666	0	0	218	0

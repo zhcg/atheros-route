@@ -2,6 +2,7 @@
 #include "terminal_authentication.h"
 #include "terminal_register.h"
 #include "network_config.h"
+#include "communication_usb.h"
 
 #define LOCAL_IP "127.0.0.1"
 // 终端初始化 测试
@@ -44,6 +45,7 @@ int main(int argc, char **argv)
         #endif
         PRINT("x 检测WAN口状态\n");
         PRINT("y 连接服务器\n");
+        PRINT("z USB通路测试\n");
         return 0;
     }
     if (argc != 4)
@@ -92,11 +94,23 @@ int main(int argc, char **argv)
                 return res;
             }
             #endif
+            
             #if CTSI_SECURITY_SCHEME == 1
             if ((res = terminal_authentication.insert_token()) < 0)
             {
                 PRINT("insert_token failed!\n");
                 goto EXIT;
+            }
+            #elif CTSI_SECURITY_SCHEME == 2
+            if ((res = terminal_authentication.rebuild_device_token(device_token)) < 0)
+            {
+                PERROR("rebuild_device_token failed!\n");
+                goto EXIT; 
+            }
+            if ((res = terminal_authentication.rebuild_position_token(position_token)) < 0)
+            {
+                PERROR("rebuild_position_token failed!\n");
+                goto EXIT; 
             }
             #endif
         }
@@ -110,7 +124,7 @@ int main(int argc, char **argv)
         }
         else if (strcmp(argv[1], "c") == 0) // 挂机
         {
-            if ((res = communication_stc.cmd_on_hook()) < 0)
+            if ((res = communication_serial.cmd_on_hook()) < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "cmd_on_hook failed!", res);
                 return res;
@@ -119,12 +133,12 @@ int main(int argc, char **argv)
         }
         else if (strcmp(argv[1], "d") == 0) // 呼叫
         {
-            if ((res = communication_stc.cmd_call(argv[2])) < 0)
+            if ((res = communication_serial.cmd_call(argv[2])) < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "cmd_call failed!", res);
                 return res;
             }
-            sleep(50);
+            sleep(3);
             return 0;
         }
         else if (strcmp(argv[1], "e") == 0) // 发建链应答
@@ -138,7 +152,7 @@ int main(int argc, char **argv)
         else if (strcmp(argv[1], "f") == 0) // 呼叫 发送建链请求 接收建链应答 挂机
         {
             // 呼叫
-            if ((res = communication_stc.cmd_call(argv[2])) < 0)
+            if ((res = communication_serial.cmd_call(argv[2])) < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "cmd_call failed!", res);
                 return res;
@@ -162,7 +176,7 @@ int main(int argc, char **argv)
             PRINT_BUF_BY_HEX(fsk_82_recv_buf, NULL, sizeof(fsk_82_recv_buf), __FILE__, __FUNCTION__, __LINE__);
             
             sleep(2);
-            if ((res = communication_stc.cmd_on_hook()) < 0)
+            if ((res = communication_serial.cmd_on_hook()) < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "cmd_on_hook failed!", res);
                 return res;
@@ -223,7 +237,7 @@ int main(int argc, char **argv)
         }
         else if (strcmp(argv[1], "l") == 0) // 摘机
         {
-            if ((res = communication_stc.cmd_off_hook()) < 0)
+            if ((res = communication_serial.cmd_off_hook()) < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "cmd_off_hook failed!", res);
                 return res;
@@ -408,21 +422,21 @@ int main(int argc, char **argv)
         {
             #if CTSI_SECURITY_SCHEME == 1
             // 接收来电
-            if ((res = communication_stc.recv_display_msg()) < 0)
+            if ((res = communication_serial.recv_display_msg()) < 0)
             {
                 PERROR("recv_display_msg failed!\n");
                 goto EXIT;
             }
             #else
             // 接收来电
-            if ((res = communication_stc.recv_display_msg(common_tools.config->center_phone)) < 0)
+            if ((res = communication_serial.recv_display_msg(common_tools.config->center_phone)) < 0)
             {
                 PERROR("recv_display_msg failed!\n");
                 goto EXIT;
             }
             #endif
             // 摘机
-            if ((res = communication_stc.cmd_off_hook()) < 0)
+            if ((res = communication_serial.cmd_off_hook()) < 0)
             {
                 PERROR("cmd_off_hook failed!\n");
                 goto EXIT;
@@ -505,7 +519,7 @@ int main(int argc, char **argv)
             }
             sleep(2);
             // 挂机
-            if ((res = communication_stc.cmd_on_hook()) < 0)
+            if ((res = communication_serial.cmd_on_hook()) < 0)
             {
                 PERROR("cmd_on_hook failed!\n");
                 hook_flag = 1;
@@ -533,7 +547,7 @@ int main(int argc, char **argv)
             
             #if 0
             // 创建客户端连接
-            if ((client_fd = internetwork_communication.make_local_socket_client_link(TERMINAL_LOCAL_SOCKET_NAME)) < 0)
+            if ((client_fd = communication_network.make_local_socket_client_link(TERMINAL_LOCAL_SOCKET_NAME)) < 0)
             {
                 PERROR("make_client_link failed!\n");
                 res = client_fd;
@@ -543,7 +557,7 @@ int main(int argc, char **argv)
             #else
             // 创建客户端连接
             PRINT("LOCAL_IP = %s, TERMINAL_LOCAL_SERVER_PORT = %s\n", LOCAL_IP, TERMINAL_LOCAL_SERVER_PORT);
-            if ((client_fd = internetwork_communication.make_client_link(LOCAL_IP, TERMINAL_LOCAL_SERVER_PORT)) < 0)
+            if ((client_fd = communication_network.make_client_link(LOCAL_IP, TERMINAL_LOCAL_SERVER_PORT)) < 0)
             {
                 PERROR("make_client_link failed!\n");
                 res = client_fd;
@@ -630,6 +644,7 @@ int main(int argc, char **argv)
             return 0;
         }
         #endif
+        #if 0
         else if (strcmp(argv[1], "x") == 0) // 检测WAN口
         {
             if ((res = network_config.get_wan_state()) < 0)
@@ -639,10 +654,10 @@ int main(int argc, char **argv)
             }
             return 0;
         }
-        else if (strcmp(argv[1], "y") == 0) // 检测WAN口
+        else if (strcmp(argv[1], "y") == 0) // 连接服务器
         {
             PRINT("ip = %s port = %s\n", argv[2], argv[3]);
-            if ((res = internetwork_communication.make_client_link(argv[2], argv[3])) < 0)
+            if ((res = communication_network.make_client_link(argv[2], argv[3])) < 0)
             {
                 PERROR("make_client_link failed!\n");
                 return res;
@@ -650,6 +665,97 @@ int main(int argc, char **argv)
             PRINT("link success!\n");
             close(res);
             return 0;
+        }
+        #endif
+        else if (strcmp(argv[1], "z") == 0) // USB通路测试
+        {
+            int fd = 0;
+            int client_fd = 0;
+            fd_set fdset;
+            unsigned long num = 0;
+            unsigned long num_tmp = 0;
+            struct timeval tv = {5, 0};
+            if ((res = communication_network.make_server_link(USB_SOCKET_PORT)) < 0)
+            {
+                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "make_server_link failed", res); 
+                return res;
+            }
+            fd = res;
+            while (1)
+            {
+                FD_ZERO(&fdset);
+                FD_SET(fd, &fdset);       
+                tv.tv_sec = 5;
+                switch(select(fd + 1, &fdset, NULL, NULL, &tv))
+                {
+                    case -1:             
+                    case 0:
+                    {
+                        PRINT("waiting to receive data...\n");
+                        continue;
+                    }
+                    default:
+                    {
+                        if (FD_ISSET(fd, &fdset) > 0)
+                        {
+                            if ((res = communication_network.accept_client_connection(fd)) < 0)
+                            {
+                                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "accept_client_connection failed", res); 
+                                continue;
+                            }
+                            client_fd = res;
+                            PRINT("client_fd = %d\n", client_fd);
+                            while (1)
+                            {
+                                if ((res = common_tools.recv_data(client_fd, (char *)&num_tmp, NULL, sizeof(num_tmp), &tv)) < 0)
+                                {
+                                    PRINT("recv_data failed!\n");
+                                    break;
+                                }
+                                /*
+                                if (num + 1 != num_tmp)
+                                {
+                                    PRINT("data err!\n");
+                                    res = DATA_ERR;
+                                    break;
+                                }
+                                */
+                                PRINT("num = %08X %d\n", num, num);
+                                PRINT("num_tmp = %08X %d\n", num_tmp, num_tmp);
+                                num = num_tmp;
+                                num_tmp++;
+                                if ((res = common_tools.send_data(client_fd, (char *)&num_tmp, NULL, sizeof(num_tmp), &tv)) < 0)
+                                {
+                                    PRINT("send_data failed!\n");
+                                    break; 
+                                }
+                            }
+                            if (res < 0)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
+                /*
+                if (fd != 0)
+                {
+                    close(fd);
+                    fd = 0;
+                }
+                */
+                if (client_fd != 0)
+                {
+                    close(client_fd);
+                    client_fd = 0;
+                }
+                /*
+                if (res < 0)
+                {
+                    break;
+                }
+                */
+            }
         }
         else
         {  
@@ -666,7 +772,7 @@ EXIT:
         {
             if (hook_flag == 1)
             {
-                if ((res = communication_stc.cmd_on_hook()) < 0)
+                if ((res = communication_serial.cmd_on_hook()) < 0)
                 {
                     PERROR("cmd_on_hook failed!\n");
                     failed_count++;

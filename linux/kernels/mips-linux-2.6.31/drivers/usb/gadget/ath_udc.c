@@ -33,6 +33,9 @@
 #define TRIP_WIRE
 
 #include "ath_udc.h"
+int usbdrv_major =  218;
+#define USB_DEV_NAME	"usb0"
+
 
 /*
  * debug level zones can be enabled individually for different level of
@@ -42,14 +45,14 @@
  */
 #ifdef ATH_USB_DEBUG
 static int ath_usb_debug_level = (
-	//ATH_USB_DEBUG_FUNCTION	|
-	//ATH_USB_DEBUG_INTERRUPT	|
-	//ATH_USB_DEBUG_ENDPOINT	|
-	//ATH_USB_DEBUG_PORTSTATUS	|
-	//ATH_USB_DEBUG_DEVICE		|
-	//ATH_USB_DEBUG_MEMORY		|
-	//ATH_USB_DEBUG_QUEUEHEAD	|
-	//ATH_USB_DEBUG_DTD		|
+//	ATH_USB_DEBUG_FUNCTION	|
+//	ATH_USB_DEBUG_INTERRUPT	|
+//	ATH_USB_DEBUG_ENDPOINT	|
+//	ATH_USB_DEBUG_PORTSTATUS	|
+//	ATH_USB_DEBUG_DEVICE		|
+//	ATH_USB_DEBUG_MEMORY		|
+//	ATH_USB_DEBUG_QUEUEHEAD	|
+//	ATH_USB_DEBUG_DTD		|
 	0x0);
 static const char *ep_direction[] = { "OUT", "IN" };
 #endif
@@ -62,10 +65,9 @@ static const char *ep_direction[] = { "OUT", "IN" };
  */
 #define ATH_USB_MAX_EP			(6)
 #define ATH_USB_MAX_EP_IN_SYSTEM	(32)
-#define ATH_USB_MAX_DTD			(32)
+#define ATH_USB_MAX_DTD			(64)
 #define ATH_USB_REMOTE_WKUP		(0x02)
 
-static struct proc_dir_entry *ath_usb_proc;
 
 #define USB_RECV			(0)
 #define USB_SEND			(1)
@@ -128,8 +130,8 @@ struct ath_usb_udc {
 	struct list_head dtd_list[ATH_USB_MAX_EP_IN_SYSTEM];
 	struct ep_dtd *dtd_heads[ATH_USB_MAX_EP * 2];
 	struct ep_dtd *dtd_tails[ATH_USB_MAX_EP * 2];
-	struct usb_request *ctrl_req;
-	void *ctrl_buf;
+	struct usb_request *ctrl_req[ATH_MAX_CTRL_REQ];
+	void *ctrl_buf[ATH_MAX_CTRL_REQ];
 	void __iomem *reg_base;
 	spinlock_t lock;
 	__u16 usbState;
@@ -461,6 +463,7 @@ ath_usb_alloc_init_dtd(struct ath_usb_udc *udc, struct ath_usb_ep *ep, struct at
 			return NULL;
 		}
 		ath_usb_debug_mem("DTD Alloc %p, %x\n", ep_dtd, dma);
+		//printk("DTD Alloc %p, %x\n", ep_dtd, dma);
 		ep_dtd->dtd_dma = dma;
 		ep_dtd->next = NULL;
 		list_add_tail(&ep_dtd->tr_list, &udc->dtd_list[catalyst]);
@@ -634,6 +637,7 @@ static int ath_usb_ep_queue(struct usb_ep *_ep, struct usb_request *_req,
 	struct ath_usb_ep *ep;
 	struct ath_usb_udc *udc;
 	unsigned long flags;
+	//__u8 empty;
 
 	ath_usb_debug_fn("__enter %s\n", __func__);
 
@@ -643,8 +647,8 @@ static int ath_usb_ep_queue(struct usb_ep *_ep, struct usb_request *_req,
 	/* Sanity checks */
 	req = container_of(_req, struct ath_usb_req, req);
 	if (!_req || !req->req.buf || !list_empty(&req->queue)) {
-		ath_usb_error("%s, Invalid Params %p %d, %d\n", __func__,
-				_req->buf, _req->length, list_empty(&req->queue));
+		ath_usb_error("%s, _ep->name :%s, Invalid Params %p %p, %d\n", __func__, _ep->name,
+				req->req.buf, _req, list_empty(&req->queue));
 		return -EINVAL;
 	}
 
@@ -873,15 +877,18 @@ static void ath_usb_send_data(struct ath_usb_udc *udc, __u8 epno, __u8 * buff,
 			__u32 size)
 {
 	struct usb_request *_req;
+        struct ath_usb_req *req;
 	unsigned long flags;
 
 	ath_usb_debug_fn("__enter %s\n", __func__);
-	_req = udc->ctrl_req;
+	_req = udc->ctrl_req[ATH_SND_CTRL_REQ];
 	_req->zero = 0;
 	if (size) {
 		memcpy(_req->buf, buff, size);
 	}
 	_req->length = size;
+	req = container_of(_req, struct ath_usb_req, req);
+	INIT_LIST_HEAD(&req->queue);
 	if (ath_usb_ep_queue(&udc->ep[1].ep, _req, GFP_ATOMIC) < 0) {
 		ath_usb_error("send setup phase failed\n");
 		spin_lock_irqsave(&udc->lock, flags);
@@ -895,12 +902,15 @@ static void usb_recv_data(struct ath_usb_udc *udc, __u8 epno, __u8 * buff,
 			__u32 size)
 {
 	struct usb_request *_req;
+        struct ath_usb_req *req;
 	unsigned long flags;
 
 	ath_usb_debug_fn("__enter %s\n", __func__);
-	_req = udc->ctrl_req;
+	_req = udc->ctrl_req[ATH_RCV_CTRL_REQ];
 	_req->zero = 0;
 	_req->length = size;
+	req = container_of(_req, struct ath_usb_req, req);
+	INIT_LIST_HEAD(&req->queue);
 	if (ath_usb_ep_queue(&udc->ep[0].ep, _req, GFP_ATOMIC) < 0) {
 		ath_usb_error("recv setup phase failed\n");
 		spin_lock_irqsave(&udc->lock, flags);
@@ -971,7 +981,8 @@ static void ath_usb_unstall_endpoint(struct ath_usb_udc *udc, __u8 epno,
 static int getStatus(struct ath_usb_udc *udc, struct usb_ctrlrequest *ctrl)
 {
 	__u16 status;
-	__u8 intStatus, ep;
+	__u16 intStatus;
+	__u8 ep;
 
 	ath_usb_debug_fn("__enter %s\n", __func__);
 	switch (ctrl->bRequestType) {
@@ -981,11 +992,8 @@ static int getStatus(struct ath_usb_udc *udc, struct usb_ctrlrequest *ctrl)
 		break;
 
 	case (USB_DIR_IN | USB_RECIP_INTERFACE):
-		return 1;
-#if 0
-		intStatus = USB_IF_ALT[ctrl->wIndex & 0x00ff];
+		intStatus = (__u16)(ctrl->wIndex & 0x00ff);
 		ath_usb_send_data(udc, 0, (__u8 *) & intStatus, sizeof(intStatus));
-#endif
 		break;
 
 	case (USB_DIR_IN | USB_RECIP_ENDPOINT):
@@ -1165,20 +1173,25 @@ static void handle_ep0_setup(struct ath_usb_udc *udc)
 	}
 	switch (ctrl.bRequest) {
 	case USB_REQ_GET_STATUS:
+		//printk ("Get Status \n");
 		if (getStatus(udc, &ctrl)) {
 			goto cliOper;
 		}
 		break;
 	case USB_REQ_SET_FEATURE:
+		//printk ("Set Feature\n");
 		setFeature(udc, &ctrl);
 		break;
 	case USB_REQ_CLEAR_FEATURE:
+		//printk ("Clear Feature\n");
 		clrFeature(udc, &ctrl);
 		break;
 	case USB_REQ_SET_CONFIGURATION:
+		//printk ("Set Configuration \n");
 		setConfiguration(udc, &ctrl);
 		goto cliOper;
 	case USB_REQ_SET_ADDRESS:
+		//printk ("Set Address \n");
 		setAddress(udc, le16_to_cpu(ctrl.wValue));
 		ath_usb_send_data(udc, 0, 0, 0);
 		break;
@@ -1194,7 +1207,7 @@ cliOper:
 	}
 
 	if (status < 0) {
-		ath_usb_error("error %d, stalling endpoint\n", status);
+		ath_usb_error("request = %x, type = %x error %d, stalling endpoint\n", ctrl.bRequest, le16_to_cpu(ctrl.wIndex), status);
 		ath_usb_stall_endpoint(udc, 0, 0);
 	}
 }
@@ -1348,10 +1361,7 @@ static void ath_usb_process_USB_Intr(struct ath_usb_udc *udc)
 									printk("Descp Halted \n");
 									ep_QHead->size_ioc_int_status &= cpu_to_le32(~err);
 								}
-								if (err & 0x20) {
-									printk("Data Buffer Err %x \n", err);
-								}
-								if (err & 0x08) {
+								if (err & 0x20 || err & 0x08) {
 									printk("Data Trans Err %x \n", err);
 								}
 							}
@@ -1451,6 +1461,7 @@ static void ath_usb_process_port_change(struct ath_usb_udc *udc)
 			spin_lock(&udc->lock);
 			if(is_wasp()) {
 				ap_usb_led_off();
+//				ath_reg_rmw_set(ATH_GPIO_OUT, (1<<11));
 			}
 		}
 	}
@@ -1468,6 +1479,14 @@ static void ath_usb_process_port_change(struct ath_usb_udc *udc)
 			spin_lock(&udc->lock);
 			if(is_wasp()) {
 				ap_usb_led_on();
+#if 0
+				rddata = ath_reg_rd(ATH_GPIO_OUT_FUNCTION2); //87- for USB suspend
+				rddata = rddata & 0x00ffffff;
+				rddata = rddata | ATH_GPIO_OUT_FUNCTION2_ENABLE_GPIO_11(0x0);
+				ath_reg_wr(ATH_GPIO_OUT_FUNCTION2, rddata);
+				ath_reg_rmw_clear(ATH_GPIO_OE, (1<<11));
+				ath_reg_rmw_clear(ATH_GPIO_OUT, (1<<11));
+#endif 
 			}
 		}
 	}
@@ -1480,17 +1499,20 @@ static void ath_usb_process_port_change(struct ath_usb_udc *udc)
 #define ATH_USB_CHIP_RESET_ON_RESUME	(1u << 1)
 #define ATH_USB_MASTER_SUSPEND_ENABLE	(1u)
 
+#define ATH_SRAM_BASE                   0x1d000000u
 #define ATH_SELF_REFRESH 		(ATH_DDR_CTL_BASE+0x110)
 #define EN_SELF_REFRESH 		(1 << 31)
 #define EN_AUTO_SF_EXIT 		(1 << 30)
 #define CUT_CLK 			(1 << 28)
-#define ATH_SRAM_BASE 			0xbd000000
 #define ATH_SRAM_DEV_PTR		((struct ath_usb **)(ATH_SRAM_BASE+0x1000))
 #define TEMP_INT			((unsigned int *)(ATH_SRAM_BASE+0x1020))
 #define TEMP_INT1			((unsigned int *)(ATH_SRAM_BASE+0x1040))
 
 #undef MASTER_SUSPEND
 #define ATH_ENABLE_DDR_SELFREFRESH
+
+#define is_qca955x()  (0)
+
 
 void ath_usb_suspend(void)
 {
@@ -1557,7 +1579,6 @@ irqreturn_t ath_usb_udc_isr(int irq, void *_udc)
 {
 	struct ath_usb_udc *udc = (struct ath_usb_udc *)_udc;
 	__u32 status = 0, setupstat = 0;
-
 	isr_count++;
 	if(!udc){
 		printk("udc null condition \n");
@@ -1573,6 +1594,7 @@ irqreturn_t ath_usb_udc_isr(int irq, void *_udc)
 	 * at once
 	 */
 	for (;;) {
+		
 		status = readl(&udc->op_base->usbsts);
 		setupstat = readl(&udc->op_base->ep_setup_stat);
 
@@ -1686,11 +1708,11 @@ static int ath_usb_endpoint_setup(char *ep_name, __u8 ep_addr, __u8 ep_type,
 	 * required when the endpoint is enabled by gadget drivers
 	 */
 	ep_QHead->maxPacketLen = cpu_to_le32((maxPack << 16) | xferFlags);
-
+#if 0
 	ath_usb_debug_ep("ep_setup ==> ep%d-%s queue:%d, name:%s, maxlen:%d, "
 			 "ctrl:%x\n", epno, ep_direction[epdir], qh_offset,
 			 ep->name, maxPack, readl(&udc->op_base->ep_ctrlx[epno]));
-
+#endif
 	_ep = &ep->ep;
 	_ep->name = ep->name;	/* ep- (name, type, direction) */
 	_ep->ops = &ath_usb_ep_ops;
@@ -1707,11 +1729,11 @@ static int ath_usb_endpoint_setup(char *ep_name, __u8 ep_addr, __u8 ep_type,
 
 	writel((readl(&udc->op_base->ep_ctrlx[epno]) | bits),
 		&udc->op_base->ep_ctrlx[epno]);
-
+#if 0
 	ath_usb_debug_ep("ep_setup ==> ep%d-%s queue:%d, name:%s, maxlen:%d, "
 			 "ctrl:%x, %x\n", epno, ep_direction[epdir], qh_offset,
 			 ep->name, maxPack, readl(&udc->op_base->ep_ctrlx[epno]), bits);
-
+#endif
 	/* EP0 not added to the gadget endpoint list */
 	if (epno > 0) {
 		list_add_tail(&_ep->ep_list, &udc->gadget.ep_list);
@@ -1797,7 +1819,6 @@ static void ath_usb_init_device(struct ath_usb_udc *udc)
 	ath_usb_debug_dev("Setting Device Mode \n");
 
 	/* Set Device Mode */
-//	writel((ATH_USB_SET_DEV_MODE | ATH_USB_MODE_SLOM | ATH_USB_MODE_SDIS), &udc->op_base->usbmode);
 	writel((ATH_USB_SET_DEV_MODE | ATH_USB_MODE_SLOM), &udc->op_base->usbmode);
 
 	writel(0, &udc->op_base->ep_setup_stat);
@@ -1859,14 +1880,15 @@ static void ath_usb_udc_mem_free(struct ath_usb_udc *udc)
 		udc->ep_queue_head = NULL;
 	}
 
-	if (udc->ctrl_req) {
-		ath_usb_free_request(NULL, udc->ctrl_req);
-		udc->ctrl_req = NULL;
-	}
-
-	if (udc->ctrl_buf) {
-		kfree(udc->ctrl_buf);
-		udc->ctrl_buf = NULL;
+	for( count = 0; count < ATH_MAX_CTRL_REQ; count++ ) {
+		if (udc->ctrl_req[count]) {
+			ath_usb_free_request(NULL, udc->ctrl_req[count]);
+			udc->ctrl_req[count] = NULL;
+		}
+		if (udc->ctrl_buf[count]) {
+			kfree(udc->ctrl_buf[count]);
+			udc->ctrl_buf[count] = NULL;
+		}
 	}
 }
 
@@ -1902,13 +1924,15 @@ static int ath_usb_udc_mem_init(struct ath_usb_udc *udc)
 	printk("queue head %p %x Allocated\n", udc->ep_queue_head,
 		udc->qh_dma);
 	/* Pre-allocate a transfer request and buffer for EP0 operations */
-	udc->ctrl_req = ath_usb_alloc_request(NULL, GFP_ATOMIC);
-	udc->ctrl_buf = kmalloc(64, GFP_ATOMIC);
-	if (!udc->ctrl_req || !udc->ctrl_buf) {
-		ath_usb_udc_mem_free(udc);
-		return -ENOMEM;
+	for( count = 0; count < ATH_MAX_CTRL_REQ; count++ ) {
+		udc->ctrl_req[count] = ath_usb_alloc_request(NULL, GFP_ATOMIC);
+		udc->ctrl_buf[count] = kmalloc(64, GFP_ATOMIC);
+		if (!udc->ctrl_req[count] || !udc->ctrl_buf[count]) {
+			ath_usb_udc_mem_free(udc);
+			return -ENOMEM;
+		}
+		udc->ctrl_req[count]->buf = udc->ctrl_buf[count];
 	}
-	udc->ctrl_req->buf = udc->ctrl_buf;
 
 	/* Pre-allocate DTDs */
 	for (count = 0; count < ATH_USB_MAX_EP_IN_SYSTEM; count++) {
@@ -2129,6 +2153,7 @@ static int ath_usb_udc_init(struct ath_usb_udc *udc, struct device *dev)
 
 	/* Setup all endpoints */
 	ath_usb_setup(udc);
+	udc->gadget.dev.init_name = device_name;
 	device_add(&udc->gadget.dev);
 	return 0;
 }
@@ -2179,7 +2204,7 @@ static int ath_usb_udc_probe(struct platform_device *pdev)
 	ath_usb_reg_rmw_set(ATH_USB_RESET, ATH_USB_RESET_USB_PHY); //PHY RESET
 #endif
 
-	if (is_wasp() || is_ar7242() || is_ar7241() || is_ar933x()) {
+	if (is_qca955x() || is_wasp() || is_ar7242() || is_ar7241() || is_ar933x()) {
 		ath_usb_reg_rmw_set(ATH_USB_RESET, ATH_USB_RESET_USBSUS_OVRIDE);
 		mdelay(10);
 		ath_usb_reg_wr(ATH_USB_RESET,
@@ -2207,7 +2232,7 @@ static int ath_usb_udc_probe(struct platform_device *pdev)
 	mdelay(10);
 
 	/* Clear Host Mode */
-	if (is_wasp() || is_ar7242() || is_ar7241() || is_ar933x()) {
+	if (is_qca955x() || is_wasp() || is_ar7242() || is_ar7241() || is_ar933x()) {
 		ath_usb_reg_rmw_clear(ATH_USB_CONFIG, (1 << 8));
 	} else {
 		ath_usb_reg_rmw_clear(ATH_USB_CONFIG, (1 << 2));
@@ -2335,10 +2360,41 @@ static int ath_usb_udc_read_procmem(char *buf, char **start, off_t offset,
 				case1, case2);
 }
 
+#define USB_REG_READ                   0x01
+#define USB_REG_WRITE                   0x02
+
+int usbdrv_ioctl(struct inode *inode, struct file *filp,
+		unsigned int cmd, unsigned long arg)
+{
+	unsigned int reg = 0;
+	unsigned int *ret = 0;
+	switch (cmd) {
+	case USB_REG_READ:
+	//	ret = (unsigned int __user *)arg;
+		reg = ath_usb_reg_rd(0x1B000184);
+		copy_to_user((unsigned int *)arg, &reg, sizeof(unsigned int));
+//		printk("USB_REG_READ -- 0x%x ...\n",reg);
+		break;
+	case USB_REG_WRITE:
+		break;
+
+	default:
+		printk("usbdrv_ioctl: command format error\n");
+	}
+
+	return 0;
+}
+
+struct file_operations usbdrv_fops = {
+	ioctl:      usbdrv_ioctl,
+
+};
+
+
 static int __init ath_usb_init(void)
 {
 	ath_usb_debug_fn("__enter %s\n", __func__);
-	create_proc_read_entry("udc", 0, ath_usb_proc,
+	create_proc_read_entry("udc", 0, NULL,
 				ath_usb_udc_read_procmem, NULL);
 #ifdef CONFIG_MACH_HORNET
     printk("%s: id: %lx\n", __func__, 
@@ -2347,6 +2403,19 @@ static int __init ath_usb_init(void)
     printk("%s: id: %lx\n", __func__, 
         (unsigned long) ath_reg_rd(ATH_REV_ID));
 #endif
+
+
+int result=0;
+result = register_chrdev(usbdrv_major, USB_DEV_NAME, &usbdrv_fops);
+if (result < 0) {
+		printk(KERN_WARNING "spi_drv: can't get major %d\n",usbdrv_major);
+		return result;
+	}
+
+if (usbdrv_major == 0) {
+	usbdrv_major = result; /* dynamic */
+	}
+
 #ifdef CONFIG_USB_ATH_OTG
 	return (ath_usb_udc_probe());
 #else
@@ -2357,14 +2426,13 @@ static int __init ath_usb_init(void)
 static void __exit ath_usb_exit(void)
 {
 	ath_usb_debug_fn("__enter %s\n", __func__);
+	unregister_chrdev(usbdrv_major, USB_DEV_NAME);
 #ifdef CONFIG_USB_ATH_OTG
 	ath_usb_udc_remove();
 #else
 	platform_driver_unregister(&ath_usb_udc_drv);
 #endif
-	if (ath_usb_proc) {
-		remove_proc_entry("udc", ath_usb_proc);
-	}
+	remove_proc_entry("udc", NULL);
 }
 
 MODULE_DESCRIPTION(DRIVER_DESC);

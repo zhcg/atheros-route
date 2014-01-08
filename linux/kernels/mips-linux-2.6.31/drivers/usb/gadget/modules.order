@@ -1,0 +1,3 @@
+kernel/drivers/usb/gadget/ath_udc.ko
+kernel/drivers/usb/gadget/g_ether.ko
+kernel/drivers/usb/gadget/g_file_storage.ko

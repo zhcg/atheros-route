@@ -68,6 +68,9 @@
 
 #endif
 
+#define CACM_SOCKCT_PORT "8658"
+#define SPI_UART1_MUTEX_SOCKET_PORT "5225"
+
 #define MSGNAME "./phone_status"
 #define MSGTYPE_SND 61
 #define MSGTYPE_RCV 16
@@ -170,11 +173,12 @@ enum ERROR_NUM
     P_CHECK_DIFF_ERR,      // 校验不对错误
     S_CHECK_DIFF_ERR,      // 校验不对错误
     DATA_ERR,              // 数据内容错误
+    L_DATA_ERR,            // 本地数据内容错误 
     P_DATA_ERR,            // 数据内容错误
     S_DATA_ERR,            // 数据内容错误
     DATA_DIFF_ERR,         // 数据不相同错误
-    P_DATA_DIFF_ERR,       // 数据不相同错误
-    S_DATA_DIFF_ERR,       // 数据不相同错误 -240
+    P_DATA_DIFF_ERR,       // 数据不相同错误 -240
+    S_DATA_DIFF_ERR,       // 数据不相同错误 
 	DEAL_ERR_TYPE_ERR,     // 交易错误类型错误
 	DEAL_TYPE_ERR,         // 交易类型错误 
 	
@@ -184,8 +188,8 @@ enum ERROR_NUM
 	FTOK_ERR,              // 获取IPC的ID值错误
 	GETATTR_ERR,           // 属性设置错误
 	GET_CHECK_ERR,         // 获取校验错误
-	IOCTL_ERR,             // IO控制错误
-	LAN_ABNORMAL,          // 局域网不正常 -230
+	IOCTL_ERR,             // IO控制错误  -230
+	LAN_ABNORMAL,          // 局域网不正常
 	WAN_ABNORMAL,          // 广域网不正常 
 	LENGTH_ERR,            // 数据长度错误
 	P_LENGTH_ERR,          // 数据长度错误
@@ -194,9 +198,9 @@ enum ERROR_NUM
 	LIST_FREE_ERR,         // 链表释放错误
 	LIST_NULL_ERR,         // 链表空错误  
 	LIST_GET_ERR,          // 链表获得错误 
-	LOGIN_FAILED,          // 登陆失败
+	LOGIN_FAILED,          // 登陆失败 -220
 	
-	MAC_ERR,               // mac地址错误 -220
+	MAC_ERR,               // mac地址错误 
 	MALLOC_ERR,            // 内存分配错误 
 	MISMATCH_ERR,          // 选项不匹配 
 	P_MISMATCH_ERR,        // 选项不匹配
@@ -206,8 +210,8 @@ enum ERROR_NUM
 	MSGSND_ERR,            // 消息队列发送错误
 	MSGRCV_ERR,            // 消息队列接收错误 
 	
-	NVRAM_SET_ERR,         // 数据插入失败
-	NVRAM_COMMIT_ERR,      // 数据提交失败 -210
+	NVRAM_SET_ERR,         // 数据插入失败 -210
+	NVRAM_COMMIT_ERR,      // 数据提交失败 
 	NO_INIT_ERR,           // 没有初始化设备 
 	NO_FILE_ERR,           // 文件未找到错误 
 	NULL_ERR,              // 数据为空错误 
@@ -217,8 +221,8 @@ enum ERROR_NUM
 	OPEN_ERR,              // 文件打开错误
 	OVER_LEN_ERR,          // 自定义数据超长错误
 	PIPE_ERR,              // 创建管道失败 
-	PTHREAD_CREAT_ERR,     // 线程创建错误
-	PTHREAD_CANCEL_ERR,    // 线程终止错误 -200
+	PTHREAD_CREAT_ERR,     // 线程创建错误 -200
+	PTHREAD_CANCEL_ERR,    // 线程终止错误 
 	
 	PTHREAD_LOCK_ERR,      // 获取锁错误 
 	PTHREAD_UNLOCK_ERR,    // 解锁失败错误
@@ -226,11 +230,13 @@ enum ERROR_NUM
 	PPPOE_CALL_FAILED,     // 呼叫失败 
 	PPPOE_LINK_FAILED,     // 连接失败 
 	PPPOE_NO_DNS_SERVER_INFO, // 不存在DNS服务器  
+	PHONE_LINE_ERR,        // 电话线状态异常错误 
+	POSITION_AUTH_ERR,     // 位置认证失败
 	
-	REGCOMP_ERR,           // 编译正则表达式
-	REGEXEC_ERR,           // 匹配字符串
-	READ_ERR,              // 文件读取错误
-	P_READ_ERR,            // 文件读取错误 -190
+	REGCOMP_ERR,           // 编译正则表达式 -190
+	REGEXEC_ERR,           // 匹配字符串 
+	READ_ERR,              // 文件读取错误 
+	P_READ_ERR,            // 文件读取错误 
 	S_READ_ERR,            // 文件读取错误  
 	
 	SHMGET_ERR,            // 创建共享内存失败   
@@ -239,9 +245,9 @@ enum ERROR_NUM
 	SHMCTL_ERR,            // 释放共享内存 
 	
 	SEMGET_ERR,            // 信号量获取失败 
-	SEMCTL_ERR,            // 信号量设置失败   
+	SEMCTL_ERR,            // 信号量设置失败 -180 
 	SEMOP_ERR,             // 信号量操作失败 
-	SEM_OPEN_ERR,          // 创建命名信号量  -180
+	SEM_OPEN_ERR,          // 创建命名信号量  
 	SEM_WAIT_ERR,          // 信号量减一 
 	SEM_POST_ERR,          // 信号量加一   
 	
@@ -250,20 +256,22 @@ enum ERROR_NUM
 	SQLITE_OPEN_ERR,       // 数据库打开错误
 	SQLITE_EXEC_ERR,       // sql语句执行错误 
 	SQLITE_GET_TABLE_ERR,  // 数据库查询错误 
-	SELECT_ERR,            // 轮询等待错误 
+	SELECT_ERR,            // 轮询等待错误 -170
 	SELECT_NULL_ERR,       // 轮询为空错误 
 	P_SELECT_NULL_ERR,     // 轮询为空错误 
-	S_SELECT_NULL_ERR,     // 轮询为空错误 -170
+	S_SELECT_NULL_ERR,     // 轮询为空错误 
 	SOCKET_ERR,            // 获取套接字错误 
 	SETSOCKOPT_ERR,        // 设置套接字属性错误
 	SETATTR_ERR,           // 属性设置错误 
 	SYSTEM_ERR,            // 执行shell命令失败
 	STRSTR_ERR,            // strstr错误 
+	SN_BASE_ERR,           // base序列号错误
+	SN_PAD_ERR,            // PAD序列号错误 -160 
 	TIMEOUT_ERR,           // 时间超时错误 
 	WRITE_ERR,             // 文件写入错误 
 	WRONGFUL_PAD_ERR,      // PAD不合法 
 	WRONGFUL_DEV_ERR,      // PAD和base不合法 
-	WAN_STATE_ERR,         // wan口没有插入 -160  
+	WAN_STATE_ERR,         // wan口没有插入  
 	P_WRITE_ERR,           // 文件写入错误
 	S_WRITE_ERR,           // 文件写入错误
 };
@@ -294,12 +302,14 @@ enum DEAL_ERROR_TYPE
 enum enum_options
 {
     STEP_LOG,                  // 运行步骤日志 
+    
     #if BOARDTYPE == 5350 || BOARDTYPE == 6410
     SERIAL_DATA_LOG,           // 串口数据日志
     #endif 
     #if BOARDTYPE == 6410 || BOARDTYPE == 9344
     DB,                        // 数据库目录 
     #endif
+    
     OLD_ROUTE_CONFIG,          // 设置前的路由配置 
     PPPOE_STATE_FILE,          // 路由器PPPOE设置后，保存路由设置状态
     SPI_PARA_FILE,             // spi参数文件
@@ -353,13 +363,13 @@ enum enum_options
  */
  struct s_config
 {
-    char step_log[32];
-    char serial_data_log[32];
-    char db[32];
-    char old_route_config[32];
-    char pppoe_state[32];
-    char spi_para_file[32];
-    char wan_state[32];
+    char step_log[64];
+    char serial_data_log[64];
+    char db[64];
+    char old_route_config[64];
+    char pppoe_state[64];
+    char spi_para_file[64];
+    char wan_state[64];
     
     char serial_stc[50];
     char serial_pad[50];
@@ -651,6 +661,7 @@ struct s_dial_back_respond
 	char discrete_factor[8];                  // 离散因子
 	char phone_num[16];
 	char call_permit;                         // 呼叫许可
+	char call_result;                         // 接收语音中心结果 // 0 呼叫成功并且拒接等步骤成功 1 中间错误 
 	#endif
 	unsigned short cmd;                       // 命令字
 };

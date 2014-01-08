@@ -4,7 +4,7 @@
 #include "common_tools.h"
 #include "terminal_authentication.h"
 #include "database_management.h"
-#include "internetwork_communication.h"
+#include "communication_network.h"
 
 // 请求结构
 struct s_request_pack

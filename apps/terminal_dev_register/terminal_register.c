@@ -216,7 +216,9 @@ static int respond_data_unpack(void *respond_buf, void *out_buf, unsigned int le
 static int request_data_pack(char **send_pack, char (*columns_value)[100])
 {
     int count = 0;
+    int res = 0;
     unsigned int buf_len = 0;
+    char device_token[16] = {0};
     struct s_request_pack request_pack;
     memset((void *)&request_pack, 0, sizeof(struct s_request_pack));
     
@@ -234,13 +236,23 @@ static int request_data_pack(char **send_pack, char (*columns_value)[100])
     sprintf(request_pack.pad_id, "padId:%s,", columns_value[0]);
     sprintf(request_pack.pad_mac, "padMac:%s,", columns_value[1]);
     sprintf(request_pack.base_id, "baseId:%s,", columns_value[2]);    
-    sprintf(request_pack.base_mac, "baseMac:%s,", columns_value[3]);    
-    sprintf(request_pack.token, "token:%s", columns_value[4]);
+    sprintf(request_pack.base_mac, "baseMac:%s,", columns_value[3]);
+    if (terminal_authentication.static_device_flag == 0)
+    {
+        if ((res = terminal_authentication.return_device_token(device_token)) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "return_device_token failed!", res);
+            return res;
+        }
+        PRINT_BUF_BY_HEX(device_token, NULL, 16, __FILE__, __FUNCTION__, __LINE__);
+    }
+    memcpy(request_pack.token, "token:", strlen("token:"));
+    memcpy(request_pack.token + strlen("token:"), terminal_authentication.static_device_token, sizeof(terminal_authentication.static_device_token));
     
     request_pack.total_len = sizeof(request_pack.total_len) + sizeof(request_pack.message_type)
             + strlen(request_pack.version) + strlen(request_pack.func_id) + strlen(request_pack.start_time) 
             + strlen(request_pack.base_id) + strlen(request_pack.base_mac) 
-            + strlen(request_pack.pad_id) + strlen(request_pack.pad_mac) + strlen(request_pack.token); 
+            + strlen(request_pack.pad_id) + strlen(request_pack.pad_mac) + strlen("token:") + sizeof(device_token); 
     
     // 动态申请
     if ((*send_pack = (char *)malloc(request_pack.total_len + 1)) == NULL)
@@ -283,8 +295,8 @@ static int request_data_pack(char **send_pack, char (*columns_value)[100])
     common_tools.memncat(*send_pack, request_pack.pad_mac, count, strlen(request_pack.pad_mac));
     count += strlen(request_pack.pad_mac);
     
-    common_tools.memncat(*send_pack, request_pack.token, count, strlen(request_pack.token));
-    count += strlen(request_pack.token);
+    common_tools.memncat(*send_pack, request_pack.token, count, strlen("token:") + sizeof(device_token));
+    count += strlen("token:") + sizeof(device_token);
     return count;
 }
 
@@ -365,11 +377,12 @@ static int get_base_sn_and_mac(char *base_sn, char *base_mac)
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_wan_mac failed!", res);
         return res;
     }
-    
+    PRINT("mac_tmp = %s\n", mac_tmp);
     common_tools.mac_del_colon(mac_tmp);
     
     strncat(base_sn, mac_tmp, strlen(mac_tmp));
     memcpy(base_mac, mac_tmp, strlen(mac_tmp));
+    PRINT("base_mac = %s\n", base_mac);
     #endif
     
     PRINT_STEP("exit...\n");
@@ -414,8 +427,8 @@ static int get_sip_info(char *pad_sn, char *pad_mac)
     char *buf = NULL;
     struct timeval tv;
     unsigned int buf_len = 0;
-    char columns_name[5][30] = {"pad_sn", "pad_mac", "base_sn", "base_mac", "device_token"};
-    char columns_value[5][100] = {0};
+    char columns_name[4][30] = {"pad_sn", "pad_mac", "base_sn", "base_mac"};
+    char columns_value[4][100] = {0};
     memset(&respond_pack, 0, sizeof(struct s_respond_pack));
     
     if ((pad_sn == NULL) && (pad_mac == NULL))
@@ -426,7 +439,7 @@ static int get_sip_info(char *pad_sn, char *pad_mac)
     
     #if BOARDTYPE == 6410 || BOARDTYPE == 9344
     // 数据库查询数据
-    if ((res = database_management.select(5, columns_name, columns_value)) < 0)
+    if ((res = database_management.select(4, columns_name, columns_value)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_select failed!", res);
         return res;
@@ -434,13 +447,13 @@ static int get_sip_info(char *pad_sn, char *pad_mac)
     #elif BOARDTYPE == 5350
     
     // 数据库查询数据
-    if ((res = nvram_interface.select(RT5350_FREE_SPACE, 5, columns_name, columns_value)) < 0)
+    if ((res = nvram_interface.select(RT5350_FREE_SPACE, 4, columns_name, columns_value)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "nvram__select failed!", res);
         return res;
     }
     int i = 0;
-    for (i = 0; i < 5; i++)
+    for (i = 0; i < 4; i++)
     {
         if ((strcmp("\"\"", columns_value[i]) == 0) || (strlen(columns_value[i]) == 0))
         {
@@ -480,7 +493,7 @@ static int get_sip_info(char *pad_sn, char *pad_mac)
     
     // 链接服务器
 	PRINT("common_tools.config->terminal_server_ip = %s, common_tools.config->terminal_server_port = %s\n", common_tools.config->terminal_server_ip, common_tools.config->terminal_server_port);
-    if ((fd =  internetwork_communication.make_client_link(common_tools.config->terminal_server_ip, common_tools.config->terminal_server_port)) < 0)
+    if ((fd =  communication_network.make_client_link(common_tools.config->terminal_server_ip, common_tools.config->terminal_server_port)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "tcp_client_link failed!", fd);
         free(buf);
@@ -499,8 +512,9 @@ static int get_sip_info(char *pad_sn, char *pad_mac)
     }
     free(buf);
     buf = NULL;
-    PRINT("recv data start!\n");
     
+    tv.tv_sec = common_tools.config->total_timeout;
+    PRINT("recv data start! tv.tv_sec = %d\n", tv.tv_sec);
     // 接收数据 长度
     if ((res = common_tools.recv_data(fd, (char *)&buf_len, NULL, sizeof(buf_len), &tv)) < 0)
     {

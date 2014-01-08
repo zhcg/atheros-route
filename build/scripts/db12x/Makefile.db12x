@@ -398,30 +398,40 @@ terminal_dev_register:
 	@echo making terminal_dev_register app
 	cd ../apps/terminal_dev_register; make clean; make; \
 	$(STRIP) sqlite-mips-linux/lib/libsqlite3.so.0.8.6; \
-	$(STRIP) libdatabase_management.so; \
+	$(STRIP) libdata_storager.so; \
 	$(STRIP) libspi_rt.so; \
 	$(STRIP) libterminal_authentication.so; \
 	$(STRIP) libterminal_register.so; \
+	$(STRIP) libcommunication.so; \
 	$(STRIP) libcommon_tools.so; \
 	$(STRIP) spi_rt_main; \
+        $(STRIP) spi_rt_uart1; \
+        $(STRIP) usb_stub; \
 	$(STRIP) terminal_dev_register; \
 	$(STRIP) terminal_init_test; \
 	$(STRIP) swipe_card; \
 	$(STRIP) monitor_application; \
 	cp -af sqlite-mips-linux/lib/libsqlite3.so.0.8.6 $(INSTALL_ROOT)/lib; \
 	cp -af sqlite-mips-linux/bin/sqlite3 $(INSTALL_ROOT)/bin; \
-	cp -af libdatabase_management.so $(INSTALL_ROOT)/lib; \
+	cp -af libdata_storager.so $(INSTALL_ROOT)/lib; \
 	cp -af libspi_rt.so $(INSTALL_ROOT)/lib; \
 	cp -af libterminal_authentication.so $(INSTALL_ROOT)/lib; \
 	cp -af libterminal_register.so $(INSTALL_ROOT)/lib; \
+	cp -af libcommunication.so $(INSTALL_ROOT)/lib; \
 	cp -af libcommon_tools.so $(INSTALL_ROOT)/lib; \
 	cp -af spi_rt_main $(INSTALL_ROOT)/bin; \
+	cp -af spi_rt_uart1 $(INSTALL_ROOT)/bin; \
+	cp -af usb_stub $(INSTALL_ROOT)/bin; \
 	cp -af terminal_dev_register $(INSTALL_ROOT)/bin; \
 	cp -af terminal_init_test $(INSTALL_ROOT)/bin; \
 	cp -af swipe_card $(INSTALL_ROOT)/bin; \
 	cp -af monitor_application $(INSTALL_ROOT)/bin; \
-        mkdir -p $(INSTALL_ROOT)/var/terminal_dev_register/; \
+        mkdir -p $(INSTALL_ROOT)/var/terminal_dev_register/db/; \
+        mkdir -p $(INSTALL_ROOT)/var/terminal_dev_register/log/; \
+        mkdir -p $(INSTALL_ROOT)/var/terminal_dev_register/fs/; \
 	cp -af config $(INSTALL_ROOT)/var/terminal_dev_register/; \
+	cp -af terminal_base_db $(INSTALL_ROOT)/var/terminal_dev_register/db/; \
+	cp -af fat_fs $(INSTALL_ROOT)/var/terminal_dev_register/fs/; \
 	echo finished making terminal_dev_register;	
 
 cacm:
@@ -508,6 +518,7 @@ usb_build: kernel_build
 ifneq ($(BUILD_CONFIG), _ap123)
 	cp -f ${USBDIR}/gadget/g_ether.ko ${USBMODPATH}
 	cp -f ${USBDIR}/gadget/ath_udc.ko ${USBMODPATH}
+	cp -f ${USBDIR}/gadget/g_file_storage.ko ${USBMODPATH}
 	cp -f ${KERNELPATH}/drivers/net/usb/usbnet.ko ${USBMODPATH}
 	cp -f ${KERNELPATH}/drivers/net/usb/cdc_ether.ko ${USBMODPATH}
 endif

@@ -2,7 +2,7 @@
 #define _TERMINAL_AUTHENTICATION_H_
 
 #include "common_tools.h"
-#include "communication_stc.h"
+#include "communication_serial.h"
 
 #if BOARDTYPE == 6410 || BOARDTYPE == 9344
 #include "database_management.h"
@@ -10,8 +10,8 @@
 #include "nvram_interface.h"
 #endif
 
-#include "internetwork_communication.h"
-#include "serial_communication.h"
+#include "communication_network.h"
+#include "communication_serial.h"
 
 // 数据结构定义
 struct class_terminal_authentication
@@ -21,6 +21,10 @@ struct class_terminal_authentication
     int (* delete_token)();
     int (* update_token)();
     #else
+    char static_device_token[16];
+    char static_position_token[16];
+    char static_device_flag;
+    char static_position_flag;
     int (* return_device_token)(char *device_token);
     int (* return_position_token)(char *position_token);
     int (* rebuild_device_token)(char *device_token);

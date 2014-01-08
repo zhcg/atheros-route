@@ -4,7 +4,7 @@
 #elif BOARDTYPE == 9344
 #include "database_management.h"
 #endif
-#include "internetwork_communication.h"
+#include "communication_network.h"
 
 static struct timeval tv_start;
 static struct timeval tv_end;
@@ -17,37 +17,6 @@ static unsigned char ssid3_live_flag = 0;
 #define LOCAL_PORT "7788"
 
 #endif
-
-/**
- * 启动CACM
- */
-int start_up_CACM()
-{
-    int res = 0;
-    char buf[256] = {0};
-    char *cacm_cmd = "ps | grep cacm | sed '/grep/'d";
-    char * const app_argv[] = {"cacm", NULL};
-    
-    if ((res = common_tools.get_cmd_out(cacm_cmd, buf, sizeof(buf))) < 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_cmd_out failed!", res);
-        return res;
-    }
-    
-    buf[strlen(buf) - 1] = '\0';
-    
-    if (strlen(buf) != 0) 
-    {
-        system("kill -9 `ps | grep cacm | sed \'/grep/\'d | awk \'{print $1}\'`");
-	}
-    
-    if ((res = common_tools.start_up_application("/bin/cacm", app_argv, 1)) < 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "start_up_application failed!", res);
-        return res;
-    }
-    return 0;
-}
 
 #if SMART_RECOVERY
 
@@ -476,6 +445,11 @@ static void signal_handle(int sig)
         }
         case 18:
         {
+            pid_t pid;
+            while ((pid = waitpid(-1, &res, WNOHANG)) > 0)
+			{
+				PRINT("pid = %d, res = %d\n", pid, res);
+			}
             PRINT("SIGCLD sig no:%d; sig info:子进程结束信号\n", sig);
             break;
         }
@@ -509,6 +483,7 @@ static int monitor_app()
     unsigned char register_flag = 0;
     int client_fd = 0;
     char *spi_cmd = "ps | grep spi_rt_main | sed '/grep/'d | sed '/\\[spi_rt_main\\]/'d | sed '/sed/'d";
+    char *cacm_cmd = "ps | grep cacm | sed '/grep/'d | sed '/\\[cacm\\]/'d | sed '/sed/'d";
     char *terminal_init_cmd = "ps | grep terminal_dev_register | sed '/grep/'d | sed '/\\[terminal_dev_register\\]/'d | sed '/sed/'d";
     char *swipe_card_cmd = "ps | grep swipe_card | sed '/grep/'d";
     #if BOARDTYPE == 5350
@@ -516,6 +491,7 @@ static int monitor_app()
     char *terminal_init_para_check_cmd2 = "nvram_get backupspace STEP_LOG";
     #endif
     char buf[256] = {0};
+    unsigned char register_state = 5;
     
     char columns_name[1][30] = {0};
 	char columns_value[1][100] = {0};
@@ -534,6 +510,7 @@ static int monitor_app()
 	    PERROR("nvram_select failed!\n");
 	    return res;
 	}
+	register_state = columns_value[0][0];
 	// 初始化成功
 	if (columns_value[0][0] ==  '0')
 	    
@@ -543,19 +520,12 @@ static int monitor_app()
 	    PERROR("sqlite_select failed!\n");
 	    return res;
 	}
-	
+	register_state = columns_value[0][0];
     // 初始化成功
 	if (columns_value[0][0] ==  0)
     #endif
 	{
 	    PRINT("register_state key is zero!(terminal initialized successful!)\n");
-	    
-	    if ((res = start_up_CACM()) < 0)
-	    {
-	        PERROR("start_up_CACM failed!\n");
-	        return res;
-	    }
-	    PERROR("start_up_CACM successful!\n");
 	    
 	    memset(columns_name[0], 0, sizeof(columns_name[0]));
 	    memset(columns_value[0], 0, sizeof(columns_value[0]));
@@ -641,11 +611,14 @@ static int monitor_app()
     
     // 需要查看register_state和交易周期
     char * const stub_app_argv[] = {"spi_rt_main", NULL};
+    char * const cacm_app_argv[] = {"cacm", NULL};
+    
     #if TERMIANL_SCHEME == 0
     char * const terminal_init_app_argv[] = {"terminal_init", NULL};
     #elif TERMIANL_SCHEME == 1
     char * const terminal_init_app_argv[] = {"terminal_dev_register", NULL};
     #endif
+    
     char * const swipe_card_app_argv[] = {"swipe_card", NULL};
     while (1)
     {
@@ -730,7 +703,7 @@ static int monitor_app()
             if ((tv_end.tv_sec - tv_start.tv_sec) >= 15 * 60)
             {
                 // 清除SSID3
-                if ((client_fd = internetwork_communication.make_client_link(LOCAL_IP, LOCAL_PORT)) < 0)
+                if ((client_fd = communication_network.make_client_link(LOCAL_IP, LOCAL_PORT)) < 0)
                 {
                     PERROR("make_client_link failed!\n");
                 }
@@ -803,6 +776,36 @@ static int monitor_app()
         }
         #endif
         
+        //cacm
+        #if BOARDTYPE == 5350
+        if (register_state == '0')
+        #elif BOARDTYPE == 9344
+        if (register_state == 0)
+        #endif
+        {
+            // CACM
+            if (common_tools.get_cmd_out(cacm_cmd, buf, sizeof(buf)) < 0)
+            {
+                PERROR("get_cmd_out failed!\n");
+                continue;
+            }
+            else
+            {
+                if (strlen(buf) == 0)
+                {
+                    PRINT("cacm stop!\n");
+                    if ((res = common_tools.start_up_application("/bin/cacm", cacm_app_argv, 0)) < 0)
+                    {
+                        PERROR("start_up_application failed!\n");
+                    }
+                    else 
+                    {
+                        PRINT("cacm restart!\n");
+                    }
+                }
+            }
+        }
+        
         // base状态
         if (register_flag == 1)
         {
@@ -856,7 +859,7 @@ static void * accept_link(void* para)
     socklen_t len = sizeof(client); 
     
     #if 0
-    if ((server_fd = internetwork_communication.make_local_socket_server_link(TERMINAL_LOCAL_SOCKET_NAME)) < 0)
+    if ((server_fd = communication_network.make_local_socket_server_link(TERMINAL_LOCAL_SOCKET_NAME)) < 0)
     {
         PERROR("make_local_socket_server_link failed!\n");         
         res = server_fd;
@@ -864,7 +867,7 @@ static void * accept_link(void* para)
     }
     PRINT("The server is established successfully! TERMINAL_LOCAL_SOCKET_NAME = %s\n", TERMINAL_LOCAL_SOCKET_NAME);    
     #else
-    if ((server_fd = internetwork_communication.make_server_link(TERMINAL_LOCAL_SERVER_PORT)) < 0)
+    if ((server_fd = communication_network.make_server_link(TERMINAL_LOCAL_SERVER_PORT)) < 0)
     {
         PERROR("make_server_link failed!\n");         
         res = server_fd;
@@ -988,9 +991,22 @@ int main(int argc, char ** argv)
 int main(int argc, char ** argv)
 {    
     // 信号捕获和处理 
-    signal(SIGCHLD, signal_handle);
+    signal(SIGHUP, signal_handle);
     signal(SIGINT, signal_handle);
+    signal(SIGQUIT, signal_handle);
+    
+    signal(SIGABRT, signal_handle);
+    //signal(SIGBUS, signal_handle);
+    
+    signal(SIGPIPE, signal_handle);
+    signal(SIGALRM, signal_handle);
     signal(SIGTERM, signal_handle);
+    
+    signal(SIGPROF, signal_handle);
+    signal(SIGVTALRM, signal_handle);
+    signal(SIGCLD, signal_handle);
+    signal(SIGPWR, signal_handle);
+    signal(SIGCHLD, signal_handle);
     
     strcpy(common_tools.argv0, argv[0]);
     

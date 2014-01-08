@@ -224,12 +224,11 @@
  * into a header file plus about 3 separate .c files, to handle the details
  * of the Gadget, USB Mass Storage, and SCSI protocols.
  */
-
-
-/* #define VERBOSE_DEBUG */
-/* #define DUMP_MSGS */
-
-
+/*
+#define DEBUG
+#define VERBOSE_DEBUG
+#define DUMP_MSGS
+*/
 #include <linux/blkdev.h>
 #include <linux/completion.h>
 #include <linux/dcache.h>
@@ -367,6 +366,7 @@ static struct {
 	char		*protocol_name;
 
 } mod_data = {					// Default values
+	.file				= "/dev/ram1",
 	.transport_parm		= "BBB",
 	.protocol_parm		= "SCSI",
 	.removable		= 0,
@@ -1461,17 +1461,19 @@ static int fsg_setup(struct usb_gadget *gadget,
 	struct fsg_dev		*fsg = get_gadget_data(gadget);
 	int			rc;
 	int			w_length = le16_to_cpu(ctrl->wLength);
-
+//	printk("__enter %s\n", __func__);
 	++fsg->ep0_req_tag;		// Record arrival of a new request
 	fsg->ep0req->context = NULL;
 	fsg->ep0req->length = 0;
 	dump_msg(fsg, "ep0-setup", (u8 *) ctrl, sizeof(*ctrl));
 
-	if ((ctrl->bRequestType & USB_TYPE_MASK) == USB_TYPE_CLASS)
+	if ((ctrl->bRequestType & USB_TYPE_MASK) == USB_TYPE_CLASS){
+		printk("class_setup_req\n");
 		rc = class_setup_req(fsg, ctrl);
-	else
+	} else {
+		printk("standard_setup_req\n");
 		rc = standard_setup_req(fsg, ctrl);
-
+	}
 	/* Respond with data/status or defer until later? */
 	if (rc >= 0 && rc != DELAYED_STATUS) {
 		rc = min(rc, w_length);
@@ -1498,12 +1500,14 @@ static void start_transfer(struct fsg_dev *fsg, struct usb_ep *ep,
 		enum fsg_buffer_state *state)
 {
 	int	rc;
-
-	if (ep == fsg->bulk_in)
+//	printk("__enter %s\n", __func__);
+	if (ep == fsg->bulk_in){
 		dump_msg(fsg, "bulk-in", req->buf, req->length);
-	else if (ep == fsg->intr_in)
-		dump_msg(fsg, "intr-in", req->buf, req->length);
-
+//		printk("bulk-in", req->buf, req->length);
+	} else if (ep == fsg->intr_in) {
+		dump_msg(fsg, "bulk-in", req->buf, req->length);
+//		printk("bulk-in", req->buf, req->length);
+	}
 	spin_lock_irq(&fsg->lock);
 	*pbusy = 1;
 	*state = BUF_STATE_BUSY;
@@ -1524,13 +1528,22 @@ static void start_transfer(struct fsg_dev *fsg, struct usb_ep *ep,
 	}
 }
 
+int sleep_thread_flag;
+EXPORT_SYMBOL(sleep_thread_flag);
 
 static int sleep_thread(struct fsg_dev *fsg)
 {
 	int	rc = 0;
-
+//printk("sleep_thread is called\r\n");
+	
 	/* Wait until a signal arrives or we are woken up */
 	for (;;) {
+		if(sleep_thread_flag == 1)
+		{
+//		printk("sleep_thread exit 1\r\n");			
+			return 0;
+
+		}
 		try_to_freeze();
 		set_current_state(TASK_INTERRUPTIBLE);
 		if (signal_pending(current)) {
@@ -1543,6 +1556,8 @@ static int sleep_thread(struct fsg_dev *fsg)
 	}
 	__set_current_state(TASK_RUNNING);
 	fsg->thread_wakeup_needed = 0;
+	sleep_thread_flag = 0;
+//printk("sleep_thread exit 2\r\n");	
 	return rc;
 }
 
@@ -1560,7 +1575,7 @@ static int do_read(struct fsg_dev *fsg)
 	unsigned int		amount;
 	unsigned int		partial_page;
 	ssize_t			nread;
-
+	printk("__enter %s\n", __func__);
 	/* Get the starting Logical Block Address and check that it's
 	 * not too big */
 	if (fsg->cmnd[0] == SC_READ_6)
@@ -1687,6 +1702,7 @@ static int do_write(struct fsg_dev *fsg)
 	unsigned int		partial_page;
 	ssize_t			nwritten;
 	int			rc;
+	printk("__enter %s\n", __func__);
 
 	if (curlun->ro) {
 		curlun->sense_data = SS_WRITE_PROTECTED;
@@ -2417,7 +2433,7 @@ static int pad_with_zeros(struct fsg_dev *fsg)
 	u32			nkeep = bh->inreq->length;
 	u32			nsend;
 	int			rc;
-
+	printk("__enter %s\n", __func__);
 	bh->state = BUF_STATE_EMPTY;		// For the first iteration
 	fsg->usb_amount_left = nkeep + fsg->residue;
 	while (fsg->usb_amount_left > 0) {
@@ -2447,6 +2463,7 @@ static int throw_away_data(struct fsg_dev *fsg)
 	struct fsg_buffhd	*bh;
 	u32			amount;
 	int			rc;
+	printk("__enter %s\n", __func__);
 
 	while ((bh = fsg->next_buffhd_to_drain)->state != BUF_STATE_EMPTY ||
 			fsg->usb_amount_left > 0) {
@@ -2497,7 +2514,7 @@ static int finish_reply(struct fsg_dev *fsg)
 {
 	struct fsg_buffhd	*bh = fsg->next_buffhd_to_fill;
 	int			rc = 0;
-
+	printk("__enter %s\n", __func__);
 	switch (fsg->data_dir) {
 	case DATA_DIR_NONE:
 		break;			// Nothing to send
@@ -2604,7 +2621,7 @@ static int send_status(struct fsg_dev *fsg)
 	int			rc;
 	u8			status = USB_STATUS_PASS;
 	u32			sd, sdinfo = 0;
-
+	printk("__enter %s\n", __func__);
 	/* Wait for the next buffer to become available */
 	bh = fsg->next_buffhd_to_fill;
 	while (bh->state != BUF_STATE_EMPTY) {
@@ -2623,12 +2640,17 @@ static int send_status(struct fsg_dev *fsg)
 
 	if (fsg->phase_error) {
 		DBG(fsg, "sending phase-error status\n");
+		printk("sending phase-error status\n");
 		status = USB_STATUS_PHASE_ERROR;
 		sd = SS_INVALID_COMMAND;
 	} else if (sd != SS_NO_SENSE) {
 		DBG(fsg, "sending command-failure status\n");
+		printk("sending command-failure status\n");
 		status = USB_STATUS_FAIL;
 		VDBG(fsg, "  sense data: SK x%02x, ASC x%02x, ASCQ x%02x;"
+				"  info x%x\n",
+				SK(sd), ASC(sd), ASCQ(sd), sdinfo);
+		printk("  sense data: SK x%02x, ASC x%02x, ASCQ x%02x;"
 				"  info x%x\n",
 				SK(sd), ASC(sd), ASCQ(sd), sdinfo);
 	}
@@ -3140,7 +3162,7 @@ static int get_next_command(struct fsg_dev *fsg)
 {
 	struct fsg_buffhd	*bh;
 	int			rc = 0;
-
+	printk("__enter %s\n", __func__);
 	if (transport_is_bbb()) {
 
 		/* Wait for the next buffer to become available */
@@ -3150,7 +3172,7 @@ static int get_next_command(struct fsg_dev *fsg)
 			if (rc)
 				return rc;
 		}
-
+		printk("1\n");		
 		/* Queue a request to read a Bulk-only CBW */
 		set_bulk_out_req_length(fsg, bh, USB_BULK_CB_WRAP_LEN);
 		bh->outreq->short_not_ok = 1;
@@ -3167,9 +3189,11 @@ static int get_next_command(struct fsg_dev *fsg)
 			if (rc)
 				return rc;
 		}
+		printk("2\n");	
 		smp_rmb();
 		rc = received_cbw(fsg, bh);
 		bh->state = BUF_STATE_EMPTY;
+		printk("3\n");	
 
 	} else {		// USB_PR_CB or USB_PR_CBI
 
@@ -3457,6 +3481,7 @@ static void handle_exception(struct fsg_dev *fsg)
 		break;
 
 	case FSG_STATE_ABORT_BULK_OUT:
+		printk("case FSG_STATE_ABORT_BULK_OUT: \n");
 		send_status(fsg);
 		spin_lock_irq(&fsg->lock);
 		if (fsg->state == FSG_STATE_STATUS_PHASE)
@@ -3465,6 +3490,7 @@ static void handle_exception(struct fsg_dev *fsg)
 		break;
 
 	case FSG_STATE_RESET:
+		printk("case FSG_STATE_RESET: \n");
 		/* In case we were forced against our will to halt a
 		 * bulk endpoint, clear the halt now.  (The SuperH UDC
 		 * requires this.) */
@@ -3486,6 +3512,7 @@ static void handle_exception(struct fsg_dev *fsg)
 		break;
 
 	case FSG_STATE_INTERFACE_CHANGE:
+		printk("case FSG_STATE_INTERFACE_CHANGE: \n");
 		rc = do_set_interface(fsg, 0);
 		if (fsg->ep0_req_tag != exception_req_tag)
 			break;
@@ -3496,6 +3523,7 @@ static void handle_exception(struct fsg_dev *fsg)
 		break;
 
 	case FSG_STATE_CONFIG_CHANGE:
+		printk("case FSG_STATE_CONFIG_CHANGE: \n");
 		rc = do_set_config(fsg, new_config);
 		if (fsg->ep0_req_tag != exception_req_tag)
 			break;
@@ -3506,12 +3534,14 @@ static void handle_exception(struct fsg_dev *fsg)
 		break;
 
 	case FSG_STATE_DISCONNECT:
+		printk("case FSG_STATE_DISCONNECT: \n");
 		fsync_all(fsg);
 		do_set_config(fsg, 0);		// Unconfigured state
 		break;
 
 	case FSG_STATE_EXIT:
 	case FSG_STATE_TERMINATED:
+		printk("case FSG_STATE_EXIT | FSG_STATE_TERMINATED: \n");
 		do_set_config(fsg, 0);			// Free resources
 		spin_lock_irq(&fsg->lock);
 		fsg->state = FSG_STATE_TERMINATED;	// Stop the thread
@@ -3544,8 +3574,10 @@ static int fsg_main_thread(void *fsg_)
 
 	/* The main loop */
 	while (fsg->state != FSG_STATE_TERMINATED) {
-		if (exception_in_progress(fsg) || signal_pending(current)) {
+	//	printk("The main loop... \n");
+		if (exception_in_progress(fsg) || signal_pending(current)) {		
 			handle_exception(fsg);
+			printk("handle_exception \n");
 			continue;
 		}
 
@@ -3554,17 +3586,19 @@ static int fsg_main_thread(void *fsg_)
 			continue;
 		}
 
-		if (get_next_command(fsg))
+		if (get_next_command(fsg)){
+//			printk("get_next_command \n");
 			continue;
-
+		}
 		spin_lock_irq(&fsg->lock);
 		if (!exception_in_progress(fsg))
 			fsg->state = FSG_STATE_DATA_PHASE;
 		spin_unlock_irq(&fsg->lock);
 
-		if (do_scsi_command(fsg) || finish_reply(fsg))
+		if (do_scsi_command(fsg) || finish_reply(fsg)){
+			printk("do_scsi_command(fsg) || finish_reply(fsg) \n");
 			continue;
-
+		}
 		spin_lock_irq(&fsg->lock);
 		if (!exception_in_progress(fsg))
 			fsg->state = FSG_STATE_STATUS_PHASE;

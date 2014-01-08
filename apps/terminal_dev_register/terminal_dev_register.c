@@ -15,11 +15,14 @@
 #include "nvram_interface.h"
 #endif
 
-#include "internetwork_communication.h"
+#include "communication_network.h"
 #include "terminal_authentication.h"
 
 static pthread_mutex_t config_mutex;
 static time_t start_time;
+static int cmd_handle_fd = 0;
+static int cmd_handle_cmd_count = 0;
+static char cmd_handle_cmd_word = 0;
 
 struct s_terminal_dev_register
 {
@@ -161,7 +164,7 @@ static int analyse_command_line(int argc, char ** argv)
             #if BOARDTYPE == 5350 || BOARDTYPE == 6410
             if ((res = common_tools.recv_data(*network_config.serial_pad_fd, recv_buf, NULL, sizeof(recv_buf), &tv)) < 0)
             #elif BOARDTYPE == 9344
-            if ((res = common_tools.recv_data(network_config.usb_pad_fd, recv_buf, NULL, sizeof(recv_buf), &tv)) < 0)
+            if ((res = common_tools.recv_data(usb_client_fd, recv_buf, NULL, sizeof(recv_buf), &tv)) < 0)
             #endif    
             {
                 PRINT("recv_data failed!\n");
@@ -172,7 +175,7 @@ static int analyse_command_line(int argc, char ** argv)
             #if BOARDTYPE == 5350 || BOARDTYPE == 6410
             if ((res = common_tools.send_data(*network_config.serial_pad_fd, send_buf, NULL, sizeof(send_buf), &tv)) < 0)
             #elif BOARDTYPE == 9344
-            if ((res = common_tools.send_data(network_config.usb_pad_fd, send_buf, NULL, sizeof(send_buf), &tv)) < 0)
+            if ((res = common_tools.send_data(usb_client_fd, send_buf, NULL, sizeof(send_buf), &tv)) < 0)
             #endif
             {
                 PRINT("send_data failed!\n");
@@ -273,6 +276,11 @@ static void signal_handle(int sig)
         }
         case 18:
         {
+            pid_t pid;
+            while ((pid = waitpid(-1, &res, WNOHANG)) > 0)
+			{
+				PRINT("pid = %d, state = %d\n", pid, res);
+			}
             PRINT("SIGCLD sig no:%d; sig info:子进程结束信号\n", sig);
             break;
         }
@@ -311,6 +319,7 @@ void * pad_cmd_handle(void* para)
     char columns_name[3][30] = {0};
     char columns_value[3][100] = {0};
     
+    PRINT("fd = %d\n", fd);
     // 相关设置 （包括设备认证和SIP信息获取）
     if ((res = network_config.network_settings(fd, terminal_dev_register->cmd_count, terminal_dev_register->cmd_word)) < 0)
     {
@@ -325,7 +334,7 @@ void * pad_cmd_handle(void* para)
     // 连接PAD端服务器
     for (i = 0; i < common_tools.config->repeat; i++)
     {
-        if ((*network_config.server_pad_fd = internetwork_communication.make_client_link(common_tools.config->pad_ip, common_tools.config->pad_server_port)) < 0)
+        if ((*network_config.server_pad_fd = communication_network.make_client_link(common_tools.config->pad_ip, common_tools.config->pad_server_port)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "make_client_link failed", *network_config.server_pad_fd);
             if (i != (common_tools.config->repeat - 1))
@@ -344,12 +353,16 @@ void * pad_cmd_handle(void* para)
     }
     else 
     {
+        #if BOARDTYPE == 5350
         // 网口时关闭
         if (terminal_dev_register->transmission_mode == 0)
         {
             PRINT("fd = %d\n", fd);
             close(fd);
         }
+        #elif BOARDTYPE == 9344
+        close(fd);
+        #endif
         fd = *network_config.server_pad_fd;
     }
     
@@ -417,7 +430,7 @@ void * pad_cmd_handle(void* para)
         PRINT("%s\n", buf);
         
         // 正确信息发送到PAD
-        if ((res = network_config.send_msg_to_pad(fd, 0x00, buf)) < 0)
+        if ((res = network_config.send_msg_to_pad(fd, 0x00, buf, strlen(buf))) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
             goto EXIT;
@@ -456,27 +469,24 @@ EXIT:
                 free(buf);
                 buf = NULL;
             }
-            // 网口时关闭
-            if (terminal_dev_register->transmission_mode == 0)
+        }
+        else 
+        {
+            PRINT("strlen(buf) = %d\n", strlen(buf));
+            if ((res = network_config.send_msg_to_pad(fd, 0xFF, buf, strlen(buf))) < 0)
             {
-                PRINT("fd = %d\n", fd);
-                close(fd);
+                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed!", res);  
             }
-        }
-        PRINT("strlen(buf) = %d\n", strlen(buf));
-        if ((res = network_config.send_msg_to_pad(fd, 0xFF, buf)) < 0)
-        {
-            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed!", res);  
-        }
-        if (buf != NULL)
-        {
-            free(buf);
-            buf = NULL;
+            if (buf != NULL)
+            {
+                free(buf);
+                buf = NULL;
+            }
         }
     }
     else if (res == STOP_CMD)
     {
-        if ((res = network_config.send_msg_to_pad(fd, 0x00, NULL)) < 0)
+        if ((res = network_config.send_msg_to_pad(fd, 0x00, NULL, 0)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed!", res);  
         }
@@ -515,6 +525,7 @@ EXIT:
             PRINT("insert failed!\n");
         }            
     }
+    #if BOARDTYPE == 5350
     // 网口时关闭
     if (terminal_dev_register->transmission_mode == 0)
     {
@@ -525,6 +536,10 @@ EXIT:
     {
         terminal_dev_register->transmission_mode = 0;
     }
+    #elif BOARDTYPE == 9344
+    close(fd);
+    #endif
+    network_config.init_cmd_list();  // 初始化命令结构体
     return (void *)res;
 }
 
@@ -572,7 +587,7 @@ void * pthread_manage(void* para)
         // 设置线程创建
         for (i = 0; i < common_tools.config->repeat; i++)
         {
-            if ((res = pthread_create(&terminal_dev_register->pad_cmd_handle_id, NULL, (void*)pad_cmd_handle, para)) < 0)
+            if ((res = pthread_create(&terminal_dev_register->pad_cmd_handle_id, NULL, (void*)pad_cmd_handle, (void *)terminal_dev_register)) < 0)
             {
                 PERROR("start_pthread_cmd_handle failed!\n");
                 continue;
@@ -611,11 +626,19 @@ void * pthread_manage(void* para)
     return 0;
 }
 
-
+#if BOARDTYPE == 5350
 /**
  * pad串口监听  
  */
 void * pad_serial_monitor(void* para) 
+
+#elif BOARDTYPE == 9344
+
+/**
+ * pad串口监听  
+ */
+void * pad_usb_monitor(void* para) 
+#endif
 {
     pthread_mutex_lock(&config_mutex);
     
@@ -649,6 +672,10 @@ void * pad_serial_monitor(void* para)
     unsigned char cmd = 0;
     unsigned char write_falg = 1;  // 是否有必要更新注册状态
     struct s_terminal_dev_register * terminal_dev_register = (struct s_terminal_dev_register *)para;
+    
+    #if BOARDTYPE == 9344
+    int usb_client_fd = 0;
+    #endif
     pthread_mutex_unlock(&config_mutex);
     
     /*************************************************************************************/
@@ -663,7 +690,11 @@ void * pad_serial_monitor(void* para)
         if (network_config.pthread_recv_flag == 1)
         {
             pthread_mutex_unlock(&network_config.recv_mutex);
-            PRINT("pad_serial waiting sleep 2...\n");
+            #if BOARDTYPE == 5350
+            PRINT("pad_serial waiing sleep 2...\n");
+            #else 
+            PRINT("pad_usb waiing sleep 2...\n");
+            #endif
             sleep(2);
             continue;
         }
@@ -702,6 +733,7 @@ void * pad_serial_monitor(void* para)
                     pthread_mutex_unlock(&config_mutex);
                     continue;
                 }
+                
                 #if BOARDTYPE == 5350 || BOARDTYPE == 6410
                 if (FD_ISSET(*network_config.serial_pad_fd, &fdset) > 0)
                 #elif BOARDTYPE == 9344
@@ -711,11 +743,23 @@ void * pad_serial_monitor(void* para)
                     memset(&tpstart, 0, sizeof(struct timeval));
                     gettimeofday(&tpstart, NULL); // 得到当前时间
                     //tcflush(*network_config.serial_pad_fd, TCIOFLUSH);
+                    
+                    #if BOARDTYPE == 9344
+                    if ((res = communication_network.accept_client_connection(network_config.usb_pad_fd)) < 0)
+                    {
+                        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "accept_client_connection failed", res); 
+                        pthread_mutex_unlock(&config_mutex);
+                        continue;
+                    }
+                    usb_client_fd = res;
+                    PRINT("usb_client_fd = %d\n", usb_client_fd);
+                    #endif 
+                    
                     // 接收pad发送的数据
                     #if BOARDTYPE == 5350 || BOARDTYPE == 6410
                     if ((res = network_config.recv_msg_from_pad(*network_config.serial_pad_fd, &pad_and_6410_msg)) < 0)
                     #elif BOARDTYPE == 9344
-                    if ((res = network_config.recv_msg_from_pad(network_config.usb_pad_fd, &pad_and_6410_msg)) < 0)
+                    if ((res = network_config.recv_msg_from_pad(usb_client_fd, &pad_and_6410_msg)) < 0)
                     #endif    
                     {
                         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "recv_msg_from_pad failed", res); 
@@ -870,9 +914,9 @@ void * pad_serial_monitor(void* para)
                                 }
                                 // 数据发送到PAD
                                 #if BOARDTYPE == 5350 || BOARDTYPE == 6410                      
-                                if ((res = network_config.send_msg_to_pad(*network_config.serial_pad_fd, 0XFA, NULL)) < 0)
+                                if ((res = network_config.send_msg_to_pad(*network_config.serial_pad_fd, 0XFA, NULL, 0)) < 0)
                                 #elif BOARDTYPE == 9344
-                                if ((res = network_config.send_msg_to_pad(network_config.usb_pad_fd, 0XFA, NULL)) < 0)
+                                if ((res = network_config.send_msg_to_pad(usb_client_fd, 0XFA, NULL, 0)) < 0)
                                 #endif
                                 {
                                     OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
@@ -882,7 +926,7 @@ void * pad_serial_monitor(void* para)
                                 #if BOARDTYPE == 5350 || BOARDTYPE == 6410
                                 if ((res = network_config.recv_msg_from_pad(*network_config.serial_pad_fd, &pad_and_6410_msg)) < 0)
                                 #elif BOARDTYPE == 9344
-                                if ((res = network_config.recv_msg_from_pad(network_config.usb_pad_fd, &pad_and_6410_msg)) < 0)
+                                if ((res = network_config.recv_msg_from_pad(usb_client_fd, &pad_and_6410_msg)) < 0)
                                 #endif
                                 {
                                     OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "recv_msg_from_pad failed", res);
@@ -914,14 +958,29 @@ void * pad_serial_monitor(void* para)
                                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "nvram_select failed!", res); 
                                 break;
                             }
+                            else 
+                            {
+                                PRINT("columns_value[0] = %s\n", columns_value[0]);
+                            }
                             #elif BOARDTYPE == 9344 
                             if ((res = database_management.select(1, columns_name, columns_value)) < 0)
                             {
-                                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_select failed!", res); 
-                                break;
-                            } 
+                                if (res == NO_RECORD_ERR)
+                                {
+                                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no record!", res); 
+                                    res = 0;
+                                }
+                                else 
+                                {
+                                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_select failed!", res); 
+                                    break;    
+                                }
+                            }
+                            else 
+                            {
+                                PRINT("columns_value[0] = %s\n", columns_value[0]);
+                            }
                             #endif
-                            PRINT("columns_value[0] = %s\n", columns_value[0]);
                             if ((strcmp("\"\"", columns_value[0]) != 0) && (strlen(columns_value[0]) == 12))
                             {
                                 // 获取10.10.10.100的mac
@@ -1004,9 +1063,9 @@ void * pad_serial_monitor(void* para)
                             }
                             // 数据发送到PAD
                             #if BOARDTYPE == 5350 || BOARDTYPE == 6410
-                            if ((res = network_config.send_msg_to_pad(*network_config.serial_pad_fd, *network_config.pad_cmd, NULL)) < 0)
+                            if ((res = network_config.send_msg_to_pad(*network_config.serial_pad_fd, *network_config.pad_cmd, NULL, 0)) < 0)
                             #elif BOARDTYPE == 9344
-                            if ((res = network_config.send_msg_to_pad(network_config.usb_pad_fd, *network_config.pad_cmd, NULL)) < 0)
+                            if ((res = network_config.send_msg_to_pad(usb_client_fd, *network_config.pad_cmd, NULL, 0)) < 0)
                             #endif
                             {
                                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
@@ -1016,7 +1075,7 @@ void * pad_serial_monitor(void* para)
                             #if BOARDTYPE == 5350 || BOARDTYPE == 6410
                             if ((res = network_config.recv_msg_from_pad(*network_config.serial_pad_fd, &pad_and_6410_msg)) < 0)
                             #elif BOARDTYPE == 9344
-                            if ((res = network_config.recv_msg_from_pad(network_config.usb_pad_fd, &pad_and_6410_msg)) < 0)
+                            if ((res = network_config.recv_msg_from_pad(usb_client_fd, &pad_and_6410_msg)) < 0)
                             #endif
                             {
                                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "recv_msg_from_pad failed", res);
@@ -1165,9 +1224,9 @@ void * pad_serial_monitor(void* para)
                         *network_config.network_flag = 1;
                         
                         #if BOARDTYPE == 5350 || BOARDTYPE == 6410
-                        if ((res = network_config.send_msg_to_pad(*network_config.serial_pad_fd, 0x00, NULL)) < 0)
+                        if ((res = network_config.send_msg_to_pad(*network_config.serial_pad_fd, 0x00, NULL, 0)) < 0)
                         #elif BOARDTYPE == 9344
-                        if ((res = network_config.send_msg_to_pad(network_config.usb_pad_fd, 0x00, NULL)) < 0)
+                        if ((res = network_config.send_msg_to_pad(usb_client_fd, 0x00, NULL, 0)) < 0)
                         #endif
                         {
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
@@ -1177,7 +1236,7 @@ void * pad_serial_monitor(void* para)
                         #if BOARDTYPE == 5350 || BOARDTYPE == 6410         
                         if ((res = network_config.network_settings(*network_config.serial_pad_fd, pad_and_6410_msg.data[0], pad_and_6410_msg.cmd)) < 0)
                         #elif BOARDTYPE == 9344
-                        if ((res = network_config.network_settings(network_config.usb_pad_fd, pad_and_6410_msg.data[0], pad_and_6410_msg.cmd)) < 0)
+                        if ((res = network_config.network_settings(usb_client_fd, pad_and_6410_msg.data[0], pad_and_6410_msg.cmd)) < 0)
                         #endif
                         {
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "network_config failed", res); 
@@ -1186,9 +1245,9 @@ void * pad_serial_monitor(void* para)
                         }
                         
                         #if BOARDTYPE == 5350 || BOARDTYPE == 6410 
-                        if ((res = network_config.send_msg_to_pad(*network_config.serial_pad_fd, 0x00, NULL)) < 0)
+                        if ((res = network_config.send_msg_to_pad(*network_config.serial_pad_fd, 0x00, NULL, 0)) < 0)
                         #elif BOARDTYPE == 9344
-                        if ((res = network_config.send_msg_to_pad(network_config.usb_pad_fd, 0x00, NULL)) < 0)
+                        if ((res = network_config.send_msg_to_pad(usb_client_fd, 0x00, NULL, 0)) < 0)
                         #endif 
                         {
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
@@ -1210,7 +1269,7 @@ void * pad_serial_monitor(void* para)
                         memset(columns_value[0], 0, sizeof(columns_value[0]));                  
                         memcpy(columns_name[0], "pad_sn", strlen("pad_sn")); 
                         
-                        #if BOARDTYPE == 5350 || BOARDTYPE == 9344
+                        #if BOARDTYPE == 5350
                         if ((res = nvram_interface.select(RT5350_FREE_SPACE, 1, columns_name, columns_value)) < 0)
                         {
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "nvram_select failed!", res);                           
@@ -1224,6 +1283,12 @@ void * pad_serial_monitor(void* para)
                             res = NULL_ERR;
                             break;
                         }
+                        #elif BOARDTYPE == 9344
+                        if ((res = database_management.select(1, columns_name, columns_value)) < 0)
+                        {
+                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_select failed!", res);
+                            break;
+                        }
                         #endif
                         PRINT("columns_value[0] = %s, pad_and_6410_msg.data = %s\n", columns_value[0], pad_and_6410_msg.data);
                         if (memcmp(columns_value[0], pad_and_6410_msg.data, strlen(columns_value[0])) != 0)
@@ -1235,7 +1300,7 @@ void * pad_serial_monitor(void* para)
                         #endif
                         
                         #if BOARDTYPE == 5350
-                        system("kill -9 `ps | grep terminal_dev_register | sed '/grep/'d | awk '{print $1}'`");
+                        system("kill -9 `ps | grep cacm | sed '/grep/'d | awk '{print $1}'`");
                         system("nvram_set freespace register_state 251");
                         #if SMART_RECOVERY == 1// 路由智能恢复
                         system("nvram_set backupspace register_state 251");
@@ -1246,9 +1311,9 @@ void * pad_serial_monitor(void* para)
                         #endif
                         
                         #if BOARDTYPE == 5350 || BOARDTYPE == 6410 
-                        if ((res = network_config.send_msg_to_pad(*network_config.serial_pad_fd, 0x00, NULL)) < 0)
+                        if ((res = network_config.send_msg_to_pad(*network_config.serial_pad_fd, 0x00, NULL, 0)) < 0)
                         #elif BOARDTYPE == 9344
-                        if ((res = network_config.send_msg_to_pad(network_config.usb_pad_fd, 0x00, NULL)) < 0)
+                        if ((res = network_config.send_msg_to_pad(usb_client_fd, 0x00, NULL, 0)) < 0)
                         #endif
                         {
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
@@ -1309,9 +1374,9 @@ void * pad_serial_monitor(void* para)
                         }
                         
                         #if BOARDTYPE == 5350 || BOARDTYPE == 6410 
-                        if ((res = network_config.send_msg_to_pad(*network_config.serial_pad_fd, 0x00, buf_tmp)) < 0)
+                        if ((res = network_config.send_msg_to_pad(*network_config.serial_pad_fd, 0x00, buf_tmp, strlen(buf_tmp))) < 0)
                         #elif BOARDTYPE == 9344
-                        if ((res = network_config.send_msg_to_pad(network_config.usb_pad_fd, 0x00, buf_tmp)) < 0)
+                        if ((res = network_config.send_msg_to_pad(usb_client_fd, 0x00, buf_tmp, strlen(buf_tmp))) < 0)
                         #endif
                         {
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
@@ -1320,9 +1385,9 @@ void * pad_serial_monitor(void* para)
                         sleep(3);
                         
                         #if BOARDTYPE == 5350 || BOARDTYPE == 6410 
-                        if ((res = network_config.send_msg_to_pad(*network_config.serial_pad_fd, 0x00, buf_tmp)) < 0)
+                        if ((res = network_config.send_msg_to_pad(*network_config.serial_pad_fd, 0x00, buf_tmp, strlen(buf_tmp))) < 0)
                         #elif BOARDTYPE == 9344
-                        if ((res = network_config.send_msg_to_pad(network_config.usb_pad_fd, 0x00, buf_tmp)) < 0)
+                        if ((res = network_config.send_msg_to_pad(usb_client_fd, 0x00, buf_tmp, strlen(buf_tmp))) < 0)
                         #endif
                         {
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
@@ -1425,9 +1490,9 @@ void * pad_serial_monitor(void* para)
                         
                         /*
                         #if BOARDTYPE == 5350 || BOARDTYPE == 6410 
-                        if ((res = network_config.send_msg_to_pad(*network_config.serial_pad_fd, 0x00, NULL)) < 0)
+                        if ((res = network_config.send_msg_to_pad(*network_config.serial_pad_fd, 0x00, NULL, 0)) < 0)
                         #elif BOARDTYPE == 9344
-                        if ((res = network_config.send_msg_to_pad(network_config.usb_pad_fd, 0x00, NULL)) < 0)
+                        if ((res = network_config.send_msg_to_pad(usb_client_fd, 0x00, NULL, 0)) < 0)
                         #endif
                         {
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
@@ -1446,9 +1511,9 @@ void * pad_serial_monitor(void* para)
                         }
                         
                         #if BOARDTYPE == 5350 || BOARDTYPE == 6410 
-                        if ((res = network_config.send_msg_to_pad(*network_config.serial_pad_fd, 0x00, NULL)) < 0)
+                        if ((res = network_config.send_msg_to_pad(*network_config.serial_pad_fd, 0x00, NULL, 0)) < 0)
                         #elif BOARDTYPE == 9344
-                        if ((res = network_config.send_msg_to_pad(network_config.usb_pad_fd, 0x00, NULL)) < 0)
+                        if ((res = network_config.send_msg_to_pad(usb_client_fd, 0x00, NULL, 0)) < 0)
                         #endif
                         {
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
@@ -1470,10 +1535,12 @@ void * pad_serial_monitor(void* para)
                         #if BOARDTYPE == 5350 || BOARDTYPE == 6410 
                         terminal_dev_register->fd = *network_config.serial_pad_fd;
                         #elif BOARDTYPE == 9344
-                        terminal_dev_register->fd = network_config.usb_pad_fd;
+                        terminal_dev_register->fd = usb_client_fd;
                         #endif
+                        
                         terminal_dev_register->cmd_count = pad_and_6410_msg.data[0];
                         terminal_dev_register->cmd_word = pad_and_6410_msg.cmd;
+                        
                         PRINT("_______________\n");
                         pthread_cond_signal(&terminal_dev_register->cond);
                         
@@ -1578,23 +1645,24 @@ void * pad_serial_monitor(void* para)
             #if 1
             PRINT("strlen(buf) = %d\n", strlen(buf));
             #if BOARDTYPE == 5350 || BOARDTYPE == 6410 
-            if ((res = network_config.send_msg_to_pad(*network_config.serial_pad_fd, 0xFF, buf)) < 0)
+            if ((res = network_config.send_msg_to_pad(*network_config.serial_pad_fd, 0xFF, buf, strlen(buf))) < 0)
             #elif BOARDTYPE == 9344
-            if ((res = network_config.send_msg_to_pad(network_config.usb_pad_fd, 0xFF, buf)) < 0)
+            PRINT("usb_client_fd = %d\n", usb_client_fd);
+            if ((res = network_config.send_msg_to_pad(usb_client_fd, 0xFF, buf, strlen(buf))) < 0)
             #endif
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed!", res);                
             }
+            
+            #if BOARDTYPE == 5350 || BOARDTYPE == 6410 
             sleep(3);
             PRINT("strlen(buf) = %d\n", strlen(buf));
-            #if BOARDTYPE == 5350 || BOARDTYPE == 6410 
-            if ((res = network_config.send_msg_to_pad(*network_config.serial_pad_fd, 0xFF, buf)) < 0)
-            #elif BOARDTYPE == 9344
-            if ((res = network_config.send_msg_to_pad(network_config.usb_pad_fd, 0xFF, buf)) < 0)
-            #endif
+            if ((res = network_config.send_msg_to_pad(*network_config.serial_pad_fd, 0xFF, buf, strlen(buf))) < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed!", res);  
             }
+            #endif
+            
             #else
             while (1)
             {
@@ -1602,7 +1670,7 @@ void * pad_serial_monitor(void* para)
                 #if BOARDTYPE == 5350 || BOARDTYPE == 6410 
                 if ((res = network_config.send_msg_to_pad(*network_config.serial_pad_fd, 0xFF, buf)) < 0)
                 #elif BOARDTYPE == 9344
-                if ((res = network_config.send_msg_to_pad(network_config.usb_pad_fd, 0xFF, buf)) < 0)
+                if ((res = network_config.send_msg_to_pad(usb_client_fd, 0xFF, buf)) < 0)
                 #endif
                 {
                     OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed!", res);    
@@ -1617,7 +1685,15 @@ void * pad_serial_monitor(void* para)
                 buf = NULL;
             }
         }
-           
+        #if BOARDTYPE == 9344
+        sleep(1);
+        if ((usb_client_fd != 0) && (cmd != 0x01) && (cmd != 0x02) && (cmd != 0x03))
+        {
+            close(usb_client_fd);
+            usb_client_fd = 0;
+        }
+        #endif
+        
         if (buf != NULL)
         {
             free(buf);
@@ -1644,6 +1720,7 @@ void * pad_serial_monitor(void* para)
         #if BOARDTYPE == 5350 || BOARDTYPE == 6410 
         tcflush(*network_config.serial_pad_fd, TCIOFLUSH);
         #elif BOARDTYPE == 9344
+        
         #endif
         
         network_config.pthread_flag = 0;
@@ -1963,7 +2040,7 @@ void * pad_socket_monitor(void* para)
                                     pad_and_6410_msg.data = NULL;
                                 }
                                 // 数据发送到PAD                            
-                                if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0XFA, NULL)) < 0)
+                                if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0XFA, NULL, 0)) < 0)
                                 {
                                     OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
                                     continue;
@@ -2080,7 +2157,7 @@ void * pad_socket_monitor(void* para)
                         for (i = 0; i < common_tools.config->repeat; i++)
                         {
                             // 数据发送到PAD
-                            if ((res = network_config.send_msg_to_pad(accept_pad_fd, *network_config.pad_cmd, NULL)) < 0)
+                            if ((res = network_config.send_msg_to_pad(accept_pad_fd, *network_config.pad_cmd, NULL, 0)) < 0)
                             {
                                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
                                 continue;
@@ -2214,7 +2291,7 @@ void * pad_socket_monitor(void* para)
                                 terminal_register.respond_pack->heart_beat_cycle, terminal_register.respond_pack->business_cycle);
                                 
                     	    PRINT("%s\n", buf);
-                            if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, buf)) < 0)
+                            if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, buf, strlen(buf))) < 0)
                             {
                                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
                                 break;
@@ -2300,7 +2377,7 @@ void * pad_socket_monitor(void* para)
                             break;
                         }
                                                
-                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, NULL)) < 0)
+                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, NULL, 0)) < 0)
                         {
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
                             break;
@@ -2396,6 +2473,15 @@ void * pad_socket_monitor(void* para)
                                     PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
                                     break;
                                 }
+                                case 0x22: // AP_CYPHER
+                                {
+                                    index++;
+                                    network_config.cmd_list[i].cmd_bit = index;
+                                    memcpy(network_config.cmd_list[i].set_value, "TKIP CCMP", strlen("TKIP CCMP"));
+                                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s\"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
+                                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
+                                    break;
+                                }
                                 case 0x32: // SSID3 密码
                                 {
                                     index++;
@@ -2445,7 +2531,7 @@ void * pad_socket_monitor(void* para)
                                 {
                                     index++;
                                     network_config.cmd_list[i].cmd_bit = index;
-                                    memcpy(network_config.cmd_list[i].set_value, "2", strlen("2"));
+                                    memcpy(network_config.cmd_list[i].set_value, "3", strlen("3"));
                                     sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
                                     PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
                                     break;
@@ -2519,7 +2605,7 @@ void * pad_socket_monitor(void* para)
                         
                         #if LOCAL_SOCKET
                         // 创建客户端连接
-                        if ((client_fd = internetwork_communication.make_local_socket_client_link(TERMINAL_LOCAL_SOCKET_NAME)) < 0)
+                        if ((client_fd = communication_network.make_local_socket_client_link(TERMINAL_LOCAL_SOCKET_NAME)) < 0)
                         {
                             PERROR("make_client_link failed!\n");
                             res = client_fd;
@@ -2528,7 +2614,7 @@ void * pad_socket_monitor(void* para)
                         }
                         #else
                         // 创建客户端连接
-                        if ((client_fd = internetwork_communication.make_client_link("127.0.0.1", TERMINAL_LOCAL_SERVER_PORT)) < 0)
+                        if ((client_fd = communication_network.make_client_link("127.0.0.1", TERMINAL_LOCAL_SERVER_PORT)) < 0)
                         {
                             PERROR("make_client_link failed!\n");
                             res = client_fd;
@@ -2539,7 +2625,7 @@ void * pad_socket_monitor(void* para)
                         PRINT("client_fd = %d\n", client_fd);
                         for (i = 0; i < 3; i++)
                         {
-                            if ((res = network_config.send_msg_to_pad(client_fd, 0x00, NULL)) < 0)
+                            if ((res = network_config.send_msg_to_pad(client_fd, 0x00, NULL, 0)) < 0)
                             {
                                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
                                 continue;
@@ -2640,7 +2726,7 @@ void * pad_socket_monitor(void* para)
                             break;
                         }
                         //#if BOARDTYPE == 5350
-                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, NULL)) < 0)
+                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, NULL, 0)) < 0)
                         {
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
                             break;
@@ -2814,7 +2900,7 @@ void * pad_socket_monitor(void* para)
                         }
                         *network_config.network_flag = 1;
                         
-                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, NULL)) < 0)
+                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, NULL, 0)) < 0)
                         {
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
                             break;
@@ -3401,7 +3487,7 @@ void * pad_socket_monitor(void* para)
                             }
                         }
                         PRINT("send_buf = %s\n", send_buf);
-                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, send_buf)) < 0)
+                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, send_buf, strlen(send_buf))) < 0)
                         {
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
                         }
@@ -3453,7 +3539,7 @@ void * pad_socket_monitor(void* para)
                         }
                         #endif
                         
-                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, NULL)) < 0)
+                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, NULL, 0)) < 0)
                         {
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
                             break;
@@ -3461,7 +3547,7 @@ void * pad_socket_monitor(void* para)
                         sleep(1);
                         
                         #if BOARDTYPE == 5350
-                        system("kill -9 `ps | grep terminal_dev_register | sed '/grep/'d | awk '{print $1}'`");
+                        system("kill -9 `ps | grep cacm | sed '/grep/'d | awk '{print $1}'`");
                         system("nvram_set freespace register_state 251");
                         #if SMART_RECOVERY == 1// 路由智能恢复
                         system("nvram_set backupspace register_state 251");
@@ -3528,7 +3614,7 @@ void * pad_socket_monitor(void* para)
                             break;
                         }
                         
-                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, buf_tmp)) < 0)
+                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, buf_tmp, strlen(buf_tmp))) < 0)
                         {
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
                             break;
@@ -3593,7 +3679,7 @@ void * pad_socket_monitor(void* para)
                             break;
                         }
                         
-                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, device_token)) < 0)
+                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, device_token, 16)) < 0)
                         {
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
                             break;
@@ -3658,7 +3744,7 @@ void * pad_socket_monitor(void* para)
                             break;
                         }
                         
-                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, position_token)) < 0)
+                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, position_token, 16)) < 0)
                         {
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
                             break;
@@ -3723,7 +3809,7 @@ void * pad_socket_monitor(void* para)
                             break;
                         }
                         
-                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, device_token)) < 0)
+                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, device_token, 16)) < 0)
                         {
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
                             break;
@@ -3788,7 +3874,7 @@ void * pad_socket_monitor(void* para)
                             break;
                         }
                         
-                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, position_token)) < 0)
+                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, position_token, 16)) < 0)
                         {
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
                             break;
@@ -3917,7 +4003,7 @@ void * pad_socket_monitor(void* para)
                         }
                         
                         /*
-                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, NULL)) < 0)
+                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, NULL, 0)) < 0)
                         {
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
                             break;
@@ -3934,7 +4020,7 @@ void * pad_socket_monitor(void* para)
                             break;
                         }
                         
-                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, NULL)) < 0)
+                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, NULL, 0)) < 0)
                         {
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
                             break;
@@ -3983,7 +4069,7 @@ void * pad_socket_monitor(void* para)
             // 建立链接
             for (i = 0; i < common_tools.config->repeat; i++)
             {
-                if ((*network_config.server_pad_fd = internetwork_communication.make_client_link(common_tools.config->pad_ip, port)) < 0)
+                if ((*network_config.server_pad_fd = communication_network.make_client_link(common_tools.config->pad_ip, port)) < 0)
                 {
                     OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "make_client_link failed", *network_config.server_pad_fd);    
                     if (i != (common_tools.config->repeat - 1))
@@ -4003,7 +4089,7 @@ void * pad_socket_monitor(void* para)
                 if (res == 0)
                 {
                     // 发送
-                    if ((res = network_config.send_msg_to_pad(*network_config.server_pad_fd, 0x00, NULL)) < 0)
+                    if ((res = network_config.send_msg_to_pad(*network_config.server_pad_fd, 0x00, NULL, 0)) < 0)
                     {
                         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);  
                     }
@@ -4086,7 +4172,7 @@ void * pad_socket_monitor(void* para)
                 PRINT("pad is client\n");
                 fd = accept_pad_fd;
             }
-            if ((res = network_config.send_msg_to_pad(fd, 0xFF, buf)) < 0)
+            if ((res = network_config.send_msg_to_pad(fd, 0xFF, buf, strlen(buf))) < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed!", res);
                 PRINT("send failed! %d %d %s\n", res, errno, strerror(errno));  
@@ -4161,7 +4247,13 @@ int main(int argc, char ** argv)
     strcpy(common_tools.argv0, argv[0]);
     
     int res = 0;
-    pthread_t pthread_pad_serial_monitor_id, pthread_pad_socket_monitor_id, pthread_manage_id; 
+    
+    pthread_t pthread_pad_socket_monitor_id, pthread_manage_id,
+    #if BOARDTYPE == 5350
+    pthread_pad_serial_monitor_id;
+    #elif BOARDTYPE == 9344
+    pthread_pad_usb_monitor_id;
+    #endif
     
     common_tools.work_sum->work_sum = 1;
 	start_time = time(0);
@@ -4195,17 +4287,58 @@ int main(int argc, char ** argv)
     printf("[%s]%s["__FILE__"][%s][%05d] [terminal_init is running...]\n", common_tools.argv0, common_tools.get_datetime_buf(), __FUNCTION__, __LINE__);
     #endif
     
-    /*
     #if CTSI_SECURITY_SCHEME == 2
-    // 用户登录：当base上电时，检测是否终端初始化成功，当成功时，主动向平台请求设备令牌，保存在本地
+     // 用户登录：当base上电时，检测是否终端初始化成功，当成功时，主动向平台请求设备令牌，保存在本地
     char device_token[128] = {0};
-    if ((res = terminal_authentication.rebuild_device_token(device_token)) < 0)
+    char column_name[1][30] = {"register_state"};
+    char column_value[1][100] = {0};
+    int i = 0;
+    
+    // 查询状态
+    for (i = 0; i < common_tools.config->repeat; i++)
     {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "rebuild_device_token failed", res); 
-        return res;
+        #if BOARDTYPE == 6410 || BOARDTYPE == 9344
+        if ((res = database_management.select(1, column_name, column_value)) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_select failed!", res);           
+            continue;
+        }
+        PRINT("column_value[0] = %02X %02X %02X %02X, *network_config.pad_cmd = %02X\n", column_value[0][0], column_value[0][1], column_value[0][2], column_value[0][3], (unsigned char)*network_config.pad_cmd);
+        #elif BOARDTYPE == 5350
+        if ((res = nvram_interface.select(RT5350_FREE_SPACE, 1, column_name, column_value)) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "nvram_select failed!", res);           
+            continue;
+        }
+        if ((strcmp("\"\"", column_value[0]) == 0) || (strlen(column_value[0]) == 0))
+        {
+            memset(column_value[0], 0, sizeof(column_value[0]));
+            sprintf(column_value[0], "There is no (%s) record!", column_name[0]);
+            res = NULL_ERR;
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, column_value[0], res); 
+            break;
+        }
+        PRINT("columns_value[0] = %s\n", column_value[0]);
+        #endif
+        break;
+    }
+    
+    if (res == 0)
+    {
+        if (memcmp("0", column_value[0], strlen(column_value[0])) == 0)
+        {
+            for (i = 0; i < common_tools.config->repeat; i++)
+            {
+                if ((res = terminal_authentication.rebuild_device_token(device_token)) < 0)
+                {
+                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "rebuild_device_token failed", res); 
+                    continue;
+                }
+                break;
+            }
+        }
     }
     #endif
-    */
     
     struct s_terminal_dev_register terminal_dev_register;
     memset(&terminal_dev_register, 0, sizeof(struct s_terminal_dev_register));
@@ -4222,13 +4355,22 @@ int main(int argc, char ** argv)
     
     pthread_create(&pthread_pad_socket_monitor_id, NULL, (void*)pad_socket_monitor, (void *)&terminal_dev_register); 
     PRINT("pthread_create (pad_socket_monitor) success!\n");
+    #if BOARDTYPE == 5350
     pthread_create(&pthread_pad_serial_monitor_id, NULL, (void*)pad_serial_monitor, (void *)&terminal_dev_register);
     PRINT("pthread_create (pad_serial_monitor) success!\n");
+    #elif BOARDTYPE == 9344
+    pthread_create(&pthread_pad_usb_monitor_id, NULL, (void*)pad_usb_monitor, (void *)&terminal_dev_register);
+    PRINT("pthread_create (pad_usb_monitor) success!\n");
+    #endif
     pthread_create(&pthread_manage_id, NULL, (void*)pthread_manage, (void *)&terminal_dev_register);
     PRINT("pthread_create (pthread_manage) success!\n");
     
     pthread_join(pthread_pad_socket_monitor_id, NULL);
+    #if BOARDTYPE == 5350
     pthread_join(pthread_pad_serial_monitor_id, NULL);
+    #elif BOARDTYPE == 9344
+    pthread_join(pthread_pad_usb_monitor_id, NULL);
+    #endif
     pthread_join(pthread_manage_id, NULL);
     pthread_mutex_destroy(&config_mutex);
     pthread_mutex_destroy(&terminal_dev_register.mutex);

@@ -193,7 +193,7 @@ int sqlite3_select(unsigned char columns_count, char (*columns_name)[30], char (
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "para is NULL!", NULL_ERR);
         return NULL_ERR;
     }
-    
+    PRINT("common_tools.config->db = %s\n", common_tools.config->db);
     if (sqlite3_open(common_tools.config->db, &db) != 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, sqlite3_errmsg(db), SQLITE_OPEN_ERR);
@@ -225,7 +225,7 @@ int sqlite3_select(unsigned char columns_count, char (*columns_name)[30], char (
         if (strcmp(result_buf[index], "") == 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no data", NULL_ERR);
-            return NULL_ERR;    
+            return NO_RECORD_ERR;    
         }
         memcpy(columns_value[i], result_buf[index], strlen(result_buf[index]));
         ++index;

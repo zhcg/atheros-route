@@ -84,6 +84,8 @@ insmod /lib/modules/2.6.31/usb/ehci-hcd.ko
 insmod /lib/modules/2.6.31/usb/usb-storage.ko
 insmod /lib/modules/2.6.31/usb/usbnet.ko
 insmod /lib/modules/2.6.31/usb/cdc_ether.ko
+#insmod /lib/modules/2.6.31/usb/ath_udc.ko
+#insmod /lib/modules/2.6.31/usb/g_file_storage.ko file=/dev/ram1 stall=0 removable=1
 
 #
 # Enable I2S
@@ -170,10 +172,13 @@ insmod /lib/modules/2.6.31/stm32/ath_spi_stm32.ko
 mkdir -p /var/terminal_init/log
 
 /usr/bin/version_check &
+
 spi_rt_main & 
-terminal_dev_register &
-swipe_card &
-monitor_application  &
+#spi_rt_uart1 &
+#terminal_dev_register &
+#swipe_card &
+#monitor_application  &
+#usb_stub &
 
 /bin/reset_mips /bin/phone_serv_19200 &
 /bin/server &
