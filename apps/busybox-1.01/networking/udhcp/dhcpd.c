@@ -73,8 +73,8 @@ void deal_staControl()
     }
     else if( 0 == pid )
     {
-    	system("iptables -N control_sta");
-		system("iptables -A INPUT -j control_sta");
+    	//system("iptables -N control_sta");
+		//system("iptables -A INPUT -j control_sta");
         if ((fp = fopen("/etc/.staAcl", "r")) == NULL)
 			exit(0);
 		else
