@@ -24,7 +24,9 @@ int main(int argc,char **argv)
 	int len;
 	char buf[MAX_SIZE];
 	int i=0;
-	
+	int ret = 0;
+	//static FILE *errOut;
+	//errOut = fopen("/dev/ttyS0","w");
 	memset (buf , 0, sizeof(buf));
 	
 	if(  argc !=  2){
@@ -51,6 +53,21 @@ int main(int argc,char **argv)
 	
 	fseek(f, FLAG_OFFSET, SEEK_SET);
 	len = fread (buf ,1,16,f );
+	while(fgets(buf, 17, f))
+	{
+		if (strncmp(buf,flagbuf,16) == 0)
+		{
+			//fprintf(errOut,"%s  %d write %s ok\n",__func__,__LINE__);
+			ret = 0;
+			break;
+		}
+		else
+			ret = 1;
+	}
+	//fprintf(errOut,"%s  %d write %d ok\n",__func__,__LINE__, ret);
+	if(ret == 1)
+		return 1;
+	/*
 	if( !len)
 	{
 		printf("ERROR:  the read operation is fail\n");
@@ -64,6 +81,7 @@ int main(int argc,char **argv)
 		
 		return 1;
 	}
+	*/
 	
 	printf("It's OK\n");
 		
