@@ -10,7 +10,8 @@
 	<message msgid="par offbutton" msgstr="Off" />  
 	<message msgid="par work" msgstr="Take effect" />
 	<message msgid="par offwork" msgstr="Lose efficacy" />  
-	<message msgid="par bSAVE" msgstr="Save" />   
+	<message msgid="par bSAVE" msgstr="Save" /> 
+	<message msgid="par mac_format" msgstr="for example(11:22:33:44:55:66)" />   	
 
 	<message msgid="parset title" msgstr="Parents contrl" />  
 	<message msgid="parset des" msgstr="The management of children PC Internet access" />  

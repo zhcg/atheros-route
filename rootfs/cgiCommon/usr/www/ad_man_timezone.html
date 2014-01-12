@@ -119,6 +119,8 @@ function NTPFormCheck()
 		widget_disable("NTPServerIP1");
 		widget_disable("NTPServerIP2"); 
 	}
+	Butterlate.setTextDomain("admin");
+	window.parent.Demo(_("admw settingwaiting"));
 	button_commit("TIMEZONE_SET");
 	return true;
 }
@@ -263,7 +265,7 @@ function switch_ntp()
 <tr>
   <td class="head" id="manNTPTimeZone"></td>
   <td>
-    <select name="sTIME_ZONE">
+    <select name="TIME_ZONE">
       <option ~sTIME_ZONE:UCT_-11~ value="UCT_-11" id="manNTPMidIsland"></option>
       <option ~sTIME_ZONE:UCT_-10~ value="UCT_-10" id="manNTPHawaii"></option>
       <option ~sTIME_ZONE:NAS_-09~ value="NAS_-09" id="manNTPAlaska"></option>

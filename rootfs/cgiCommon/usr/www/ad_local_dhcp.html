@@ -297,6 +297,8 @@ function CheckValue()
 		widget_disable("GW_IP");
 		widget_disable("GW_SUB");
 	}
+	Butterlate.setTextDomain("admin");
+	window.parent.Demo(_("admw settingwaiting"));
 	button_commit("DHCP_SET");
 	return true;
 }

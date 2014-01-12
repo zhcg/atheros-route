@@ -5,6 +5,8 @@
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
+
+function button_commit(buttonID){document.getElementById(buttonID).click();}
 function checkInjection(str)
 {
 	var len = str.length;
@@ -19,7 +21,7 @@ function checkInjection(str)
 
 function refresh_all()
 {	
-	top.location.href = "http://10.10.10.254"; 
+	window.top.location.href = "http://10.10.10.254"; 
 } 
 function update()
 { 
@@ -42,12 +44,6 @@ function AdmFormCheck()
 		document.Adm.ADMPASS.select();
 		return false;
 	}
-	//if(checkInjection(document.Adm.ADMPASS.value) == false)
-	//{
-	//	alert(_("err keychar"));
-	//	document.Adm.ADMPASS.select();
-	//	return false;
-	//}
 	{
 		var xxx=document.Adm.ADMPASS.value;  //用户名（在此赋值）
 
@@ -72,7 +68,9 @@ function AdmFormCheck()
 	}
 	//alert(_("password change"));
 	//update();
-	document.getElementById('ADMINSET').click();
+	Butterlate.setTextDomain("admin");
+	window.parent.Demo(_("admw settingwaiting"));
+	button_commit('ADMINSET');
 	return true;
 }
 

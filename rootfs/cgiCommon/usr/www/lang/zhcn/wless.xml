@@ -10,7 +10,7 @@
 	<message msgid="wless offbutton" msgstr="禁用" />  
 	<message msgid="wless bSAVE" msgstr="保存" />  
 
-	<message msgid="wless title" msgstr="高级设置" />  
+	<message msgid="wless title" msgstr="无线高级设置" />  
 	<message msgid="wless des" msgstr="配置无线高级设置参数" />  
 	<message msgid="wless t1_title" msgstr="无线高级设置" />  
 	<message msgid="wless ti_pow" msgstr="调整发射功率" />  
@@ -24,7 +24,7 @@
 	<message msgid="wless t1_long" msgstr="长" />  
 	<message msgid="wless t1_shot" msgstr="短" />  
 
-	<message msgid="wless wifititle" msgstr="基本设置" />
+	<message msgid="wless wifititle" msgstr="无线基本设置" />
 
 	<message msgid="err MAC empty" msgstr="MAC地址不能为空" />
 	<message msgid="err user empty" msgstr="用户名不能为空" />

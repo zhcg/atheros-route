@@ -7,9 +7,9 @@
   <message msgid="admin scan" msgstr="搜寻" />
   <message msgid="admin restart" msgstr="重启" />
   
-  <message msgid="admw div_wan_title" msgstr="请您选择路由器WAN口的连接方式。所需参数在开通网络时，由网络运营商（中国电信、中国移动、中国联通等）提供。" />
+  <message msgid="admw div_wan_title" msgstr="请您选择HBD路由器WAN口的连接方式。所需参数在开通网络时，由网络运营商（中国电信、中国移动、中国联通等）提供。" />
   <message msgid="admw DHCP" msgstr="自动获取(动态IP)" />  
-  <message msgid="admw DHCPdisc" msgstr="网络运营商没有提供任何参数，BASE将自动从网络运营商获取IP地址" />
+  <message msgid="admw DHCPdisc" msgstr="网络运营商没有提供任何参数，HBD路由器将自动从网络运营商获取IP地址" />
   <message msgid="admw SM" msgstr="手动设置(静态IP)" />
   <message msgid="admw SMdisc" msgstr="网络运营商提供固定的IP地址、子网掩码、网关、DNS服务器。" />
   <message msgid="admw PPPOE" msgstr="宽带 (ADSL)" />
@@ -82,7 +82,7 @@
   <message msgid="admw int" msgstr="有线连接" />  
   <message msgid="admw int1" msgstr="（连接网线）" />  
   <message msgid="admw wireless" msgstr="无线中继" />  
-  <message msgid="admw int2" msgstr="（连接到现有路由器的WiFi网络）" />
+  <message msgid="admw int2" msgstr="（连接到现有其他路由器的WiFi网络）" />
   
   <message msgid="admw RMd" msgstr="无线中继" />  
   <message msgid="admw R_uname" msgstr="网络名称（SSID）" />  
@@ -100,7 +100,7 @@
    <message msgid="admw w5ttitle" msgstr="家长控制" />  
    <message msgid="admw wwtitle" msgstr="外网/无线中继设置" />  
  
-   <message msgid="admw modedes" msgstr="请您选择路由器WAN口的连接方式。所需参数在开通网络时，由网络运营商（中国电信、中国联通、中国铁通、中国移动等）提供。" />  
+   <message msgid="admw modedes" msgstr="请您选择HBD路由器WAN口的连接方式。所需参数在开通网络时，由网络运营商（中国电信、中国联通、中国铁通、中国移动等）提供。" />  
    <message msgid="admw modedes1" msgstr="所需参数在开通网络时，由网络运营商（中国电信、中国联通、中国铁通、中国移动等）提供。" />  
    <message msgid="admw wifides" msgstr="请您设置HBD路由的WiFi名称和密码。您的电脑、PAD、智能手机等将使用以下网络上网。" />  
    <message msgid="admw wirelessdes" msgstr="请您选择要连接的WiFi。注意:中继之后,请使用静态IP方式连接登录Web。" />  
@@ -116,8 +116,8 @@
 	<message msgid="admw otherbutton" msgstr="其他" />    
  	<message msgid="admw advbutton" msgstr="高级" />
 	
-	<message msgid="admw AutoMode" msgstr="路由器自动选择连接方式（推荐使用）" />    
-	<message msgid="admw Autodisc" msgstr="选此模式，路由器会自动选择连接方式" />
+	<message msgid="admw AutoMode" msgstr="HBD路由器自动选择连接方式（推荐使用）" />    
+	<message msgid="admw Autodisc" msgstr="选此模式，HBD路由器会自动选择连接方式" />
 	<message msgid="admw m_bset" msgstr="开始设置" />
 	
 	<message msgid="admw showp" msgstr="显示密码" />
@@ -138,7 +138,7 @@
     <message msgid="admin open" msgstr="不加密" />
     <message msgid="admin jiami" msgstr="加密(推荐使用)" />
 	
-	<message msgid="admw wifiswitch" msgstr="网络开关" />
+	<message msgid="admw wifiswitch" msgstr="无线开关" />
 	<message msgid="admw wdsswitch" msgstr="无线中继开关" />
 
 	<message msgid="admw onbutton" msgstr="启用" />
@@ -182,7 +182,7 @@
 	<message msgid="admw internet" msgstr="互联网" />
 	<message msgid="admw wai" msgstr="外网/无线中继设置" />
 	<message msgid="admw nei" msgstr="WiFi设置" />
-	<message msgid="password change" msgstr="密码修改成功，重启路由器后生效" />
+	<message msgid="password change" msgstr="密码修改成功，重启HBD路由器后生效" />
 	<message msgid="admw securitydes" msgstr="修改路由Web管理页面的登录密码" />
 	
 	<message msgid="admw uploadtitle" msgstr="固件升级" />
@@ -192,12 +192,12 @@
 	<message msgid="admw Upload" msgstr="升级" />
 	<message msgid="err file empty" msgstr="请您选择升级文件!" />
 	<message msgid="upgrade success" msgstr="升级成功!" />
-	<message msgid="admw channelchoose" msgstr="信道选择" />
+	<message msgid="admw channelchoose" msgstr="信道" />
 	<message msgid="admw channelauto" msgstr="自动" />
 
 	<message msgid="factory reset" msgstr="恢复出厂设置将丢失现有的配置，你确定要继续吗?" />
 	<message msgid="admw factitle" msgstr="恢复出厂设置" />
-	<message msgid="admw facdes" msgstr="将BASE的所有设置恢复至出厂状态。" />
+	<message msgid="admw facdes" msgstr="将HBD路由器的所有设置恢复至出厂状态。" />
 	<message msgid="admw defaultset" msgstr="恢复出厂设置" />
 	
 	<message msgid="factory fail" msgstr="恢复出厂设置失败!" />
@@ -216,7 +216,7 @@
 	<message msgid="err file format" msgstr="升级包与系统硬件不匹配，请您选择正确的升级包" />
 	<message msgid="err file upload" msgstr="文件上传失败" />
 	<message msgid="admw chfile" msgstr="选择文件" />
-    <message msgid="admw waring" msgstr="注意:升级过程完全自动,请您不要关闭电源,否则将导致BASE损坏而无法使用,升级过程约130秒,当升级结束后,BASE将自动重新启动" />	
+    <message msgid="admw waring" msgstr="注意:升级过程完全自动,请您不要关闭电源,否则将导致HBD路由器损坏而无法使用,升级过程约130秒,当升级结束后,HBD路由器将自动重新启动" />	
 	<message msgid="admw sysupgrade" msgstr="确认进行固件升级?" />
 	<message msgid="err dhcp null" msgstr="无法通过DHCP获取到WAN口IP,请您检查是否为DHCP方式连接" />
 	<message msgid="err dhcp ip" msgstr="DHCP获取到WAN口IP跟当前路由在同一个网段,请您在高级设置-内网设置-网关设置里面修改路由的网段" />

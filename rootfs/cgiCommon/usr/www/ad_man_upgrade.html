@@ -7,6 +7,7 @@
 <META http-equiv=Pragma content=no-cache>
 <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
 <script type="text/javascript" src="/lang/b28n.js"></script>
+<script language="JavaScript" type="text/javascript" src="/style/load.js"></script>
 <script type="text/javascript">
 function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "table-row";}}
 function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
@@ -31,7 +32,8 @@ function initTranslation()
 
 function waitgifshow()
 {
-	widget_display("waitshow");
+	//widget_display("waitshow");
+	window.parent.Demo( _("admw settingwaiting"));
 }
 
 function upgradef()
@@ -46,8 +48,8 @@ function upgradef()
 	if(confirm(_("admw sysupgrade")))
 	{
 		Butterlate.setTextDomain("admin");
-		widget_hide("uploaddes");	
-		widget_hide("uploadff");	
+		//widget_hide("uploaddes");	
+		//widget_hide("uploadff");	
 		waitgifshow();
 		button_commit('UPGRADE');
 	}	
@@ -92,13 +94,13 @@ function init()
   </td>
 </tr>
 <tr>
-  <td>&nbsp; &nbsp;</td>
+  <td class="head">&nbsp; &nbsp;</td>
   <td>
   <span align="center" id="waring"></span>
   </td>
 </tr>
 <tr>
-  <td>&nbsp; &nbsp;</td>
+  <td class="head">&nbsp; &nbsp;</td>
   <td>
 	<input id="Upload" class="handaer_input" onclick="upgradef()" type="button" name="Upload" value="Upload">
 	<input type="submit" name="UPGRADE" style="display:none" id="UPGRADE" value="UPGRADE">

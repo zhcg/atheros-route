@@ -8,7 +8,7 @@
 
 	<message msgid="man ntp title" msgstr="时间设置" />
 	<message msgid="man ntp des" msgstr="配置时间服务器相关选项" />
-	<message msgid="man ntp setting" msgstr="网络时间设置" />
+	<message msgid="man ntp setting" msgstr="时间设置" />
 	<message msgid="man ntp timezone" msgstr="时区：" />
 	<message msgid="man ntp mid island" msgstr="(GMT-11:00) 中途岛、萨摩亚" />
 	<message msgid="man ntp hawaii" msgstr="(GMT-10:00) 夏威夷" />
@@ -75,17 +75,17 @@
 	<message msgid="man cfg backto1" msgstr="您确定要恢复到" />
 	<message msgid="man cfg backto2" msgstr="的状态?" />
 	<message msgid="man cfg backupdel1" msgstr="你确定要删除" />	
-	<message msgid="man cfg backupdel2" msgstr="的备份?" />
+	<message msgid="man cfg backupdel2" msgstr="的备份文件将被删除" />
 	<message msgid="err cfg full" msgstr="备份空间已满,请删除部分备份后再进行备份" />	
 	
 	
 	<message msgid="man reboottitle" msgstr="系统重启" />
-	<message msgid="man rebootdes" msgstr="单击此按钮使BASE重启" />
-	<message msgid="man reboot" msgstr="重启BASE" />
+	<message msgid="man rebootdes" msgstr="单击此按钮使HBD路由器重启" />
+	<message msgid="man reboot" msgstr="重启HBD路由器" />
 
-	<message msgid="man basesavedes" msgstr="BASE备份与恢复" />
-	<message msgid="man basesavetitle" msgstr="BASE备份" />
-	<message msgid="man basesavetitle2" msgstr="BASE恢复" />
+	<message msgid="man basesavedes" msgstr="HBD路由器备份与恢复" />
+	<message msgid="man basesavetitle" msgstr="HBD路由器备份" />
+	<message msgid="man basesavetitle2" msgstr="HBD路由器恢复" />
 	<message msgid="man date" msgstr="日期" />
 	<message msgid="man modify" msgstr="删除" />
 	<message msgid="man use" msgstr="恢复" />
@@ -100,7 +100,7 @@
 	<message msgid="err range" msgstr="参数范围错误" />
 	<message msgid="err file empty" msgstr="请您选择升级文件!" />
 	<message msgid="man chfile" msgstr="选择文件" />
-	<message msgid="man sysreboot" msgstr="确认重新启动BASE?" />
+	<message msgid="man sysreboot" msgstr="确认重新启动HBD路由器?" />
 	<message msgid="err IP empty" msgstr="IP地址不能为空" />
 	<message msgid="err sub empty" msgstr="掩码不能为空" />
 	<message msgid="err gw empty" msgstr="网关不能为空" />

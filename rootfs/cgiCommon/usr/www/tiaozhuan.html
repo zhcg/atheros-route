@@ -2,34 +2,29 @@
 <head>
 <title></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
-<script>
-function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
-function init()
-{
-	Butterlate.setTextDomain("other");
 
-	var a = document.getElementById("RESULT").value;
-	var b = document.getElementById("PAGE").value;
-	//alert("a:"+a);
-	//alert("b:"+b);
-	if(a == "yes")
-		trans_inner("resultshow","R_SUCCESS");
-	else
-		trans_inner("resultshow","R_FAIL");
-
-	setTimeout(function(){window.location.href=b;},2000);
-}
-
-</script>
 </head>
 
-<body onload=init();>
+<body>
+<input type="text" style="display:none" name="RESULT" id="RESULT" size="20" maxlength="32" value="~~RESULT~">
+<input type="text" style="display:none" name="PAGE" id="PAGE" size="20" maxlength="32" value="~~PAGE~">
+<script type="text/javascript">
+Butterlate.setTextDomain("other");
+var a = document.getElementById("RESULT").value;
+var b = document.getElementById("PAGE").value;
+if(a == "yes")
+{
+	window.parent.Demo2(_("R_SUCCESS"));
+}
+else
+{
+	window.parent.Demo2(_("R_FAIL"));
+}
+setTimeout(function(){window.parent.DialogHide();window.location.href=b;},1000);
+</script>
 
-<div>
-  <p align="center" id="resultshow"></p>
-</div>
-	<input type="text" style="display:none" name="RESULT" id="RESULT" size="20" maxlength="32" value="~~RESULT~">
-	<input type="text" style="display:none" name="PAGE" id="PAGE" size="20" maxlength="32" value="~~PAGE~">
 </body>
 </html>

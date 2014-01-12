@@ -14,7 +14,8 @@
 	<message msgid="conn bSAVE" msgstr="Save" />   
 	<message msgid="conn delit1" msgstr="Are you sure to delete " /> 
 	<message msgid="conn delit2" msgstr=" management rule" /> 
-
+	<message msgid="conn mac_format" msgstr="for example(11:22:33:44:55:66)" />   
+	
 	<message msgid="clist title" msgstr="Accessed devices" />  
 	<message msgid="clist t1_title" msgstr="Cable equipment" />  
 	<message msgid="clist t2_title" msgstr="Wireless devices（Including the suspicious device）" />  

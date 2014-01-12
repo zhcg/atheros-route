@@ -4,6 +4,7 @@
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <script type="text/javascript" src="/lang/b28n.js"></script>
+<script language="JavaScript" type="text/javascript" src="/style/load.js"></script>
 <script language="JavaScript" type="text/javascript">
 Butterlate.setTextDomain("admin");
 var showothers;
@@ -27,6 +28,7 @@ function widget_display	(widgetID){document.getElementById(widgetID).style.visib
 
 function widget_enable	(widgetID){document.getElementById(widgetID).disabled = false;}
 function widget_disable	(widgetID){document.getElementById(widgetID).disabled = true;}
+function button_commit(buttonID){document.getElementById(buttonID).click();}
 function butwork(zhi1,zhi2,zhi3,zhi4)
 {
 	if(zhi1 == "false")
@@ -108,16 +110,16 @@ function change_step(offset)
 		{
 			document.getElementById("buttontable").style.visibility = "hidden";
 			document.getElementById("buttontable").style.display = "none";	
-			document.getElementById("gifshow").style.visibility = "visible";
-			document.getElementById("gifshow").style.display = style_display_on();
-			document.getElementById('AUTOGET').click();
+			//document.getElementById("gifshow").style.visibility = "visible";
+			//document.getElementById("gifshow").style.display = style_display_on();
+			window.parent.Demo(_("admw waiting"));
+			button_commit('AUTOGET');
 		}
 		else if (document.wizard_form.WAN_MODE[1].checked == true) 
 		{
-			document.getElementById("buttontable").style.visibility = "hidden";
-			document.getElementById("buttontable").style.display = "none";	
+	
 			waitgifshow();
-			document.getElementById('DHCP').click();
+			button_commit('DHCP');
 		}
 		else
 		{
@@ -133,31 +135,31 @@ function change_step(offset)
 		{
 			waitgifshow();
 			document.wizard_form.AUTOTYPE.disabled=true;
-			document.getElementById('DHCP').click();
+			button_commit('DHCP');
 		}
 		else if (document.wizard_form.WAN_MODE[2].checked == true) 
 		{
 			waitgifshow();
 			document.wizard_form.AUTOTYPE.disabled=true;
-			document.getElementById('SIP').click();
+			button_commit('SIP');
 		}
 		else if (document.wizard_form.WAN_MODE[3].checked == true) 
 		{
 			waitgifshow();
 			document.wizard_form.AUTOTYPE.disabled=true;
-			document.getElementById('PPP').click();
+			button_commit('PPP');
 		}
 		else if (document.wizard_form.WAN_MODE[4].checked == true) 
 		{
 			waitgifshow();
 			document.wizard_form.AUTOTYPE.disabled=true;
-			document.getElementById('L2TP').click();
+			button_commit('L2TP');
 		}
 		else if (document.wizard_form.WAN_MODE[5].checked == true) 
 		{
 			waitgifshow();
 			document.wizard_form.AUTOTYPE.disabled=true;
-			document.getElementById('P2TP').click();
+			button_commit('P2TP');
 		}
 		else 
 		{
@@ -1021,40 +1023,40 @@ function initValue()
 		if(zidong == "static")
 		{
 			document.wizard_form.WAN_MODE[2].checked = true;
-			alert(_("admw auto_sip"));
+			setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_sip"));},100);
 			change_step(1);
 			
 		}
 		else if(zidong == "dhcp")
 		{
 			document.wizard_form.WAN_MODE[1].checked = true;
-			alert(_("admw auto_dhcp"));
+			setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_dhcp"));},100);
 			change_step(1);
 		
 		}
 		else if(zidong == "pppoe")
 		{
 			document.wizard_form.WAN_MODE[3].checked = true;
-			alert(_("admw auto_ppp"));
+			setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_ppp"));},100);
 			change_step(1);
 		
 		}
 		else if(zidong == "l2tp")
 		{
 			document.wizard_form.WAN_MODE[4].checked = true;
-			alert(_("admw auto_l2tp"));
+			setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_l2tp"));},100);
 			change_step(1);
 	
 		}
 		else if(zidong == "p2tp")
 		{
 			document.wizard_form.WAN_MODE[5].checked = true;
-			alert(_("admw auto_p2tp"));
+			setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_p2tp"));},100);
 			change_step(1);
 		}
 		else
 		{
-			alert(_("admw auto_fail"));
+			setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_fail"));},100);
 			document.getElementById("div_wan_opmode").style.visibility = "visible";
 			document.getElementById("div_wan_opmode").style.display = style_display_on();
 			document.getElementById("modedes").style.visibility = "visible";
@@ -1160,11 +1162,9 @@ function pppshowpwd()
 }
  function waitgifshow()
 {
-	hideAllTables();
-	document.getElementById("waitshow").style.visibility = "visible";
-	document.getElementById("waitshow").style.display = style_display_on();
 	document.getElementById("buttontable").style.visibility = "hidden";
-	document.getElementById("buttontable").style.display = "none";
+	document.getElementById("buttontable").style.display = "none";	
+	window.parent.Demo( _("admw settingwaiting"));
 }
 function workoutgw()
 {
@@ -1210,31 +1210,27 @@ function workoutgw()
 <h2 id="modedes"></h2>
 <table id="div_wan_opmode" width="640" border="0" cellpadding="2" cellspacing="1">
 <tr>
-  <td width="15px"><input id="wrad_1" type="radio" name="WAN_MODE" value="auto" checked></td>
-  <label for="wrad_1"><th align="left" id="AutoMode"></th></label>
+  <td width="15px"><input id="wrad_1" type="radio" name="WAN_MODE" value="auto" checked></td><td><label style="font-size: 12pt; font-weight: bold;; margin-left: 8px; font-family: 微软雅黑, Arial, Helvetica, sans-serif; color: #000000" for="wrad_1" id="AutoMode" onclick=""></label></td>
 </tr>
 <tr>
   <td>&nbsp; &nbsp;</td>
   <td id="Autodisc"></td>
 </tr> 
 <tr>
-  <td width="15px"><input id="wrad_2" type="radio" name="WAN_MODE" value="dhcp"></td>
-  <label for="wrad_2"><th align="left" id="DHCPac"></th></label>
+  <td width="15px"><input id="wrad_2" type="radio" name="WAN_MODE" value="dhcp"></td><td><label style="font-size: 12pt; font-weight: bold;; margin-left: 8px; font-family: 微软雅黑, Arial, Helvetica, sans-serif; color: #000000" for="wrad_2" id="DHCPac" onclick=""></label></td>
 </tr>
 <tr>
   <td>&nbsp; &nbsp;</td>
   <td id="DHCPdisc"></td>
 </tr> 
 <tr>
-  <td width="15px"><input id="wrad_3" type="radio" name="WAN_MODE" value="static"></td>
-  <label for="wrad_3"><th align="left" id="SM"></th></label>
+  <td width="15px"><input id="wrad_3" type="radio" name="WAN_MODE" value="static"></td><td><label style="font-size: 12pt; font-weight: bold;; margin-left: 8px; font-family: 微软雅黑, Arial, Helvetica, sans-serif; color: #000000" for="wrad_3" id="SM" onclick=""></label></td>
 </tr>
 <tr>
   <td>&nbsp; &nbsp;</td>
   <td id="SMdisc"></td>
 </tr>
-  <td width="15px"><input id="wrad_4" type="radio" name="WAN_MODE" value="pppoe"></td>
-  <label for="wrad_4"><th align="left" id="PPPOE"></th></label>
+  <td width="15px"><input id="wrad_4" type="radio" name="WAN_MODE" value="pppoe"></td><td><label style="font-size: 12pt; font-weight: bold;; margin-left: 8px; font-family: 微软雅黑, Arial, Helvetica, sans-serif; color: #000000" for="wrad_4" id="PPPOE" onclick=""></label></td>
 </tr>
 <tr>
   <td>&nbsp; &nbsp;</td>
@@ -1245,24 +1241,21 @@ function workoutgw()
   <td><input id="otherbutton" type="button" value="其他" class="handaer_small_button" onClick="others()" /></td>
 </tr>
 <tr id="l2tptr1" style="display:none">
-  <td width="15px"><input  id="wrad_5" type="radio" name="WAN_MODE" value="l2tp"></td>
-  <label for="wrad_5"><th align="left">L2TP</th></label>
+  <td width="15px"><input  id="wrad_5" type="radio" name="WAN_MODE" value="l2tp"></td><td><label style="font-size: 12pt; font-weight: bold;; margin-left: 8px; font-family: 微软雅黑, Arial, Helvetica, sans-serif; color: #000000" for="wrad_5" onclick="">L2TP</label></td>
 </tr>
 <tr id="l2tptr2" style="display:none">
   <td>&nbsp; &nbsp;</td>
   <td id="L2TPc"></th>
 </tr>
 <tr id="pptptr1" style="display:none">
-  <td width="15px"><input id="wrad_6" type="radio" name="WAN_MODE" value="pptp"></td>
-  <label for="wrad_6"><th align="left">PPTP</th></label>
+  <td width="15px"><input id="wrad_6" type="radio" name="WAN_MODE" value="pptp"></td><td><label style="font-size: 12pt; font-weight: bold;; margin-left: 8px; font-family: 微软雅黑, Arial, Helvetica, sans-serif; color: #000000" for="wrad_6" onclick="">PPTP</label></td>
 </tr>
 <tr id="pptptr2" style="display:none">
   <td>&nbsp; &nbsp;</td>
   <td id="PPTPc"></td>
 </tr>
 <tr style="display:none">
-  <td width="15px"><input id="wrad_7" type="radio" name="WAN_MODE" value="3g"></td>
-  <label for="wrad_7"><th align="left">3G</th></label>
+  <td width="15px"><input id="wrad_7" type="radio" name="WAN_MODE" value="3g"></td><td><label style="font-size: 12pt; font-weight: bold;; margin-left: 8px; font-family: 微软雅黑, Arial, Helvetica, sans-serif; color: #000000" for="wrad_7" onclick="">3G</label></td>
 </tr>
 <tr style="display:none">
   <td>&nbsp; &nbsp;</td>

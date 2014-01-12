@@ -3,7 +3,7 @@
 	<message msgid="inet cancel" msgstr="Cancel" />
 	<message msgid="inet enable" msgstr="Enable" />
 	<message msgid="inet disable" msgstr="Disable" />
-	<message msgid="inet showp" msgstr="show password" />
+	<message msgid="inet showp" msgstr="Show Password" />
 	<message msgid="inet settingwaiting" msgstr="Auto checking,please wait......" />
 	<message msgid="inet setwaiting" msgstr="Setting,please wait......" />
 
@@ -26,7 +26,7 @@
 	<message msgid="inet hostname" msgstr="Hostname" />
 	<message msgid="inet cmacenable" msgstr="Enable" />
 	
-	<message msgid="wan optionXX" msgstr="optional" />	
+	<message msgid="wan optionXX" msgstr="(optional)" />	
 
 	<message msgid="wan title" msgstr="Wide Area Network (WAN) Settings" />
 	<message msgid="wan introduction" msgstr="You may choose different connection type suitable for your environment. Besides, you may also configure parameters according to the selected connection type." />

@@ -26,8 +26,8 @@
 	<message msgid="advmenu treeapp_conm_list" msgstr="Connected Equipment List" />
 	<message msgid="advmenu treeapp_conm_ctrl" msgstr="Wireless Access Management" />
 	<message msgid="advmenu treeapp_wifi" msgstr="Wireless Settings" />
-	<message msgid="advmenu treeapp_wifi_basic" msgstr="Basic Settings" />
-	<message msgid="advmenu treeapp_wifi_adv" msgstr="Advanced Settings" />
+	<message msgid="advmenu treeapp_wifi_basic" msgstr="Wireless Basic Settings" />
+	<message msgid="advmenu treeapp_wifi_adv" msgstr="Wireless Advanced Settings" />
 	<message msgid="advmenu treeapp_wifi_wds" msgstr="WDS" />
 
 	<message msgid="advmenu treeapp_safe" msgstr="Safety Management" />
@@ -54,7 +54,8 @@
 	<message msgid="admw m_upload" msgstr="Firmware upgrade" />
 	<message msgid="admw m_factory" msgstr="Factory Reset" />
 
-	<message msgid="sysinfo t1_title" msgstr="System mode" />
+	<message msgid="sysinfo title" msgstr="System mode" />
+	<message msgid="sysinfo t1_title" msgstr="Version Information" />
 	<message msgid="sysinfo t1_softv" msgstr="The current software version" />
 	<message msgid="sysinfo t1_firmv" msgstr="The hardware version" />
 	<message msgid="sysinfo t2_title" msgstr="Internet" />
@@ -71,7 +72,7 @@
 	<message msgid="sysinfo t4_name" msgstr="SSID" />
 	<message msgid="sysinfo t4_safes" msgstr="Security type" />
 	<message msgid="sysinfo t4_channel" msgstr="Wireless channel" />
-	<message msgid="sysinfo t4_wds" msgstr="WDS mode" />
+	<message msgid="sysinfo t4_wds" msgstr="WDS" />
 
 	<message msgid="sysinfo ok" msgstr="Access to the Internet" />
 	<message msgid="sysinfo fail" msgstr="Unable to access the Internet" />

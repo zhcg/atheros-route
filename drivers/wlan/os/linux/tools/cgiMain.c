@@ -161,6 +161,7 @@ struct staList *getSta1(struct staList *list, char *maddr);
 void addSta(char *maddr, char *desc, int id);
 void delSta(char *maddr);
 struct staList *scan_staList(struct staList *list);
+static void  Reboot_tiaozhuan(char* res,char * gopage);
 
 /******************************************************************************/
 /*!
@@ -2835,6 +2836,7 @@ void use_backup(void)
 	writeParameters("/tmp/.apcfg","w+",0);
 	CFG_get_by_name("ACT",valBuff1);
 	
+    #if 0
 	printf("Content-Type:text/html\n\n");
 	printf("<HTML><HEAD>\r\n");
 	printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
@@ -2844,7 +2846,9 @@ void use_backup(void)
 	printf("<p align=\"center\" style=\"font-size: 9pt; margin-left: 10px; font-family: 微软雅黑, Arial, Helvetica, sans-serif; color: #848484\">Import the configuration file was completed, restartting BASE..........</p><br>\n");	
 	printf("<script  language=javascript>setTimeout(function(){window.top.location.href=\"index.html\";},140000);</script>");
 	printf("</body></html>");	
+    #endif
 	//reconfig
+        Reboot_tiaozhuan("cfgback","index.html");
 	sprintf(cmdd,"dd if=/etc/backup/%s.bin of=/dev/caldata   > /dev/null 2>&1",valBuff1);
 	system(cmdd);
 	system("sleep 1 && reboot"); 
@@ -3198,6 +3202,22 @@ static void  Result_tiaozhuan(char* res,char * gopage)
     printf("</head><body>");
 
     sprintf(temp,"<script language=javascript>window.location.href=\"tiaozhuan?RESULT=%s?PAGE=%s\";</script>",res,gopage);
+    printf(temp);
+    printf("</body></html>");
+}
+/**************************************************************************/
+static void  Reboot_tiaozhuan(char* res,char * gopage)
+{
+    char temp[256]={0};
+    printf("HTTP/1.0 200 OK\r\n");
+    printf("Content-type: text/html\r\n");
+    printf("Connection: close\r\n");
+    printf("\r\n");
+    printf("\r\n");
+    printf("<HTML><HEAD>\r\n");
+    printf("</head><body>");
+
+    sprintf(temp,"<script language=javascript>window.location.href=\"reboot?RESULT=%s?PAGE=%s\";</script>",res,gopage);
     printf(temp);
     printf("</body></html>");
 }
@@ -3888,7 +3908,7 @@ int main(int argc,char **argv)
                             printf("Connection: Close\r\n");
                             printf("\r\n");
                             printf("\r\n");
-				 printf("Content-Type:text/html\n\n");
+
 				 printf("<HTML><HEAD>\r\n");
 				 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
 				 printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
@@ -3915,7 +3935,7 @@ int main(int argc,char **argv)
                             printf("Connection: Close\r\n");
                             printf("\r\n");
                             printf("\r\n");
-                            printf("Content-Type:text/html\n\n");
+
 				 printf("<HTML><HEAD>\r\n");
 				 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
 				 printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
@@ -4152,24 +4172,28 @@ int main(int argc,char **argv)
 		if((strstr(valBuff5,valBuff3) == 0) && (strcmp(valBuff3,"on") == 0) )
 		{
 			CFG_set_by_name("AP_STARTMODE","repeater");
+			CFG_set_by_name("DHCPON_OFF","off");
 			flag=1;
 		}
 		//on->off
 		if((strstr(valBuff,valBuff3) == 0) && (strcmp(valBuff3,"off") == 0) )
 		{
 			CFG_set_by_name("AP_STARTMODE","standard");
+			CFG_set_by_name("DHCPON_OFF","on");
 			flag=2;
 		}
 		//on->on
 		if((strstr(valBuff5,valBuff3) != 0) && (strcmp(valBuff3,"on") == 0) )
 		{
 			//CFG_set_by_name("AP_STARTMODE","repeater");
+			CFG_set_by_name("DHCPON_OFF","off");
 			flag=3;
 		}
 		//off->off
 		if((strstr(valBuff,valBuff3) != 0) && (strcmp(valBuff3,"off") == 0) )
 		{
 			//CFG_set_by_name("AP_STARTMODE","standard");
+			CFG_set_by_name("DHCPON_OFF","on");
 			flag=4;
 		}
 		//2.save new config to flash 
@@ -4496,7 +4520,7 @@ int main(int argc,char **argv)
 		
 		//CFG_get_by_name("SOFT_VERSION",valBuff);		
         system("cfg -x");
-		sleep(1);
+		sleep(3);
 		//backup version
 		//CFG_set_by_name("SOFT_VERSION",valBuff);
 	    //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
@@ -4505,7 +4529,7 @@ int main(int argc,char **argv)
 		//system("echo \"/:admin:admin\" > /etc/httpd.conf");
 		//MAC and BACKUP
 		//system("/usr/sbin/var_backup > /dev/null 2>&1");
-		
+#if 0		
         printf("HTTP/1.0 200 OK\r\n");
         printf("Content-type: text/html\r\n");
         printf("Connection: close\r\n");
@@ -4526,8 +4550,8 @@ int main(int argc,char **argv)
         printf("<script  language=javascript>setTimeout(function(){window.location.href=\"crfact\";},60000);</script>");
         printf("</div>");
 		printf("</body></html>");
-		
-		
+	#endif
+        Reboot_tiaozhuan("factory","index.html");
         system("sleep 1 && reboot &");
          gohome =2;
     }
@@ -4625,7 +4649,7 @@ int main(int argc,char **argv)
            fprintf(errOut,"\n%s  %d GW_SET \n",__func__,__LINE__);
 		unsigned char br0_ip[20],br0_mac[20],br0_sub[20], eth0_ip[20];
 		unsigned char* pbr0_ip;unsigned char*pbr0_mac;unsigned char*pbr0_sub;unsigned char*peth0_ip;
-		
+		unsigned char* ptmp;
 		unsigned char dhcp_b[20],dhcp_hb[20], dhcp_e[20],tmp[20],tmp2[20];
 		unsigned char pChar[128];
 		unsigned char dhcp_flag[20];
@@ -4646,10 +4670,10 @@ int main(int argc,char **argv)
 		{
 		   sprintf(pChar,"ifconfig br0 %s netmask %s up > /dev/null 2>&1",br0_ip,br0_sub);
 		   Execute_cmd(pChar, rspBuff);
-		   
            //update nat_vlan.sh
 		   Execute_cmd("cat /etc/nat_vlan.sh | grep \"ppp0\"|grep \"DNAT --to\"|awk -F ' ' '{print$15}'", tmp);//get old DNAT value
-		   sprintf(pChar,"sed -i 's/%s/%s/g' /etc/nat_vlan.sh",tmp,br0_ip);//combine replacement cmd
+		   ptmp=strtok(tmp,"\n");
+		   sprintf(pChar,"sed -i 's/%s/%s/g' /etc/nat_vlan.sh",ptmp,br0_ip);//combine replacement cmd
 		   Execute_cmd(pChar, rspBuff);
 
 		   sprintf(pChar," ifconfig br0 hw ether %s up > /dev/null 2>&1",pbr0_mac);
@@ -4730,7 +4754,8 @@ int main(int argc,char **argv)
 				 exit(1);
 		
        } 
-        gohome =1;
+	   Result_tiaozhuan("yes",argv[0]);
+       gohome =2;
     }
     
     /*************************************
@@ -5016,10 +5041,7 @@ int main(int argc,char **argv)
 		
 		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
 		writeParameters("/tmp/.apcfg","w+",0);
-		memset(Page,0,64);
-        sprintf(Page,"%s","ad_con_manage");
-        //Result_tiaozhuan("yes",argv[0]);
-		Result_tiaozhuan("yes", Page);
+        Result_tiaozhuan("yes",argv[0]);   
 		gohome =2;
 	}
 	
@@ -5354,8 +5376,6 @@ int main(int argc,char **argv)
         memset(Page,0,64);
         sprintf(Page,"%s","../ad_parentc_accept.html");
         gohome =0;
-
-//        gohome =0;
     }
     
 	/*************************************
@@ -5435,7 +5455,7 @@ int main(int argc,char **argv)
     if(strcmp(CFG_get_by_name("REBOOT",valBuff),"REBOOT") == 0 ) 
     {		 
         fprintf(errOut,"\n%s  %d REBOOT \n",__func__,__LINE__);
-
+#if 0
         printf("HTTP/1.0 200 OK\r\n");
         printf("Content-type: text/html\r\n");
         printf("Connection: close\r\n");
@@ -5456,7 +5476,8 @@ int main(int argc,char **argv)
         printf("<script language=javascript>setTimeout(function(){window.location.href=\"map\";},60000);</script>");
         printf("</div>");
         printf("</body></html>");
-	
+#endif	
+        Reboot_tiaozhuan("reboot","index.html");
         system("sleep 1 && reboot &");
         gohome =2;
 		//luodp

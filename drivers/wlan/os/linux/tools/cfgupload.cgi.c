@@ -93,7 +93,21 @@ char *getFileName(unsigned char *req)
 	}
 	return psz1;
 }
+static void  Reboot_tiaozhuan(char* res,char * gopage)
+{
+    char temp[256]={0};
+    printf("HTTP/1.0 200 OK\r\n");
+    printf("Content-type: text/html\r\n");
+    printf("Connection: close\r\n");
+    printf("\r\n");
+    printf("\r\n");
+    printf("<HTML><HEAD>\r\n");
+    printf("</head><body>");
 
+    sprintf(temp,"<script language=javascript>window.location.href=\"reboot?RESULT=%s?PAGE=%s\";</script>",res,gopage);
+    printf(temp);
+    printf("</body></html>");
+}
 main()
 {
 	char *reqMethod;
@@ -294,6 +308,7 @@ error:
 					
 			if(firmware_flag!=1)
 			{
+			#if 0
 				printf("Content-Type:text/html\n\n");
 				printf("<HTML><HEAD>\r\n");
 				printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
@@ -301,8 +316,10 @@ error:
 				printf("<div style=\"font-size: 14pt; font-weight: bold; margin-left: 10px; font-family: 微软雅黑, Arial, Helvetica, sans-serif; color: #848484;border-bottom:1px dotted #d0d0d0; padding-bottom:10px; margin-bottom:10px;height:30px; line-height:30px; padding:5px;\">配置管理</div>\n");	
 				printf("<p align=\"center\" style=\"font-size: 9pt; margin-left: 10px; font-family: 微软雅黑, Arial, Helvetica, sans-serif; color: #848484\">导入配置完成,正在重启BASE..........</p><br>\n");	
 				printf("<p align=\"center\" style=\"font-size: 9pt; margin-left: 10px; font-family: 微软雅黑, Arial, Helvetica, sans-serif; color: #848484\">Import the configuration file was completed, restartting BASE..........</p><br>\n");	
-				printf("<script  language=javascript>setTimeout(function(){window.top.location.href=\"home.html\";},140000);</script>");
+				printf("<script  language=javascript>setTimeout(function(){window.top.location.href=\"index.html\";},140000);</script>");
 				printf("</body></html>");	
+                    #endif
+                            Reboot_tiaozhuan("cfgback","index.html");
 				//reconfig
 				sprintf(cmdd,"dd if=%s of=/dev/caldata   > /dev/null 2>&1",filePath);
 				system(cmdd);

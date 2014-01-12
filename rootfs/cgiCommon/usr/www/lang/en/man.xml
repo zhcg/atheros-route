@@ -5,9 +5,9 @@
 	<message msgid="man onbutton" msgstr="Enable" />
 	<message msgid="man offbutton" msgstr="Disable" />
 
-	<message msgid="man ntp title" msgstr="Time setting" />
+	<message msgid="man ntp title" msgstr="Time settings" />
 	<message msgid="man ntp des" msgstr="Options related configuration time server" />
-	<message msgid="man ntp setting" msgstr="NTP Settings" />
+	<message msgid="man ntp setting" msgstr="Time Settings" />
 	<message msgid="man ntp timezone" msgstr="Time Zone:" />
 	<message msgid="man ntp mid island" msgstr="(GMT-11:00) Midway Island, Samoa" />
 	<message msgid="man ntp hawaii" msgstr="(GMT-10:00) Hawaii" />
@@ -74,7 +74,7 @@
 	<message msgid="man cfg backto1" msgstr="Are you sure to backto" />
 	<message msgid="man cfg backto2" msgstr="?" />
 	<message msgid="man cfg backupdel1" msgstr="Are you sure to delete" />	
-	<message msgid="man cfg backupdel2" msgstr="?" />
+	<message msgid="man cfg backupdel2" msgstr=" backup will be delete" />
 	<message msgid="err cfg full" msgstr="Backup space is full, please delete some backup and backup" />	
 		
 	<message msgid="man reboottitle" msgstr="System restart" />

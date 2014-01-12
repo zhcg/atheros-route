@@ -7,7 +7,7 @@
 	<message msgid="admin scan" msgstr="Scan" />
 	<message msgid="admin restart" msgstr="Restart" />
 
-	<message msgid="admw div_wan_title" msgstr="Please select the router WAN port connection." />
+	<message msgid="admw div_wan_title" msgstr="Please select the HBD router WAN port connection." />
 	<message msgid="admw DHCP" msgstr="Automatic acquisition (dynamic IP)" />  
 	<message msgid="admw DHCPdisc" msgstr="Broadband service providers do not provide any parameter,BASE will get IP from Broadband service providers" />
 	<message msgid="admw SM" msgstr="Manual settings (static IP)" />
@@ -102,7 +102,7 @@
 	<message msgid="admw w5ttitle" msgstr="Parental Control" /> 
 	<message msgid="admw wwtitle" msgstr="Network/Wireless Relay" />     
 
-	<message msgid="admw modedes" msgstr="Please select the router WAN connection type." />  
+	<message msgid="admw modedes" msgstr="Please select the HBD router WAN connection type." />  
 	<message msgid="admw modedes1" msgstr="The parameters needed in the opening of the network, the network operators to provide" />  
 
 	<message msgid="admw wifides" msgstr="Please set the HBD routing WiFi account and password. Your computer, PAD, intelligent mobile phone will use the following network." />  
@@ -195,7 +195,7 @@
 	<message msgid="admw Upload" msgstr="Upgrade" />
 	<message msgid="err file empty" msgstr="Please choose the image file!" />
 	<message msgid="upgrade success" msgstr="Upgrade success!" />
-	<message msgid="admw channelchoose" msgstr="Channel select" />
+	<message msgid="admw channelchoose" msgstr="Channel" />
 	<message msgid="admw channelauto" msgstr="AUTO" />
 
 	<message msgid="factory reset" msgstr="Restore factory settings will be lost the existing configuration, are you sure you want to continue?" />

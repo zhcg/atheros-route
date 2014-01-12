@@ -59,7 +59,8 @@ function CheckValue()
 		document.WORKFORM.WIFI_ADV_RSTCTS.select();
 		return false;
 	}
-
+	Butterlate.setTextDomain("admin");
+	window.parent.Demo(_("admw settingwaiting"));	
 	button_commit("WIRELESS_ADVSET");
 	return true;
 }

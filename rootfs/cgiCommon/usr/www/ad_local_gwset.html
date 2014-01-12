@@ -287,6 +287,8 @@ function CheckValue()
 		alert(_("err sub format"));
 		return false;
 	}
+	Butterlate.setTextDomain("admin");
+	window.parent.Demo(_("admw settingwaiting"));	
 	button_commit("GW_SET");
 	return true;
 }

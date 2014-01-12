@@ -11,19 +11,20 @@
 	<message msgid="lan work" msgstr="生效" />
 	<message msgid="lan offwork" msgstr="失效" />  
 	<message msgid="lan bSAVE" msgstr="保存" />   
-
+	<message msgid="lan mac_format" msgstr="例如(11:22:33:44:55:66)" />   
+	
 	<message msgid="dhcp title" msgstr="DHCP服务器" />
-	<message msgid="dhcp des" msgstr="配置DHCP服务器并显示其相关信息" />
+	<message msgid="dhcp des" msgstr="设置DHCP服务。路由器的DHCP服务器能自动配置局域网中各计算机的TCP/IP协议" />
 	<message msgid="dhcp t1_title" msgstr="DHCP服务器" />
 	<message msgid="dhcp t1_GWIP" msgstr="网关IP" />
 	<message msgid="dhcp t1_DHCPON_OFF" msgstr="DHCP服务器" />
-	<message msgid="dhcp t1_DHCPIP" msgstr="IP分配地址" />
+	<message msgid="dhcp t1_DHCPIP" msgstr="IP地址分配范围" />
 	<message msgid="dhcp t1_TIME" msgstr="租用时间" />
 	<message msgid="dhcp t1_hour" msgstr="小时" />
 	<message msgid="dhcp t1_min" msgstr="分钟" />
 	<message msgid="dhcp t1_defaut" msgstr="（1-2880分钟,缺省值120分钟）" />
 
-	<message msgid="dhcp t2_title" msgstr="静态分配" />
+	<message msgid="dhcp t2_title" msgstr="静态地址分配" />
 	<message msgid="dhcp t2_Mac" msgstr="MAC地址" />
 	<message msgid="dhcp t2_Ip" msgstr="IP地址" />
 	<message msgid="dhcp t2_Status" msgstr="生效" />

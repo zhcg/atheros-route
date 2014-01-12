@@ -5,6 +5,7 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
+function button_commit(buttonID){document.getElementById(buttonID).click();}
 function style_display_on()
 {
 	if (window.ActiveXObject)
@@ -45,13 +46,6 @@ function initTranslation()
 	e.innerHTML = _("admw Wlisttitle1");
 	e = document.getElementById("Wlisttitle2");
 	e.innerHTML = _("admw Wlisttitle2");
-	e = document.getElementById("Wlisttitle3");
-	e.innerHTML = _("admw Wlisttitle3");
-	e = document.getElementById("waiting");
-	e.innerHTML = _("admw waiting");	
-	
-	e = document.getElementById("settingwaiting");
-	e.innerHTML = _("admw settingwaiting");	
 	
 	e = document.getElementById("wdsswitch");
 	e.innerHTML = _("admw wdsswitch");	
@@ -84,8 +78,6 @@ function initValue()
 		return true;
 	}
 	switch_wds();
-	document.getElementById("gifshow").style.visibility = "hidden";
-	document.getElementById("gifshow").style.display = "none";
 	hidekeyf();
 }
 function checkInjection(str)
@@ -154,7 +146,7 @@ function CheckWirelessValue()
 	//}
 	waitgifshow();
 	document.wizard_form.INDEX.disabled = true;
-	document.getElementById('WIRRE').click();
+	button_commit('WIRRE');
 	return true;
 }
 function reloadd()
@@ -215,34 +207,14 @@ function  WIFSwitch()
 }
 function refreshwds()
 {
-	document.getElementById("wirelessdes").style.visibility = "hidden";
-	document.getElementById("wirelessdes").style.display = "none";
-	document.getElementById("div_Router").style.visibility = "hidden";
-	document.getElementById("div_Router").style.display = "none";
-	document.getElementById("buttontable").style.visibility = "hidden";
-	document.getElementById("buttontable").style.display = "none";
-	
-	{
-		Butterlate.setTextDomain("other");
-		var z = document.getElementById("waiting");
-		z.innerHTML = _("wait");	
-	}
-	document.getElementById("gifshow").style.visibility = "visible";
-	document.getElementById("gifshow").style.display = style_display_on();
-	document.getElementById('REFRESHWFi').click();
+	Butterlate.setTextDomain("other");
+	window.parent.Demo(_("wait"));
+	button_commit('REFRESHWFi');
 
 }
 function waitgifshow()
 {
-	document.getElementById("wirelessdes").style.visibility = "hidden";
-	document.getElementById("wirelessdes").style.display = "none";
-	document.getElementById("div_Router").style.visibility = "hidden";
-	document.getElementById("div_Router").style.display = "none";
-	
-	document.getElementById("waitshow").style.visibility = "visible";
-	document.getElementById("waitshow").style.display = style_display_on();
-	document.getElementById("buttontable").style.visibility = "hidden";
-	document.getElementById("buttontable").style.display = "none";
+	window.parent.Demo( _("admw settingwaiting"));
 }
 
 function switch_wds()
@@ -340,22 +312,9 @@ function hidekeyf()
     <td><input type="button" name="refresh" id="fresh" class="handaer_small_button" value="Fresh" onClick="refreshwds()"></td>
  </tr>
 </table>
-
-<div id="gifshow" style="display:none" align="center">
-
-  <img align="center" src="/images/loading.gif"></img>
-  <p align="center" id="waiting"></p>
-
-</div>
-<div id="waitshow" style="display:none" align="center">
-  <img align="center" src="/images/loading.gif"></img>
-  <p align="center" id="settingwaiting"></p>
-</div>
-
 <div id="offwifi" style="display:none" align="center">
   <h1 align="center" id="offwifides"></h1>
 </div>
-
 <table cellpadding="2" cellspacing="1" id="buttontable">
 <tr align="center">
   <td>

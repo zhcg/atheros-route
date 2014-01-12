@@ -5,6 +5,7 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
+function button_commit(buttonID){document.getElementById(buttonID).click();}
 function style_display_on()
 {
 	if (window.ActiveXObject)
@@ -68,6 +69,7 @@ function initValue()
 	if((document.getElementById("INDEX").value == "11") || (document.getElementById("INDEX").value == 11))
 	{
 		document.wizard_form.WDSON_OFF[0].checked = true;
+		window.parent.DialogHide();
 	}
 	if(document.getElementById("WIFION_OFF").value=="off")
 	{
@@ -152,7 +154,7 @@ function CheckWirelessValue()
 	//}
 	waitgifshow();
 	document.wizard_form.INDEX.disabled = true;
-	document.getElementById('WIRRE').click();
+	button_commit('WIRRE');
 	return true;
 }
 function reloadd()
@@ -213,34 +215,13 @@ function  WIFSwitch()
 }
 function refreshwds()
 {
-	document.getElementById("wirelessdes").style.visibility = "hidden";
-	document.getElementById("wirelessdes").style.display = "none";
-	document.getElementById("div_Router").style.visibility = "hidden";
-	document.getElementById("div_Router").style.display = "none";
-	document.getElementById("buttontable").style.visibility = "hidden";
-	document.getElementById("buttontable").style.display = "none";
-	
-	{
-		Butterlate.setTextDomain("other");
-		var z = document.getElementById("waiting");
-		z.innerHTML = _("wait");	
-	}
-	document.getElementById("gifshow").style.visibility = "visible";
-	document.getElementById("gifshow").style.display = style_display_on();
-	document.getElementById('REFRESHWFi').click();
-
+	Butterlate.setTextDomain("other");
+	window.parent.Demo(_("wait"));
+	button_commit('REFRESHWFi');
 }
 function waitgifshow()
 {
-	document.getElementById("wirelessdes").style.visibility = "hidden";
-	document.getElementById("wirelessdes").style.display = "none";
-	document.getElementById("div_Router").style.visibility = "hidden";
-	document.getElementById("div_Router").style.display = "none";
-	
-	document.getElementById("waitshow").style.visibility = "visible";
-	document.getElementById("waitshow").style.display = style_display_on();
-	document.getElementById("buttontable").style.visibility = "hidden";
-	document.getElementById("buttontable").style.display = "none";
+	window.parent.Demo(_("admw settingwaiting"));
 }
 
 function switch_wds()

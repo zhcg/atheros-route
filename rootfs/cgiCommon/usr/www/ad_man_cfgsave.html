@@ -180,7 +180,7 @@ function listdel(value)
 	
 	document.getElementById("ACT").value="BACKUP"+value;
 	name = document.getElementById("BACKUP"+value).value;
-	if(confirm(_("man cfg backupdel1")+name+_("man cfg backupdel2")))
+	if(confirm(name+_("man cfg backupdel2")))
 	{
 		button_commit("CFG_MODIFY_DEL");
 	}
@@ -251,43 +251,43 @@ function listdel(value)
   
 
   <tr id="cfgtr1"> 
-    <td width="30%">
+    <td>
 	<input size="32" name="show_BACKUP1" id="show_BACKUP1" class="handaer_text_content" value="~~BACKUP1~" type="text" readonly></td>
     <td>
-	<input type="button" name="1" id="USE1" onClick="listuse(this.name)">&nbsp; &nbsp;
-    <input type="button" name="1" id="DEL1" onClick="listdel(this.name)">&nbsp; &nbsp;
+	<input type="button" class="handaer_small_button" name="1" id="USE1" onClick="listuse(this.name)">&nbsp; &nbsp;
+    <input type="button" class="handaer_small_button" name="1" id="DEL1" onClick="listdel(this.name)">&nbsp; &nbsp;
 	</td>
   </tr>
   <tr id="cfgtr2"> 
     <td>
 	<input size="32" name="show_BACKUP2" id="show_BACKUP2" class="handaer_text_content" value="~~BACKUP2~" type="text" readonly></td>
     <td>
-	<input type="button" name="2" id="USE2" onClick="listuse(this.name)">&nbsp; &nbsp;
-    <input type="button" name="2" id="DEL2" onClick="listdel(this.name)">&nbsp; &nbsp;
+	<input type="button" class="handaer_small_button" name="2" id="USE2" onClick="listuse(this.name)">&nbsp; &nbsp;
+    <input type="button" class="handaer_small_button" name="2" id="DEL2" onClick="listdel(this.name)">&nbsp; &nbsp;
 	</td>
   </tr>
   <tr id="cfgtr3"> 
     <td>
 	<input size="32" name="show_BACKUP3" id="show_BACKUP3" class="handaer_text_content" value="~~BACKUP3~" type="text" readonly></td>
     <td>
-	<input type="button" name="3" id="USE3" onClick="listuse(this.name)">&nbsp; &nbsp;
-    <input type="button" name="3" id="DEL3" onClick="listdel(this.name)">&nbsp; &nbsp;
+	<input type="button" class="handaer_small_button" name="3" id="USE3" onClick="listuse(this.name)">&nbsp; &nbsp;
+    <input type="button" class="handaer_small_button" name="3" id="DEL3" onClick="listdel(this.name)">&nbsp; &nbsp;
 	</td>
   </tr>
   <tr id="cfgtr4"> 
     <td>
 	<input size="32" name="show_BACKUP4" id="show_BACKUP4" class="handaer_text_content" value="~~BACKUP4~" type="text" readonly></td>
     <td>
-	<input type="button" name="4" id="USE4" onClick="listuse(this.name)">&nbsp; &nbsp;
-    <input type="button" name="4" id="DEL4" onClick="listdel(this.name)">&nbsp; &nbsp;
+	<input type="button" class="handaer_small_button" name="4" id="USE4" onClick="listuse(this.name)">&nbsp; &nbsp;
+    <input type="button" class="handaer_small_button" name="4" id="DEL4" onClick="listdel(this.name)">&nbsp; &nbsp;
 	</td>
   </tr>
   <tr id="cfgtr5"> 
     <td>
 	<input size="32" name="show_BACKUP5" id="show_BACKUP5" class="handaer_text_content" value="~~BACKUP5~" type="text" readonly></td>
     <td>
-	<input type="button" name="5" id="USE5" onClick="listuse(this.name)">&nbsp; &nbsp;
-    <input type="button" name="5" id="DEL5" onClick="listdel(this.name)">&nbsp; &nbsp;
+	<input type="button" class="handaer_small_button" name="5" id="USE5" onClick="listuse(this.name)">&nbsp; &nbsp;
+    <input type="button" class="handaer_small_button" name="5" id="DEL5" onClick="listdel(this.name)">&nbsp; &nbsp;
 	</td>
   </tr>
 <form method="post" name="WORMFORM2">    
