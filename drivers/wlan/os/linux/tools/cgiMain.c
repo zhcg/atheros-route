@@ -4522,6 +4522,8 @@ int main(int argc,char **argv)
 		//char valBuff[128];
 		
 		//CFG_get_by_name("SOFT_VERSION",valBuff);		
+
+        system("cat /dev/null > /etc/ath/iptables/parc");
         system("cfg -x");
 		sleep(3);
 		//backup version
