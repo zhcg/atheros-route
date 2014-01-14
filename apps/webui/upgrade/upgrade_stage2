@@ -52,6 +52,5 @@ then
         echo  "ERROR: failed to copy  rootfs image l"
         exit 3
 fi
-
 /sbin/reboot
 sleep 2

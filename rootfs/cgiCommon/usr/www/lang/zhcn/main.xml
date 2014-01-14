@@ -4,6 +4,7 @@
 	<message msgid="main apply" msgstr="应用" />
 	<message msgid="main cancel" msgstr="取消" />
 	<message msgid="toplanguage" msgstr="z" />
+	<message msgid="help" msgstr="帮助" />
 
 	<message msgid="top_fast" msgstr="快速设置" />
 	<message msgid="top_adv" msgstr="高级设置" />

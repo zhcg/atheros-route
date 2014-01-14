@@ -4,6 +4,8 @@
 	<message msgid="man bSAVE" msgstr="Save" />   
 	<message msgid="man onbutton" msgstr="Enable" />
 	<message msgid="man offbutton" msgstr="Disable" />
+	<message msgid="help" msgstr="Help" />
+	<message msgid="toplanguage" msgstr="e" />
 
 	<message msgid="man ntp title" msgstr="Time settings" />
 	<message msgid="man ntp des" msgstr="Options related configuration time server" />
@@ -60,6 +62,7 @@
 	<message msgid="man ntp err1" msgstr="Please specify a NTP Server." />
 	<message msgid="man ntp servererror" msgstr="Network time server address is wrong, please fill in the correct format IP or domain name" />
 	
+	<message msgid="man cfgdes" msgstr="The configuration file export, import and the machine backup and restore" />
 	<message msgid="man export" msgstr="Export" />
 	<message msgid="man exporttitle" msgstr="Configuration files management" />
 	<message msgid="man exportdes" msgstr="The system configuration files are saved to the local." />
@@ -89,14 +92,14 @@
 
 	<message msgid="man use" msgstr="USE" />
 	<message msgid="man delete" msgstr="DELETE" />
-	<message msgid="err MAC empty" msgstr="MAC is empty!" />
-	<message msgid="err user empty" msgstr="User name is empty!" />
-	<message msgid="err pwd empty" msgstr="Password is empty!" />
-	<message msgid="err time empty" msgstr="Time is empty!" />
+	<message msgid="err MAC empty" msgstr="MAC is empty " />
+	<message msgid="err user empty" msgstr="User name is empty " />
+	<message msgid="err pwd empty" msgstr="Password is empty " />
+	<message msgid="err time empty" msgstr="Time is empty " />
 
-	<message msgid="err MAC format" msgstr="MAC format error!Please input as XX:XX:XX:XX:XX:XX" />
-	<message msgid="err format" msgstr="Parameter illegal!" />
-	<message msgid="err range" msgstr="Parameter range error!" />
+	<message msgid="err MAC format" msgstr="MAC format error,Please input as XX:XX:XX:XX:XX:XX" />
+	<message msgid="err format" msgstr="Parameter illegal " />
+	<message msgid="err range" msgstr="Parameter range error " />
 	<message msgid="man chfile" msgstr="Choose file" />
 	<message msgid="man sysreboot" msgstr="Confirm restart BASE?" />
 	<message msgid="err IP empty" msgstr="IP address can not be empty" />

@@ -23,16 +23,14 @@ function initTranslation()
 	trans_inner("uploadfirware","admw uploadfirware");
 	trans_inner("up_selsectfile","admw up_selsectfile");
 	trans_value("Upload","admw Upload");
-
-	trans_inner("settingwaiting","admw settingwaiting");	
 	trans_inner("hardware","admw hardware");	
 	trans_inner("software","admw software");	
 	trans_inner("waring","admw waring");	
+	trans_inner("help_r","help");	
 }
 
 function waitgifshow()
 {
-	//widget_display("waitshow");
 	window.parent.Demo( _("admw settingwaiting"));
 }
 
@@ -53,9 +51,6 @@ function upgradef()
 		waitgifshow();
 		button_commit('UPGRADE');
 	}	
-
-
-
 }
 
 function init()
@@ -63,14 +58,20 @@ function init()
 	Butterlate.setTextDomain("admin");
 	initTranslation();
 }
-
+function help()
+{
+	if (_("toplanguage")=="e")
+		window.location.href='../help/ad_man_upgrade_help_e.html';
+	else
+		window.location.href='../help/ad_man_upgrade_help_z.html';
+}
 </script>
 </head>
 
 <body onload=init();>
 <div class="handaer_main">
 <table  border="0" cellpadding="0" cellspacing="0" id="tt1"><tr><td>
-<h1 id="uploadtitle"></h1>
+<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="uploadtitle"></h1>
 <form name="usb_upload" enctype="multipart/form-data" action="/cgi-bin/upload.cgi" method="post">
 <h2 id="uploaddes"></h2>
 
@@ -112,11 +113,6 @@ function init()
 </tr>
 </table>
 
-<div id="waitshow" style="display:none" align="center">
-  <img align="center" src="/images/loading.gif"></img>
-  <p align="center" id="settingwaiting"></p>
-
-</div>
 </div>
 
 </body>

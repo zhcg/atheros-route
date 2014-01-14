@@ -278,7 +278,7 @@ error:
          printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
          printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
          printf("</head><body>");
- 	     printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");alert(_(\"err file upload\"));window.location.href=\"ad_man_upgrade\";</script>");
+ 	     printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err file upload\"));window.location.href=\"ad_man_upgrade\";</script>");
          printf("</body></html>");
     }
 	//打印信息到网页的隐藏的iframe中
@@ -320,13 +320,15 @@ error:
 				printf("<script  language=javascript>setTimeout(function(){window.location.href=\"crupload\";},140000);</script>");
 				printf("</body></html>");	
                 #endif
-                            Reboot_tiaozhuan("upload","index.html");
+				
+				Reboot_tiaozhuan("upload","index.html");
 				//[TODO]factory default
 				system("cfg -x");
 				sleep(1);
 		
-				sprintf(cmdd,"sleep 1 && sysupgrade %s &",filePath);
+				sprintf(cmdd,"sleep 1 && sysupgrade %s",filePath);
 				system(cmdd);
+				
 			}else //error firmware file
 			{	
 				 printf("Content-Type:text/html\n\n");
@@ -334,7 +336,7 @@ error:
 				 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
 				 printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
 				 printf("</head><body>");
-				 printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");alert(_(\"err file format\"));window.location.href=\"ad_man_upgrade\";</script>");
+				 printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err file format\"));window.location.href=\"ad_man_upgrade\";</script>");
 				 printf("</body></html>");
 			}
 	}

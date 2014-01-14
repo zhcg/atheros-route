@@ -6,6 +6,8 @@
 	<message msgid="inet showp" msgstr="Show Password" />
 	<message msgid="inet settingwaiting" msgstr="Auto checking,please wait......" />
 	<message msgid="inet setwaiting" msgstr="Setting,please wait......" />
+	<message msgid="help" msgstr="Help" />
+	<message msgid="toplanguage" msgstr="e" />
 
 	<message msgid="inet autocheck" msgstr="Automatic detection" />
 	<message msgid="inet bSAVE" msgstr="Save" />   
@@ -67,15 +69,15 @@
 	<message msgid="macc mactype1" msgstr="Use the management device MAC address" />
 	<message msgid="macc mactype2" msgstr="Manually enter the MAC address" />
 
-	<message msgid="err MAC empty" msgstr="MAC is empty!" />
-	<message msgid="err user empty" msgstr="User name is empty!" />
-	<message msgid="err pwd empty" msgstr="Password is empty!" />
-	<message msgid="err time empty" msgstr="Time is empty!" />
+	<message msgid="err MAC empty" msgstr="MAC is empty " />
+	<message msgid="err user empty" msgstr="User name is empty " />
+	<message msgid="err pwd empty" msgstr="Password is empty " />
+	<message msgid="err time empty" msgstr="Time is empty " />
 
-	<message msgid="err MAC format" msgstr="MAC format error!Please input as XX:XX:XX:XX:XX:XX" />
+	<message msgid="err MAC format" msgstr="MAC format error,Please input as XX:XX:XX:XX:XX:XX" />
 
-	<message msgid="err format" msgstr="Parameter illegal!" />
-	<message msgid="err range" msgstr="Parameter range error!" />
+	<message msgid="err format" msgstr="Parameter illegal " />
+	<message msgid="err range" msgstr="Parameter range error " />
 
 	<message msgid="err IP empty" msgstr="IP address can not be empty" />
 	<message msgid="err sub empty" msgstr="Subnet can not be empty" />

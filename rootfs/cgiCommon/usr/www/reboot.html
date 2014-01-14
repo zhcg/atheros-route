@@ -55,6 +55,7 @@ function ping()
 	intStartTime = +new Date();     
     //objIMG.src = "http://192.168.4.168"+"/" + intStartTime;
     objIMG.src = "http://"+c+"/" + intStartTime;
+	//alert(objIMG.src);
 	bolIsTimeout=false;
 	intTimerID = setTimeout(timeout, intTimeout);           
 }                                                               
@@ -63,6 +64,7 @@ function timeout()
 {
 	bolIsTimeout=true;
 	{
+		objIMG.src = "X:\\"; 
 		ping();
 	}
 }

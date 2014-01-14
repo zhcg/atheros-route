@@ -6,6 +6,7 @@
 	<message msgid="admin reset" msgstr="Reset" />
 	<message msgid="admin scan" msgstr="Scan" />
 	<message msgid="admin restart" msgstr="Restart" />
+	<message msgid="help" msgstr="Help" />
 
 	<message msgid="admw div_wan_title" msgstr="Please select the HBD router WAN port connection." />
 	<message msgid="admw DHCP" msgstr="Automatic acquisition (dynamic IP)" />  
@@ -133,7 +134,7 @@
 	<message msgid="admw auto_ppp" msgstr="Automatically select PPPoE mode" />
 	<message msgid="admw auto_l2tp" msgstr="Automatically select L2TP mode" />
 	<message msgid="admw auto_p2tp" msgstr="Automatically select P2TP mode" />
-	<message msgid="admw auto_fail" msgstr="Automatically select fail！,please check the internet connection or select manually " />
+	<message msgid="admw auto_fail" msgstr="Automatically select fail,please check the internet connection or select manually " />
 
 	<message msgid="admw fresh" msgstr="Scanning" />
 	<message msgid="admw Wlisttitle1" msgstr="WiFi list（Drop-down list）" />
@@ -156,17 +157,17 @@
 	<message msgid="admw passwordrequest" msgstr="  (8-12 letters, numbers or underscore)" />
 	<message msgid="admw passwordrequest1" msgstr="  (5-12 letters, numbers or underscore)" />
 
-	<message msgid="err lineout" msgstr="The line is out!" />
+	<message msgid="err lineout" msgstr="The line is out " />
 	<message msgid="err ip empty" msgstr="Error. IP address is empty." />
 	<message msgid="err mask empty" msgstr="Error. Mask is empty." />
-	<message msgid="err name empty" msgstr="Please enter user name!" />
-	<message msgid="err SSID empty" msgstr="Please enter SSID!" />    
-	<message msgid="err mac empty" msgstr="Please enter MAC!" />   
+	<message msgid="err name empty" msgstr="Please enter user name " />
+	<message msgid="err SSID empty" msgstr="Please enter SSID " />    
+	<message msgid="err mac empty" msgstr="Please enter MAC " />   
 
-	<message msgid="err pwd empty" msgstr="Please enter password!" />
-	<message msgid="err key" msgstr="Please input key!" />
+	<message msgid="err pwd empty" msgstr="Please enter password " />
+	<message msgid="err key" msgstr="Please input key " />
 
-	<message msgid="err pwd mismatch" msgstr="Password mismatched!" />
+	<message msgid="err pwd mismatch" msgstr="Password mismatched " />
 	<message msgid="err SSID length" msgstr="The length of SSID is error" />
 	<message msgid="err pwd length" msgstr="The length of Password is error" />
 
@@ -179,7 +180,7 @@
 
 	<message msgid="err IP error" msgstr="WAN IP and local IP cannot be located in the same network, please reset" />
 
-	<message msgid="err keylen" msgstr="Please input at least 8 and less than 12 character of key!" />
+	<message msgid="err keylen" msgstr="Please input at least 8 and less than 12 character of key " />
 	<message msgid="err keychar" msgstr="Invalid characters in Pass Phrase." />
 	<message msgid="admw internet" msgstr="Internet" />
 	<message msgid="admw wai" msgstr="Internet settings" />
@@ -193,8 +194,8 @@
 	<message msgid="admw uploadfirware" msgstr="Firmware upgrade" />
 	<message msgid="admw up_selsectfile" msgstr="Please selest image file" />
 	<message msgid="admw Upload" msgstr="Upgrade" />
-	<message msgid="err file empty" msgstr="Please choose the image file!" />
-	<message msgid="upgrade success" msgstr="Upgrade success!" />
+	<message msgid="err file empty" msgstr="Please choose the image file " />
+	<message msgid="upgrade success" msgstr="Upgrade success " />
 	<message msgid="admw channelchoose" msgstr="Channel" />
 	<message msgid="admw channelauto" msgstr="AUTO" />
 
@@ -202,10 +203,10 @@
 	<message msgid="admw factitle" msgstr="Factory Settings" />
 	<message msgid="admw facdes" msgstr="Click on this button will restore all settings to the router's factory default state" />
 	<message msgid="admw defaultset" msgstr="Factory settings" />
-	<message msgid="factory fail" msgstr="Return to factory setting fail!" />
-	<message msgid="factory success" msgstr="Return to factory setting successfully!" />
-	<message msgid="upgrade success" msgstr="Upgrade successfully!" />
-	<message msgid="upgrade fail" msgstr="Version of the same, the firmware is not upgraded!" />
+	<message msgid="factory fail" msgstr="Return to factory setting fail " />
+	<message msgid="factory success" msgstr="Return to factory setting successfully " />
+	<message msgid="upgrade success" msgstr="Upgrade successfully " />
+	<message msgid="upgrade fail" msgstr="Version of the same, the firmware is not upgraded " />
 
 	<message msgid="admw offwifides" msgstr="wifi is off so WDS is not work" />
 	<message msgid="admw software" msgstr="Softwsre Version" />
@@ -215,8 +216,8 @@
 	<message msgid="admw PPPOE_TIMING" msgstr="Timing ：Timing Period" />
 	<message msgid="err stiming" msgstr="Please set right time" />
 
-	<message msgid="err file format" msgstr="Upgrade package and system hardware does not match, please select the correct upgrade package! " />
-	<message msgid="err file upload" msgstr="Firmware upload fail!" />
+	<message msgid="err file format" msgstr="Upgrade package and system hardware does not match, please select the correct upgrade package  " />
+	<message msgid="err file upload" msgstr="Firmware upload fail " />
 	<message msgid="admw chfile" msgstr="Choose file" />	
 	<message msgid="admw waring" msgstr="Note: the upgrade process is completely automatic, please don't turn off the power, otherwise it will result in BASE damage and can not be used, the upgrade process about 130 seconds, when the upgrade is complete, the BASE will automatically restart." />	
 	<message msgid="admw sysupgrade" msgstr="Confirm the firmware upgrade?" />
@@ -233,6 +234,6 @@
 	<message msgid="err gw format" msgstr="Gateway address illegal" />
 	<message msgid="err DNS format" msgstr="DNS address illegal" />
 	
-	<message msgid="err Ruleexist" msgstr="This rule is already exist!" />	
+	<message msgid="err Ruleexist" msgstr="This rule is already exist " />	
 
 </po>

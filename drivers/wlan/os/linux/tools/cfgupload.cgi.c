@@ -277,7 +277,7 @@ error:
          printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
          printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
          printf("</head><body>");
- 	     printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"man\");alert(_(\"err cfg upload\"));window.location.href=\"ad_man_cfgsave\";</script>");
+ 	     printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"man\");window.parent.DialogHide();alert(_(\"err cfg upload\"));window.location.href=\"ad_man_cfgsave\";</script>");
          printf("</body></html>");
     }
 
@@ -333,7 +333,7 @@ error:
 				 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
 				 printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
 				 printf("</head><body>");
-				 printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"man\");alert(_(\"err cfg format\"));window.location.href=\"ad_man_cfgsave\";</script>");
+				 printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"man\");window.parent.DialogHide();alert(_(\"err cfg format\"));window.location.href=\"ad_man_cfgsave\";</script>");
 				 printf("</body></html>");
 			}
 	}

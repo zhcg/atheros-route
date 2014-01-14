@@ -1,6 +1,7 @@
 <html>
 <head>
 <title>Wizard Internet Settings</title>
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <script type="text/javascript" src="/lang/b28n.js"></script>
@@ -56,6 +57,9 @@ function initTranslation()
 	
 	e = document.getElementById("offwifides");
 	e.innerHTML = _("admw offwifides");
+	
+	e = document.getElementById("help_r");
+	e.innerHTML = _("help");
 }
 function initValue()
 {
@@ -262,15 +266,21 @@ function hidekeyf()
 		document.wizard_form.PSK_KEY_2.disabled = true;
 	}
 }
+function help()
+{
+	if (_("toplanguage")=="e")
+		window.location.href='../help/ad_wireless_wds_help_e.html';
+	else
+		window.location.href='../help/ad_wireless_wds_help_z.html';
+}
 </script>
 
-<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
 </head>
 
 <body onLoad="initValue()">
 <div class="handaer_main">
 <table  width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td>
-<h1 id="qsettitle"></h1>
+<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="qsettitle"></h1>
 <p></p>
 <form method="post" name="wizard_form">
 <!-- ============= Wizard Home Page ============= -->

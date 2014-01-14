@@ -12,6 +12,8 @@
 	<message msgid="lan offwork" msgstr="失效" />  
 	<message msgid="lan bSAVE" msgstr="保存" />   
 	<message msgid="lan mac_format" msgstr="例如(11:22:33:44:55:66)" />   
+	<message msgid="help" msgstr="帮助" />
+	<message msgid="toplanguage" msgstr="z" />
 	
 	<message msgid="dhcp title" msgstr="DHCP服务器" />
 	<message msgid="dhcp des" msgstr="设置DHCP服务。路由器的DHCP服务器能自动配置局域网中各计算机的TCP/IP协议" />

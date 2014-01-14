@@ -17,6 +17,8 @@
 	<message msgid="safe delit1" msgstr="Are you sure to delete " />  
 	<message msgid="safe delit2" msgstr=" bunding rule?" />  
 	<message msgid="safe mac_format" msgstr="for example(11:22:33:44:55:66)" />   
+	<message msgid="help" msgstr="Help" />
+	<message msgid="toplanguage" msgstr="e" />
 	
 	<message msgid="ipmac title" msgstr="IP/MAC address bunding" />    
 	<message msgid="ipmac des" msgstr="Display the current system ARP mapping table, and you can display and modify the IP address and MAC static bindings settings" /> 
@@ -32,13 +34,13 @@
 	<message msgid="addIPMAC t1_MAC" msgstr="MAC" />    
 	<message msgid="addIPMAC t1_IP" msgstr="IP" />    
 	<message msgid="addIPMAC t1_Tye" msgstr="Bunding" />    
-	<message msgid="err MAC empty" msgstr="MAC is empty!" />
-	<message msgid="err user empty" msgstr="User name is empty!" />
-	<message msgid="err pwd empty" msgstr="Password is empty!" />
-	<message msgid="err time empty" msgstr="Time is empty!" />
-	<message msgid="err MAC format" msgstr="MAC format error!Please input as XX:XX:XX:XX:XX:XX" />
-	<message msgid="err format" msgstr="Parameter illegal!" />
-	<message msgid="err range" msgstr="Parameter range error!" />
+	<message msgid="err MAC empty" msgstr="MAC is empty " />
+	<message msgid="err user empty" msgstr="User name is empty " />
+	<message msgid="err pwd empty" msgstr="Password is empty " />
+	<message msgid="err time empty" msgstr="Time is empty " />
+	<message msgid="err MAC format" msgstr="MAC format error,Please input as XX:XX:XX:XX:XX:XX" />
+	<message msgid="err format" msgstr="Parameter illegal " />
+	<message msgid="err range" msgstr="Parameter range error " />
 	<message msgid="err IP empty" msgstr="IP address can not be empty" />
 	<message msgid="err sub empty" msgstr="Subnet can not be empty" />
 	<message msgid="err gw empty" msgstr="Gateway can not be empty" />

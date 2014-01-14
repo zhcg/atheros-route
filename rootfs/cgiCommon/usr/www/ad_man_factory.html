@@ -22,6 +22,7 @@ function initTranslation()
 	trans_inner("f_title","admw factitle");
 	trans_inner("facdes","admw facdes");
 	trans_value("defaultset","admw defaultset");
+	trans_inner("help_r","help");	
 }
 function init()
 {
@@ -40,6 +41,13 @@ function factoryset()
 		button_commit('FACTORY');
 	}
 }
+function help()
+{
+	if (_("toplanguage")=="e")
+		window.location.href='../help/ad_man_factory_help_e.html';
+	else
+		window.location.href='../help/ad_man_factory_help_z.html';
+}
 </script>
 
 </head>
@@ -47,7 +55,7 @@ function factoryset()
 <body onload=init();>
 <div class="handaer_main">
 <table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
-<h1 id="factitle"></h1>
+<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="factitle"></h1>
 <h2 id="facdes"></h2>  
 <table width="100%" cellpadding="0" cellspacing="0" class="handaer_text">
 <tr>

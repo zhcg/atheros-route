@@ -1,6 +1,7 @@
 <html>
 <head>
-<title>Wizard Internet Settings</title>
+<title></title>
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <script type="text/javascript" src="/lang/b28n.js"></script>
@@ -46,11 +47,6 @@ function initTranslation()
 	e.innerHTML = _("admw Wlisttitle1");
 	e = document.getElementById("Wlisttitle2");
 	e.innerHTML = _("admw Wlisttitle2");
-	e = document.getElementById("waiting");
-	e.innerHTML = _("admw waiting");	
-	
-	e = document.getElementById("settingwaiting");
-	e.innerHTML = _("admw settingwaiting");	
 	
 	e = document.getElementById("wdsswitch");
 	e.innerHTML = _("admw wdsswitch");	
@@ -84,8 +80,6 @@ function initValue()
 		return true;
 	}
 	switch_wds();
-	document.getElementById("gifshow").style.visibility = "hidden";
-	document.getElementById("gifshow").style.display = "none";
 	hidekeyf();
 }
 function checkInjection(str)
@@ -271,7 +265,6 @@ function hidekeyf()
 }
 </script>
 
-<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
 </head>
 
 <body onLoad="initValue()">
@@ -319,17 +312,6 @@ function hidekeyf()
     <td><input type="button" name="refresh" id="fresh" class="handaer_small_button" value="Fresh" onClick="refreshwds()"></td>
  </tr>
 </table>
-
-<div id="gifshow" style="display:none" align="center">
-
-  <img align="center" src="/images/loading.gif"></img>
-  <p align="center" id="waiting"></p>
-
-</div>
-<div id="waitshow" style="display:none" align="center">
-  <img align="center" src="/images/loading.gif"></img>
-  <p align="center" id="settingwaiting"></p>
-</div>
 
 <div id="offwifi" style="display:none" align="center">
   <h1 align="center" id="offwifides"></h1>

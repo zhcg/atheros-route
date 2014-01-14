@@ -17,6 +17,8 @@
 	<message msgid="safe delit1" msgstr="确定要删除" />  
 	<message msgid="safe delit2" msgstr="的绑定规则?" />  
 	<message msgid="safe mac_format" msgstr="例如(11:22:33:44:55:66)" />   
+	<message msgid="help" msgstr="帮助" />
+	<message msgid="toplanguage" msgstr="z" />
 	
 	<message msgid="ipmac title" msgstr="IP/MAC地址绑定" />    
 	<message msgid="ipmac des" msgstr="显示当前系统ARP映射表,并且可以显示和修改IP地址与MAC静态绑定设置" />    

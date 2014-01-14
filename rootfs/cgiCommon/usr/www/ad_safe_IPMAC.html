@@ -28,6 +28,7 @@ function initTranslation()
 	trans_inner("t1_Tye","safe tye");
 	trans_inner("t1_Set","safe set");
 	trans_value("ADDRULE","safe ADD");	
+	trans_inner("help_r","help");	
 }
 
 function init()
@@ -60,13 +61,20 @@ function lismod(value)
 	
 	button_commit("MOD_IPMAC");
 }
+function help()
+{
+	if (_("toplanguage")=="e")
+		window.location.href='../help/ad_safe_IPMAC_help_e.html';
+	else
+		window.location.href='../help/ad_safe_IPMAC_help_z.html';
+}
 </script>
 </head>
 
 <body onload="init()">
 <div class="handaer_main">
 <table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
-<h1 id="title">IP/MAC地址绑定</h1>
+<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="title">IP/MAC地址绑定</h1>
 
 <h2 id="des">当前IP地址与MAC绑定列表显示与修改</h2>
 
@@ -95,16 +103,8 @@ function lismod(value)
     <td id="t1_Set">配置</td>
   </tr>  
 ~Z:IPMAClist~
-  <tr>
-	<td>&nbsp; &nbsp;</td>
-	<td>&nbsp; &nbsp;</td>
-	<td>&nbsp; &nbsp;</td>
-	<td>&nbsp; &nbsp;</td>
-    <td>
-		<input type="button"  class="handaer_small_button" name="ADDRULE" id="ADDRULE" value="添加" onClick="window.location.href='ad_safe_addIPMAC'">
-	</td>
-  </tr>
 </table>
+<input type="button"  class="handaer_small_button" name="ADDRULE" id="ADDRULE" value="添加" onClick="window.location.href='ad_safe_addIPMAC'">
 
 <form method="POST" name="DELLIST">
 	<input style="display:none"  type="text" name="DELXXX" id="DELXXX" size="20" maxlength="32">

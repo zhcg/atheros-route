@@ -1,6 +1,7 @@
 <html>
 <head>
 <title>Wizard Internet Settings</title>
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <script type="text/javascript" src="/lang/b28n.js"></script>
@@ -314,9 +315,6 @@ function hideAllTables()
 	document.getElementById("div_wan_opmode").style.visibility = "hidden";
 	document.getElementById("div_wan_opmode").style.display = "none";
 	hideWanOption();
-	document.getElementById("gifshow").style.visibility = "hidden";
-	document.getElementById("gifshow").style.display = "none";
-
 }
 
 function hideWanOption()
@@ -1155,11 +1153,7 @@ function initTranslation()
 	e.innerHTML = _("admw Wlisttitle1");
 	e = document.getElementById("Wlisttitle2");
 	e.innerHTML = _("admw Wlisttitle2");
-	e = document.getElementById("waiting");
-	e.innerHTML = _("admw waiting");	
-	e = document.getElementById("settingwaiting");
-	e.innerHTML = _("admw settingwaiting");	
-	
+
 	e = document.getElementById("wdsswitch");
 	e.innerHTML = _("admw wdsswitch");	
 	e = document.getElementById("onbutton");
@@ -1259,10 +1253,13 @@ function initValue()
 			}
 			else
 			{
-				document.getElementById("buttontable").style.visibility = "hidden";
-				document.getElementById("buttontable").style.display = "none";	
 				setTimeout(function(){window.parent.DialogHide();alert(_("err lineout"));},100);
-				change_step(0);
+				document.getElementById("div_wizard_home").style.visibility = "visible";
+				document.getElementById("div_wizard_home").style.display = style_display_on();
+				document.getElementById("RCMd").style.visibility = "visible";
+				document.getElementById("RCMd").style.display = style_display_on();
+
+				butwork("true","false","true","true");
 			}
 			return true;
 		}
@@ -1498,7 +1495,6 @@ function hidekeyf()
 	}
 }
 </script>
-<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
 </head>
 
 <body onLoad="initValue()" ondragstart="window.event.returnValue=false" oncontextmenu="window.event.returnValue=false" onselectstart="event.returnValue=false">
@@ -1850,16 +1846,6 @@ function hidekeyf()
 </tr>
 </table>
 
-<div id="gifshow" style="display:none" align="center">
-
-  <img align="center" src="/images/loading.gif"></img>
-    <p align="center" id="waiting"></p>
-
-</div>
-<div id="waitshow" style="display:none" align="center">
-  <img align="center" src="/images/loading.gif"></img>
-  <p align="center" id="settingwaiting"></p>
-</div>
 <div id="offwifi" style="display:none" align="center">
   <h1 align="center" id="offwifides"></h1>
 </div>

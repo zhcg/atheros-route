@@ -1,8 +1,8 @@
 <html>
 <head>
 <title>Wizard Internet Settings</title>
-<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript" src="/style/load.js"></script>
@@ -171,9 +171,9 @@ function initTranslation()
 	trans_inner("ssidrequest","admw ssidrequest");
 	trans_inner("passwordrequest","admw passwordrequest");
 	trans_inner("wifiswitch","admw wifiswitch");	 
-	trans_inner("settingwaiting","admw settingwaiting");	
 	trans_inner("channelchoose","admw channelchoose");	
-	trans_inner("hidewifides","admw hidewifides");	
+	trans_inner("hidewifides","admw hidewifides");
+	trans_inner("help_r","help");	
 }
 function initclickfun()
 {
@@ -206,10 +206,6 @@ function switch_wifi()
 }
 function waitgifshow()
 {
-	//widget_hide("div_wireless");
-	//widget_hide("wifides");
-	//widget_hide("buttontable");
-	//widget_display("waitshow");
 	window.parent.Demo( _("admw settingwaiting"));
 }
 function inithidewifi()
@@ -226,13 +222,20 @@ function hidewififun()
 	else
 		document.getElementById("AP_HIDESSID").value="0";
 }
+function help()
+{
+	if (_("toplanguage")=="e")
+		window.location.href='../help/ad_wireless_basic_help_e.html';
+	else
+		window.location.href='../help/ad_wireless_basic_help_z.html';
+}
 </script>
 </head>
 
 <body onLoad="initValue()" ondragstart="window.event.returnValue=false" oncontextmenu="window.event.returnValue=false" onselectstart="event.returnValue=false">
 <div class="handaer_main">
 <table  width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td>
-<h1 id="qsettitle"></h1>
+<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="qsettitle"></h1>
 <p></p>
 
 <FORM method="POST" name="wizard_form">
@@ -287,13 +290,8 @@ function hidewififun()
 </tr>
 <tr id="div_security_key">
   <td><span id="wkey"></span><span id="pwdinput"><input type="password" id="pwd" name="PSK_KEY" maxlength="64" size="28"  class="handaer_text_content"  value="~~PSK_KEY~"/></span>&nbsp;<input type="checkbox" id="cccc" />&nbsp;<label for="cccc" id="showp"></label>&nbsp;<span id="passwordrequest"></span></td>
-							
 </tr>
 </table>
-<div id="waitshow" style="display:none" align="center">
-  <img align="center" src="/images/loading.gif"></img>
-  <p align="center" id="settingwaiting"></p>
-</div>
 
 <table width="540" cellpadding="2" cellspacing="1" id="buttontable">
 <tr align="center">

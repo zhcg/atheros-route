@@ -9,6 +9,8 @@
 	<message msgid="wless onbutton" msgstr="启用" />
 	<message msgid="wless offbutton" msgstr="禁用" />  
 	<message msgid="wless bSAVE" msgstr="保存" />  
+	<message msgid="help" msgstr="帮助" />
+	<message msgid="toplanguage" msgstr="z" />
 
 	<message msgid="wless title" msgstr="无线高级设置" />  
 	<message msgid="wless des" msgstr="配置无线高级设置参数" />  

@@ -1,6 +1,7 @@
 <html>
 <head>
 <title>Wizard Internet Settings</title>
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <script type="text/javascript" src="/lang/b28n.js"></script>
@@ -110,8 +111,6 @@ function change_step(offset)
 		{
 			document.getElementById("buttontable").style.visibility = "hidden";
 			document.getElementById("buttontable").style.display = "none";	
-			//document.getElementById("gifshow").style.visibility = "visible";
-			//document.getElementById("gifshow").style.display = style_display_on();
 			window.parent.Demo(_("admw waiting"));
 			button_commit('AUTOGET');
 		}
@@ -994,11 +993,6 @@ function initTranslation()
 	
 	e = document.getElementById("optionXX");
 	e.innerHTML = _("admw optionXX");
-	e = document.getElementById("waiting");
-	e.innerHTML = _("admw waiting");	
-	e = document.getElementById("settingwaiting");
-	e.innerHTML = _("admw settingwaiting");	
-	
 	
 	e = document.getElementById("wPppoeTiming");
 	e.innerHTML = _("admw opmode timing");
@@ -1197,7 +1191,6 @@ function workoutgw()
 	}
 }
 </script>
-<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
 </head>
 
 <body onLoad="initValue()" ondragstart="window.event.returnValue=false" oncontextmenu="window.event.returnValue=false" onselectstart="event.returnValue=false">
@@ -1486,15 +1479,6 @@ function workoutgw()
   </td>
 </tr>
 </table>
-<div id="gifshow" style="display:none" align="center">
-
-  <img align="center" src="/images/loading.gif"></img>
-    <p align="center" id="waiting"></p>
-</div>
-<div id="waitshow" style="display:none" align="center">
-  <img align="center" src="/images/loading.gif"></img>
-  <p align="center" id="settingwaiting"></p>
-</div>
 
 <table width="540" cellpadding="2" cellspacing="1" id="buttontable">
 <tr align="center">

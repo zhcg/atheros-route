@@ -72,7 +72,7 @@ function ScreenConvert()
   var wh = "100%";
   }
   oS.width = "100%";
-  oS.height = wh;
+  oS.height = document.body.scrollHeight+"px";
   oS.position = "absolute";
   oS.zIndex = "3";
   oS.background = "#cccccc";

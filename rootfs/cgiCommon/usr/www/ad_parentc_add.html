@@ -1,8 +1,8 @@
 <html>
 <head>
 <title>DHCP</title>
-<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
@@ -129,7 +129,7 @@ function initTranslation()
 	
 	trans_value("bCANCEL","par bCANCEL");
 	trans_value("bSAVE","par bSAVE");	
-	
+	trans_inner("help_r","help");
 	trans_inner("mac_format","par mac_format");		
 }
 
@@ -143,7 +143,7 @@ function initValue()
 }
 function delnet(name)
 {
-	alert("delete"+name);
+	//alert("delete"+name);
 	widget_hide("NET"+name);
 	widget_disable("ADD_NET"+(parseInt(name)+1).toString());
 }
@@ -174,13 +174,20 @@ function daycount()
 		
 	day_week = day_week.substring(0,day_week.length-1);   
 }
+function help()
+{
+	if (_("toplanguage")=="e")
+		window.location.href='../help/ad_parentc_add_help_e.html';
+	else
+		window.location.href='../help/ad_parentc_add_help_z.html';
+}
 </script>
 </head>
 
 <body onLoad="initValue()">
 <div class="handaer_main">
 <table  width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td>
-<h1 id="title">访问管理</h1>
+<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="title">访问管理</h1>
 <p></p>
 
 <FORM method="POST" name="WORKFORM">

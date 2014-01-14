@@ -2683,7 +2683,7 @@ int set_addr_bind(void)
                 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
                 printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
                 printf("</head><body>");
-                printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"lan\");alert(_(\"err IPMAC exist\"));window.location.href=\"ad_local_addsdhcp\";</script>");
+                printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"lan\");window.parent.DialogHide();alert(_(\"err IPMAC exist\"));window.location.href=\"ad_local_addsdhcp\";</script>");
                 printf("</body></html>");
                 result = 1;
 			}
@@ -2779,7 +2779,7 @@ int add_arp(void)
                 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
                 printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
                 printf("</head><body>");
-                printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"lan\");alert(_(\"err IPMAC exist\"));window.location.href=\"ad_safe_IPMAC\";</script>");
+                printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"lan\");window.parent.DialogHide();alert(_(\"err IPMAC exist\"));window.location.href=\"ad_safe_IPMAC\";</script>");
                 printf("</body></html>");
                 result = 1;
 		}
@@ -3193,6 +3193,9 @@ int set_pctime(void)
 static void  Result_tiaozhuan(char* res,char * gopage)
 {
     char temp[256]={0};
+	
+	system("dd if=/dev/caldata of=/etc/cal.bin > /dev/null 2>&1");
+	
     printf("HTTP/1.0 200 OK\r\n");
     printf("Content-type: text/html\r\n");
     printf("Connection: close\r\n");
@@ -3916,11 +3919,11 @@ int main(int argc,char **argv)
                  
                             if((strcmp(argv[0],"w1")==0)||(strcmp(argv[0],"w2")==0)||(strcmp(argv[0],"w3")==0)||(strcmp(argv[0],"w4")==0)||(strcmp(argv[0],"wwai")==0))
                             {
-                                sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");alert(_(\"err dhcp null\"));window.location.href=\"map\";</script>");
+                                sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err dhcp null\"));window.location.href=\"map\";</script>");
                             }
                             else
                             {
-                                sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");alert(_(\"err dhcp null\"));window.location.href=\"%s\";</script>",argv[0]);
+                                sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err dhcp null\"));window.location.href=\"%s\";</script>",argv[0]);
                             }
 				 printf(tempu);
 				 printf("</body></html>");
@@ -3942,11 +3945,11 @@ int main(int argc,char **argv)
 				 printf("</head><body>");
                             if((strcmp(argv[0],"w1")==0)||(strcmp(argv[0],"w2")==0)||(strcmp(argv[0],"w3")==0)||(strcmp(argv[0],"w4")==0)||(strcmp(argv[0],"wwai")==0))
                             {
-                                sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");alert(_(\"err dhcp ip\"));window.location.href=\"map\";</script>");
+                                sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err dhcp ip\"));window.location.href=\"map\";</script>");
                             }
                             else
                             {
-                                sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");alert(_(\"err dhcp ip\"));window.location.href=\"%s\";</script>",argv[0]);
+                                sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err dhcp ip\"));window.location.href=\"%s\";</script>",argv[0]);
                             }
 
 				 printf(tempu2);
@@ -4748,7 +4751,7 @@ int main(int argc,char **argv)
 				 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
 				 printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
 				 printf("</head><body>");
-                 sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");alert(_(\"err WANsame\"));window.location.href=\"%s\";</script>",argv[0]);
+                 sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err WANsame\"));window.location.href=\"%s\";</script>",argv[0]);
 				 printf(tempu2);
 				 printf("</body></html>");
 				 exit(1);
@@ -5291,7 +5294,7 @@ int main(int argc,char **argv)
 					printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
 					printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
 					printf("</head><body>");
-					sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");alert(_(\"err Ruleexist\"));window.location.href=\"%s\";</script>",argv[0]);
+					sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err Ruleexist\"));window.location.href=\"%s\";</script>",argv[0]);
 					printf(tempu2);
 					printf("</body></html>");
 					exit(1);
@@ -5508,7 +5511,6 @@ int main(int argc,char **argv)
     }
     else if( gohome == 1)//w1 w2 w3 w4 wwai
     {
-	    system("dd if=/dev/caldata of=/etc/cal.bin   > /dev/null 2>&1");
         if((strcmp(argv[0],"w1")==0)||(strcmp(argv[0],"w2")==0)||(strcmp(argv[0],"w3")==0)||(strcmp(argv[0],"w4")==0)||(strcmp(argv[0],"wwai")==0))
         {
             Result_tiaozhuan("yes","map");            
