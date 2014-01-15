@@ -1004,7 +1004,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 							if(strcmp(buf, oldstalist.macAddr) == 0)
 							{
 								ret = 1;
-								continue;
+								break;
 							}
 						}
 						if(ret == 0)
@@ -1019,7 +1019,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 					{
 						p = scan_staList(staHostList);
 						while(p)
-						{fprintf(errOut,"fwrite 22222");
+						{//fprintf(errOut,"fwrite 22222");
 							fwrite(p, sizeof(struct staList), 1, fp1);
 							p = p->next;
 						}
@@ -1054,6 +1054,8 @@ char *processSpecial(char *paramStr, char *outBuff)
 	                            }
 							}
 							fclose(fp1);
+							
+							if(shi == 1)	continue;
 						}
                         //fprintf(errOut,"\n%s  %d mac_buf:%s buf:%s\n",__func__,__LINE__,mac_buf,buf);
 						
