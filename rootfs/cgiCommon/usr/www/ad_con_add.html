@@ -48,6 +48,9 @@ function initTranslation()
 	
 	trans_value("bCANCEL","conn bCANCEL");
 	trans_value("bSAVE","conn bSAVE");
+	trans_inner("help_r","help");	
+	
+	trans_inner("mac_format","conn mac_format");	
 }
 
 function initValue()
@@ -55,14 +58,20 @@ function initValue()
 	Butterlate.setTextDomain("conn");
 	initTranslation();
 }
-
+function help()
+{
+	if (_("toplanguage")=="e")
+		window.location.href='../help/ad_con_add_help_e.html';
+	else
+		window.location.href='../help/ad_con_add_help_z.html';
+}
 </script>
 </head>
 
 <body onLoad="initValue()">
 <div class="handaer_main">
 <table  width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td>
-<h1 id="title">添加无线接入管理的设备信息</h1>
+<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="title">添加无线接入管理的设备信息</h1>
 <p></p>
 
 <FORM method="POST" name="WORKFORM">
@@ -75,7 +84,7 @@ function initValue()
 </tr>
 <tr>
   <td class="head" id="t1_MAC">MAC地址</td>
-  <td><input type="text" name="MAC" id="MAC" size="32" maxlength="32" class="handaer_text_content"></td>
+  <td><input type="text" name="MAC" id="MAC" size="32" maxlength="32" class="handaer_text_content">&nbsp; &nbsp;<span id="mac_format"></span></td>
 </tr>
 
 <tr id="t1_hide1">

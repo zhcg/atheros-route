@@ -11,19 +11,22 @@
 	<message msgid="lan work" msgstr="Take effect" />
 	<message msgid="lan offwork" msgstr="lose efficacy" />  
 	<message msgid="lan bSAVE" msgstr="Save" />   
-
+	<message msgid="lan mac_format" msgstr="for example(11:22:33:44:55:66)" />   
+	<message msgid="help" msgstr="Help" />
+	<message msgid="toplanguage" msgstr="e" />
+	
 	<message msgid="dhcp title" msgstr="DHCP Server" />
-	<message msgid="dhcp des" msgstr="Options related to configure the DHCP server and display the DHCP information" />
+	<message msgid="dhcp des" msgstr="Set the DHCP service. Router DHCP server can automatically configure the computer LAN TCP/IP protocol" />
 	<message msgid="dhcp t1_title" msgstr="DHCP" />
 	<message msgid="dhcp t1_GWIP" msgstr="Gateway IP" />
 	<message msgid="dhcp t1_DHCPON_OFF" msgstr="DHCP Server" />
-	<message msgid="dhcp t1_DHCPIP" msgstr="IP allocation" />
+	<message msgid="dhcp t1_DHCPIP" msgstr="IP allocation range" />
 	<message msgid="dhcp t1_TIME" msgstr="Time" />
 	<message msgid="dhcp t1_hour" msgstr="Hour" />
 	<message msgid="dhcp t1_min" msgstr="Minutes" />
 	<message msgid="dhcp t1_defaut" msgstr="(1-2880 minutes, the default value of 120 minutes)" />
 
-	<message msgid="dhcp t2_title" msgstr="Static allocation" />
+	<message msgid="dhcp t2_title" msgstr="Static address allocation" />
 	<message msgid="dhcp t2_Mac" msgstr="MAC" />
 	<message msgid="dhcp t2_Ip" msgstr="IP" />
 	<message msgid="dhcp t2_Status" msgstr="Enable" />
@@ -78,15 +81,15 @@
 	<message msgid="addru t1_Sub" msgstr="The subnet mask" />
 	<message msgid="addru t1_Gw" msgstr="Gateway" />
 	<message msgid="addru t1_St" msgstr="Status" />
-	<message msgid="err MAC empty" msgstr="MAC is empty!" />
-	<message msgid="err user empty" msgstr="User name is empty!" />
-	<message msgid="err pwd empty" msgstr="Password is empty!" />
-	<message msgid="err time empty" msgstr="Time is empty!" />
-	<message msgid="err MAC format" msgstr="MAC format error!Please input as XX:XX:XX:XX:XX:XX" />
-	<message msgid="err format" msgstr="Parameter illegal!" />
-	<message msgid="err range" msgstr="Parameter range error!" />
-	<message msgid="err bip" msgstr="The starting address is not valid segment!" />
-	<message msgid="err eip" msgstr="The end address is not in the legal network!" />
+	<message msgid="err MAC empty" msgstr="MAC is empty " />
+	<message msgid="err user empty" msgstr="User name is empty " />
+	<message msgid="err pwd empty" msgstr="Password is empty " />
+	<message msgid="err time empty" msgstr="Time is empty " />
+	<message msgid="err MAC format" msgstr="MAC format error,Please input as XX:XX:XX:XX:XX:XX" />
+	<message msgid="err format" msgstr="Parameter illegal " />
+	<message msgid="err range" msgstr="Parameter range error " />
+	<message msgid="err bip" msgstr="The starting address is not valid segment " />
+	<message msgid="err eip" msgstr="The end address is not in the legal network " />
 	<message msgid="err iprange" msgstr="The DHCP address range can't contain gateway IP" />
 	<message msgid="err ip notin" msgstr="IP address must be in the DHCP address range" />
 	<message msgid="err IPMAC exist" msgstr="IP or MAC address has been bound" />

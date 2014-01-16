@@ -9,6 +9,8 @@
 	<message msgid="wless onbutton" msgstr="On" />
 	<message msgid="wless offbutton" msgstr="Off" />  
 	<message msgid="wless bSAVE" msgstr="Save" />   
+	<message msgid="help" msgstr="Help" />
+	<message msgid="toplanguage" msgstr="e" />
 
 	<message msgid="wless title" msgstr="Wireless advanced settings" />  
 	<message msgid="wless des" msgstr="Modify the configuration of wireless advanced parameters" />  
@@ -26,13 +28,13 @@
 
 	<message msgid="wless wifititle" msgstr="Basic Settings" />
 
-	<message msgid="err MAC empty" msgstr="MAC is empty!" />
-	<message msgid="err user empty" msgstr="User name is empty!" />
-	<message msgid="err pwd empty" msgstr="Password is empty!" />
-	<message msgid="err time empty" msgstr="Time is empty!" />
-	<message msgid="err MAC format" msgstr="MAC format error!Please input as XX:XX:XX:XX:XX:XX" />
-	<message msgid="err format" msgstr="Parameter illegal!" />
-	<message msgid="err range" msgstr="Parameter range error!" />
+	<message msgid="err MAC empty" msgstr="MAC is empty " />
+	<message msgid="err user empty" msgstr="User name is empty " />
+	<message msgid="err pwd empty" msgstr="Password is empty " />
+	<message msgid="err time empty" msgstr="Time is empty " />
+	<message msgid="err MAC format" msgstr="MAC format error,Please input as XX:XX:XX:XX:XX:XX" />
+	<message msgid="err format" msgstr="Parameter illegal " />
+	<message msgid="err range" msgstr="Parameter range error " />
 	<message msgid="err ssidtime empty" msgstr="Broadcast SSID time cannot be empty" />
 	<message msgid="err ssidtime" msgstr="Broadcast SSID time is invalid" />
 	<message msgid="err rstcts empty" msgstr="RST/CTS Limit value cannot be empty" />

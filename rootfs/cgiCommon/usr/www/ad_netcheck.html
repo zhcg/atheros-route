@@ -3,24 +3,25 @@
 <title></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script type="text/javascript" src="/lang/b28n.js"></script>
+<script language="JavaScript" type="text/javascript" src="/style/load.js"></script>
 <script language="JavaScript" type="text/javascript">
 function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
 function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
 function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "table-row";}}
 function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
 function widget_display(widgetID){document.getElementById(widgetID).style.visibility = "visible";document.getElementById(widgetID).style.display = style_display_on();}
-
+function button_commit(buttonID){document.getElementById(buttonID).click();}
 function initTranslation()
 {
 	trans_inner("title","netcheck title");
 	trans_inner("des","netcheck des");
-	trans_value("netc","netcheck netc");
-	trans_inner("checkingwaiting","netcheck checkingwaiting");
+	trans_value("netc","netcheck renetc");
 	trans_inner("Result","netcheck Result");
 	trans_inner("t1_wantype","netcheck t1_wantype");
 	trans_inner("t1_basetype","netcheck t1_basetype");
 	trans_inner("t1_pngBD","netcheck t1_pngBD");
 	trans_inner("t1_pingQQ","netcheck t1_pingQQ");
+	trans_inner("help_r","help");	
 }
 
 function init()
@@ -29,7 +30,10 @@ function init()
 	initTranslation();
 	
 	if((document.getElementById("INDEX").value == "14") || (document.getElementById("INDEX").value == 14))
+	{
+		window.parent.DialogHide();
 		resultshow();
+	}
 	else
 		netcheckf();		
 }
@@ -38,22 +42,20 @@ function netcheckf()
 {
 	widget_hide("checkresultshow");
 	waitgifshow();
-	document.getElementById('NETCHECK').click();
+	button_commit('NETCHECK');
 }
 function waitgifshow()
 {
-	widget_hide("des");
+	//widget_hide("des");
 	widget_hide("netc");
-	widget_display("waitshow");
-	widget_hide("checkresult");
-
+	//widget_hide("checkresult");
+	window.parent.Demo( _("netcheck checkingwaiting"));
 }
 function resultshow()
 {
 	widget_hide("des");
-	widget_hide("waitshow");
 	widget_display("netc");
-	trans_value("netc","netcheck renetc");
+	
 	widget_display("checkresult");
 	var p1 = document.getElementById("ping1").value;
 	var p2 = document.getElementById("ping2").value;
@@ -70,6 +72,13 @@ function resultshow()
 
 	widget_display("checkresultshow");
 }
+function help()
+{
+	if (_("toplanguage")=="e")
+		window.location.href='help/ad_netcheck_help_e.html';
+	else
+		window.location.href='help/ad_netcheck_help_z.html';
+}
 </script>
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
@@ -78,16 +87,11 @@ function resultshow()
 <body onload="init();">
 <div class="handaer_main">
 <table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
-<h1 id="title">网络诊断</h1>
+<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="title">网络诊断</h1>
 
 <h2 id="des">检测网络连接类型和进行网络PING操作</h2> 
 <span id="checkresultshow" style="display:none;font-family:arial;color:red;font-size:20px;" ></span>
 
-
-<div id="waitshow" style="display:none" align="center">
-  <img align="center" src="/images/loading.gif"></img>
-  <p align="center" id="checkingwaiting">正在进行检测请稍候......</p>
-</div>
 
 <table id="checkresult"  width="100%" cellpadding="0" cellspacing="0"   style="display:none" class="handaer_text">
 <tr>

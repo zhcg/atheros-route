@@ -10,7 +10,10 @@
 	<message msgid="par offbutton" msgstr="Off" />  
 	<message msgid="par work" msgstr="Take effect" />
 	<message msgid="par offwork" msgstr="Lose efficacy" />  
-	<message msgid="par bSAVE" msgstr="Save" />   
+	<message msgid="par bSAVE" msgstr="Save" /> 
+	<message msgid="par mac_format" msgstr="for example(11:22:33:44:55:66)" />   	
+	<message msgid="help" msgstr="Help" />
+	<message msgid="toplanguage" msgstr="e" />
 
 	<message msgid="parset title" msgstr="Parents contrl" />  
 	<message msgid="parset des" msgstr="The management of children PC Internet access" />  
@@ -47,13 +50,13 @@
 
 	<message msgid="paradd t1_Time" msgstr="Time" />  
 	<message msgid="paradd t1_Status" msgstr="Status" />  
-	<message msgid="err MAC empty" msgstr="MAC is empty!" />
-	<message msgid="err user empty" msgstr="User name is empty!" />
-	<message msgid="err pwd empty" msgstr="Password is empty!" />
-	<message msgid="err time empty" msgstr="Time is empty!" />
-	<message msgid="err MAC format" msgstr="MAC format error!Please input as XX:XX:XX:XX:XX:XX" />
-	<message msgid="err format" msgstr="Parameter illegal!" />
-	<message msgid="err range" msgstr="Parameter range error!" />
+	<message msgid="err MAC empty" msgstr="MAC is empty " />
+	<message msgid="err user empty" msgstr="User name is empty " />
+	<message msgid="err pwd empty" msgstr="Password is empty " />
+	<message msgid="err time empty" msgstr="Time is empty " />
+	<message msgid="err MAC format" msgstr="MAC format error,Please input as XX:XX:XX:XX:XX:XX" />
+	<message msgid="err format" msgstr="Parameter illegal " />
+	<message msgid="err range" msgstr="Parameter range error " />
 	<message msgid="err time" msgstr="Invalid time" /> 
 	<message msgid="err IP empty" msgstr="IP address can not be empty" />
 	<message msgid="err sub empty" msgstr="Subnet can not be empty" />

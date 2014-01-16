@@ -372,7 +372,7 @@ CONFIG_KILLALL=y
 # CONFIG_PIDOF is not set
 CONFIG_PS=y
 # CONFIG_RENICE is not set
-# CONFIG_TOP is not set
+CONFIG_TOP=y
 # CONFIG_UPTIME is not set
 # CONFIG_SYSCTL is not set
 

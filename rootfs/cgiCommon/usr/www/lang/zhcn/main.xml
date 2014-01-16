@@ -4,6 +4,7 @@
 	<message msgid="main apply" msgstr="应用" />
 	<message msgid="main cancel" msgstr="取消" />
 	<message msgid="toplanguage" msgstr="z" />
+	<message msgid="help" msgstr="帮助" />
 
 	<message msgid="top_fast" msgstr="快速设置" />
 	<message msgid="top_adv" msgstr="高级设置" />
@@ -25,8 +26,8 @@
 	<message msgid="advmenu treeapp_conm_list" msgstr="已接入设备列表" />
 	<message msgid="advmenu treeapp_conm_ctrl" msgstr="无线接入管理" />
 	<message msgid="advmenu treeapp_wifi" msgstr="无线设置" />
-	<message msgid="advmenu treeapp_wifi_basic" msgstr="基本设置" />
-	<message msgid="advmenu treeapp_wifi_adv" msgstr="高级设置" />
+	<message msgid="advmenu treeapp_wifi_basic" msgstr="无线基本设置" />
+	<message msgid="advmenu treeapp_wifi_adv" msgstr="无线高级设置" />
 	<message msgid="advmenu treeapp_wifi_wds" msgstr="无线中继" />
 
 	<message msgid="advmenu treeapp_safe" msgstr="安全管理" />
@@ -54,7 +55,8 @@
 	<message msgid="admw m_upload" msgstr="固件升级" />
 	<message msgid="admw m_factory" msgstr="恢复出厂设置" />
 
-	<message msgid="sysinfo t1_title" msgstr="系统状态" />
+	<message msgid="sysinfo title" msgstr="系统状态" />
+	<message msgid="sysinfo t1_title" msgstr="版本信息" />
 	<message msgid="sysinfo t1_softv" msgstr="当前软件版本" />
 	<message msgid="sysinfo t1_firmv" msgstr="当前硬件版本" />
 	<message msgid="sysinfo t2_title" msgstr="互联网" />
@@ -71,7 +73,7 @@
 	<message msgid="sysinfo t4_name" msgstr="网络名称" />
 	<message msgid="sysinfo t4_safes" msgstr="安全类型" />
 	<message msgid="sysinfo t4_channel" msgstr="无线信道" />
-	<message msgid="sysinfo t4_wds" msgstr="WDS状态" />
+	<message msgid="sysinfo t4_wds" msgstr="无线中继" />
 
 	<message msgid="sysinfo ok" msgstr="可上网" />
 	<message msgid="sysinfo fail" msgstr="不可上网" />
@@ -94,7 +96,7 @@
 	<message msgid="netcheck checkingwaiting" msgstr="正在进行检测请您稍候......" />
 	<message msgid="netcheck Result" msgstr="诊断结果" />
 	<message msgid="netcheck t1_wantype" msgstr="自动检测WAN口类型" />
-	<message msgid="netcheck t1_basetype" msgstr="BASE路由设置类型" />
+	<message msgid="netcheck t1_basetype" msgstr="HBD路由器路由设置类型" />
 	<message msgid="netcheck t1_pngBD" msgstr="PING百度结果" />
 	<message msgid="netcheck t1_pingQQ" msgstr="PING腾讯结果" />
 

@@ -1,8 +1,8 @@
 <html>
 <head>
 <title>DHCP</title>
-<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
@@ -36,6 +36,7 @@ function initTranslation()
 	trans_inner("t2_Gw","rulit t2_Gw");	
 	trans_inner("t2_Inf","rulit t2_Inf");	
 	trans_inner("t2_Modefy","rulit t2_Modefy");	
+	trans_inner("help_r","help");	
 
 	//trans_value("MODRUL","lan MODDHCP");	
 	//trans_value("DELRUL","lan DELDHCP");	
@@ -73,13 +74,20 @@ function lismod(value)
 	
 	button_commit("MOD_RU");
 }
+function help()
+{
+	if (_("toplanguage")=="e")
+		window.location.href='../help/ad_local_rulist_help_e.html';
+	else
+		window.location.href='../help/ad_local_rulist_help_z.html';
+}
 </script>
 </head>
 
 <body onLoad="initValue()">
 <div class="handaer_main">
 <table  width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td>
-<h1 id="title">路由表设置</h1>
+<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="title">路由表设置</h1>
 <p></p>
 
 <FORM method="POST" name="DHCP_FORM">
@@ -114,18 +122,8 @@ function lismod(value)
 	<td id="t2_Modefy">编辑</td>
   </tr>
   ~Z:routelist~ 
-   <tr>
-	<td>&nbsp; &nbsp;</td>
-	<td>&nbsp; &nbsp;</td>
-	<td>&nbsp; &nbsp;</td>
-	<td>&nbsp; &nbsp;</td>
-	<td>&nbsp; &nbsp;</td>
-    <td>
-		<input type="button"  class="handaer_small_button" name="ADDRUL" id="ADDRUL" value="添加" onClick="window.location.href='ad_local_addru'">
-	</td>
-  </tr>
- 
 </table>
+<input type="button"  class="handaer_small_button" name="ADDRUL" id="ADDRUL" value="添加" onClick="window.location.href='ad_local_addru'">
 
 </form>
 </form>

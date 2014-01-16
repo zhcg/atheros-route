@@ -1,11 +1,12 @@
 <html>
 <head>
 <title>Wizard Internet Settings</title>
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
-
+function button_commit(buttonID){document.getElementById(buttonID).click();}
 var step_num;
 function style_display_on()
 {
@@ -121,7 +122,7 @@ function CheckWirelessValue()
 		document.getElementById("pwd").disabled = true;	   
 	}
 	waitgifshow();
-	document.getElementById('WIRELESS').click();
+	button_commit('WIRELESS');
 	return true;
 }
 function initTranslation()
@@ -165,19 +166,10 @@ function initTranslation()
 	e = document.getElementById("wifiswitch");
 	e.innerHTML = _("admw wifiswitch");	 
 	
-	e = document.getElementById("settingwaiting");
-	e.innerHTML = _("admw settingwaiting");	
-
-	
 	e = document.getElementById("channelchoose");
 	e.innerHTML = _("admw channelchoose");	
 	e = document.getElementById("hidewifides");
 	e.innerHTML = _("admw hidewifides");	
-	
-			
-	//e = document.getElementById("channelauto");
-	//e.innerHTML = _("admw channelauto");	
-
 }
 function initValue()
 {
@@ -226,14 +218,7 @@ function switch_wifi()
 }
 function waitgifshow()
 {
-	document.getElementById("div_wireless").style.visibility = "hidden";
-	document.getElementById("div_wireless").style.display = "none";
-	document.getElementById("wifides").style.visibility = "hidden";
-	document.getElementById("wifides").style.display = "none";
-	document.getElementById("waitshow").style.visibility = "visible";
-	document.getElementById("waitshow").style.display = style_display_on();
-	document.getElementById("buttontable").style.visibility = "hidden";
-	document.getElementById("buttontable").style.display = "none";
+	window.parent.Demo(_("admw settingwaiting"));
 }
 function inithidewifi()
 {
@@ -255,7 +240,6 @@ function hidewififun()
 		document.getElementById("AP_HIDESSID").value="0";
 }
 </script>
-<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
 </head>
 
 <body onLoad="initValue()" ondragstart="window.event.returnValue=false" oncontextmenu="window.event.returnValue=false" onselectstart="event.returnValue=false">
@@ -303,8 +287,8 @@ function hidewififun()
   </td>
 </tr>
 
-<tr  id="tt1">
-  <td class="head" rowspan="2" id="security"></td>
+<tr id="tt1">
+  <td class="head" id="security"></td>
   <td>
     <select name="AP_SECMODE" style="width:150px" size="1" onChange="switch_security_mode();">
 	  <option ~sAP_SECMODE:WPA~ value="WPA" id="Senable"></option>
@@ -313,14 +297,10 @@ function hidewififun()
   </td>
 </tr>
 <tr id="div_security_key">
-  <td><span id="wkey"></span><span id="pwdinput"><input type="password" id="pwd" name="PSK_KEY" maxlength="64" size="28"  class="handaer_text_content"  value="~~PSK_KEY~"/></span>&nbsp;<input type="checkbox" id="cccc" onClick="showpwd()" />&nbsp;<label for="cccc" id="showp"></label>&nbsp;<span id="passwordrequest"></span></td>
-							
+<td class="head" id="wkey"></td>
+  <td><span id="pwdinput"><input type="password" id="pwd" name="PSK_KEY" maxlength="64" size="28"  class="handaer_text_content"  value="~~PSK_KEY~"/></span>&nbsp;<input type="checkbox" id="cccc" onClick="showpwd()" />&nbsp;<label for="cccc" id="showp"></label>&nbsp;<span id="passwordrequest"></span></td>
 </tr>
 </table>
-<div id="waitshow" style="display:none" align="center">
-  <img align="center" src="/images/loading.gif"></img>
-  <p align="center" id="settingwaiting"></p>
-</div>
 
 <table width="540" cellpadding="2" cellspacing="1" id="buttontable">
 <tr align="center">

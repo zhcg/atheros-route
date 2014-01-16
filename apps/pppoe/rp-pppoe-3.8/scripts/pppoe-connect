@@ -219,8 +219,8 @@ PPP_STD_OPTIONS="$PLUGIN_OPTS noipdefault noauth default-asyncmap $DEFAULTROUTE 
 # Jigger DNS if required...
 if test "$DNSTYPE" = "SERVER" ; then
     # Sorry, dude...
-    #rm -f /etc/resolv.conf
-    #ln -s /etc/ppp/resolv.conf /etc/resolv.conf
+    rm -f /etc/resolv.conf
+    ln -s /etc/ppp/resolv.conf /etc/resolv.conf
 elif test "$DNSTYPE" = "SPECIFY" ; then
     # Sorry, dude...
     rm -f /etc/resolv.conf

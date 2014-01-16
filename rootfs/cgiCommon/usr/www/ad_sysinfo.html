@@ -6,12 +6,12 @@
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script>
-
 function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
 function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
 function widget_disable	(widgetID){document.getElementById(widgetID).disabled = true;}
 function initTranslation()
 {
+	trans_inner("title_all","sysinfo title");
 	trans_inner("t1_title","sysinfo t1_title");
 	trans_inner("t1_softv","sysinfo t1_softv");
 	trans_inner("t1_firmv","sysinfo t1_firmv");
@@ -30,6 +30,7 @@ function initTranslation()
 	trans_inner("t4_safes","sysinfo t4_safes");
 	trans_inner("t4_channel","sysinfo t4_channel");
 	trans_inner("t4_wds","sysinfo t4_wds");
+	trans_inner("help_r","help");
 }
 function init()
 {
@@ -164,15 +165,19 @@ function valueinit()
 	else
 		document.getElementById("ss14").innerHTML=_("sysinfo off");
 }
+function help()
+{
+	if (_("toplanguage")=="e")
+		window.location.href='../help/ad_sysinfo_help_e.html';
+	else
+		window.location.href='../help/ad_sysinfo_help_z.html';
+}
 </script>
-
 </head>
-
 <body onload="init()">
 <div class="handaer_main">
 <table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
-
-<h1></h1>
+<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="title_all"></h1>
 <table width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
 <tr><td class="title" colspan="2" id="t1_title">系统状态</td></tr> 
 <tr>

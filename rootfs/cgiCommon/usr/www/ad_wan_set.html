@@ -1,8 +1,9 @@
 <html>
 <head>
-<title>Wide Area Network (WAN) Settings</title>
-<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+<title></title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
 function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "table-row";}}
@@ -53,11 +54,11 @@ function disableall()
 	widget_disable("pptpNetmask");
 	widget_disable("pptpGateway");
 	widget_disable("pptpOPMode");
-	widget_disable("pptpRedialPeriod");             
+	widget_disable("pptpRedialPeriod");
 
 	widget_disable("INDEX");
 	widget_disable("AUTOTYPE");
-	widget_disable("AP_locatIP");                  
+	widget_disable("AP_locatIP");
 }
 function enableSTATICIP()
 {
@@ -168,6 +169,7 @@ function connectionTypeSwitch()
 	{
 		widget_display("static_table");
 	}
+	window.parent.iFrameHeight();
 }
 
 function l2tpModeSwitch()
@@ -724,55 +726,55 @@ function initTranslation()
 	trans_inner("p2tpshowp","inet showp");
 	trans_value("autocheck","inet autocheck");
 	
-	
-	trans_inner("settingwaiting","inet settingwaiting");	
-	trans_inner("setwaiting","inet setwaiting");	
-	
+	trans_inner("help_r","help");	
 }
-
 function initValue()
 {
 	Butterlate.setTextDomain("wan");
 	initTranslation();
 	connectionTypeSwitch();	
+	
+	if((document.getElementById("INDEX").value == "12") || (document.getElementById("INDEX").value == 12))
 	{
-		if((document.getElementById("INDEX").value == "12") || (document.getElementById("INDEX").value == 12))
+		document.getElementById("INDEX").value = "99";
+		var zidong = document.getElementById("AUTOTYPE").value;
+		if(zidong == "static")
 		{
-			document.getElementById("INDEX").value = "99";
-			var zidong = document.getElementById("AUTOTYPE").value;
-			if(zidong == "static")
-			{
-				alert(_("wan auto_sip"));
-				document.wanCfg.WAN_MODE.options.selectedIndex = 0;
-			}
-			else if(zidong == "dhcp")
-			{
-				alert(_("wan auto_dhcp"));
-				document.wanCfg.WAN_MODE.options.selectedIndex = 1;
-			}
-			else if(zidong == "pppoe")
-			{
-				alert(_("wan auto_ppp"));
-				document.wanCfg.WAN_MODE.options.selectedIndex = 2;
-			}
-			else if(zidong == "l2tp")
-			{
-				alert(_("wan auto_l2tp"));
-				document.wanCfg.WAN_MODE.options.selectedIndex = 3;
-			}
-			else if(zidong == "p2tp")
-			{
-				alert(_("wan auto_p2tp"));
-				document.wanCfg.WAN_MODE.options.selectedIndex = 4;
-			}
-			else
-			{
-				alert(_("wan auto_fail"));
-				document.wanCfg.WAN_MODE.options.selectedIndex = 0;
-			}
+			setTimeout(function(){window.parent.DialogHide();alert(_("wan auto_sip"));},100);
+			document.wanCfg.WAN_MODE.options.selectedIndex = 0;
+			connectionTypeSwitch();
 		}
+		else if(zidong == "dhcp")
+		{
+			setTimeout(function(){window.parent.DialogHide();alert(_("wan auto_dhcp"));},100);
+			document.wanCfg.WAN_MODE.options.selectedIndex = 1;
+			connectionTypeSwitch();
+		}
+		else if(zidong == "pppoe")
+		{
+			setTimeout(function(){window.parent.DialogHide();alert(_("wan auto_ppp"));},100);
+			document.wanCfg.WAN_MODE.options.selectedIndex = 2;
+			connectionTypeSwitch();
+		}
+		else if(zidong == "l2tp")
+		{
+			setTimeout(function(){window.parent.DialogHide();alert(_("wan auto_l2tp"));},100);
+			document.wanCfg.WAN_MODE.options.selectedIndex = 3;
+			connectionTypeSwitch();
+		}
+		else if(zidong == "p2tp")
+		{
+			setTimeout(function(){window.parent.DialogHide();alert(_("wan auto_p2tp"));},100);
+			document.wanCfg.WAN_MODE.options.selectedIndex = 4;
+			connectionTypeSwitch();
+		}
+		else
+		{
+			setTimeout(function(){window.parent.DialogHide();alert(_("wan auto_fail"));},100);
+			//document.wanCfg.WAN_MODE.options.selectedIndex = 0;
+		}
+		
 	}
-	connectionTypeSwitch();
 }
 function pppshowpwd()
 {
@@ -845,44 +847,31 @@ function workoutgw()
 }
 function waitgifshow()
 {
-	widget_hide("typetable");
-	widget_hide("wIntroduction");
-	
-	widget_hide("static_table");
-	widget_hide("dhcp_table");
-	widget_hide("pppoe_table");
-	widget_hide("l2tp_table");
-	widget_hide("pptp_table");
-	widget_hide("buttontable");
-	widget_display("waitshow");
+	window.parent.Demo(_("inet settingwaiting"));
 }
 function setwaitgifshow()
 {
-	widget_hide("typetable");
-	widget_hide("wIntroduction");
-	
-	widget_hide("static_table");
-	widget_hide("dhcp_table");
-	widget_hide("pppoe_table");
-	widget_hide("l2tp_table");
-	widget_hide("pptp_table");
-	widget_hide("buttontable");
-	widget_display("setwaitshow");
+	window.parent.Demo( _("inet setwaiting"));
 }
 function connecttypecheck()
 {
 	waitgifshow();
 	button_commit('AUTOGET');
 }
+function help()
+{
+	if (_("toplanguage")=="e")
+		window.location.href='../help/ad_wan_set_help_e.html';
+	else
+		window.location.href='../help/ad_wan_set_help_z.html';
+}
 </script>
-<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
 </head>
-
 <body onLoad="initValue()" ondragstart="window.event.returnValue=false" oncontextmenu="window.event.returnValue=false" onselectstart="event.returnValue=false">
 <div class="handaer_main">
 <table class="body" cellpadding="0" cellspacing="0" class="handaer_text"><tr><td>
 
-<h1 id="wTitle"></h1>
+<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="wTitle"></h1>
 <h2 id="wIntroduction"></h2>
 
 <form method="post" name="wanCfg">
@@ -894,8 +883,8 @@ function connecttypecheck()
       <option ~sWAN_MODE:static~ value="static" id="wConnTypeStatic">Static Mode (fixed IP)</option>
       <option ~sWAN_MODE:dhcp~ value="dhcp" id="wConnTypeDhcp">DHCP (Auto Config)</option>
       <option ~sWAN_MODE:pppoe~ value="pppoe" id="wConnTypePppoe">PPPOE (ADSL)</option>
-      <option ~sWAN_MODE:l2tp~ value="l2tp" id="wConnTypeL2tp">L2TP</option>
-      <option ~sWAN_MODE:pptp~ value="pptp" id="wConnTypePptp">PPTP</option>
+      <!--option ~sWAN_MODE:l2tp~ value="l2tp" id="wConnTypeL2tp">L2TP</option>
+      <option ~sWAN_MODE:pptp~ value="pptp" id="wConnTypePptp">PPTP</option-->
     </select>
 	<input type="button"  value="自动检测" id="autocheck"  class="handaer_small_button" onClick="connecttypecheck()">&nbsp;&nbsp;
 </td>
@@ -1108,14 +1097,6 @@ function connecttypecheck()
   </td>
 </tr>
 </table>
-<div id="waitshow" style="display:none" align="center">
-  <img align="center" src="/images/loading.gif"></img>
-  <p align="center" id="settingwaiting"></p>
-</div>
-<div id="setwaitshow" style="display:none" align="center">
-  <img align="center" src="/images/loading.gif"></img>
-  <p align="center" id="setwaiting"></p>
-</div>
 
 </form>
 

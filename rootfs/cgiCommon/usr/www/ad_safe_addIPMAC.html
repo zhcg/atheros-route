@@ -1,8 +1,9 @@
 <html>
 <head>
 <title>DHCP</title>
-<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
@@ -221,7 +222,9 @@ function initTranslation()
 	trans_inner("t1_title","addIPMAC t1_title");	
 	trans_inner("t1_MAC","addIPMAC t1_MAC");	
 	trans_inner("t1_IP","addIPMAC t1_IP");	
-	trans_inner("t1_Tye","addIPMAC t1_Tye");	
+	trans_inner("t1_Tye","addIPMAC t1_Tye");
+	trans_inner("help_r","help");	
+	trans_inner("mac_format","safe mac_format");		
 }
 
 function initValue()
@@ -229,14 +232,20 @@ function initValue()
 	Butterlate.setTextDomain("safe");
 	initTranslation();
 }
-
+function help()
+{
+	if (_("toplanguage")=="e")
+		window.location.href='../help/ad_safe_addIPMAC_help_e.html';
+	else
+		window.location.href='../help/ad_safe_addIPMAC_help_z.html';
+}
 </script>
 </head>
 
 <body onLoad="initValue()">
 <div class="handaer_main">
 <table  width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td>
-<h1 id="title">添加IP/MAC绑定</h1>
+<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="title">添加IP/MAC绑定</h1>
 <p></p>
 
 <FORM method="POST" name="WORKFORM">
@@ -250,7 +259,7 @@ function initValue()
 
 <tr>
   <td class="head" id="t1_MAC">MAC地址</td>
-  <td><input type="text" name="ADD_MAC" id="ADD_MAC" size="32" maxlength="32" class="handaer_text_content"></td>
+  <td><input type="text" name="ADD_MAC" id="ADD_MAC" size="32" maxlength="32" class="handaer_text_content">&nbsp; &nbsp;<span id="mac_format"></span></td>
 </tr>
 
 <tr>

@@ -1,12 +1,13 @@
 <html>
 <head>
 <title>DHCP</title>
-<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
 var input_num=1;
+var but_num=1;
 var day_week="";
 
 function widget_enable(widgetID){document.getElementById(widgetID).disabled = false;}
@@ -14,6 +15,10 @@ function widget_disable(widgetID){document.getElementById(widgetID).disabled = t
 
 function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
 function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
+
+function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "table-row";}}
+function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
+function widget_display(widgetID){document.getElementById(widgetID).style.visibility = "visible";document.getElementById(widgetID).style.display = style_display_on();}
 
 function button_commit(buttonID){document.getElementById(buttonID).click();}
 
@@ -124,20 +129,30 @@ function initTranslation()
 	
 	trans_value("bCANCEL","par bCANCEL");
 	trans_value("bSAVE","par bSAVE");	
+	trans_inner("help_r","help");
+	trans_inner("mac_format","par mac_format");		
 }
 
 function initValue()
 {
 	input_num=1;
+	but_num=0;
 	Butterlate.setTextDomain("par");
 	initTranslation();
 	document.getElementById("WEEK").value="0";
+}
+function delnet(name)
+{
+	//alert("delete"+name);
+	widget_hide("NET"+name);
+	widget_disable("ADD_NET"+(parseInt(name)+1).toString());
 }
 function addnet()
 {
 	var orgvalue = document.getElementById("addinput").innerHTML;
 	input_num ++;
-	document.getElementById("addinput").innerHTML = orgvalue+'<br><input type="text" name="ADD_NET'+input_num+'" id="ADD_NET'+input_num+'" size="32" maxlength="32" class="handaer_text_content">';
+	but_num ++;
+	document.getElementById("addinput").innerHTML = orgvalue+'<span id="NET'+but_num+'"><br><input type="text" name="ADD_NET'+input_num+'" id="ADD_NET'+input_num+'" size="32" maxlength="32" class="handaer_text_content"/>&nbsp;<input type="button" style="color:red;font-size:20px;" value="×" name="'+but_num+'" onClick="delnet(this.name)"/><span>';
 }
 function daycount()
 {
@@ -159,13 +174,20 @@ function daycount()
 		
 	day_week = day_week.substring(0,day_week.length-1);   
 }
+function help()
+{
+	if (_("toplanguage")=="e")
+		window.location.href='../help/ad_parentc_add_help_e.html';
+	else
+		window.location.href='../help/ad_parentc_add_help_z.html';
+}
 </script>
 </head>
 
 <body onLoad="initValue()">
 <div class="handaer_main">
 <table  width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td>
-<h1 id="title">访问管理</h1>
+<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="title">访问管理</h1>
 <p></p>
 
 <FORM method="POST" name="WORKFORM">
@@ -179,14 +201,14 @@ function daycount()
 
 <tr> 
   <td class="head" id="t1_MAC">MAC地址</td>
-  <td><input type="text" name="ADD_MAC" id="ADD_MAC" size="32" maxlength="32" class="handaer_text_content"></td>
+  <td><input type="text" name="ADD_MAC" id="ADD_MAC" size="32" maxlength="32" class="handaer_text_content">&nbsp; &nbsp;<span id="mac_format"></span></td>
 </tr>
 
 <tr>
 	<td class="head" id="t1_NetL">网站列表</td>
 	<td>
 	<span id="addinput"><input type="text" name="ADD_NET1" id="ADD_NET1" size="32" maxlength="32" class="handaer_text_content"></span>
-	<input type="button" style="color:red;font-size:20px;" value="+" onClick="addnet()">
+	<br><input type="button" class="handaer_small_button"style="color:red;font-size:20px;" value="+" onClick="addnet()">
 	</td>
 </tr>
 

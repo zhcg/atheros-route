@@ -21,4 +21,7 @@ iptables -N FORWARD_ACCESSCTRL
 iptables -I FORWARD -p tcp --dport 80 -j FORWARD_ACCESSCTRL
 #iptables -I FORWARD -p tcp --dport 53 -j ACCEPT
 iptables -I FORWARD -p udp --dport 53 -j ACCEPT
+#deal staControl save
+iptables -N control_sta
+iptables -A INPUT -j control_sta
 sh /etc/ath/iptables/parc

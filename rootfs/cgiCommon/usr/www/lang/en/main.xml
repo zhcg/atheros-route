@@ -5,6 +5,7 @@
 	<message msgid="main cancel" msgstr="Cancel" />
 	<message msgid="toplanguage" msgstr="e" />
 	<message msgid="main bSAVE" msgstr="Save" />   
+	<message msgid="help" msgstr="Help" />
 
 	<message msgid="top_fast" msgstr="Quick Settings" />
 	<message msgid="top_adv" msgstr="Advanced Settings" />
@@ -26,8 +27,8 @@
 	<message msgid="advmenu treeapp_conm_list" msgstr="Connected Equipment List" />
 	<message msgid="advmenu treeapp_conm_ctrl" msgstr="Wireless Access Management" />
 	<message msgid="advmenu treeapp_wifi" msgstr="Wireless Settings" />
-	<message msgid="advmenu treeapp_wifi_basic" msgstr="Basic Settings" />
-	<message msgid="advmenu treeapp_wifi_adv" msgstr="Advanced Settings" />
+	<message msgid="advmenu treeapp_wifi_basic" msgstr="Wireless Basic Settings" />
+	<message msgid="advmenu treeapp_wifi_adv" msgstr="Wireless Advanced Settings" />
 	<message msgid="advmenu treeapp_wifi_wds" msgstr="WDS" />
 
 	<message msgid="advmenu treeapp_safe" msgstr="Safety Management" />
@@ -54,7 +55,8 @@
 	<message msgid="admw m_upload" msgstr="Firmware upgrade" />
 	<message msgid="admw m_factory" msgstr="Factory Reset" />
 
-	<message msgid="sysinfo t1_title" msgstr="System mode" />
+	<message msgid="sysinfo title" msgstr="System mode" />
+	<message msgid="sysinfo t1_title" msgstr="Version Information" />
 	<message msgid="sysinfo t1_softv" msgstr="The current software version" />
 	<message msgid="sysinfo t1_firmv" msgstr="The hardware version" />
 	<message msgid="sysinfo t2_title" msgstr="Internet" />
@@ -71,7 +73,7 @@
 	<message msgid="sysinfo t4_name" msgstr="SSID" />
 	<message msgid="sysinfo t4_safes" msgstr="Security type" />
 	<message msgid="sysinfo t4_channel" msgstr="Wireless channel" />
-	<message msgid="sysinfo t4_wds" msgstr="WDS mode" />
+	<message msgid="sysinfo t4_wds" msgstr="WDS" />
 
 	<message msgid="sysinfo ok" msgstr="Access to the Internet" />
 	<message msgid="sysinfo fail" msgstr="Unable to access the Internet" />
@@ -102,13 +104,13 @@
 	<message msgid="netcheck r1" msgstr="Internet access failed, please check the Internet settings are correct" />
 	<message msgid="netcheck r2" msgstr="Access to the Internet, the network is normal" />
 	<message msgid="netcheck r3" msgstr="Please check the WAN cable" />
-	<message msgid="err MAC empty" msgstr="MAC is empty!" />
-	<message msgid="err user empty" msgstr="User name is empty!" />
-	<message msgid="err pwd empty" msgstr="Password is empty!" />
-	<message msgid="err time empty" msgstr="Time is empty!" />
-	<message msgid="err MAC format" msgstr="MAC format error!Please input as XX:XX:XX:XX:XX:XX" />
-	<message msgid="err format" msgstr="Parameter illegal!" />
-	<message msgid="err range" msgstr="Parameter range error!" />
+	<message msgid="err MAC empty" msgstr="MAC is empty " />
+	<message msgid="err user empty" msgstr="User name is empty " />
+	<message msgid="err pwd empty" msgstr="Password is empty " />
+	<message msgid="err time empty" msgstr="Time is empty " />
+	<message msgid="err MAC format" msgstr="MAC format error,Please input as XX:XX:XX:XX:XX:XX" />
+	<message msgid="err format" msgstr="Parameter illegal " />
+	<message msgid="err range" msgstr="Parameter range error " />
 	<message msgid="err IP empty" msgstr="IP address can not be empty" />
 	<message msgid="err sub empty" msgstr="Subnet can not be empty" />
 	<message msgid="err gw empty" msgstr="Gateway can not be empty" />

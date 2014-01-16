@@ -75,6 +75,7 @@ function initTranslation()
 	
 	trans_value("manNTPApply","man apply");
 	trans_value("manNTPCancel","man cancel");
+	trans_inner("help_r","help");	
 	 
 }
 function init()
@@ -119,6 +120,8 @@ function NTPFormCheck()
 		widget_disable("NTPServerIP1");
 		widget_disable("NTPServerIP2"); 
 	}
+	Butterlate.setTextDomain("admin");
+	window.parent.Demo(_("admw settingwaiting"));
 	button_commit("TIMEZONE_SET");
 	return true;
 }
@@ -236,6 +239,13 @@ function switch_ntp()
 		widget_disable("NTPServerIP2");
 	}
 }
+function help()
+{
+	if (_("toplanguage")=="e")
+		window.location.href='../help/ad_man_timezone_help_e.html';
+	else
+		window.location.href='../help/ad_man_timezone_help_z.html';
+}
 </script>
 
 </head>
@@ -243,7 +253,7 @@ function switch_ntp()
 <body onload="init()">
 <div class="handaer_main">
 <table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
-<h1 id="title"></h1>
+<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="title"></h1>
 <h2 id="des"></h2>
 <table width="100%" cellpadding="0" cellspacing="0" class="handaer_text">
 <tbody><tr>
@@ -263,7 +273,7 @@ function switch_ntp()
 <tr>
   <td class="head" id="manNTPTimeZone"></td>
   <td>
-    <select name="sTIME_ZONE">
+    <select name="TIME_ZONE">
       <option ~sTIME_ZONE:UCT_-11~ value="UCT_-11" id="manNTPMidIsland"></option>
       <option ~sTIME_ZONE:UCT_-10~ value="UCT_-10" id="manNTPHawaii"></option>
       <option ~sTIME_ZONE:NAS_-09~ value="NAS_-09" id="manNTPAlaska"></option>
@@ -324,7 +334,7 @@ function switch_ntp()
 
 </tbody></table>
 
-<table cellpadding="0" cellspacing="0" class="handaer_text">
+<table width="100%" cellpadding="2" cellspacing="1">
   <tr align="center">
     <td>
       <input type="button"  class="handaer_input" value="Cancel"id="manNTPCancel" onClick="window.location.reload()">&nbsp; &nbsp;

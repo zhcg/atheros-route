@@ -25,7 +25,7 @@ function initTranslation()
 
 	trans_value("wApply","inet apply");
 	trans_value("wCancel","inet cancel");
-	
+	trans_inner("help_r","help");	
 	 
 }
 function init()
@@ -75,18 +75,19 @@ function switch_mac()
 		document.WORKFORM.ETH0_MAC.focus();
 	}
 }
- 
+function help()
+{
+	if (_("toplanguage")=="e")
+		window.location.href='../help/ad_wan_MACclone_help_e.html';
+	else
+		window.location.href='../help/ad_wan_MACclone_help_z.html';
+}
 </script>
-
 </head>
-
 <body onload="init()">
 <div class="handaer_main">
 <table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
-
-<h1 id="title">MAC地址克隆</h1>
-<p></p>
-
+<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="title">MAC地址克隆</h1>
 <FORM method="POST" name="WORKFORM">
 <!-- =========== Wireless Settings =========== -->
 <h2 id="des">设置BASE对广域网的MAC地址（  注意：只有局域网中计算机可以使用本功能）</h2>

@@ -1,8 +1,8 @@
 <html>
 <head>
 <title>DHCP</title>
-<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
@@ -297,6 +297,8 @@ function CheckValue()
 		widget_disable("GW_IP");
 		widget_disable("GW_SUB");
 	}
+	Butterlate.setTextDomain("admin");
+	window.parent.Demo(_("admw settingwaiting"));
 	button_commit("DHCP_SET");
 	return true;
 }
@@ -329,6 +331,7 @@ function initTranslation()
 	trans_inner("t3_Expr","dhcp t3_Expr");	
 	trans_value("bCANCEL","lan bCANCEL");	
 	trans_value("bAPPLY","lan bAPPLY");
+	trans_inner("help_r","help");	
 }
 
 function initValue()
@@ -384,13 +387,20 @@ function lismod(value)
 	
 	button_commit("MOD_SDHCP");
 }
+function help()
+{
+	if (_("toplanguage")=="e")
+		window.location.href='../help/ad_local_dhcp_help_e.html';
+	else
+		window.location.href='../help/ad_local_dhcp_help_z.html';
+}
 </script>
 </head>
 
 <body onLoad="initValue()">
 <div class="handaer_main">
 <table  width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td>
-<h1 id="title">DHCP服务器</h1>
+<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="title">DHCP服务器</h1>
 <p></p>
 
 <FORM method="POST" name="WORKFORM">
@@ -445,17 +455,8 @@ function lismod(value)
     <td id="t2_Modefy">编辑</td>
   </tr>
   ~Z:sdhcplist~ 
-   <tr>
-	<td>&nbsp; &nbsp;</td>
-	<td>&nbsp; &nbsp;</td>
-	<td>&nbsp; &nbsp;</td>
-	<td>&nbsp; &nbsp;</td>
-    <td>
-		<input type="button"  class="handaer_small_button" name="ADDDHCP" id="ADDDHCP" value="添加" onClick="window.location.href='ad_local_addsdhcp'">
-	</td>
-  </tr>
-  
 </table>
+<input type="button"  class="handaer_small_button" name="ADDDHCP" id="ADDDHCP" value="添加" onClick="window.location.href='ad_local_addsdhcp'">
 <h1 id="t3line"> </h1>
 <table id="t3"  width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
   <tr> 

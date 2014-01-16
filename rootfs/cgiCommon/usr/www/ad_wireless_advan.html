@@ -1,8 +1,8 @@
 <html>
 <head>
-<title>Wizard Internet Settings</title>
-<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+<title></title>
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
@@ -59,7 +59,8 @@ function CheckValue()
 		document.WORKFORM.WIFI_ADV_RSTCTS.select();
 		return false;
 	}
-
+	Butterlate.setTextDomain("admin");
+	window.parent.Demo(_("admw settingwaiting"));	
 	button_commit("WIRELESS_ADVSET");
 	return true;
 }
@@ -79,7 +80,7 @@ function initTranslation()
 	trans_inner("t1_long","wless t1_long");	
 	trans_inner("t1_shot","wless t1_shot");
 	trans_inner("auto","wless auto");
-	
+	trans_inner("help_r","help");	
 	
 	trans_value("bCANCEL","wless bCANCEL");
 	trans_value("bAPPLY","wless bAPPLY");
@@ -91,14 +92,20 @@ function initValue()
 	Butterlate.setTextDomain("wless");
 	initTranslation();
 }
-
+function help()
+{
+	if (_("toplanguage")=="e")
+		window.location.href='../help/ad_wireless_advan_help_e.html';
+	else
+		window.location.href='../help/ad_wireless_advan_help_z.html';
+}
 </script>
 </head>
 
 <body onLoad="initValue()" ondragstart="window.event.returnValue=false" oncontextmenu="window.event.returnValue=false" onselectstart="event.returnValue=false">
 <div class="handaer_main">
 <table  width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td>
-<h1 id="title">无线高级设置</h1>
+<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="title">无线高级设置</h1>
 <p></p>
 
 <FORM method="POST" name="WORKFORM">

@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script type="text/javascript" src="/lang/b28n.js"></script>
+
 <script>
 function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "table-row";}}
 function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
@@ -18,9 +19,10 @@ function button_commit(buttonID){document.getElementById(buttonID).click();}
 function initTranslation()
 {
 	trans_inner("factitle","admw factitle");
+	trans_inner("f_title","admw factitle");
 	trans_inner("facdes","admw facdes");
 	trans_value("defaultset","admw defaultset");
-	trans_inner("settingwaiting","admw settingwaiting");	
+	trans_inner("help_r","help");	
 }
 function init()
 {
@@ -29,17 +31,22 @@ function init()
 }
 function waitgifshow()
 {
-	widget_display("waitshow");
+	window.parent.Demo( _("admw settingwaiting"));
 }
 function factoryset()
 {
 	if(confirm(_("factory reset")))
 	{
-		widget_hide("facdes");	
-		widget_hide("defaultset");	
 		waitgifshow();
 		button_commit('FACTORY');
 	}
+}
+function help()
+{
+	if (_("toplanguage")=="e")
+		window.location.href='../help/ad_man_factory_help_e.html';
+	else
+		window.location.href='../help/ad_man_factory_help_z.html';
 }
 </script>
 
@@ -48,17 +55,22 @@ function factoryset()
 <body onload=init();>
 <div class="handaer_main">
 <table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
-<h1 id="factitle"></h1>
-<form method="post" name="wizard_form">  
+<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="factitle"></h1>
 <h2 id="facdes"></h2>  
+<table width="100%" cellpadding="0" cellspacing="0" class="handaer_text">
+<tr>
+  <td class="title" id="f_title"></td>
+</tr>
+<tr>
+<td>	
+	<form method="post" name="wizard_form">  
 	<input type="button" name="defaultset" id="defaultset" class="handaer_input"  onclick="factoryset();">
     <input type="submit" name="FACTORY" id="FACTORY" style="display:none" value="FACTORY">
-</form></td></tr>
-</table>
-<div id="waitshow" style="display:none" align="center">
-  <img align="center" src="/images/loading.gif"></img>
-  <p align="center" id="settingwaiting"></p>
-</div>
+</td>
+</form>
+</tr>
+<table>
+</td></tr></table>
 </div>
 
 </body>

@@ -217,6 +217,11 @@ powercloud_build:
 	cp -rf $(TOPDIR)/apps/powercloud-client/output/* $(INSTALL_ROOT)/
 endif
 
+ukey_build:
+	@echo building ukey software
+	cd $(TOPDIR)/apps/ukey_syno && \
+	make && \
+	cp -f $(TOPDIR)/apps/ukey_syno/ukey_test $(INSTALL_ROOT)/
 samba_build:
 ifeq ($(BUILD_SAMBA),y)
 	@echo Building samba ver 3.0.24.....

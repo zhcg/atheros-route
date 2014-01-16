@@ -14,8 +14,12 @@
 	<message msgid="conn bSAVE" msgstr="保存" />   
 	<message msgid="conn delit1" msgstr="确定要删除" /> 
 	<message msgid="conn delit2" msgstr="的管理条目?" /> 
+	<message msgid="conn mac_format" msgstr="例如(11:22:33:44:55:66)" />   
+	<message msgid="help" msgstr="帮助" />
+	<message msgid="toplanguage" msgstr="z" />
 
-	<message msgid="clist title" msgstr="已接入设备列表" />  
+	<message msgid="clist title" msgstr="已接入设备列表" /> 
+	<message msgid="clist des" msgstr="显示HBD路由当前已经接入的有线和无线设备的信息" /> 
 	<message msgid="clist t1_title" msgstr="有线设备" />  
 	<message msgid="clist t2_title" msgstr="无线设备（包括无线可疑设备）" />  
 	<message msgid="clist ip" msgstr="IP地址" />  
