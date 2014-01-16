@@ -7,7 +7,7 @@
 **************************************************************************/
 #include "communication_usb.h"
 
-static volatile unsigned char link_flag = 1; // 
+static volatile unsigned char link_flag = 1; // 1：表示连接已经关闭
 static volatile int client_fd = 0;
 
 /** 
@@ -158,6 +158,9 @@ void * pthread_socket_recv(void *para)
     char buf[SECTORS] = {0};
     
     struct s_usb_stub *usb = (struct s_usb_stub *)para;
+    
+    time_t start_time = 0;
+    time_t end_time = 0;
     while (1) 
     {
         pthread_mutex_lock(&usb->mutex);
@@ -175,7 +178,22 @@ void * pthread_socket_recv(void *para)
             case 0:
             case -1:
             {
-                PRINT("pthread_socket_recv waiting recv!\n");
+                PERROR("pthread_socket_recv waiting recv!\n");
+                end_time = time(NULL);
+                if (errno == EBADF) // 无效的文件描述符或者已经关闭
+                {
+                    link_flag = 1;
+                    close(client_fd);
+                    client_fd = 0;
+                    PERROR("link_flag = %d\n", link_flag);
+                }
+                else if ((start_time > 0) && (end_time > 0) && (end_time - start_time > 120)) // 两分钟关闭连接
+                {
+                    link_flag = 1;
+                    close(client_fd);
+                    client_fd = 0;
+                    PERROR("link_flag = %d\n", link_flag);
+                } 
                 pthread_mutex_unlock(&usb->mutex);
                 continue;
             }
@@ -183,7 +201,7 @@ void * pthread_socket_recv(void *para)
             {
                 if (FD_ISSET(client_fd, &fdset) > 0)
                 {
-                    if (link_flag == 1)
+                    if (link_flag == 1) 
                     {
                         client_fd = 0;
                         link_flag = 0;
@@ -228,6 +246,7 @@ void * pthread_socket_recv(void *para)
                     #endif
                     PRINT("usb_send success!\n");
                 }
+                start_time = time(NULL); // 获取当前时间
             } 
         }
         
@@ -267,7 +286,7 @@ void * usb_recv_and_socket_send(void *para)
             case 0:
             case -1:
             {
-                PRINT("pthread_stop_recv_cmd waiting recv cmd!\n");
+                PERROR("pthread_stop_recv_cmd waiting recv cmd!\n");
                 pthread_mutex_unlock(&usb->mutex);
                 continue;
             }

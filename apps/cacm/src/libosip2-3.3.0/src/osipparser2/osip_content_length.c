@@ -44,22 +44,27 @@ osip_message_set_content_length (osip_message_t * sip, const char *hvalue)
   int i;
 
   if (hvalue == NULL || hvalue[0] == '\0')
-    return OSIP_SUCCESS;
-
+  {
+      return OSIP_SUCCESS;
+  }
   if (sip->content_length != NULL)
-    return OSIP_SYNTAXERROR;
+  {
+      return OSIP_SYNTAXERROR;
+  }
+  
   i = osip_content_length_init (&(sip->content_length));
   if (i != 0)
-    return i;
+  {
+      return i;
+  }
   sip->message_property = 2;
   i = osip_content_length_parse (sip->content_length, hvalue);
   if (i != 0)
-    {
+  {
       osip_content_length_free (sip->content_length);
       sip->content_length = NULL;
       return i;
-    }
-
+  }
   return OSIP_SUCCESS;
 }
 
@@ -70,13 +75,21 @@ osip_content_length_parse (osip_content_length_t * content_length,
   size_t len;
 
   if (hvalue == NULL)
-    return OSIP_BADPARAMETER;
+  {
+      return OSIP_BADPARAMETER;
+  }
   len = strlen (hvalue);
+  
   if (len + 1 < 2)
-    return OSIP_SYNTAXERROR;
+  {
+      return OSIP_SYNTAXERROR;
+  }
   content_length->value = (char *) osip_malloc (len + 1);
   if (content_length->value == NULL)
-    return OSIP_NOMEM;
+  {
+      return OSIP_NOMEM;
+  }
+  
   osip_strncpy (content_length->value, hvalue, len);
   return OSIP_SUCCESS;
 }

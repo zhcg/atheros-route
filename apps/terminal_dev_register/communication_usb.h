@@ -22,8 +22,8 @@
 #define RAMDEV "/dev/ram1"
 #define USBDEV "/dev/usb0"
 #define FATFS  "/var/terminal_dev_register/fs/fat_fs"
-#define USB_SOCKET_PORT "9685"
 
+#define USB_SOCKET_PORT "9685"
 struct class_communication_usb
 {
     int (* usb_init)();

@@ -97,13 +97,13 @@ with_gcc=yes
 EGREP="/bin/grep -E"
 
 # The linker used to build libraries.
-LD="/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/mips-linux-uclibc/bin/ld"
+LD="/home/yangjilong/20140108/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/mips-linux-uclibc/bin/ld"
 
 # Whether we need hard or soft links.
 LN_S="ln -s"
 
 # A BSD-compatible nm program.
-NM="/home/yangjilong/20131119/9344/build/../build/gcc-4.3.3/build_mips/staging_dir/usr//bin/mips-linux-nm -B"
+NM="/home/yangjilong/20140108/9344/build/../build/gcc-4.3.3/build_mips/staging_dir/usr//bin/mips-linux-nm -B"
 
 # A symbol stripping program
 STRIP="mips-linux-uclibc-strip"
@@ -329,7 +329,7 @@ variables_saved_for_relink="PATH LD_LIBRARY_PATH LD_RUN_PATH GCC_EXEC_PREFIX COM
 link_all_deplibs=no
 
 # Compile-time system search path for libraries
-sys_lib_search_path_spec="/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/lib/gcc/mips-linux-uclibc/4.3.3 /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/lib/gcc /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/mips-linux-uclibc/lib /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/lib /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/lib"
+sys_lib_search_path_spec="/home/yangjilong/20140108/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/lib/gcc/mips-linux-uclibc/4.3.3 /home/yangjilong/20140108/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/lib/gcc /home/yangjilong/20140108/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/mips-linux-uclibc/lib /home/yangjilong/20140108/9344/build/gcc-4.3.3/build_mips/staging_dir/lib /home/yangjilong/20140108/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/lib"
 
 # Run-time system search path for libraries
 sys_lib_dlsearch_path_spec="/lib /usr/lib /usr/lib/i386-linux-gnu/mesa-egl /usr/lib/i386-linux-gnu/mesa /lib/i386-linux-gnu /usr/lib/i386-linux-gnu /lib/i686-linux-gnu /usr/lib/i686-linux-gnu /usr/local/lib "
@@ -7373,13 +7373,13 @@ with_gcc=yes
 EGREP="/bin/grep -E"
 
 # The linker used to build libraries.
-LD="/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/mips-linux-uclibc/bin/ld"
+LD="/home/yangjilong/20140108/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/mips-linux-uclibc/bin/ld"
 
 # Whether we need hard or soft links.
 LN_S="ln -s"
 
 # A BSD-compatible nm program.
-NM="/home/yangjilong/20131119/9344/build/../build/gcc-4.3.3/build_mips/staging_dir/usr//bin/mips-linux-nm -B"
+NM="/home/yangjilong/20140108/9344/build/../build/gcc-4.3.3/build_mips/staging_dir/usr//bin/mips-linux-nm -B"
 
 # A symbol stripping program
 STRIP="mips-linux-uclibc-strip"
@@ -7502,11 +7502,11 @@ striplib="mips-linux-uclibc-strip --strip-unneeded"
 
 # Dependencies to place before the objects being linked to create a
 # shared library.
-predep_objects="/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/lib/crti.o /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/bin-ccache/../lib/gcc/mips-linux-uclibc/4.3.3/crtbeginS.o"
+predep_objects="/home/yangjilong/20140108/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/lib/crti.o /home/yangjilong/20140108/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/bin-ccache/../lib/gcc/mips-linux-uclibc/4.3.3/crtbeginS.o"
 
 # Dependencies to place after the objects being linked to create a
 # shared library.
-postdep_objects="/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/bin-ccache/../lib/gcc/mips-linux-uclibc/4.3.3/crtendS.o /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/lib/crtn.o"
+postdep_objects="/home/yangjilong/20140108/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/bin-ccache/../lib/gcc/mips-linux-uclibc/4.3.3/crtendS.o /home/yangjilong/20140108/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/lib/crtn.o"
 
 # Dependencies to place before the objects being linked to create a
 # shared library.
@@ -7518,11 +7518,11 @@ postdeps="-lstdc++ -lm -lgcc_s -lc -lgcc_s"
 
 # The directories searched by this compiler when creating a shared
 # library
-compiler_lib_search_dirs="/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/bin-ccache/../lib/gcc/mips-linux-uclibc/4.3.3 /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/bin-ccache/../lib/gcc /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/bin-ccache/../lib/gcc/mips-linux-uclibc/4.3.3/../../../../mips-linux-uclibc/lib /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/lib /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/lib"
+compiler_lib_search_dirs="/home/yangjilong/20140108/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/bin-ccache/../lib/gcc/mips-linux-uclibc/4.3.3 /home/yangjilong/20140108/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/bin-ccache/../lib/gcc /home/yangjilong/20140108/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/bin-ccache/../lib/gcc/mips-linux-uclibc/4.3.3/../../../../mips-linux-uclibc/lib /home/yangjilong/20140108/9344/build/gcc-4.3.3/build_mips/staging_dir/lib /home/yangjilong/20140108/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/lib"
 
 # The library search path used internally by the compiler when linking
 # a shared library.
-compiler_lib_search_path="-L/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/bin-ccache/../lib/gcc/mips-linux-uclibc/4.3.3 -L/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/bin-ccache/../lib/gcc -L/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/bin-ccache/../lib/gcc/mips-linux-uclibc/4.3.3/../../../../mips-linux-uclibc/lib -L/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/lib -L/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/lib"
+compiler_lib_search_path="-L/home/yangjilong/20140108/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/bin-ccache/../lib/gcc/mips-linux-uclibc/4.3.3 -L/home/yangjilong/20140108/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/bin-ccache/../lib/gcc -L/home/yangjilong/20140108/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/bin-ccache/../lib/gcc/mips-linux-uclibc/4.3.3/../../../../mips-linux-uclibc/lib -L/home/yangjilong/20140108/9344/build/gcc-4.3.3/build_mips/staging_dir/lib -L/home/yangjilong/20140108/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/lib"
 
 # Method to check whether dependent libraries are shared objects.
 deplibs_check_method="pass_all"
@@ -7602,7 +7602,7 @@ variables_saved_for_relink="PATH LD_LIBRARY_PATH LD_RUN_PATH GCC_EXEC_PREFIX COM
 link_all_deplibs=no
 
 # Compile-time system search path for libraries
-sys_lib_search_path_spec="/home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/lib/gcc/mips-linux-uclibc/4.3.3 /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/lib/gcc /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/mips-linux-uclibc/lib /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/lib /home/yangjilong/20131119/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/lib"
+sys_lib_search_path_spec="/home/yangjilong/20140108/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/lib/gcc/mips-linux-uclibc/4.3.3 /home/yangjilong/20140108/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/lib/gcc /home/yangjilong/20140108/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/mips-linux-uclibc/lib /home/yangjilong/20140108/9344/build/gcc-4.3.3/build_mips/staging_dir/lib /home/yangjilong/20140108/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/lib"
 
 # Run-time system search path for libraries
 sys_lib_dlsearch_path_spec="/lib /usr/lib /usr/lib/i386-linux-gnu/mesa-egl /usr/lib/i386-linux-gnu/mesa /lib/i386-linux-gnu /usr/lib/i386-linux-gnu /lib/i686-linux-gnu /usr/lib/i686-linux-gnu /usr/local/lib "

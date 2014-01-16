@@ -615,19 +615,19 @@ static int get_sip_info(char *pad_sn, char *pad_mac)
         columns_value_len[7] = strlen(respond_pack.business_cycle) - strlen("businessCycle:");
         
         #if BOARDTYPE == 6410 || BOARDTYPE == 9344
-        if ((res = database_management.insert(8, columns_name, columns_value, columns_value_len)) < 0)
+        if ((res = database_management.update(8, columns_name, columns_value, columns_value_len)) < 0)
         {
-            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_insert failed!", res);
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_update failed!", res);
             return res;
         }
         #elif BOARDTYPE == 5350
-        PRINT("before insert!\n");
-        if ((res = nvram_interface.insert(RT5350_FREE_SPACE, 8, columns_name, columns_value, columns_value_len)) < 0)
+        PRINT("before update!\n");
+        if ((res = nvram_interface.update(RT5350_FREE_SPACE, 8, columns_name, columns_value, columns_value_len)) < 0)
         {
-            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "nvram_insert failed!", res);
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "nvram_update failed!", res);
             return res;
         }
-        PRINT("after insert!\n");
+        PRINT("after update!\n");
         #endif
     }
     else if (strcmp(msg_data_status_num, "401") == 0) // functionId找不到

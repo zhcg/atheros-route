@@ -214,6 +214,8 @@ struct s_cmd cmd_list[] =
     {0x45, 0x00, "ADD_MAC",        "cfg -a ADD_MAC=",         "", ""},
     {0x46, 0x00, "ADD_IP",         "cfg -a ADD_IP=",          "", ""},
     {0x47, 0x00, "ADD_STATUS",     "cfg -a ADD_STATUS=",      "", ""},
+    
+    {0x48, 0x00, "PPPOE_MODE",     "cfg -a PPPOE_MODE=",      "", ""},
 };
 #endif
 
@@ -278,12 +280,6 @@ int init_env()
     int res = 0;
     char buf[64] = {0};
     
-    if ((res = common_tools.get_config()) < 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_config failed!", res);
-        return res;
-    }
-    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "The configuration file is read successfully!", 0);
     #if BOARDTYPE == 5350
     // 打开串口并且初始化
     if ((serial_pad_fd = open(common_tools.config->serial_pad, O_RDWR, 0644)) < 0)
@@ -1407,14 +1403,179 @@ int get_wan_state()
 {
     return 0;
 }
+
+/**
+ * 获取上网方式 动态 静态 pppoe
+ */
+static int get_wan_mode()
+{
+    int res = 0;
+    char *cmd = "cfg -s | grep \"WAN_MODE:=\"";
+    char buf[128] = {0};
+    
+    if ((res = common_tools.get_cmd_out(cmd, buf, sizeof(buf))) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_cmd_out failed!", res);
+        return res;
+    }
+    
+    if (memcmp(buf + strlen("WAN_MODE:="), "dhcp", strlen("dhcp")) == 0) // 动态 
+    {
+        return 1;
+    }
+    else if (memcmp(buf + strlen("WAN_MODE:="), "static", strlen("static")) == 0) // 静态 
+    {
+        return 2;
+    }
+    else if (memcmp(buf + strlen("WAN_MODE:="), "pppoe", strlen("pppoe")) == 0) // 拨号上网
+    {
+        return 3;
+    }
+    else 
+    {
+        return DATA_ERR;
+    }
+    return 0;
+}
+
+/**
+ * 动态IP设置
+ */
+static int wan_dhcp_config()
+{
+    system("udhcpc -b -i eth0 -h HBD-Route -s /etc/udhcpc.script");
+    return 0;
+}
+
+/**
+ * 静态IP设置
+ */
+static int wan_static_config()
+{
+    int res = 0;
+    char *cmd_get_ip = "cfg -s | grep \"WAN_IPADDR:=\"";
+    char *cmd_get_netmask = "cfg -s | grep \"WAN_NETMASK:=\"";
+    char *cmd_get_ipgw = "cfg -s | grep \"IPGW:=\"";
+    
+    char ip[64] = {0};
+    char netmask[64] = {0};
+    char ipgw[64] = {0};
+    
+    char buf[128] = {0};
+    if ((res = common_tools.get_cmd_out(cmd_get_ip, ip, sizeof(ip))) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_cmd_out failed!", res);
+        return res;
+    }
+    ip[strlen(ip) - 1] = '\0';
+    if ((res = common_tools.get_cmd_out(cmd_get_netmask, netmask, sizeof(netmask))) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_cmd_out failed!", res);
+        return res;
+    }
+    netmask[strlen(netmask) - 1] = '\0';
+    
+    sprintf(buf, "ifconfig eth0 %s netmask %s up", ip + strlen("WAN_IPADDR:="), netmask + strlen("WAN_NETMASK:="));
+    system(buf);
+    PRINT("buf = %s\n", buf);
+    memset(buf, 0, sizeof(buf));
+    
+    if ((res = common_tools.get_cmd_out(cmd_get_ipgw, ipgw, sizeof(ipgw))) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_cmd_out failed!", res);
+        return res;
+    }
+    ipgw[strlen(ipgw) - 1] = '\0';
+    sprintf(buf, "route add default gw %s dev eth0", ipgw + strlen("IPGW:="));
+    system(buf);
+    PRINT("buf = %s\n", buf);
+    return 0;
+}
+
+/**
+ * pppoe设置
+ */
+static int wan_pppoe_config()
+{
+    int res = 0;
+    char *cmd_get_user = "cfg -s | grep \"PPPOE_USER:=\"";
+    char *cmd_get_password = "cfg -s | grep \"PPPOE_PWD:=\"";
+    char pppoe_user[64] = {0};
+    char pppoe_pwd[64] = {0};
+    char buf[128] = {0};
+     
+    if ((res = common_tools.get_cmd_out(cmd_get_user, pppoe_user, sizeof(pppoe_user))) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_cmd_out failed!", res);
+        return res;
+    }
+    pppoe_user[strlen(pppoe_user) - 1] = '\0';
+    PRINT("pppoe_user = %s\n", pppoe_user);
+    if ((res = common_tools.get_cmd_out(cmd_get_password, pppoe_pwd, sizeof(pppoe_pwd))) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_cmd_out failed!", res);
+        return res;
+    }
+    pppoe_pwd[strlen(pppoe_pwd) - 1] = '\0';
+    PRINT("pppoe_pwd = %s\n", pppoe_pwd);
+    sprintf(buf, "pppoe-setup %s %s &", pppoe_user + strlen("PPPOE_USER:="), pppoe_pwd + strlen("PPPOE_PWD:="));
+    PRINT("buf = %s\n", buf);
+    system(buf);
+    
+    PRINT("before stop!\n");
+    system("pppoe-stop &");
+    PRINT("before start!\n");
+    system("pppoe-start &");
+    return 0;
+}
+
 /**
  * 使设置生效
  */
 int config_route_take_effect()
 {
-    system("/usr/sbin/set_addr"); // 静态指定生效
+    int res = 0;
+    // 静态指定生效
+    system("killall udhcpd");
+    system("/etc/rc.d/rc.udhcpd");
+    system("/usr/sbin/set_addr");
+    system("/usr/sbin/udhcpd /etc/udhcpd.conf");
+    
+    // wifi 生效
     system("/etc/ath/apdown");
     system("/etc/ath/apup");
+    
+    if (get_wan_mode() == 1) // 动态 
+    {
+        if ((res = wan_dhcp_config()) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "wan_dhcp_config failed!", res);
+            return res;
+        }
+    }
+    else if (get_wan_mode() == 2) // 静态 
+    {
+        PRINT("before wan_static_config\n");
+        if ((res = wan_static_config()) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "wan_static_config failed!", res);
+            return res;
+        }
+        PRINT("after wan_static_config\n");
+    }
+    else if (get_wan_mode() == 3) // 拨号上网
+    {
+        if ((res = wan_pppoe_config()) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "wan_pppoe_config failed!", res);
+            return res;
+        }
+    }
+    else 
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data error!", res);
+        return DATA_ERR;
+    }
     return 0;
 }
 
@@ -1433,6 +1594,33 @@ int route_config(int index)
 {
     int res = 0;
     int i= 0, j = 0;
+    res = get_wan_mode();
+    
+    switch (res)
+    {
+        case 1: // 动态IP
+        {
+            PRINT("old wan mode is DHCP!\n");
+            system("killall udhcpc");
+            break;
+        }
+        case 2: // 静态IP
+        {
+            PRINT("old wan mode is static!\n");
+            break;
+        }
+        case 3: // PPPOE
+        {
+            PRINT("old wan mode is DHCP!\n");
+            system("pppoe-stop");
+            break;
+        }
+        default: // 不匹配
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "Option does not match!", MISMATCH_ERR);
+            return MISMATCH_ERR;
+        }
+    }
     for (i = 0, j = 1; i < sizeof(network_config.cmd_list) / sizeof(struct s_cmd); i++)
     {
         if (j == network_config.cmd_list[i].cmd_bit)
@@ -2006,9 +2194,9 @@ int network_settings(int fd, int cmd_count, char cmd_word)
         }
         PRINT("_________________________________\n");
         #if BOARDTYPE == 6410 || BOARDTYPE == 9344
-        if ((res = database_management.insert(8, column_name, values, values_len)) < 0)
+        if ((res = database_management.update(8, column_name, values, values_len)) < 0)
         {
-            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_insert failed", res);
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_update failed", res);
             return res;
         }
         #elif BOARDTYPE == 5350
@@ -2020,7 +2208,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
         }
         PRINT("_________________________________\n");
         #endif
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "The database insert success!", 0);    
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "The database update success!", 0);    
     }
     
     common_tools.mac_add_colon(pad_mac);
@@ -2572,7 +2760,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
         }
     }
     #elif BOARDTYPE == 9344
-    PRINT("pad_cmd = %02X\n", (char)pad_cmd);
+    PRINT("pad_cmd = %02X\n", (unsigned char)pad_cmd);
     for (i = 0; i < sizeof(network_config.cmd_list) / sizeof(struct s_cmd); i++)
     {   
         //PRINT("%d %02X %s %s\n", index, network_config.cmd_list[i].cmd_word, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
@@ -2917,6 +3105,15 @@ int network_settings(int fd, int cmd_count, char cmd_word)
                         PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);             
                         break;
                     }
+                    case 0x48:
+                    {
+                        index++;
+                        network_config.cmd_list[i].cmd_bit = index;
+                        memcpy(network_config.cmd_list[i].set_value, "auto", strlen("auto"));
+                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s\"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
+                        PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);             
+                        break;
+                    }
                     default:
                     {
                         break;
@@ -3252,7 +3449,11 @@ int network_settings(int fd, int cmd_count, char cmd_word)
         }
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "Pad save SSID success!", 0);  
     }
+    #if BOARDTYPE == 5350
     if ((res = common_tools.get_network_state(common_tools.config->pad_ip, 4, 6)) < 0)
+    #elif BOARDTYPE == 9344
+    if ((res = common_tools.get_network_state(common_tools.config->pad_ip, 1, 2)) < 0)
+    #endif
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_network_state failed!", res);
         return (res == DATA_DIFF_ERR) ? LAN_ABNORMAL : res;

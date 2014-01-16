@@ -510,20 +510,18 @@ static int monitor_app()
 	    PERROR("nvram_select failed!\n");
 	    return res;
 	}
-	register_state = columns_value[0][0];
-	// 初始化成功
-	if (columns_value[0][0] ==  '0')
-	    
 	#elif BOARDTYPE == 9344
 	if ((res = database_management.select(1, columns_name, columns_value)) < 0)
 	{
 	    PERROR("sqlite_select failed!\n");
 	    return res;
 	}
-	register_state = columns_value[0][0];
-    // 初始化成功
-	if (columns_value[0][0] ==  0)
     #endif
+    
+    register_state = atoi(columns_value[0]);
+    PRINT("register_state = %d, columns_value[0] = %s\n", register_state, columns_value[0]);
+    // 初始化成功
+	if (register_state ==  0)
 	{
 	    PRINT("register_state key is zero!(terminal initialized successful!)\n");
 	    
@@ -537,13 +535,6 @@ static int monitor_app()
     	    PERROR("nvram_select failed!\n");
     	    return res;
     	}
-    	#elif BOARDTYPE == 9344
-    	if ((res = database_management.select(1, columns_name, columns_value)) < 0)
-    	{
-    	    PERROR("sqlite_select failed!\n");
-    	    return res;
-    	}
-    	#endif
     	if ((strlen(columns_value[0]) == 0) || (memcmp(columns_value[0], "\"\"", 2) == 0))
         {
             PERROR("no business_cycle in flash!\n");
@@ -555,6 +546,16 @@ static int monitor_app()
             business_cycle = atoi(columns_value[0]);
             PRINT("business_cycle = %s\n", columns_value[0]);
         }
+    	#elif BOARDTYPE == 9344
+    	if ((res = database_management.select(1, columns_name, columns_value)) < 0)
+    	{
+    	    PERROR("sqlite_select failed!\n");
+    	    return res;
+    	}
+        register_flag = 1;
+        business_cycle = atoi(columns_value[0]);
+        PRINT("business_cycle = %s\n", columns_value[0]);
+    	#endif
 	}
     
     #if BOARDTYPE == 5350
@@ -777,11 +778,7 @@ static int monitor_app()
         #endif
         
         //cacm
-        #if BOARDTYPE == 5350
-        if (register_state == '0')
-        #elif BOARDTYPE == 9344
         if (register_state == 0)
-        #endif
         {
             // CACM
             if (common_tools.get_cmd_out(cacm_cmd, buf, sizeof(buf)) < 0)
@@ -1009,7 +1006,12 @@ int main(int argc, char ** argv)
     signal(SIGCHLD, signal_handle);
     
     strcpy(common_tools.argv0, argv[0]);
-    
+	int res = 0;
+    if ((res = common_tools.get_config()) < 0)
+	{
+		PERROR("get_config failed!\n");
+		return res;
+	}
     // STUB启动提示
     #if PRINT_DEBUG
     PRINT("[monitor_application (%s %s)]\n", __DATE__, __TIME__);

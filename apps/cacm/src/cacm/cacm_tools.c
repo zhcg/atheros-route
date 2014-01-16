@@ -15,16 +15,22 @@ static int init_register(struct s_cacm *cacm)
 {
     osip_message_t * msg = NULL;
     int res = 0;
-	char send_buf[2048] = {0};
-	
-	eXosip_clear_authentication_info();
-	/*
-	if (eXosip_add_authentication_info(cacm->user_name, cacm->user_name, cacm->password, NULL, NULL) < 0)
-	{
-	    PERROR("eXosip_add_authentication_info failed!\n");
-	    return ADD_AUTHENTICATION_INFO_ERR;
-	}
-	*/
+    char send_buf[2048] = {0};
+    char length[5] = {0};
+    
+    eXosip_clear_authentication_info();
+    /*
+    if (eXosip_add_authentication_info(cacm->user_name, cacm->user_name, cacm->password, NULL, NULL) < 0)
+    {
+        PERROR("eXosip_add_authentication_info failed!\n");
+        return ADD_AUTHENTICATION_INFO_ERR;
+    }
+    */
+    
+    PRINT("cacm->from = %s\n", cacm->from);
+    PRINT("cacm->register_uri = %s\n", cacm->register_uri);
+    PRINT("cacm->contact = %s\n", cacm->contact);
+    PRINT("cacm->expires = %d\n", cacm->expires);
     eXosip_lock();
     if ((cacm->id = eXosip_register_build_initial_register(cacm->from, cacm->register_uri, cacm->contact, cacm->expires, &msg)) < 0)
     {
@@ -33,19 +39,26 @@ static int init_register(struct s_cacm *cacm)
         return INIT_REGISTER_ERR;
     }
     PRINT("after eXosip_register_build_initial_register! cacm->id = %d\n", cacm->id);
-	
-	snprintf (send_buf, sizeof(send_buf), 
-	    "v=0\r\n" 
-	    "o=%s\r\n" 
-		"s=conversation\r\n" 
-		"i=1\r\n"
-		"c=%s\r\n"
-		"t=0\r\n", cacm->base_sn, cacm->hint); 
-		
-	osip_message_set_body(msg, send_buf, strlen(send_buf));
-	osip_message_set_content_type(msg, "application/sdp");
-
-	eXosip_register_send_register(cacm->id, msg);
+    
+    snprintf (send_buf, sizeof(send_buf), 
+        "v=0\r\n" 
+        "o=%s\r\n" 
+        "s=conversation\r\n" 
+        "i=1\r\n"
+        "c=%s\r\n"
+        "t=0\r\n", cacm->base_sn, cacm->hint); 
+    
+    PRINT("strlen(send_buf) = %d\n", strlen(send_buf));
+    snprintf(length, sizeof(length), "%d", strlen(send_buf) + 1);
+    
+    PRINT("length = %s\n", length);
+    
+    osip_message_set_content_type(msg, "application/sdp");
+    PRINT("after osip_message_set_content_type\n");
+    osip_message_set_body(msg, send_buf, strlen(send_buf));
+    PRINT("after osip_message_set_body\n");
+    
+    eXosip_register_send_register(cacm->id, msg);
     PRINT("after eXosip_register_send_register!\n");
     eXosip_unlock();
     return 0;
@@ -66,7 +79,7 @@ static int init_logout(struct s_cacm *cacm)
     
     PRINT("cacm->expires = %d\n", cacm->expires);
     eXosip_clear_authentication_info();
-	
+    
     eXosip_lock();
     if (eXosip_register_build_register(cacm->id, cacm->expires, &msg) < 0)
     {
@@ -75,20 +88,20 @@ static int init_logout(struct s_cacm *cacm)
         return INIT_LOGOUT_ERR;
     }
     PRINT("after eXosip_register_build_register! cacm->id = %d\n", cacm->id);
-	
-	/*
-	snprintf (send_buf, sizeof(send_buf), 
-	    "v=0\r\n" 
-	    "o=%s\r\n" 
-		"s=conversation\r\n" 
-		"i=1\r\n"
-		"c=%s\r\n"
-		"t=0\r\n", cacm->base_sn, cacm->hint); 
-		
-	osip_message_set_body(msg, send_buf, strlen(send_buf));
-	osip_message_set_content_type(msg, "application/sdp");
-	*/
-	eXosip_register_send_register(cacm->id, msg);
+    
+    /*
+    snprintf (send_buf, sizeof(send_buf), 
+        "v=0\r\n" 
+        "o=%s\r\n" 
+        "s=conversation\r\n" 
+        "i=1\r\n"
+        "c=%s\r\n"
+        "t=0\r\n", cacm->base_sn, cacm->hint); 
+        
+    osip_message_set_body(msg, send_buf, strlen(send_buf));
+    osip_message_set_content_type(msg, "application/sdp");
+    */
+    eXosip_register_send_register(cacm->id, msg);
     PRINT("after eXosip_register_send_register!\n");
     eXosip_unlock();
     return 0;
@@ -99,26 +112,33 @@ static int init_logout(struct s_cacm *cacm)
  */
 static int send_message(struct s_cacm *cacm, char *buf)
 {
-	int res = 0;
-	osip_message_t *options = NULL;
-	PRINT("buf = %s", buf);
-	
-	PRINT("cacm->from = %s\n", cacm->from);
-	PRINT("cacm->register_uri = %s\n", cacm->register_uri);
-	
-	eXosip_options_build_request(&options, cacm->from, cacm->from, cacm->register_uri);
-	
-	osip_message_set_body(options, buf, strlen(buf));
-	osip_message_set_content_type(options, "application/sdp");
-	eXosip_lock();
-	eXosip_options_send_request(options);
-	eXosip_unlock();
-	return 0;
+    int res = 0;
+    osip_message_t *options = NULL;
+    char length[5] = {0};
+    PRINT("buf = %s", buf);
+    
+    PRINT("cacm->from = %s\n", cacm->from);
+    PRINT("cacm->register_uri = %s\n", cacm->register_uri);
+    
+    eXosip_options_build_request(&options, cacm->from, cacm->from, cacm->register_uri);
+    
+    snprintf(length, sizeof(length), "%d", strlen(buf));
+    
+    PRINT("length = %s\n", length);
+    
+    osip_message_set_content_type(options, "application/sdp");
+    osip_message_set_body(options, buf, strlen(buf));
+    
+    
+    eXosip_lock();
+    eXosip_options_send_request(options);
+    eXosip_unlock();
+    return 0;
 }
 
 
 
-#if SPI_RECV_PHONE_STATE // spi中读取数据
+#if SPI_RECV_PHONE_STATE == 1// spi中读取数据
 /**
  * 接收电话线状态包
  */
@@ -157,15 +177,16 @@ static int recv_phone_state_msg(char *buf, unsigned short len, struct timeval *t
 static int recv_phone_state_msg(int fd, char *buf, unsigned short len, struct timeval *timeout)
 {
     int res = 0;
-    buf[0] = 0xAA;
+    buf[0] = 0x5A;
+    buf[1] = 0xA5;
     
-    if ((res = common_tools.recv_data_head(fd, &buf[0], 1, timeout)) < 0)
+    if ((res = common_tools.recv_data_head(fd, buf, 2, timeout)) < 0)
     {
         PERROR("recv_data_head failed!\n");
         return res;
     }
     
-    if ((res = common_tools.recv_data(fd, buf + 1, NULL, 3, timeout)) < 0)
+    if ((res = common_tools.recv_data(fd, buf + 2, NULL, 4, timeout)) < 0)
     {
         PERROR("recv_data failed!\n");
         return res;
@@ -182,10 +203,11 @@ int phone_state_msg_unpack(struct s_cacm *cacm, char *buf, unsigned short buf_le
 {
     struct timeval tv;
     memset(&tv, 0, sizeof(struct timeval));    
-    unsigned char phone_state_type = buf[2];
+    unsigned char phone_state_type = buf[4];
     unsigned char warn_type = 0;
     unsigned char warn_flag = 0;
-    PRINT_BUF_BY_HEX(buf, NULL, 4, __FILE__, __FUNCTION__, __LINE__);
+    PRINT_BUF_BY_HEX(buf, NULL, 6, __FILE__, __FUNCTION__, __LINE__);
+    
     // 判断电话线状态
     switch (phone_state_type)
     {
@@ -198,6 +220,8 @@ int phone_state_msg_unpack(struct s_cacm *cacm, char *buf, unsigned short buf_le
         }
         case 0x52: // 电话线插入
         {
+            warn_type = 2; // 插入
+            warn_flag = 1;
             PRINT("telephoneline is inserting!\n");
             break;
         }        
@@ -229,6 +253,7 @@ int phone_state_msg_unpack(struct s_cacm *cacm, char *buf, unsigned short buf_le
             return MISMATCH_ERR;
         }
     }
+    
     if (warn_flag == 1)
     {
         gettimeofday(&tv, NULL);
@@ -240,11 +265,11 @@ int phone_state_msg_unpack(struct s_cacm *cacm, char *buf, unsigned short buf_le
         PERROR("option is not mismatching!\n");
         return MISMATCH_ERR;
     }
-    
+    cacm->phone_state_type = phone_state_type;
     return 0;
 }
 
-#if SPI_RECV_PHONE_STATE
+#if SPI_RECV_PHONE_STATE == 1
 /**
  * 监听电话线状态
  */
@@ -253,7 +278,7 @@ static int phone_state_monitor(struct s_cacm *cacm, char *buf, unsigned short bu
     int res = 0;      
     
     if ((res = recv_phone_state_msg(buf, buf_len, timeout)) < 0)
-    {	
+    {    
         PERROR("recv_phone_state_msg failed!\n");
         return res;
     }
@@ -284,11 +309,11 @@ static int phone_state_monitor(struct s_cacm *cacm, char *buf, unsigned short bu
     socklen_t sock_len = sizeof(client); 
     
     FD_ZERO(&fdset);
-    FD_SET(server_fd, &fdset);       
+    FD_SET(cacm->fd, &fdset);       
     
     tv.tv_sec = 10;
     tv.tv_usec = 0;
-    switch(select(server_fd + 1, &fdset, NULL, NULL, &tv))
+    switch(select(cacm->fd + 1, &fdset, NULL, NULL, &tv))
     {
         case -1:
         {
@@ -302,16 +327,16 @@ static int phone_state_monitor(struct s_cacm *cacm, char *buf, unsigned short bu
         }
         default:
         {
-            if (FD_ISSET(server_fd, &fdset) > 0)
+            if (FD_ISSET(cacm->fd, &fdset) > 0)
             {
-                if ((client_fd = accept(server_fd, (struct sockaddr*)&client, &sock_len)) < 0)
-            	{	
+                if ((client_fd = accept(cacm->fd, (struct sockaddr*)&client, &sock_len)) < 0)
+                {    
                     PERROR("accept failed!\n");
                     return ACCEPT_ERR;
                 }             
                           
                 if ((res = recv_phone_state_msg(client_fd, buf, buf_len, timeout)) < 0)
-                {	
+                {    
                     PERROR("recv_phone_state_msg failed!\n");
                     return res;
                 }
@@ -425,8 +450,8 @@ static int get_process_resource_occupy_info(char *process_info_buf, unsigned sho
  * 获取当前flash使用情况
  */
 static int get_flash_occupy_info()
-{	
-	return 4;  
+{    
+    return 4;  
 }
 
 

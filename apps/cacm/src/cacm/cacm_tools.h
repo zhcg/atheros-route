@@ -17,9 +17,9 @@
 #elif BOARDTYPE == 9344
 #include "database_management.h"
 #endif 
-#include "internetwork_communication.h"
+#include "communication_network.h"
 
-#define SPI_RECV_PHONE_STATE 1
+#define SPI_RECV_PHONE_STATE 0 // 1:从spi中读取数据 0：从本地socket中读取
 #define CACM_STOP 0
 
 enum CACM_ERR_NUM 
@@ -118,6 +118,8 @@ struct s_cacm
     unsigned char heartbeat_cycle;
     unsigned char business_cycle;
     
+    int fd;
+    unsigned char phone_state_type;
     char register_flag;                 // 注册成功标志
     char pthread_event_exit_flag;       // 事件监听线程退出标志
     char exit_flag;                     // 进程退出标志
@@ -125,8 +127,8 @@ struct s_cacm
     
     pthread_t pthread_event_manage_id;    // 事件处理线程ID
     pthread_t pthread_heartbeat_id;       // 心跳线程ID
-	pthread_t pthread_base_state_id;      // base状态线程ID
-	pthread_t pthread_real_time_event_id; // 实时事件线程ID
+    pthread_t pthread_base_state_id;      // base状态线程ID
+    pthread_t pthread_real_time_event_id; // 实时事件线程ID
 };
 
 struct class_cacm_tools

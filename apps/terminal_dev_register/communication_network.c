@@ -515,6 +515,7 @@ int IP_msg_pack2(struct s_data_list *a_data_list, struct s_dial_back_respond *a_
 {
     PRINT_STEP("entry...\n");
     int res = 0;
+    int len = 0;
     int i = 0;
     char dest[8] = {0};
     char reserve[2] = {0};
@@ -655,6 +656,13 @@ int IP_msg_pack2(struct s_data_list *a_data_list, struct s_dial_back_respond *a_
         }
     }
     
+    #if ENDIAN == 1
+    len = DATA_ENDIAN_CHANGE_SHORT(IP_msg.data_len);
+    IP_msg.data_len = len;
+    len = DATA_ENDIAN_CHANGE_SHORT(IP_msg.data_len);
+    PRINT("len = %04X, IP_msg.data_len = 04X\n", len, IP_msg.data_len);
+    #endif
+    
     // 加入链表
     for (i = 6; i < 11; i++)
     {
@@ -666,7 +674,7 @@ int IP_msg_pack2(struct s_data_list *a_data_list, struct s_dial_back_respond *a_
             return res;
         }        
     }
-    for (i = 0; i < IP_msg.data_len; i++)
+    for (i = 0; i < len; i++)
     {
         if ((res = common_tools.list_tail_add_data(a_data_list, IP_msg.valid_data[i])) < 0)
         {
@@ -679,7 +687,7 @@ int IP_msg_pack2(struct s_data_list *a_data_list, struct s_dial_back_respond *a_
     free(IP_msg.valid_data);
     IP_msg.valid_data = NULL;
     
-    res = common_tools.get_checkbit(NULL, a_data_list, 6, (sizeof(IP_msg) - sizeof(IP_msg.sync_head) - sizeof(IP_msg.sync_tail) - 5 + IP_msg.data_len), SUM, 1);
+    res = common_tools.get_checkbit(NULL, a_data_list, 6, (sizeof(IP_msg) - sizeof(IP_msg.sync_head) - sizeof(IP_msg.sync_tail) - 5 + len), SUM, 1);
     if ((res == MISMATCH_ERR) || (res == NULL_ERR))
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "get_checkbit failed!", res);
@@ -995,6 +1003,10 @@ int IP_msg_unpack2(char *buf, unsigned short buf_len, struct s_dial_back_respond
     
     memcpy((void *)&IP_msg.data_len, buf + index, sizeof(IP_msg.data_len));
     index += sizeof(IP_msg.data_len);
+    
+    #if ENDIAN == 1 // 大端
+    IP_msg.data_len = DATA_ENDIAN_CHANGE_SHORT(IP_msg.data_len);
+    #endif
     
     PRINT("IP_msg.data_len = %d, buf_len - 6 = %d\n", IP_msg.data_len, buf_len - 6);
     if (IP_msg.data_len != (buf_len - 6))

@@ -338,17 +338,17 @@ int insert_token()
         PRINT("column_name = %02X\n", column_name);
         
         #if BOARDTYPE == 6410  || BOARDTYPE == 9344
-        if ((res = database_management.insert(1, column_name, (char (*)[100])&(dial_back_respond.terminal_token), (unsigned short *)&dial_back_respond.terminal_token_len)) < 0)
+        if ((res = database_management.update(1, column_name, (char (*)[100])&(dial_back_respond.terminal_token), (unsigned short *)&dial_back_respond.terminal_token_len)) < 0)
         {
-            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_insert failed!", res);
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_update failed!", res);
             return res;
         }
         #elif BOARDTYPE == 5350
         usleep(500000);
         //if ((res = nvram_interface.insert(RT5350_FREE_SPACE, 1, column_name, (char (*)[100])&(dial_back_respond.terminal_token), (unsigned short *)&dial_back_respond.terminal_token_len)) < 0)
-        if ((res = nvram_interface.insert(RT5350_FREE_SPACE, 1, column_name, column_value, &value_len)) < 0)
+        if ((res = nvram_interface.update(RT5350_FREE_SPACE, 1, column_name, column_value, &value_len)) < 0)
         {
-            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "nvram_insert failed!", res);
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "nvram_update failed!", res);
             return res;
         }
         

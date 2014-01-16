@@ -497,8 +497,18 @@ if [ "${IFNUM}" = "1" ]; then
     fi
 fi
 
-if [ "${AP_HIDESSID}" = "1" ]; then
-     iwpriv ${APNAME} hide_ssid 1
+#if [ "${AP_HIDESSID}" = "1" ]; then
+#     iwpriv ${APNAME} hide_ssid 1
+#fi
+
+if [ "${AP_HIDESSID}" = "1" -a "${APNAME}" = "ath0" ]; then                                             
+     iwpriv ${APNAME} hide_ssid 1                                            
+fi 
+if [ "${AP_HIDESSID_2}" = "1" -a "${APNAME}" = "ath1" ]; then                                             
+     iwpriv ${APNAME} hide_ssid 1                                          
+fi                                                                              
+if [ "${AP_HIDESSID_3}" = "1" -a "${APNAME}" = "ath2" ]; then                                             
+     iwpriv ${APNAME} hide_ssid 1                                                                                           
 fi
 
 ##

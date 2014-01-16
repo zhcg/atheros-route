@@ -1,4 +1,4 @@
-prefix=/home/yangjilong/20131119/9344/apps/cacm/target
+prefix=/home/yangjilong/20140108/9344/apps/cacm/target
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include

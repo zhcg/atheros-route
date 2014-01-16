@@ -1585,8 +1585,9 @@ int get_network_state(char *ip, unsigned char ping_count, unsigned char repeat)
 		return MALLOC_ERR;
 	}
 	memset(cmd_buf, 0, strlen(ip) + 50);
-	sprintf(cmd_buf, "ping -c %d -W 1 %s 1>/dev/null 2>/dev/null;echo $?", ping_count, ip);
-	
+	//sprintf(cmd_buf, "ping -c %d -W 1 %s 1>/dev/null 2>/dev/null;echo $?", ping_count, ip);
+	sprintf(cmd_buf, "ping -c %d %s 1>/dev/null 2>/dev/null;echo $?", ping_count, ip);
+	PRINT("cmd_buf = %s\n", cmd_buf);
     for (i = 0; i < repeat; i++)
     {
         memset(state, 0, sizeof(state));

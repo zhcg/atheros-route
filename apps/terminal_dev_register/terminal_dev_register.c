@@ -38,6 +38,400 @@ struct s_terminal_dev_register
     volatile char mutex_lock_flag; // 加锁标志位   
 };
 
+#if BOARDTYPE == 9344
+struct s_dev_register
+{
+    char dev_name[32];
+    char dev_id[16];
+    char dev_mac[16];
+    int dev_code;
+    
+    time_t end_time;
+};
+
+static int cancel_mac_and_ip_bind()
+{
+    int res = 0;
+    char *cmd = "cfg -s | grep \"ADD_MAC:=\"";
+    char mac[64] = {0};
+    char buf[128] = {0};
+     
+    if ((res = common_tools.get_cmd_out(cmd, mac, sizeof(mac))) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_cmd_out failed!", res);
+        return res;
+    }
+    mac[strlen(mac) - 1] = '\0';
+    PRINT("mac = %s\n", mac);
+    
+    sprintf(buf, "cfg -a DELXXX=\"%s\"", mac + strlen("DELXXX:="));
+    PRINT("buf = %s\n", buf);
+    system(buf);
+    system("cfg -c");
+    sleep(1);
+    system("/usr/sbin/del_addr"); // 取消静态绑定
+    return 0;
+}
+
+/**
+ * 获取BASE中存储的信息给PAD
+ */
+static int get_success_buf(char *buf)
+{
+    int res = 0;
+    int len = 0;
+    #if USER_REGISTER
+    char columns_name[13][30] = {"base_sn", "base_mac", "base_ip", "base_user_name", "base_password",
+        "pad_user_name", "pad_password", "sip_ip", "sip_port", "heart_beat_cycle",
+        "business_cycle", "ssid_user_name", "ssid_password"};
+    char columns_value[13][100] = {0};
+    
+    if ((res = database_management.select(13, columns_name, columns_value)) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_select failed!", res);
+        return res;
+    }
+            
+    len = strlen("base_sn:") + strlen("base_mac:") + strlen("base_ip:") +
+        strlen("base_user_name:") + strlen("base_password:") + strlen("pad_user_name:") +
+        strlen("pad_password:") + strlen("sip_ip:") + strlen("sip_port:") +
+        strlen("heart_beat_cycle:") + strlen("business_cycle:") + strlen("ssid_user_name:") +
+        strlen("ssid_password:") + 
+        strlen(columns_value[0]) + strlen(columns_value[1]) + strlen(columns_value[2]) +
+        strlen(columns_value[3]) + strlen(columns_value[4]) + strlen(columns_value[5]) +
+        strlen(columns_value[6]) + strlen(columns_value[7]) + strlen(columns_value[8]) +
+        strlen(columns_value[9]) + strlen(columns_value[10]) + strlen(columns_value[11]) +
+        strlen(columns_value[12]) + 14;
+        
+    PRINT("len = %d\n", len);
+    if ((buf = (char *)malloc(len)) == NULL)
+    {
+        res = MALLOC_ERR;
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "malloc failed", res);
+        return res;
+    }
+    
+    memset(buf, 0, len);
+    sprintf(buf, "base_sn:%s,base_mac:%s,base_ip:%s,base_user_name:%s,base_password:%s,pad_user_name:%s, \
+        pad_password:%s,sip_ip:%s,sip_port:%s,heart_beat_cycle:%s,business_cycle:%s,ssid_user_name:%s,ssid_password:%s", 
+        columns_value[0], columns_value[1], columns_value[2], columns_value[3], columns_value[4], columns_value[5], 
+        columns_value[6], columns_value[7], columns_value[8], columns_value[9], columns_value[10], columns_value[11],
+        columns_value[12]); 
+    #else
+    
+    char columns_name[5][30] = {"base_sn", "base_mac", "base_ip", "ssid_user_name", "ssid_password"};
+    char columns_value[5][100] = {0};
+    
+    if ((res = database_management.select(3, columns_name, columns_value)) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_select failed!", res);
+        return res;
+    }
+            
+    len = strlen("base_sn:") + strlen("base_mac:") + strlen("base_ip:") + strlen("ssid_user_name") + strlen("ssid_password") + 
+        strlen(columns_value[0]) + strlen(columns_value[1]) + strlen(columns_value[2]) + strlen(columns_value[3]) + strlen(columns_value[4]) + 6;
+        
+    PRINT("len = %d\n", len);
+    if ((buf = (char *)malloc(len)) == NULL)
+    {
+        res = MALLOC_ERR;
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "malloc failed", res);
+        return res;
+    }
+    
+    memset(buf, 0, len);
+    sprintf(buf, "base_sn:%s,base_mac:%s,base_ip:%s,ssid_user_name:%s,ssid_password:%s,", columns_value[0], columns_value[1], columns_value[2], columns_value[3], columns_value[4]); 
+    #endif
+    PRINT("%s\n", buf);
+    return 0;
+}
+
+/**
+ * 判断此设备是否在此表中
+ * 0:不存在
+ * 1:存在
+ * < 0:错误
+ */
+static int is_in_dev_table(unsigned short dev_count, void *dev_info, struct s_dev_register *dev_register)
+{
+    if (dev_info == NULL)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data is NULL!", NULL_ERR);
+        return NULL_ERR;
+    }
+    if (dev_register == NULL)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data is NULL!", NULL_ERR);
+        return NULL_ERR;
+    }
+    int i = 0;
+    struct s_dev_register *dev_tmp;
+    
+    for (i = 0; i < dev_count; i++)
+    {
+        dev_tmp = (struct s_dev_register *)(dev_info + i * sizeof(struct s_dev_register));
+        if (memcmp(dev_tmp->dev_mac, dev_register->dev_mac, strlen(dev_register->dev_mac)) == 0)
+        {
+            PRINT("This dev in table!\n");
+            return 1;
+        }
+    }
+    return 0;
+}
+
+/**
+ * 添加指定行 （内存）
+ */
+static int add_dev_info(unsigned short *dev_count, void *dev_info, struct s_dev_register *dev_register)
+{
+    int res = 0;
+    int malloc_len = sizeof(struct s_dev_register);
+    
+    if (dev_register == NULL)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data is NULL!", NULL_ERR);
+        return NULL_ERR;
+    }
+    
+    if (dev_info == NULL)
+    {
+        if ((dev_info = malloc(malloc_len)) == NULL)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "malloc failed", MALLOC_ERR);
+            return MALLOC_ERR;
+        }
+    }
+    else 
+    {
+        res = is_in_dev_table(*dev_count, dev_info, dev_register);
+        PRINT("res = %d\n", res);
+        switch (res)
+        {
+            case 0: // 不存在
+            {
+                if ((dev_info = realloc(dev_info, malloc_len)) == NULL)
+                {
+                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "realloc failed", MALLOC_ERR);
+                    return MALLOC_ERR;
+                }
+                break;
+            }     
+            case 1:
+            {
+                return 0;
+            }
+            default:
+            {
+                return res;
+            }
+        }
+    }
+    memcpy(dev_info + *dev_count * malloc_len, dev_register, malloc_len);
+    *dev_count++;
+    return 0;
+}
+
+/**
+ * 更新指定行串码和串码时间
+ */
+static int update_dev_info_code(unsigned short dev_count, void *dev_info, struct s_dev_register *dev_register)
+{
+    if (is_in_dev_table(dev_count, dev_info, dev_register) != 1)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data error!", DATA_ERR);
+        return DATA_ERR;
+    }
+    
+    int i = 0;
+    struct s_dev_register *dev_tmp;
+    for (i = 0; i < dev_count; i++)
+    {
+        dev_tmp = (struct s_dev_register *)(dev_info + i * sizeof(struct s_dev_register));
+        if (memcmp(dev_tmp->dev_mac, dev_register->dev_mac, strlen(dev_register->dev_mac)) == 0)
+        {
+            PRINT("dev_register->dev_code = %08X\n", dev_register->dev_code);
+            dev_tmp->dev_code = dev_register->dev_code;
+            dev_tmp->end_time = time(NULL) + 1800;  // 有效期30分钟
+            return 0;
+        }
+    }
+    return DATA_ERR;
+}
+
+/**
+ * 删除指定行（内存）
+ */
+static int delete_dev_info(unsigned short *dev_count, void *dev_info, struct s_dev_register *dev_register)
+{
+    int res = 0;
+    res = is_in_dev_table(*dev_count, dev_info, dev_register);
+    PRINT("res = %d\n", res);
+    switch (res)
+    {
+        case 0:
+        {
+            return 0;
+            break;
+        }    
+        case 1:
+        {
+            break;
+        } 
+        default:
+        {
+            return res;
+        }
+    }
+    
+    int i = 0;
+    struct s_dev_register *dev_tmp;
+    for (i = 0; i < *dev_count; i++)
+    {
+        dev_tmp = (struct s_dev_register *)(dev_info + i * sizeof(struct s_dev_register));
+        PRINT("dev_tmp->dev_mac = %s\n", dev_tmp->dev_mac);
+        if (memcmp(dev_tmp->dev_mac, dev_register->dev_mac, strlen(dev_register->dev_mac)) == 0)
+        {
+            memcpy(dev_tmp, dev_info + sizeof(struct s_dev_register), *dev_count - i - 1);
+            *dev_count--;
+            free(dev_info + *dev_count * sizeof(struct s_dev_register));
+            return 0;
+        }
+    }
+    return DATA_ERR;
+}
+
+/**
+ * 查询内存表（内存）
+ */
+static int select_dev_info(unsigned short dev_count, void *dev_info, char *buf, unsigned short len)
+{
+    if (dev_info == NULL)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data is NULL!", NULL_ERR);
+        return NULL_ERR;
+    }
+    if (buf == NULL)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data is NULL!", NULL_ERR);
+        return NULL_ERR;
+    }
+    
+    int i = 0;
+    unsigned short buf_len = 0;    
+    struct s_dev_register *dev_tmp;
+    for (i = 0; i < dev_count; i++)
+    {
+        dev_tmp = (struct s_dev_register *)(dev_info + i * sizeof(struct s_dev_register));
+        
+        snprintf(buf + buf_len, len - buf_len, "%s,%s\n", dev_tmp->dev_name, dev_tmp->dev_id);
+        buf_len = strlen(dev_tmp->dev_name) + strlen(dev_tmp->dev_id) + 2;
+    }
+    return 0;
+}
+
+/**
+ * 串码对比
+ */
+static int dev_code_comparison(unsigned short dev_count, void *dev_info, struct s_dev_register *dev_register)
+{
+    if (dev_info == NULL)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data is NULL!", NULL_ERR);
+        return NULL_ERR;
+    }
+    if (dev_register == NULL)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data is NULL!", NULL_ERR);
+        return NULL_ERR;
+    }
+    
+    int i = 0;
+    struct s_dev_register *dev_tmp;
+    for (i = 0; i < dev_count; i++)
+    {
+        dev_tmp = (struct s_dev_register *)(dev_info + i * sizeof(struct s_dev_register));
+        if (memcmp(dev_tmp->dev_mac, dev_register->dev_mac, strlen(dev_register->dev_mac)) == 0)
+        {
+            if ((dev_tmp->end_time - time(NULL)) < 0)
+            {
+                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "dev_code timeout!", NULL_ERR);
+                return TIMEOUT_ERR;
+            }
+            if (dev_tmp->dev_code != dev_register->dev_code)
+            {
+                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data error!", DATA_ERR);
+                return DATA_ERR;
+            }
+            break;
+        }
+    }
+    return 0;
+}
+
+/**
+ * 添加指定行 （数据库）
+ */
+static int database_insert_dev_info(struct s_dev_register *dev_register)
+{
+    int res = 0;
+    char columns_name[4][30] = {"device_name", "device_id", "device_mac", "device_code"};
+    char columns_value[4][100] = {0};
+    unsigned short columns_value_len[4] = {0};
+    
+    memcpy(columns_value[0], dev_register->dev_name, strlen(dev_register->dev_name));
+    memcpy(columns_value[1], dev_register->dev_id, strlen(dev_register->dev_id));
+    memcpy(columns_value[2], dev_register->dev_mac, strlen(dev_register->dev_mac));
+    sprintf(columns_value[3], "%d", dev_register->dev_code);
+    
+    columns_value_len[0] = strlen(columns_value[0]);
+    columns_value_len[1] = strlen(columns_value[1]);
+    columns_value_len[2] = strlen(columns_value[2]);
+    columns_value_len[3] = strlen(columns_value[3]);
+    
+    if ((res = database_management.insert(4, columns_name, columns_value, columns_value_len)) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_insert failed!", res);
+        return res;
+    }
+    return 0;
+}
+
+/**
+ * 删除指定行 （数据库）
+ */
+static int database_delete_dev_info(struct s_dev_register *dev_register)
+{
+    int res = 0;
+    char columns_name[1][30] = {"device_mac"};
+    char columns_value[1][100] = {0};
+    
+    memcpy(columns_value[0], dev_register->dev_mac, strlen(dev_register->dev_mac));
+    if ((res = database_management.delete_row(1, columns_name, columns_value)) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_delete_row failed!", res);
+        return res;
+    }
+    return 0;
+}
+
+/**
+ * 查询注册成功的设备
+ */
+static int database_select_dev_info(char *buf, unsigned short len)
+{
+    int res = 0;
+    char columns_name[2][30] = {"dev_name", "device_id"};
+    if ((res = database_management.select_table(2, columns_name, buf, len)) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_select_table failed!", res);
+        return res;
+    }
+    return 0;
+}
+
+#endif // BOARDTYPE == 9344
+
+
 /**
  * 命令行分析
  */
@@ -84,6 +478,24 @@ static int analyse_command_line(int argc, char ** argv)
         #endif
         PRINT("data clear success!\n");
     }
+    #if BOARDTYPE == 9344
+    else if (memcmp(argv[1], "-d", strlen("-d")) == 0) // 恢复出厂设置
+    {
+        // 1.情况数据库
+        if ((res = database_management.clear()) < 0)
+        {
+            PRINT("sqlite3_clear_table failed!\n");
+            return res;
+        }
+        // 2.取消绑定
+        cancel_mac_and_ip_bind();
+        
+        // 3.
+        system("cfg -x");
+        system("apcfg");
+        system("reboot");
+    }
+    #endif
     #if BOARDTYPE == 5350
     else if (memcmp(argv[1], "-i", strlen("-i")) == 0) // 填充配置文件
     {
@@ -189,10 +601,11 @@ static int analyse_command_line(int argc, char ** argv)
     else if (memcmp(argv[1], "-h", strlen("-h")) == 0)
     {
         PRINT("terminal_init %s (%s %s)\n", TERMINAL_VERSION, __DATE__, __TIME__);
-        PRINT("usage1: terminal_init [option]\n");
-        PRINT("usage2: terminal_init [option] [column_name column_value]\n");
+        PRINT("usage1: terminal_dev_register [option]\n");
+        PRINT("usage2: terminal_dev_register [option] [column_name column_value]\n");
         PRINT("options:\n");
         PRINT("\t-c: 清空数据表\n");
+        PRINT("\t-d: 恢复出厂设置\n");
         PRINT("\t-h: 帮助\n");
         PRINT("\t-i: 配置文件制作\n");
         //PRINT("\t-t: pad串口测试\n");
@@ -260,6 +673,11 @@ static void signal_handle(int sig)
 				PRINT("pid = %d, state = %d\n", pid, res);
 			}
             PRINT("SIGCHLD sig no:%d; sig info:子进程停止信号\n", sig);
+            break;
+        }
+        case 19:
+        {
+            PRINT("SIGSTOP sig no:%d; sig info:停止进程的执行\n", sig);
             break;
         }
         case 27:
@@ -349,6 +767,7 @@ void * pad_cmd_handle(void* para)
     // 连接失败时
     if (*network_config.server_pad_fd < 0)
     {
+        res = *network_config.server_pad_fd;
         ret = common_tools.get_errno('P', *network_config.server_pad_fd);
     }
     else 
@@ -361,6 +780,9 @@ void * pad_cmd_handle(void* para)
             close(fd);
         }
         #elif BOARDTYPE == 9344
+        PRINT("before close! fd = %d terminal_dev_register->fd = %d\n", fd, terminal_dev_register->fd);
+        shutdown(fd, SHUT_RDWR);
+        PERROR("after shutdown\n");
         close(fd);
         #endif
         fd = *network_config.server_pad_fd;
@@ -505,9 +927,9 @@ EXIT:
         for (i = 0; i < common_tools.config->repeat; i++)
         {
             #if BOARDTYPE == 6410 || BOARDTYPE == 9344
-            if ((ret = database_management.insert(1, columns_name, columns_value, &insert_len)) < 0)
+            if ((ret = database_management.update(1, columns_name, columns_value, &insert_len)) < 0)
             {
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_insert failed!", ret);
+                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_update failed!", ret);
                 continue;
             }
             #elif BOARDTYPE == 5350
@@ -525,11 +947,11 @@ EXIT:
             PRINT("insert failed!\n");
         }            
     }
+    PRINT("before close! fd = %d terminal_dev_register->fd = %d\n", fd, terminal_dev_register->fd);
     #if BOARDTYPE == 5350
     // 网口时关闭
     if (terminal_dev_register->transmission_mode == 0)
     {
-        PRINT("fd = %d\n", fd);
         close(fd);
     }
     else // 串口时
@@ -537,7 +959,11 @@ EXIT:
         terminal_dev_register->transmission_mode = 0;
     }
     #elif BOARDTYPE == 9344
+    PRINT("before close! fd = %d terminal_dev_register->fd = %d\n", fd, terminal_dev_register->fd);
+    shutdown(fd, SHUT_RDWR);
+    PERROR("after shutdown\n");
     close(fd);
+    PERROR("after close\n");
     #endif
     network_config.init_cmd_list();  // 初始化命令结构体
     return (void *)res;
@@ -807,7 +1233,7 @@ void * pad_usb_monitor(void* para)
                         break;
                     }
                     *network_config.pad_cmd = atoi(columns_value[0]);
-                    PRINT("columns_value[0] = %02X %02X %02X %02X, *network_config.pad_cmd = %02X\n", columns_value[0][0], columns_value[0][1], columns_value[0][2], columns_value[0][3], *network_config.pad_cmd);
+                    PRINT("columns_value[0] = %s, *network_config.pad_cmd = %02X\n", columns_value[0], *network_config.pad_cmd);
                     #elif BOARDTYPE == 5350
                     if ((res = nvram_interface.select(RT5350_FREE_SPACE, 1, columns_name, columns_value)) < 0)
                     {
@@ -1154,15 +1580,14 @@ void * pad_usb_monitor(void* para)
                             memset(columns_name[0], 0, sizeof(columns_name[0]));
                             memset(columns_value[0], 0, sizeof(columns_value[0]));
                             memcpy(columns_name[0], "register_state", strlen("register_state")); 
-                            
-                            memcpy(columns_value[0], network_config.pad_cmd, sizeof(*network_config.pad_cmd)); 
-                            buf_len = sizeof(*network_config.pad_cmd);
+                            sprintf(columns_value[0], "%d", (unsigned char)*network_config.pad_cmd);
+                            buf_len = strlen(columns_value[0]);
                             for (i = 0; i < common_tools.config->repeat; i++)
                             {
                                 #if BOARDTYPE == 6410 || BOARDTYPE == 9344 
-                                if ((res = database_management.insert(1, columns_name, columns_value, &buf_len)) < 0)
+                                if ((res = database_management.update(1, columns_name, columns_value, &buf_len)) < 0)
                                 {
-                                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_insert failed!", res);
+                                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_update failed!", res);
                                     continue;
                                 }
                                 #elif BOARDTYPE == 5350
@@ -1307,7 +1732,10 @@ void * pad_usb_monitor(void* para)
                         #endif
                         system("ralink_init clear 2860");
                         #elif BOARDTYPE == 9344 
+                        cancel_mac_and_ip_bind();
                         system("cfg -x");
+                        system("/etc/ath/apcfg");
+                        system("reboot");
                         #endif
                         
                         #if BOARDTYPE == 5350 || BOARDTYPE == 6410 
@@ -1323,8 +1751,7 @@ void * pad_usb_monitor(void* para)
                         #if BOARDTYPE == 5350
                         system("reboot");
                         #elif BOARDTYPE == 9344
-                        system("/etc/ath/apdown");
-                        system("/etc/ath/apup");
+                        system("/etc/ath/apcfg");
                         #endif
                         break;
                     }
@@ -1593,21 +2020,17 @@ void * pad_usb_monitor(void* para)
             memset(columns_name[0], 0, sizeof(columns_name[0]));
             memset(columns_value[0], 0, sizeof(columns_value[0]));
             memcpy(columns_name[0], "register_state", strlen("register_state")); 
-            #if BOARDTYPE == 6410 || BOARDTYPE == 9344 
-            memcpy(columns_value[0], network_config.cmd, sizeof(*network_config.cmd));
-            insert_len = sizeof(*network_config.cmd);
-            #elif BOARDTYPE == 5350
+            
             sprintf(columns_value[0], "%d", (unsigned char)*network_config.cmd);
             insert_len = strlen(columns_value[0]);
             PRINT("columns_value[0] = %s\n", columns_value[0]);
-            #endif
             
             for (i = 0; i < common_tools.config->repeat; i++)
             {
                 #if BOARDTYPE == 6410 || BOARDTYPE == 9344 
-                if ((ret = database_management.insert(1, columns_name, columns_value, &insert_len)) < 0)
+                if ((ret = database_management.update(1, columns_name, columns_value, &insert_len)) < 0)
                 {
-                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_insert failed!", ret);
+                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_update failed!", ret);
                     continue;
                 }
                 #elif BOARDTYPE == 5350 
@@ -1774,6 +2197,7 @@ void * pad_socket_monitor(void* para)
     char send_buf[256] = {0};
     char buf_tmp[128] = {0};
     char pad_mac[20] = {0};
+    char pad_sn[35] = {0};
     char columns_name[5][30] = {0};
     char columns_value[5][100] = {0};
     
@@ -1789,6 +2213,12 @@ void * pad_socket_monitor(void* para)
     unsigned char cmd = 0;
     unsigned char write_falg = 1;  // 是否有必要更新注册状态
     struct s_terminal_dev_register * terminal_dev_register = (struct s_terminal_dev_register *)para;
+    
+    #if BOARDTYPE == 9344
+    unsigned short dev_count = 0; // 记录发送注册申请的设备个数
+    void * dev_info = NULL; // 设备信息指针
+    struct s_dev_register dev_register;
+    #endif
     pthread_mutex_unlock(&config_mutex);
     
     /*************************************************************************************/
@@ -1858,8 +2288,13 @@ void * pad_socket_monitor(void* para)
                         case 0x02:   //0x02: 静态IP + 注册
                         case 0x03:   //0x03: PPPOE + 注册
                         case 0x04:   //0x04: 询问当前设置状态
+                        #if BOARDTYPE == 5350
                         case 0x05:   //0x05: 生成默认ssid，用于外围设备的接入
                         case 0x06:   //0x06: 注销默认ssid
+                        #elif BOARDTYPE == 9344
+                        case 0x05:   //0x05: 注册命令，PAD将随机生成的4字节串码发给base
+                        case 0x06:   //0x06: 注册命令，智能设备将 设备名称、id、mac发送给BASE
+                        #endif
                         case 0x07:   //0x07: 无线网络设置
                         case 0x08:   //0x08: 动态IP
                         case 0x09:   //0x09: 静态IP
@@ -1875,6 +2310,12 @@ void * pad_socket_monitor(void* para)
                         #endif
                         case 0x52:   //0x52: 查看WAN口
                         case 0x53:   //0x53: 取消当前配置
+                        #if BOARDTYPE == 9344
+                        case 0x54:   //0x54：串码对比，智能设备将输入的串码发送到base，base进行对比
+                        case 0x55:   //0x55：PAD扫描“发送注册申请”的设备
+                        case 0x56:   //0x56：查询已经注册的设备
+                        case 0x57:   //0x57：注销命令，删除匹配序列号的行
+                        #endif
                         {
                             cmd = pad_and_6410_msg.cmd;
                             break;
@@ -1903,7 +2344,7 @@ void * pad_socket_monitor(void* para)
                         break;
                     }
                     *network_config.pad_cmd = atoi(columns_value[0]);
-                    PRINT("columns_value[0] = %02X %02X %02X %02X, *network_config.pad_cmd = %02X\n", columns_value[0][0], columns_value[0][1], columns_value[0][2], columns_value[0][3], (unsigned char)*network_config.pad_cmd);
+                    PRINT("columns_value[0] = %s, *network_config.pad_cmd = %02X\n", columns_value[0], (unsigned char)*network_config.pad_cmd);
                     #elif BOARDTYPE == 5350 
                     if ((res = nvram_interface.select(RT5350_FREE_SPACE, 1, columns_name, columns_value)) < 0)
                     {
@@ -2025,7 +2466,7 @@ void * pad_socket_monitor(void* para)
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data error!", res);
                             break;
                         }
-                        
+                          
                         pthread_mutex_lock(&network_config.recv_mutex);
                         // 说明此时正在设置
                         if (terminal_dev_register->config_now_flag == 1)
@@ -2154,10 +2595,25 @@ void * pad_socket_monitor(void* para)
                             *network_config.cmd = 0x00;
                         }
                         #endif
+                        
+                        #if BOARDTYPE == 9344
+                        PRINT("*network_config.pad_cmd = %02X\n", (unsigned char)*network_config.pad_cmd);
+                        // 当已经初始化成功时，PAD询问，BASE把SSID等信息发送到PAD
+                        if (*network_config.pad_cmd == 0x00)
+                        {
+                            // 打包
+                            if ((res = get_success_buf(buf)) < 0)
+                            {
+                                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_success_buf failed", res);
+                                break;
+                            }
+                        }
+                        #endif
+                        
                         for (i = 0; i < common_tools.config->repeat; i++)
                         {
                             // 数据发送到PAD
-                            if ((res = network_config.send_msg_to_pad(accept_pad_fd, *network_config.pad_cmd, NULL, 0)) < 0)
+                            if ((res = network_config.send_msg_to_pad(accept_pad_fd, *network_config.pad_cmd, buf, 0)) < 0)
                             {
                                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
                                 continue;
@@ -2236,14 +2692,14 @@ void * pad_socket_monitor(void* para)
                             memset(columns_value[0], 0, sizeof(columns_value[0]));
                             memcpy(columns_name[0], "register_state", strlen("register_state")); 
                             
-                            memcpy(columns_value[0], network_config.pad_cmd, sizeof(*network_config.pad_cmd)); 
-                            buf_len = sizeof(*network_config.pad_cmd);
+                            sprintf(columns_value[0], "%d", (unsigned char)*network_config.pad_cmd);
+                            buf_len = strlen(columns_value[0]);
                             for (i = 0; i < common_tools.config->repeat; i++)
                             {
                                 #if BOARDTYPE == 6410 || BOARDTYPE == 9344 
-                                if ((res = database_management.insert(1, columns_name, columns_value, &buf_len)) < 0)
+                                if ((res = database_management.update(1, columns_name, columns_value, &buf_len)) < 0)
                                 {
-                                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_insert failed!", res);
+                                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_update failed!", res);
                                     continue;
                                 }
                                 #elif BOARDTYPE == 5350
@@ -2317,6 +2773,7 @@ void * pad_socket_monitor(void* para)
                         }
                         
                     }
+                    #if BOARDTYPE == 5350
                     else if (pad_and_6410_msg.cmd == 0x05) // 生成默认SSID
                     {
                         if (pad_and_6410_msg.len != 35)
@@ -2338,14 +2795,6 @@ void * pad_socket_monitor(void* para)
                         memcpy(columns_name[1], "default_ssid", strlen("default_ssid"));
                         memcpy(columns_name[2], "default_ssid_password", strlen("default_ssid_password"));
                         
-                        // 查询数据库，从中取得默认ssid和密码
-                        #if BOARDTYPE == 6410 || BOARDTYPE == 9344
-                        if ((res = database_management.select(3, columns_name, columns_value)) < 0)
-                        {
-                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_select failed!", res); 
-                            break;
-                        }
-                        #elif BOARDTYPE == 5350
                         if ((res = nvram_interface.select(RT5350_FREE_SPACE, 3, columns_name, columns_value)) < 0)
                         {
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "nvram_select failed!", res);
@@ -2366,7 +2815,6 @@ void * pad_socket_monitor(void* para)
                             res = NULL_ERR;
                             break;
                         }
-                        #endif
                         PRINT("columns_value[0] = %s\n", columns_value[0]);
                         PRINT("pad_and_6410_msg.data = %s\n", pad_and_6410_msg.data);
                         
@@ -2383,7 +2831,6 @@ void * pad_socket_monitor(void* para)
                             break;
                         }
                         
-                        #if BOARDTYPE == 5350
                         for (i = 0; i < sizeof(network_config.cmd_list) / sizeof(struct s_cmd); i++)
                         {
                             // 初始化设备项
@@ -2458,115 +2905,6 @@ void * pad_socket_monitor(void* para)
                                 }
                             }
                         }
-                        #elif BOARDTYPE == 9344
-                        for (i = 0; i < sizeof(network_config.cmd_list) / sizeof(struct s_cmd); i++)
-                        {
-                            // 初始化设备项
-                            switch (network_config.cmd_list[i].cmd_word)
-                            {
-                                case 0x1F: // SSID3
-                                {
-                                    index++;
-                                    network_config.cmd_list[i].cmd_bit = index;
-                                    sprintf(network_config.cmd_list[i].set_value, "%s", columns_value[1]);
-                                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                                    break;
-                                }
-                                case 0x22: // AP_CYPHER
-                                {
-                                    index++;
-                                    network_config.cmd_list[i].cmd_bit = index;
-                                    memcpy(network_config.cmd_list[i].set_value, "TKIP CCMP", strlen("TKIP CCMP"));
-                                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s\"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                                    break;
-                                }
-                                case 0x32: // SSID3 密码
-                                {
-                                    index++;
-                                    network_config.cmd_list[i].cmd_bit = index;
-                                    sprintf(network_config.cmd_list[i].set_value, "%s", columns_value[2]);
-                                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                                    break;
-                                }
-                                case 0x35: // 2.4G
-                                {
-                                    index++;
-                                    network_config.cmd_list[i].cmd_bit = index;
-                                    memcpy(network_config.cmd_list[i].set_value, "0", strlen("0"));
-                                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                                    break;
-                                }
-                                case 0x38: // 模式
-                                {
-                                    index++;
-                                    network_config.cmd_list[i].cmd_bit = index;
-                                    memcpy(network_config.cmd_list[i].set_value, "ap", strlen("ap"));
-                                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                                    break;
-                                }
-                                case 0x3B: // 是否隐藏
-                                {
-                                    index++;
-                                    network_config.cmd_list[i].cmd_bit = index;
-                                    memcpy(network_config.cmd_list[i].set_value, "0", strlen("0"));
-                                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                                    break;
-                                }
-                                case 0x3E: // 加密
-                                {
-                                    index++;
-                                    network_config.cmd_list[i].cmd_bit = index;
-                                    memcpy(network_config.cmd_list[i].set_value, "WPA", strlen("WPA"));
-                                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                                    break;
-                                }
-                                case 0x41: // 加密
-                                {
-                                    index++;
-                                    network_config.cmd_list[i].cmd_bit = index;
-                                    memcpy(network_config.cmd_list[i].set_value, "3", strlen("3"));
-                                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                                    break;
-                                }
-                                case 0x44: // 加密
-                                {
-                                    index++;
-                                    network_config.cmd_list[i].cmd_bit = index;
-                                    memcpy(network_config.cmd_list[i].set_value, "PSK", strlen("PSK"));
-                                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                                    break;
-                                }
-                                default:
-                                {
-                                    break;
-                                }
-                            }
-                        }
-                        #endif
-                        
-                        #if BOARDTYPE == 6410
-                        // 设置路由
-                        if ((res = network_config.route_config(*network_config.serial_5350_fd, index)) < 0)
-                        {
-                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "route_config failed!", res);
-                            break;
-                        }
-                         // 发送重启命令
-                        if ((res = network_config.send_msg_to_5350(*network_config.serial_5350_fd, "reboot", strlen("reboot"))) < 0)
-                        {
-                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_5350 failed", res);
-                            break;
-                        }
-                        #elif BOARDTYPE == 5350 
                         
                         // 设置路由
                         if ((res = network_config.route_config2(index)) < 0)
@@ -2576,27 +2914,6 @@ void * pad_socket_monitor(void* para)
                         }
                         
                         sleep(1);
-						/*
-                        // 是设置生效
-                        if ((res = network_config.config_route_take_effect()) < 0)
-                        {
-                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "config_route_take_effect failed", res);
-                            break;
-                        }
-                        
-                        // add ssid3_state
-                        memset(columns_name[0], 0, sizeof(columns_name[0]));
-                        memset(columns_value[0], 0, sizeof(columns_value[0]));
-                        memcpy(columns_name[0], "ssid3_state", strlen("ssid3_state"));
-						columns_value[0][0] = '1';
-						insert_len = 1;
-                        if ((res = nvram_interface.insert(RT5350_FREE_SPACE, 1, columns_name, columns_value, &insert_len)) < 0)
-                        {
-                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "nvram_insert failed!", res);
-                            break;
-                        }
-						*/
-						
 						system("reboot");
                         /*****************************************************************
                          *************** 发送到监控程序（monitor_application）   *********
@@ -2661,18 +2978,6 @@ void * pad_socket_monitor(void* para)
                         /*****************************************************************
                          *************** 发送到监控程序（monitor_application）   *********
                          *****************************************************************/
-                        #elif BOARDTYPE == 9344
-                        // 设置路由
-                        if ((res = network_config.route_config(index)) < 0)
-                        {
-                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "route_config failed!", res);
-                            break;
-                        }
-                        
-                        sleep(1);
-                        system("/etc/ath/apdown");
-                        system("/etc/ath/apup");
-                        #endif
                         break;
                     }
                     else if (pad_and_6410_msg.cmd == 0x06) // 注销默认SSID
@@ -2695,13 +3000,6 @@ void * pad_socket_monitor(void* para)
                         memset(columns_value[0], 0, sizeof(columns_value[0]));
                         memcpy(columns_name[0], "pad_sn", strlen("pad_sn"));
                         
-                        #if BOARDTYPE == 6410 || BOARDTYPE == 9344
-                        if ((res = database_management.select(1, columns_name, columns_value)) < 0)
-                        {
-                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_select failed!", res);   
-                            break;
-                        }
-                        #elif BOARDTYPE == 5350 
                         if ((res = nvram_interface.select(RT5350_FREE_SPACE, 1, columns_name, columns_value)) < 0)
                         {
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "nvram_select failed!", res); 
@@ -2715,7 +3013,7 @@ void * pad_socket_monitor(void* para)
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, columns_value[0], res);
                             break;
                         }
-                        #endif
+                        
                         PRINT("columns_value[0] = %s\n", columns_value[0]);
                         PRINT("pad_and_6410_msg.data = %s\n", pad_and_6410_msg.data);
                         
@@ -2725,15 +3023,13 @@ void * pad_socket_monitor(void* para)
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "pad and base mismatching!", res);
                             break;
                         }
-                        //#if BOARDTYPE == 5350
+                       
                         if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, NULL, 0)) < 0)
                         {
                             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
                             break;
                         }
-                        //#endif
                         
-                        #if BOARDTYPE == 5350
                         for (i = 0; i < sizeof(network_config.cmd_list) / sizeof(struct s_cmd); i++)
                         {
                             // 初始化设备项
@@ -2808,41 +3104,6 @@ void * pad_socket_monitor(void* para)
                                 }
                             }
                         }
-                        #elif BOARDTYPE == 9344
-                        system("cfg -r AP_SSID_3");
-                        system("cfg -r PSK_KEY_3");
-                        system("cfg -r AP_RADIO_ID_3");
-                        system("cfg -r AP_MODE_3");
-                        system("cfg -r AP_HIDESSID_3");
-                        system("cfg -r AP_SECMODE_3");
-                        system("cfg -r AP_WPA_3");
-                        system("cfg -r AP_SECFILE_3");
-                        system("cfg -c");
-                        #endif
-                        
-                        #if BOARDTYPE == 6410
-                        // 设置路由
-                        if ((res = network_config.route_config(*network_config.serial_5350_fd, index)) < 0)
-                        {
-                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "route_config failed!", res);
-                            break;
-                        }
-                         // 发送重启命令
-                        if ((res = network_config.send_msg_to_5350(*network_config.serial_5350_fd, "reboot", strlen("reboot"))) < 0)
-                        {
-                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_5350 failed", res);
-                            break;
-                        }
-                        
-                        #elif BOARDTYPE == 5350
-                        /*
-                        // 设置路由
-                        if ((res = network_config.route_config(index)) < 0)
-                        {
-                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "route_config failed!", res);
-                            break;
-                        }
-                        */
                         
                         if ((res = network_config.route_config2(index)) < 0)
                         {
@@ -2850,37 +3111,88 @@ void * pad_socket_monitor(void* para)
                             break;
                         }
                         sleep(1);
-
-						/*
-                        // 是设置生效
-                        if ((res = network_config.config_route_take_effect()) < 0)
-                        {
-                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "config_route_take_effect failed", res);
-                            break;
-                        }
-						*/
 						system("reboot");
-						#elif BOARDTYPE == 9344
-                        system("/etc/ath/apdown");
-                        system("/etc/ath/apup");
-                        #endif
-                        
-						/*
-                        // add ssid3_state
-                        memset(columns_name[0], 0, sizeof(columns_name[0]));
-                        memset(columns_value[0], 0, sizeof(columns_value[0]));
-                        memcpy(columns_name[0], "ssid3_state", strlen("ssid3_state"));
-						columns_value[0][0] = '0';
-						insert_len = 1;
-                        if ((res = nvram_interface.insert(RT5350_FREE_SPACE, 1, columns_name, columns_value, &insert_len)) < 0)
-                        {
-                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "nvram_insert failed!", res);
-                            break;
-						}
-						*/
-						
                         break;
                     }
+                    #elif BOARDTYPE == 9344
+                    else if (pad_and_6410_msg.cmd == 0x05) // 注册命令，PAD将随机生成的4字节串码发给base
+                    {
+                        if (pad_and_6410_msg.len != (35 + 12 + 4))
+                        {
+                            res = P_DATA_ERR;
+                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "buf len err!", res);
+                            break;
+                        }
+                        
+                        if ((unsigned char)*network_config.pad_cmd != 0x00)  // PAD没有注册成功
+                        {
+                            res = NO_INIT_ERR;
+                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no init!", res);
+                            break;
+                        }
+                        char sn[35] = {0};
+                        memcpy(sn, pad_and_6410_msg.data + 1, 34);
+                        if ((strlen(pad_sn) != 0) && (memcmp(pad_sn, sn, strlen(pad_sn)) != 0))
+                        {
+                            res = WRONGFUL_PAD_ERR;
+                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "pad and base mismatching!", res);
+                            break;
+                        }
+                        memset(&dev_register, 0, sizeof(struct s_dev_register));
+                        memcpy(&(dev_register.dev_mac), pad_and_6410_msg.data + 35, 4);
+                        memcpy(&(dev_register.dev_code), pad_and_6410_msg.data + 35 + 12, 4);
+                        
+                        if ((res = update_dev_info_code(dev_count, dev_info, &dev_register)) < 0)
+                        {
+                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "update_dev_info_code failed!", res);
+                            break;
+                        }
+                        
+                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, NULL, 0)) < 0)
+                        {
+                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
+                            break;
+                        }
+                           
+                        PRINT("after send_msg_to_pad\n");
+                        break;
+                    }
+                    else if (pad_and_6410_msg.cmd == 0x06) // 注册命令，智能设备将 设备名称、id、mac发送给BASE
+                    {
+                        PRINT("pad_and_6410_msg.len = %d\n", pad_and_6410_msg.len);
+                        index = 1;
+                        if ((unsigned char)*network_config.pad_cmd != 0x00)  // 未初始化
+                        {
+                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no init!", res);
+                            res = NO_INIT_ERR;
+                            break;
+                        }
+                        memset(&dev_register, 0, sizeof(struct s_dev_register));
+                        unsigned short length = pad_and_6410_msg.data[index++] + pad_and_6410_msg.data[index++] << 8;
+                        memcpy(dev_register.dev_name, pad_and_6410_msg.data + index, length);
+                        index += length;
+                        
+                        length = pad_and_6410_msg.data[index++] + pad_and_6410_msg.data[index++] << 8;
+                        memcpy(dev_register.dev_id, pad_and_6410_msg.data + index, length);
+                        index += length;
+                        
+                        length = pad_and_6410_msg.data[index++] + pad_and_6410_msg.data[index++] << 8;
+                        memcpy(dev_register.dev_mac, pad_and_6410_msg.data + index, length);
+                        
+                        if ((res = add_dev_info(&dev_count, dev_info, &dev_register)) < 0)
+                        {
+                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "add_dev_info failed!", res);
+                            break;
+                        }
+                        
+                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, NULL, 0)) < 0)
+                        {
+                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
+                            break;
+                        }
+                        break;
+                    }
+                    #endif
                     else if ((pad_and_6410_msg.cmd == 0x07) || (pad_and_6410_msg.cmd == 0x08) || 
                         (pad_and_6410_msg.cmd == 0x09) || (pad_and_6410_msg.cmd == 0x0A)) // 无线网络设置和网络设置
                     {
@@ -3554,10 +3866,11 @@ void * pad_socket_monitor(void* para)
                         #endif
                         system("ralink_init clear 2860");
                         system("reboot");
-                        #elif BOARDTYPE == 9344 
+                        #elif BOARDTYPE == 9344
+                        cancel_mac_and_ip_bind();
                         system("cfg -x");
-                        system("/etc/ath/apdown");
-                        system("/etc/ath/apup");
+                        system("/etc/ath/apcfg");
+                        system("reboot");
                         #endif
                         
                         break;
@@ -4011,6 +4324,146 @@ void * pad_socket_monitor(void* para)
                         */
                         break;
                     }
+                    #if BOARDTYPE == 9344
+                    else if (pad_and_6410_msg.cmd == 0x54) // 0x54：串码对比，智能设备将输入的串码发送到base，base进行对比
+                    {
+                        index = 1;
+                        if ((unsigned char)*network_config.pad_cmd != 0x00)  // 未初始化
+                        {
+                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no init!", res);
+                            res = NO_INIT_ERR;
+                            break;
+                        }
+                        memset(&dev_register, 0, sizeof(struct s_dev_register));
+                        unsigned short length = pad_and_6410_msg.data[index++] + pad_and_6410_msg.data[index++] << 8;
+                        memcpy(dev_register.dev_mac, pad_and_6410_msg.data + index, length);
+                        index += length;
+                        
+                        length = pad_and_6410_msg.data[index++] + pad_and_6410_msg.data[index++] << 8;
+                        memcpy(dev_register.dev_id, pad_and_6410_msg.data + index, length);
+                        index += length;
+                        
+                        length = pad_and_6410_msg.data[index++] + pad_and_6410_msg.data[index++] << 8;
+                        memcpy(&dev_register.dev_code, pad_and_6410_msg.data + index, length);
+                        
+                        if ((res = dev_code_comparison(dev_count, dev_info, &dev_register)) < 0)
+                        {
+                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "dev_code_comparison failed!", res);
+                            break;
+                        }
+                        
+                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, NULL, 0)) < 0)
+                        {
+                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
+                            break;
+                        }
+                        
+                        // 从内存中删除
+                        if ((res = delete_dev_info(&dev_count, dev_info, &dev_register)) < 0)
+                        {
+                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "delete_dev_info failed", res);
+                            break;
+                        }
+                        // 插入数据库
+                        if ((res = database_insert_dev_info(&dev_register)) < 0)
+                        {
+                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "database_insert_dev_info failed", res);
+                            break;
+                        }
+                        break;
+                    }
+                    else if (pad_and_6410_msg.cmd == 0x55) // 0x55：PAD扫描“发送注册申请”的设备
+                    {
+                        if (pad_and_6410_msg.len != 35)
+                        {
+                            res = P_DATA_ERR;
+                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "buf len err!", res);
+                            break;
+                        }
+                        
+                        if ((unsigned char)*network_config.pad_cmd != 0x00)  // PAD没有注册成功
+                        {
+                            res = NO_INIT_ERR;
+                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no init!", res);
+                            break;
+                        }
+                        
+                        char buf[1024] = {0};
+                        if ((res = select_dev_info(dev_count, dev_info, buf, sizeof(buf))) < 0)
+                        {
+                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "select_dev_info failed!", res);
+                            break;
+                        }
+                        
+                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, NULL, 0)) < 0)
+                        {
+                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
+                            break;
+                        }
+                        break;
+                    }
+                    else if (pad_and_6410_msg.cmd == 0x56) // 0x56：查询已经注册的设备
+                    {
+                        if (pad_and_6410_msg.len != 35)
+                        {
+                            res = P_DATA_ERR;
+                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "buf len err!", res);
+                            break;
+                        }
+                        
+                        if ((unsigned char)*network_config.pad_cmd != 0x00)  // PAD没有注册成功
+                        {
+                            res = NO_INIT_ERR;
+                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no init!", res);
+                            break;
+                        }
+                        
+                        char buf[1024] = {0};
+                        if ((res = database_select_dev_info(buf, sizeof(buf))) < 0)
+                        {
+                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "database_select_dev_info failed!", res);
+                            break;
+                        }
+                        
+                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, NULL, 0)) < 0)
+                        {
+                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
+                            break;
+                        }
+                        break;
+                    }
+                    else if (pad_and_6410_msg.cmd == 0x57) // 0x57：注销命令，删除匹配序列号的行
+                    {
+                        if (pad_and_6410_msg.len != (35 + 12))
+                        {
+                            res = P_DATA_ERR;
+                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "buf len err!", res);
+                            break;
+                        }
+                        
+                        if ((unsigned char)*network_config.pad_cmd != 0x00)  // PAD没有注册成功
+                        {
+                            res = NO_INIT_ERR;
+                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no init!", res);
+                            break;
+                        }
+                        memset(&dev_register, 0, sizeof(struct s_dev_register));
+                        memcpy(dev_register.dev_mac, pad_and_6410_msg.data + 35, 12);
+                        
+                        if ((res = database_delete_dev_info(&dev_register)) < 0)
+                        {
+                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "database_delete_dev_info failed!", res);
+                            break;
+                        }
+                        
+                        if ((res = network_config.send_msg_to_pad(accept_pad_fd, 0x00, NULL, 0)) < 0)
+                        {
+                            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
+                            break;
+                        }
+                        break;
+                    }
+                    #endif // BOARDTYPE == 9344
                     else // 01 02 03 
                     {
                         if (pad_and_6410_msg.len != 36)
@@ -4107,27 +4560,23 @@ void * pad_socket_monitor(void* para)
             memset(columns_name[0], 0, sizeof(columns_name[0]));
             memset(columns_value[0], 0, sizeof(columns_value[0]));
             memcpy(columns_name[0], "register_state", strlen("register_state")); 
-            #if BOARDTYPE == 6410 || BOARDTYPE == 9344
-            memcpy(columns_value[0], network_config.cmd, sizeof(*network_config.cmd));
-            insert_len = sizeof(*network_config.cmd);
-            #elif BOARDTYPE == 5350
+            
             sprintf(columns_value[0], "%d", (unsigned char)*network_config.cmd);
             insert_len = strlen(columns_value[0]);
             PRINT("columns_value[0] = %s\n", columns_value[0]);
-            #endif
             
             for (i = 0; i < common_tools.config->repeat; i++)
             {
                 #if BOARDTYPE == 6410 || BOARDTYPE == 9344
-                if ((ret = database_management.insert(1, columns_name, columns_value, &insert_len)) < 0)
+                if ((ret = database_management.update(1, columns_name, columns_value, &insert_len)) < 0)
                 {
-                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_insert failed!", ret);
+                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_update failed!", ret);
                     continue;
                 }
                 #elif BOARDTYPE == 5350
-                if ((ret = nvram_interface.insert(RT5350_FREE_SPACE, 1, columns_name, columns_value, &insert_len)) < 0)
+                if ((ret = nvram_interface.update(RT5350_FREE_SPACE, 1, columns_name, columns_value, &insert_len)) < 0)
                 {
-                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "nvram_insert failed!", ret); 
+                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "nvram_update failed!", ret); 
                     continue;
                 }
                 #endif
@@ -4196,6 +4645,7 @@ void * pad_socket_monitor(void* para)
         memset(columns_value, 0, sizeof(columns_value));
         memset(send_buf, 0, sizeof(send_buf));
         memset(port, 0, sizeof(port));
+        memset(config_cmd, 0, sizeof(config_cmd));
         
         // 资源释放
         if (buf != NULL)
@@ -4243,6 +4693,8 @@ int main(int argc, char ** argv)
     signal(SIGCLD, signal_handle);
     signal(SIGPWR, signal_handle);
     signal(SIGCHLD, signal_handle);
+    signal(SIGSTOP, signal_handle);
+     
     
     strcpy(common_tools.argv0, argv[0]);
     
@@ -4259,6 +4711,13 @@ int main(int argc, char ** argv)
 	start_time = time(0);
 	network_config.init_cmd_list();
 	
+	if ((res = common_tools.get_config()) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_config failed!", res);
+        return res;
+    }
+    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "The configuration file is read successfully!", 0);
+    
 	// 命令行分析
     if (argc != 1)
     {
@@ -4303,7 +4762,7 @@ int main(int argc, char ** argv)
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_select failed!", res);           
             continue;
         }
-        PRINT("column_value[0] = %02X %02X %02X %02X, *network_config.pad_cmd = %02X\n", column_value[0][0], column_value[0][1], column_value[0][2], column_value[0][3], (unsigned char)*network_config.pad_cmd);
+        PRINT("column_value[0] = %s, *network_config.pad_cmd = %02X\n", column_value[0], (unsigned char)*network_config.pad_cmd);
         #elif BOARDTYPE == 5350
         if ((res = nvram_interface.select(RT5350_FREE_SPACE, 1, column_name, column_value)) < 0)
         {
