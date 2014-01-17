@@ -2811,9 +2811,11 @@ void add_backup(void)
 {
 	char pChar[128];
 	char valBuff1[128];
+	errOut = fopen("/dev/ttyS0","w");
 	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
 	writeParameters("/tmp/.apcfg","w+",0);
 	CFG_get_by_name("SAV",valBuff1);
+	fprintf(errOut,"\n%s  %d valBuff1 is %s \n",__func__,__LINE__, valBuff1);
 	sprintf(pChar,"/usr/sbin/set_backup %s > /dev/null 2>&1",valBuff1);
 	Execute_cmd(pChar,rspBuff);
 }
@@ -2833,7 +2835,12 @@ void del_backup(void)
 void use_backup(void)
 {
 	char valBuff1[128];
-	char cmdd[128];	
+	char cmdd[128];
+	char buf[128];
+	char *bakupName;
+	int i;
+	FILE *fp;
+	errOut = fopen("/dev/ttyS0","w");
 	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
 	writeParameters("/tmp/.apcfg","w+",0);
 	CFG_get_by_name("ACT",valBuff1);
@@ -2850,10 +2857,37 @@ void use_backup(void)
 	printf("</body></html>");	
     #endif
 	//reconfig
-        Reboot_tiaozhuan("cfgback","index.html");
-	sprintf(cmdd,"dd if=/etc/backup/%s.bin of=/dev/caldata   > /dev/null 2>&1",valBuff1);
-	system(cmdd);
-	system("sleep 1 && reboot"); 
+    Reboot_tiaozhuan("cfgback","index.html");
+
+	if((fp = fopen("/etc/backup/backup_list.conf", "r")) != NULL)
+	{
+		while(fgets(buf, 128, fp))
+		{
+			if(!strncmp(buf, valBuff1, strlen(valBuff1) ))
+			{
+				for(i = strlen(valBuff1)+1; ; i++)
+				{
+					if(!strncmp(&buf[i], "20", 2))
+						break;
+				}
+				//fprintf(errOut,"\n%s  %d strlen(&buf[i]) is %d \n",__func__,__LINE__, strlen(&buf[i]));
+				bakupName = malloc(strlen(&buf[i]));
+				strncpy(bakupName, &buf[i], strlen(&buf[i]) - 1);
+				break;
+			}
+		}
+		fclose(fp);
+	}
+	
+	//fprintf(errOut,"\n%s  %d bakupName is %s the size is %d\n",__func__,__LINE__, bakupName, strlen(bakupName));
+	sprintf(cmdd,"dd if=/etc/backup/%s.bin of=/dev/caldata   > /dev/null 2>&1", bakupName);
+	i = 3;
+	while(i--)
+	{
+		system(cmdd);
+	}
+	free(bakupName);
+	system("reboot"); 
 }
 //luodp end  route rule 
 //zhao zhanwei
