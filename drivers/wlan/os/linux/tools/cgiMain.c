@@ -80,7 +80,7 @@ struct staList
 
 static struct staList *staHostList;
 static int staId = 0;
-#define OLD_STAFILE  "/var/run/.OldStaList"
+#define OLD_STAFILE  "/etc/.OldStaList"
 #define UDHCPD_FILE  "/var/run/udhcpd.leases"
 #define MAX_WLAN_ELEMENT    1024
 
@@ -969,15 +969,16 @@ char *processSpecial(char *paramStr, char *outBuff)
 					int add = 0;
 
                     Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
-                    Execute_cmd("wlanconfig ath0 list sta > /var/run/.STAlist", rspBuff);
+                    Execute_cmd("wlanconfig ath0 list sta > /etc/.STAlist", rspBuff);
 
 					fprintf(errOut,"\n%s  %d  to open [dhcpclinetlist]\n",__func__,__LINE__);
 
 					/*if the /var/run/.OldStaList is not exit, creat it*/
 					if((fp1 = fopen(OLD_STAFILE, "r")) == NULL)     /*  /var/run/.OldStaList  */
 					{
+						fprintf(errOut,"\n%s  %d  creat the file %s\n",__func__,__LINE__, OLD_STAFILE);
 						fp1 = fopen(OLD_STAFILE, "at");
-						flist = fopen("/var/run/.STAlist", "r");    /*  /var/run/.STAlist   */
+						flist = fopen("/etc/.STAlist", "r");    /*  /etc/.STAlist   */
                         fgets(STAbuf, 128, flist);
                         while(fgets(STAbuf, 128, flist))
                         {
@@ -988,7 +989,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 						fclose(flist);
 						fclose(fp1);
 					}
-					flist = fopen("/var/run/.STAlist", "r");    /*  /var/run/.STAlist   */
+					flist = fopen("/etc/.STAlist", "r");    /*  /etc/.STAlist   */
 					fgets(STAbuf, 128, flist);
                     while(fgets(STAbuf, 128, flist))
                     {
@@ -1119,7 +1120,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                     while (fread(&lease, sizeof(lease), 1, fp) == 1) 
                     {
                         shi=0;
-                        flist = fopen("/var/run/.STAlist", "r");    /*  /var/run/.STAlist   */
+                        flist = fopen("/etc/.STAlist", "r");    /*  /etc/.STAlist   */
                         if (NULL == flist)
                         {
                             fprintf(errOut,"\n%s  %d open STAlist error\n \n",__func__,__LINE__);
@@ -1226,7 +1227,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 					int ret = 0;
 
                     Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
-                    Execute_cmd("wlanconfig ath0 list sta > /var/run/.STAlist", rspBuff);
+                    Execute_cmd("wlanconfig ath0 list sta > /etc/.STAlist", rspBuff);
 
 					//sleep(1);
 					/*wait for dhcp write over*/
@@ -1330,7 +1331,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                     int shi=0;
 
                     Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
-                    Execute_cmd("wlanconfig ath0 list sta > /var/run/.STAlist", rspBuff);
+                    Execute_cmd("wlanconfig ath0 list sta > /etc/.STAlist", rspBuff);
 
                     fp = fopen(UDHCPD_FILE, "r");  /*  /var/run/udhcpd.leases   */
                     if (NULL == fp)
