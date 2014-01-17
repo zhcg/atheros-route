@@ -5265,8 +5265,11 @@ int main(int argc,char **argv)
         {
             sprintf(url_arg, "ADD_NET%d", i);
             CFG_get_by_name(url_arg,url_tmp);
-            strcat(parc_url,url_tmp);
-            strcat(parc_url,",");
+            if(strlen(url_tmp) != 0)
+            {
+                strcat(parc_url,url_tmp);
+                strcat(parc_url,",");
+            }
         }
         strcat(parc_url,"return1");
 
