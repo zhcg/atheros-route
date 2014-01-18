@@ -23,6 +23,10 @@ export SQUASHFSFILE=$(BOARD_TYPE)$(BUILD_CONFIG)-squashfs
 export SSDK_DIR=$(ENETDIR)/s17_ssdk
 export NTFS_3G_DIR=$(TOPDIR)/apps/ntfs-3g-2010.10.2
 export NTP_ARMDIR=$(TOPDIR)/apps/ntpclient_arm
+export SI32178DIR=$(TOPDIR)/linux/drivers/si32178
+export SI32178MODPATH=$(INSTALL_ROOT)/lib/modules/$(KERNELVER)/si32178
+export SPI32178DIR=$(TOPDIR)/linux/drivers/spi32178
+export SPI32178MODPATH=$(INSTALL_ROOT)/lib/modules/$(KERNELVER)/spi32178
 #
 # Makefile for WASP Fusion build.  It has dependancies for both
 # the "common" build and the "jffs2" build.  This is unique for
@@ -102,7 +106,11 @@ else
 ifeq ($(strip ${ATH_SUPPORT_SPECTRAL}),1)
 db12x_build: common_mainline driver_build usb_build pci_build spectral_app_build $(BUILD_TYPE)_build art_mod
 else
+ifeq ($(BUILD_FOR_32178), yes)
+db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si32178_build spi32178_build phone_9344_32178 check_phone_status ntpclient_arm  pppoe_build threethread channel webui terminal_dev_register cacm tester $(fs_build) makeotaimage makeoneimage 
+else
 db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si3000_build si3000_app stm32_build stm32_app phone_9344  ntpclient_arm  pppoe_build threethread channel webui terminal_dev_register cacm tester $(fs_build) makeotaimage makeoneimage 
+endif
 #db12x_build: common_mainline i2s_build athplay_tools_fus usb_build $(fs_build)
 #db12x_build: common_mainline slic_build slic_app i2s_build athplay_tools_fus $(fs_build)
 #db12x_build: common_mainline gateway_build slic_build slic_app $(fs_build)
@@ -528,6 +536,30 @@ ifneq ($(BUILD_CONFIG), _ap123)
 	cp -f ${KERNELPATH}/drivers/net/usb/cdc_ether.ko ${USBMODPATH}
 endif
 
+si32178_build: kernel_build
+	cd $(SI32178DIR) && rm -f *.o *.ko *.mod.*
+	$(MAKEARCH) -C $(KERNELPATH) SUBDIRS=$(SI32178DIR) modules
+	test -d $(SI32178MODPATH) || mkdir -p $(SI32178MODPATH)
+	cp $(SI32178DIR)/ath_si32178.ko $(SI32178MODPATH)
+
+spi32178_build: kernel_build
+	cd $(SPI32178DIR) && rm -f *.o *.ko *.mod.*
+	$(MAKEARCH) -C $(KERNELPATH) SUBDIRS=$(SPI32178DIR) modules
+	test -d $(SPI32178MODPATH) || mkdir -p $(SPI32178MODPATH)
+	cp $(SPI32178DIR)/ath_spi_si32178.ko $(SPI32178MODPATH)
+
+phone_9344_32178:
+	@echo making phone_9344_32178 application
+	cd ../apps/phone_9344_32178; make clean; make; \
+	$(STRIP) phone_control; \
+	cp -f phone_control $(INSTALL_ROOT)/bin;
+	
+check_phone_status:
+	@echo making check_phone_status application
+	cd ../apps/check_phone_status; make clean; make; \
+	$(STRIP) check_phone_status; \
+	cp -f check_phone_status $(INSTALL_ROOT)/bin;
+	
 uboot_mainline:
 	@echo making uboot...
 	cd $(BOOTLOADERDIR) && make db12x_config
