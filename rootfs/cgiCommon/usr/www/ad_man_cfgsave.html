@@ -39,7 +39,10 @@ function initTranslation()
 	trans_value("DEL3","man delete");
 	trans_value("DEL4","man delete");
 	trans_value("DEL5","man delete");
-	trans_inner("help_r","help");	
+
+	trans_inner("care1","cfg care1");
+	trans_inner("care2","cfg care2");
+	trans_inner("care3","cfg care3");
 }
 function init()
 {
@@ -188,20 +191,14 @@ function listdel(value)
 		button_commit("CFG_MODIFY_DEL");
 	}
 }
-function help()
-{
-	if (_("toplanguage")=="e")
-		window.location.href='../help/ad_man_cfgsave_help_e.html';
-	else
-		window.location.href='../help/ad_man_cfgsave_help_z.html';
-}
+
 </script>
 </head>
 
 <body onload=init();>
 <div class="handaer_main">
 <table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
-<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="title"></h1>
+<h1 id="title"></h1>
 <h2 id="des"></h2>
 <table id="t1" width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
 <form method="post" name="ExportSettings" action="/cgi-bin/download.cgi">
@@ -226,7 +223,7 @@ function help()
 <tr>
   <td class="head" id="selsectfile"></td>
   <td>
-	<input type="file" id="uploadedfile" name="uploadedfile"/>
+	<input type="file" id="uploadedfile" style="border-width:1px;font-family:'微软雅黑';font-size:12px;  height:25px;color: #000000;  cursor:hand; " name="uploadedfile"/>
   </td>
 </tr>
 <tr>
@@ -236,10 +233,20 @@ function help()
   </td>
   <td>&nbsp; &nbsp;</td>
 </tr>
+
 </table>
+<table width="100%" cellpadding="0" cellspacing="0"   style="border-top: 0px;" class="handaer_text">
+<tr>
+  <td>
+	<span id="care1"></span><br>
+	<span id="care2"></span><br>
+	<span id="care3"></span>
+  </td>
+</tr>
+<table>
 </form>
 
-<h1>  </h1>
+<h1>&nbsp; &nbsp;</h1>
 <table id="t3" width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
   <tr> 
     <td class="title" colspan="2" id="t3_title"></td>

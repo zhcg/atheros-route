@@ -254,7 +254,6 @@ function initTranslation()
 	trans_inner("t1_MAC","dhcpadd t1_MAC");	
 	trans_inner("t1_IP","dhcpadd t1_IP");	
 	trans_inner("t1_Status","dhcpadd t1_Status");
-	trans_inner("help_r","help");	
 	
 	trans_inner("mac_format","lan mac_format");	
 }
@@ -264,20 +263,14 @@ function initValue()
 	Butterlate.setTextDomain("lan");
 	initTranslation();
 }
-function help()
-{
-	if (_("toplanguage")=="e")
-		window.location.href='../help/ad_local_addsdhcp_help_e.html';
-	else
-		window.location.href='../help/ad_local_addsdhcp_help_z.html';
-}
+
 </script>
 </head>
 
 <body onLoad="initValue()">
 <div class="handaer_main">
 <table  width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td>
-<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="title">添加静态DHCP条目</h1>
+<h1 id="title">添加静态DHCP条目</h1>
 <p></p>
 
 <FORM method="POST" name="WORKFORM">

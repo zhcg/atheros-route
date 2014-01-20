@@ -11,7 +11,8 @@
 	<message msgid="wless bSAVE" msgstr="保存" />  
 	<message msgid="help" msgstr="帮助" />
 	<message msgid="toplanguage" msgstr="z" />
-
+	<message msgid="settingwaiting" msgstr="正在配置,请您稍等......" />
+	
 	<message msgid="wless title" msgstr="无线高级设置" />  
 	<message msgid="wless des" msgstr="配置无线高级设置参数" />  
 	<message msgid="wless t1_title" msgstr="无线高级设置" />  

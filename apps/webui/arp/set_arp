@@ -37,11 +37,10 @@ fi
 if [ "$BIND_STATUS" -eq "1" ];then
 	echo "$IP_ADDR $MAC_ADDR" >>  $ARP_IP_MAC_ON_FILE
 	arp -s $IP_ADDR $MAC_ADDR
-else if [ "$BIND_STATUS" -eq "0" ];then
+elif [ "$BIND_STATUS" -eq "0" ];then
 	echo "$IP_ADDR $MAC_ADDR" >>  $ARP_IP_MAC_OFF_FILE
 else
 	exit 4
-fi
 fi
 
 echo "add IP/MAC bind done"

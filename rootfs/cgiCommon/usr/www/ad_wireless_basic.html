@@ -187,6 +187,11 @@ function initValue()
 	switch_wifi();
 	inithidewifi();
 	initclickfun();
+	var ifwdson = document.getElementById("WDSON").value;
+	if(ifwdson=="on")
+	{
+		document.getElementById("AP_PRIMARY_CH").disabled = true;
+	}
 }
 function switch_wifi()
 {
@@ -258,7 +263,7 @@ function help()
 <tr id="channel">
   <td class="head" id="channelchoose"></td>
   <td>
-    <select name="AP_PRIMARY_CH" size="1">
+    <select name="AP_PRIMARY_CH" id="AP_PRIMARY_CH" size="1">
 	  <!--option ~sAP_PRIMARY_CH:0~ value="0" id="channelauto"></option-->
 	  <option ~sAP_PRIMARY_CH:1~ value="1">1</option>
       <option ~sAP_PRIMARY_CH:2~ value="2">2</option>
@@ -300,6 +305,7 @@ function help()
     <input type="button" name="apply_motion" id="bAPPLY" class="handaer_input" value="Apply" onClick="CheckWirelessValue();">
 	<input type="submit" name="WIRELESS" id="WIRELESS" style="display:none" value="WIRELESS">
 	<input type="text" style="display:none" name="AP_HIDESSID" id="AP_HIDESSID" size="20" maxlength="32" value="~~AP_HIDESSID~">
+	<input type="text" style="display:none" name="WDSON" id="WDSON" size="20" maxlength="32" value="~~WDSON_OFF~">
   </td>
 </tr>
 </table>

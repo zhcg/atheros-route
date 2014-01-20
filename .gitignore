@@ -1,3 +1,4 @@
+apps/webui/arp/arp
 apps/terminal_dev_register/communication_network.o
 apps/terminal_dev_register/communication_serial.o
 apps/terminal_dev_register/communication_usb.o

@@ -1003,8 +1003,8 @@ static int arp_show(char *name)
 				sprintf(outBuff,"<tr><td>%d</td><td>%s</td><td>%s</td><td>NO</td></tr>",count,hwa,ip);
 			}
 			count++;
+			fwrite(outBuff,strlen(outBuff),1,fp2);
 		}
-		fwrite(outBuff,strlen(outBuff),1,fp2);
 		//end luodp for webui  
 	}
 		fclose(fp2);

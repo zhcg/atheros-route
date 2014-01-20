@@ -26,7 +26,6 @@ function initTranslation()
 	trans_inner("hardware","admw hardware");	
 	trans_inner("software","admw software");	
 	trans_inner("waring","admw waring");	
-	trans_inner("help_r","help");	
 }
 
 function waitgifshow()
@@ -58,20 +57,14 @@ function init()
 	Butterlate.setTextDomain("admin");
 	initTranslation();
 }
-function help()
-{
-	if (_("toplanguage")=="e")
-		window.location.href='../help/ad_man_upgrade_help_e.html';
-	else
-		window.location.href='../help/ad_man_upgrade_help_z.html';
-}
+
 </script>
 </head>
 
 <body onload=init();>
 <div class="handaer_main">
 <table  border="0" cellpadding="0" cellspacing="0" id="tt1"><tr><td>
-<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="uploadtitle"></h1>
+<h1 id="uploadtitle"></h1>
 <form name="usb_upload" enctype="multipart/form-data" action="/cgi-bin/upload.cgi" method="post">
 <h2 id="uploaddes"></h2>
 
@@ -91,7 +84,7 @@ function help()
 <tr>
   <td class="head" id="up_selsectfile"></td>
   <td>
-	<input type="file" id="uploadedfile" name="uploadedfile">
+	<input type="file" id="uploadedfile" style="border-width:1px;font-family:'微软雅黑';font-size:12px;  height:25px;color: #000000;  cursor:hand; " name="uploadedfile">
   </td>
 </tr>
 <tr>

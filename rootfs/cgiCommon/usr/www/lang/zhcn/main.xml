@@ -5,6 +5,7 @@
 	<message msgid="main cancel" msgstr="取消" />
 	<message msgid="toplanguage" msgstr="z" />
 	<message msgid="help" msgstr="帮助" />
+	<message msgid="settingwaiting" msgstr="正在配置,请您稍等......" />
 
 	<message msgid="top_fast" msgstr="快速设置" />
 	<message msgid="top_adv" msgstr="高级设置" />
@@ -31,7 +32,7 @@
 	<message msgid="advmenu treeapp_wifi_wds" msgstr="无线中继" />
 
 	<message msgid="advmenu treeapp_safe" msgstr="安全管理" />
-	<message msgid="advmenu treeapp_safe_ipmac" msgstr="IP/MAC地址绑定" />
+	<message msgid="advmenu treeapp_safe_ipmac" msgstr="ARP绑定" />
 	<message msgid="advmenu treeapp_par" msgstr="访问控制" />
 	<message msgid="advmenu treeapp_par_set" msgstr="家长设置" />
 	<message msgid="advmenu treeapp_par_access" msgstr="访问管理" />
@@ -93,7 +94,7 @@
 	<message msgid="netcheck title" msgstr="网络诊断" />
 	<message msgid="netcheck des" msgstr="检测网络连接类型和进行网络PING操作" />
 	<message msgid="netcheck netc" msgstr="开始诊断" />
-	<message msgid="netcheck checkingwaiting" msgstr="正在进行检测请您稍候......" />
+	<message msgid="netcheck checkingwaiting" msgstr="正在进行检测,请您稍等......" />
 	<message msgid="netcheck Result" msgstr="诊断结果" />
 	<message msgid="netcheck t1_wantype" msgstr="自动检测WAN口类型" />
 	<message msgid="netcheck t1_basetype" msgstr="HBD路由器路由设置类型" />

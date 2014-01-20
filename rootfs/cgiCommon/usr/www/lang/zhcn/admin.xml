@@ -133,9 +133,10 @@
 	<message msgid="admw auto_fail" msgstr="自动选择失败,请您检查网络连接或者手动选择" />
 
 	<message msgid="admw fresh" msgstr="扫描" />
-	<message msgid="admw Wlisttitle1" msgstr="WiFi列表（可下拉选择）" />
+	<message msgid="admw Wlisttitle1" msgstr="WiFi列表（扫描后可下拉选择）" />
 	<message msgid="admw Wlisttitle2" msgstr="目前存在的WiFi:网络名称(信号强度)" />
 	<message msgid="admw Wlisttitle3" msgstr="可下拉选择" />
+	<message msgid="admw Alreadc" msgstr="当前已连接WiFi" />
 
 	<message msgid="admin open" msgstr="不加密" />
 	<message msgid="admin jiami" msgstr="加密(推荐使用)" />
@@ -220,7 +221,7 @@
 	<message msgid="admw chfile" msgstr="选择文件" />
 	<message msgid="admw waring" msgstr="注意:升级过程完全自动,请您不要关闭电源,否则将导致HBD路由器损坏而无法使用,升级过程约130秒,当升级结束后,HBD路由器将自动重新启动" />	
 	<message msgid="admw sysupgrade" msgstr="确认进行固件升级?" />
-	<message msgid="err dhcp null" msgstr="无法通过DHCP获取到WAN口IP,请您检查是否为DHCP方式连接" />
+	<message msgid="err dhcp null" msgstr="无法自动获取到WAN口IP,请您检查是否为自动获取方式连接" />
 	<message msgid="err dhcp ip" msgstr="DHCP获取到WAN口IP跟当前路由在同一个网段,请您在高级设置-内网设置-网关设置里面修改路由的网段" />
 
 	<message msgid="man admin setting" msgstr="密码管理" />
@@ -236,5 +237,8 @@
 	<message msgid="err DNS format" msgstr="DNS地址不合法" />
 
 	<message msgid="err Ruleexist" msgstr="条目已存在" />	
-
+	<message msgid="wan not connected" msgstr="请检查WAN口网线是否连接正常" />
+	
+	<message msgid="err no choose" msgstr="请扫描并选择您要连接的WiFi" />	
+	
 </po>
