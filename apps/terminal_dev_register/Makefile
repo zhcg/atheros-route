@@ -5,7 +5,7 @@ endif
 GCC = $(CROSS)gcc
 
 TERMINAL_DEV_REGISTERBIN = terminal_dev_register
-TERMINAL_DEV_REGISTEROBJ = terminal_dev_register.o network_config.o
+TERMINAL_DEV_REGISTEROBJ = terminal_dev_register.o network_config.o request_cmd.o
 
 TERMINAL_INIT_TESTBIN = terminal_init_test
 TERMINAL_INIT_TESTOBJ = terminal_init_test.o network_config.o

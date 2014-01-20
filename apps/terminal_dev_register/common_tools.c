@@ -9,6 +9,11 @@ static char __datetime_buf[128];
 static unsigned char phone_status_flag;     // 电话线路状态 默认为0，0表示未摘机，1表示已摘机
 
 /**
+ * 获取比较大的数字
+ */
+static int get_large_number(int num1, int num2);
+
+/**
  * 读取配置文件，并设置全局变量
  */
 static int get_config();
@@ -247,6 +252,7 @@ struct class_common_tools common_tools =
     &g_timer,
     &phone_status_flag,
     {0},
+    get_large_number,
     get_config, set_GPIO4, make_menulist, /*operation_steps_log, */
     #if BOARDTYPE == 6410 || BOARDTYPE == 5350
     make_serial_data_file, 
@@ -261,6 +267,14 @@ struct class_common_tools common_tools =
 /*******************************************************************************/
 /************************      以上为声明，以下为实现       ********************/
 /*******************************************************************************/
+
+/**
+ * 获取比较大的数字
+ */
+int get_large_number(int num1, int num2)
+{
+    return ((num1 > num2) ? num1 : num2);
+}
 
 #if BOARDTYPE == 6410 || BOARDTYPE == 9344
 
@@ -1869,6 +1883,34 @@ int get_user_prompt(int error_num, char **out_buf)
         {
             state_num = 24;  //状态码
             memcpy(prompt, "位置认证失败！", sizeof(prompt) - 1);  // 提示信息
+            len = strlen(prompt);
+            break;
+        }
+	    case NO_REQUEST_ERR:        // 无请求错误
+	    {
+            state_num = 25;  //状态码
+            memcpy(prompt, "无请求！", sizeof(prompt) - 1);  // 提示信息
+            len = strlen(prompt);
+            break;
+        }
+	    case IDENTIFYING_CODE_ERR:  // 验证码错误
+	    {
+            state_num = 26;  //状态码
+            memcpy(prompt, "验证码错误！", sizeof(prompt) - 1);  // 提示信息
+            len = strlen(prompt);
+            break;
+        }
+	    case OVERDUE_ERR:           // 请求数据过期
+	    {
+            state_num = 27;  //状态码
+            memcpy(prompt, "请求数据过期！", sizeof(prompt) - 1);  // 提示信息
+            len = strlen(prompt);
+            break;
+        }
+	    case NON_EXISTENT_ERR:      // 请求数据不存在
+	    {
+            state_num = 28;  //状态码
+            memcpy(prompt, "请求数据不存在！", sizeof(prompt) - 1);  // 提示信息
             len = strlen(prompt);
             break;
         }

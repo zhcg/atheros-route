@@ -18,6 +18,8 @@ static unsigned char ssid3_live_flag = 0;
 
 #endif
 
+#define DELAYS 5
+
 #if SMART_RECOVERY
 
 /**
@@ -500,6 +502,7 @@ static int monitor_app()
 	unsigned char recv_buf[6] = {0};
 	char pad_sn[35] = {0};
 	unsigned int business_cycle = 0;
+	int count = 0; // 记录延时的次数 count * DELAYS >= business_cycle
 	
 	strcpy(columns_name[0], "register_state");
     
@@ -804,10 +807,11 @@ static int monitor_app()
         }
         
         // base状态
-        if (register_flag == 1)
+        if ((register_flag == 1) && ((count == 0) || (++count * DELAYS >= business_cycle)))
         {
+            count = 1; // 提前 DELAYS 生成
             // 生成base状态文件
-            if (system("top -b -n 1 > /var/linphone/log/.base_state") < 0)
+            if (system("top -b -n 1 > /var/cacm/log/.base_state") < 0)
             {
                 PERROR("system failed!\n");
                 continue;
@@ -816,7 +820,7 @@ static int monitor_app()
         }
         else
         {
-            sleep(5);
+            sleep(DELAYS);
         }
     }
     #if SSID3_MONITOR

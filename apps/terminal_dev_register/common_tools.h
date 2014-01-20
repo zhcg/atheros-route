@@ -274,6 +274,11 @@ enum ERROR_NUM
 	WAN_STATE_ERR,         // wan口没有插入  
 	P_WRITE_ERR,           // 文件写入错误
 	S_WRITE_ERR,           // 文件写入错误
+	
+	NO_REQUEST_ERR,        // 无请求错误
+	IDENTIFYING_CODE_ERR,  // 验证码错误
+	OVERDUE_ERR,           // 请求数据过期
+	NON_EXISTENT_ERR,      // 请求数据不存在
 };
 
 //错误码
@@ -683,6 +688,7 @@ struct class_common_tools
     char argv0[32];
     
     // 项目相关
+    int (* get_large_number)(int num1, int num2);
     int (* get_config)();
     int (* set_GPIO4)(int cmd);
     int (* make_menulist)(time_t start_time, struct timeval start, struct timeval end);
