@@ -14,6 +14,7 @@
 	<message msgid="par mac_format" msgstr="例如(11:22:33:44:55:66)" />   
 	<message msgid="help" msgstr="帮助" />
 	<message msgid="toplanguage" msgstr="z" />
+	<message msgid="settingwaiting" msgstr="正在配置,请您稍等......" />
 	
 	<message msgid="parset title" msgstr="家长设置" />  
 	<message msgid="parset des" msgstr="设置家长PC" />  

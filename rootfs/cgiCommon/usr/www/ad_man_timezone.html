@@ -226,15 +226,19 @@ function switch_ntp()
 {
 	if(document.NTP.NTPON_OFF[0].checked == true)
 	{
+		widget_display("timezones");
 		widget_display("servertr1");
 		widget_display("servertr2");
+		widget_enable("TIME_ZONE");
 		widget_enable("NTPServerIP1");
 		widget_enable("NTPServerIP2");
 	}
 	else
 	{
+		widget_hide("timezones");
 		widget_hide("servertr1");
 		widget_hide("servertr2");
+		widget_disable("TIME_ZONE");
 		widget_disable("NTPServerIP1");
 		widget_disable("NTPServerIP2");
 	}
@@ -270,10 +274,17 @@ function help()
 	</td>
 </tr>
 <form method="post" name="NTP">
+
 <tr>
+ <td class="head" id="ntpswitch"></td>
+	<td><input type="radio"  ~cNTPON_OFF:on~ id="NTPON_OFF1" name="NTPON_OFF" value="on" onclick="switch_ntp();" checked /><label for="NTPON_OFF1" id="onbutton"></label>
+	<input type="radio"  ~cNTPON_OFF:off~ id="NTPON_OFF2" name="NTPON_OFF" value="off" onclick="switch_ntp();"/><label for="NTPON_OFF2" id="offbutton"></label>
+	</td>
+</tr>
+<tr id="timezones">
   <td class="head" id="manNTPTimeZone"></td>
   <td>
-    <select name="TIME_ZONE">
+    <select name="TIME_ZONE" id="TIME_ZONE">
       <option ~sTIME_ZONE:UCT_-11~ value="UCT_-11" id="manNTPMidIsland"></option>
       <option ~sTIME_ZONE:UCT_-10~ value="UCT_-10" id="manNTPHawaii"></option>
       <option ~sTIME_ZONE:NAS_-09~ value="NAS_-09" id="manNTPAlaska"></option>
@@ -316,12 +327,6 @@ function help()
       <option ~sTIME_ZONE:NZS_012~ value="NZS_012" id="manNTPNewZealand"></option>
     </select>
   </td>
-</tr>
-<tr>
- <td class="head" id="ntpswitch"></td>
-	<td><input type="radio"  ~cNTPON_OFF:on~ id="NTPON_OFF1" name="NTPON_OFF" value="on" onclick="switch_ntp();" checked /><label for="NTPON_OFF1" id="onbutton"></label>
-	<input type="radio"  ~cNTPON_OFF:off~ id="NTPON_OFF2" name="NTPON_OFF" value="off" onclick="switch_ntp();"/><label for="NTPON_OFF2" id="offbutton"></label>
-	</td>
 </tr>
 <tr id="servertr1">
   <td class="head" id="manNTPServer1"></td>

@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
-function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "table-row";}}
+function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "";}}
 function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
 function widget_display(widgetID){document.getElementById(widgetID).style.visibility = "visible";document.getElementById(widgetID).style.display = style_display_on();}
 function widget_enable(widgetID){document.getElementById(widgetID).disabled = false;}
@@ -25,7 +25,7 @@ function disableall()
 
 	widget_disable("PPPOE_USER");
 	widget_disable("ppppass");
-	widget_disable("PPPOE_PWD2");	
+
 	widget_disable("PPPOE_MODE");
 
 	widget_disable("PPPOE_DEMAND");
@@ -75,7 +75,6 @@ function enablePPPOE()
 {
 	widget_enable("PPPOE_USER");
 	widget_enable("ppppass");
-	widget_enable("PPPOE_PWD2");
 	widget_enable("PPPOE_MODE");
 	
 	if (document.wanCfg.PPPOE_MODE.selectedIndex == 1) 
@@ -498,11 +497,7 @@ function CheckValue()
 			document.wanCfg.PPPOE_PWD.select();
 			return false;
 		}
-		if (document.wanCfg.PPPOE_PWD.value != document.wanCfg.PPPOE_PWD2.value) 
-		{
-			alert(_("err pwd mismatch"));
-			return false;
-		}
+
 		if (document.wanCfg.PPPOE_MODE.selectedIndex == 1)
 		{
 			if (document.wanCfg.PPPOE_DEMAND.value == "")
@@ -666,7 +661,7 @@ function initTranslation()
 	trans_inner("wPppoeMode","wan pppoe mode");
 	trans_inner("wPppoeUser","inet user");
 	trans_inner("wPppoePassword","inet password");
-	trans_inner("wPppoePass2","inet pass2");
+
 	trans_inner("wPppoeOPMode","wan protocol opmode");
 	
 	trans_inner("wPppoeKeepAlive","wan protocol opmode keepalive");
@@ -915,7 +910,7 @@ function help()
 </tr>
 <tr>
   <td class="head" id="wStaticSecDns">Secondary DNS Server</td>
-  <td><input id="SECDNS" name="SECDNS"  class="handaer_text_content" maxlength=15 value="~~SECDNS~"/><span id="optionXX"></span></td>
+  <td><input id="SECDNS" name="SECDNS"  class="handaer_text_content" maxlength=15 value="~~SECDNS~"/><span style="height:30px; line-height:30px; padding:5px;" id="optionXX"></span></td>
 </tr>
 </table>
 
@@ -943,10 +938,7 @@ function help()
   <td class="head" id="wPppoePassword">Password</td>
   <td><span id="ppppwdinput"><input type="password" id="ppppass" name="PPPOE_PWD" class="handaer_text_content" maxlength="32" size="32" value="~~PPPOE_PWD~"/></span>&nbsp;<input type="checkbox" id="aaaa" onClick="pppshowpwd()"/>&nbsp;<label for="aaaa" id="pppshowp"></label></td>
 </tr>
-<tr>
-  <td class="head" id="wPppoePass2">Verify Password</td>
-  <td><input type="password"  class="handaer_text_content" id="PPPOE_PWD2" name="PPPOE_PWD2" maxlength=32 size=32 value="~~PPPOE_PWD2~"></td>
-</tr>
+
 <tr>
   <td class="head" rowspan="2" id="wPppoeOPMode">Operation Mode</td>
   <td>
@@ -963,10 +955,10 @@ function help()
 	<span id="hide1"><span id="PPPOE_KAM"></span><input type="text" id="PPPOE_DEMAND" name="PPPOE_DEMAND" class="handaer_text_small_content" maxlength="5" size="3" value="~~PPPOE_DEMAND~"/><span id="PPPOE_seconds"></span></br></span>
   	<span id="hide2"><span id="PPPOE_ODM"></span><input type="text" id="PPPOE_MANUAL" name="PPPOE_MANUAL" class="handaer_text_small_content" maxlength="3" size="2" value="~~PPPOE_MANUAL~"/><span id="PPPOE_minutes"></span></br></span>
 	<span id="hide3"><span id="PPPOE_TIMING"></span>
-	<input type="text" id="PPPOE_TIMING_BH" name="PPPOE_TIMING_BH" class="handaer_text_small_content" maxlength="3" size="2" value="~~PPPOE_TIMING_BH~"/>:
-	<input type="text" id="PPPOE_TIMING_BM" name="PPPOE_TIMING_BM" class="handaer_text_small_content" maxlength="3" size="2" value="~~PPPOE_TIMING_BM~"/>-
-	<input type="text" id="PPPOE_TIMING_EH" name="PPPOE_TIMING_EH" class="handaer_text_small_content" maxlength="3" size="2" value="~~PPPOE_TIMING_EH~"/>:
-	<input type="text" id="PPPOE_TIMING_EM" name="PPPOE_TIMING_EM" class="handaer_text_small_content" maxlength="3" size="2" value="~~PPPOE_TIMING_EM~"/></span>
+	<input type="text" id="PPPOE_TIMING_BH" name="PPPOE_TIMING_BH" class="handaer_text_small_content" maxlength="2" size="2" value="~~PPPOE_TIMING_BH~"/>:
+	<input type="text" id="PPPOE_TIMING_BM" name="PPPOE_TIMING_BM" class="handaer_text_small_content" maxlength="2" size="2" value="~~PPPOE_TIMING_BM~"/>-
+	<input type="text" id="PPPOE_TIMING_EH" name="PPPOE_TIMING_EH" class="handaer_text_small_content" maxlength="2" size="2" value="~~PPPOE_TIMING_EH~"/>:
+	<input type="text" id="PPPOE_TIMING_EM" name="PPPOE_TIMING_EM" class="handaer_text_small_content" maxlength="2" size="2" value="~~PPPOE_TIMING_EM~"/></span>
 </td>
 </tr>
 </table>

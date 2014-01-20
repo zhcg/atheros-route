@@ -8,6 +8,7 @@
 	<message msgid="inet setwaiting" msgstr="Setting,please wait......" />
 	<message msgid="help" msgstr="Help" />
 	<message msgid="toplanguage" msgstr="e" />
+	<message msgid="settingwaiting" msgstr="Setting,Please Wait......" />
 
 	<message msgid="inet autocheck" msgstr="Automatic detection" />
 	<message msgid="inet bSAVE" msgstr="Save" />   
@@ -30,7 +31,7 @@
 	
 	<message msgid="wan optionXX" msgstr="(optional)" />	
 
-	<message msgid="wan title" msgstr="Wide Area Network (WAN) Settings" />
+	<message msgid="wan title" msgstr="WAN Settings" />
 	<message msgid="wan introduction" msgstr="You may choose different connection type suitable for your environment. Besides, you may also configure parameters according to the selected connection type." />
 	<message msgid="wan connection type" msgstr="WAN Connection Type:" />
 	<message msgid="wan connection type static" msgstr="STATIC (fixed IP)" />
@@ -62,7 +63,7 @@
 	<message msgid="seconds" msgstr="seconds" />
 
 	<message msgid="macc title" msgstr="Clone MAC address" />
-	<message msgid="macc des" msgstr="Set the BASE to the WAN MAC address (Note: only the LAN computer can use this function" />
+	<message msgid="macc des" msgstr="Set the BASE to the WAN MAC address (Note: only the LAN device can use this function" />
 	<message msgid="macc t1_title" msgstr="Clone MAC address" />
 	<message msgid="macc t1_MACS" msgstr="Select the MAC address source" />
 	<message msgid="macc mactype0" msgstr="Use the default MAC address" />

@@ -21,7 +21,6 @@ function initTranslation()
 	trans_inner("t1_basetype","netcheck t1_basetype");
 	trans_inner("t1_pngBD","netcheck t1_pngBD");
 	trans_inner("t1_pingQQ","netcheck t1_pingQQ");
-	trans_inner("help_r","help");	
 }
 
 function init()
@@ -53,7 +52,7 @@ function waitgifshow()
 }
 function resultshow()
 {
-	widget_hide("des");
+	//widget_hide("des");
 	widget_display("netc");
 	
 	widget_display("checkresult");
@@ -72,13 +71,7 @@ function resultshow()
 
 	widget_display("checkresultshow");
 }
-function help()
-{
-	if (_("toplanguage")=="e")
-		window.location.href='help/ad_netcheck_help_e.html';
-	else
-		window.location.href='help/ad_netcheck_help_z.html';
-}
+
 </script>
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
@@ -87,7 +80,7 @@ function help()
 <body onload="init();">
 <div class="handaer_main">
 <table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
-<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="title">网络诊断</h1>
+<h1 id="title">网络诊断</h1>
 
 <h2 id="des">检测网络连接类型和进行网络PING操作</h2> 
 <span id="checkresultshow" style="display:none;font-family:arial;color:red;font-size:20px;" ></span>

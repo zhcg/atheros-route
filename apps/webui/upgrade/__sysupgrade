@@ -44,6 +44,7 @@ cp -a /bin/sed bin
 #cp -a /usr/bin/logger bin
 cp -a /usr/bin/wc bin
 cp -a /usr/bin/expr bin
+cp -a /usr/bin/awk bin
 
 cp -a /sbin/pivot_root sbin
 cp -a /sbin/reboot sbin

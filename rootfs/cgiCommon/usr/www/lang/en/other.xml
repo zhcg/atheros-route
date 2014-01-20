@@ -7,4 +7,5 @@
 	<message msgid="CFGBACK" msgstr="Configuration import over, HBD BASE is being restarted , please wait......" />
 	<message msgid="FACTORY" msgstr="Restore factory settings over, HBD BASE is being restarted , please wait......" />
 	<message msgid="UPLOAD" msgstr="Firmware upgrade over, HBD BASE is being restarted , please wait......" />
+	<message msgid="settingwaiting" msgstr="Setting,Please Wait......" />
 </po>

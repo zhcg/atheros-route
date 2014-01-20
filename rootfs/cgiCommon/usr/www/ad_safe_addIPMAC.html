@@ -223,7 +223,6 @@ function initTranslation()
 	trans_inner("t1_MAC","addIPMAC t1_MAC");	
 	trans_inner("t1_IP","addIPMAC t1_IP");	
 	trans_inner("t1_Tye","addIPMAC t1_Tye");
-	trans_inner("help_r","help");	
 	trans_inner("mac_format","safe mac_format");		
 }
 
@@ -232,20 +231,14 @@ function initValue()
 	Butterlate.setTextDomain("safe");
 	initTranslation();
 }
-function help()
-{
-	if (_("toplanguage")=="e")
-		window.location.href='../help/ad_safe_addIPMAC_help_e.html';
-	else
-		window.location.href='../help/ad_safe_addIPMAC_help_z.html';
-}
+
 </script>
 </head>
 
 <body onLoad="initValue()">
 <div class="handaer_main">
 <table  width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td>
-<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="title">添加IP/MAC绑定</h1>
+<h1 id="title">添加IP/MAC绑定</h1>
 <p></p>
 
 <FORM method="POST" name="WORKFORM">

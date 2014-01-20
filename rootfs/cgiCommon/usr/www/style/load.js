@@ -95,11 +95,11 @@ function ScreenClean(){  //清屏
 function Demo(string)
 { //主调
   ScreenConvert();
-  var ShowDiv="<div style=\"padding:10px;width:200px;height:100;border:#909090 1px solid;background:#fff;color:#333;filter:progid:DXImageTransform.Microsoft.Shadow(color=#909090,direction=120,strength=4);-moz-box-shadow: 8px 8px 18px #909090;-webkit-box-shadow: 8px 8px 18px #909090;box-shadow:8px 8px 18px #909090;\"><marquee style=\"border:1px solid #000000\" direction=\"right\" width=\"180\" scrollamount=\"5\" scrolldelay=\"5\" bgcolor=\"#ECF2FF\"\><table cellspacing=\"1\" cellpadding=\"0\"><tr height=15><td bgcolor=#a3a4a5 width=15></td><td></td><td bgcolor=#a3a4a5 width=15></td><td></td><td bgcolor=#a3a4a5 width=15></td><td></td><td bgcolor=#a3a4a5 width=15></td><td></td></tr></table></marquee><br><br><h3>"+string+"</h3></div>";
-  DialogShow(ShowDiv,250,120,200,100);
+  var ShowDiv="<div style=\"padding:10px;width:200px;height:120;border:#909090 1px solid;background:#fff;color:#333;filter:progid:DXImageTransform.Microsoft.Shadow(color=#909090,direction=120,strength=4);-moz-box-shadow: 8px 8px 18px #909090;-webkit-box-shadow: 8px 8px 18px #909090;box-shadow:8px 8px 18px #909090;\"><marquee style=\"border:1px solid #000000\" direction=\"right\" width=\"180\" scrollamount=\"5\" scrolldelay=\"5\" bgcolor=\"#ECF2FF\"\><table cellspacing=\"1\" cellpadding=\"0\"><tr height=15><td bgcolor=#a3a4a5 width=15></td><td></td><td bgcolor=#a3a4a5 width=15></td><td></td><td bgcolor=#a3a4a5 width=15></td><td></td><td bgcolor=#a3a4a5 width=15></td><td></td></tr></table></marquee><br><br><div style=\"color:#333\" align=\"center\">"+string+"</div></div>";
+  DialogShow(ShowDiv,100,50,200,120);
 }
 function Demo2(string){ //主调
   ScreenConvert();
-  var ShowDiv="<div style=\"padding:10px;width:200px;height:100;border:#909090 1px solid;background:#fff;color:#333;filter:progid:DXImageTransform.Microsoft.Shadow(color=#909090,direction=120,strength=4);-moz-box-shadow: 8px 8px 18px #909090;-webkit-box-shadow: 8px 8px 18px #909090;box-shadow:8px 8px 18px #909090;\"><br><br><h3>"+string+"<h3></div>";
-  DialogShow(ShowDiv,250,120,200,100);
+  var ShowDiv="<div style=\"padding:10px;width:200px;height:120;border:#909090 1px solid;background:#fff;color:#333;filter:progid:DXImageTransform.Microsoft.Shadow(color=#909090,direction=120,strength=4);-moz-box-shadow: 8px 8px 18px #909090;-webkit-box-shadow: 8px 8px 18px #909090;box-shadow:8px 8px 18px #909090;\"><br><br><div style=\"color:#333\" align=\"center\">"+string+"<div></div>";
+  DialogShow(ShowDiv,100,50,200,120);
 }

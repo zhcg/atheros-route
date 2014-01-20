@@ -7,7 +7,7 @@
 <script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
 
-function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "table-row";}}
+function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "";}}
 function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
 function widget_display(widgetID){document.getElementById(widgetID).style.visibility = "visible";document.getElementById(widgetID).style.display = style_display_on();}
 
@@ -351,6 +351,7 @@ function switch_dhcp()
 		widget_hide("t2line");
 		widget_display("t3");
 		widget_display("t3line");
+		widget_display("ADDDHCP");
 	}
 	else
 	{
@@ -360,6 +361,7 @@ function switch_dhcp()
 		widget_hide("t2line");
 		widget_hide("t3");
 		widget_hide("t3line");
+		widget_hide("ADDDHCP");
 	}
 }
 function listdel(value)
@@ -456,8 +458,8 @@ function help()
   </tr>
   ~Z:sdhcplist~ 
 </table>
-<input type="button"  class="handaer_small_button" name="ADDDHCP" id="ADDDHCP" value="添加" onClick="window.location.href='ad_local_addsdhcp'">
-<h1 id="t3line"> </h1>
+<input type="button"  class="handaer_small_button" name="ADDDHCP" id="ADDDHCP" value="添加" onClick="window.location.href='ad_local_addsdhcp'"><br>
+<h1 id="t3line">&nbsp; &nbsp; </h1>
 <table id="t3"  width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
   <tr> 
     <td class="title" colspan="5" id="t3_title">DHCP客户端</td>

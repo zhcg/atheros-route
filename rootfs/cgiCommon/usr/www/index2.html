@@ -12,32 +12,63 @@
 <script type="text/javascript" src="/style/BarMenu.js"></script>
 <script language="JavaScript" type="text/javascript" src="/style/load.js"></script>
 <style type="text/css">
-body {font-family: 微软雅黑,tahoma; font-size: 12px;color: #eee;}
-a, a:visited {color: #848484;}
+body {font-family:"微软雅黑"; font-size: 14px;color: #eee;}
 h1 {font-size: 24px;}
 .bar-menu {}
 
-.bar-menu .box1 {width:196px;height:35px; line-height:35px;display:block;font-weight:800;color:#848484;background-color:#e6e6e6;}
 
-.bar-menu .box1-hover {background-color:#CE4034;font-weight:800;}
-.bar-menu .box1-open {font-weight:800;color: #FFEBA9;background-color:#CE4034;border-bottom:1px  solid #fff;}
-.bar-menu .box1-open-hover {font-weight:800;color: #FFEBA9;border-bottom:1px  solid #fff;background-color:#CE4034;}
+.bar-menu .box1 {width:200px;height:35px;display:block;color:#848484;background:url(../images/button_bj2.gif) no-repeat 0 0;margin:10px 0;}
+.bar-menu .box1-hover{color:#848484;background: color:#fff;}
+.bar-menu .box1-open {background:url(../images/button_bj.gif) no-repeat 0 0!important;;border-bottom:0px  solid #fff;}
+.bar-menu .box1-open-hover {color: #FFEBA9;border-bottom:0px  solid #fff;background:url(../images/button_bj.gif) no-repeat 0 0!important;}
 .bar-menu .box1,
 .bar-menu .box1-hover,
 .bar-menu .box1-open,
-.bar-menu .box1-open-hover {text-indent: 10px;font-size: 14px;line-height: 35px;font-family: 微软雅黑,arial;cursor: pointer;}
+.bar-menu .box1-open-hover {margin:10px 0;text-indent:20px;font-size: 14px;line-height: 35px;font-family:"微软雅黑";cursor: pointer;}
 
 .box1-hover,
 .box1-open-hover { color:#fff; }
-.bar-menu .section {background-color: #ECEDEF;font-family: arial;font-size: 13px;line-height: 30px;padding: 0 0 5px 0px;display: none;}
-.bar-menu .section a {color: 222207;text-decoration: none;white-space: nowrap;cursor:pointer;height:35px; line-height:35px;display:block;}
+.bar-menu .section {background-color: #ECEDEF;font-family: arial;font-size: 14px;line-height: 30px;display: none;}
+.bar-menu .section a {color: 222207;text-decoration: none;white-space: nowrap;cursor:pointer;height:35px; line-height:30px;display:block; overflow:hidden; }
 .bar-menu .section a:hover {color: #d48928;text-decoration: none;white-space: nowrap;cursor:pointer;}
-.bar-menu .box2 {border-color: #fff;border-width: 1px;border-style: none none dotted none;font-family: 微软雅黑,arial;padding: 1px 0 2px 5px;cursor:pointer;text-indent:2em;}
-.bar-menu .box2-hover {border-color: #fff;border-width: 1px;border-style: none none dotted none;font-family: 微软雅黑,arial;padding: 1px 0 2px 5px;background:#ECEDEF;cursor:pointer;text-indent:2em;}
-.box3{ height:40px; line-height:40px; color:#D0D0D0; border-bottom:1px solid #d0d0d0; padding-left:10px; font-weight:800;}
+.bar-menu .box2 {border-color: #fff;border-width: 1px;border-style: none none dotted none;font-family:"微软雅黑";cursor:pointer;text-indent:3em;}
+.bar-menu .box2-hover {border-color: #fff;border-width: 1px;border-style: none none dotted none;font-family:"微软雅黑";background:#ECEDEF;cursor:pointer;text-indent:3em;}
+.bar-menu .box3{ font-size: 14px;padding-left:20px;height:40px; line-height:40px; color:#D0D0D0; border-bottom:1px solid #d0d0d0;font-weight:800;}
 </style>
 <script language="JavaScript" type="text/javascript">
 function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
+function initLanguage()
+{
+	var cook="no";
+	if (document.cookie.length > 0) {
+		var s = document.cookie.indexOf("language=");
+		//alert("s:"+s);
+		var e = document.cookie.indexOf(";", s);
+		//alert("e:"+e);
+		if (s != -1) 
+		{
+			if (e == -1)
+			{
+				//alert("e=-1:"+e);
+				cook = document.cookie.substring(s+9);
+				//alert("cook:"+cook);
+			}
+			else
+			{
+				//alert("e!=-1:"+e);
+				cook = document.cookie.substring(s+9, e);
+				//alert("cook:"+cook);
+			}
+		}
+	}
+	if((cook != "zhcn")&&(cook != "en"))
+	{
+		//alert("cook:language=zhcn"+cook);
+		document.cookie="language=zhcn; path=/";
+		window.location.reload();
+	}
+
+}
 function tr()
 {
 	trans_inner("treeapp_title","advmenu treeapp_title");
@@ -71,6 +102,7 @@ function tr()
 }
 function onInit()
 {
+	initLanguage();
 	Butterlate.setTextDomain("main");
 	var e = document.getElementById("top_fast");
 	e.innerHTML =  _("top_fast");
@@ -157,7 +189,7 @@ function iFrameHeight()
    }  
   
 //结果输出至两个文本框 
-	document.getElementById("ifm").width= winWidth-220;   
+	document.getElementById("ifm").width= winWidth-201;   
 	if((winHeight-80)> subWeb.body.scrollHeight)
 	{
 		xxx.height = (winHeight-80); 
@@ -196,95 +228,52 @@ function iFrameHeight()
 
 <div class="hbd_menu_l left" style="background-color: #ECEDEF;"> 
 
+<div id="leftmenu" style="width:200px;height:464px;vertical-align:top;">
 
-<script type="text/javascript">
-    /* preload images, you can remove this code */
-    var img = new Array();
-    img[0] = new Image();
-    img[0].src = "images/button1.gif";
-    img[1] = new Image();
-    img[1].src = "images/button1-click.gif";
-    </script>
+<div cellspacing="0" cellpadding="0" id="bar-menu2" class="bar-menu">
 
-    <table>
-		<tr><td id="leftmenu" style="height:464px;vertical-align:top;">
-    
-        <table cellspacing="0" cellpadding="0" id="bar-menu2" class="bar-menu">
-        <tr>
-            <td>
                  <div class="box3" id="treeapp_title">高级设置</div>
-           </td>
-        </tr>  
-		<tr>
-            <td>
+
+
 				<div class="box1"><font id="treeapp_sysstatus">系统状态</font></div>
 				<div class="section"></div>
-           </td>
-        </tr>      
-		<tr><td height="8"></td></tr>
-	   <tr>
-            <td>
+
                 <div class="box1"><font id="treeapp_wan">外网设置</font></div>
                 <div class="section">
 					<div class="box2"><a href="cgi-bin/ad_wan_set" target="ifm" id="treeapp_wan_set">WAN设置</a></div>
 					<div class="box2"><a href="cgi-bin/ad_wan_MACclone" target="ifm" id="treeapp_wan_macclone">MAC地址克隆</a></div>
                 </div>
-            </td>
-        </tr>
-		<tr><td height="8"></td></tr>
-	    <tr>
-            <td>
+
                 <div class="box1"><font id="treeapp_local">内网设置</font></div>
                 <div class="section">
 					<div class="box2"><a href="cgi-bin/ad_local_dhcp" target="ifm" id="treeapp_local_dhcp">DHCP</a></div>
 					<div class="box2"><a href="cgi-bin/ad_local_gwset" target="ifm" id="treeapp_local_gwset">网关设置</a></div>					
 					<div class="box2"><a href="cgi-bin/ad_local_rulist" target="ifm" id="treeapp_local_rulist">路由表设置</a></div>
                 </div>
-            </td>
-        </tr>
-		<tr><td height="8"></td></tr>
-        <tr id="wirea2">
-            <td>
+
                 <div class="box1"><font id="treeapp_wifi">无线设置</font></div>
                 <div class="section">
                     <div class="box2"><a href="cgi-bin/ad_wireless_basic" target="ifm" id="treeapp_wifi_basic">基本设置</a></div>
 					<div class="box2"><a href="cgi-bin/ad_wireless_advan" target="ifm" id="treeapp_wifi_adv">高级设置</a></div>
 					<div class="box2"><a href="cgi-bin/ad_wireless_wds" target="ifm" id="treeapp_wifi_wds">无线中继</a></div>
                 </div>
-            </td>
-        </tr>
-        <tr id="wirea1"><td height="8"></td></tr>
-			    <tr>
-            <td>
+
                 <div class="box1"><font id="treeapp_conm">接入管理</font></div>
                 <div class="section">
 					<div class="box2"><a href="cgi-bin/ad_con_list" target="ifm" id="treeapp_conm_list">已接入设备列表</a></div>
 					<div class="box2"><a href="cgi-bin/ad_con_manage" target="ifm" id="treeapp_conm_ctrl">无线接入控制</a></div>
                 </div>
-            </td>
-        </tr>
-        <tr id="Firea1"><td height="8"></td></tr>
-        <tr id="Firea2">
-            <td id="Firewallp2">
+
                 <div class="box1"><font id="treeapp_safe">安全管理</font></div>
                 <div class="section">
 					<div class="box2" id="Fire1"><a href="cgi-bin/ad_safe_IPMAC" target="ifm" id="treeapp_safe_ipmac">IP/MAC绑定</a></div>
                 </div>
-            </td>
-        </tr>
-        <tr id="par1"><td height="8"></td></tr>
-        <tr id="par2">
-            <td>
+
                 <div class="box1"><font id="treeapp_par">访问控制</font></div>
                 <div class="section">
 					<div class="box2"><a href="cgi-bin/ad_parentc_accept" target="ifm" id="treeapp_par_access">访问管理</a></div>
                 </div>
-            </td>
-        </tr>
-       
-   	    <tr id="adma1"><td height="8"></td></tr>
-        <tr id="adma2">
-            <td>
+
                 <div class="box1"><font id="treeapp_man">系统管理</font></div>
                 <div class="section">
                     <div class="box2"><a href="cgi-bin/ad_man_timezone" target="ifm" id="treeapp_man_tz">时间设置</a></div>
@@ -293,19 +282,13 @@ function iFrameHeight()
                     <div class="box2"><a href="cgi-bin/ad_man_factory" target="ifm" id="treeapp_man_factory">恢复出厂</a></div>
                     <div class="box2"><a href="cgi-bin/ad_man_reboot" target="ifm" id="treeapp_man_reboot">重启</a></div>
                 </div>
-            </td>
-        </tr>
-		
-		<tr id="adma1"><td height="8"></td></tr>       
- 		<tr>
-            <td>
+
                  <div class="box1"><font id="treeapp_netcheck" >网络诊断</font></div>
 				 <div class="section"></div>
-           </td>
-        </tr> 	
-        </table>
 
-    </td></tr></table>
+</div>
+
+</div>
 
     <script type="text/javascript">
 	//Hidden();

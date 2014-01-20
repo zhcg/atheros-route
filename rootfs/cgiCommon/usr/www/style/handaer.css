@@ -60,5 +60,5 @@ color: #333; font-weight: 800; background:url(../images/button2.gif) 0 0  no-rep
 .handaer_txt3{ position:absolute; left:900px; top:108px;}
 .handaer_txt4{ position:absolute; left:302px; top:380px;}
 .handaer_txt5{ position:absolute; left:776px; top:100px;}
-
+.handaer_main2  input{  BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BACKGROUND: none transparent scroll repeat 0% 0%; BORDER-BOTTOM-WIDTH: 0px;  BORDER-RIGHT-WIDTH: 0px; margin-top:10px;}
  option.selected {color: White;background-color: Cyan;}

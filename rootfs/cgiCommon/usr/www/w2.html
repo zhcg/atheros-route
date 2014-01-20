@@ -172,6 +172,7 @@ function change_step(offset)
 	{
 		window.location.href="w2";
 	}
+	window.parent.iFrameHeight();
 	return true;
 }
 
@@ -210,7 +211,6 @@ function disableWanSettings()
 	document.wizard_form.SECDNS.disabled = true;
 	document.wizard_form.PPPOE_USER.disabled = true;
 	document.wizard_form.PPPOE_PWD.disabled = true;
-	document.wizard_form.PPPOE_PWD2.disabled = true;
 	document.wizard_form.PPPOE_MODE.disabled = true;
 	document.wizard_form.PPPOE_DEMAND.disabled = true;
 	document.wizard_form.PPPOE_MANUAL.disabled = true;
@@ -256,7 +256,6 @@ function connectionTypeSwitch()
 		document.getElementById("div_wan_pppoe").style.display = style_display_on();
 		document.wizard_form.PPPOE_USER.disabled = false;
 		document.wizard_form.PPPOE_PWD.disabled = false;
-		document.wizard_form.PPPOE_PWD2.disabled = false;
 		if (pppoecdb == "1")
 		{
 			document.getElementById("div_pppoe_opmode").style.visibility = "hidden";
@@ -663,11 +662,7 @@ function CheckWanValue()
 			document.wizard_form.PPPOE_PWD.select();
 			return false;
 		}
-		if (document.wizard_form.PPPOE_PWD.value != document.wizard_form.PPPOE_PWD2.value) 
-		{
-			alert(_("err pwd mismatch"));
-			return false;
-		}
+
 		if (pppoecdb != "1")
 		{
 			if (document.wizard_form.PPPOE_MODE.selectedIndex == 1)
@@ -887,8 +882,7 @@ function initTranslation()
 	e.innerHTML = _("admw uname");
 	e = document.getElementById("pword");
 	e.innerHTML = _("admw pword");
-	e = document.getElementById("vpword");
-	e.innerHTML = _("admw vpword");
+
 	e = document.getElementById("opmope");
 	e.innerHTML = _("admw opmope");
 
@@ -1281,7 +1275,7 @@ function workoutgw()
 </tr>
 <tr>
   <td class="head" id="sDNSserver"></td>
-  <td><input name="SECDNS"  class="handaer_text_content" maxlength=15 value="~~SECDNS~"/><span id="optionXX"></span></td>
+  <td><input name="SECDNS"  class="handaer_text_content" maxlength=15 value="~~SECDNS~"/><span style="height:30px; line-height:30px; padding:5px;" id="optionXX"></span></td>
 </tr>
 </table>
 
@@ -1298,10 +1292,7 @@ function workoutgw()
   <td class="head" id="pword"></td>
   <td><span id="ppppwdinput"><input type="password" id="ppppass" name="PPPOE_PWD" class="handaer_text_content" maxlength="32" size="32" value="~~PPPOE_PWD~"/></span>&nbsp;<input type="checkbox" id="aaaa" onClick="pppshowpwd()"/>&nbsp;<label for="aaaa" id="pppshowp"></label></td>
 </tr>
-<tr>
-  <td class="head" id="vpword"></td>
-  <td><input type="password"  class="handaer_text_content" name="PPPOE_PWD2" maxlength=32 size=32 value="~~PPPOE_PWD2~"></td>
-</tr>
+
 <tr>
   <td><input id="advbutton" type="button"   class="handaer_small_button" onClick="advance()" /></td>
   <td>&nbsp; &nbsp;</td>
@@ -1322,10 +1313,10 @@ function workoutgw()
 	<span id="hide1"><span id="PPPOE_KAM"></span><input type="text" name="PPPOE_DEMAND" class="handaer_text_small_content" maxlength="5" size="3" value="~~PPPOE_DEMAND~"/><span id="PPPOE_seconds"></span></br></span>
   	<span id="hide2"><span id="PPPOE_ODM"></span><input type="text" name="PPPOE_MANUAL" class="handaer_text_small_content" maxlength="3" size="2" value="~~PPPOE_MANUAL~"/><span id="PPPOE_minutes"></span></br></span>
 	<span id="hide3"><span id="PPPOE_TIMING"></span>
-	<input type="text" name="PPPOE_TIMING_BH" class="handaer_text_small_content" maxlength="3" size="2" value="~~PPPOE_TIMING_BH~"/>:
-	<input type="text" name="PPPOE_TIMING_BM" class="handaer_text_small_content" maxlength="3" size="2" value="~~PPPOE_TIMING_BM~"/>-
-	<input type="text" name="PPPOE_TIMING_EH" class="handaer_text_small_content" maxlength="3" size="2" value="~~PPPOE_TIMING_EH~"/>:
-	<input type="text" name="PPPOE_TIMING_EM" class="handaer_text_small_content" maxlength="3" size="2" value="~~PPPOE_TIMING_EM~"/></span>
+	<input type="text" name="PPPOE_TIMING_BH" class="handaer_text_small_content" maxlength="2" size="2" value="~~PPPOE_TIMING_BH~"/>:
+	<input type="text" name="PPPOE_TIMING_BM" class="handaer_text_small_content" maxlength="2" size="2" value="~~PPPOE_TIMING_BM~"/>-
+	<input type="text" name="PPPOE_TIMING_EH" class="handaer_text_small_content" maxlength="2" size="2" value="~~PPPOE_TIMING_EH~"/>:
+	<input type="text" name="PPPOE_TIMING_EM" class="handaer_text_small_content" maxlength="2" size="2" value="~~PPPOE_TIMING_EM~"/></span>
 </td>
 </tr>
 </table>

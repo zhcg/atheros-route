@@ -1,20 +1,22 @@
 #!/bin/sh
 
 BACKUP_LIST="/etc/backup/backup_list.conf"
-#mac
+#mac factory
 #backup
 
+cfg -a ETH0_DFMAC=`cat /etc/mac.bin`
+cfg -a ETH0_MAC=`cat /etc/mac.bin`
+cfg -a BR0_MAC=`ifconfig | grep br0 | awk -F ' ' '{print$5}'`
+
 if [ -f "$BACKUP_LIST" ]; then
-	cfg -a ETH0_DFMAC=`cat /etc/mac.bin`
-	cfg -a ETH0_MAC=`cat /etc/mac.bin`
-	cfg -a BR0_MAC=`ifconfig | grep br0 | awk -F ' ' '{print$5}'`
+
 	cat $BACKUP_LIST | while read line
 	do
 		name=`echo $line | awk '{print $1}'`
 		value=`echo $line | awk '{print $2}'`
 		cfg -a $name="$value"
 	done
-	cfg -c	
+	
 fi
-
+cfg -c
 echo "var back done"

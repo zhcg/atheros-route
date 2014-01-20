@@ -7,6 +7,7 @@
 	<message msgid="admin scan" msgstr="Scan" />
 	<message msgid="admin restart" msgstr="Restart" />
 	<message msgid="help" msgstr="Help" />
+	<message msgid="toplanguage" msgstr="e" />
 
 	<message msgid="admw div_wan_title" msgstr="Please select the HBD router WAN port connection." />
 	<message msgid="admw DHCP" msgstr="Automatic acquisition (dynamic IP)" />  
@@ -87,7 +88,7 @@
 	<message msgid="admw wireless" msgstr="Wireless connection" />  
 	<message msgid="admw int2" msgstr="Connect to an existing router for WiFi network" />  
 
-	<message msgid="admw RMd" msgstr="Wireless Relay" />  
+	<message msgid="admw RMd" msgstr="WDS Settings" />  
 	<message msgid="admw R_uname" msgstr="WiFi Name(SSID)" />  
 	<message msgid="admw R_pword" msgstr="Password" />  
 
@@ -99,9 +100,9 @@
 	<message msgid="admw w1title" msgstr="Setting wizard" />
 	<message msgid="admw w2title" msgstr="WAN Settings" />  
 	<message msgid="admw w3ttitle" msgstr="WiFi Settings" />  
-	<message msgid="admw w4ttitle" msgstr="Wireless Relay" />  
+	<message msgid="admw w4ttitle" msgstr="WDS Settings" />  
 	<message msgid="admw w5ttitle" msgstr="Parental Control" /> 
-	<message msgid="admw wwtitle" msgstr="Network/Wireless Relay" />     
+	<message msgid="admw wwtitle" msgstr="Network/WDS" />     
 
 	<message msgid="admw modedes" msgstr="Please select the HBD router WAN connection type." />  
 	<message msgid="admw modedes1" msgstr="The parameters needed in the opening of the network, the network operators to provide" />  
@@ -137,10 +138,10 @@
 	<message msgid="admw auto_fail" msgstr="Automatically select fail,please check the internet connection or select manually " />
 
 	<message msgid="admw fresh" msgstr="Scanning" />
-	<message msgid="admw Wlisttitle1" msgstr="WiFi list（Drop-down list）" />
+	<message msgid="admw Wlisttitle1" msgstr="WiFi list（Drop-down list after scanning）" />
 	<message msgid="admw Wlisttitle2" msgstr="Existing WiFi:SSID(Signal strength)" />
 	<message msgid="admw Wlisttitle3" msgstr="Drop-down list" />
-	<message msgid="toplanguage" msgstr="e" />
+	<message msgid="admw Alreadc" msgstr="Current connected WiFi" />
 	<message msgid="admin open" msgstr="Open" />
 	<message msgid="admin jiami" msgstr="Security（Recommend）" />
 
@@ -200,9 +201,9 @@
 	<message msgid="admw channelauto" msgstr="AUTO" />
 
 	<message msgid="factory reset" msgstr="Restore factory settings will be lost the existing configuration, are you sure you want to continue?" />
-	<message msgid="admw factitle" msgstr="Factory Settings" />
+	<message msgid="admw factitle" msgstr="Restore Factory" />
 	<message msgid="admw facdes" msgstr="Click on this button will restore all settings to the router's factory default state" />
-	<message msgid="admw defaultset" msgstr="Factory settings" />
+	<message msgid="admw defaultset" msgstr="Restore Factory" />
 	<message msgid="factory fail" msgstr="Return to factory setting fail " />
 	<message msgid="factory success" msgstr="Return to factory setting successfully " />
 	<message msgid="upgrade success" msgstr="Upgrade successfully " />
@@ -221,7 +222,7 @@
 	<message msgid="admw chfile" msgstr="Choose file" />	
 	<message msgid="admw waring" msgstr="Note: the upgrade process is completely automatic, please don't turn off the power, otherwise it will result in BASE damage and can not be used, the upgrade process about 130 seconds, when the upgrade is complete, the BASE will automatically restart." />	
 	<message msgid="admw sysupgrade" msgstr="Confirm the firmware upgrade?" />
-	<message msgid="err dhcp null" msgstr="Unable to get WAN IP through DHCP,please check that the dhcp server provider?" />
+	<message msgid="err dhcp null" msgstr="Unable to get WAN IP through automatic acquisition,please check that the  automatic acquisition server provider?" />
 	<message msgid="err dhcp ip" msgstr="The WAN IP and Route IP are in the same subnet, please set the Route IP in Advanced Settings - Network Settings - Gateway Settings" />
 	<message msgid="man admin setting" msgstr="Administrator settings" />
 
@@ -235,5 +236,6 @@
 	<message msgid="err DNS format" msgstr="DNS address illegal" />
 	
 	<message msgid="err Ruleexist" msgstr="This rule is already exist " />	
+	<message msgid="wan not connected" msgstr="Please check WAN line" />
 
 </po>
