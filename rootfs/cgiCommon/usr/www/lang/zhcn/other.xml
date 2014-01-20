@@ -7,4 +7,6 @@
 	<message msgid="CFGBACK" msgstr="配置导入结束，正在重新启动，请稍等......" />
 	<message msgid="UPLOAD" msgstr="固件升级结束，正在重新启动，请稍等......" />
 	<message msgid="FACTORY" msgstr="恢复出厂设置结束，正在重新启动，请稍等......" />
+	<message msgid="settingwaiting" msgstr="正在配置,请您稍等......" />
+
 </po>

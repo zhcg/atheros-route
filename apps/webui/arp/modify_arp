@@ -25,14 +25,13 @@ else
 			echo "$IP_ADDR $SR_MAC" >>  $ARP_IP_MAC_ON_FILE
 			sed -i '/'$IP_ADDR'/d' $ARP_IP_MAC_OFF_FILE
 			arp -s $IP_ADDR $SR_MAC
-		else if [ "$MOD_STATUS" = "OFF" ];then
-			SR_MAC=`cat $ARP_IP_MAC_OFF_FILE | grep $IP_ADDR | awk '{print $2}'`
+		elif [ "$MOD_STATUS" = "OFF" ];then
+			SR_MAC=`cat $ARP_IP_MAC_ON_FILE | grep $IP_ADDR | awk '{print $2}'`
 			echo "$IP_ADDR $SR_MAC" >>  $ARP_IP_MAC_OFF_FILE
 			sed -i '/'$IP_ADDR'/d' $ARP_IP_MAC_ON_FILE
 			arp -d $IP_ADDR	
 		else
 			exit 4
-		fi
 		fi
 fi
 echo "modify arp rule done"

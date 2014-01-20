@@ -12,7 +12,7 @@ function BarMenu(id)
 {
     this.box1Hover = true;
     this.box2Hover = true;
-    this.highlightActive = false;
+    this.highlightActive = true;
 
     this.init = function() 
 	{
@@ -25,11 +25,11 @@ function BarMenu(id)
         this.load();
         if (window.attachEvent) 
 		{
-            window.attachEvent("onunload", function(e) { self.save(); });
+            //window.attachEvent("onunload", function(e) { self.save(); });
         } 
 		else if (window.addEventListener) 
 		{
-            window.addEventListener("unload", function(e) { self.save(); }, false);
+            //window.addEventListener("unload", function(e) { self.save(); }, false);
         }
     }
 
@@ -140,36 +140,36 @@ function BarMenu(id)
 		{
 			window.ifm.location.href="cgi-bin/ad_sysinfo";
 		}
-		if(id=="bar-menu2-1")
+		if(id=="bar-menu2-0-0")
 		{
 			window.ifm.location.href="cgi-bin/ad_wan_set";
 		}
 
-		if(id=="bar-menu2-2")
+		if(id=="bar-menu2-0-0-2")
 		{
 			window.ifm.location.href="cgi-bin/ad_local_dhcp";
 		}
-		if(id=="bar-menu2-3")
+		if(id=="bar-menu2-0-0-2-3")
 		{
 			window.ifm.location.href="cgi-bin/ad_wireless_basic";
 		}
-		if(id=="bar-menu2-4")
+		if(id=="bar-menu2-0-0-2-3-3")
 		{
 			window.ifm.location.href="cgi-bin/ad_con_list";
 		}
-		if(id=="bar-menu2-5")
+		if(id=="bar-menu2-0-0-2-3-3-2")
 		{
 			window.ifm.location.href="cgi-bin/ad_safe_IPMAC";
 		}
-		if(id=="bar-menu2-6")
+		if(id=="bar-menu2-0-0-2-3-3-2-1")
 		{
 			window.ifm.location.href="cgi-bin/ad_parentc_accept";
 		}
-		if(id=="bar-menu2-7")
+		if(id=="bar-menu2-0-0-2-3-3-2-1-1")
 		{
 			window.ifm.location.href="cgi-bin/ad_man_timezone";
 		}
-		if(id=="bar-menu2-8")
+		if(id=="bar-menu2-0-0-2-3-3-2-1-1-5")
 		{
 			window.ifm.location.href="cgi-bin/ad_netcheck";
 		}
@@ -218,7 +218,7 @@ function BarMenu(id)
 
     this.load = function() 
 	{
-        var id_openbox = this.cookie.get(this.id);
+        var id_openbox = "bar-menu2-0";//var id_openbox = this.cookie.get(this.id);
         if (id_openbox) 
 		{
             this.show(id_openbox);

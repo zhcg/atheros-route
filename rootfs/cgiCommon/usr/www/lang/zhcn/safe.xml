@@ -19,11 +19,12 @@
 	<message msgid="safe mac_format" msgstr="例如(11:22:33:44:55:66)" />   
 	<message msgid="help" msgstr="帮助" />
 	<message msgid="toplanguage" msgstr="z" />
+	<message msgid="settingwaiting" msgstr="正在配置,请您稍等......" />
 	
-	<message msgid="ipmac title" msgstr="IP/MAC地址绑定" />    
-	<message msgid="ipmac des" msgstr="显示当前系统ARP映射表,并且可以显示和修改IP地址与MAC静态绑定设置" />    
+	<message msgid="ipmac title" msgstr="ARP绑定" />    
+	<message msgid="ipmac des" msgstr="显示当前系统ARP映射表,并且可以显示和修改ARP静态绑定设置" />    
 	<message msgid="ipmac t0_title" msgstr="系统ARP映射表" /> 
-	<message msgid="ipmac t1_title" msgstr="IP/MAC地址静态绑定" /> 
+	<message msgid="ipmac t1_title" msgstr="ARP静态绑定" /> 
 
 	<message msgid="addIPMAC Stye" msgstr="绑定" />    
 	<message msgid="addIPMAC Snotstye" msgstr="未绑定" />    

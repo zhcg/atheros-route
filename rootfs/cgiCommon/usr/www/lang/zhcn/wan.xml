@@ -9,6 +9,7 @@
 	<message msgid="inet setwaiting" msgstr="正在配置，请您稍等......" />
 	<message msgid="help" msgstr="帮助" />
 	<message msgid="toplanguage" msgstr="z" />
+	<message msgid="settingwaiting" msgstr="正在配置,请您稍等......" />
 
 	<message msgid="inet autocheck" msgstr="自动检测" />
 	<message msgid="inet bSAVE" msgstr="保存" />  
@@ -64,7 +65,7 @@
 	<message msgid="seconds" msgstr="秒" />
 
 	<message msgid="macc title" msgstr="MAC地址克隆" />
-	<message msgid="macc des" msgstr="设置HBD路由器的WAN口MAC地址（  注意：只有局域网中的计算机可以使用本功能）" />
+	<message msgid="macc des" msgstr="设置HBD路由器的WAN口MAC地址（  注意：只有局域网中的终端可以使用本功能）" />
 	<message msgid="macc t1_title" msgstr="MAC地址克隆" />
 
 	<message msgid="macc t1_MACS" msgstr="选择MAC地址来源" />

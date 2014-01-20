@@ -45,7 +45,7 @@ function CheckValue()
 		return false;
 	}
 	var re = /[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}/;
-	if (!re.test(document.WORKFORM.ADD_MAC.value))
+	if (!re.test(document.WORKFORM.ADD_MAC.value)||(document.WORKFORM.ADD_MAC.value.length > 17))
 	{
 		alert(_("err MAC format"));
 		document.WORKFORM.ADD_MAC.select();
@@ -153,6 +153,7 @@ function addnet()
 	input_num ++;
 	but_num ++;
 	document.getElementById("addinput").innerHTML = orgvalue+'<span id="NET'+but_num+'"><br><input type="text" name="ADD_NET'+input_num+'" id="ADD_NET'+input_num+'" size="32" maxlength="32" class="handaer_text_content"/>&nbsp;<input type="button" style="color:red;font-size:20px;" value="×" name="'+but_num+'" onClick="delnet(this.name)"/><span>';
+	window.parent.iFrameHeight();
 }
 function daycount()
 {
@@ -174,20 +175,14 @@ function daycount()
 		
 	day_week = day_week.substring(0,day_week.length-1);   
 }
-function help()
-{
-	if (_("toplanguage")=="e")
-		window.location.href='../help/ad_parentc_add_help_e.html';
-	else
-		window.location.href='../help/ad_parentc_add_help_z.html';
-}
+
 </script>
 </head>
 
 <body onLoad="initValue()">
 <div class="handaer_main">
 <table  width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td>
-<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="title">访问管理</h1>
+</a></div><h1 id="title">访问管理</h1>
 <p></p>
 
 <FORM method="POST" name="WORKFORM">

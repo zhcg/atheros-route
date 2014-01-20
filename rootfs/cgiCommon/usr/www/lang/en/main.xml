@@ -6,6 +6,7 @@
 	<message msgid="toplanguage" msgstr="e" />
 	<message msgid="main bSAVE" msgstr="Save" />   
 	<message msgid="help" msgstr="Help" />
+	<message msgid="settingwaiting" msgstr="Setting,Please Wait......" />
 
 	<message msgid="top_fast" msgstr="Quick Settings" />
 	<message msgid="top_adv" msgstr="Advanced Settings" />
@@ -13,7 +14,7 @@
 	<message msgid="top_exit" msgstr="EXIT" />
 
 	<message msgid="advmenu treeapp_title" msgstr="Advanced Settings" />
-	<message msgid="advmenu treeapp_sysstatus" msgstr="System State" />
+	<message msgid="advmenu treeapp_sysstatus" msgstr="System Info" />
 	<message msgid="advmenu treeapp_wan" msgstr="Network Settings" />
 	<message msgid="advmenu treeapp_wan_set" msgstr="WAN Settings" />
 	<message msgid="advmenu treeapp_wan_macclone" msgstr="Clone MAC Address" />
@@ -24,25 +25,25 @@
 	<message msgid="advmenu treeapp_local_rulist" msgstr="Routing Table Settings" />
 
 	<message msgid="advmenu treeapp_conm" msgstr="Access management " />
-	<message msgid="advmenu treeapp_conm_list" msgstr="Connected Equipment List" />
-	<message msgid="advmenu treeapp_conm_ctrl" msgstr="Wireless Access Management" />
+	<message msgid="advmenu treeapp_conm_list" msgstr="Connected Equipments" />
+	<message msgid="advmenu treeapp_conm_ctrl" msgstr="Wireless Access" />
 	<message msgid="advmenu treeapp_wifi" msgstr="Wireless Settings" />
-	<message msgid="advmenu treeapp_wifi_basic" msgstr="Wireless Basic Settings" />
-	<message msgid="advmenu treeapp_wifi_adv" msgstr="Wireless Advanced Settings" />
-	<message msgid="advmenu treeapp_wifi_wds" msgstr="WDS" />
+	<message msgid="advmenu treeapp_wifi_basic" msgstr="Basic Settings" />
+	<message msgid="advmenu treeapp_wifi_adv" msgstr="Advanced Settings" />
+	<message msgid="advmenu treeapp_wifi_wds" msgstr="WDS Settings" />
 
 	<message msgid="advmenu treeapp_safe" msgstr="Safety Management" />
-	<message msgid="advmenu treeapp_safe_ipmac" msgstr="IP/MAC Address Binding" />
+	<message msgid="advmenu treeapp_safe_ipmac" msgstr="ARP Binding" />
 	<message msgid="advmenu treeapp_par" msgstr="Access Control" />
 	<message msgid="advmenu treeapp_par_set" msgstr="Parents Settings" />
 	<message msgid="advmenu treeapp_par_access" msgstr="Access Management" />
 
 	<message msgid="advmenu treeapp_man" msgstr="System Management" />
 	<message msgid="advmenu treeapp_man_tz" msgstr="Time Settings" />
-	<message msgid="advmenu treeapp_man_cfgm" msgstr="Configuration Management" />
+	<message msgid="advmenu treeapp_man_cfgm" msgstr="Configure Management" />
 	<message msgid="advmenu treeapp_man_upgrade" msgstr="Firmware Upgrade" />
 	<message msgid="advmenu treeapp_man_factory" msgstr="Restore Factory" />
-	<message msgid="advmenu treeapp_man_reboot" msgstr="System Reboot" />
+	<message msgid="advmenu treeapp_man_reboot" msgstr="System Restart" />
 	<message msgid="advmenu treeapp_netcheck" msgstr="Network Diagnosis" />
 
 	<message msgid="sset exit" msgstr="Are you sure you want to exit?" /> 
@@ -50,23 +51,23 @@
 	<message msgid="admw m_normal" msgstr="Settings wizard" />
 	<message msgid="admw m_wan" msgstr="WAN settings" />
 	<message msgid="admw m_wifi" msgstr="WiFi settings" />
-	<message msgid="admw m_wirere" msgstr="Wireless relay" />
+	<message msgid="admw m_wirere" msgstr="WDS settings" />
 	<message msgid="admw m_parent" msgstr="Parental control" />
 	<message msgid="admw m_upload" msgstr="Firmware upgrade" />
 	<message msgid="admw m_factory" msgstr="Factory Reset" />
 
-	<message msgid="sysinfo title" msgstr="System mode" />
-	<message msgid="sysinfo t1_title" msgstr="Version Information" />
+	<message msgid="sysinfo title" msgstr="System Info" />
+	<message msgid="sysinfo t1_title" msgstr="Version Info" />
 	<message msgid="sysinfo t1_softv" msgstr="The current software version" />
 	<message msgid="sysinfo t1_firmv" msgstr="The hardware version" />
 	<message msgid="sysinfo t2_title" msgstr="Internet" />
 	<message msgid="sysinfo t2_intnets" msgstr="Internet status" />
-	<message msgid="sysinfo t2_mac" msgstr="MAC" />
-	<message msgid="sysinfo t2_ip" msgstr="IP" />
+	<message msgid="sysinfo t2_mac" msgstr="MAC Address" />
+	<message msgid="sysinfo t2_ip" msgstr="IP Address" />
 	<message msgid="sysinfo t2_ctpye" msgstr="Access mode" />
 	<message msgid="sysinfo t2_gw" msgstr="Gateway" />
 	<message msgid="sysinfo t3_title" msgstr="LAN" />
-	<message msgid="sysinfo t3_mac" msgstr="MAC" />
+	<message msgid="sysinfo t3_mac" msgstr="MAC Address" />
 	<message msgid="sysinfo t3_GW" msgstr="Gateway IP" />
 	<message msgid="sysinfo t4_title" msgstr="Wireless" />
 	<message msgid="sysinfo t4_wifis" msgstr="Wireless mode" />

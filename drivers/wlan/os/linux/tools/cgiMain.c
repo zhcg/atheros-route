@@ -80,7 +80,7 @@ struct staList
 
 static struct staList *staHostList;
 static int staId = 0;
-#define OLD_STAFILE  "/var/run/.OldStaList"
+#define OLD_STAFILE  "/etc/.OldStaList"
 #define UDHCPD_FILE  "/var/run/udhcpd.leases"
 #define MAX_WLAN_ELEMENT    1024
 
@@ -904,7 +904,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 					
 					while ( fgets(buf,1024,f) != NULL )
 					{
-						sscanf(buf,"%s %s",arp_mac,arp_ip);
+						sscanf(buf,"%s %s",arp_ip,arp_mac);
 						outBuff += sprintf(outBuff,"<tr>");
 	                    outBuff += sprintf(outBuff,"<td>%d</td>",id);
 	                    outBuff += sprintf(outBuff,"<td>%s</td>",arp_mac);   
@@ -969,15 +969,16 @@ char *processSpecial(char *paramStr, char *outBuff)
 					int add = 0;
 
                     Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
-                    Execute_cmd("wlanconfig ath0 list sta > /var/run/.STAlist", rspBuff);
+                    Execute_cmd("wlanconfig ath0 list sta > /etc/.STAlist", rspBuff);
 
 					fprintf(errOut,"\n%s  %d  to open [dhcpclinetlist]\n",__func__,__LINE__);
 
 					/*if the /var/run/.OldStaList is not exit, creat it*/
 					if((fp1 = fopen(OLD_STAFILE, "r")) == NULL)     /*  /var/run/.OldStaList  */
 					{
+						fprintf(errOut,"\n%s  %d  creat the file %s\n",__func__,__LINE__, OLD_STAFILE);
 						fp1 = fopen(OLD_STAFILE, "at");
-						flist = fopen("/var/run/.STAlist", "r");    /*  /var/run/.STAlist   */
+						flist = fopen("/etc/.STAlist", "r");    /*  /etc/.STAlist   */
                         fgets(STAbuf, 128, flist);
                         while(fgets(STAbuf, 128, flist))
                         {
@@ -988,7 +989,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 						fclose(flist);
 						fclose(fp1);
 					}
-					flist = fopen("/var/run/.STAlist", "r");    /*  /var/run/.STAlist   */
+					flist = fopen("/etc/.STAlist", "r");    /*  /etc/.STAlist   */
 					fgets(STAbuf, 128, flist);
                     while(fgets(STAbuf, 128, flist))
                     {
@@ -1119,7 +1120,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                     while (fread(&lease, sizeof(lease), 1, fp) == 1) 
                     {
                         shi=0;
-                        flist = fopen("/var/run/.STAlist", "r");    /*  /var/run/.STAlist   */
+                        flist = fopen("/etc/.STAlist", "r");    /*  /etc/.STAlist   */
                         if (NULL == flist)
                         {
                             fprintf(errOut,"\n%s  %d open STAlist error\n \n",__func__,__LINE__);
@@ -1226,7 +1227,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 					int ret = 0;
 
                     Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
-                    Execute_cmd("wlanconfig ath0 list sta > /var/run/.STAlist", rspBuff);
+                    Execute_cmd("wlanconfig ath0 list sta > /etc/.STAlist", rspBuff);
 
 					//sleep(1);
 					/*wait for dhcp write over*/
@@ -1312,6 +1313,7 @@ char *processSpecial(char *paramStr, char *outBuff)
         */
 
         {
+		
                      FILE *fp, *flist;
                     struct dhcpOfferedAddr 
                     {
@@ -1328,7 +1330,8 @@ char *processSpecial(char *paramStr, char *outBuff)
                     unsigned d, h, m;
                     int num=1;
                     int shi=0;
-
+					int flag=0;
+fprintf(errOut,"[luodp] get mac from arp89");
                     Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
                     Execute_cmd("wlanconfig ath0 list sta > /var/run/.STAlist", rspBuff);
 
@@ -1336,25 +1339,72 @@ char *processSpecial(char *paramStr, char *outBuff)
                     if (NULL == fp)
                     {
                         fprintf(errOut,"\n%s  %d open udhcpd error\n \n",__func__,__LINE__);
-                        break;
+                        flag=3;
                     }
-
-                    while (fread(&lease, 1, sizeof(lease), fp) == sizeof(lease)) 
-                    {
-                            addr.s_addr = lease.ip;
-                            fprintf(errOut,"\nhttpreferer:%s  inet_ntoa(addr) :%s\n",httpreferer,inet_ntoa(addr));
-                            if(httpreferer)
-                             {
-                                if(!strcmp(httpreferer,(char *)inet_ntoa(addr)))
-                                {
-                                    outBuff += sprintf(outBuff,"%02x", lease.mac[0]);
-                                    for (i = 1; i < 6; i++)
-                                        outBuff += sprintf(outBuff,":%02x", lease.mac[i]);
-                                }
-                              }
-                    }
-                    fclose(fp);
-              }
+					if(flag!=3)
+					{fprintf(errOut,"[luodp] get mac from arp6");
+						while ((fread(&lease, 1, sizeof(lease), fp) == sizeof(lease))) 
+						{
+								addr.s_addr = lease.ip;
+								//fprintf(errOut,"\nhttpreferer:%s  inet_ntoa(addr) :\n",httpreferer);//,inet_ntoa(addr));
+								
+								fprintf(errOut,"[luodp] get mac from arp7");
+								fprintf(errOut,"[luodp] get mac from arp8");
+								if(httpreferer!=NULL)
+								{
+									fprintf(errOut,"[luodp] get mac from arp5");
+									if(!strcmp(httpreferer,(char *)inet_ntoa(addr)))
+									{
+										if(lease.mac[0])
+										{
+											outBuff += sprintf(outBuff,"%02x", lease.mac[0]);
+											for (i = 1; i < 6; i++)
+												outBuff += sprintf(outBuff,":%02x", lease.mac[i]);
+											flag=1;
+										}
+									}
+									fprintf(errOut,"[luodp] get mac from arp4");
+								}
+								fprintf(errOut,"[luodp] get mac from arp3");
+						}
+						fprintf(errOut,"[luodp] get mac from arp2");
+						fclose(fp);
+					}
+					fprintf(errOut,"[luodp] get mac from arp");
+					if(flag==0) //get mac from arp if getmac from dhcp fail
+					{
+						Execute_cmd("arp -a > /tmp/getmac",rspBuff);
+						system("rm /tmp/arplist");
+							
+						FILE *f = fopen("/tmp/getmac","r");
+						char *ptr;
+						char *tmp;
+						if ( !f )
+						{
+							fprintf(errOut,"\n%s  %d open /etc/arp_ip_mac_on.conf error\n \n",__func__,__LINE__);
+							break;
+						}
+						memset(buf,0,1024);
+					    fprintf(errOut,"[luodp] is here");
+						while ( fgets(buf,1024,f) != NULL )
+						{
+							ptr=strstr(buf,httpreferer);
+							if(ptr)
+							{
+								while(*ptr!=')')
+								{
+									ptr++;
+								}
+								strncpy(tmp, ptr+5,17);
+								fprintf(errOut,"[luodp] getmac %s",tmp);
+								outBuff += sprintf(outBuff,"%s", tmp);
+							}
+							memset(buf,0,1024);
+						}
+						fclose(f);	
+					}
+                    
+        }
         break;       
         case 'D':
         {
@@ -2680,7 +2730,7 @@ int set_addr_bind(void)
                 printf("Connection: close\r\n");
                 printf("\r\n");
                 printf("\r\n");
-                printf("Content-Type:text/html\n\n");
+                
                 printf("<HTML><HEAD>\r\n");
                 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
                 printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
@@ -2776,7 +2826,7 @@ int add_arp(void)
         printf("Connection: close\r\n");
         printf("\r\n");
         printf("\r\n");
-                printf("Content-Type:text/html\n\n");
+        
                 printf("<HTML><HEAD>\r\n");
                 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
                 printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
@@ -3043,8 +3093,7 @@ unsigned char * get_max_dhcp_end_ip(unsigned char* pChar,unsigned char ip[30])//
 			strcpy(ip,pstr);
 }
 
-
-void get_net_seg_and(unsigned char* pip,unsigned char* psub,unsigned char* ret_buf)
+void get_net_seg_or(unsigned char* pip,unsigned char* psub,unsigned char* ret_buf)
 {
 unsigned char* ip_seg_pos[4];
 unsigned char* sub_seg_pos[4];
@@ -3114,9 +3163,9 @@ for(i=0;i<4;i++)
 sub_seg_int[i]=atoi(sub_seg_pos[i]);
 }
 
-//and process
+//or process
 for(i=0;i<4;i++)
-	net_seg_int[i]=(ip_seg_int[i]&sub_seg_int[i]);
+	net_seg_int[i]=(ip_seg_int[i]|sub_seg_int[i]);
 
 sprintf(net_seg_str,"%d",(net_seg_int[0]));
 strcat(net_seg_str,".");
@@ -3133,6 +3182,97 @@ sprintf(tmp,"%d",(net_seg_int[3]));
 strcat(net_seg_str,tmp);
 
 strcpy(ret_buf,net_seg_str);
+}
+
+void get_net_seg_and(unsigned char* pip,unsigned char* psub,unsigned char* ret_buf)
+{
+		unsigned char* ip_seg_pos[4];
+		unsigned char* sub_seg_pos[4];
+		unsigned int ip_seg_int[4],sub_seg_int[4],net_seg_int[4];
+		unsigned char net_seg_str[20];
+		unsigned char num,i,j=0;
+
+		unsigned char tmp[5];
+
+		ip_seg_pos[0]=pip;
+		sub_seg_pos[0]=psub;
+		memset(net_seg_str,'\0',20);
+
+		//for--ip
+		for(i=0;i<strlen(pip);i++)
+			{
+			   if(pip[i]=='.')
+				{
+				 j++;
+				ip_seg_pos[j]=&pip[i+1];
+				}
+			}
+
+		for(j=0;j<4;j++)
+		{
+		for(i=0;i<strlen(ip_seg_pos[j]);i++)
+			{
+			   if(ip_seg_pos[j][i]=='.')
+				{
+				 ip_seg_pos[j][i]='\0';
+				 break;
+				}
+			}
+		}
+
+
+		for(i=0;i<4;i++)
+		{
+		ip_seg_int[i]=atoi(ip_seg_pos[i]);
+		}
+
+		//for sub
+		   j=0;
+		for(i=0;i<strlen(psub);i++)
+			{
+			   if(psub[i]=='.')
+				{
+				 j++;
+				 sub_seg_pos[j]=&psub[i+1];
+				}
+			}
+
+		for(j=0;j<4;j++)
+		{
+		  for(i=0;i<strlen(sub_seg_pos[j]);i++)
+			{
+			   if(sub_seg_pos[j][i]=='.')
+				{
+				 sub_seg_pos[j][i]='\0';
+				 break;
+				}
+			}
+		}
+
+		for(i=0;i<4;i++)
+		{
+		sub_seg_int[i]=atoi(sub_seg_pos[i]);
+		}
+
+		//and process
+		for(i=0;i<4;i++)
+			net_seg_int[i]=(ip_seg_int[i]&sub_seg_int[i]);
+
+		sprintf(net_seg_str,"%d",(net_seg_int[0]));
+		strcat(net_seg_str,".");
+
+		sprintf(tmp,"%d",(net_seg_int[1]));
+		strcat(net_seg_str,tmp);
+		strcat(net_seg_str,".");
+
+		sprintf(tmp,"%d",(net_seg_int[2]));
+		strcat(net_seg_str,tmp);
+		strcat(net_seg_str,".");
+
+		sprintf(tmp,"%d",(net_seg_int[3]));
+		strcat(net_seg_str,tmp);
+
+		strcpy(ret_buf,net_seg_str);
 }
 
 //added by yhl above,for ip process
@@ -3803,23 +3943,29 @@ int main(int argc,char **argv)
 					if(val3[0]!=NULL)
 					{
 						//val1-mac,val2-ssid,val3-security,val4-channel
-						if(strcmp(val3[0],"on")==0)
-							sprintf(val3[0],"WPA");
-						else  
-							sprintf(val3[0],"None");
-						memset(cmdd,0x00,128);	
-						sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(%sdbm)</option>",val2[0],val1[0],val4[0],val3[0],val2[0],val5[0]);
-						fwrite(cmdd,strlen(cmdd),1,fp);
+						if(strcmp(val2[0],""))
+						{
+							if(strcmp(val3[0],"on")==0)
+								sprintf(val3[0],"WPA");
+							else  
+								sprintf(val3[0],"None");
+							memset(cmdd,0x00,128);	
+							sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(%sdbm)</option>",val2[0],val1[0],val4[0],val3[0],val2[0],val5[0]);
+							fwrite(cmdd,strlen(cmdd),1,fp);
+						}
 						for(i=1;i<lists;i++)
 						{
 							memset(cmdd,0x00,128);
-							if(strcmp(val3[i]+4,"on")==0)
-								sprintf(val3[i]+4,"WPA");
-							else
-								sprintf(val3[i]+4,"None");
-							//fprintf(errOut,"[luodp] %s(%s)(%s)(%s) \n",val2[i]+4,val1[i]+4,val3[i]+4,val4[i]+4);
-							sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(%sdbm)</option>",val2[i]+4,val1[i]+4,val4[i]+4,val3[i]+4,val2[i]+4,val5[i]+4);
-							fwrite(cmdd,strlen(cmdd),1,fp);
+							if(strcmp(val2[i]+4,""))
+							{
+								if(strcmp(val3[i]+4,"on")==0)
+									sprintf(val3[i]+4,"WPA");
+								else
+									sprintf(val3[i]+4,"None");
+								//fprintf(errOut,"[luodp] %s(%s)(%s)(%s) \n",val2[i]+4,val1[i]+4,val3[i]+4,val4[i]+4);
+								sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(%sdbm)</option>",val2[i]+4,val1[i]+4,val4[i]+4,val3[i]+4,val2[i]+4,val5[i]+4);
+								fwrite(cmdd,strlen(cmdd),1,fp);
+							}
 						}
 					}
                     fclose(fp);
@@ -3903,6 +4049,8 @@ int main(int argc,char **argv)
      {
         fprintf(errOut,"\n%s  %d DHCP \n",__func__,__LINE__);
 		int flag=0;
+		//if dhcp fail ,WAN_MODE rollback to last value
+		char tmp[128],*tmp2;
 		//static  char     rspBuff2[65536];
 		
 		if(strcmp(CFG_get_by_name("DHCPW",valBuff),"DHCPW")== 0 )
@@ -3910,16 +4058,43 @@ int main(int argc,char **argv)
 			flag=1;
 		}
 		
+		Execute_cmd("wan_check  > /dev/null 2>&1", rspBuff);
+		Execute_cmd("cfg -e | grep \"LINEIN_OUT=\"",valBuff);
+		if(strstr(valBuff,"out") != 0){
+			char tempu[128]={0};
+			printf("HTTP/1.0 200 OK\r\n");
+			printf("Content-type: text/html\r\n");
+			printf("Connection: Close\r\n");
+			printf("\r\n");
+			printf("\r\n");
+
+			printf("<HTML><HEAD>\r\n");
+			printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+			printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
+			printf("</head><body>");	
+                 
+			if((strcmp(argv[0],"w1")==0)||(strcmp(argv[0],"w2")==0)||(strcmp(argv[0],"w3")==0)||(strcmp(argv[0],"w4")==0)||(strcmp(argv[0],"wwai")==0))
+			{
+			    sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");alert(_(\"wan not connected\"));window.location.href=\"map\";</script>");
+			}
+			else
+			{
+			    sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");alert(_(\"wan not connected\"));window.location.href=\"%s\";</script>",argv[0]);
+			}
+			printf(tempu);
+			printf("</body></html>");
+			exit(1);
+		}
 		//CFG_set_by_name("AP_STARTMODE","standard");
 		//1.destory old mode pid 
-		Execute_cmd("cfg -e | grep \"WAN_MODE=\"",valBuff);
+		Execute_cmd("cfg -e | grep \"WAN_MODE=\" | awk -F \"=\" '{print $2}'",tmp);
 		//Execute_cmd("ps | grep udhcpc",rspBuff2);
-		if(strstr(valBuff,"pppoe") != 0)
+		if(strstr(tmp,"pppoe") != 0)
 		{
 			//kill pppoe
 			Execute_cmd("pppoe-stop > /dev/null 2>&1", rspBuff);
 		}
-		if(strstr(valBuff,"dhcp") != 0)
+		if(strstr(tmp,"dhcp") != 0)
 		{
 			//[TODO]kill udhcpc that may slow and httpd: bind: Address already in use
 			//Execute_cmd("ps | grep udhcpc | awk \'{print $1}\' | xargs kill -9 > /dev/null 2>&1", rspBuff);	
@@ -3935,19 +4110,26 @@ int main(int argc,char **argv)
 		//3.do new config pid
 		//if(flag!=1)
 		Execute_cmd("udhcpc -b -i eth0 -h HBD-Router -s /etc/udhcpc.script > /dev/null 2>&1", rspBuff);
-		//TODO check the ip address 
+		//4.check the ip address 
 		//unnormal 、none、normal
 		Execute_cmd("cfg -e | grep \"WAN_IPFLAG=\"",valBuff);
 		//get ip fail
 		if(strstr(valBuff,"none") != 0)
 		{
-		                char tempu[128]={0};
-                            printf("HTTP/1.0 200 OK\r\n");
-                            printf("Content-type: text/html\r\n");
-                            printf("Connection: Close\r\n");
-                            printf("\r\n");
-                            printf("\r\n");
-
+				char tempu[128]={0};
+				 //WAN_MODE rollback to old value
+				 tmp2=strtok(tmp,"\n");
+				 CFG_set_by_name("WAN_MODE",tmp2);
+				 if(flag!=1)
+				 {
+					writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+					writeParameters("/tmp/.apcfg","w+",0);
+		         }
+                 printf("HTTP/1.0 200 OK\r\n");
+                 printf("Content-type: text/html\r\n");
+                 printf("Connection: Close\r\n");
+                 printf("\r\n");
+                 printf("\r\n");
 				 printf("<HTML><HEAD>\r\n");
 				 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
 				 printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
@@ -3968,13 +4150,21 @@ int main(int argc,char **argv)
 		//wan ip and gateway in same subnet
 		if(strstr(valBuff,"unnormal") != 0)
 		{
-                            char tempu2[128]={0};
-                            printf("HTTP/1.0 200 OK\r\n");
-                            printf("Content-type: text/html\r\n");
-                            printf("Connection: Close\r\n");
-                            printf("\r\n");
-                            printf("\r\n");
-
+                 char tempu2[128]={0};
+				 //WAN_MODE rollback to old value
+				 tmp2=strtok(tmp,"\n");
+				 CFG_set_by_name("WAN_MODE",tmp2);
+				 if(flag!=1)
+				 {
+					writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+					writeParameters("/tmp/.apcfg","w+",0);
+		         }
+				 
+                 printf("HTTP/1.0 200 OK\r\n");
+                 printf("Content-type: text/html\r\n");
+                 printf("Connection: Close\r\n");
+                 printf("\r\n");
+                 printf("\r\n");      
 				 printf("<HTML><HEAD>\r\n");
 				 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
 				 printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
@@ -4082,9 +4272,9 @@ int main(int argc,char **argv)
 			char	usernameBuff[128];
 			char	passBuff[128];
 			char	cmdstr[128];
-						  
+						 
 			CFG_get_by_name("PPPOE_USER",usernameBuff);
-			CFG_get_by_name("PPPOE_PWD",passBuff);
+			CFG_get_by_name("PPPOE_PWD",passBuff);	
 			strcat(cmdstr,"pppoe-setup ");strcat(cmdstr,usernameBuff);strcat(cmdstr," ");strcat(cmdstr,passBuff);
 			strcat(cmdstr," > /dev/null 2>&1");
             Execute_cmd(cmdstr,cgi_auto);
@@ -4142,8 +4332,10 @@ int main(int argc,char **argv)
 			Execute_cmd("pppoe-stop > /dev/null 2>&1", cgi_tim);sleep(5);
 			Execute_cmd("pppoe-start > /dev/null 2>&1", cgi_tim);sleep(5);
 		}
-		if(strncmp(Execute_cmd("echo `route -n|grep ppp0|awk -F ' ' '{print$8}'`",tmp2),"ppp0 ppp0",9))
-        Execute_cmd("route add default gw `route -n | grep ppp0 |awk -F ' ' '{print$1}'|awk 'NR==1'`",tmp2);
+		if(strstr(Execute_cmd("echo `route -n|grep ppp0|awk -F ' ' '{print$8}'`",tmp2),"ppp0 ppp0"))
+		{
+			Execute_cmd("route add default gw `route -n | grep ppp0 |awk -F ' ' '{print$1}'|awk 'NR==1'`",tmp2);
+		}
 		// user select pppoe,then start threethread
 		Execute_cmd("ps aux | grep \"threethread\"|awk -F ' ' '{print$5}'|cut -c11-21 | awk 'NR==1'",three_thread_buf);
         if(!strncmp(three_thread_buf,"threethread",11))
@@ -4561,6 +4753,11 @@ int main(int argc,char **argv)
 
         system("cat /dev/null > /etc/ath/iptables/parc");
         system("cfg -x");
+        system("rm -f /etc/ip_mac.conf");//wangyu add for ip and mac address bond operation
+        system("rm -f /etc/.staAcl /etc/.staMac");//wangyu add for wireless client manage
+        system("rm -f  /etc/arp_ip_mac_on.conf /etc/arp_ip_mac_off.conf");//wangyu add for arp  ip and mac address bond operation
+        system("rm -f /etc/route.conf");//wangyu add for static route list
+        
 		sleep(3);
 		//backup version
 		//CFG_set_by_name("SOFT_VERSION",valBuff);
@@ -4607,12 +4804,20 @@ int main(int argc,char **argv)
 		char *mymac2;	
 		char tmp[128];
 		char tmp2[128];
+		char ipaddr[128],*ipaddr2;		
+		char linenum[128];
 		
 		Execute_cmd("cat /etc/mac.bin",mymac);
 		mymac2=strtok(mymac,"\n");
 		
 		CFG_get_by_name("MACTYPE",tmp);
 		//0 -factory mac ,1-pc mac,2 -user input
+		
+		//wangyu add for route list backup
+		Execute_cmd("route | grep default | awk -F' ' '{print $2}'",ipaddr);
+		ipaddr2=strtok(ipaddr,"\n");
+ //       fprintf(errOut,"\n.........%s.............\n",ipaddr);
+
 		if(atoi(tmp)==0)
 		{
 			//fprintf(errOut,"[luodp] %s",mymac2);
@@ -4629,6 +4834,16 @@ int main(int argc,char **argv)
 			system(str);
 			system("ifconfig eth0 up");
 		}
+
+		//wangyu add for route list backup
+		
+		if(strncmp(Execute_cmd("route | grep default | awk -F' ' '{print $8}'",linenum),"eth0",4))
+			sprintf(str,"route add default gw %s",ipaddr2);
+		
+   //     fprintf(errOut,"\n.........%s .............\n",str);
+		system(str);
+		
+		
 		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
         writeParameters("/tmp/.apcfg","w+",0);
         Result_tiaozhuan("yes",argv[0]);   
@@ -4669,6 +4884,7 @@ int main(int argc,char **argv)
     {		 
         fprintf(errOut,"\n%s  %d DEL_SDHCP \n",__func__,__LINE__);
 		del_addr_bind();
+        sprintf(Page,"%s","../ad_local_dhcp.html");
         gohome =0;
     }
 	   /*************************************
@@ -4678,7 +4894,8 @@ int main(int argc,char **argv)
     {		 
         fprintf(errOut,"\n%s  %d MOD_SDHCP \n",__func__,__LINE__);
 		modify_addr_bind();
-		gohome =0;
+        sprintf(Page,"%s","../ad_local_dhcp.html");
+        gohome =0;
     }
 
 
@@ -4687,12 +4904,15 @@ int main(int argc,char **argv)
    *************************************/
     if(strcmp(CFG_get_by_name("GW_SET",valBuff),"GW_SET") == 0 ) 
     {		 
-           fprintf(errOut,"\n%s  %d GW_SET \n",__func__,__LINE__);
+        fprintf(errOut,"\n%s  %d GW_SET \n",__func__,__LINE__);
 		unsigned char br0_ip[20],br0_mac[20],br0_sub[20], eth0_ip[20];
-		unsigned char* pbr0_ip;unsigned char*pbr0_mac;unsigned char*pbr0_sub;unsigned char*peth0_ip;
-		unsigned char* ptmp;
-		unsigned char dhcp_b[20],dhcp_hb[20], dhcp_e[20],tmp[20],tmp2[20];
+		unsigned char*peth0_ip;
 		unsigned char pChar[128];
+		
+		
+		unsigned char* ptmp;
+		unsigned char dhcp_b[20],dhcp_hb[20], dhcp_e[20],tmp[20],tmp2[20],tmp_b[20];
+		
 		unsigned char dhcp_flag[20];
 		unsigned char filter[20];
 		
@@ -4704,7 +4924,7 @@ int main(int argc,char **argv)
 
 		fprintf(errOut,"\nbr0_mac:%s,br0_ip:%s,br0_sub:%s\n",br0_mac,br0_ip,br0_sub);
 
-		Execute_cmd("ifconfig eth0|grep \"inet addr:\"|awk -F ' ' '{print$2}'|awk -F ':' '{print$2}'", eth0_ip);
+		Execute_cmd("ifconfig eth0|grep 'inet addr:' |awk -F ' ' '{print$2}'|awk -F ':' '{print$2}'", eth0_ip);
 		peth0_ip=strtok(eth0_ip,"\n");
   	
 		if(strcmp(peth0_ip,br0_ip))//eth0_ip!=br0_ip
@@ -4712,70 +4932,59 @@ int main(int argc,char **argv)
 		   sprintf(pChar,"ifconfig br0 %s netmask %s up > /dev/null 2>&1",br0_ip,br0_sub);
 		   Execute_cmd(pChar, rspBuff);
            //update nat_vlan.sh
-		   Execute_cmd("cat /etc/nat_vlan.sh | grep \"ppp0\"|grep \"DNAT --to\"|awk -F ' ' '{print$15}'", tmp);//get old DNAT value
+		   Execute_cmd("cat /etc/nat_vlan.sh | grep 'ppp0'|grep 'DNAT --to'|awk -F ' ' '{print$15}'", tmp);//get old DNAT value
 		   ptmp=strtok(tmp,"\n");
-		   sprintf(pChar,"sed -i 's/%s/%s/g' /etc/nat_vlan.sh",ptmp,br0_ip);//combine replacement cmd
-		   Execute_cmd(pChar, rspBuff);
-
-		   sprintf(pChar," ifconfig br0 hw ether %s up > /dev/null 2>&1",pbr0_mac);
+		   //combine replacement cmd
+		   sprintf(pChar,"sed -i 's/%s/%s/g' /etc/nat_vlan.sh",ptmp,br0_ip);
 		   Execute_cmd(pChar, rspBuff);
 	
 		   get_net_seg_and(br0_ip,br0_sub,dhcp_b);	   
-		   CFG_set_by_name("DHCP_BIP",dhcp_b);   
-		   //fprintf(errOut,"dhcp_b:%s\n",dhcp_b);
 		   strcpy(dhcp_hb,dhcp_b);
-
-		  {//just for flag
+			//just for flag
 		   strcpy(filter,"0.0.0.255");
 		   get_net_seg_and(dhcp_hb,filter,tmp2);
-		   //fprintf(errOut,"\ntmp2 is:%s\n",tmp2);
-		  }
-
-		  if(!strcmp(tmp2,"0.0.0.0"))
+		 
+		   if(!strcmp(tmp2,"0.0.0.0"))
 		   {
 		      num=strlen(dhcp_b);
-		      for(i=num;i>0;i--)
-		   	    {if(dhcp_b[i]=='.')
+		      for(i=num-1;i>0;i--)
+		   	  {
+			      if(dhcp_b[i]=='.')
 			   	  {
 			   	   break;
 				  }
-			     dhcp_b[i]='\0';
-		   	    }
+			      dhcp_b[i]='\0';
+		   	  }
 		      strcpy(tmp,dhcp_b);
-			  strcat(dhcp_b,"100");
+			  strcat(dhcp_b,"101");
 			  strcat(tmp,"199");
 			  strcpy(dhcp_e,tmp);
 		   }
-		   else
-		   	{	
-		   	   num=strlen(dhcp_b);
-		       get_max_dhcp_end_ip(dhcp_b,dhcp_e);//get dhcp_e,todo
+		   else if(strcmp(tmp2,"0.0.0.0"))
+		   {	
+			   //get dhcp_e,todo
+		       get_max_dhcp_end_ip(dhcp_b,dhcp_e);
+			   //get dhcp_b,save in tmp_b
+			   strcpy(tmp,"0.0.0.1");
+			   get_net_seg_or(dhcp_b,tmp,tmp_b);
+		   }
+		 fprintf(errOut,"\ndhcp_b:%s\ndhcp_e:%s\n",tmp_b,dhcp_e);
 
-		      for(i=num;i>0;i--)
-		   	   {if(dhcp_b[i]=='.')
-			   	  { 
-			   	    break;
-				  }
-			    dhcp_b[i]='\0';
-		   	   }
-			  strcat(dhcp_b,"2");
-		    }
-		 fprintf(errOut,"\ndhcp_b:%s\ndhcp_e:%s\n",dhcp_b,dhcp_e);
-
-		 CFG_set_by_name("DHCP_BIP",dhcp_b);
+		 CFG_set_by_name("DHCP_BIP",tmp_b);
 		 CFG_set_by_name("DHCP_EIP",dhcp_e);
 		 
 		 CFG_get_by_name("DHCPON_OFF",dhcp_flag);
-		    if(strcmp(dhcp_flag,"on")==0)
-		  	 {
-		       Execute_cmd("./etc/rc.d/rc.udhcpd", rspBuff);
-			   fprintf(errOut,"\nafter ./etc/rc.d/rc.udhcpd\n");
-		  	 }
-        //write to flash
-		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-        writeParameters("/tmp/.apcfg","w+",0);
+		 if(strcmp(dhcp_flag,"on")==0)
+		 {
+			   Execute_cmd("killall udhcpd > /dev/null 2>&1",rspBuff);
+		       Execute_cmd("/etc/rc.d/rc.udhcpd", rspBuff);
+			   Execute_cmd("/usr/sbin/udhcpd /etc/udhcpd.conf",rspBuff);
+		 }
+         //write to flash
+		 writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+         writeParameters("/tmp/.apcfg","w+",0);
 	   }//end eth0_ip != br0_ip
-     else
+	   else
 	   {
 				 fprintf(errOut,"\nbr0_ip shall not be equal to eth0_ip,try others,please\n");
 				 char tempu2[128]={0};
@@ -4784,7 +4993,8 @@ int main(int argc,char **argv)
                  printf("Connection: Close\r\n");
                  printf("\r\n");
                  printf("\r\n");
-                 printf("Content-Type:text/html\n\n");
+                 
+
 				 printf("<HTML><HEAD>\r\n");
 				 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
 				 printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
@@ -4795,7 +5005,13 @@ int main(int argc,char **argv)
 				 exit(1);
 		
        } 
-	   Result_tiaozhuan("yes",argv[0]);
+        
+       char tt[20]={0};
+       char tt2[128]={0};
+       CFG_get_by_name("AP_IPADDR",tt);
+       sprintf(tt2,"http://%s/cgi-bin/%s",tt,argv[0]);
+	   Result_tiaozhuan("yes",tt2);
+	   fprintf(errOut,"test %s \n",tt2);
        gohome =2;
     }
     
@@ -4816,8 +5032,11 @@ int main(int argc,char **argv)
     if(strcmp(CFG_get_by_name("DEL_RU",valBuff),"DEL_RU") == 0 ) 
     {		 
         fprintf(errOut,"\n%s  %d DEL_RU \n",__func__,__LINE__);
-		del_route_rule();
+        del_route_rule();
+        memset(Page,0,64);
+        sprintf(Page,"%s","../ad_local_rulist.html");
         gohome =0;
+
     }
         /*************************************
     内网设置    路由表设置      修改
@@ -4826,6 +5045,8 @@ int main(int argc,char **argv)
     {		 
         fprintf(errOut,"\n%s  %d MOD_RU \n",__func__,__LINE__);
 		modify_route_rule();
+        memset(Page,0,64);
+        sprintf(Page,"%s","../ad_local_rulist.html");
         gohome =0;
     }
     /*************************************
@@ -5198,7 +5419,9 @@ int main(int argc,char **argv)
     {		 
         fprintf(errOut,"\n%s  %d DEL_IPMAC \n",__func__,__LINE__);
 		del_arp();
-        gohome =0;
+        memset(Page,0,64);
+			sprintf(Page,"%s","../ad_safe_IPMAC.html");
+			gohome =0;
     }
     /*************************************
     内网设置    IP/MAC绑定    修改
@@ -5207,7 +5430,9 @@ int main(int argc,char **argv)
     {		 
         fprintf(errOut,"\n%s  %d MOD_IPMAC \n",__func__,__LINE__);
 		modify_arp();
-        gohome =0;
+        memset(Page,0,64);
+		sprintf(Page,"%s","../ad_safe_IPMAC.html");
+		gohome =0;
     }
     
     /*************************************
@@ -5330,7 +5555,7 @@ int main(int argc,char **argv)
 					printf("Connection: Close\r\n");
 					printf("\r\n");
 					printf("\r\n");
-					printf("Content-Type:text/html\n\n");
+
 					printf("<HTML><HEAD>\r\n");
 					printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
 					printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");

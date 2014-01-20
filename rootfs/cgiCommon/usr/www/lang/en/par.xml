@@ -14,6 +14,7 @@
 	<message msgid="par mac_format" msgstr="for example(11:22:33:44:55:66)" />   	
 	<message msgid="help" msgstr="Help" />
 	<message msgid="toplanguage" msgstr="e" />
+	<message msgid="settingwaiting" msgstr="Setting,Please Wait......" />
 
 	<message msgid="parset title" msgstr="Parents contrl" />  
 	<message msgid="parset des" msgstr="The management of children PC Internet access" />  
@@ -25,7 +26,7 @@
 
 	<message msgid="pa title" msgstr="Access management" />  
 	<message msgid="pa des" msgstr="The management of PC Internet access permissions" />  
-	<message msgid="pa t1_Mac" msgstr="MAC" />  
+	<message msgid="pa t1_Mac" msgstr="MAC Address" />  
 	<message msgid="pa t1_Ns" msgstr="Website list" />  
 	<message msgid="pa t1_Week" msgstr="Week" />  
 	<message msgid="pa t1_Time" msgstr="Time" />  
@@ -36,7 +37,7 @@
 	<message msgid="paradd title" msgstr="Access control" />  
 	<message msgid="paradd des" msgstr="Add access management items, did not join the list of PC network can't access" />  
 	<message msgid="paradd t1_title" msgstr="Add access control entries" />  
-	<message msgid="paradd t1_MAC" msgstr="MAC" />  
+	<message msgid="paradd t1_MAC" msgstr="MAC Address" />  
 	<message msgid="paradd t1_NetL" msgstr="Website list" />  
 	<message msgid="paradd t1_Week" msgstr="Week" />  
 

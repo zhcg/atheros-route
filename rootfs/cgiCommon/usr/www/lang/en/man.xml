@@ -6,11 +6,12 @@
 	<message msgid="man offbutton" msgstr="Disable" />
 	<message msgid="help" msgstr="Help" />
 	<message msgid="toplanguage" msgstr="e" />
+	<message msgid="settingwaiting" msgstr="Setting,Please Wait......" />
 
 	<message msgid="man ntp title" msgstr="Time settings" />
 	<message msgid="man ntp des" msgstr="Options related configuration time server" />
 	<message msgid="man ntp setting" msgstr="Time Settings" />
-	<message msgid="man ntp timezone" msgstr="Time Zone:" />
+	<message msgid="man ntp timezone" msgstr="Time Zone" />
 	<message msgid="man ntp mid island" msgstr="(GMT-11:00) Midway Island, Samoa" />
 	<message msgid="man ntp hawaii" msgstr="(GMT-10:00) Hawaii" />
 	<message msgid="man ntp alaska" msgstr="(GMT-09:00) Alaska" />
@@ -30,7 +31,7 @@
 	<message msgid="man ntp azores islands" msgstr="(GMT-01:00) Azores Islands" />
 	<message msgid="man ntp gambia" msgstr="(GMT) Gambia, Liberia, Morocco" />
 	<message msgid="man ntp england" msgstr="(GMT) England" />
-	<message msgid="man ntp czech republic" msgstr="(GMT+01:00) Czech Republic, N" />
+	<message msgid="man ntp czech republic" msgstr="(GMT+01:00) Czech Republic" />
 	<message msgid="man ntp germany" msgstr="(GMT+01:00) Germany" />
 	<message msgid="man ntp tunisia" msgstr="(GMT+01:00) Tunisia" />
 	<message msgid="man ntp greece" msgstr="(GMT+02:00) Greece, Ukraine, Turkey" />
@@ -64,7 +65,7 @@
 	
 	<message msgid="man cfgdes" msgstr="The configuration file export, import and the machine backup and restore" />
 	<message msgid="man export" msgstr="Export" />
-	<message msgid="man exporttitle" msgstr="Configuration files management" />
+	<message msgid="man exporttitle" msgstr="Configure management" />
 	<message msgid="man exportdes" msgstr="The system configuration files are saved to the local." />
 	<message msgid="man selsectfile" msgstr="Select the configuration file" />
 	<message msgid="man inportdes" msgstr="To make local system configuration file work in the BASE" /> 
@@ -79,7 +80,12 @@
 	<message msgid="man cfg backupdel1" msgstr="Are you sure to delete" />	
 	<message msgid="man cfg backupdel2" msgstr=" backup will be delete" />
 	<message msgid="err cfg full" msgstr="Backup space is full, please delete some backup and backup" />	
-		
+
+	<message msgid="cfg care1" msgstr="Note:" />	
+	<message msgid="cfg care2" msgstr="1.Import configuration files, equipment in the user configuration will be lost. If you load the configuration file is wrong, may cause the equipment cannot be managed." />	
+	<message msgid="cfg care3" msgstr="2.Load the configuration file does not turn off the power of the HBD router, otherwise it will cause damage to the router and can not be used. In the process of about 20 seconds, the HBD will automatically restart the routing." />	
+
+	
 	<message msgid="man reboottitle" msgstr="System restart" />
 	<message msgid="man rebootdes" msgstr="Click this button to restart BASE" />
 	<message msgid="man reboot" msgstr="Restart" />

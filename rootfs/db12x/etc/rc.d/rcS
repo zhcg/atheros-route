@@ -70,6 +70,9 @@ if [ "${ETH0_MAC_2}" != "" ]; then
 fi
 #yuhaolei
 
+#rm the old sta list by zzw
+rm /etc/.OldStaList
+
 ifconfig $WAN_IF up
 ifconfig $LAN_IF up
 /etc/rc.d/rc.network

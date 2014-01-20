@@ -65,6 +65,13 @@ ifndef BUILD_TYPE
 export BUILD_TYPE=jffs2
 endif
 
+# this macro for 9344+32178 platform
+#	add new type for 32178 phone,xiaojun 2014.1.18 
+#
+#ifndef BUILD_FOR_32178
+#export BUILD_FOR_32178=yes
+#endif
+
 #
 # Include the specific configuration files from the config.boardtype file
 # here.  This removes the need to set environmental variables through a
@@ -328,6 +335,9 @@ endif
         else \
  	    cp -Rf ../rootfs/$(BOARD_TYPE)/* $(INSTALL_ROOT) ; \
 	fi;
+ifeq ($(BUILD_FOR_32178), yes)
+	cp -f $(INSTALL_ROOT)/etc/rc.d/rcS32178 $(INSTALL_ROOT)/etc/rc.d/rcS
+endif
 	chmod 755 $(INSTALL_ROOT)/etc/rc.d/*
 	chmod 755 $(INSTALL_ROOT)/etc/ath/*
 	mv -f $(INSTALL_ROOT)/etc/ath/wpscli_ap $(INSTALL_ROOT)/sbin

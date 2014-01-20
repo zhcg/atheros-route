@@ -17,6 +17,7 @@
 	<message msgid="conn mac_format" msgstr="例如(11:22:33:44:55:66)" />   
 	<message msgid="help" msgstr="帮助" />
 	<message msgid="toplanguage" msgstr="z" />
+	<message msgid="settingwaiting" msgstr="正在配置,请您稍等......" />
 
 	<message msgid="clist title" msgstr="已接入设备列表" /> 
 	<message msgid="clist des" msgstr="显示HBD路由当前已经接入的有线和无线设备的信息" /> 

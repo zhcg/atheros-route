@@ -7,11 +7,12 @@
 	<message msgid="man bSAVE" msgstr="保存" />   
 	<message msgid="help" msgstr="帮助" />
 	<message msgid="toplanguage" msgstr="z" />
+	<message msgid="settingwaiting" msgstr="正在配置,请您稍等......" />
 
 	<message msgid="man ntp title" msgstr="时间设置" />
 	<message msgid="man ntp des" msgstr="配置时间服务器相关选项" />
 	<message msgid="man ntp setting" msgstr="时间设置" />
-	<message msgid="man ntp timezone" msgstr="时区：" />
+	<message msgid="man ntp timezone" msgstr="时区" />
 	<message msgid="man ntp mid island" msgstr="(GMT-11:00) 中途岛、萨摩亚" />
 	<message msgid="man ntp hawaii" msgstr="(GMT-10:00) 夏威夷" />
 	<message msgid="man ntp alaska" msgstr="(GMT-09:00) 阿拉斯加" />
@@ -31,7 +32,7 @@
 	<message msgid="man ntp azores islands" msgstr="(GMT-01:00) 亚速尔群岛" />
 	<message msgid="man ntp gambia" msgstr="(GMT) 甘比亚，赖比瑞亚、摩洛哥" />
 	<message msgid="man ntp england" msgstr="(GMT) 英格兰" />
-	<message msgid="man ntp czech republic" msgstr="(GMT+01:00) 捷克、N" />
+	<message msgid="man ntp czech republic" msgstr="(GMT+01:00) 捷克" />
 	<message msgid="man ntp germany" msgstr="(GMT+01:00) 德国" />
 	<message msgid="man ntp tunisia" msgstr="(GMT+01:00) 突尼西亚" />
 	<message msgid="man ntp greece" msgstr="(GMT+02:00) 希腊、乌克兰、土耳其" />
@@ -80,6 +81,10 @@
 	<message msgid="man cfg backupdel1" msgstr="你确定要删除" />	
 	<message msgid="man cfg backupdel2" msgstr="的备份文件将被删除" />
 	<message msgid="err cfg full" msgstr="备份空间已满,请删除部分备份后再进行备份" />	
+	
+	<message msgid="cfg care1" msgstr="注意：" />	
+	<message msgid="cfg care2" msgstr="1.导入配置文件后，设备中原有用户配置将丢失。如果您载入的配置文件有误，可能会导致设备无法被管理。" />	
+	<message msgid="cfg care3" msgstr="2.载入配置文件的过程不能关闭HBD路由器的电源，否则将导致路由器损坏而无法使用。载入过程约20秒，HBD路由将会自动重启。" />	
 	
 	
 	<message msgid="man reboottitle" msgstr="系统重启" />
