@@ -69,27 +69,27 @@ int startaudio(dev_status_t* devp)
 	{
 		PRINT("PSTN....\n");
 
-		ioctl(phone_audio.phone_audio_pcmfd,SLIC_INIT,0);
-		//if(phone_audio.phone_audio_pcmfd != -1)
-		//{
-			//close(phone_audio.phone_audio_pcmfd);
-			//phone_audio.phone_audio_pcmfd = -1;
-		//}
-		//usleep(100*1000);
-		//if(phone_audio.phone_audio_pcmfd == -1)
-		//{
-			//int pcm_fd=open(PCMNAME,O_RDWR);
-			//if(pcm_fd<0)
-			//{
-				//perror("open pcm fail,again!\n");
-				//pcm_fd=open(PCMNAME,O_RDWR);
-				//if(pcm_fd<0)
-					//return -1;
-			//}
-			//PRINT("audio open_success\n");
-//
-			//phone_audio.phone_audio_pcmfd = pcm_fd;
-		//}
+		//ioctl(phone_audio.phone_audio_pcmfd,SLIC_INIT,0);
+		if(phone_audio.phone_audio_pcmfd != -1)
+		{
+			close(phone_audio.phone_audio_pcmfd);
+			phone_audio.phone_audio_pcmfd = -1;
+		}
+		usleep(100*1000);
+		if(phone_audio.phone_audio_pcmfd == -1)
+		{
+			int pcm_fd=open(PCMNAME,O_RDWR);
+			if(pcm_fd<0)
+			{
+				perror("open pcm fail,again!\n");
+				pcm_fd=open(PCMNAME,O_RDWR);
+				if(pcm_fd<0)
+					return -1;
+			}
+			PRINT("audio open_success\n");
+
+			phone_audio.phone_audio_pcmfd = pcm_fd;
+		}
 		phone_audio.audio_talkback_recv_thread_flag = 0;
 		phone_audio.audio_talkbacked_recv_send_thread_flag = 0;
 		phone_audio.audio_talkback_send_thread_flag = 0;
@@ -926,7 +926,7 @@ RECV_ERROR:
 				PRINT("error,when receive from socket,error code is %d\r\n",recv_ret);
 				phone_audio.audio_recv_thread_flag = 0;
 				phone_audio.audio_send_thread_flag = 0;
-				//phone_audio.audio_read_write_thread_flag = 0;
+				phone_audio.audio_read_write_thread_flag = 0;
 				close(devp->audio_client_fd);
 				devp->audio_client_fd = -1;
 
@@ -1090,3 +1090,4 @@ void* audio_loop_accept(void* argv)
 		//usleep(100*1000);
 	}
 }
+

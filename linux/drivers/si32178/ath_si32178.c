@@ -662,7 +662,10 @@ ssize_t ath_slic_write(struct file * filp, const char __user * buf,
 			tail = prev_tail(tail);
 		}
 		else
+		{
+			dmabuf->tail = tail;
 			break;
+		}
 	}
 	
 	scbuf = dmabuf->db_buf;
@@ -672,11 +675,6 @@ ssize_t ath_slic_write(struct file * filp, const char __user * buf,
 	data = scbuf[0].bf_vaddr;
 
 //	desc_p += tail * sizeof(ath_mbox_dma_desc);
-
-//	if (!need_start) {
-//		wait_event_interruptible(wq_rx, desc[tail].OWN != 1);
-//	}
-	dmabuf->tail = tail;
 	
 	/* Send count bytes of data */
 //	while (byte_cnt && !desc[tail].OWN) {
