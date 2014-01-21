@@ -517,7 +517,7 @@ int main(int argc, char *argv[]) {
 				break;
 			case 's':
 				set_clock++;
-				probe_count = 1;
+//				probe_count = 1;//wangyu cannel this line
 				break;
 			case 't':
 				timezone_ntp = atoi(optarg);
