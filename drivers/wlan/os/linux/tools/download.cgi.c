@@ -38,7 +38,7 @@ static FILE *errOut;
 				fclose(fpp);
 			}
 		}
-		fprintf(errOut,"\n%s  %d  zhaozhanwei444\n",__func__,__LINE__);
+		//fprintf(errOut,"\n%s  %d  zhaozhanwei444\n",__func__,__LINE__);
 		fclose(fp);
 		
 		
