@@ -16,6 +16,56 @@
 #define FLAG_OFFSET 32772
 #define MAX_SIZE  1024
 
+struct staList
+{
+	int id;
+	char macAddr[20];
+	char staDesc[80];
+	struct staList *next;
+};
+
+void parse_staControl(FILE *fp)
+{
+	char buf[MAX_SIZE];
+	int count;
+	FILE *fpp, *fpp1;
+	struct staList stalist;
+	static FILE *errOut;
+	errOut = fopen("/dev/ttyS0","w");
+
+	
+	
+	while(fgets(buf, 17, fp))
+	{
+		//fprintf(errOut,"%s  %d buf is %s \n",__func__,__LINE__, buf);
+		if(!strncmp(buf, "WCONON_OFF=", 11))
+		{
+			fpp1 = fopen("/etc/.staAcl", "w");
+			//fprintf(errOut,"%s  %d &buf[11] is %s \n",__func__,__LINE__, &buf[11]);
+			if(!strncmp(&buf[11], "on", 2))
+				fwrite("enable", sizeof("enable"), 1, fpp1);
+			else
+				fwrite("disable", sizeof("disable"), 1, fpp1);
+			
+			fclose(fpp1);
+		}
+		
+		if(!strncmp(buf, "staMac=", 7))
+		{
+			system("rm /etc/.staMac");
+			fpp = fopen("/etc/.staMac", "at");
+			while(fread(&stalist, sizeof stalist, 1, fp) == 1)
+			{
+				//fprintf(errOut,"%s  %d stalist.macAddr is %s \n",__func__,__LINE__, stalist.macAddr);
+				if(stalist.id > 0 && stalist.id < 200)
+					fwrite(&stalist, sizeof(stalist), 1, fpp);
+			}
+			fclose(fpp);
+		}
+	}
+	
+	
+}
 
 char flagbuf[]="ATH_countrycode=";
 int main(int argc,char **argv)
@@ -59,6 +109,7 @@ int main(int argc,char **argv)
 		{
 			//fprintf(errOut,"%s  %d write %s ok\n",__func__,__LINE__);
 			ret = 0;
+			parse_staControl(f);
 			break;
 		}
 		else

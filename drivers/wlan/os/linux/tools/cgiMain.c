@@ -969,7 +969,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 					int add = 0;
 
                     Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
-                    Execute_cmd("wlanconfig ath0 list sta > /etc/.STAlist", rspBuff);
+                    Execute_cmd("wlanconfig ath0 list sta > /etc/.STAlist 2>&1", rspBuff);
 
 					fprintf(errOut,"\n%s  %d  to open [dhcpclinetlist]\n",__func__,__LINE__);
 
@@ -1227,7 +1227,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 					int ret = 0;
 
                     Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
-                    Execute_cmd("wlanconfig ath0 list sta > /etc/.STAlist", rspBuff);
+                    Execute_cmd("wlanconfig ath0 list sta > /etc/.STAlist 2>&1", rspBuff);
 
 					//sleep(1);
 					/*wait for dhcp write over*/
@@ -1333,7 +1333,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 					int flag=0;
 fprintf(errOut,"[luodp] get mac from arp89");
                     Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
-                    Execute_cmd("wlanconfig ath0 list sta > /var/run/.STAlist", rspBuff);
+                    Execute_cmd("wlanconfig ath0 list sta > /var/run/.STAlist 2>&1", rspBuff);
 
                     fp = fopen(UDHCPD_FILE, "r");  /*  /var/run/udhcpd.leases   */
                     if (NULL == fp)
@@ -2932,11 +2932,21 @@ void use_backup(void)
 	
 	//fprintf(errOut,"\n%s  %d bakupName is %s the size is %d\n",__func__,__LINE__, bakupName, strlen(bakupName));
 	sprintf(cmdd,"dd if=/etc/backup/%s.bin of=/dev/caldata   > /dev/null 2>&1", bakupName);
-	i = 3;
+	i = 5;
 	while(i--)
 	{
+		usleep(10);
 		system(cmdd);
 	}
+	
+	/*recover the /etc/backup/*.staAcl & *.staMac to /etc/.staAcl & .staMac*/
+	memset(cmdd, 0, sizeof cmdd);
+	sprintf(cmdd, "cp /etc/backup/%s.staMac /etc/.staMac", bakupName);
+	system(cmdd);
+	memset(cmdd, 0, sizeof cmdd);
+	sprintf(cmdd, "cp /etc/backup/%s.staAcl /etc/.staAcl", bakupName);
+	system(cmdd);
+
 	free(bakupName);
 	system("reboot"); 
 }
