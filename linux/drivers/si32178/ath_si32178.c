@@ -31,7 +31,6 @@ Qualcomm Atheros Confidential and Proprietary.
 void ath_slic_enable(void);
 
 
-
 int ath_slic_major = 252;
 int ath_slic_minor = 0;
 int ath_slic_wide  = 0;

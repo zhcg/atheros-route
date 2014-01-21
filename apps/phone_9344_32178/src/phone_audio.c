@@ -3,6 +3,7 @@
 //#include "phone_action.h"
 #include "fsk_external.h"
 
+
 struct class_phone_audio phone_audio =
 {
 	.init_audio=init_audio, //音频socket初始化

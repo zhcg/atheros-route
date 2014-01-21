@@ -5,7 +5,7 @@
 
 #define MIN_PACKET_BYTES	        7
 
-#define RING_LIMIT	9
+#define RING_LIMIT					9
 
 #define PACKET_HEAD_BYTE1       0XA5
 #define PACKET_HEAD_BYTE2       0X5A
