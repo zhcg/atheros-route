@@ -194,7 +194,8 @@ main()
 	}
 	// copy the file
 	while ((count=fread(tmpBuf, 1, 512, stdin)) != 0)
-	{
+	{	
+		//fprintf(errOut,"\n%s  %d count %d the buf is %s\n",__func__,__LINE__, count, tmpBuf);
 		if ((fwrite(tmpBuf, 1, count, fileBuf)) != count)
 		{
                     fprintf(errOut,"%s  %d Write file error.\n",__func__,__LINE__);
@@ -321,9 +322,15 @@ error:
                     #endif
                             Reboot_tiaozhuan("cfgback","index.html");
 				//reconfig
+				int i;
 				sprintf(cmdd,"dd if=%s of=/dev/caldata   > /dev/null 2>&1",filePath);
-				system(cmdd);
-				system("sleep 1 && reboot"); 
+				i = 5;
+				while(i--)
+				{
+					usleep(10);
+					system(cmdd);
+				}
+				system("reboot"); 
 				//Todo reboot	
 			}
 			else //error firmware file

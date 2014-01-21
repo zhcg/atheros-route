@@ -290,6 +290,7 @@ function CheckValue()
 	Butterlate.setTextDomain("admin");
 	window.parent.Demo(_("admw settingwaiting"));	
 	button_commit("GW_SET");
+	setTimeout(function(){window.parent.DialogHide();window.top.location.href="http://"+document.WORKFORM.AP_IPADDR.value;},5000);	
 	return true;
 }
 

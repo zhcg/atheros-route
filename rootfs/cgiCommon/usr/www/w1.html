@@ -7,7 +7,6 @@
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript" src="/style/load.js"></script>
 <script language="JavaScript" type="text/javascript">
-var show = 0;
 var step_num;
 var pppoecdb = "0";
 var showothers;
@@ -21,7 +20,7 @@ function style_display_on()
 	}
 	else if (window.XMLHttpRequest)
 	{ // Mozilla, Safari,...
-		return "table-row";
+		return "";
 	}
 }
 function widget_hide	(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
@@ -30,23 +29,11 @@ function widget_display	(widgetID){document.getElementById(widgetID).style.visib
 function widget_enable	(widgetID){document.getElementById(widgetID).disabled = false;}
 function widget_disable	(widgetID){document.getElementById(widgetID).disabled = true;}
 function button_commit(buttonID){document.getElementById(buttonID).click();}
-function disablewdsSettings()
-{
-	document.wizard_form.WDS_CHAN.disabled = true;
-	document.wizard_form.AP_SECMODE_2.disabled = true;
-	document.wizard_form.WDSON_OFF.disabled = true;
-	document.getElementById("WDSON_OFF1").disabled = true;
-	document.getElementById("WDSON_OFF2").disabled = true;
-	document.wizard_form.AP_SSID_2.disabled = true;
-	document.wizard_form.ROOTAP_MAC_2.disabled = true;
-	document.wizard_form.PSK_KEY_2.disabled = true;
-}
+
 function disableunneedSettings()
 {
 	document.wizard_form.AUTOTYPE.disabled = true;
 	document.wizard_form.AP_locatIP.disabled = true;
-	document.getElementById("intType1").disabled = true;
-	document.getElementById("intType2").disabled = true;
 }
 function butwork(zhi1,zhi2,zhi3,zhi4)
 {
@@ -106,60 +93,18 @@ function checkInjection(str)
 	}
     return true;
 }
-function checkwds()
-{			
-	if(document.wizard_form.WDSON_OFF[0].checked == true)
-	{
-		if((document.getElementById("INDEX").value == "11") || (document.getElementById("INDEX").value == 11))
-		{
-			if(document.getElementById("AP_SECMODE_2").value == "WPA")
-			{
-				if(document.getElementById("wrpass").value =="")
-				{
-					alert(_("err pwd empty"));
-					return false;
-				}
 
-			}
-		}
-		else
-		{
-			alert(_("err no choose"));
-			return false;
-		}
-	}
-	else
-	{
-		document.getElementById("AP_SSID_2").disabled = true;	
-		document.getElementById("ROOTAP_MAC_2").disabled = true;	
-		document.getElementById("wrpass").disabled = true;	
-		document.getElementById("WFILIST").disabled = true;	 
-		document.getElementById("WDS_CHAN").disabled = true;	 
-		document.getElementById("AP_SECMODE_2").disabled = true;
-	}
-	return true;
-}
 function change_step(offset)
 {
 	if (offset == 1)
 	{
 		if(step_num == 1)
 		{
-			if (document.wizard_form.intType[1].checked == true) 
-			{
-				if(!checkwds())
+			if (!CheckWanValue())
 				return false;
-			}
+
 		}
 		if (step_num == 2)
-		{
-			if (document.wizard_form.intType[0].checked == true) 
-			{
-				if (!CheckWanValue())
-					return false;
-			}
-		}
-		else if (step_num == 3)
 		{
 			if (!CheckWirelessValue())
 				return false;
@@ -171,59 +116,18 @@ function change_step(offset)
 	else
 		step_num += offset;
 
-	if (step_num == 1)
+	if (step_num == 0)
 	{
-		if (document.wizard_form.intType[0].checked == true) 
-		{		
-			//document.getElementById("div_wan_opmode").style.visibility = "visible";
-			//document.getElementById("div_wan_opmode").style.display = style_display_on();
-			//document.getElementById("div_wan_title").style.visibility = "visible";
-			//document.getElementById("div_wan_title").style.display = style_display_on();
-			//butwork("false","false","true","true");
-			if(linework == 1)
-			{
-				document.getElementById("div_wan_opmode").style.visibility = "visible";
-				document.getElementById("div_wan_opmode").style.display = style_display_on();
-				document.getElementById("div_wan_title").style.visibility = "visible";
-				document.getElementById("div_wan_title").style.display = style_display_on();
-				butwork("false","false","true","true");
-			}
-			else
-			{
-				document.getElementById("buttontable").style.visibility = "hidden";
-				document.getElementById("buttontable").style.display = "none";	
-				document.getElementById('CHECKLINE').click();
-			}
-		}
-		else if (document.wizard_form.intType[1].checked == true) 
-		{
-			if(document.getElementById("WIFIONOFF").value=="off")
-			{
-				document.getElementById("offwifi").style.visibility = "visible";
-				document.getElementById("offwifi").style.display = style_display_on();
-
-				butwork("false","true","true","true");
-				return true;
-			}
-
-			document.getElementById("wirelessdes").style.visibility = "visible";
-			document.getElementById("wirelessdes").style.display = style_display_on();
-
-			document.getElementById("div_Router").style.visibility = "visible";
-			document.getElementById("div_Router").style.display = style_display_on();
-			initshow();
-			butwork("false","true","true","false");
-		}
+		document.getElementById("div_wan_title").style.visibility = "visible";
+		document.getElementById("div_wan_title").style.display = style_display_on();
+		document.getElementById("div_wan_opmode").style.visibility = "visible";
+		document.getElementById("div_wan_opmode").style.display = style_display_on();
+		butwork("true","false","true","true");		
 	}
-	else if (step_num == 2)
+	else if (step_num == 1)
 	{
-		if(document.wizard_form.intType[1].checked == true)
-		{
-			waitgifshow();
-			document.wizard_form.INDEX.disabled = true;
-			button_commit('WIRRE');
-		}
-		else if (document.wizard_form.WAN_MODE[0].checked == true) 
+
+		if (document.wizard_form.WAN_MODE[0].checked == true) 
 		{
 			document.getElementById("buttontable").style.visibility = "hidden";
 			document.getElementById("buttontable").style.display = "none";	
@@ -239,13 +143,11 @@ function change_step(offset)
 		}
 		else
 		{
-			//document.getElementById("div_wan_title").style.visibility = "visible";
-			//document.getElementById("div_wan_title").style.display = style_display_on();
 			connectionTypeSwitch();
 			butwork("false","false","true","true");
 		}
 	}
-	else if (step_num == 3)
+	else if (step_num == 2)
 	{
 		document.getElementById("div_wireless_title").style.visibility = "visible";
 		document.getElementById("div_wireless_title").style.display = style_display_on();
@@ -255,40 +157,35 @@ function change_step(offset)
 		switch_security_mode();
 		butwork("false","true","true","false");
 	}
-	else if(step_num == 4)
+	else if (step_num == 3)
 	{
 		if (document.wizard_form.WAN_MODE[1].checked == true) 
 		{
 			waitgifshow();
-			disablewdsSettings();
 			disableunneedSettings();
 			button_commit('DHCPW');
 		}
 		else if (document.wizard_form.WAN_MODE[2].checked == true) 
 		{
 			waitgifshow();
-			disablewdsSettings();
 			disableunneedSettings();
 			button_commit('SIPW');
 		}
 		else if (document.wizard_form.WAN_MODE[3].checked == true) 
 		{
 			waitgifshow();
-			disablewdsSettings();
 			disableunneedSettings();
 			button_commit('PPPW');
 		}
 		else if (document.wizard_form.WAN_MODE[4].checked == true) 
 		{
 			waitgifshow();
-			disablewdsSettings();
 			disableunneedSettings();
 			button_commit('L2TPW');
 		}
 		else if (document.wizard_form.WAN_MODE[5].checked == true) 
 		{
 			waitgifshow();
-			disablewdsSettings();
 			disableunneedSettings();
 			button_commit('P2TPW');
 		}
@@ -298,7 +195,6 @@ function change_step(offset)
 		}
 		document.getElementById("buttontable").style.visibility = "hidden";
 		document.getElementById("buttontable").style.display = "none";	
-		
 	}
 	else
 	{
@@ -310,17 +206,6 @@ function change_step(offset)
 
 function hideAllTables()
 {
-	document.getElementById("div_wizard_home").style.visibility = "hidden";
-	document.getElementById("div_wizard_home").style.display = "none";
-	document.getElementById("RCMd").style.visibility = "hidden";
-	document.getElementById("RCMd").style.display = "none";
-	
-	document.getElementById("wirelessdes").style.visibility = "hidden";
-	document.getElementById("wirelessdes").style.display = "none";
-
-	document.getElementById("div_Router").style.visibility = "hidden";
-	document.getElementById("div_Router").style.display = "none";
-	
 	document.getElementById("div_wan_title").style.visibility = "hidden";
 	document.getElementById("div_wan_title").style.display = "none";
 	document.getElementById("div_wan_opmode").style.visibility = "hidden";
@@ -1072,24 +957,6 @@ function initTranslation()
 {
 	var e = document.getElementById("qsettitle");
 	e.innerHTML = _("admw w1title");
-	
-	e = document.getElementById("RCMd");
-	e.innerHTML = _("admw RCMd");
-	e = document.getElementById("int");
-	e.innerHTML = _("admw int");
-	e = document.getElementById("int1");
-	e.innerHTML = _("admw int1");
-	e = document.getElementById("int2");
-	e.innerHTML = _("admw int2");
-	e = document.getElementById("wireless");
-	e.innerHTML = _("admw wireless");
-	
-	e = document.getElementById("RMd");
-	e.innerHTML = _("admw RMd");
-	e = document.getElementById("R_pword");
-	e.innerHTML = _("admw R_pword");
-	e = document.getElementById("Alreadc");
-	e.innerHTML = _("admw Alreadc");
 
 	e = document.getElementById("div_wan_title");
 	e.innerHTML = _("admw div_wan_title");
@@ -1245,8 +1112,6 @@ function initTranslation()
 	e = document.getElementById("advbutton");
 	e.value = _("admw advbutton");
 	
-	e = document.getElementById("wrshowp");
-	e.innerHTML = _("admw showp");
 	e = document.getElementById("pppshowp");
 	e.innerHTML = _("admw showp");
 	e = document.getElementById("l2tpshowp");
@@ -1258,11 +1123,6 @@ function initTranslation()
 	
 	e = document.getElementById("optionXX");
 	e.innerHTML = _("admw optionXX");
-	
-	e = document.getElementById("fresh");
-	e.value = _("admw fresh");
-	e = document.getElementById("Wlisttitle1");
-	e.innerHTML = _("admw Wlisttitle1");
 	
 	e = document.getElementById("wifionbutton");
 	e.innerHTML = _("admw onbutton");	
@@ -1277,20 +1137,9 @@ function initTranslation()
 	e = document.getElementById("wifiswitch");
 	e.innerHTML = _("admw wifiswitch");	 
 
-	e = document.getElementById("wdsswitch");
-	e.innerHTML = _("admw wdsswitch");	
-	e = document.getElementById("onbutton");
-	e.innerHTML = _("admw onbutton");	
-	e = document.getElementById("offbutton");
-	e.innerHTML = _("admw offbutton");
-	
 	e = document.getElementById("channelchoose");
 	e.innerHTML = _("admw channelchoose");	
-	//e = document.getElementById("channelauto");
-	//e.innerHTML = _("admw channelauto");	
-	e = document.getElementById("offwifides");
-	e.innerHTML = _("admw offwifides");
-	
+
 	e = document.getElementById("hidewifides");
 	e.innerHTML = _("admw hidewifides");
 	
@@ -1298,9 +1147,6 @@ function initTranslation()
 	e.innerHTML = _("admw opmode timing");
 	e = document.getElementById("PPPOE_TIMING");
 	e.innerHTML = _("admw PPPOE_TIMING");
-
-	e = document.getElementById("wirelessdes");
-	e.innerHTML = _("admw wirelessdes");
 }
 
 function inithidewifi()
@@ -1326,28 +1172,10 @@ function initValue()
 {
 	Butterlate.setTextDomain("admin");
 	initTranslation();
-	if(document.wizard_form.WDSON_OFF[0].checked == true)
-		show = 1;
-	else
-		show = 0;
-	if((document.getElementById("INDEX").value == "11") || (document.getElementById("INDEX").value == 11))
-	{
-		document.wizard_form.WDSON_OFF[0].checked = true;
-		window.parent.DialogHide();
-	}
-	else
-	{
-		document.getElementById("WFILIST").style.visibility = "hidden";
-		document.getElementById("WFILIST").style.display = "none";
-	}
-
-	
 	hideAllTables();
 	disableWanSettings();
 	disableWirelessSettings();
 	switch_wifi();
-	initshow();
-	switch_wds();
 	inithidewifi();
 	step_num = 0;
 	showothers = 0;
@@ -1358,92 +1186,80 @@ function initValue()
 	{
 		document.getElementById("AP_PRIMARY_CH").disabled = true;
 	}
+
+	if((document.getElementById("INDEX").value == "12") || (document.getElementById("INDEX").value == 12))
 	{
-		if((document.getElementById("INDEX").value == "11") || (document.getElementById("INDEX").value == 11))
+		document.getElementById("INDEX").value = "99";
+		var zidong = document.getElementById("AUTOTYPE").value;
+		if(zidong == "static")
 		{
-			//document.getElementById("INDEX").value = "99";
-			document.wizard_form.intType[1].checked = true;
+			document.wizard_form.WAN_MODE[2].checked = true;
+			setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_sip"));},100);
 			change_step(1);
-			
-			initshow();
-			switch_wds();
-			WIFSwitch();
-			return true;
 		}
-		if((document.getElementById("INDEX").value == "12") || (document.getElementById("INDEX").value == 12))
+		else if(zidong == "dhcp")
 		{
-			document.getElementById("INDEX").value = "99";
-			document.wizard_form.intType[0].checked = true;
-			linework=1;
+			document.wizard_form.WAN_MODE[1].checked = true;
+			setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_dhcp"));},100);
 			change_step(1);
-			var zidong = document.getElementById("AUTOTYPE").value;
-			if(zidong == "static")
-			{
-				document.wizard_form.WAN_MODE[2].checked = true;
-				setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_sip"));},100);
-				change_step(1);
-			}
-			else if(zidong == "dhcp")
-			{
-				document.wizard_form.WAN_MODE[1].checked = true;
-				setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_dhcp"));},100);
-				change_step(1);
-			
-			}
-			else if(zidong == "pppoe")
-			{
-				document.wizard_form.WAN_MODE[3].checked = true;
-				setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_ppp"));},100);
-				change_step(1);
-			
-			}
-			else if(zidong == "l2tp")
-			{
-				document.wizard_form.WAN_MODE[4].checked = true;
-				setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_l2tp"));},100);
-				change_step(1);
 		
-			}
-			else if(zidong == "p2tp")
-			{
-				document.wizard_form.WAN_MODE[5].checked = true;
-				setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_p2tp"));},100);
-				change_step(1);
-			}
-			else
-			{
-				setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_fail"));},100);
-			}
-			return true;
 		}
-		if((document.getElementById("INDEX").value == "13") || (document.getElementById("INDEX").value == 13))
+		else if(zidong == "pppoe")
 		{
-			document.getElementById("INDEX").value = "99";
-			document.wizard_form.intType[0].checked = true;
-			
-			var linestatus=document.wizard_form.LINEIN_OUT.value;
-			if(linestatus == "in")
-			{
-				linework = 1;
-				change_step(1);
-			}
-			else
-			{
-				setTimeout(function(){window.parent.DialogHide();alert(_("err lineout"));},100);
-				document.getElementById("div_wizard_home").style.visibility = "visible";
-				document.getElementById("div_wizard_home").style.display = style_display_on();
-				document.getElementById("RCMd").style.visibility = "visible";
-				document.getElementById("RCMd").style.display = style_display_on();
-				butwork("true","false","true","true");
-			}
-			return true;
+			document.wizard_form.WAN_MODE[3].checked = true;
+			setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_ppp"));},100);
+			change_step(1);
+		
 		}
-	}
-	document.getElementById("div_wizard_home").style.visibility = "visible";
-	document.getElementById("div_wizard_home").style.display = style_display_on();
-	document.getElementById("RCMd").style.visibility = "visible";
-	document.getElementById("RCMd").style.display = style_display_on();
+		else if(zidong == "l2tp")
+		{
+			document.wizard_form.WAN_MODE[4].checked = true;
+			setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_l2tp"));},100);
+			change_step(1);
 	
+		}
+		else if(zidong == "p2tp")
+		{
+			document.wizard_form.WAN_MODE[5].checked = true;
+			setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_p2tp"));},100);
+			change_step(1);
+		}
+		else
+		{
+			setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_fail"));},100);
+			document.getElementById("div_wan_title").style.visibility = "visible";
+			document.getElementById("div_wan_title").style.display = style_display_on();
+			document.getElementById("div_wan_opmode").style.visibility = "visible";
+			document.getElementById("div_wan_opmode").style.display = style_display_on();
+
+			butwork("true","false","true","true");
+		}
+		return true;
+	}
+	/*if((document.getElementById("INDEX").value == "13") || (document.getElementById("INDEX").value == 13))
+	{
+		document.getElementById("INDEX").value = "99";
+		document.wizard_form.intType[0].checked = true;
+		
+		var linestatus=document.wizard_form.LINEIN_OUT.value;
+		if(linestatus == "in")
+		{
+			linework = 1;
+			change_step(1);
+		}
+		else
+		{
+			setTimeout(function(){window.parent.DialogHide();alert(_("err lineout"));},100);
+			butwork("true","false","true","true");
+		}
+		return true;
+		
+	}*/
+	document.getElementById("div_wan_title").style.visibility = "visible";
+	document.getElementById("div_wan_title").style.display = style_display_on();
+	document.getElementById("div_wan_opmode").style.visibility = "visible";
+	document.getElementById("div_wan_opmode").style.display = style_display_on();
+
 	butwork("true","false","true","true");
 }
 
@@ -1492,19 +1308,6 @@ function advance()
 		document.getElementById("div_pppoe_opmode_setting").style.visibility = "hidden";
 		document.getElementById("div_pppoe_opmode_setting").style.display = "none";
 		showoadv = 0;
-	}
-}
-function wrshowpwd()
-{
-    var pass = document.getElementById("wrpass").value;
-
-	if(document.getElementById("aaaa").checked == true)
-	{
-		document.getElementById("wrpwd").innerHTML='<input type="text" name="PSK_KEY_2" id="wrpass" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
-	}
-	else
-	{
-		document.getElementById("wrpwd").innerHTML='<input type="password" name="PSK_KEY_2" id="wrpass" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
 	}
 }
 
@@ -1560,50 +1363,7 @@ function pppshowpwd()
    	}
 }
  
-function  WIFSwitch()
-{
-	var obj=document.getElementById("WFILIST");
-	var index=obj.selectedIndex; //序号，取当前选中选项的序号
-	
-	var myString=obj.options[index].id;
-	
-	var a = myString.indexOf("(");
-	var b = myString.indexOf(")(");
-	var c = myString.lastIndexOf(")(");
-	var d = myString.lastIndexOf(")");
-	
-	var s, ss, sss, ssss;                // 声明变量。
-	
-    s = myString.substr(0, a); // 获取子字符串。
-    ss = myString.substr(a+1, b-a-1); // 获取子字符串。
-	sss = myString.substr(b+2, c-b-2);
-	ssss = myString.substr(c+2, d-c-2);
-	
-	document.getElementById("AP_SSID_2").value = s;//obj.options[index].text;
-	document.getElementById("ROOTAP_MAC_2").value = ss;//obj.options[index].text;
-	document.getElementById("WDS_CHAN").value = sss;//obj.options[index].text;
-	document.getElementById("AP_SECMODE_2").value = ssss;//obj.options[index].text;
-	if(ssss == "None")
-	{
-		document.wizard_form.PSK_KEY_2.disabled = true;
-		document.getElementById("tt2").style.visibility = "hidden";
-		document.getElementById("tt2").style.display = "none";
 
-	}
-	else
-	{
-		document.wizard_form.PSK_KEY_2.disabled = false;
-		document.getElementById("tt2").style.visibility = "visible";
-		document.getElementById("tt2").style.display = style_display_on();
-		document.getElementById("wrpass").value="";
-	}
-}
-function refreshwds()
-{
-	Butterlate.setTextDomain("other");
-	window.parent.Demo( _("wait"));
-	button_commit('REFRESHWFi');
-}
 function switch_wifi()
 {
 	if(document.wizard_form.WIFION_OFF[0].checked == true)
@@ -1631,47 +1391,7 @@ function waitgifshow()
 	document.getElementById("buttontable").style.display = "none";
 	window.parent.Demo(_("admw settingwaiting"));
 }
-function switch_wds()
-{
-	if(document.wizard_form.WDSON_OFF[0].checked == true)
-	{
-		if(show == 1)
-		{
-			document.getElementById("dwsset2").style.visibility = "visible";
-			document.getElementById("dwsset2").style.display = style_display_on();
-		}
-		document.getElementById("dwsset3").style.visibility = "visible";
-		document.getElementById("dwsset3").style.display = style_display_on();
-		if((document.getElementById("INDEX").value == "11") || (document.getElementById("INDEX").value == 11))
-		{
-			WIFSwitch();
-		}
-	}
-	else
-	{
-		document.getElementById("dwsset2").style.visibility = "hidden";
-		document.getElementById("dwsset2").style.display = "none";
-		document.getElementById("dwsset3").style.visibility = "hidden";
-		document.getElementById("dwsset3").style.display = "none";
-		document.getElementById("tt2").style.visibility = "hidden";
-		document.getElementById("tt2").style.display = "none";
-	}
 
-}
-function initshow()
-{
-	if(show == 1)
-	{
-		
-		document.getElementById("dwsset2").style.visibility = "visible";
-		document.getElementById("dwsset2").style.display = style_display_on();
-	}
-	else
-	{
-		document.getElementById("dwsset2").style.visibility = "hidden";
-		document.getElementById("dwsset2").style.display = "none";
-	}
-}
 function workoutgw()
 {
 	var myString=document.getElementById("WAN_IPADDR").value;	
@@ -1714,57 +1434,6 @@ function workoutgw()
 <p></p>
 <form method="post" name="wizard_form">
 <!-- ============= Wizard Home Page ============= -->
-<h2 id="RCMd"></h2>
-<table id="div_wizard_home" width="100%" border="0" cellpadding="2" cellspacing="1">
-<tr>
-  <td width="15px"><input type="radio" name="intType" id="intType1" value="interner" checked></td><td><label  style="font-size: 12pt; font-weight: bold;; margin-left: 8px; font-family: 微软雅黑, Arial, Helvetica, sans-serif; color: #000000" for="intType1" id="int" onclick=""></label></td>
-</tr>
-<tr>
-  <td>&nbsp; &nbsp;</td>
-  <td id="int1"></td>
-</tr> 
-<tr>
-  <td width="15px"><input type="radio" name="intType" id="intType2" value="router"></td><td><label  style="font-size: 12pt; font-weight: bold;; margin-left: 8px; font-family: 微软雅黑, Arial, Helvetica, sans-serif; color: #000000" for="intType2" id="wireless" onclick=""></label></td>
-</tr>
-<tr>
-  <td>&nbsp; &nbsp;</td>
-  <td id="int2"></td>
-</tr>
-</table>
-<!-- ================= Router Mode ================= -->
-<h2 id="wirelessdes"></h2>
-<table id="div_Router"  cellpadding="0" cellspacing="0"   class="handaer_text">
-<tr>
-  <td class="title" colspan="2" id="RMd"></td>
-</tr>
-<tr>
-<td class="head" id="wdsswitch"></td>
-	<td>
-	<input type="radio" ~cWDSON_OFF:on~ id="rad_1" name="WDSON_OFF" value="on" onclick="switch_wds();" checked /><label for="rad_1" id="onbutton"></label>
-	<input type="radio" ~cWDSON_OFF:off~ id="rad_2" name="WDSON_OFF" value="off" onclick="switch_wds();"/><label for="rad_2" id="offbutton"></label>
-	<input style="display:none" name="AP_SSID_2" id="AP_SSID_2" maxlength=32 size=32 class="handaer_text_content" value="~~AP_SSID_2~">
-	<input style="display:none" name="ROOTAP_MAC_2" id="ROOTAP_MAC_2" maxlength=32 size=32 class="handaer_text_content" value="~~ROOTAP_MAC_2~">
-
-	</td>
-</tr>
-<tr id="dwsset2">
-  <td class="head" id="Alreadc">当前已连接WiFi</td>
-  <td><input  maxlength=32 size=32 value="~~AP_SSID_2~" readonly></td>
-</tr>
-
-<tr id="dwsset3">
-    <td class="head" id="Wlisttitle1"></td>
-    <td>
-	<select name="WFILIST" id="WFILIST" size="1" onchange="WIFSwitch()">~LList~</select>&nbsp;&nbsp;<input type="button" name="refresh" id="fresh" class="handaer_small_button" value="Fresh" onClick="refreshwds()">
-	</td>
-  </tr>
-
-<tr style="display:none" id="tt2">
-  <td class="head" id="R_pword"></td>
-  <td><span id="wrpwd"><input type="password" id="wrpass" name="PSK_KEY_2" class="handaer_text_content" maxlength="32" size="32" value="~~PSK_KEY_2~" /></span>&nbsp;<input type="checkbox" id="aaaa" onClick="wrshowpwd()"/>&nbsp;<label for="aaaa" id="wrshowp"></label></td>
-</tr>
-</table>
-
 <h2 id="div_wan_title"></h2>
 <!-- ============= Internet OP Mode ============= -->
 <table id="div_wan_opmode" width="640" border="0" cellpadding="2" cellspacing="1">
@@ -1848,7 +1517,7 @@ function workoutgw()
 </tr>
 <tr>
   <td class="head" id="sDNSserver"></td>
-  <td><input name="SECDNS"  class="handaer_text_content" maxlength=15 value="~~SECDNS~"/><span id="optionXX"></span></td>
+  <td><input name="SECDNS"  class="handaer_text_content" maxlength=15 value="~~SECDNS~"/><span style="height:30px; line-height:30px; padding:5px;" id="optionXX"></span></td>
 </tr>
 </table>
 
@@ -2099,9 +1768,6 @@ function workoutgw()
 </tr>
 </table>
 
-<div id="offwifi" style="display:none" align="center">
-  <h1 align="center" id="offwifides"></h1>
-</div>
 <table width="540" cellpadding="2" cellspacing="1" id="buttontable">
 <tr align="center">
   <td>
@@ -2109,7 +1775,7 @@ function workoutgw()
     <input type="button" name="next_motion" id="bNEXT" class="handaer_input"  value="Next" onClick="change_step(1);">
     <input type="button" name="cancel_motion" id="bCANCEL" class="handaer_input"  value="Cancel" onClick="change_step(0);">
     <input type="button" name="apply_motion" id="bAPPLY" class="handaer_input"  value="Apply" onClick="change_step(1);">
-    <input type="submit" name="WIRRE" id="WIRRE" style="display:none" value="WIRRE">
+
     <input type="submit" name="DHCPW" id="DHCPW" style="display:none" value="DHCPW">
     <input type="submit" name="SIPW" id="SIPW" style="display:none" value="SIPW">
     <input type="submit" name="PPPW" id="PPPW" style="display:none" value="PPPW">
@@ -2117,12 +1783,9 @@ function workoutgw()
     <input type="submit" name="P2TPW" id="P2TPW" style="display:none" value="P2TPW">
 	<input type="text" style="display:none" name="AUTOTYPE" id="AUTOTYPE" size="20" maxlength="32" value="~~AUTOTYPE~">	
 	<input type="text" style="display:none" name="INDEX" id="INDEX" value="~~INDEX~">
-    <input type="button" name="REFRESHWFi" id="REFRESHWFi" style="display:none" value="REFRESHWFi" onClick="window.location.href='w1?INDEX=11'">
+
     <input type="button" name="AUTOGET" id="AUTOGET" style="display:none" value="AUTOGET" onClick="window.location.href='w1?INDEX=12'">
     <input type="button" name="CHECKLINE" id="CHECKLINE" style="display:none" value="CHECKLINE" onClick="window.location.href='w1?INDEX=13'">
-	
-	<input type="text" style="display:none" name="WDS_CHAN" id="WDS_CHAN" size="20" maxlength="32" value="~~WDS_CHAN~">	
-	<input type="text" style="display:none" name="AP_SECMODE_2" id="AP_SECMODE_2" size="20" maxlength="32" value="~~AP_SECMODE_2~">	
 	<input type="text" style="display:none" name="LINEIN_OUT" id="LINEIN_OUT" size="20" maxlength="32" value="~~LINEIN_OUT~">	
 	<input type="text" style="display:none" name="WIFIONOFF" id="WIFIONOFF" size="20" maxlength="32" value="~~WIFION_OFF~">	
 	<input type="text" style="display:none" name="AP_HIDESSID" id="AP_HIDESSID" size="20" maxlength="32" value="~~AP_HIDESSID~">	

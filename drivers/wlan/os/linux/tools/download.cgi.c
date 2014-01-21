@@ -7,15 +7,40 @@
 	#define MAX_FILE_LEN  (1024*30)
 	#define DOWNLOAD_FILE_PATH	"/tmp/"
 	#define DOWNLOAD_FILE_NAME	"cal.bin"
+static FILE *errOut;
+	const char *staFile = "/etc/.staMac";
+	struct staList
+	{
+		int id;
+		char macAddr[20];
+		char staDesc[80];
+		struct staList *next;
+	};
 
 	int main(){
-		
-		FILE *fp;
+		errOut = fopen("/dev/ttyS0","w");
+		FILE *fp, *fpp;
 		char filebuf[MAX_FILE_LEN];
 		char cmd[512];
 		struct stat sb;
+		struct staList stalist;
 		
 		system("dd if=/dev/caldata of=/tmp/cal.bin  > /dev/null 2>&1");
+		if ((fp = fopen("/tmp/cal.bin", "ab")) != NULL) 
+		{
+			fwrite("\nstaMac=\n", 9, 1, fp);
+			if ((fpp = fopen(staFile, "r")) != NULL)
+			{	
+				while(fread(&stalist, sizeof stalist, 1, fpp) == 1)
+				{
+					fwrite(&stalist, sizeof(struct staList), 1, fp);
+				}
+				fclose(fpp);
+			}
+		}
+		//fprintf(errOut,"\n%s  %d  zhaozhanwei444\n",__func__,__LINE__);
+		fclose(fp);
+		
 		
 		sprintf(cmd, "%s%s", DOWNLOAD_FILE_PATH, DOWNLOAD_FILE_NAME);
 		stat(cmd, &sb); //取待下载文件的大小

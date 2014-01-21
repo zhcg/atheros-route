@@ -1,4 +1,5 @@
 #!/bin/sh
+killall ntpclient > /dev/null 2>&1
 ntp_switch=`cfg -e | grep "NTPON_OFF"|awk -F'=' '{print $2}'`
 echo $ntp_switch
 if [ "$ntp_switch" = "off" ];then
@@ -11,10 +12,11 @@ if [ "$ntp_switch" = "on" ];then
 	echo $timezone
 	ntpserverip1=`cfg -e | grep "NTPServerIP1"|awk -F'"' '{print $2}'`
 	echo $ntpserverip1
-	ntpserverip2=`cfg -e | grep "NTPServerIP1"|awk -F'"' '{print $2}'`
+	ntpserverip2=`cfg -e | grep "NTPServerIP2"|awk -F'"' '{print $2}'`
 	echo $ntpserverip2
 	
 	if [ ! -z $ntpserverip1 -a ! -z $timezone ];then
-		/usr/sbin/ntpclient -s -h $ntpserverip1 -t  $timezone &
+		#/usr/sbin/ntpclient -d -s -h $ntpserverip1 -t  $timezone > /tmp/ntpserver.log 2>&1 &
+		/usr/sbin/ntpclient -c 100 -d -s -h $ntpserverip1 -i 10 -t  $timezone  &
 	fi
 fi

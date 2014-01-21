@@ -22,6 +22,7 @@ else
         echo "the backup is exist"
 		sed -i '/'$1'/d' $BACKUP_LIST
 		rm $BACKUP_DIR/$BACKUP_DATE.bin
+		rm $BACKUP_DIR/$BACKUP_DATE.sta*
         echo "delete backup done"
         exit 1
 fi
