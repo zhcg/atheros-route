@@ -2673,6 +2673,7 @@ int set_dhcp(void)
 			//Execute_cmd("/etc/ath/apcfg",rspBuff);
 			//system("/etc/rc.d/rc.udhcpd");
 			Execute_cmd("/etc/rc.d/rc.udhcpd",rspBuff);
+			Execute_cmd("/usr/sbin/set_addr > /dev/null 2>&1",rspBuff);
 			Execute_cmd("/usr/sbin/udhcpd /etc/udhcpd.conf",rspBuff);
 		}
 		return 0;
