@@ -17,42 +17,6 @@ var objIMG;
 
 function init()
 {
-	intTimeout = 4000;
-	intStartTime;  
-	bolIsTimeout;
-	objIMG = new Image();
-	objIMG.onload =
-	objIMG.onerror =
-	function()
-	{
-		//alert("连接成功,准备跳转");
-		clearTimeout(intTimerID);
-		if(bolIsTimeout)
-			return;
-		{
-			window.parent.DialogHide();
-			if(a == "reboot")
-			{
-				window.top.location.href='../index.html';
-			}
-			else if(a == "upload")
-			{
-				window.location.href="crupload";
-			}
-			else if(a == "cfgback")
-			{
-				window.top.location.href='../index.html';
-			}
-			else if(a == "factory")
-			{
-				window.location.href="crfact";
-			}
-			else
-			{
-				window.top.location.href='../index.html';
-			}
-		}
-	}
 	Butterlate.setTextDomain("other");
 	a = document.getElementById("RESULT").value;
 	b = document.getElementById("PAGE").value;
@@ -64,37 +28,75 @@ function init()
 	if(a == "reboot")
 	{
 		window.parent.Demo(_("REBOOT"));
-		setTimeout(function(){ping();},20000);
+		setTimeout(function(){ping();},35000);
 	}
 	else if(a == "upload")
 	{
 		window.parent.Demo(_("UPLOAD"));
-		setTimeout(function(){ping();},20000);
+		setTimeout(function(){ping();},35000);
 	}
 	else if(a == "cfgback")
 	{
 		window.parent.Demo(_("CFGBACK"));
-		setTimeout(function(){ping();},20000);
+		setTimeout(function(){ping();},40000);
 	}
 	else if(a == "factory")
 	{
 		window.parent.Demo(_("FACTORY"));
-		setTimeout(function(){ping();},20000);
+		setTimeout(function(){ping();},35000);
 	}
 	else
 	{
-		setTimeout(function(){ping();},20000);
+		setTimeout(function(){ping();},35000);
 	}
 }
 
 function ping()
-{                
+{ 
+	intTimeout = 4000;
+	intStartTime;  
+	bolIsTimeout;
+	objIMG = new Image();
+	objIMG.onload =
+	objIMG.onerror =
+	function()
+	{
+		//alert("连接成功,准备跳转 bolIsTimeout"+bolIsTimeout);
+		clearTimeout(intTimerID);
+		if(bolIsTimeout)
+			return;
+		{
+			
+			if(a == "reboot")
+			{
+				setTimeout(function(){window.parent.DialogHide();window.top.location.href="http://"+c;},5000);
+				
+			}
+			else if(a == "upload")
+			{
+				setTimeout(function(){window.parent.DialogHide();window.top.location.href="http://"+c+"/cgi-bin/"+"crupload";},5000);
+			}
+			else if(a == "cfgback")
+			{
+				setTimeout(function(){window.parent.DialogHide();window.top.location.href="http://"+c;},5000);
+				
+			}
+			else if(a == "factory")
+			{
+				setTimeout(function(){window.parent.DialogHide();window.top.location.href="http://"+c+"/cgi-bin/"+"crfact";},5000);
+			}
+			else
+			{
+				setTimeout(function(){window.parent.DialogHide();window.top.location.href="http://"+c},5000);
+			}
+		}
+	}               
 	intStartTime = +new Date();     
     //objIMG.src = "http://192.168.4.168"+"/" + intStartTime;
     objIMG.src = "http://"+c+"/" + intStartTime;
-	alert(objIMG.src);
+	//alert(objIMG.src);
+	intTimerID = setTimeout(timeout, intTimeout); 
 	bolIsTimeout=false;
-	intTimerID = setTimeout(timeout, intTimeout);           
 }                                                               
 
 function timeout()
@@ -102,7 +104,7 @@ function timeout()
 	//alert("连接不成功");
 	bolIsTimeout=true;
 	{
-		objIMG.src = "X:\\"; 
+		//objIMG.src = "X:\\"; 
 		ping();
 	}
 }

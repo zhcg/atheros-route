@@ -1314,7 +1314,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 
         {
 		
-                     FILE *fp, *flist;
+                     FILE *fp, *f;
                     struct dhcpOfferedAddr 
                     {
                         unsigned char hostname[16];
@@ -1323,7 +1323,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                         unsigned long expires;
                     } lease;
                     char STAbuf[128];
-                    char buf[20], mac_buf[20], rate_buf[10], rssi_buf[10];
+                    char buf[1024], mac_buf[20], rate_buf[10], rssi_buf[10];
                     int i, j;
                     struct in_addr addr;
                     unsigned long expires;
@@ -1376,9 +1376,9 @@ fprintf(errOut,"[luodp] get mac from arp89");
 						Execute_cmd("arp -a > /tmp/getmac",rspBuff);
 						system("rm /tmp/arplist");
 							
-						FILE *f = fopen("/tmp/getmac","r");
+						f = fopen("/tmp/getmac","r");
 						char *ptr;
-						char *tmp;
+            		    char tmp[20]={0};
 						if ( !f )
 						{
 							fprintf(errOut,"\n%s  %d open /etc/arp_ip_mac_on.conf error\n \n",__func__,__LINE__);
@@ -3057,16 +3057,18 @@ struct staList *scan_staList(struct staList *list)
 
 //end zhaozhanwei
 //added by yhl below for ip process
-unsigned char * get_max_dhcp_end_ip(unsigned char* pChar,unsigned char ip[30])//ip is output
+//pChar is net_seg,ip is output,max_end_ip
+unsigned char * get_max_dhcp_end_ip(unsigned char* pChar,unsigned char ip[20])
 {		   
       unsigned char pstr[30]; 
-	  strcpy(ip,pChar);
-
 	  unsigned char* pip[4];
-	  int num=0,i,j;
 	  unsigned char tmp;
-	  num=sizeof(ip);
-		   
+	  int num=0,i,j;
+
+	  memset(ip,'\0',20);
+	  strcpy(ip,pChar);
+	  num=strlen(ip);
+	  
 	  pip[0]=ip;
 	  for(i=0,j=1;i<num,j<4;i++)
          { 
@@ -3077,69 +3079,60 @@ unsigned char * get_max_dhcp_end_ip(unsigned char* pChar,unsigned char ip[30])//
 				j++;
 			  }
     	 }
-		//printf("----%d.%d.%d.%d\n",atoi(pip[0]),atoi(pip[1]),atoi(pip[2]),atoi(pip[3]));
-
              for(i=3;i>=0;i--)
 			  {
 			   	if(atoi(pip[i])!=0)
-			   		{
-			   	if((atoi(pip[i])%128)==0)
-                                           { tmp=(atoi(pip[i])+127-1);break;}
-				if((atoi(pip[i])%64)==0)
+			   	{
+			    	if((atoi(pip[i])%128)==0)
+                            { tmp=(atoi(pip[i])+127-1);break;}
+				    if((atoi(pip[i])%64)==0)
 					        {tmp=(atoi(pip[i])+63-1);break;}
-				if((atoi(pip[i])%32)==0)
+				    if((atoi(pip[i])%32)==0)
 					        {tmp=(atoi(pip[i])+31-1);break;}
-				if((atoi(pip[i])%16)==0)
+				    if((atoi(pip[i])%16)==0)
 					        {tmp=(atoi(pip[i])+15-1);break;}
-				if((atoi(pip[i])%8)==0)
+				    if((atoi(pip[i])%8)==0)
 					       {tmp=(atoi(pip[i])+7-1);break;}
-				if((atoi(pip[i])%4)==0)
+				    if((atoi(pip[i])%4)==0)
 					       {tmp=(atoi(pip[i])+3-1);break;}
-				if((atoi(pip[i])%2)==0)
+				    if((atoi(pip[i])%2)==0)
 					       { tmp=(atoi(pip[i])+1-1);break;	}
-				break;
-			   		}
+				    break;
+			   	}
               }
-			sprintf(pstr,"%d.%d.%d.%d",atoi(pip[0]),atoi(pip[1]),atoi(pip[2]),tmp);
-			strcpy(ip,pstr);
+   sprintf(pstr,"%d.%d.%d.%d",atoi(pip[0]),atoi(pip[1]),atoi(pip[2]),tmp);
+   strcpy(ip,pstr);
 }
 
+//ensure pip psub to be :x.x.x.x\0.... ret_buf to be:\0 \0 ......
 void get_net_seg_or(unsigned char* pip,unsigned char* psub,unsigned char* ret_buf)
 {
 unsigned char* ip_seg_pos[4];
 unsigned char* sub_seg_pos[4];
-unsigned int ip_seg_int[4],sub_seg_int[4],net_seg_int[4];
+unsigned char ip_seg_int[4],sub_seg_int[4],net_seg_int[4];
 unsigned char net_seg_str[20];
 unsigned char num,i,j=0;
 
-unsigned char tmp[5];
+unsigned char tmp[20];
+
+memset(ret_buf,'\0',20);
+memset(net_seg_str,'\0',20);
+memset(tmp,'\0',20);
+
 
 ip_seg_pos[0]=pip;
 sub_seg_pos[0]=psub;
-memset(net_seg_str,'\0',20);
 
 //for--ip
 for(i=0;i<strlen(pip);i++)
 	{
 	   if(pip[i]=='.')
 		{
+		 pip[i]=='\0';
          j++;
 	    ip_seg_pos[j]=&pip[i+1];
         }
     }
-
-for(j=0;j<4;j++)
-{
-for(i=0;i<strlen(ip_seg_pos[j]);i++)
-	{
-	   if(ip_seg_pos[j][i]=='.')
-		{
-         ip_seg_pos[j][i]='\0';
-		 break;
-        }
-    }
-}
-
 
 for(i=0;i<4;i++)
 {
@@ -3152,22 +3145,11 @@ for(i=0;i<strlen(psub);i++)
 	{
 	   if(psub[i]=='.')
 		{
+		 psub[i]=='\0';
          j++;
 	     sub_seg_pos[j]=&psub[i+1];
         }
     }
-
-for(j=0;j<4;j++)
-{
-  for(i=0;i<strlen(sub_seg_pos[j]);i++)
-	{
-	   if(sub_seg_pos[j][i]=='.')
-		{
-         sub_seg_pos[j][i]='\0';
-		 break;
-        }
-    }
-}
 
 for(i=0;i<4;i++)
 {
@@ -3176,7 +3158,7 @@ sub_seg_int[i]=atoi(sub_seg_pos[i]);
 
 //or process
 for(i=0;i<4;i++)
-	net_seg_int[i]=(ip_seg_int[i]|sub_seg_int[i]);
+	{net_seg_int[i]=(ip_seg_int[i]|sub_seg_int[i]);}
 
 sprintf(net_seg_str,"%d",(net_seg_int[0]));
 strcat(net_seg_str,".");
@@ -3195,79 +3177,56 @@ strcat(net_seg_str,tmp);
 strcpy(ret_buf,net_seg_str);
 }
 
+
+//ensure pip psub to be :x.x.x.x\0.... ret_buf to be:\0 \0 ......
 void get_net_seg_and(unsigned char* pip,unsigned char* psub,unsigned char* ret_buf)
 {
-		unsigned char* ip_seg_pos[4];
-		unsigned char* sub_seg_pos[4];
-		unsigned int ip_seg_int[4],sub_seg_int[4],net_seg_int[4];
-		unsigned char net_seg_str[20];
-		unsigned char num,i,j=0;
+unsigned char* ip_seg_pos[4];
+unsigned char* sub_seg_pos[4];
+unsigned char ip_seg_int[4],sub_seg_int[4],net_seg_int[4];
+unsigned char net_seg_str[20];
+unsigned char num,i,j=0;
 
-		unsigned char tmp[5];
+unsigned char tmp[20];
 
-		ip_seg_pos[0]=pip;
-		sub_seg_pos[0]=psub;
-		memset(net_seg_str,'\0',20);
+memset(ret_buf,'\0',20);
+memset(net_seg_str,'\0',20);
+memset(tmp,'\0',20);
 
-		//for--ip
-		for(i=0;i<strlen(pip);i++)
-			{
-			   if(pip[i]=='.')
-				{
-				 j++;
-				ip_seg_pos[j]=&pip[i+1];
-				}
-			}
+ip_seg_pos[0]=pip;
+sub_seg_pos[0]=psub;
 
-		for(j=0;j<4;j++)
+//for--ip
+for(i=0;i<strlen(pip);i++)
+	{
+	   if(pip[i]=='.')
 		{
-		for(i=0;i<strlen(ip_seg_pos[j]);i++)
-			{
-			   if(ip_seg_pos[j][i]=='.')
-				{
-				 ip_seg_pos[j][i]='\0';
-				 break;
-				}
-			}
-		}
+		pip[i]=='\0';
+         j++;
+	    ip_seg_pos[j]=&pip[i+1];
+        }
+    }
+for(i=0;i<4;i++)
+ { ip_seg_int[i]=atoi(ip_seg_pos[i]);}
 
-
-		for(i=0;i<4;i++)
+//for sub
+   j=0;
+for(i=0;i<strlen(psub);i++)
+	{
+	   if(psub[i]=='.')
 		{
-		ip_seg_int[i]=atoi(ip_seg_pos[i]);
-		}
+		 psub[i]=='.';
+         j++;
+	     sub_seg_pos[j]=&psub[i+1];
+        }
+    }
 
-		//for sub
-		   j=0;
-		for(i=0;i<strlen(psub);i++)
-			{
-			   if(psub[i]=='.')
-				{
-				 j++;
-				 sub_seg_pos[j]=&psub[i+1];
-				}
-			}
+for(i=0;i<4;i++)
+  { sub_seg_int[i]=atoi(sub_seg_pos[i]);}
 
-		for(j=0;j<4;j++)
-		{
-		  for(i=0;i<strlen(sub_seg_pos[j]);i++)
-			{
-			   if(sub_seg_pos[j][i]=='.')
-				{
-				 sub_seg_pos[j][i]='\0';
-				 break;
-				}
-			}
-		}
-
-		for(i=0;i<4;i++)
-		{
-		sub_seg_int[i]=atoi(sub_seg_pos[i]);
-		}
-
-		//and process
-		for(i=0;i<4;i++)
-			net_seg_int[i]=(ip_seg_int[i]&sub_seg_int[i]);
+//and process
+for(i=0;i<4;i++)
+	{net_seg_int[i]=(ip_seg_int[i]&sub_seg_int[i]);}
 
 		sprintf(net_seg_str,"%d",(net_seg_int[0]));
 		strcat(net_seg_str,".");
@@ -3395,6 +3354,27 @@ static void  Result_tiaozhuan(char* res,char * gopage)
     printf(temp);
     printf("</body></html>");
 }
+static void  Result_tiaozhuan2(char* res,char * gopage)
+{
+    char temp[256]={0};
+	
+	//system("dd if=/dev/caldata of=/etc/cal.bin > /dev/null 2>&1");
+	
+    printf("HTTP/1.0 200 OK\r\n");
+    printf("Content-type: text/html\r\n");
+    printf("Connection: close\r\n");
+    printf("\r\n");
+    printf("\r\n");
+    printf("<HTML><HEAD>\r\n");
+    printf("</head><body>");
+
+    //sprintf(temp,"<script language=javascript>setTimeout(function(){window.top.location.href=\"http://%s/cgi-bin/tiaozhuan?RESULT=%s?PAGE=%s\";},5000);</script>",gopage,res,"ad_local_gwset");
+    sprintf(temp,"<script language=javascript>setTimeout(function(){window.top.location.href=\"http://%s/index.html\";},5000);</script>",gopage);
+    printf(temp);
+   fprintf(errOut,"\ntemp:%s\n",temp);
+    printf("</body></html>");
+}
+
 /**************************************************************************/
 static void  Reboot_tiaozhuan(char* res,char * gopage)
 {
@@ -4251,19 +4231,21 @@ int main(int argc,char **argv)
 	if((strcmp(CFG_get_by_name("PPP",valBuff),"PPP") == 0 ) || (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 ))
 	{	
 		char pppoe_mode[10];						
-		memset(pppoe_mode,'\0',10);
 		char three_thread_buf[128];						
-		memset(three_thread_buf,'\0',128);
 		char tmp_Buff[10];	
-		char tmp2[128];
+		char cmdstr[128];
+		char route_gw[20];
 		
+		memset(pppoe_mode,'\0',10);
+		memset(three_thread_buf,'\0',128);
 		memset(tmp_Buff,'\0',10);
+		memset(cmdstr,'\0',128);
+		memset(route_gw,'\0',20);
 		int flag=0; 
-		Execute_cmd("cfg -e | grep \"WAN_MODE=\"",valBuff);              
+		
+		Execute_cmd("cfg -e | grep 'WAN_MODE='",valBuff);              
 		if(strstr(valBuff,"dhcp") != 0)
-		{
-			//kill udhcpc                       
-			//Execute_cmd("ps aux | grep udhcpc | awk \'{print $1}\' | xargs kill -9  > /dev/null 2>&1", rspBuff);                      
+		{                                           
 			Execute_cmd("killall udhcpc > /dev/null 2>&1", rspBuff);               
 		}
 		if (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 ) 
@@ -4279,84 +4261,69 @@ int main(int argc,char **argv)
 		}
 		if(!strncmp(pppoe_mode,"auto",4))
 		{  
-			char cgi_auto[128];
 			char	usernameBuff[128];
 			char	passBuff[128];
-			char	cmdstr[128];
-						 
+						  
 			CFG_get_by_name("PPPOE_USER",usernameBuff);
-			CFG_get_by_name("PPPOE_PWD",passBuff);	
-			strcat(cmdstr,"pppoe-setup ");strcat(cmdstr,usernameBuff);strcat(cmdstr," ");strcat(cmdstr,passBuff);
-			strcat(cmdstr," > /dev/null 2>&1");
-            Execute_cmd(cmdstr,cgi_auto);
+			CFG_get_by_name("PPPOE_PWD",passBuff);
 
-            Execute_cmd("pppoe-stop > /dev/null 2>&1", cgi_auto);sleep(5);
-			Execute_cmd("pppoe-start > /dev/null 2>&1", cgi_auto);sleep(5);
+			sprintf(cmdstr,"pppoe-setup %s %s > /dev/null 2>&1",usernameBuff,passBuff);
+			fprintf(errOut,"auto pppoe-setup cmdstr-----%s\n",cmdstr);
+			system(cmdstr);
+
+            system("pppoe-stop > /dev/null 2>&1");sleep(5);
+			system("pppoe-start > /dev/null 2>&1");sleep(5);
 		}
 		else if(!strncmp(pppoe_mode,"demand",6))
 		{  
-			char cgi_dem[128];
 			char	usernameBuff[128];
 			char	passBuff[128];
-			char	cmdstr[128];
 						  
 			CFG_get_by_name("PPPOE_USER",usernameBuff);
 			CFG_get_by_name("PPPOE_PWD",passBuff);
-			strcat(cmdstr,"pppoe-setup ");strcat(cmdstr,usernameBuff);strcat(cmdstr," ");strcat(cmdstr,passBuff);
-			strcat(cmdstr," > /dev/null 2>&1");//very important
-            Execute_cmd(cmdstr,cgi_dem);
+			
+			sprintf(cmdstr,"pppoe-setup %s %s > /dev/null 2>&1",usernameBuff,passBuff);
+			fprintf(errOut,"demand pppoe-setup cmdstr-----%s\n",cmdstr);
+			system(cmdstr);
 
-			//Execute_cmd("pppoe-stop", cgi_dem);sleep(5);
 			system("pppoe-stop > /dev/null 2>&1");sleep(5);
 			system("pppoe-start > /dev/null 2>&1");sleep(5);
-			//Execute_cmd("pppoe-start", cgi_dem);sleep(5);
 		}//demand mode
 		else if(!strncmp(pppoe_mode,"manual",6))
 		{
-			char cgi_man[128];
 			char	usernameBuff[128];
 			char	passBuff[128];
-			char	cmdstr[128];
 						  
 			CFG_get_by_name("PPPOE_USER",usernameBuff);
 			CFG_get_by_name("PPPOE_PWD",passBuff);
-			strcat(cmdstr,"pppoe-setup ");strcat(cmdstr,usernameBuff);strcat(cmdstr," ");strcat(cmdstr,passBuff);
-			strcat(cmdstr," > /dev/null 2>&1");
-            Execute_cmd(cmdstr,cgi_man);
-			            
-			Execute_cmd("pppoe-stop > /dev/null 2>&1", cgi_man);sleep(5);
-			Execute_cmd("pppoe-start > /dev/null 2>&1", cgi_man);sleep(5);
+			
+			sprintf(cmdstr,"pppoe-setup %s %s > /dev/null 2>&1",usernameBuff,passBuff);
+			fprintf(errOut,"manual pppoe-setup cmdstr-----%s\n",cmdstr);
+			system(cmdstr);   
+			
+            system("pppoe-stop > /dev/null 2>&1");sleep(5);
+			system("pppoe-start > /dev/null 2>&1");sleep(5);
 		}//manual mode		
 		else if(!strncmp(pppoe_mode,"timing",6))	
 		{ 
-			char cgi_tim[128];
 			char	usernameBuff[128];
 			char	passBuff[128];
-			char	cmdstr[128];
 						  
 			CFG_get_by_name("PPPOE_USER",usernameBuff);
 			CFG_get_by_name("PPPOE_PWD",passBuff);
-			strcat(cmdstr,"pppoe-setup ");strcat(cmdstr,usernameBuff);strcat(cmdstr," ");strcat(cmdstr,passBuff);
-			strcat(cmdstr," > /dev/null 2>&1");
-			Execute_cmd(cmdstr,cgi_tim);
+			
+			sprintf(cmdstr,"pppoe-setup %s %s > /dev/null 2>&1",usernameBuff,passBuff);
+			fprintf(errOut,"timing pppoe-setup cmdstr-----%s\n",cmdstr);
+			system(cmdstr);
 
-			Execute_cmd("pppoe-stop > /dev/null 2>&1", cgi_tim);sleep(5);
-			Execute_cmd("pppoe-start > /dev/null 2>&1", cgi_tim);sleep(5);
+            system("pppoe-stop > /dev/null 2>&1");sleep(5);
+			system("pppoe-start > /dev/null 2>&1");sleep(5);
 		}
-		if(strstr(Execute_cmd("echo `route -n|grep ppp0|awk -F ' ' '{print$8}'`",tmp2),"ppp0 ppp0"))
-		{
-			Execute_cmd("route add default gw `route -n | grep ppp0 |awk -F ' ' '{print$1}'|awk 'NR==1'`",tmp2);
-		}
-		// user select pppoe,then start threethread
-		Execute_cmd("ps aux | grep \"threethread\"|awk -F ' ' '{print$5}'|cut -c11-21 | awk 'NR==1'",three_thread_buf);
-        if(!strncmp(three_thread_buf,"threethread",11))
-		{
-			Execute_cmd("killall threethread > /dev/null 2>&1",tmp_Buff);sleep(5);
-		    Execute_cmd("killall threethread > /dev/null 2>&1",tmp_Buff);sleep(5);//ensure kill old threethread
-		}
-        Execute_cmd("/usr/sbin/threethread & > /dev/null 2>&1",tmp_Buff);sleep(2);
-		//fprintf(errOut,"\nfprintf__user select pppoe,start /usr/sbin/threethread & > /dev/null 2>&1\n");
 
+		//kill old,start new  threethread
+		    system("killall threethread > /dev/null 2>&1");sleep(1);
+            system("/usr/sbin/threethread & > /dev/null 2>&1");sleep(1);
+		
 		//for pppoe show yhlnew
 		char pppoe_ip[20];
 		char pppoe_gw[20];
@@ -4369,6 +4336,16 @@ int main(int argc,char **argv)
 		CFG_set_by_name("WAN_IPADDR3",pppoe_ip);
 		CFG_set_by_name("AP_NETMASK3",pppoe_mask);
 		CFG_set_by_name("IPGW3",pppoe_gw);
+
+		//add ppp0 route default gw if losing
+		fprintf(errOut,"\npppoe5\n");
+		if(!strstr(Execute_cmd("echo `route -n|grep ppp0|awk -F ' ' '{print$8}'`",route_gw),"ppp0 ppp0"))
+		     {
+		      Execute_cmd("route add default gw `route -n | grep ppp0 |awk -F ' ' '{print$1}'|awk 'NR==1'`",route_gw);
+               fprintf(errOut,"\nPPP0 LOST,ADD ONE\n");
+			 }
+		fprintf(errOut,"\npppoe6\n");
+		//save new config to flash 
 		if(flag!=1)
 		{
 			writeParameters(NVRAM,"w+", NVRAM_OFFSET);//save new config to flash 
@@ -4914,86 +4891,91 @@ int main(int argc,char **argv)
     内网设置    网关设置
    *************************************/
     if(strcmp(CFG_get_by_name("GW_SET",valBuff),"GW_SET") == 0 ) 
-    {		 
-        fprintf(errOut,"\n%s  %d GW_SET \n",__func__,__LINE__);
-		unsigned char br0_ip[20],br0_mac[20],br0_sub[20], eth0_ip[20];
+    {
+		unsigned char br0_ip[20],br0_sub[20], eth0_ip[20];
 		unsigned char*peth0_ip;
-		unsigned char pChar[128];
-		
-		
 		unsigned char* ptmp;
-		unsigned char dhcp_b[20],dhcp_hb[20], dhcp_e[20],tmp[20],tmp2[20],tmp_b[20];
-		
-		unsigned char dhcp_flag[20];
-		unsigned char filter[20];
+		unsigned char dhcp_b[20],dhcp_e[20],net_seg[20],net_seg2[20],tmp[20],tmp2[20];
+		unsigned char pChar[128];
 		
 		int num,i=0;
 
-		CFG_get_by_name("BR0_MAC",br0_mac);
 		CFG_get_by_name("AP_IPADDR",br0_ip);
 		CFG_get_by_name("AP_NETMASK",br0_sub);
 
-		fprintf(errOut,"\nbr0_mac:%s,br0_ip:%s,br0_sub:%s\n",br0_mac,br0_ip,br0_sub);
-
-		Execute_cmd("ifconfig eth0|grep 'inet addr:' |awk -F ' ' '{print$2}'|awk -F ':' '{print$2}'", eth0_ip);
+		Execute_cmd("ifconfig eth0|grep 'inet addr:'|awk -F ' ' '{print$2}'|awk -F ':' '{print$2}'", eth0_ip);
 		peth0_ip=strtok(eth0_ip,"\n");
   	
-		if(strcmp(peth0_ip,br0_ip))//eth0_ip!=br0_ip
+		if(strcmp(peth0_ip,br0_ip))//TODO
 		{
 		   sprintf(pChar,"ifconfig br0 %s netmask %s up > /dev/null 2>&1",br0_ip,br0_sub);
-		   Execute_cmd(pChar, rspBuff);
+		   system(pChar);
+		   
            //update nat_vlan.sh
-		   Execute_cmd("cat /etc/nat_vlan.sh | grep 'ppp0'|grep 'DNAT --to'|awk -F ' ' '{print$15}'", tmp);//get old DNAT value
+		   Execute_cmd("cat /etc/nat_vlan.sh | grep 'ppp0'|grep 'DNAT --to'|awk -F ' ' '{print$15}'", tmp);
 		   ptmp=strtok(tmp,"\n");
-		   //combine replacement cmd
 		   sprintf(pChar,"sed -i 's/%s/%s/g' /etc/nat_vlan.sh",ptmp,br0_ip);
-		   Execute_cmd(pChar, rspBuff);
-	
-		   get_net_seg_and(br0_ip,br0_sub,dhcp_b);	   
-		   strcpy(dhcp_hb,dhcp_b);
-			//just for flag
-		   strcpy(filter,"0.0.0.255");
-		   get_net_seg_and(dhcp_hb,filter,tmp2);
-		 
-		   if(!strcmp(tmp2,"0.0.0.0"))
-		   {
-		      num=strlen(dhcp_b);
-		      for(i=num-1;i>0;i--)
-		   	  {
-			      if(dhcp_b[i]=='.')
-			   	  {
-			   	   break;
-				  }
-			      dhcp_b[i]='\0';
-		   	  }
-		      strcpy(tmp,dhcp_b);
-			  strcat(dhcp_b,"101");
-			  strcat(tmp,"199");
-			  strcpy(dhcp_e,tmp);
-		   }
-		   else if(strcmp(tmp2,"0.0.0.0"))
-		   {	
-			   //get dhcp_e,todo
-		       get_max_dhcp_end_ip(dhcp_b,dhcp_e);
-			   //get dhcp_b,save in tmp_b
-			   strcpy(tmp,"0.0.0.1");
-			   get_net_seg_or(dhcp_b,tmp,tmp_b);
-		   }
-		 fprintf(errOut,"\ndhcp_b:%s\ndhcp_e:%s\n",tmp_b,dhcp_e);
+		   system(pChar);
 
-		 CFG_set_by_name("DHCP_BIP",tmp_b);
+		   memset(net_seg2,'\0',20);
+		   memset(net_seg,'\0',20);
+
+		   get_net_seg_and(br0_ip,br0_sub,net_seg);	
+		   
+		   strcpy(net_seg2,net_seg);//backup net_seg
+		   fprintf(errOut,"net seg:%s\n",net_seg);
+
+		   memset(tmp,'\0',20);
+		   memset(tmp2,'\0',20);	
+		   
+		   strcpy(tmp,"0.0.0.255");
+		   get_net_seg_and(net_seg,tmp,tmp2);	   
+		   fprintf(errOut,"\nAnd 0.0.0.255 is:%s to check\n",tmp2);
+		  
+		  if(!strcmp(tmp2,"0.0.0.0"))
+		   {  
+		      memset(tmp,'\0',20);
+			  memset(tmp2,'\0',20);
+			  strcpy(tmp,"255.255.255.0");
+			  
+		      get_net_seg_and(net_seg,tmp,tmp2);
+			  fprintf(errOut,"\nAnd 255.255.255.0---%s\n",tmp2);
+			  memset(tmp,'\0',20);
+			  strcpy(tmp,"0.0.0.100");
+			  
+			  memset(dhcp_b,'\0',20);
+			  get_net_seg_or(tmp2,tmp,dhcp_b);
+
+			  strcpy(tmp,"255.255.255.0");
+			  memset(tmp2,'\0',20);
+			  memset(dhcp_e,'\0',20);
+		      get_net_seg_and(net_seg,tmp,tmp2);
+			  strcpy(tmp,"0.0.0.199");
+			  get_net_seg_or(tmp2,tmp,dhcp_e);
+		   }
+		   else
+		   	{	
+		       get_max_dhcp_end_ip(net_seg2,dhcp_e);
+			   strcpy(tmp,"0.0.0.1");
+			   get_net_seg_or(net_seg2,tmp,dhcp_b);
+		    }
+		 fprintf(errOut,"\ndhcp_b:%s\ndhcp_e:%s\n",dhcp_b,dhcp_e);
+
+		 CFG_set_by_name("DHCP_BIP",dhcp_b);
 		 CFG_set_by_name("DHCP_EIP",dhcp_e);
 		 
-		 CFG_get_by_name("DHCPON_OFF",dhcp_flag);
-		 if(strcmp(dhcp_flag,"on")==0)
-		 {
-			   Execute_cmd("killall udhcpd > /dev/null 2>&1",rspBuff);
-		       Execute_cmd("/etc/rc.d/rc.udhcpd", rspBuff);
-			   Execute_cmd("/usr/sbin/udhcpd /etc/udhcpd.conf",rspBuff);
-		 }
-         //write to flash
-		 writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-         writeParameters("/tmp/.apcfg","w+",0);
+		 CFG_get_by_name("DHCPON_OFF",tmp);
+		    if(strcmp(tmp,"on")==0)
+		  	 {
+		  	 system("killall udhcpd > /dev/null 2>&1");			 
+			 system("/etc/rc.d/rc.udhcpd > /dev/null 2>&1");
+			 system("/usr/sbin/set_addr > /dev/null 2>&1");		 
+			 system("/usr/sbin/udhcpd /etc/udhcpd.conf > /dev/null 2>&1");
+
+		  	}
+        //write to flash
+		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+        writeParameters("/tmp/.apcfg","w+",0);
 	   }//end eth0_ip != br0_ip
 	   else
 	   {
@@ -5018,11 +5000,9 @@ int main(int argc,char **argv)
        } 
         
        char tt[20]={0};
-       char tt2[128]={0};
        CFG_get_by_name("AP_IPADDR",tt);
-       sprintf(tt2,"http://%s/cgi-bin/%s",tt,argv[0]);
-	   Result_tiaozhuan("yes",tt2);
-	   fprintf(errOut,"test %s \n",tt2);
+        //fprintf(errOut,"\ntt:%s\n",tt);
+	   Result_tiaozhuan2("yes",tt);
        gohome =2;
     }
     

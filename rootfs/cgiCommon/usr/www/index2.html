@@ -117,7 +117,7 @@ function onInit()
 		e.src = "images/logo.gif";
 		
 	tr();
-	iFrameHeight();
+	//iFrameHeight();
 	window.onresize=iFrameHeight; 
 }
 function zhcn()
@@ -155,6 +155,7 @@ function iFrameHeight()
 	var xxx= document.getElementById("ifm"); 
 	xxx.height=500;
 	var subWeb = document.frames ? document.frames["ifm"].document : xxx.contentDocument; 
+
 	if(xxx != null && subWeb != null) 
 	{ 
 		xxx.height = subWeb.body.scrollHeight; 
@@ -182,14 +183,14 @@ function iFrameHeight()
    		winWidth = document.body.clientWidth ;
 		winHeight = document.body.clientHeight ;     //return "Camino";  
    }  
-   if(isMozilla=navigator.userAgent.indexOf("Gecko/")>0)
+   if(isMozilla=navigator.userAgent.indexOf("Gecko")>0)
    {  
 		winWidth = document.body.clientWidth ;
 		winHeight = document.body.clientHeight ;    //return "Gecko";  
    }  
   
 //结果输出至两个文本框 
-	document.getElementById("ifm").width= winWidth-201;   
+	document.getElementById("ifm").width= winWidth-210;   
 	if((winHeight-80)> subWeb.body.scrollHeight)
 	{
 		xxx.height = (winHeight-80); 

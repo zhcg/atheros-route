@@ -1,3 +1,6 @@
+apps/ntpclient_arm/ntpclient.o
+apps/ntpclient_arm/ntpclient
+apps/terminal_dev_register/request_cmd.o
 apps/webui/arp/arp
 apps/terminal_dev_register/communication_network.o
 apps/terminal_dev_register/communication_serial.o

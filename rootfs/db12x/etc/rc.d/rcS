@@ -188,4 +188,3 @@ spi_rt_main &
 /usr/bin/cal_check &
 /usr/sbin/threethread &
 /usr/sbin/set_ntpserver &
-net_test &

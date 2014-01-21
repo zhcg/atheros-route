@@ -53,8 +53,8 @@ function tr()
 	ee.innerHTML = _("admw m_wan");
 	ee = document.getElementById("m_wifi");
 	ee.innerHTML = _("admw m_wifi");
-	ee = document.getElementById("m_wirere");
-	ee.innerHTML = _("admw m_wirere");
+	//ee = document.getElementById("m_wirere");
+	//ee.innerHTML = _("admw m_wirere");
 }
 function onInit()
 {
@@ -72,7 +72,7 @@ function onInit()
 		e.src = "images/logo.gif";
 		
 	tr();
-	iFrameHeight();
+	//iFrameHeight();
 	window.onresize=iFrameHeight; 
 }
 function zhcn()
@@ -105,7 +105,7 @@ function hidehead()
 {
   document.getElementById("c1").innerHTML='<a href="cgi-bin/map" target="ifm" id="m_normal" onclick="showpwd1()"></a>';
   document.getElementById("c2").innerHTML='<a href="cgi-bin/w2" target="ifm" id="m_wan"  onclick="showpwd2()"></a>';
-  document.getElementById("c3").innerHTML='<a href="cgi-bin/w4" target="ifm" id="m_wirere" onclick="showpwd3()"></a>';
+  //document.getElementById("c3").innerHTML='<a href="cgi-bin/w4" target="ifm" id="m_wirere" onclick="showpwd3()"></a>';
   document.getElementById("c4").innerHTML='<a href="cgi-bin/w3" target="ifm" id="m_wifi" onclick="showpwd4()"></a>';
 }
 function showpwd1()
@@ -123,7 +123,7 @@ function showpwd2()
 function showpwd3()
 {
 	hidehead();
- 	document.getElementById("c3").innerHTML='<a href="cgi-bin/w4" target="ifm" id="m_wirere" onclick="showpwd3()" class="handaer_common"></a>';
+ 	//document.getElementById("c3").innerHTML='<a href="cgi-bin/w4" target="ifm" id="m_wirere" onclick="showpwd3()" class="handaer_common"></a>';
 	tr();
 }
 function showpwd4()
@@ -138,6 +138,7 @@ function iFrameHeight()
 	var xxx= document.getElementById("ifm"); 
 	xxx.height=500;
 	var subWeb = document.frames ? document.frames["ifm"].document : xxx.contentDocument; 
+
 	if(xxx != null && subWeb != null) 
 	{ 
 		xxx.height = subWeb.body.scrollHeight; 
@@ -165,14 +166,14 @@ function iFrameHeight()
    		winWidth = document.body.clientWidth ;
 		winHeight = document.body.clientHeight ;     //return "Camino";  
    }  
-   if(isMozilla=navigator.userAgent.indexOf("Gecko/")>0)
+   if(isMozilla=navigator.userAgent.indexOf("Gecko")>0)
    {  
 		winWidth = document.body.clientWidth ;
 		winHeight = document.body.clientHeight ;    //return "Gecko";  
    }  
   
 //结果输出至两个文本框 
-	document.getElementById("ifm").width= winWidth-201; 
+	document.getElementById("ifm").width= winWidth-210; 
 	//alert(winHeight);
 	//alert(subWeb.body.scrollHeight);
 	if((winHeight-80)> subWeb.body.scrollHeight)
@@ -219,7 +220,7 @@ function iFrameHeight()
 <dt id="m_fast1">快速设置</dt>
 	<dd><span id="c1"><a href="cgi-bin/map" target="ifm" id="m_normal" onClick="showpwd1()" class="handaer_common">设置向导</a></span></dd>
 	<dd><span id="c2"><a href="cgi-bin/w2" target="ifm" id="m_wan" onClick="showpwd2()">外网设置</a></span></dd>
-	<dd><span id="c3"><a href="cgi-bin/w4" target="ifm" id="m_wirere" onClick="showpwd3()">无线设置</a></span></dd>
+	<!--dd><span id="c3"><a href="cgi-bin/w4" target="ifm" id="m_wirere" onClick="showpwd3()">无线设置</a></span></dd-->
 	<dd><span id="c4"><a href="cgi-bin/w3" target="ifm" id="m_wifi" onClick="showpwd4()">WiFi设置</a></span></dd>
    </dl>
     </div>     
