@@ -171,14 +171,14 @@ int ath_spi_si3217x_reset(int status)
 int ath_spi_si3217x_gpio_init(void)
 {
 	unsigned int rddata;
-#if 0
-	//set gpio0 used as spi_cs1
-    rddata = ath_reg_rd(ATH_GPIO_OUT_FUNCTION1);
-    rddata = rddata & 0xffffff00;
-    rddata = rddata | ATH_GPIO_OUT_FUNCTION1_ENABLE_GPIO_4(0x00);
-    ath_reg_wr(ATH_GPIO_OUT_FUNCTION1, rddata);
+#if 1
+	//set gpio17 used as spi_cs for si32178 on B6_V3 board
+    rddata = ath_reg_rd(ATH_GPIO_OUT_FUNCTION4);
+    rddata = rddata & 0xffff00ff;
+    rddata = rddata | ((0x07) << 8);
+    ath_reg_wr(ATH_GPIO_OUT_FUNCTION4, rddata);
 
-	ath_reg_rmw_clear(ATH_GPIO_OE, 1<<4);
+	ath_reg_rmw_clear(ATH_GPIO_OE, 1<<17);
 #else
 	
 	ath_reg_rmw_set(ATH_GPIO_FUNCTIONS,

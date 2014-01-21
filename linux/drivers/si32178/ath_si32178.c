@@ -206,7 +206,20 @@ int ath_slic_set_freq(void)
 int si3217x_reset(int status)
 {
 	unsigned int rddata;
+#if 1 //B6_V3
+	ath_reg_rmw_clear(ATH_GPIO_OE, 1<<19);
 
+	rddata = ath_reg_rd(ATH_GPIO_OUT_FUNCTION4);
+	rddata = rddata & 0xffffff;
+//	rddata = rddata | ATH_GPIO_OUT_FUNCTION3_ENABLE_GPIO_15(0x00);
+	ath_reg_wr(ATH_GPIO_OUT_FUNCTION4, rddata);
+
+	if (status) {
+		ath_reg_rmw_clear(ATH_GPIO_OUT, 1<<19);
+	} else  {
+		ath_reg_rmw_set(ATH_GPIO_OUT, 1<<19);
+	}
+#else
 	ath_reg_rmw_clear(ATH_GPIO_OE, 1<<15);
 
 	rddata = ath_reg_rd(ATH_GPIO_OUT_FUNCTION3);
@@ -219,6 +232,7 @@ int si3217x_reset(int status)
 	} else  {
 		ath_reg_rmw_set(ATH_GPIO_OUT, 1<<15);
 	}
+#endif
 	return 0;
 }
 
@@ -1331,10 +1345,15 @@ void ath_slic_link_on(void)
 		ath_reg_wr(ATH_GPIO_IN_ENABLE4, rddata);
 		
 		rddata = ath_reg_rd(ATH_GPIO_OUT_FUNCTION3);
+#if 1 //B6_V3
+		rddata |= (ATH_GPIO_OUT_FUNCTION3_ENABLE_GPIO_12(0x4) |
+				ATH_GPIO_OUT_FUNCTION3_ENABLE_GPIO_14(0x6) |
+				ATH_GPIO_OUT_FUNCTION3_ENABLE_GPIO_15(0x5));
+#else
 		rddata |= (ATH_GPIO_OUT_FUNCTION3_ENABLE_GPIO_12(0x4) |
 				ATH_GPIO_OUT_FUNCTION3_ENABLE_GPIO_13(0x6) |
 				ATH_GPIO_OUT_FUNCTION3_ENABLE_GPIO_14(0x5));
-
+#endif
 		ath_reg_wr(ATH_GPIO_OUT_FUNCTION3, rddata);
 
 //		ath_reg_rmw_set(ATH_GPIO_FUNCTIONS, (ATH_GPIO_FUNCTION_ETH_SWITCH_LED3_EN |
@@ -1371,7 +1390,11 @@ void ath_slic_link_on(void)
 //			rddata = ATH_GPIO_OE_EN(0x30309);
 			rddata = ath_reg_rd(ATH_GPIO_OE);
 			rddata = rddata | ATH_GPIO_OE_EN(0x800);//GPIO11=SLIC_DATA_IN
+#if 1 //B6_V3
 			rddata = rddata & 0xffff8fff;//GPIO12=SLIC_DATA_OUT GPIO13=SLIC_PCM_CLK GPIO14=SLIC_PCM_FS 
+#else
+			rddata = rddata & 0xffff2fff;//GPIO12=SLIC_DATA_OUT GPIO14=SLIC_PCM_CLK GPIO15=SLIC_PCM_FS 
+#endif		
 		}
 		ath_reg_wr(ATH_GPIO_OE, rddata);
 
