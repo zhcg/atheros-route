@@ -464,7 +464,7 @@ static int get_base_state(struct s_cacm *cacm, char *buf, unsigned short buf_len
     int res = 0;
     int fd = 0;
     struct stat file_stat;
-    char * file_name = "/var/linphone/log/.base_state";
+    char * file_name = "/var/cacm/log/.base_state";
     FILE *fp = NULL;
     struct timeval tv;
     memset(&tv, 0, sizeof(struct timeval));
@@ -484,13 +484,13 @@ static int get_base_state(struct s_cacm *cacm, char *buf, unsigned short buf_len
     char buf_tmp[512] = {0};
     char process_info_buf[4096] = {0};
     PRINT("_____________________\n");
-    if (system("top -b -n 1 > /var/linphone/log/.base_state") < 0)
+    if (system("top -b -n 1 > /var/cacm/log/.base_state") < 0)
     {
         PERROR("system failed!\n");
         return SYSTEM_ERR;
     }
     PRINT("_____________________\n");
-    if ((fp = fopen("/var/linphone/log/.base_state", "r")) == NULL)
+    if ((fp = fopen("/var/cacm/log/.base_state", "r")) == NULL)
     {
         PERROR("open failed!\n");
         return OPEN_ERR;
@@ -651,7 +651,7 @@ static int get_base_state(struct s_cacm *cacm, char *buf, unsigned short buf_len
     int res = 0;
     int fd = 0;
     struct stat file_stat;
-    char * file_name = "/var/linphone/log/.base_state";
+    char * file_name = "/var/cacm/log/.base_state";
     FILE *fp = NULL;
     struct timeval tv;
     memset(&tv, 0, sizeof(struct timeval));
@@ -669,32 +669,32 @@ static int get_base_state(struct s_cacm *cacm, char *buf, unsigned short buf_len
     char buf_tmp[256] = {0};
     char process_info_buf[4096] = {0};
     PRINT("_____________________\n");
-    if (system("top -b -n 1 > /var/linphone/log/.base_state") < 0)
+    if (system("top -b -n 1 > /var/cacm/log/.base_state") < 0)
     {
         PERROR("system failed!\n");
         return SYSTEM_ERR;
     }
     PRINT("_____________________\n");
-    if (system("cat /var/linphone/log/.base_state | grep CPU: | sed '/grep/'d | awk '{print $2,$4,$6,$8}' > /var/linphone/log/.cpu_info") < 0)
+    if (system("cat /var/cacm/log/.base_state | grep CPU: | sed '/grep/'d | awk '{print $2,$4,$6,$8}' > /var/cacm/log/.cpu_info") < 0)
     {
         PERROR("system failed!\n");
         return SYSTEM_ERR;
     }
     PRINT("_____________________\n");
-    if (system("cat /var/linphone/log/.base_state | grep Mem: | sed '/grep/'d | awk '{print $2}' > /var/linphone/log/.mem_info") < 0)
+    if (system("cat /var/cacm/log/.base_state | grep Mem: | sed '/grep/'d | awk '{print $2}' > /var/cacm/log/.mem_info") < 0)
     {
         PERROR("system failed!\n");
         return SYSTEM_ERR;
     }
     PRINT("_____________________\n");
-    if (system("cat /var/linphone/log/.base_state | sed '1,4d' | awk '{print $8,$6,$7}' | awk '{if ($0 != line) print;line = $0}' > /var/linphone/log/.process_info") < 0)
+    if (system("cat /var/cacm/log/.base_state | sed '1,4d' | awk '{print $8,$6,$7}' | awk '{if ($0 != line) print;line = $0}' > /var/cacm/log/.process_info") < 0)
     {
         PERROR("system failed!\n");
         return SYSTEM_ERR;
     }
     PRINT("_____________________\n");
     // cpu 信息
-    if ((fp = fopen("/var/linphone/log/.cpu_info", "r")) == NULL)
+    if ((fp = fopen("/var/cacm/log/.cpu_info", "r")) == NULL)
     {
         PERROR("open failed!\n");
         return OPEN_ERR;
@@ -706,7 +706,7 @@ static int get_base_state(struct s_cacm *cacm, char *buf, unsigned short buf_len
     memset(buf_tmp, 0, strlen(buf_tmp));
     
     // mem 信息
-    if ((fp = fopen("/var/linphone/log/.mem_info", "r")) == NULL)
+    if ((fp = fopen("/var/cacm/log/.mem_info", "r")) == NULL)
     {
         PERROR("open failed!\n");
         return OPEN_ERR;
@@ -718,7 +718,7 @@ static int get_base_state(struct s_cacm *cacm, char *buf, unsigned short buf_len
     memset(buf_tmp, 0, strlen(buf_tmp));
     
     // 各个进程 信息
-    if ((fp = fopen("/var/linphone/log/.process_info", "r")) == NULL)
+    if ((fp = fopen("/var/cacm/log/.process_info", "r")) == NULL)
     {
         PERROR("open failed!\n");
         return OPEN_ERR;
@@ -775,7 +775,7 @@ int get_base_state(struct s_cacm *cacm, char *buf, unsigned short buf_len)
     int res = 0;
     int fd = 0;
     struct stat file_stat;
-    char * file_name = "/var/linphone/log/.base_state";
+    char * file_name = "/var/cacm/log/.base_state";
     FILE *fp = NULL;
     struct timeval tv;
     memset(&tv, 0, sizeof(struct timeval));
@@ -798,7 +798,7 @@ int get_base_state(struct s_cacm *cacm, char *buf, unsigned short buf_len)
     PRINT("_____________________\n");
     while (1)
     {
-        if ((fp = fopen("/var/linphone/log/.base_state", "r")) == NULL)
+        if ((fp = fopen("/var/cacm/log/.base_state", "r")) == NULL)
         {
             PERROR("open failed!\n");
             return OPEN_ERR;
