@@ -1,3 +1,12 @@
+apps/check_phone_status/check_phone_status
+apps/check_phone_status/check_phone_status.o
+apps/phone_9344_32178/phone_control
+apps/phone_9344_32178/src/dtmf_all_raw_data_100ms_big.o
+apps/phone_9344_32178/src/fsk_parse.o
+apps/phone_9344_32178/src/phone_action.o
+apps/phone_9344_32178/src/phone_audio.o
+apps/phone_9344_32178/src/phone_control.o
+apps/phone_9344_32178/src/phone_main.o
 apps/ntpclient_arm/ntpclient.o
 apps/ntpclient_arm/ntpclient
 apps/terminal_dev_register/request_cmd.o
