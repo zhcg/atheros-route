@@ -3698,6 +3698,9 @@ int main(int argc,char **argv)
             */
 			//fprintf(errOut,"[luodp] do factory");
             Execute_cmd("rm -rf /etc/wpa2/*.conf;/etc/ath/apcfg", rspBuff);	
+            
+            //backup FACTORY flag
+            CFG_set_by_name("FACTORY","1");
 			//backup version
 			CFG_set_by_name("SOFT_VERSION",valBuff);
 			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
