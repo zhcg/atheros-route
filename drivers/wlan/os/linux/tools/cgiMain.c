@@ -2772,8 +2772,11 @@ int del_addr_bind(void)
 	//CFG_get_by_name("DELXXX",valBuff1);
 	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
 	writeParameters("/tmp/.apcfg","w+",0);
+	Execute_cmd("killall udhcpd > /dev/null 2>&1",rspBuff);
 
 	Execute_cmd("/usr/sbin/del_addr > /dev/null 2>&1",rspBuff);
+	
+	Execute_cmd("/usr/sbin/udhcpd /etc/udhcpd.conf",rspBuff);
 	return 0;
 }
 /*end :  wangyu add for dhcp server operation */
@@ -3695,6 +3698,9 @@ int main(int argc,char **argv)
             */
 			//fprintf(errOut,"[luodp] do factory");
             Execute_cmd("rm -rf /etc/wpa2/*.conf;/etc/ath/apcfg", rspBuff);	
+            
+            //backup FACTORY flag
+            CFG_set_by_name("FACTORY","1");
 			//backup version
 			CFG_set_by_name("SOFT_VERSION",valBuff);
 			writeParameters(NVRAM,"w+", NVRAM_OFFSET);

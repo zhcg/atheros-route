@@ -370,11 +370,6 @@ phone_9344:
 	@echo making phone_9344 application
 	cd ../apps/pstn_test; make clean; make; \
 	echo before strip; \
-	$(STRIP) 20131111/libspi_rt.so; \
-	$(STRIP) 20131111/libterminal_authentication.so; \
-	$(STRIP) 20131111/libterminal_register.so; \
-	$(STRIP) 20131111/libcommon_tools.so; \
-	$(STRIP) 20131111/spi_rt_main; \
 	$(STRIP) phone/lib/libmediastreamer.so.1.0.0; \
 	$(STRIP) phone/lib/libogg.so.0.8.0; \
 	$(STRIP) phone/lib/libortp.so.8.0.0; \
@@ -397,11 +392,6 @@ phone_9344:
 	cp -af phone/lib/libspeex.so.1.5.0 $(INSTALL_ROOT)/lib; \
 	cp -af phone/lib/libspeex.so.1 $(INSTALL_ROOT)/lib; \
 	cp -af phone/lib/libspeex.so $(INSTALL_ROOT)/lib; \
-	cp -af 20131111/libspi_rt.so $(INSTALL_ROOT)/lib; \
-	cp -af 20131111/libterminal_authentication.so $(INSTALL_ROOT)/lib; \
-	cp -af 20131111/libterminal_register.so $(INSTALL_ROOT)/lib; \
-	cp -af 20131111/libcommon_tools.so $(INSTALL_ROOT)/lib; \
-	cp -af 20131111/spi_rt_main $(INSTALL_ROOT)/bin; \
 	cp -af pstn_serv_handaer/phone_serv_19200 $(INSTALL_ROOT)/bin; \
 	cp -af reset_mips  $(INSTALL_ROOT)/bin; \
 	echo finished making pstn_9344;

@@ -6,17 +6,18 @@ TOPDIR_PHONE = ..
 
 
 #SPI_INCLUDE_DIR = $(TOPDIR_PHONE)/lib_of_terminal_init
-SPI_INCLUDE_DIR = $(TOPDIR_PHONE)/20131111
+SPI_INCLUDE_DIR = $(TOPDIR_PHONE)/../terminal_dev_register
 #SPI_LIB_DIR = $(TOPDIR_PHONE)/lib/lib
+SQLITE_DIR = $(SPI_INCLUDE_DIR)/sqlite-mips-linux
 
 NVRAM_INCLUDE_DIR = $(TOPDIR_PHONE)/lib/libnvram
 LIB_LIB_DIR = $(TOPDIR_PHONE)/lib/lib
 
 
-CFLAGS += -I$(SPI_INCLUDE_DIR) -DSPI_FOR_PHONE -I$(NVRAM_INCLUDE_DIR)
+CFLAGS += -I$(SPI_INCLUDE_DIR) -DSPI_FOR_PHONE -I$(NVRAM_INCLUDE_DIR) -I$(SQLITE_DIR)/include
 #LDFLAGS += -L$(SPI_INCLUDE_DIR)  -lcommon_tools -lnvram_interface -lterminal_authentication -lterminal_register -lspi_rt  -L$(NVRAM_INCLUDE_DIR) -lnvram -lpthread
 #LDFLAGS += -L$(LIB_LIB_DIR)  -L$(NVRAM_INCLUDE_DIR)   -L$(SPI_INCLUDE_DIR)  -lcommon_tools  -lspi_rt   -pthread
-LDFLAGS += -L$(LIB_LIB_DIR)  -L$(NVRAM_INCLUDE_DIR)   -L$(SPI_INCLUDE_DIR)  -pthread  -lcommon_tools -lterminal_authentication -lterminal_register -lspi_rt
+LDFLAGS += -L$(LIB_LIB_DIR)  -L$(NVRAM_INCLUDE_DIR)   -L$(SPI_INCLUDE_DIR)  -lpthread -lcommon_tools -lterminal_authentication -lterminal_register -lspi_rt -ldata_storager -lcommunication -L$(SQLITE_DIR)/lib -lsqlite3 
 
 
 %.o: %.c
