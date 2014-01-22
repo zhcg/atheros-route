@@ -20,6 +20,9 @@ export PATH=$PATH:/etc/ath
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/lib
 cd /lib;
 ln -s libsqlite3.so.0.8.6 libsqlite3.so.0
+ln -s /lib/libosipparser2.so.4.2.0  /lib/libosipparser2.so.4
+ln -s /lib/libosip2.so.4.2.0 /lib/libosip2.so.4
+ln -s /lib/libeXosip2.so.4.2.0 /lib/libeXosip2.so.4
 cd /root
 
 
@@ -83,13 +86,13 @@ ifconfig $LAN_IF up
 #
 # Enable USB
 #
-insmod /lib/modules/2.6.31/usb/usbcore.ko
-insmod /lib/modules/2.6.31/usb/ehci-hcd.ko
-insmod /lib/modules/2.6.31/usb/usb-storage.ko
-insmod /lib/modules/2.6.31/usb/usbnet.ko
-insmod /lib/modules/2.6.31/usb/cdc_ether.ko
-#insmod /lib/modules/2.6.31/usb/ath_udc.ko
-#insmod /lib/modules/2.6.31/usb/g_file_storage.ko file=/dev/ram1 stall=0 removable=1
+#insmod /lib/modules/2.6.31/usb/usbcore.ko
+#insmod /lib/modules/2.6.31/usb/ehci-hcd.ko
+#insmod /lib/modules/2.6.31/usb/usb-storage.ko
+#insmod /lib/modules/2.6.31/usb/usbnet.ko
+#insmod /lib/modules/2.6.31/usb/cdc_ether.ko
+insmod /lib/modules/2.6.31/usb/ath_udc.ko
+insmod /lib/modules/2.6.31/usb/g_file_storage.ko file=/dev/ram1 stall=0 removable=1
 
 #
 # Enable I2S
@@ -179,10 +182,10 @@ mkdir -p /var/terminal_init/log
 
 spi_rt_main & 
 #spi_rt_uart1 &
-#terminal_dev_register &
-#swipe_card &
+terminal_dev_register &
+swipe_card &
 #monitor_application  &
-#usb_stub &
+usb_stub &
 
 /bin/reset_mips /bin/phone_serv_19200 &
 /bin/server &
