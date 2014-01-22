@@ -335,8 +335,12 @@ endif
         else \
  	    cp -Rf ../rootfs/$(BOARD_TYPE)/* $(INSTALL_ROOT) ; \
 	fi;
+	cp -f ../rootfs/$(BOARD_TYPE)/etc/rc.d/rcS $(INSTALL_ROOT)/etc/rc.d/rcS
 ifeq ($(BUILD_FOR_32178), yes)
-	cp -f $(INSTALL_ROOT)/etc/rc.d/rcS32178 $(INSTALL_ROOT)/etc/rc.d/rcS
+#	cp -f $(INSTALL_ROOT)/etc/rc.d/rcS32178 $(INSTALL_ROOT)/etc/rc.d/rcS
+	cat $(INSTALL_ROOT)/etc/rc.d/rcS32178 >> $(INSTALL_ROOT)/etc/rc.d/rcS
+else
+	cat $(INSTALL_ROOT)/etc/rc.d/rcSsi3000 >> $(INSTALL_ROOT)/etc/rc.d/rcS
 endif
 	chmod 755 $(INSTALL_ROOT)/etc/rc.d/*
 	chmod 755 $(INSTALL_ROOT)/etc/ath/*
