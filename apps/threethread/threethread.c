@@ -1801,6 +1801,9 @@ int getRadioID(int index)
 	else
 		return (-1);
 }
+
+
+
 //added by yhl,2013.12.17
 //get_now_seconds,from  00h/00m/00s  for any year
 int get_now_seconds(void)
@@ -1809,7 +1812,6 @@ int get_now_seconds(void)
 	 int hh_int,mm_int,ss_int;
 	 int final_sec;
 	 
-	//printf("get_now_seconds1\n");
 	 Execute_cmd("date +%H", hh_char);
 	 hh_int=atoi(hh_char);
 
@@ -1820,7 +1822,6 @@ int get_now_seconds(void)
 	  ss_int=atoi(ss_char);
 
 	  final_sec=(hh_int*3600+mm_int*60+ss_int);
-	  //printf("get_now_seconds:%d\n",final_sec);
 	  return final_sec;
 }
 
@@ -1831,47 +1832,40 @@ int * pppoe_demand_thread(void)
         printf("pppoe_demand_thread id is %d.\n",pthread_self());
         char pppoe_argu[10];
 		int  argu_int;
-		int mac_1to0_seconds=0;
+		int  start=0;
 		char mac_list[10];
-		char flag=0;
-		char rspBuff_demand[10];
+		char first=1;
 	
 		memset(pppoe_argu,'\0',10);
 		memset(mac_list,'\0',10);
 				
 	while(1)
 	{
-		if((!strncmp(Execute_cmd("grep \"PPPOE_MODE\" /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-6", rspBuff),"demand",6))&&
-			(!strncmp(Execute_cmd("grep \"WAN_MODE\" /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-5", rspBuff),"pppoe",5)))
+		if((!strncmp(Execute_cmd("grep 'PPPOE_MODE' /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-6", rspBuff),"demand",6))&&
+			(!strncmp(Execute_cmd("grep 'WAN_MODE' /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-5", rspBuff),"pppoe",5)))
 		    {//pppoe+demand
-				Execute_cmd("grep \"PPPOE_DEMAND\" /tmp/.apcfg | awk -F '=' '{ print $2 }'", pppoe_argu);
+				Execute_cmd("grep 'PPPOE_DEMAND' /tmp/.apcfg | awk -F '=' '{ print $2 }'", pppoe_argu);
 				argu_int=atoi(pppoe_argu);
-				printf("demand********argu_int:%d\n",argu_int);
-				
 				Execute_cmd("wlanconfig ath0 list | grep ADDR |awk '{print $1}'|cut -c1-4",mac_list);
 					if(strncmp(mac_list,"ADDR",4))//no station
-						{
-						   if(flag)//beginning time of mac 1 to 0
-							   { mac_1to0_seconds = get_now_seconds();
-							     printf(">>>>>>>>>>>>>>>>>>>>>>>demand,mac 1to0 start_seconds:%d\n",mac_1to0_seconds);
-							   }
-						   printf("demand********argu_int\n");
-						   printf("demand********get_now_seconds():%d\n",get_now_seconds());
-						   if((get_now_seconds()<(mac_1to0_seconds+argu_int))&&(mac_1to0_seconds))
-                                {Execute_cmd("pppoe-start", rspBuff_demand);
-						         if(strncmp(Execute_cmd("echo `route -n|grep ppp0|awk -F ' ' '{print$8}'`",rspBuff_demand),"ppp0 ppp0",9))
-									Execute_cmd("route add default gw `route -n | grep ppp0 |awk -F ' ' '{print$1}'|awk 'NR==1'`",rspBuff_demand);
-
-						   }
-						   else if((get_now_seconds()>=(mac_1to0_seconds+argu_int))&&(mac_1to0_seconds))
-							    {Execute_cmd("pppoe-stop", rspBuff_demand);sleep(5);}
-						   flag=0;
-						}
+					 {
+						   if(first)
+						   	 {start = get_now_seconds();}
+						   if(get_now_seconds()<(start+argu_int*60))
+                                {system("pppoe-start > /dev/null 2>&1");}
+						   else 
+							    {
+							     system("pppoe-stop > /dev/null 2>&1");
+						         sleep(5);
+								 }
+						   first=0;
+					 }
 					else if(!strncmp(mac_list,"ADDR",4))//have station
-						{Execute_cmd("pppoe-start", rspBuff_demand);sleep(5);flag=1;
-					if(strncmp(Execute_cmd("echo `route -n|grep ppp0|awk -F ' ' '{print$8}'`",rspBuff_demand),"ppp0 ppp0",9))
-					   Execute_cmd("route add default gw `route -n | grep ppp0 |awk -F ' ' '{print$1}'|awk 'NR==1'`",rspBuff_demand);
-								 }//need 5s
+					 {  
+						  system("pppoe-start > /dev/null 2>&1");sleep(5);
+						  start = get_now_seconds();
+						  first=0;
+                     }
 			}
 	usleep(10*1000);//must have
   }
@@ -1880,50 +1874,60 @@ int * pppoe_demand_thread(void)
 
 
 int * pppoe_manual_thread(void *arg)
-{
-        printf("pppoe_manual_thread id is %d.\n",pthread_self());
-		int mac_null_start_seconds=0;
-		char pppoe_argu[10];
-	    int  argu_int;
-		char mac_list[10];
-	    char flag=0;
-		char rspBuff_manual[10];
-	
-		memset(pppoe_argu,'\0',10);
-		memset(mac_list,'\0',10);
-	while(1)
-	{			
-		if((!strncmp(Execute_cmd("grep \"PPPOE_MODE\" /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-6", rspBuff),"manual",6))&&
-			(!strncmp(Execute_cmd("grep \"WAN_MODE\" /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-5", rspBuff),"pppoe",5)))
-              {	//pppoe+manual	
-				Execute_cmd("grep \"PPPOE_MANUAL\" /tmp/.apcfg | awk -F '=' '{ print $2 }'", pppoe_argu);//pppoe_argu minutes
-				argu_int=atoi(pppoe_argu);
-				printf("manual********argu_int:%d\n",argu_int);
-				
-				Execute_cmd("wlanconfig ath0 list | grep ADDR |awk '{print $1}'|cut -c1-4",mac_list);
-					if(strncmp(mac_list,"ADDR",4))//no station
-						{
-						   if(flag)//beginning time of mac exist to null 
-						   {
-							mac_null_start_seconds = get_now_seconds();
-							printf(">>>>>>>>>>>>>>>>>>>>>>>>manual,mac 1to0 start_seconds:%d\n",mac_null_start_seconds);
-							}
-						   if((get_now_seconds()<(mac_null_start_seconds+argu_int))&&(mac_null_start_seconds))
-                                {Execute_cmd("pppoe-start", rspBuff_manual);sleep(5);
-						         if(strncmp(Execute_cmd("echo `route -n|grep ppp0|awk -F ' ' '{print$8}'`",rspBuff_manual),"ppp0 ppp0",9))
-							  Execute_cmd("route add default gw `route -n | grep ppp0 |awk -F ' ' '{print$1}'|awk 'NR==1'`",rspBuff_manual);
-                                }
-						   
-						   else if((get_now_seconds()>=(mac_null_start_seconds+argu_int))&&(mac_null_start_seconds))
-							    {Execute_cmd("pppoe-stop", rspBuff_manual);sleep(5);}
-						   flag=0;
-						}
-					else if(!strncmp(mac_list,"ADDR",4))//have station
-						{flag=1;}	
-			}
-		usleep(10*1000);//must have					
+	{		
+			printf("pppoe_manual_thread id is %d.\n",pthread_self());
+			char pppoe_argu[10];
+			int  argu_int;
+			int  start=0;
+			char mac_list[10];
+			char first=1;
+			char flag_manual=1;
+		
+			memset(pppoe_argu,'\0',10);
+			memset(mac_list,'\0',10);
+					
+		while(1)
+		{
+			if((!strncmp(Execute_cmd("grep 'PPPOE_MODE' /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-6", rspBuff),"manual",6))&&
+				(!strncmp(Execute_cmd("grep 'WAN_MODE' /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-5", rspBuff),"pppoe",5)))
+				{//pppoe+manual
+					Execute_cmd("grep 'PPPOE_MANUAL' /tmp/.apcfg | awk -F '=' '{ print $2 }'", pppoe_argu);
+					argu_int=atoi(pppoe_argu);
+					Execute_cmd("wlanconfig ath0 list | grep ADDR |awk '{print $1}'|cut -c1-4",mac_list);
+						if(strncmp(mac_list,"ADDR",4))//no station
+						 {
+							   if(first)
+								 {start = get_now_seconds();}
+							   if(get_now_seconds()<(start+argu_int*60))
+									{system("pppoe-start > /dev/null 2>&1");}
+							   else 
+									{
+									 system("pppoe-stop > /dev/null 2>&1");
+									 sleep(5);
+									 }
+							   first=0;
+							   flag_manual=0;
+							   continue;
+						 }
+						else if((!strncmp(mac_list,"ADDR",4))&&(flag_manual))
+						 {	
+							  system("pppoe-start > /dev/null 2>&1");sleep(5);
+							  start = get_now_seconds();
+							  first=0;
+							  continue;
+						 }
+						else if((!strncmp(mac_list,"ADDR",4))&&(!flag_manual))
+						 {	
+							  system("pppoe-stop > /dev/null 2>&1");sleep(5);
+							  first=0;
+							  continue;
+						 }
+				}
+		usleep(10*1000);//must have
+	  }
+				 
 	}
-}
+
 
 int * pppoe_timing_thread(void *arg)
 {
@@ -1932,7 +1936,6 @@ int * pppoe_timing_thread(void *arg)
 		 int b_time,e_time;
 		 char bh[10],bm[10],eh[10],em[10],pppoe_argu[10];
 		 int bh_int,bm_int,eh_int,em_int;
-		 char rspBuff_timing[10];//better use thread own buffer
 
 		memset(bh,'\0',10);
 		memset(bm,'\0',10);
@@ -1940,45 +1943,36 @@ int * pppoe_timing_thread(void *arg)
 		memset(em,'\0',10);
 		memset(pppoe_argu,'\0',10);
 while(1)
-	{			
-	if((!strncmp(Execute_cmd("grep \"PPPOE_MODE\" /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-6", rspBuff_timing),"timing",6))&&
-		(!strncmp(Execute_cmd("grep \"WAN_MODE\" /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-5", rspBuff_timing),"pppoe",5)))//current pppoe,thus demand mode	
-	        {//pppoe+timing
-	          Execute_cmd("grep \"PPPOE_TIMING_BH\" /tmp/.apcfg | awk -F '=' '{ print $2 }'", bh);
-              bh_int=atoi(bh);
-
-			 Execute_cmd("grep \"PPPOE_TIMING_BM\" /tmp/.apcfg | awk -F '=' '{ print $2 }'", bm);
-		     bm_int=atoi(bm);
-
-			 Execute_cmd("grep \"PPPOE_TIMING_EH\" /tmp/.apcfg | awk -F '=' '{ print $2 }'", eh);
-		     eh_int=atoi(eh);
-			 
-			 Execute_cmd("grep \"PPPOE_TIMING_EM\" /tmp/.apcfg | awk -F '=' '{ print $2 }'", em);
-		     em_int=atoi(em);
+ {			
+	if((!strncmp(Execute_cmd("grep 'PPPOE_MODE' /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-6", rspBuff),"timing",6))&&
+		(!strncmp(Execute_cmd("grep 'WAN_MODE' /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-5", rspBuff),"pppoe",5)))
+	     {//pppoe+timing
+	         Execute_cmd("grep 'PPPOE_TIMING_BH' /tmp/.apcfg | awk -F '=' '{ print $2 }'", bh);bh_int=atoi(bh);
+			 Execute_cmd("grep 'PPPOE_TIMING_BM' /tmp/.apcfg | awk -F '=' '{ print $2 }'", bm);bm_int=atoi(bm);
+			 Execute_cmd("grep 'PPPOE_TIMING_EH' /tmp/.apcfg | awk -F '=' '{ print $2 }'", eh);eh_int=atoi(eh);
+			 Execute_cmd("grep 'PPPOE_TIMING_EM' /tmp/.apcfg | awk -F '=' '{ print $2 }'", em);em_int=atoi(em);
 		
 			  b_time=(bh_int*3600+bm_int*60);
 			  e_time=(eh_int*3600+em_int*60);//b_time<   <e_time
 			  
-				seconds= get_now_seconds();//get now time
+				seconds= get_now_seconds();
 				if((seconds>=b_time)&&(seconds<=e_time))
 				  {
-				    printf("timing,begin:%d---end:%d---now:%d\n",b_time,e_time,seconds);
-					//fprintf(errOut,"timing,begin:%d---end:%d---now:%d\n",b_time,e_time,seconds);
-				    Execute_cmd("pppoe-start", rspBuff_timing);
+					printf("timing pppoe<%d---%d>,and now->%d\n",b_time,e_time,seconds);
+				    system("pppoe-start > /dev/null 2>&1");
 					sleep(5);
-					if(strncmp(Execute_cmd("echo `route -n|grep ppp0|awk -F ' ' '{print$8}'`",rspBuff_timing),"ppp0 ppp0",9))
-					Execute_cmd("route add default gw `route -n | grep ppp0 |awk -F ' ' '{print$1}'|awk 'NR==1'`",rspBuff_timing);
 				  }
 				else
-				  {Execute_cmd("pppoe-stop", rspBuff_timing);sleep(5);}
-			  }	
+				  {system("pppoe-stop > /dev/null 2>&1");
+				   sleep(5);
+				  }
+		}	
 	usleep(10*1000);
-	//printf("timing thread is running\n");
-   }
+  }
 }
 
 
-//everytime pppoe apply,begin to run.
+//boot by cgi exec_cmd func,if pppoe
 int main()
 {
  pthread_t pppoe_demand_tid;
@@ -1989,21 +1983,20 @@ int main()
  memset(manbuf,'\0',10);
 
  printf("main process\n");
-
-  if(!strncmp(Execute_cmd("grep \"WAN_MODE\" /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-5", manbuf), "pppoe", 5))
+  if(!strncmp(Execute_cmd("grep 'WAN_MODE' /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-5", manbuf), "pppoe", 5))
    {//current is pppoe
       if(!pthread_create(&pppoe_demand_tid,NULL,(void *)pppoe_demand_thread,NULL))
-          {printf("succeed!create pppoe_demand_thread\n");}
+          {printf("create pppoe_demand_thread\n");}
       else
           {printf("Fail to Create pppoe_demand_thread");}
 	  
       if(!pthread_create(&pppoe_manual_tid,NULL,(void *)pppoe_manual_thread,NULL))
-          {printf("succeed!create pppoe_manual_thread\n");}
+          {printf("create pppoe_manual_thread\n");}
       else
           {printf("Fail to Create pppoe_manual_thread");}
 	  
       if(!pthread_create(&pppoe_timing_tid,NULL,(void *)pppoe_timing_thread,NULL))
-          {printf("succeed!create pppoe_timing_thread\n");}
+          {printf("create pppoe_timing_thread\n");}
       else
           {printf("Fail to Create pppoe_timing_thread");}
    }
@@ -2011,6 +2004,12 @@ int main()
   pthread_join(pppoe_manual_tid,NULL);
   pthread_join(pppoe_timing_tid,NULL);
   
+  printf("printf main proc end\n");
+  
 }  
 /********************************** End of Module ,added by yhl date 2013.12.13*****************************/
+
+
+
+
 

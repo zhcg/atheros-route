@@ -172,15 +172,39 @@ function iFrameHeight()
 		winHeight = document.body.clientHeight ;    //return "Gecko";  
    }  
   
-//结果输出至两个文本框 
-	document.getElementById("ifm").width= winWidth-210; 
-	//alert(winHeight);
-	//alert(subWeb.body.scrollHeight);
-	if((winHeight-80)> subWeb.body.scrollHeight)
+document.getElementById("ifm").width= winWidth-220;
+	var aa = winHeight-72;	
+	var bb = subWeb.body.scrollHeight;
+	var cc = document.body.scrollHeight-72;
+
+	var max;
+	
+	if(aa > bb)
 	{
-		xxx.height = (winHeight-80); 
-		document.getElementById("leftmenu").style.height=(winHeight-80); 
+		if(aa>cc)
+		{
+			max=aa;
+		}
+		else
+		{
+			max=cc;
+		}
 	}
+	else
+	{
+		if(bb>cc)
+		{
+			max=bb;
+		}
+		else
+		{
+			max=cc;
+		}
+		
+	}
+
+	xxx.height = max; 
+	document.getElementById("leftmenu").style.height=max; 
 } 
 
 </script>

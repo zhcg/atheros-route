@@ -19,6 +19,10 @@
 	<message msgid="admw L2TPc" msgstr="L2TP客户端" />
 	<message msgid="admw PPTPc" msgstr="PPTP客户端" />
 
+	<message msgid="admw STIP_title" msgstr="网络运营商提供固定的IP地址、子网掩码、网关、DNS服务器信息" />
+	<message msgid="admw PPP_title" msgstr="网络运营商提供上网帐户名和密码" />
+	
+	
 	<message msgid="admw SMD" msgstr="静态模式" />
 	<message msgid="admw IPA" msgstr="IP地址" />  
 	<message msgid="admw SubMask" msgstr="子网掩码" />  

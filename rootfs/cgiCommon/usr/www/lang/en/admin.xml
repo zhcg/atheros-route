@@ -13,11 +13,14 @@
 	<message msgid="admw DHCP" msgstr="Automatic acquisition (dynamic IP)" />  
 	<message msgid="admw DHCPdisc" msgstr="Broadband service providers do not provide any parameter,BASE will get IP from Broadband service providers" />
 	<message msgid="admw SM" msgstr="Manual settings (static IP)" />
-	<message msgid="admw SMdisc" msgstr="The fixed IP address, subnet mask, gateway, DNS server" />
+	<message msgid="admw SMdisc" msgstr="Broadband service providers provide the fixed IP address, subnet mask, gateway, DNS server" />
 	<message msgid="admw PPPOE" msgstr="PPPoE (ADSL)" />
-	<message msgid="admw PPPOEdisc" msgstr="Choose this, user must input a username and password for ISP authenticator." />
+	<message msgid="admw PPPOEdisc" msgstr="Broadband service providers provide username and password" />
 	<message msgid="admw L2TPc" msgstr="L2TP Client" />
 	<message msgid="admw PPTPc" msgstr="PPTP Client" />
+	
+	<message msgid="admw STIP_title" msgstr="Broadband service providers provide the fixed IP address, subnet mask, gateway, DNS server" />
+	<message msgid="admw PPP_title" msgstr="Broadband service providers provide username and password" />
 
 	<message msgid="admw SMD" msgstr="Static Mode" />
 	<message msgid="admw IPA" msgstr="IP Address" />  

@@ -190,8 +190,12 @@ function hideAllTables()
 
 function hideWanOption()
 {
+	document.getElementById("STIP_title").style.visibility = "hidden";
+	document.getElementById("STIP_title").style.display = "none";
 	document.getElementById("div_wan_static").style.visibility = "hidden";
 	document.getElementById("div_wan_static").style.display = "none";
+	document.getElementById("PPP_title").style.visibility = "hidden";
+	document.getElementById("PPP_title").style.display = "none";
 	document.getElementById("div_wan_pppoe").style.visibility = "hidden";
 	document.getElementById("div_wan_pppoe").style.display = "none";
 	document.getElementById("div_wan_l2tp").style.visibility = "hidden";
@@ -243,6 +247,8 @@ function connectionTypeSwitch()
 {
 	hideWanOption();
 	if (document.wizard_form.WAN_MODE[2].checked == true) {
+		document.getElementById("STIP_title").style.visibility = "visible";
+		document.getElementById("STIP_title").style.display = style_display_on();
 		document.getElementById("div_wan_static").style.visibility = "visible";
 		document.getElementById("div_wan_static").style.display = style_display_on();
 		document.wizard_form.WAN_IPADDR.disabled = false;
@@ -252,6 +258,8 @@ function connectionTypeSwitch()
 		document.wizard_form.SECDNS.disabled = false;
 	}
 	else if (document.wizard_form.WAN_MODE[3].checked == true) {
+		document.getElementById("PPP_title").style.visibility = "visible";
+		document.getElementById("PPP_title").style.display = style_display_on();
 		document.getElementById("div_wan_pppoe").style.visibility = "visible";
 		document.getElementById("div_wan_pppoe").style.display = style_display_on();
 		document.wizard_form.PPPOE_USER.disabled = false;
@@ -842,6 +850,11 @@ function initTranslation()
 	e = document.getElementById("modedes");
 	e.innerHTML = _("admw modedes");
 
+	e = document.getElementById("STIP_title");
+	e.innerHTML = _("admw STIP_title");
+	e = document.getElementById("PPP_title");
+	e.innerHTML = _("admw PPP_title");
+
 	e = document.getElementById("AutoMode");
 	e.innerHTML = _("admw AutoMode");
 	e = document.getElementById("Autodisc");
@@ -1251,6 +1264,7 @@ function workoutgw()
 </table>
 
 <!-- ================= STATIC Mode ================= -->
+<h2 id="STIP_title"></h2>
 <table id="div_wan_static" width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
 <tr>
   <td class="title" colspan="2" id="SMD"></td>
@@ -1280,6 +1294,7 @@ function workoutgw()
 </table>
 
 <!-- ================= PPPOE Mode ================= -->
+<h2 id="PPP_title"></h2>
 <table id="div_wan_pppoe" width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
 <tr>
   <td class="title" colspan="2" id="pppoemod"></td>

@@ -3357,26 +3357,6 @@ static void  Result_tiaozhuan(char* res,char * gopage)
     printf(temp);
     printf("</body></html>");
 }
-static void  Result_tiaozhuan2(char* res,char * gopage)
-{
-    char temp[256]={0};
-	
-	//system("dd if=/dev/caldata of=/etc/cal.bin > /dev/null 2>&1");
-	
-    printf("HTTP/1.0 200 OK\r\n");
-    printf("Content-type: text/html\r\n");
-    printf("Connection: close\r\n");
-    printf("\r\n");
-    printf("\r\n");
-    printf("<HTML><HEAD>\r\n");
-    printf("</head><body>");
-
-    //sprintf(temp,"<script language=javascript>setTimeout(function(){window.top.location.href=\"http://%s/cgi-bin/tiaozhuan?RESULT=%s?PAGE=%s\";},5000);</script>",gopage,res,"ad_local_gwset");
-    sprintf(temp,"<script language=javascript>setTimeout(function(){window.top.location.href=\"http://%s/index.html\";},5000);</script>",gopage);
-    printf(temp);
-   fprintf(errOut,"\ntemp:%s\n",temp);
-    printf("</body></html>");
-}
 
 /**************************************************************************/
 static void  Reboot_tiaozhuan(char* res,char * gopage)
@@ -4057,7 +4037,8 @@ int main(int argc,char **argv)
 		
 		Execute_cmd("wan_check  > /dev/null 2>&1", rspBuff);
 		Execute_cmd("cfg -e | grep \"LINEIN_OUT=\"",valBuff);
-		if(strstr(valBuff,"out") != 0){
+		if(strstr(valBuff,"out") != 0)
+		{
 			char tempu[128]={0};
 			printf("HTTP/1.0 200 OK\r\n");
 			printf("Content-type: text/html\r\n");
@@ -4072,11 +4053,11 @@ int main(int argc,char **argv)
                  
 			if((strcmp(argv[0],"w1")==0)||(strcmp(argv[0],"w2")==0)||(strcmp(argv[0],"w3")==0)||(strcmp(argv[0],"w4")==0)||(strcmp(argv[0],"wwai")==0))
 			{
-			    sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");alert(_(\"wan not connected\"));window.location.href=\"map\";</script>");
+			    sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"wan not connected\"));window.parent.showpwd1();window.location.href=\"map\";</script>");
 			}
 			else
 			{
-			    sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");alert(_(\"wan not connected\"));window.location.href=\"%s\";</script>",argv[0]);
+			    sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"wan not connected\"));window.location.href=\"%s\";</script>",argv[0]);
 			}
 			printf(tempu);
 			printf("</body></html>");
@@ -4134,7 +4115,7 @@ int main(int argc,char **argv)
                  
                             if((strcmp(argv[0],"w1")==0)||(strcmp(argv[0],"w2")==0)||(strcmp(argv[0],"w3")==0)||(strcmp(argv[0],"w4")==0)||(strcmp(argv[0],"wwai")==0))
                             {
-                                sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err dhcp null\"));window.location.href=\"map\";</script>");
+                                sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err dhcp null\"));window.parent.showpwd1();window.location.href=\"map\";</script>");
                             }
                             else
                             {
@@ -4168,7 +4149,7 @@ int main(int argc,char **argv)
 				 printf("</head><body>");
                             if((strcmp(argv[0],"w1")==0)||(strcmp(argv[0],"w2")==0)||(strcmp(argv[0],"w3")==0)||(strcmp(argv[0],"w4")==0)||(strcmp(argv[0],"wwai")==0))
                             {
-                                sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err dhcp ip\"));window.location.href=\"map\";</script>");
+                                sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err dhcp ip\"));window.parent.showpwd1();window.location.href=\"map\";</script>");
                             }
                             else
                             {
@@ -4344,13 +4325,11 @@ int main(int argc,char **argv)
 		CFG_set_by_name("IPGW3",pppoe_gw);
 
 		//add ppp0 route default gw if losing
-		fprintf(errOut,"\npppoe5\n");
 		if(!strstr(Execute_cmd("echo `route -n|grep ppp0|awk -F ' ' '{print$8}'`",route_gw),"ppp0 ppp0"))
 		     {
 		      Execute_cmd("route add default gw `route -n | grep ppp0 |awk -F ' ' '{print$1}'|awk 'NR==1'`",route_gw);
                fprintf(errOut,"\nPPP0 LOST,ADD ONE\n");
 			 }
-		fprintf(errOut,"\npppoe6\n");
 		//save new config to flash 
 		if(flag!=1)
 		{
@@ -4947,7 +4926,7 @@ int main(int argc,char **argv)
 		      get_net_seg_and(net_seg,tmp,tmp2);
 			  fprintf(errOut,"\nAnd 255.255.255.0---%s\n",tmp2);
 			  memset(tmp,'\0',20);
-			  strcpy(tmp,"0.0.0.100");
+			  strcpy(tmp,"0.0.0.101");
 			  
 			  memset(dhcp_b,'\0',20);
 			  get_net_seg_or(tmp2,tmp,dhcp_b);
@@ -5005,10 +4984,6 @@ int main(int argc,char **argv)
 		
        } 
         
-       char tt[20]={0};
-       CFG_get_by_name("AP_IPADDR",tt);
-        //fprintf(errOut,"\ntt:%s\n",tt);
-	   Result_tiaozhuan2("yes",tt);
        gohome =2;
     }
     

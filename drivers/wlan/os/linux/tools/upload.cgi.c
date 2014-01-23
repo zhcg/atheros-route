@@ -320,15 +320,13 @@ error:
 				printf("<script  language=javascript>setTimeout(function(){window.location.href=\"crupload\";},140000);</script>");
 				printf("</body></html>");	
                 #endif
-				
-				Reboot_tiaozhuan("upload","index.html");
+                            //Reboot_tiaozhuan("upload","index.html");
 				//[TODO]factory default
 				system("cfg -x");
 				sleep(1);
 		
-				sprintf(cmdd,"sleep 1 && sysupgrade %s",filePath);
+				sprintf(cmdd,"sleep 1 && sysupgrade %s &",filePath);
 				system(cmdd);
-				
 			}else //error firmware file
 			{	
 				 printf("Content-Type:text/html\n\n");
