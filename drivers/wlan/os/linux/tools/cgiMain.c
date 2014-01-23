@@ -973,8 +973,8 @@ char *processSpecial(char *paramStr, char *outBuff)
 
 					fprintf(errOut,"\n%s  %d  to open [dhcpclinetlist]\n",__func__,__LINE__);
 
-					/*if the /var/run/.OldStaList is not exit, creat it*/
-					if((fp1 = fopen(OLD_STAFILE, "r")) == NULL)     /*  /var/run/.OldStaList  */
+					/*if the /etc/.OldStaList is not exit, creat it*/
+					if((fp1 = fopen(OLD_STAFILE, "r")) == NULL)     /*  /etc/.OldStaList  */
 					{
 						fprintf(errOut,"\n%s  %d  creat the file %s\n",__func__,__LINE__, OLD_STAFILE);
 						fp1 = fopen(OLD_STAFILE, "at");
@@ -987,7 +987,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 							fwrite(&oldstalist, sizeof(oldstalist), 1, fp1);
                         }
 						fclose(flist);
-						fclose(fp1);
+						//fclose(fp1);
 					}
 					flist = fopen("/etc/.STAlist", "r");    /*  /etc/.STAlist   */
 					fgets(STAbuf, 128, flist);
@@ -996,8 +996,8 @@ char *processSpecial(char *paramStr, char *outBuff)
                     	int ret = 0;
                     	memset(buf, 0, sizeof buf);
 						strncpy(buf, STAbuf, 17);
-						
-						fp1 = fopen(OLD_STAFILE, "r");			/*  /var/run/.OldStaList  */
+						fclose(fp1);
+						fp1 = fopen(OLD_STAFILE, "r");			/*  /etc/.OldStaList  */
 						
 						while(fread(&oldstalist, sizeof oldstalist, 1, fp1) == 1)
 						{
@@ -1016,7 +1016,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 						fclose(fp1);
                     }
 					fclose(flist);
-					if((add == 1) && (fp1 = fopen(OLD_STAFILE, "at")))			/*  /var/run/.OldStaList  */
+					if((add == 1) && (fp1 = fopen(OLD_STAFILE, "at")))			/*  /etc/.OldStaList  */
 					{
 						p = scan_staList(staHostList);
 						while(p)
@@ -1043,7 +1043,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                         }
 						
                         /*compare MAC*/
-						if((fp1 = fopen(OLD_STAFILE, "r")) != NULL)		/*  /var/run/.OldStaList  */
+						if((fp1 = fopen(OLD_STAFILE, "r")) != NULL)		/*  /etc/.OldStaList  */
 						{
 							while(fread(&oldstalist, sizeof(struct staList), 1, fp1) == 1)
 							{
