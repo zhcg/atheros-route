@@ -17,6 +17,6 @@ if [ "$ntp_switch" = "on" ];then
 	
 	if [ ! -z $ntpserverip1 -a ! -z $timezone ];then
 		#/usr/sbin/ntpclient -d -s -h $ntpserverip1 -t  $timezone > /tmp/ntpserver.log 2>&1 &
-		/usr/sbin/ntpclient -c 100 -d -s -h $ntpserverip1 -i 10 -t  $timezone  &
+		/usr/sbin/ntpclient -c 3153600 -d -s -h $ntpserverip1 -i 10 -t  $timezone  &
 	fi
 fi
