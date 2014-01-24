@@ -3678,7 +3678,6 @@ int main(int argc,char **argv)
             */
 			//fprintf(errOut,"[luodp] do factory");
             Execute_cmd("rm -rf /etc/wpa2/*.conf;/etc/ath/apcfg", rspBuff);	
-            
             //backup FACTORY flag
             CFG_set_by_name("FACTORY","1");
 			//backup version
@@ -3689,6 +3688,11 @@ int main(int argc,char **argv)
 			system("echo \"/:admin:admin\" > /etc/httpd.conf");
 			//MAC and BACKUP
 			system("/usr/sbin/var_backup > /dev/null 2>&1");
+			system("cat /dev/null > /etc/ath/iptables/parc");
+			system("rm -f /etc/ip_mac.conf");//wangyu add for ip and mac address bond operation
+			system("rm -f /etc/.staAcl /etc/.staMac");//wangyu add for wireless client manage
+			system("rm -f  /etc/arp_ip_mac_on.conf /etc/arp_ip_mac_off.conf");//wangyu add for arp  ip and mac address bond operation
+			system("rm -f /etc/route.conf");//wangyu add for static route list
 #else
             system("rm -rf /tmp/WSC*.conf");
 #endif /* #ifndef ATH_SINGLE_CFG */
@@ -4724,12 +4728,9 @@ int main(int argc,char **argv)
 		
 		//CFG_get_by_name("SOFT_VERSION",valBuff);		
 
-        system("cat /dev/null > /etc/ath/iptables/parc");
+        
         system("cfg -x");
-        system("rm -f /etc/ip_mac.conf");//wangyu add for ip and mac address bond operation
-        system("rm -f /etc/.staAcl /etc/.staMac");//wangyu add for wireless client manage
-        system("rm -f  /etc/arp_ip_mac_on.conf /etc/arp_ip_mac_off.conf");//wangyu add for arp  ip and mac address bond operation
-        system("rm -f /etc/route.conf");//wangyu add for static route list
+
         
 		sleep(3);
 		//backup version

@@ -6,7 +6,7 @@ if [ -z $ip ];then
 #	cfg -r AP_NETMASK2
 	cfg -r WAN_NETMASK2
 	cfg -r IPGW2
-	cfg -c
+#	cfg -c
 	exit 1
 fi
 if [ $interface = "eth0" ];then
@@ -23,7 +23,7 @@ if [ $interface = "eth0" ];then
 				echo "the dhcp apply IP addr has same domain with br0"
 				cfg -a WAN_IPFLAG=unnormal
 #				cfg -a WAN_IPADDR2=$ip
-				cfg -c
+#				cfg -c
 				exit 2
 			fi
 		fi
@@ -32,7 +32,7 @@ fi
 
 cfg -a WAN_IPFLAG=normal
 cfg -a WAN_IPADDR2=$ip
-cfg -c
+#cfg -c
 
 #echo ip : $ip
 #echo broadcast : $broadcast
@@ -50,21 +50,21 @@ if [ ! -z $subnet ];then
 	nflag="netmask $subnet"
 #	cfg -a AP_NETMASK2=$subnet
 	cfg -a WAN_NETMASK2=$subnet
-	cfg -c
+#	cfg -c
 else
 #	cfg -r AP_NETMASK2
 	cfg -r WAN_NETMASK2
-	cfg -c
+#	cfg -c
 	nflag=
 fi
 
 if [ ! -z $router ];then
 	rflag="gw $router"
 	cfg -a IPGW2=$router
-	cfg -c
+#	cfg -c
 else
 	cfg -r IPGW2
-	cfg -c
+#	cfg -c
 	rflag=
 fi
 #wangyu add end
@@ -72,4 +72,4 @@ fi
 #/sbin/ifconfig $interface $ip broadcast $broadcast netmask $subnet up
 /sbin/ifconfig $interface $ip $cflag $nflag up
 #route add default gw $router dev $interface 
-route add default $rflag dev $interface 
+route add default $rflag dev $interface

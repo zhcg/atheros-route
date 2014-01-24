@@ -1,11 +1,13 @@
 #!/bin/sh
-echo "[luodp] go caldata"
+
 if [ ! -f /etc/cal.bin ]; then
+	echo "[luodp] Backup caldata"
 	echo "Backup caldata at `date`"  >> /etc/callog.txt 
 	dd if=/dev/caldata of=/etc/cal.bin
 fi
 CAL_MSG=`cfg -e |grep FACTORY`
 if [ -z "$CAL_MSG" ]; then
+	echo "[luodp] Restore caldata"
 	echo "Restore caldata at `date`"  >> /etc/callog.txt    
     rm /tmp/.apcfg
 	dd if=/etc/cal.bin of=/dev/caldata
@@ -16,13 +18,28 @@ if [ -z "$CAL_MSG" ]; then
 fi
 
 #added by yhl 2013.12.20 below
-echo "mac backup"
+
 if [ ! -f /etc/mac.bin ]; then
+	echo "mac.bin backup"
 	echo "Backup mac at `date`"  >> /etc/maclog.txt
 	ifconfig | grep eth0 | awk -F ' ' '{print$5}' > /etc/mac.bin
 	cfg -a ETH0_DFMAC=`cat /etc/mac.bin`
 	cfg -a ETH0_MAC=`cat /etc/mac.bin`
 	cfg -a BR0_MAC=`ifconfig | grep br0 | awk -F ' ' '{print$5}'`
+	cfg -c
+else
+	ETH0_DFMAC=`cfg -e |grep ETH0_DFMAC`
+	if [ -z "$ETH0_DFMAC" ]; then
+		cfg -a ETH0_DFMAC=`cat /etc/mac.bin`
+	fi
+	ETH0_MAC=`cfg -e |grep ETH0_MAC`
+	if [ -z "$ETH0_MAC" ]; then
+		cfg -a ETH0_MAC=`cat /etc/mac.bin`
+	fi
+	BR0_MAC=`cfg -e |grep BR0_MAC`
+	if [ -z "$BR0_MAC" ]; then
+		cfg -a BR0_MAC=`ifconfig | grep br0 | awk -F ' ' '{print$5}'`
+	fi
 	cfg -c
 fi
 #added by yhl 2013.12.20 above
