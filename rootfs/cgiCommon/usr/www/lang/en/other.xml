@@ -8,4 +8,5 @@
 	<message msgid="FACTORY" msgstr="Restore factory settings over, HBD BASE is being restarted , please wait......" />
 	<message msgid="UPLOAD" msgstr="Firmware upgrade over, HBD BASE is being restarted , please wait......" />
 	<message msgid="settingwaiting" msgstr="Setting,Please Wait......" />
+	<message msgid="FUPLOAD" msgstr="Firmware upgrading,HBD BASE is being restarted later, please wait......" />
 </po>

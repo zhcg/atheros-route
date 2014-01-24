@@ -973,8 +973,8 @@ char *processSpecial(char *paramStr, char *outBuff)
 
 					fprintf(errOut,"\n%s  %d  to open [dhcpclinetlist]\n",__func__,__LINE__);
 
-					/*if the /var/run/.OldStaList is not exit, creat it*/
-					if((fp1 = fopen(OLD_STAFILE, "r")) == NULL)     /*  /var/run/.OldStaList  */
+					/*if the /etc/.OldStaList is not exit, creat it*/
+					if((fp1 = fopen(OLD_STAFILE, "r")) == NULL)     /*  /etc/.OldStaList  */
 					{
 						fprintf(errOut,"\n%s  %d  creat the file %s\n",__func__,__LINE__, OLD_STAFILE);
 						fp1 = fopen(OLD_STAFILE, "at");
@@ -987,7 +987,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 							fwrite(&oldstalist, sizeof(oldstalist), 1, fp1);
                         }
 						fclose(flist);
-						fclose(fp1);
+						//fclose(fp1);
 					}
 					flist = fopen("/etc/.STAlist", "r");    /*  /etc/.STAlist   */
 					fgets(STAbuf, 128, flist);
@@ -996,8 +996,8 @@ char *processSpecial(char *paramStr, char *outBuff)
                     	int ret = 0;
                     	memset(buf, 0, sizeof buf);
 						strncpy(buf, STAbuf, 17);
-						
-						fp1 = fopen(OLD_STAFILE, "r");			/*  /var/run/.OldStaList  */
+						fclose(fp1);
+						fp1 = fopen(OLD_STAFILE, "r");			/*  /etc/.OldStaList  */
 						
 						while(fread(&oldstalist, sizeof oldstalist, 1, fp1) == 1)
 						{
@@ -1016,7 +1016,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 						fclose(fp1);
                     }
 					fclose(flist);
-					if((add == 1) && (fp1 = fopen(OLD_STAFILE, "at")))			/*  /var/run/.OldStaList  */
+					if((add == 1) && (fp1 = fopen(OLD_STAFILE, "at")))			/*  /etc/.OldStaList  */
 					{
 						p = scan_staList(staHostList);
 						while(p)
@@ -1043,7 +1043,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                         }
 						
                         /*compare MAC*/
-						if((fp1 = fopen(OLD_STAFILE, "r")) != NULL)		/*  /var/run/.OldStaList  */
+						if((fp1 = fopen(OLD_STAFILE, "r")) != NULL)		/*  /etc/.OldStaList  */
 						{
 							while(fread(&oldstalist, sizeof(struct staList), 1, fp1) == 1)
 							{
@@ -3357,26 +3357,6 @@ static void  Result_tiaozhuan(char* res,char * gopage)
     printf(temp);
     printf("</body></html>");
 }
-static void  Result_tiaozhuan2(char* res,char * gopage)
-{
-    char temp[256]={0};
-	
-	//system("dd if=/dev/caldata of=/etc/cal.bin > /dev/null 2>&1");
-	
-    printf("HTTP/1.0 200 OK\r\n");
-    printf("Content-type: text/html\r\n");
-    printf("Connection: close\r\n");
-    printf("\r\n");
-    printf("\r\n");
-    printf("<HTML><HEAD>\r\n");
-    printf("</head><body>");
-
-    //sprintf(temp,"<script language=javascript>setTimeout(function(){window.top.location.href=\"http://%s/cgi-bin/tiaozhuan?RESULT=%s?PAGE=%s\";},5000);</script>",gopage,res,"ad_local_gwset");
-    sprintf(temp,"<script language=javascript>setTimeout(function(){window.top.location.href=\"http://%s/index.html\";},5000);</script>",gopage);
-    printf(temp);
-   fprintf(errOut,"\ntemp:%s\n",temp);
-    printf("</body></html>");
-}
 
 /**************************************************************************/
 static void  Reboot_tiaozhuan(char* res,char * gopage)
@@ -3698,6 +3678,8 @@ int main(int argc,char **argv)
             */
 			//fprintf(errOut,"[luodp] do factory");
             Execute_cmd("rm -rf /etc/wpa2/*.conf;/etc/ath/apcfg", rspBuff);	
+            //backup FACTORY flag
+            CFG_set_by_name("FACTORY","1");
 			//backup version
 			CFG_set_by_name("SOFT_VERSION",valBuff);
 			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
@@ -3706,6 +3688,11 @@ int main(int argc,char **argv)
 			system("echo \"/:admin:admin\" > /etc/httpd.conf");
 			//MAC and BACKUP
 			system("/usr/sbin/var_backup > /dev/null 2>&1");
+			system("cat /dev/null > /etc/ath/iptables/parc");
+			system("rm -f /etc/ip_mac.conf");//wangyu add for ip and mac address bond operation
+			system("rm -f /etc/.staAcl /etc/.staMac");//wangyu add for wireless client manage
+			system("rm -f  /etc/arp_ip_mac_on.conf /etc/arp_ip_mac_off.conf");//wangyu add for arp  ip and mac address bond operation
+			system("rm -f /etc/route.conf");//wangyu add for static route list
 #else
             system("rm -rf /tmp/WSC*.conf");
 #endif /* #ifndef ATH_SINGLE_CFG */
@@ -4054,7 +4041,8 @@ int main(int argc,char **argv)
 		
 		Execute_cmd("wan_check  > /dev/null 2>&1", rspBuff);
 		Execute_cmd("cfg -e | grep \"LINEIN_OUT=\"",valBuff);
-		if(strstr(valBuff,"out") != 0){
+		if(strstr(valBuff,"out") != 0)
+		{
 			char tempu[128]={0};
 			printf("HTTP/1.0 200 OK\r\n");
 			printf("Content-type: text/html\r\n");
@@ -4069,11 +4057,11 @@ int main(int argc,char **argv)
                  
 			if((strcmp(argv[0],"w1")==0)||(strcmp(argv[0],"w2")==0)||(strcmp(argv[0],"w3")==0)||(strcmp(argv[0],"w4")==0)||(strcmp(argv[0],"wwai")==0))
 			{
-			    sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");alert(_(\"wan not connected\"));window.location.href=\"map\";</script>");
+			    sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"wan not connected\"));window.parent.showpwd1();window.location.href=\"map\";</script>");
 			}
 			else
 			{
-			    sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");alert(_(\"wan not connected\"));window.location.href=\"%s\";</script>",argv[0]);
+			    sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"wan not connected\"));window.location.href=\"%s\";</script>",argv[0]);
 			}
 			printf(tempu);
 			printf("</body></html>");
@@ -4131,7 +4119,7 @@ int main(int argc,char **argv)
                  
                             if((strcmp(argv[0],"w1")==0)||(strcmp(argv[0],"w2")==0)||(strcmp(argv[0],"w3")==0)||(strcmp(argv[0],"w4")==0)||(strcmp(argv[0],"wwai")==0))
                             {
-                                sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err dhcp null\"));window.location.href=\"map\";</script>");
+                                sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err dhcp null\"));window.parent.showpwd1();window.location.href=\"map\";</script>");
                             }
                             else
                             {
@@ -4165,7 +4153,7 @@ int main(int argc,char **argv)
 				 printf("</head><body>");
                             if((strcmp(argv[0],"w1")==0)||(strcmp(argv[0],"w2")==0)||(strcmp(argv[0],"w3")==0)||(strcmp(argv[0],"w4")==0)||(strcmp(argv[0],"wwai")==0))
                             {
-                                sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err dhcp ip\"));window.location.href=\"map\";</script>");
+                                sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err dhcp ip\"));window.parent.showpwd1();window.location.href=\"map\";</script>");
                             }
                             else
                             {
@@ -4341,13 +4329,11 @@ int main(int argc,char **argv)
 		CFG_set_by_name("IPGW3",pppoe_gw);
 
 		//add ppp0 route default gw if losing
-		fprintf(errOut,"\npppoe5\n");
 		if(!strstr(Execute_cmd("echo `route -n|grep ppp0|awk -F ' ' '{print$8}'`",route_gw),"ppp0 ppp0"))
 		     {
 		      Execute_cmd("route add default gw `route -n | grep ppp0 |awk -F ' ' '{print$1}'|awk 'NR==1'`",route_gw);
                fprintf(errOut,"\nPPP0 LOST,ADD ONE\n");
 			 }
-		fprintf(errOut,"\npppoe6\n");
 		//save new config to flash 
 		if(flag!=1)
 		{
@@ -4742,12 +4728,9 @@ int main(int argc,char **argv)
 		
 		//CFG_get_by_name("SOFT_VERSION",valBuff);		
 
-        system("cat /dev/null > /etc/ath/iptables/parc");
+        
         system("cfg -x");
-        system("rm -f /etc/ip_mac.conf");//wangyu add for ip and mac address bond operation
-        system("rm -f /etc/.staAcl /etc/.staMac");//wangyu add for wireless client manage
-        system("rm -f  /etc/arp_ip_mac_on.conf /etc/arp_ip_mac_off.conf");//wangyu add for arp  ip and mac address bond operation
-        system("rm -f /etc/route.conf");//wangyu add for static route list
+
         
 		sleep(3);
 		//backup version
@@ -4944,7 +4927,7 @@ int main(int argc,char **argv)
 		      get_net_seg_and(net_seg,tmp,tmp2);
 			  fprintf(errOut,"\nAnd 255.255.255.0---%s\n",tmp2);
 			  memset(tmp,'\0',20);
-			  strcpy(tmp,"0.0.0.100");
+			  strcpy(tmp,"0.0.0.101");
 			  
 			  memset(dhcp_b,'\0',20);
 			  get_net_seg_or(tmp2,tmp,dhcp_b);
@@ -5002,10 +4985,6 @@ int main(int argc,char **argv)
 		
        } 
         
-       char tt[20]={0};
-       CFG_get_by_name("AP_IPADDR",tt);
-        //fprintf(errOut,"\ntt:%s\n",tt);
-	   Result_tiaozhuan2("yes",tt);
        gohome =2;
     }
     

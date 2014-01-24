@@ -23,7 +23,8 @@ else
 {
 	window.parent.Demo2(_("R_FAIL"));
 }
-setTimeout(function(){window.parent.DialogHide();window.location.href=b;},1000);
+
+setTimeout(function(){window.parent.DialogHide();if(b=="map"){window.parent.showpwd1();}window.location.href=b;},1000);
 </script>
 
 </body>

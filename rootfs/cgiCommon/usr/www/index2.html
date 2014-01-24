@@ -190,12 +190,40 @@ function iFrameHeight()
    }  
   
 //结果输出至两个文本框 
-	document.getElementById("ifm").width= winWidth-210;   
-	if((winHeight-80)> subWeb.body.scrollHeight)
+	document.getElementById("ifm").width= winWidth-220;
+	var aa = winHeight-72;	
+	var bb = subWeb.body.scrollHeight;
+	var cc = document.body.scrollHeight-72;
+
+	var max;
+	
+	if(aa > bb)
 	{
-		xxx.height = (winHeight-80); 
-		document.getElementById("leftmenu").style.height=(winHeight-80); 
-	}	
+		if(aa>cc)
+		{
+			max=aa;
+		}
+		else
+		{
+			max=cc;
+		}
+	}
+	else
+	{
+		if(bb>cc)
+		{
+			max=bb;
+		}
+		else
+		{
+			max=cc;
+		}
+		
+	}
+
+	xxx.height = max; 
+	document.getElementById("leftmenu").style.height=max; 
+
 } 
 //--> 
 </script>
@@ -299,7 +327,6 @@ function iFrameHeight()
 </div>
 <!--  左侧结束 -->
 <div class="hbd_menu_r right">
-<!--iframe src ="cgi-bin/ad_sysinfo" frameborder="0" marginheight="0" marginwidth="0" scrolling="yes" id="ifm" name="ifm" onload="javascript:findDimensions();"-->
 <iframe src="cgi-bin/ad_sysinfo" id="ifm" name="ifm" frameBorder=0 scrolling=no  onLoad="iFrameHeight()"></iframe>
 </div> 
 

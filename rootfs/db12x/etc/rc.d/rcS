@@ -17,10 +17,7 @@ mkdir -p /var/local/tmp/ppp/status
 mount -t ramfs -n none /tmp
 
 export PATH=$PATH:/etc/ath
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/lib
-cd /lib;
-ln -s libsqlite3.so.0.8.6 libsqlite3.so.0
-cd /root
+
 
 
 # for profile-based-optimization
@@ -73,22 +70,13 @@ fi
 #rm the old sta list by zzw
 rm /etc/.OldStaList
 
+/usr/bin/cal_check 
 ifconfig $WAN_IF up
 ifconfig $LAN_IF up
 /etc/rc.d/rc.network
 /etc/rc.d/rc.bridge
 . /etc/ath/apcfg
 
-#
-# Enable USB
-#
-insmod /lib/modules/2.6.31/usb/usbcore.ko
-insmod /lib/modules/2.6.31/usb/ehci-hcd.ko
-insmod /lib/modules/2.6.31/usb/usb-storage.ko
-insmod /lib/modules/2.6.31/usb/usbnet.ko
-insmod /lib/modules/2.6.31/usb/cdc_ether.ko
-#insmod /lib/modules/2.6.31/usb/ath_udc.ko
-#insmod /lib/modules/2.6.31/usb/g_file_storage.ko file=/dev/ram1 stall=0 removable=1
 
 #
 # Enable I2S
@@ -154,37 +142,9 @@ fi
 if [ -f /etc/arp_ip_mac_on.conf ]; then
 	/usr/sbin/arp -f /etc/arp_ip_mac_on.conf
 fi
-##
-## add si3000 and spi node
-##
-if [ -c /dev/spiS0 ]
-then
-	echo "/dev/spiS0 node exist"
-else
-	mknod /dev/spiS0 c 217 0
-fi
-if [ -c /dev/pcm0 ]
-then
-	echo "/dev/pcm0 node exist"
-else
-	mknod /dev/pcm0 c 252 0
-fi
-insmod /lib/modules/2.6.31/si3000/ath_si3000.ko
-insmod /lib/modules/2.6.31/stm32/ath_spi_stm32.ko
-
-mkdir -p /var/terminal_init/log
 
 /usr/bin/version_check &
-
-spi_rt_main & 
-#spi_rt_uart1 &
-#terminal_dev_register &
-#swipe_card &
-#monitor_application  &
-#usb_stub &
-
-/bin/reset_mips /bin/phone_serv_19200 &
 /bin/server &
-/usr/bin/cal_check &
 /usr/sbin/threethread &
 /usr/sbin/set_ntpserver &
+

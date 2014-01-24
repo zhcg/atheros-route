@@ -223,8 +223,8 @@ struct dhcpOfferedAddr *deal_control_staMac()
 	struct staList stalist;
 	char mac_buf[20];
 	char buf[10];
-	const char *staFile = "/var/run/.staMac";
-	const char *staFile1 = "/var/run/.staAcl";
+	const char *staFile = "/etc/.staMac";
+	const char *staFile1 = "/etc/.staAcl";
 
 	if((fpp = fopen(staFile1, "r")) == NULL)
 	{
@@ -234,7 +234,7 @@ struct dhcpOfferedAddr *deal_control_staMac()
 	if(fread(buf, 7, 1, fpp) == 1)
 	{
 		//LOG(LOG_ERR, "******the %s's buf is %s", staFile1, buf);
-		if(strncmp(buf, "disable", 7) == 0)
+		if(strncmp(buf, "enable", 6) == 0)
 		{
 			if ((fp = fopen(staFile, "r")) != NULL)
 			{
@@ -256,7 +256,8 @@ struct dhcpOfferedAddr *deal_control_staMac()
 								//LOG(LOG_ERR, "the MAC %s is exit", stalist.macAddr);
 								leases[i].expires = time(0);
 								/* clean out any old ones */
-								clear_lease(leases[i].chaddr, leases[i].yiaddr);
+								memset(&(leases[i]), 0, sizeof(struct dhcpOfferedAddr));
+								//clear_lease(leases[i].chaddr, leases[i].yiaddr);
 							}
 						}
 					}
