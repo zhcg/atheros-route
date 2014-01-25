@@ -3277,7 +3277,7 @@ int set_ntp_server( void)
 	//save new config to flash 
 	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
 	writeParameters("/tmp/.apcfg","w+",0);
-
+	Execute_cmd("killall ntpclient > /dev/null 2>&1",rspBuff);
 	Execute_cmd("/usr/sbin/set_ntpserver > /tmp/ntpserver.log 2>&1",rspBuff);
 #if 1
 	FILE *fileBuf2=NULL;

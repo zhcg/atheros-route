@@ -1,5 +1,5 @@
 #!/bin/sh
-killall ntpclient > /dev/null 2>&1
+#killall ntpclient > /dev/null 2>&1
 ntp_switch=`cfg -e | grep "NTPON_OFF"|awk -F'=' '{print $2}'`
 echo $ntp_switch
 if [ "$ntp_switch" = "off" ];then
