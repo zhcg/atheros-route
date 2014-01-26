@@ -1829,7 +1829,7 @@ int get_now_seconds(void)
 //three thread handler func,  added by yhl 2013.12.04
 int * pppoe_demand_thread(void)
 {	    
-        printf("pppoe_demand_thread id is %d.\n",pthread_self());
+        //printf("pppoe_demand_thread id is %d.\n",pthread_self());
         char pppoe_argu[10];
 		int  argu_int;
 		int  start=0;
@@ -1851,7 +1851,7 @@ int * pppoe_demand_thread(void)
 					 {
 						   if(first)
 						   	 {start = get_now_seconds();}
-						   if(get_now_seconds()<(start+argu_int*60))
+						   if(get_now_seconds()<(start+argu_int))
                                 {system("pppoe-start > /dev/null 2>&1");}
 						   else 
 							    {
@@ -1875,7 +1875,7 @@ int * pppoe_demand_thread(void)
 
 int * pppoe_manual_thread(void *arg)
 	{		
-			printf("pppoe_manual_thread id is %d.\n",pthread_self());
+			//printf("pppoe_manual_thread id is %d.\n",pthread_self());
 			char pppoe_argu[10];
 			int  argu_int;
 			int  start=0;
@@ -1898,7 +1898,7 @@ int * pppoe_manual_thread(void *arg)
 						 {
 							   if(first)
 								 {start = get_now_seconds();}
-							   if(get_now_seconds()<(start+argu_int*60))
+							   if(get_now_seconds()<(start+argu_int))
 									{system("pppoe-start > /dev/null 2>&1");}
 							   else 
 									{
@@ -1931,7 +1931,7 @@ int * pppoe_manual_thread(void *arg)
 
 int * pppoe_timing_thread(void *arg)
 {
-        printf("pppoe_timing_thread id is %d.\n",pthread_self());
+        //printf("pppoe_timing_thread id is %d.\n",pthread_self());
          int seconds;
 		 int b_time,e_time;
 		 char bh[10],bm[10],eh[10],em[10],pppoe_argu[10];
@@ -1958,7 +1958,7 @@ while(1)
 				seconds= get_now_seconds();
 				if((seconds>=b_time)&&(seconds<=e_time))
 				  {
-					printf("timing pppoe<%d---%d>,and now->%d\n",b_time,e_time,seconds);
+					//printf("timing pppoe<%d---%d>,and now->%d\n",b_time,e_time,seconds);
 				    system("pppoe-start > /dev/null 2>&1");
 					sleep(5);
 				  }
@@ -1982,29 +1982,23 @@ int main()
  char manbuf[10];
  memset(manbuf,'\0',10);
 
- printf("main process\n");
-  if(!strncmp(Execute_cmd("grep 'WAN_MODE' /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-5", manbuf), "pppoe", 5))
-   {//current is pppoe
-      if(!pthread_create(&pppoe_demand_tid,NULL,(void *)pppoe_demand_thread,NULL))
-          {printf("create pppoe_demand_thread\n");}
-      else
-          {printf("Fail to Create pppoe_demand_thread");}
+ //printf("main process\n");
+//  if(!strncmp(Execute_cmd("grep 'WAN_MODE' /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-5", manbuf), "pppoe", 5))
+//   {//current is pppoe
+      if(pthread_create(&pppoe_demand_tid,NULL,(void *)pppoe_demand_thread,NULL))
+       {printf("Fail to Create pppoe_demand_thread");}
 	  
-      if(!pthread_create(&pppoe_manual_tid,NULL,(void *)pppoe_manual_thread,NULL))
-          {printf("create pppoe_manual_thread\n");}
-      else
-          {printf("Fail to Create pppoe_manual_thread");}
+      if(pthread_create(&pppoe_manual_tid,NULL,(void *)pppoe_manual_thread,NULL))
+       {printf("Fail to Create pppoe_manual_thread");}
 	  
-      if(!pthread_create(&pppoe_timing_tid,NULL,(void *)pppoe_timing_thread,NULL))
-          {printf("create pppoe_timing_thread\n");}
-      else
-          {printf("Fail to Create pppoe_timing_thread");}
-   }
+      if(pthread_create(&pppoe_timing_tid,NULL,(void *)pppoe_timing_thread,NULL))
+       {printf("Fail to Create pppoe_timing_thread");}
+ //  }
   pthread_join(pppoe_demand_tid,NULL);
   pthread_join(pppoe_manual_tid,NULL);
   pthread_join(pppoe_timing_tid,NULL);
   
-  printf("printf main proc end\n");
+  //printf("printf main proc end\n");
   
 }  
 /********************************** End of Module ,added by yhl date 2013.12.13*****************************/

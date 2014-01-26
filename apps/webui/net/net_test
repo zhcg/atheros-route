@@ -12,7 +12,7 @@ else
         cfg -a INTERNET_ON=on
 fi
 
-cfg -c
+#cfg -c
 
 sleep 5
 

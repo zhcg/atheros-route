@@ -4262,8 +4262,8 @@ int main(int argc,char **argv)
 			fprintf(errOut,"auto pppoe-setup cmdstr-----%s\n",cmdstr);
 			system(cmdstr);
 
-            system("pppoe-stop > /dev/null 2>&1");sleep(5);
-			system("pppoe-start > /dev/null 2>&1");sleep(5);
+            system("pppoe-stop > /dev/null 2>&1");sleep(3);
+			system("pppoe-start > /dev/null 2>&1");sleep(3);
 		}
 		else if(!strncmp(pppoe_mode,"demand",6))
 		{  
@@ -4277,8 +4277,8 @@ int main(int argc,char **argv)
 			fprintf(errOut,"demand pppoe-setup cmdstr-----%s\n",cmdstr);
 			system(cmdstr);
 
-			system("pppoe-stop > /dev/null 2>&1");sleep(5);
-			system("pppoe-start > /dev/null 2>&1");sleep(5);
+			system("pppoe-stop > /dev/null 2>&1");sleep(3);
+			system("pppoe-start > /dev/null 2>&1");sleep(3);
 		}//demand mode
 		else if(!strncmp(pppoe_mode,"manual",6))
 		{
@@ -4292,8 +4292,8 @@ int main(int argc,char **argv)
 			fprintf(errOut,"manual pppoe-setup cmdstr-----%s\n",cmdstr);
 			system(cmdstr);   
 			
-            system("pppoe-stop > /dev/null 2>&1");sleep(5);
-			system("pppoe-start > /dev/null 2>&1");sleep(5);
+            system("pppoe-stop > /dev/null 2>&1");sleep(3);
+			system("pppoe-start > /dev/null 2>&1");sleep(3);
 		}//manual mode		
 		else if(!strncmp(pppoe_mode,"timing",6))	
 		{ 
@@ -4307,14 +4307,24 @@ int main(int argc,char **argv)
 			fprintf(errOut,"timing pppoe-setup cmdstr-----%s\n",cmdstr);
 			system(cmdstr);
 
-            system("pppoe-stop > /dev/null 2>&1");sleep(5);
-			system("pppoe-start > /dev/null 2>&1");sleep(5);
+            system("pppoe-stop > /dev/null 2>&1");sleep(3);
+			system("pppoe-start > /dev/null 2>&1");sleep(3);
 		}
 
-		//kill old,start new  threethread
-		    system("killall threethread > /dev/null 2>&1");sleep(1);
-            system("/usr/sbin/threethread & > /dev/null 2>&1");sleep(1);
-		
+
+//kill old,start new  threethread
+//#if 0
+		system("killall threethread > /dev/null 2>&1");sleep(1);
+		int f = fork();
+		if(f > 0)
+	     {
+		    fprintf(errOut,"\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%father process\n");
+	     }
+	    else if(f == 0)
+	     {
+		   system("/usr/sbin/threethread & > /dev/null 2>&1");sleep(1);
+	     }
+//#endif		
 		//for pppoe show yhlnew
 		char pppoe_ip[20];
 		char pppoe_gw[20];
@@ -4331,7 +4341,7 @@ int main(int argc,char **argv)
 		//add ppp0 route default gw if losing
 		if(!strstr(Execute_cmd("echo `route -n|grep ppp0|awk -F ' ' '{print$8}'`",route_gw),"ppp0 ppp0"))
 		     {
-		      Execute_cmd("route add default gw `route -n | grep ppp0 |awk -F ' ' '{print$1}'|awk 'NR==1'`",route_gw);
+		      Execute_cmd("route add default gw `route -n | grep ppp0 |awk -F ' ' '{print$1}'|awk 'NR==1'` > /dev/null 2>&1",route_gw);
                fprintf(errOut,"\nPPP0 LOST,ADD ONE\n");
 			 }
 		//save new config to flash 
