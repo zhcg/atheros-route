@@ -30,6 +30,10 @@ Qualcomm Atheros Confidential and Proprietary.
 
 void ath_slic_enable(void);
 
+#define B6_V3 		//平台V3
+//#ifdef B6_V3
+//#undef B6_V3
+//#endif
 
 int ath_slic_major = 252;
 int ath_slic_minor = 0;
@@ -206,7 +210,7 @@ int ath_slic_set_freq(void)
 int si3217x_reset(int status)
 {
 	unsigned int rddata;
-#if 1 //B6_V3
+#ifdef B6_V3 //B6_V3
 	ath_reg_rmw_clear(ATH_GPIO_OE, 1<<19);
 
 	rddata = ath_reg_rd(ATH_GPIO_OUT_FUNCTION4);
@@ -693,12 +697,12 @@ ssize_t ath_slic_write(struct file * filp, const char __user * buf,
 //	while (byte_cnt && !desc[tail].OWN) {
 	while(byte_cnt){
 		//空闲空间太小则返回
-//		if(dmabuf->play_tail == tail)
-//			;
-//		else if(space_valid(dmabuf->play_tail, tail) < (NUM_DESC/4))
-//			break;
-		if(space_valid(tail, dmabuf->play_tail) > (NUM_DESC*4/5))
+		if(dmabuf->play_tail == tail)
+			;
+		else if(space_valid(dmabuf->play_tail, tail) < (NUM_DESC/4))
 			break;
+//		if(space_valid(tail, dmabuf->play_tail) > (NUM_DESC*4/5))
+//			break;
 		desc[tail].rsvd1 = 0;
 		desc[tail].size = ath_slic_buf_size;
 		if (byte_cnt >= ath_slic_buf_size) {
@@ -1345,7 +1349,7 @@ void ath_slic_link_on(void)
 		ath_reg_wr(ATH_GPIO_IN_ENABLE4, rddata);
 		
 		rddata = ath_reg_rd(ATH_GPIO_OUT_FUNCTION3);
-#if 1 //B6_V3
+#ifdef B6_V3 //B6_V3
 		rddata |= (ATH_GPIO_OUT_FUNCTION3_ENABLE_GPIO_12(0x4) |
 				ATH_GPIO_OUT_FUNCTION3_ENABLE_GPIO_14(0x6) |
 				ATH_GPIO_OUT_FUNCTION3_ENABLE_GPIO_15(0x5));
@@ -1390,7 +1394,7 @@ void ath_slic_link_on(void)
 //			rddata = ATH_GPIO_OE_EN(0x30309);
 			rddata = ath_reg_rd(ATH_GPIO_OE);
 			rddata = rddata | ATH_GPIO_OE_EN(0x800);//GPIO11=SLIC_DATA_IN
-#if 1 //B6_V3
+#ifdef B6_V3 //B6_V3
 			rddata = rddata & 0xffff8fff;//GPIO12=SLIC_DATA_OUT GPIO13=SLIC_PCM_CLK GPIO14=SLIC_PCM_FS 
 #else
 			rddata = rddata & 0xffff2fff;//GPIO12=SLIC_DATA_OUT GPIO14=SLIC_PCM_CLK GPIO15=SLIC_PCM_FS 

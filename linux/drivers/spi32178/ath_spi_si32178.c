@@ -26,6 +26,10 @@
 #include <linux/devfs_fs_kernel.h>
 #endif
 
+#define B6_V3
+//#ifdef B6_V3
+//#undef B6_V3
+//#endif
 
 #define CNUM_TO_CID_QUAD(channelNumber)   (((channelNumber<<4)&0x10)|((channelNumber<<2)&0x8)|((channelNumber>>2)&0x2)|((channelNumber>>4)&0x1)|(channelNumber&0x4))
 
@@ -171,7 +175,7 @@ int ath_spi_si3217x_reset(int status)
 int ath_spi_si3217x_gpio_init(void)
 {
 	unsigned int rddata;
-#if 1
+#ifdef B6_V3
 	//set gpio17 used as spi_cs for si32178 on B6_V3 board
     rddata = ath_reg_rd(ATH_GPIO_OUT_FUNCTION4);
     rddata = rddata & 0xffff00ff;
