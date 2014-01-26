@@ -76,6 +76,7 @@ ifconfig $LAN_IF up
 /etc/rc.d/rc.network
 /etc/rc.d/rc.bridge
 . /etc/ath/apcfg
+/usr/sbin/set_ntpserver > /dev/null 2>&1
 
 
 #
@@ -147,5 +148,4 @@ fi
 /bin/server &
 /bin/net_test &
 /usr/sbin/threethread &
-/usr/sbin/set_ntpserver > /dev/null 2>&1 &
 
