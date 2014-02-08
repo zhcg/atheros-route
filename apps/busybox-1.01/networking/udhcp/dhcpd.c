@@ -69,7 +69,7 @@ void deal_staControl()
 	pid_t pid = fork();
     if (pid < 0)
     {
-        DEBUG(LOG_ERROR, "fork error");
+        DEBUG(LOG_ERR, "fork error");
     }
     else if( 0 == pid )
     {
@@ -91,7 +91,7 @@ void deal_staControl()
 				fclose(fp);
 				if ((fp1 = fopen("/etc/.staMac", "r")) == NULL) 
 				{
-					DEBUG(LOG_ERROR,"\nUnable to open /etc/.staMac for writing\n");
+					DEBUG(LOG_ERR,"\nUnable to open /etc/.staMac for writing\n");
 				}
 				else
 				{

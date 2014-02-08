@@ -967,6 +967,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                     int num=1;
                     int shi=0;
 					int add = 0;
+					int open = 0;
 
                     Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
                     Execute_cmd("wlanconfig ath0 list sta > /etc/.STAlist 2>&1", rspBuff);
@@ -976,6 +977,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 					/*if the /etc/.OldStaList is not exit, creat it*/
 					if((fp1 = fopen(OLD_STAFILE, "r")) == NULL)     /*  /etc/.OldStaList  */
 					{
+						open = 1;
 						fprintf(errOut,"\n%s  %d  creat the file %s\n",__func__,__LINE__, OLD_STAFILE);
 						fp1 = fopen(OLD_STAFILE, "at");
 						flist = fopen("/etc/.STAlist", "r");    /*  /etc/.STAlist   */
@@ -987,7 +989,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 							fwrite(&oldstalist, sizeof(oldstalist), 1, fp1);
                         }
 						fclose(flist);
-						//fclose(fp1);
+						fclose(fp1);
 					}
 					flist = fopen("/etc/.STAlist", "r");    /*  /etc/.STAlist   */
 					fgets(STAbuf, 128, flist);
@@ -996,9 +998,9 @@ char *processSpecial(char *paramStr, char *outBuff)
                     	int ret = 0;
                     	memset(buf, 0, sizeof buf);
 						strncpy(buf, STAbuf, 17);
-						fclose(fp1);
-						fp1 = fopen(OLD_STAFILE, "r");			/*  /etc/.OldStaList  */
-						
+						if(open == 1)
+							fp1 = fopen(OLD_STAFILE, "r");			/*  /etc/.OldStaList  */
+						//fprintf(errOut,"\n%s  %d  buf is %s\n",__func__,__LINE__, buf);
 						while(fread(&oldstalist, sizeof oldstalist, 1, fp1) == 1)
 						{
 							//fprintf(errOut,"buf is [%s],oldstalist.macAddr is [%s]\n\n", buf, oldstalist.macAddr);
@@ -1008,25 +1010,27 @@ char *processSpecial(char *paramStr, char *outBuff)
 								break;
 							}
 						}
+						
 						if(ret == 0)
 						{
 							addSta(buf, oldstalist.staDesc, oldstalist.id);
 							add = 1;
 						}
 						fclose(fp1);
+						open =  1;
                     }
 					fclose(flist);
 					if((add == 1) && (fp1 = fopen(OLD_STAFILE, "at")))			/*  /etc/.OldStaList  */
 					{
 						p = scan_staList(staHostList);
 						while(p)
-						{//fprintf(errOut,"fwrite 22222");
+						{
 							fwrite(p, sizeof(struct staList), 1, fp1);
 							p = p->next;
 						}
 						fclose(fp1);
 					}
-					
+					//fprintf(errOut,"\n%s  %d  zhaozhanwei22222\n",__func__,__LINE__);
                     fp = fopen(UDHCPD_FILE, "r");  /*  /var/run/udhcpd.leases   */
                     if (NULL == fp)
                     {
