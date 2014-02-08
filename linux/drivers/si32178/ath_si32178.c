@@ -1395,9 +1395,9 @@ void ath_slic_link_on(void)
 			rddata = ath_reg_rd(ATH_GPIO_OE);
 			rddata = rddata | ATH_GPIO_OE_EN(0x800);//GPIO11=SLIC_DATA_IN
 #ifdef B6_V3 //B6_V3
-			rddata = rddata & 0xffff8fff;//GPIO12=SLIC_DATA_OUT GPIO13=SLIC_PCM_CLK GPIO14=SLIC_PCM_FS 
+			rddata = rddata & 0xffff2fff;//GPIO12=SLIC_DATA_OUT GPIO14=SLIC_PCM_CLK GPIO15=SLIC_PCM_FS  
 #else
-			rddata = rddata & 0xffff2fff;//GPIO12=SLIC_DATA_OUT GPIO14=SLIC_PCM_CLK GPIO15=SLIC_PCM_FS 
+			rddata = rddata & 0xffff8fff;//GPIO12=SLIC_DATA_OUT GPIO13=SLIC_PCM_CLK GPIO14=SLIC_PCM_FS
 #endif		
 		}
 		ath_reg_wr(ATH_GPIO_OE, rddata);

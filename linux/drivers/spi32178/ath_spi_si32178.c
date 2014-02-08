@@ -155,7 +155,20 @@ struct file_operations spidrv_fops = {
 int ath_spi_si3217x_reset(int status)
 {
 	unsigned int rddata;
+#ifdef B6_V3
+	ath_reg_rmw_clear(ATH_GPIO_OE, 1<<19);
 
+	rddata = ath_reg_rd(ATH_GPIO_OUT_FUNCTION4);
+	rddata = rddata & 0xffffff;
+//	rddata = rddata | ATH_GPIO_OUT_FUNCTION4_ENABLE_GPIO_19(0x00);
+	ath_reg_wr(ATH_GPIO_OUT_FUNCTION4, rddata);
+
+	if (status) {
+		ath_reg_rmw_clear(ATH_GPIO_OUT, 1<<19);
+	} else  {
+		ath_reg_rmw_set(ATH_GPIO_OUT, 1<<19);
+	}
+#else
 	ath_reg_rmw_clear(ATH_GPIO_OE, 1<<15);
 
 	rddata = ath_reg_rd(ATH_GPIO_OUT_FUNCTION3);
@@ -168,6 +181,7 @@ int ath_spi_si3217x_reset(int status)
 	} else  {
 		ath_reg_rmw_set(ATH_GPIO_OUT, 1<<15);
 	}
+#endif
 	return 0;
 }
 
@@ -177,12 +191,13 @@ int ath_spi_si3217x_gpio_init(void)
 	unsigned int rddata;
 #ifdef B6_V3
 	//set gpio17 used as spi_cs for si32178 on B6_V3 board
+	ath_reg_rmw_clear(ATH_GPIO_OE, 1<<17);
+	
     rddata = ath_reg_rd(ATH_GPIO_OUT_FUNCTION4);
     rddata = rddata & 0xffff00ff;
     rddata = rddata | ((0x07) << 8);
     ath_reg_wr(ATH_GPIO_OUT_FUNCTION4, rddata);
 
-	ath_reg_rmw_clear(ATH_GPIO_OE, 1<<17);
 #else
 	
 	ath_reg_rmw_set(ATH_GPIO_FUNCTIONS,
@@ -327,8 +342,12 @@ u8 spi_si3217x_read8(unsigned short sid, unsigned char cid, unsigned char reg)
 {
 	unsigned char value;
 	unsigned char regCtrl = CNUM_TO_CID_QUAD(cid)|0x60;
+	
 	ath_flash_spi_down();
+//	ath_reg_wr_nf(ATH_SPI_WRITE, ATH_SPI_CS_DIS);
+//	ath_reg_wr_nf(ATH_SPI_CLOCK, 0x2af);
 	ath_spi_enable();
+
 	spi_chip_select(ENABLE);
 	spi_write(regCtrl);
 	spi_chip_select(DISABLE);
@@ -338,7 +357,9 @@ u8 spi_si3217x_read8(unsigned short sid, unsigned char cid, unsigned char reg)
 	spi_chip_select(ENABLE);
 	value = spi_read();
 	spi_chip_select(DISABLE);	
-	ath_spi_done();
+	ath_spi_done();	
+//	ath_reg_wr_nf(ATH_SPI_WRITE, ATH_SPI_CS_DIS);
+//	ath_reg_wr_nf(ATH_SPI_CLOCK, 0x243);
 	ath_flash_spi_up();	
 	return value;
 }
@@ -347,6 +368,10 @@ void spi_si3217x_write8(unsigned short sid, unsigned char cid, unsigned char reg
 { 
 	unsigned char regCtrl = CNUM_TO_CID_QUAD(cid)|0x20;
 	ath_flash_spi_down();
+	
+//	ath_reg_wr_nf(ATH_SPI_WRITE, ATH_SPI_CS_DIS);
+//	ath_reg_wr_nf(ATH_SPI_CLOCK, 0x2af);
+	
 	ath_spi_enable();
 	spi_chip_select(ENABLE);
 	spi_write(regCtrl);
@@ -358,6 +383,10 @@ void spi_si3217x_write8(unsigned short sid, unsigned char cid, unsigned char reg
 	spi_write(value);
 	spi_chip_select(DISABLE);
 	ath_spi_done();
+	
+//	ath_reg_wr_nf(ATH_SPI_WRITE, ATH_SPI_CS_DIS);
+//	ath_reg_wr_nf(ATH_SPI_CLOCK, 0x243);
+	
 	ath_flash_spi_up();
 }
  unsigned char ReadReg (unsigned short portID,  unsigned char channel,  unsigned char regAddr)
