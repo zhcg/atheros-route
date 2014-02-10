@@ -87,7 +87,6 @@ void *recv_sock()
 							printf("Create pthread error!\n");
 							return;
 						}
-				
 					}
 				continue;
 					
@@ -98,14 +97,18 @@ void *recv_sock()
 					{	
 						printf("MINUS MODE!!!!!\n");
 						system("iwpriv ath0 mode 11NGHT40MINUS");
-						system("cfg -a AP_CHMODE 11NGHT40MINUS");
+						system("cfg -a AP_CHMODE=11NGHT40MINUS");
+						//sprintf(cmd, "cfg -a AP_PRIMARY_CH=%d", val);
+						//system(cmd);
 						system("cfg -c");
 					}
 					else if(val <= 4)
 					{	
 						printf("PLUS MODE!!!!!");
 						system("iwpriv ath0 mode 11NGHT40PLUS");
-						system("cfg -a AP_CHMODE 11NGHT40PLUS");
+						system("cfg -a AP_CHMODE=11NGHT40PLUS");
+						//sprintf(cmd, "cfg -a AP_PRIMARY_CH=%d", val);
+						//system(cmd);
 						system("cfg -c");
 					}
 					
