@@ -73,7 +73,7 @@ _eXosip_register_build_register (eXosip_reg_t * jr, osip_message_t ** _reg)
 
   if (jr == NULL)
   {	  
-	  printf("______________________%d\n", __LINE__);
+	  printf("[%s][%s][%d][yangjilong]\n", __FILE__, __FUNCTION__, __LINE__);
       return OSIP_BADPARAMETER;
   }
 
@@ -82,7 +82,7 @@ _eXosip_register_build_register (eXosip_reg_t * jr, osip_message_t ** _reg)
       if (jr->r_last_tr->state != NICT_TERMINATED
           && jr->r_last_tr->state != NICT_COMPLETED)
 	  {
-		  printf("______________________%d\n", __LINE__);
+		  printf("[%s][%s][%d][yangjilong]\n", __FILE__, __FUNCTION__, __LINE__);
 		  return OSIP_WRONG_STATE;
 	  }
       else
@@ -93,7 +93,6 @@ _eXosip_register_build_register (eXosip_reg_t * jr, osip_message_t ** _reg)
           i = osip_message_clone (jr->r_last_tr->orig_request, &reg);
           if (i != 0)
 		  {
-			printf("______________________%d\n", __LINE__);
             return i;
 		  }
           if (jr->r_last_tr->last_response != NULL)
@@ -102,7 +101,6 @@ _eXosip_register_build_register (eXosip_reg_t * jr, osip_message_t ** _reg)
               if (i != 0)
               { 
                   osip_message_free (reg);
-				  printf("______________________%d\n", __LINE__);
                   return i;
                }
           }
@@ -131,8 +129,7 @@ _eXosip_register_build_register (eXosip_reg_t * jr, osip_message_t ** _reg)
                 osip_message_free (reg);
                 if (last_response != NULL)
                   osip_message_free (last_response);
-		  
-				 printf("______________________%d\n", __LINE__);
+                  
                  return i;
               }
 
@@ -144,9 +141,7 @@ _eXosip_register_build_register (eXosip_reg_t * jr, osip_message_t ** _reg)
                 osip_message_free (reg);
                 if (last_response != NULL)
                   osip_message_free (last_response);
-
-				
-				printf("______________________%d\n", __LINE__);
+                  
                 return OSIP_NOMEM;
               }
             sprintf (reg->cseq->number, "%i", osip_cseq_num);
@@ -165,9 +160,7 @@ _eXosip_register_build_register (eXosip_reg_t * jr, osip_message_t ** _reg)
                       osip_message_free (reg);
                       if (last_response != NULL)
                         osip_message_free (last_response);
-
-
-					  printf("______________________%d\n", __LINE__);
+                        
                       return OSIP_NOMEM;
                      }
                   snprintf (exp->hvalue, 9, "%i", jr->r_reg_period);
@@ -189,6 +182,7 @@ _eXosip_register_build_register (eXosip_reg_t * jr, osip_message_t ** _reg)
             }
         }
     }
+  printf("[%s][%s][%d][yangjilong]\n", __FILE__, __FUNCTION__, __LINE__);
   if (reg == NULL)
     {
       i = generating_register (jr, &reg, eXosip.transport,
@@ -196,13 +190,11 @@ _eXosip_register_build_register (eXosip_reg_t * jr, osip_message_t ** _reg)
                                 jr->r_reg_period);
       if (i != 0)
 	  {
-		  printf("______________________%d\n", __LINE__);
 		  return i;
 	  }
     }
 
   *_reg = reg;
-  //printf("______________________%d\n", __LINE__);
   return OSIP_SUCCESS;
 }
 
@@ -226,7 +218,6 @@ eXosip_register_build_initial_register (const char *from, const char *proxy,
     {
       if (strcmp (jr->r_aor, from) == 0 && strcmp (jr->r_registrar, proxy) == 0)
         {	
-          printf("__________________%s %d\n", __FILE__, __LINE__);
           REMOVE_ELEMENT (eXosip.j_reg, jr);
           eXosip_reg_free (jr);
           jr = NULL;
@@ -237,7 +228,6 @@ eXosip_register_build_initial_register (const char *from, const char *proxy,
     {
       /* Add new registration info */
       i = eXosip_reg_init (&jr, from, proxy, contact);
-      printf("__________________%s %d\n", __FILE__, __LINE__);
       if (i != 0)
         {
           OSIP_TRACE (osip_trace
@@ -245,7 +235,6 @@ eXosip_register_build_initial_register (const char *from, const char *proxy,
                        "eXosip: cannot register! "));
           return i;
         }
-	  printf("jr->r_last_tr->state = %d\n", jr->r_last_tr->state);
       ADD_ELEMENT (eXosip.j_reg, jr);
     }
 
@@ -255,7 +244,7 @@ eXosip_register_build_initial_register (const char *from, const char *proxy,
     jr->r_reg_period = 0;
   else if (jr->r_reg_period < 100)      /* too low */
     jr->r_reg_period = 100;
-
+    
   i = _eXosip_register_build_register (jr, reg);
   if (i != 0)
     {
@@ -266,7 +255,7 @@ eXosip_register_build_initial_register (const char *from, const char *proxy,
       return i;
     }
 
-  //printf("__________________jr->r_id = %d\n", jr->r_id);
+  printf("[%s][%s][%d][yangjilong]\n", __FILE__, __FUNCTION__, __LINE__);
   return jr->r_id;
 }
 
@@ -327,35 +316,29 @@ eXosip_register_send_register (int rid, osip_message_t * reg)
       osip_message_free (reg);
       return OSIP_BADPARAMETER;
     }
-
-  printf("___________%s %d\n", __FILE__, __LINE__);
+  printf("[%s][%s][%d][yangjilong]\n", __FILE__, __FUNCTION__, __LINE__);
   jr = eXosip_reg_find (rid);
   if (jr == NULL)
     {
-	  printf("___________%s %d\n", __FILE__, __LINE__);
       osip_message_free (reg);
       return OSIP_NOTFOUND;
     }
 
   if (jr->r_last_tr != NULL)
     {
-	  printf("___________%s %d\n", __FILE__, __LINE__);
       if (jr->r_last_tr->state != NICT_TERMINATED
           && jr->r_last_tr->state != NICT_COMPLETED)
         {
-	      printf("___________%s %d\n", __FILE__, __LINE__);
           osip_message_free (reg);
           return OSIP_WRONG_STATE;
         }
     }
-
-  printf("___________%s %d\n", __FILE__, __LINE__);
+    
   if (reg == NULL)
     {
       i = _eXosip_register_build_register (jr, &reg);
       if (i != 0)
         {
-          printf("___________%s %d\n", __FILE__, __LINE__);
           OSIP_TRACE (osip_trace
                        (__FILE__, __LINE__, OSIP_ERROR, NULL,
                        "eXosip: cannot build REGISTER!"));
@@ -363,9 +346,7 @@ eXosip_register_send_register (int rid, osip_message_t * reg)
         }
     }
 
-  printf("___________%s %d\n", __FILE__, __LINE__);
   i = _eXosip_transaction_init (&transaction, NICT, eXosip.j_osip, reg);
-  printf("___________%s %d\n", __FILE__, __LINE__);
   if (i != 0)
     {
       osip_message_free (reg);
@@ -373,11 +354,12 @@ eXosip_register_send_register (int rid, osip_message_t * reg)
     }
 
   jr->r_last_tr = transaction;
+  
   /* send REGISTER */
   sipevent = osip_new_outgoing_sipmessage (reg);
   sipevent->transactionid = transaction->transactionid;
   osip_message_force_update (reg);
-
+  
   osip_transaction_add_event (transaction, sipevent);
   __eXosip_wakeup ();
   return OSIP_SUCCESS;

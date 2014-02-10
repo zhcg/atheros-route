@@ -6,12 +6,12 @@
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script>
-
 function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
 function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
 function widget_disable	(widgetID){document.getElementById(widgetID).disabled = true;}
 function initTranslation()
 {
+	trans_inner("title_all","sysinfo title");
 	trans_inner("t1_title","sysinfo t1_title");
 	trans_inner("t1_softv","sysinfo t1_softv");
 	trans_inner("t1_firmv","sysinfo t1_firmv");
@@ -52,19 +52,51 @@ function valueinit()
 	document.getElementById("ss11").innerHTML=document.getElementById("s11").value;
 	document.getElementById("ss13").innerHTML=document.getElementById("s13").value;
 
+	var wtype;
+	wtype = document.getElementById("s6").value;
 
 	if(document.getElementById("s3").value == "on")
 		document.getElementById("ss3").innerHTML=_("sysinfo ok");
 	else
 		document.getElementById("ss3").innerHTML=_("sysinfo fail");
-	
+	//IP/MASK
 	{
-		if((document.getElementById("s5a").value == "")||(document.getElementById("s5b").value == ""))
-			document.getElementById("ss5").innerHTML=_("sysinfo unset");
-		else
-			document.getElementById("ss5").innerHTML=document.getElementById("s5a").value +"/"+document.getElementById("s5b").value;
-	}
+		if(wtype=="static")
+		{
+			if((document.getElementById("s5a").value == "")||(document.getElementById("s5b").value == ""))
+			{
+				document.getElementById("ss5").innerHTML=_("sysinfo unset");
+			}
+			else
+			{
+				document.getElementById("ss5").innerHTML=document.getElementById("s5a").value +"/"+document.getElementById("s5b").value;			
+			}
+		}		
+		else if(wtype == "dhcp")
+		{
+			if((document.getElementById("s5c").value == "")||(document.getElementById("s5d").value == ""))
+			{
+				document.getElementById("ss5").innerHTML=_("sysinfo unset");
+			}
+			else
+			{
+				document.getElementById("ss5").innerHTML=document.getElementById("s5c").value +"/"+document.getElementById("s5d").value;			
+			}
 	
+		}
+		else if(wtype == "pppoe")
+		{
+			if((document.getElementById("s5e").value == "")||(document.getElementById("s5f").value == ""))
+			{
+				document.getElementById("ss5").innerHTML=_("sysinfo unset");
+			}
+			else
+			{
+				document.getElementById("ss5").innerHTML=document.getElementById("s5e").value +"/"+document.getElementById("s5f").value;				
+			}
+
+		}
+	}
 	if(document.getElementById("s6").value == "dhcp")	
 		document.getElementById("ss6").innerHTML=_("sysinfo dhcp");
 	else if(document.getElementById("s6").value == "static")	
@@ -78,10 +110,44 @@ function valueinit()
 	else
 		document.getElementById("ss6").innerHTML="";
 		
-	if(document.getElementById("s7").value == "")	
-		document.getElementById("ss7").innerHTML=_("sysinfo unset");
-	else
-		document.getElementById("ss7").innerHTML=_("sysinfo unset");
+
+	//GW
+	{
+		if(wtype=="static")
+		{
+			if(document.getElementById("s7a").value == "")
+			{
+				document.getElementById("ss7").innerHTML=_("sysinfo unset");
+			}
+			else
+			{
+				document.getElementById("ss7").innerHTML=document.getElementById("s7a").value;			
+			}
+		}		
+		else if(wtype == "dhcp")
+		{
+			if(document.getElementById("s7b").value == "")
+			{
+				document.getElementById("ss7").innerHTML=_("sysinfo unset");
+			}
+			else
+			{
+				document.getElementById("ss7").innerHTML=document.getElementById("s7b").value;			
+			}
+		}
+		else if(wtype == "pppoe")
+		{
+			if(document.getElementById("s7c").value == "")
+			{
+				document.getElementById("ss7").innerHTML=_("sysinfo unset");
+			}
+			else
+			{
+				document.getElementById("ss7").innerHTML=document.getElementById("s7c").value;			
+			}
+		}
+	}
+	
 		
 	if(document.getElementById("s10").value == "on")
 		document.getElementById("ss10").innerHTML=_("sysinfo on");
@@ -98,15 +164,13 @@ function valueinit()
 	else
 		document.getElementById("ss14").innerHTML=_("sysinfo off");
 }
+
 </script>
-
 </head>
-
 <body onload="init()">
 <div class="handaer_main">
 <table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
-
-<h1></h1>
+<h1 id="title_all"></h1>
 <table width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
 <tr><td class="title" colspan="2" id="t1_title">系统状态</td></tr> 
 <tr>
@@ -135,8 +199,14 @@ function valueinit()
 </tr>
 <tr>
   <td class="head" id="t2_ip">IP地址</td>
-  <td><span id="ss5" name="ss5"></span><input size="32" style="display:none" maxlength="64" name="s5a" id="s5a" value="~~WAN_IPADDR~" type="text" readonly>
-  <input size="32" style="display:none" maxlength="64" name="s5b" id="s5b" value="~~WAN_NETMASK~" type="text" readonly></td>
+  <td><span id="ss5" name="ss5"></span>
+  <input size="32" style="display:none" maxlength="64" name="s5a" id="s5a" value="~~WAN_IPADDR~" type="text" readonly>
+  <input size="32" style="display:none" maxlength="64" name="s5b" id="s5b" value="~~WAN_NETMASK~" type="text" readonly>  
+  <input size="32" style="display:none" maxlength="64" name="s5c" id="s5c" value="~~WAN_IPADDR2~" type="text" readonly>
+  <input size="32" style="display:none" maxlength="64" name="s5d" id="s5d" value="~~WAN_NETMASK2~" type="text" readonly>
+  <input size="32" style="display:none" maxlength="64" name="s5e" id="s5e" value="~~WAN_IPADDR3~" type="text" readonly>
+  <input size="32" style="display:none" maxlength="64" name="s5f" id="s5f" value="~~WAN_NETMASK3~" type="text" readonly>
+  </td>
 </tr>
 <tr>
   <td class="head" id="t2_ctpye">接入方式</td>
@@ -144,7 +214,11 @@ function valueinit()
 </tr>
 <tr>
   <td class="head" id="t2_gw">网关</td>
-  <td><span id="ss7" name="ss7"></span><input size="32" style="display:none" maxlength="64" name="s7" id="s7" value="~~IPGW~" type="text" readonly></td>
+  <td><span id="ss7" name="ss7"></span>
+  <input size="32" style="display:none" maxlength="64" name="s7a" id="s7a" value="~~IPGW~" type="text" readonly>
+  <input size="32" style="display:none" maxlength="64" name="s7b" id="s7b" value="~~IPGW2~" type="text" readonly>
+  <input size="32" style="display:none" maxlength="64" name="s7c" id="s7c" value="~~IPGW3~" type="text" readonly>
+  </td>
 </tr>
 </table>
 
@@ -185,9 +259,6 @@ function valueinit()
   <td><span  name="ss14" id="ss14" ></span><input size="32" style="display:none" maxlength="64" name="s14" id="s14" value="~~WDSON_OFF~" type="text" readonly></td>
 </tr>
 </table>
-
-
-
 
 </td></tr>
 </table>

@@ -661,7 +661,7 @@ int main(int argc, char ** argv)
   	int res = 0;
   	
   	// 创建服务器
-  	if ((sock_server_fd = internetwork_communication.make_server_link(PORT)) < 0)
+  	if ((sock_server_fd = communication_network.make_server_link(PORT)) < 0)
   	{
   	    PERROR("make_server_link failed!\n");
   	    return sock_server_fd;

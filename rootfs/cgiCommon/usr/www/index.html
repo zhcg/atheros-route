@@ -1,8 +1,262 @@
-﻿<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Router Setting</title>
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>HBD router settings</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+<script type="text/javascript" src="/lang/b28n.js"></script>
+<script language="JavaScript" type="text/javascript" src="/style/load.js"></script>
+<script language="JavaScript" type="text/javascript">
+function initLanguage()
+{
+	var cook="no";
+	if (document.cookie.length > 0) {
+		var s = document.cookie.indexOf("language=");
+		//alert("s:"+s);
+		var e = document.cookie.indexOf(";", s);
+		//alert("e:"+e);
+		if (s != -1) 
+		{
+			if (e == -1)
+			{
+				//alert("e=-1:"+e);
+				cook = document.cookie.substring(s+9);
+				//alert("cook:"+cook);
+			}
+			else
+			{
+				//alert("e!=-1:"+e);
+				cook = document.cookie.substring(s+9, e);
+				//alert("cook:"+cook);
+			}
+		}
+	}
+	if((cook != "zhcn")&&(cook != "en"))
+	{
+		//alert("cook:language=zhcn"+cook);
+		document.cookie="language=zhcn; path=/";
+		window.location.reload();
+	}
+
+}
+function tr()
+{
+	var ee = document.getElementById("m_fast1");
+	ee.innerHTML = _("admw m_fast");
+	ee = document.getElementById("m_normal");
+	ee.innerHTML = _("admw m_normal");
+	ee = document.getElementById("m_wan");
+	ee.innerHTML = _("admw m_wan");
+	ee = document.getElementById("m_wifi");
+	ee.innerHTML = _("admw m_wifi");
+	//ee = document.getElementById("m_wirere");
+	//ee.innerHTML = _("admw m_wirere");
+}
+function onInit()
+{
+	initLanguage();
+	Butterlate.setTextDomain("main");
+	var	e = document.getElementById("top_adv");
+	e.innerHTML =  _("top_adv");
+	e = document.getElementById("top_admin");
+	e.innerHTML = _("top_admin");
+	
+	e = document.getElementById("logoimage");
+	if (_("toplanguage")=="e")
+		e.src = "images/logo_e.gif";
+	else
+		e.src = "images/logo.gif";
+		
+	tr();
+	//iFrameHeight();
+	window.onresize=iFrameHeight; 
+}
+function zhcn()
+{
+	document.cookie="language="+"zhcn"+"; path=/";
+	window.location.reload();
+}
+function en()
+{
+	document.cookie="language="+"en"+"; path=/";
+	window.location.reload();
+}
+function style_display_on()
+{
+	if (window.ActiveXObject)
+	{ // IE
+		return "inline-block";
+	}
+	else if (window.XMLHttpRequest)
+	{ // Mozilla, Safari,...
+		return "table-row";
+	}
+}
+function switchsa()//quick to adv
+{
+	window.location.href="index2.html";
+}
+
+function hidehead()
+{
+  document.getElementById("c1").innerHTML='<a href="cgi-bin/map" target="ifm" id="m_normal" onclick="showpwd1()"></a>';
+  document.getElementById("c2").innerHTML='<a href="cgi-bin/w2" target="ifm" id="m_wan"  onclick="showpwd2()"></a>';
+  //document.getElementById("c3").innerHTML='<a href="cgi-bin/w4" target="ifm" id="m_wirere" onclick="showpwd3()"></a>';
+  document.getElementById("c4").innerHTML='<a href="cgi-bin/w3" target="ifm" id="m_wifi" onclick="showpwd4()"></a>';
+}
+function showpwd1()
+{
+	hidehead();
+ 	document.getElementById("c1").innerHTML='<a href="cgi-bin/map" target="ifm" id="m_normal"  onclick="showpwd()" class="handaer_common"></a>';
+	tr();
+}
+function showpwd2()
+{
+	hidehead();
+ 	document.getElementById("c2").innerHTML='<a href="cgi-bin/w2" target="ifm" id="m_wan"  onclick="showpwd2()" class="handaer_common"></a>';
+	tr();
+}
+function showpwd3()
+{
+	hidehead();
+ 	//document.getElementById("c3").innerHTML='<a href="cgi-bin/w4" target="ifm" id="m_wirere" onclick="showpwd3()" class="handaer_common"></a>';
+	tr();
+}
+function showpwd4()
+{
+	hidehead();
+ 	document.getElementById("c4").innerHTML='<a href="cgi-bin/w3" target="ifm" id="m_wifi" onclick="showpwd4()" class="handaer_common"></a>';
+	tr();
+}
+
+function iFrameHeight() 
+{ 
+	var xxx= document.getElementById("ifm"); 
+	xxx.height=500;
+	var subWeb = document.frames ? document.frames["ifm"].document : xxx.contentDocument; 
+
+	if(xxx != null && subWeb != null) 
+	{ 
+		xxx.height = subWeb.body.scrollHeight; 
+		document.getElementById("leftmenu").style.height=subWeb.body.scrollHeight; 
+	} 
+	var winWidth = 0; 
+	var winHeight = 0;    
+	if(navigator.userAgent.indexOf("MSIE")>0) 
+   {  
+		winWidth = document.body.clientWidth ;
+		winHeight = document.body.clientHeight ;
+   }  
+   if(isFirefox=navigator.userAgent.indexOf("Firefox")>0)
+   {  
+		winWidth = document.documentElement.clientWidth ;
+		winHeight=	document.documentElement.clientHeight; //return "Firefox";  
+   }  
+   if(isSafari=navigator.userAgent.indexOf("Safari")>0) 
+   {  
+		winWidth = document.body.clientWidth ;
+		winHeight = document.body.clientHeight ;
+   }   
+   if(isCamino=navigator.userAgent.indexOf("Camino")>0)
+   {  
+   		winWidth = document.body.clientWidth ;
+		winHeight = document.body.clientHeight ;     //return "Camino";  
+   }  
+   if(isMozilla=navigator.userAgent.indexOf("Gecko")>0)
+   {  
+		winWidth = document.body.clientWidth ;
+		winHeight = document.body.clientHeight ;    //return "Gecko";  
+   }  
+  
+document.getElementById("ifm").width= winWidth-220;
+	var aa = winHeight-72;	
+	var bb = subWeb.body.scrollHeight;
+	var cc = document.body.scrollHeight-72;
+
+	var max;
+	
+	if(aa > bb)
+	{
+		if(aa>cc)
+		{
+			max=aa;
+		}
+		else
+		{
+			max=cc;
+		}
+	}
+	else
+	{
+		if(bb>cc)
+		{
+			max=bb;
+		}
+		else
+		{
+			max=cc;
+		}
+		
+	}
+
+	xxx.height = max; 
+	document.getElementById("leftmenu").style.height=max; 
+} 
+
+</script>
 </head>
-<body onload="window.location.href='home.html'">
+
+<body onload="onInit();" ondragstart="window.event.returnValue=false" oncontextmenu="window.event.returnValue=false" onselectstart="event.returnValue=false">
+
+<div class="handaer_top">
+<div class="handaer_top_l  left">  <img src="/images/logo.gif" width="159" height="72" id="logoimage"/>   </div>
+<div class="handaer_top_r  right">  
+<div class="handaer_top_r_top"> 
+<a href="javascript:void(0)" id="top_zhcn" onClick="zhcn()">中文</a>| 
+<a href="javascript:void(0)" id="top_en" onClick="en()">English</a> 
+</div>
+<div class="handaer_top_r_bottom">   
+<a href="cgi-bin/adminset" target="ifm" id="top_admin"></a> 
+<a href="javascript:void(0)" id="top_adv" onClick="switchsa()"></a>
+</div>
+</div>
+
+<div class="clear"></div>
+
+
+</div>
+
+<!--  上部结束 -->
+
+
+<div class="hbd_menu">
+
+
+<div class="hbd_menu_l left"> 
+
+
+<div class="handaer_left" id="leftmenu" style="background-color:#ECEDEF;">
+<dl>
+<dt id="m_fast1">快速设置</dt>
+	<dd><span id="c1"><a href="cgi-bin/map" target="ifm" id="m_normal" onClick="showpwd1()" class="handaer_common">设置向导</a></span></dd>
+	<dd><span id="c2"><a href="cgi-bin/w2" target="ifm" id="m_wan" onClick="showpwd2()">外网设置</a></span></dd>
+	<!--dd><span id="c3"><a href="cgi-bin/w4" target="ifm" id="m_wirere" onClick="showpwd3()">无线设置</a></span></dd-->
+	<dd><span id="c4"><a href="cgi-bin/w3" target="ifm" id="m_wifi" onClick="showpwd4()">WiFi设置</a></span></dd>
+   </dl>
+    </div>     
+</div>
+<!--  左侧结束 -->
+<div class="hbd_menu_r right"><!-- TemplateBeginEditable name="EditRegion3" -->
+<!--iframe src ="cgi-bin/map" frameborder="0" marginheight="0" marginwidth="0" scrolling="yes" id="ifm" name="ifm" onload="javascript:findDimensions();"-->
+<iframe src="cgi-bin/map" id="ifm" name="ifm" frameBorder=0 scrolling=no  onLoad="iFrameHeight()"></iframe>
+<!-- TemplateEndEditable --> </div> 
+
+<div class="clear"></div>
+</div>
+
 </body>
 </html>

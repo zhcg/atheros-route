@@ -13,7 +13,7 @@ echo "*** Unmounting existing file systems"
 ROOTFS_SIZE=14876672
 KERNEL_SIZE=1441792
 
-SIZE=`wc -c /tmp/9344version.img | cut -c1-7`
+SIZE=`wc -c /tmp/9344version.img | awk -F' ' '{print $1}'`
 #echo $SIZE
 if [ $SIZE -lt $KERNEL_SIZE ] || [ $SIZE -gt $ROOTFS_SIZE ];then
 	echo "wrong size"
@@ -52,6 +52,5 @@ then
         echo  "ERROR: failed to copy  rootfs image l"
         exit 3
 fi
-
 /sbin/reboot
 sleep 2

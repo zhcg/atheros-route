@@ -1,0 +1,123 @@
+﻿<html>
+<head>
+<title></title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<LINK REL="stylesheet" HREF="../style/handaer.css" TYPE="text/css" media="all">
+<link rel="stylesheet" href="../style/normal_ws.css" type="text/css">
+<script type="text/javascript" src="../lang/b28n.js"></script>
+<script type="text/javascript">
+var a ;
+var b ;
+var c ;
+var intTimerID;
+var intTimeout;
+var intStartTime;  
+var bolIsTimeout;
+var objIMG;
+
+function init()
+{
+	Butterlate.setTextDomain("other");
+	a = document.getElementById("RESULT").value;
+	b = document.getElementById("PAGE").value;
+	c = document.getElementById("IPA").value;
+	//alert(a+b+c);
+	if(c=="")
+		c="10.10.10.254";
+
+	if(a == "reboot")
+	{
+		window.parent.Demo(_("REBOOT"));
+		setTimeout(function(){ping();},35000);
+	}
+	else if(a == "upload")
+	{
+		window.parent.Demo(_("UPLOAD"));
+		setTimeout(function(){ping();},35000);
+	}
+	else if(a == "cfgback")
+	{
+		window.parent.Demo(_("CFGBACK"));
+		setTimeout(function(){ping();},40000);
+	}
+	else if(a == "factory")
+	{
+		window.parent.Demo(_("FACTORY"));
+		setTimeout(function(){ping();},35000);
+	}
+	else
+	{
+		setTimeout(function(){ping();},35000);
+	}
+}
+
+function ping()
+{ 
+	intTimeout = 4000;
+	intStartTime;  
+	bolIsTimeout;
+	objIMG = new Image();
+	objIMG.onload =
+	objIMG.onerror =
+	function()
+	{
+		//alert("连接成功,准备跳转 bolIsTimeout"+bolIsTimeout);
+		clearTimeout(intTimerID);
+		if(bolIsTimeout)
+			return;
+		{
+			
+			if(a == "reboot")
+			{
+				setTimeout(function(){window.parent.DialogHide();window.top.location.href="http://"+c;},5000);
+				
+			}
+			else if(a == "upload")
+			{
+				setTimeout(function(){window.parent.DialogHide();window.top.location.href="http://"+c+"/cgi-bin/"+"crupload";},5000);
+			}
+			else if(a == "cfgback")
+			{
+				setTimeout(function(){window.parent.DialogHide();window.top.location.href="http://"+c;},5000);
+				
+			}
+			else if(a == "factory")
+			{
+				setTimeout(function(){window.parent.DialogHide();window.top.location.href="http://"+c+"/cgi-bin/"+"crfact";},5000);
+			}
+			else
+			{
+				setTimeout(function(){window.parent.DialogHide();window.top.location.href="http://"+c},5000);
+			}
+		}
+	}               
+	intStartTime = +new Date();     
+    //objIMG.src = "http://192.168.4.168"+"/" + intStartTime;
+    objIMG.src = "http://"+c+"/" + intStartTime;
+	//alert(objIMG.src);
+	intTimerID = setTimeout(timeout, intTimeout); 
+	bolIsTimeout=false;
+}                                                               
+
+function timeout()
+{
+	//alert("连接不成功");
+	bolIsTimeout=true;
+	{
+		//objIMG.src = "X:\\"; 
+		ping();
+	}
+}
+
+
+
+</script>
+</head>
+<body onload="init()">
+<input type="text" style="display:none" name="RESULT" id="RESULT" size="20" maxlength="32" value="~~RESULT~">
+<input type="text" style="display:none" name="PAGE" id="PAGE" size="20" maxlength="32" value="~~PAGE~">
+<input type="text" style="display:none" name="IPA" id="IPA" size="20" maxlength="32" value="~~AP_IPADDR~">
+
+
+</body>
+</html>

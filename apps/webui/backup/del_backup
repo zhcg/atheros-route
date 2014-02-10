@@ -1,0 +1,28 @@
+#!/bin/sh
+
+BACKUP_DIR="/etc/backup/"
+BACKUP_LIST="/etc/backup/backup_list.conf"
+
+
+if [ x$1 = x ]; then
+	exit 1
+fi
+
+BACKUP_DATE=`cfg -e | grep "$1" |awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`
+if [ -z $BACKUP_DATE ];then
+	exit 1
+fi
+
+str=$(grep -i -E "\<$1\>" $BACKUP_LIST)
+
+if [ "$str" = "" ];then
+        echo "the backup is not exist"
+		exit 1
+else
+        echo "the backup is exist"
+		sed -i '/'$1'/d' $BACKUP_LIST
+		rm $BACKUP_DIR/$BACKUP_DATE.bin
+		rm $BACKUP_DIR/$BACKUP_DATE.sta*
+        echo "delete backup done"
+        exit 1
+fi

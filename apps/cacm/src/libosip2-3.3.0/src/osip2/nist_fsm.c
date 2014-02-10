@@ -109,14 +109,14 @@ __nist_load_fsm ()
 
   transition = (transition_t *) osip_malloc (sizeof (transition_t));
   transition->state = NIST_COMPLETED;
-  printf("_____________%s %d", __FILE__, __LINE__);
+  printf("_____________%s %d\n", __FILE__, __LINE__);
   transition->type = TIMEOUT_J;
   transition->method = (void (*)(void *, void *)) &osip_nist_timeout_j_event;
   ADD_ELEMENT (nist_fsm->transitions, transition);
 
   transition = (transition_t *) osip_malloc (sizeof (transition_t));
   transition->state = NIST_COMPLETED;
-  printf("_____________%s %d", __FILE__, __LINE__);
+  printf("_____________%s %d\n", __FILE__, __LINE__);
   transition->type = RCV_REQUEST;
   transition->method = (void (*)(void *, void *)) &nist_rcv_request;
   ADD_ELEMENT (nist_fsm->transitions, transition);

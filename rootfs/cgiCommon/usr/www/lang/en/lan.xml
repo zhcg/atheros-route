@@ -1,96 +1,110 @@
 ﻿<po>
-  <message msgid="lan bAPPLY" msgstr="Apply" />
-  <message msgid="lan bCANCEL" msgstr="Cancel" />
-  <message msgid="lan enable" msgstr="Enable" />
-  <message msgid="lan disable" msgstr="Disable" />
-  <message msgid="lan MODDHCP" msgstr="Modify" />
-  <message msgid="lan DELDHCP" msgstr="Delete" />
-  <message msgid="lan ADDDHCP" msgstr="Add" />
-  <message msgid="lan onbutton" msgstr="On" />
-  <message msgid="lan offbutton" msgstr="Off" />  
-  <message msgid="lan work" msgstr="Take effect" />
-  <message msgid="lan offwork" msgstr="lose efficacy" />  
-  <message msgid="lan bSAVE" msgstr="Save" />   
-  
-  <message msgid="dhcp title" msgstr="DHCP Server" />
-  <message msgid="dhcp des" msgstr="Options related to configure the DHCP server and display the DHCP information" />
-  <message msgid="dhcp t1_title" msgstr="DHCP" />
-  <message msgid="dhcp t1_GWIP" msgstr="Gateway IP" />
-  <message msgid="dhcp t1_DHCPON_OFF" msgstr="DHCP Server" />
-  <message msgid="dhcp t1_DHCPIP" msgstr="IP allocation" />
-  <message msgid="dhcp t1_TIME" msgstr="Time" />
-  <message msgid="dhcp t1_hour" msgstr="Hour" />
-  <message msgid="dhcp t1_min" msgstr="Minutes" />
-  <message msgid="dhcp t1_defaut" msgstr="(1-2880 minutes, the default value of 120 minutes)" />
-
-  <message msgid="dhcp t2_title" msgstr="Static allocation" />
-  <message msgid="dhcp t2_Mac" msgstr="MAC" />
-  <message msgid="dhcp t2_Ip" msgstr="IP" />
-  <message msgid="dhcp t2_Status" msgstr="Enable" />
-  <message msgid="dhcp t2_Modefy" msgstr="Delete" />
-
-  <message msgid="dhcp t3_title" msgstr="DHCP client" />
-  <message msgid="dhcp t3_Hostname" msgstr="Client name" />
-  <message msgid="dhcp t3_Mac" msgstr="MAC" />
-  <message msgid="dhcp t3_Ip" msgstr="IP" />
-  <message msgid="dhcp t3_Expr" msgstr="Effective time" />
-  
-  <message msgid="dhcpadd title" msgstr="DHCP Server" />
-  <message msgid="dhcpadd des" msgstr="Add static DHCP entries" />
-  <message msgid="dhcpadd t1_title" msgstr="Add static DHCP entries" />
-  <message msgid="dhcpadd t1_MAC" msgstr="MAC" />
-  <message msgid="dhcpadd t1_IP" msgstr="IP" />
-  <message msgid="dhcpadd t1_Status" msgstr="Status" />
-
-  <message msgid="gw title" msgstr="Gateway Settings" />
-  <message msgid="gw des" msgstr="The gateway configuration option" />
-  <message msgid="gw t1_title" msgstr="Gateway Settings" />
-  <message msgid="gw t1_MAC" msgstr="MAC" />
-  <message msgid="gw t1_IP" msgstr="IP" />
-  <message msgid="gw t1_SUB" msgstr="The subnet mask" />
-  
-  <message msgid="rulit title" msgstr="Routing table settings" />
-  <message msgid="rulit des" msgstr="Display and configure static routing table information" />
-  
-  <message msgid="rulit t1_title" msgstr="Routing table" />
-  <message msgid="rulit t1_Des" msgstr="Destination" />
-  <message msgid="rulit t1_Sub" msgstr="The subnet mask" />
-  <message msgid="rulit t1_Gw" msgstr="Gateway" />
-  <message msgid="rulit t1_Intf" msgstr="Interface" />
+	<message msgid="lan bAPPLY" msgstr="Apply" />
+	<message msgid="lan bCANCEL" msgstr="Cancel" />
+	<message msgid="lan enable" msgstr="Enable" />
+	<message msgid="lan disable" msgstr="Disable" />
+	<message msgid="lan MODDHCP" msgstr="Modify" />
+	<message msgid="lan DELDHCP" msgstr="Delete" />
+	<message msgid="lan ADDDHCP" msgstr="Add" />
+	<message msgid="lan onbutton" msgstr="On" />
+	<message msgid="lan offbutton" msgstr="Off" />  
+	<message msgid="lan work" msgstr="Take effect" />
+	<message msgid="lan offwork" msgstr="lose efficacy" />  
+	<message msgid="lan bSAVE" msgstr="Save" />   
+	<message msgid="lan mac_format" msgstr="for example(11:22:33:44:55:66)" />   
+	<message msgid="help" msgstr="Help" />
+	<message msgid="toplanguage" msgstr="e" />
+	<message msgid="settingwaiting" msgstr="Setting,Please Wait......" />
 	
-  <message msgid="rulit t2_title" msgstr="Static routing" />
-  <message msgid="rulit t2_Des" msgstr="Destination" />
-  <message msgid="rulit t2_Sub" msgstr="The subnet mask" />
-  <message msgid="rulit t2_Gw" msgstr="Gateway" />
-  <message msgid="rulit t2_Inf" msgstr="Enable" />
-  <message msgid="rulit t2_Modefy" msgstr="Delete" />
-  
-  <message msgid="addru title" msgstr="Add static routing rules" />
-  <message msgid="addru des" msgstr="Add static routing rules" />
-  <message msgid="addru t1_title" msgstr="Add static routing rules" />
-  <message msgid="addru t1_Des" msgstr="Destination" />
-  <message msgid="addru t1_Sub" msgstr="The subnet mask" />
-  <message msgid="addru t1_Gw" msgstr="Gateway" />
-  <message msgid="addru t1_St" msgstr="Status" />
-  <message msgid="err MAC empty" msgstr="MAC is empty!" />
-  <message msgid="err IP empty" msgstr="IP is empty!" />
-  <message msgid="err sub empty" msgstr="Subnet mask is empty!" />
-  <message msgid="err user empty" msgstr="User name is empty!" />
-  <message msgid="err pwd empty" msgstr="Password is empty!" />
-  <message msgid="err time empty" msgstr="Time is empty!" />
-  
-  <message msgid="err MAC format" msgstr="MAC format error!" />
-  <message msgid="err IP format" msgstr="IP format error!" />
-  <message msgid="err sub format" msgstr="Subnet mask format error!" />
-  
-  <message msgid="err format" msgstr="Parameter format error!" />
-  <message msgid="err range" msgstr="Parameter range error!" />
-  
-  <message msgid="err bip" msgstr="The starting address is not valid segment!" />
-  <message msgid="err eip" msgstr="The end address is not in the legal network!" />
-  <message msgid="err iprange" msgstr="The DHCP address range can't contain gateway IP" />
-  <message msgid="err ip notin" msgstr="IP address must be in the DHCP address range" />
-  <message msgid="err IPMAC exist" msgstr="IP or MAC address has been bound" />
-  <message msgid="err ipsame" msgstr="IP address can not be the same with the gateway IP" />
-  <message msgid="err ip illegal" msgstr="The IP address is not in the valid range" />
+	<message msgid="dhcp title" msgstr="DHCP Server" />
+	<message msgid="dhcp des" msgstr="Set the DHCP service. Router DHCP server can automatically configure the computer LAN TCP/IP protocol" />
+	<message msgid="dhcp t1_title" msgstr="DHCP" />
+	<message msgid="dhcp t1_GWIP" msgstr="Gateway IP" />
+	<message msgid="dhcp t1_DHCPON_OFF" msgstr="DHCP Server" />
+	<message msgid="dhcp t1_DHCPIP" msgstr="IP allocation range" />
+	<message msgid="dhcp t1_TIME" msgstr="Time" />
+	<message msgid="dhcp t1_hour" msgstr="Hour" />
+	<message msgid="dhcp t1_min" msgstr="Minutes" />
+	<message msgid="dhcp t1_defaut" msgstr="(1-2880 minutes, the default value of 120 minutes)" />
+
+	<message msgid="dhcp t2_title" msgstr="Static address allocation" />
+	<message msgid="dhcp t2_Mac" msgstr="MAC Address" />
+	<message msgid="dhcp t2_Ip" msgstr="IP Address" />
+	<message msgid="dhcp t2_Status" msgstr="Enable" />
+	<message msgid="dhcp t2_Modefy" msgstr="Delete" />
+
+	<message msgid="dhcp t3_title" msgstr="DHCP client" />
+	<message msgid="dhcp t3_Hostname" msgstr="Client name" />
+	<message msgid="dhcp t3_Mac" msgstr="MAC Address" />
+	<message msgid="dhcp t3_Ip" msgstr="IP Address" />
+	<message msgid="dhcp t3_Expr" msgstr="Effective time" />
+
+	<message msgid="dhcp delit1" msgstr="Are you sure to delete " />
+	<message msgid="dhcp delit2" msgstr=" static DHCP rule?" />
+	
+	<message msgid="dhcpadd title" msgstr="DHCP Server" />
+	<message msgid="dhcpadd des" msgstr="Add static DHCP entries" />
+	<message msgid="dhcpadd t1_title" msgstr="Add static DHCP entries" />
+	<message msgid="dhcpadd t1_MAC" msgstr="MAC Address" />
+	<message msgid="dhcpadd t1_IP" msgstr="IP Address" />
+	<message msgid="dhcpadd t1_Status" msgstr="Status" />
+
+	<message msgid="gw title" msgstr="Gateway Settings" />
+	<message msgid="gw des" msgstr="The gateway configuration option" />
+	<message msgid="gw t1_title" msgstr="Gateway Settings" />
+	<message msgid="gw t1_MAC" msgstr="MAC Address" />
+	<message msgid="gw t1_IP" msgstr="IP Address" />
+	<message msgid="gw t1_SUB" msgstr="Subnet Mask" />
+
+	<message msgid="rulit title" msgstr="Routing table settings" />
+	<message msgid="rulit des" msgstr="Display and configure static routing table information" />
+
+	<message msgid="rulit t1_title" msgstr="Routing table" />
+	<message msgid="rulit t1_Des" msgstr="Destination" />
+	<message msgid="rulit t1_Sub" msgstr="Subnet Mask" />
+	<message msgid="rulit t1_Gw" msgstr="Gateway" />
+	<message msgid="rulit t1_Intf" msgstr="Interface" />
+
+	<message msgid="rulit t2_title" msgstr="Static routing" />
+	<message msgid="rulit t2_Des" msgstr="Destination" />
+	<message msgid="rulit t2_Sub" msgstr="Subnet Mask" />
+	<message msgid="rulit t2_Gw" msgstr="Gateway" />
+	<message msgid="rulit t2_Inf" msgstr="Enable" />
+	<message msgid="rulit t2_Modefy" msgstr="Delete" />
+
+	<message msgid="rulit delit1" msgstr="Are you sure to delete " />
+	<message msgid="rulit delit2" msgstr=" static routing rule?" />
+
+	<message msgid="addru title" msgstr="Add static routing rules" />
+	<message msgid="addru des" msgstr="Add static routing rules" />
+	<message msgid="addru t1_title" msgstr="Add static routing rules" />
+	<message msgid="addru t1_Des" msgstr="Destination" />
+	<message msgid="addru t1_Sub" msgstr="Subnet Mask" />
+	<message msgid="addru t1_Gw" msgstr="Gateway" />
+	<message msgid="addru t1_St" msgstr="Status" />
+	<message msgid="err MAC empty" msgstr="MAC is empty " />
+	<message msgid="err user empty" msgstr="User name is empty " />
+	<message msgid="err pwd empty" msgstr="Password is empty " />
+	<message msgid="err time empty" msgstr="Time is empty " />
+	<message msgid="err MAC format" msgstr="MAC format error,Please input as XX:XX:XX:XX:XX:XX" />
+	<message msgid="err format" msgstr="Parameter illegal " />
+	<message msgid="err range" msgstr="Parameter range error " />
+	<message msgid="err bip" msgstr="The starting address is not valid segment " />
+	<message msgid="err eip" msgstr="The end address is not in the legal network " />
+	<message msgid="err iprange" msgstr="The DHCP address range can't contain gateway IP" />
+	<message msgid="err ip notin" msgstr="IP address must be in the DHCP address range" />
+	<message msgid="err IPMAC exist" msgstr="IP or MAC address has been bound" />
+	<message msgid="err ipsame" msgstr="IP address can not be the same with the gateway IP" />
+	<message msgid="err ip illegal" msgstr="The IP address is not in the valid range" />
+	<message msgid="err sub allone" msgstr="Subnet mask should not be 255.255.255.255" />
+	<message msgid="err time" msgstr="Invalid time" />
+	<message msgid="err IP empty" msgstr="IP address can not be empty" />
+	<message msgid="err sub empty" msgstr="Subnet can not be empty" />
+	<message msgid="err gw empty" msgstr="Gateway can not be empty" />
+	<message msgid="err DNS empty" msgstr="DNS can not be empty" />
+	<message msgid="err IP format" msgstr="IP address illegal" />
+	<message msgid="err sub format" msgstr="Subnet address illegal" />	
+	<message msgid="err gw format" msgstr="Gateway address illegal" />
+	<message msgid="err DNS format" msgstr="DNS address illegal" />
+	<message msgid="err WANsame" msgstr="Gateway IP cannot port and WAN IP in the same segment" />	
  </po>

@@ -18,20 +18,16 @@ function button_commit(buttonID){document.getElementById(buttonID).click();}
 function initTranslation()
 {
 	trans_inner("title","man exporttitle");
+	trans_inner("des","man cfgdes");
+	
 	trans_inner("t1des","man exportdes");
 	trans_value("setmanExpSetExport","man export");
 	
-		
 	trans_value("localsave","man localsave");
 	trans_inner("selsectfile","man selsectfile");
 	trans_inner("t2des","man inportdes");
 	trans_value("inport","man inport");
-	
-	trans_inner("t3des","man basesavedes");
-	trans_inner("t3_title","man basesavetitle");
-	trans_inner("t3_title2","man basesavetitle2");
-	
-	trans_inner("t3_DATE","man date");
+	trans_inner("t3_title","man basesavedes");
 	
 	trans_value("USE1","man use");
 	trans_value("USE2","man use");
@@ -43,6 +39,10 @@ function initTranslation()
 	trans_value("DEL3","man delete");
 	trans_value("DEL4","man delete");
 	trans_value("DEL5","man delete");
+
+	trans_inner("care1","cfg care1");
+	trans_inner("care2","cfg care2");
+	trans_inner("care3","cfg care3");
 }
 function init()
 {
@@ -52,46 +52,144 @@ function init()
 }
 function initmodifybutton()
 {
-	if(document.getElementById("CFG1").value=="")
+	if(document.getElementById("show_BACKUP1").value=="")
 		widget_hide("cfgtr1");
-	if(document.getElementById("CFG2").value=="")
+	if(document.getElementById("show_BACKUP2").value=="")
 		widget_hide("cfgtr2");
-	if(document.getElementById("CFG3").value=="")
+	if(document.getElementById("show_BACKUP3").value=="")
 		widget_hide("cfgtr3");
-	if(document.getElementById("CFG4").value=="")
+	if(document.getElementById("show_BACKUP4").value=="")
 		widget_hide("cfgtr4");
-	if(document.getElementById("CFG5").value=="")
+	if(document.getElementById("show_BACKUP5").value=="")
 		widget_hide("cfgtr5");
 }
 function uploadcfg()
 {
-	button_commit("upgradecfg");
+	if(document.cfg_upload.uploadedfile.value == "")
+	{
+		document.cfg_upload.uploadedfile.focus();
+		alert(_("err cfg empty"));
+		return false;
+	}
+	if(confirm(_("man cfg backup")))
+	{
+		//waitgifshow();
+		button_commit('upgradecfg');
+	}	
+}
+function getdatef()
+{
+	var currentTime = new Date();
+
+	var seconds = currentTime.getSeconds();
+	var minutes = currentTime.getMinutes();
+	var hours = currentTime.getHours();
+	var month = currentTime.getMonth() + 1;
+	var day = currentTime.getDate();
+	var year = currentTime.getFullYear();
+
+	var seconds_str = " ";
+	var minutes_str = " ";
+	var hours_str = " ";
+	var month_str = " ";
+	var day_str = " ";
+	var year_str = " ";
+
+	if(seconds < 10)
+		seconds_str = "0" + seconds;
+	else
+		seconds_str = ""+seconds;
+
+	if(minutes < 10)
+		minutes_str = "0" + minutes;
+	else
+		minutes_str = ""+minutes;
+
+	if(hours < 10)
+		hours_str = "0" + hours;
+	else
+		hours_str = ""+hours;
+
+	if(month < 10)
+		month_str = "0" + month;
+	else
+		month_str = ""+month;
+
+	if(day < 10)
+		day_str = "0" + day;
+	else
+		day_str = day;
+
+	return (year+'-'+month_str+'-'+day_str+'-'+hours_str+':'+minutes_str+':'+seconds_str);
 }
 function savetolocal()
 {
+	if(document.getElementById("BACKUP1").value=="")
+	{
+		widget_disable("BACKUP2");widget_disable("BACKUP3");
+		widget_disable("BACKUP4");widget_disable("BACKUP5");
+		document.getElementById("BACKUP1").value=getdatef();	
+		document.getElementById("SAV").value="BACKUP1";
+	}
+	else if(document.getElementById("BACKUP2").value=="")
+	{
+		widget_disable("BACKUP1");widget_disable("BACKUP3");
+		widget_disable("BACKUP4");widget_disable("BACKUP5");
+		document.getElementById("BACKUP2").value=getdatef();	
+		document.getElementById("SAV").value="BACKUP2";
+	}
+	else if(document.getElementById("BACKUP3").value=="")
+	{
+		widget_disable("BACKUP1");widget_disable("BACKUP2");
+		widget_disable("BACKUP4");widget_disable("BACKUP5");
+		document.getElementById("BACKUP3").value=getdatef();	
+		document.getElementById("SAV").value="BACKUP3";
+	}
+	else if(document.getElementById("BACKUP4").value=="")
+	{
+		widget_disable("BACKUP1");widget_disable("BACKUP2");
+		widget_disable("BACKUP3");widget_disable("BACKUP5");
+		document.getElementById("BACKUP4").value=getdatef();	
+		document.getElementById("SAV").value="BACKUP4";
+	}
+	else if(document.getElementById("BACKUP5").value=="")
+	{
+		widget_disable("BACKUP1");widget_disable("BACKUP2");
+		widget_disable("BACKUP3");widget_disable("BACKUP4");
+		document.getElementById("BACKUP5").value=getdatef();	
+		document.getElementById("SAV").value="BACKUP5";
+	}
+	else
+	{
+		alert(_("err cfg full"));
+		return false;
+	}
+
 	button_commit("LOCAL_SAVE");
 }
-function disableCFG()
-{
-	widget_disable("CFG1");
-	widget_disable("CFG2");
-	widget_disable("CFG3");
-	widget_disable("CFG4");
-	widget_disable("CFG5");
-}
+
 function listuse(value)
 {
-	disableCFG();
-	document.getElementById("ACT").value=value;
-	alert("使用了"+value);
-	button_commit("CFG_MODIFY_USE");
+	var name;
+
+	document.getElementById("ACT").value="BACKUP"+value;
+	name = document.getElementById("BACKUP"+value).value;
+	
+	if(confirm(_("man cfg backto1")+name+_("man cfg backto2")))
+	{
+		button_commit("CFG_MODIFY_USE");
+	}	
 }
 function listdel(value)
 {
-	disableCFG();
-	document.getElementById("ACT").value=value;
-	alert("删除了"+value);
-	button_commit("CFG_MODIFY_DEL");
+	var name;
+	
+	document.getElementById("ACT").value="BACKUP"+value;
+	name = document.getElementById("BACKUP"+value).value;
+	if(confirm(name+_("man cfg backupdel2")))
+	{
+		button_commit("CFG_MODIFY_DEL");
+	}
 }
 
 </script>
@@ -101,35 +199,54 @@ function listdel(value)
 <div class="handaer_main">
 <table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
 <h1 id="title"></h1>
-
+<h2 id="des"></h2>
+<table id="t1" width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
 <form method="post" name="ExportSettings" action="/cgi-bin/download.cgi">
-<h2 id="t1des"></h2>
-
-<input value="Export" id="setmanExpSetExport" name="Export" class="handaer_input" type="submit">
+<tr> 
+	<td class="title" colspan="2" id="t1des"></td>
+</tr>
+<tr>
+	<td> <input value="Export" id="setmanExpSetExport" name="Export" class="handaer_input" type="submit"/></td>
+</tr>
 </form>
+</table>
 <h1></h1>
 
-<h2 id="t2des"></h2>
-<form name="cfg_upload" enctype="multipart/form-data" action="/cgi-bin/upload.cgi" method="post" target="">
+<h2></h2>
+<form name="cfg_upload" enctype="multipart/form-data" action="/cgi-bin/cfgupload.cgi" method="post" target="">
 <table id="uploadff" width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
+
+<tr> 
+	<td class="title" colspan="2" id="t2des"></td>
+</tr>
+
 <tr>
   <td class="head" id="selsectfile"></td>
   <td>
-	<input type="file" id="uploadedfile" name="uploadedfile">
+	<input type="file" id="uploadedfile" style="border-width:1px;font-family:'微软雅黑';font-size:12px;  height:25px;color: #000000;  cursor:hand; " name="uploadedfile"/>
   </td>
 </tr>
 <tr>
-  <td>&nbsp; &nbsp;</td>
   <td>
-	<input id="inport" class="handaer_input" onclick="uploadcfg()" type="button" name="inport">
-	<input type="submit" name="upgradecfg" id="upgradecfg" style="display:none" value="upgradecfg">
+	<input id="inport" class="handaer_input" onclick="uploadcfg()" type="button" name="inport"/>
+	<input type="submit" name="upgradecfg" id="upgradecfg" style="display:none" value="upgradecfg"/>
+  </td>
+  <td>&nbsp; &nbsp;</td>
+</tr>
+
+</table>
+<table width="100%" cellpadding="0" cellspacing="0"   style="border-top: 0px;" class="handaer_text">
+<tr>
+  <td>
+	<span id="care1"></span><br>
+	<span id="care2"></span><br>
+	<span id="care3"></span>
   </td>
 </tr>
-</table>
+<table>
 </form>
 
-<h1>  </h1>
-<h2 id="t3des"></h2>
+<h1>&nbsp; &nbsp;</h1>
 <table id="t3" width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
   <tr> 
     <td class="title" colspan="2" id="t3_title"></td>
@@ -138,55 +255,60 @@ function listdel(value)
   <td>
 	<form method="post" name="WORMFORM">    
 		<input id="localsave" class="handaer_input" onclick="savetolocal()" type="button" name="localsave">
+		<input type="text" size="32" name="BACKUP1" id="BACKUP1" style="display:none"  value="~~BACKUP1~">
+		<input type="text" size="32" name="BACKUP2" id="BACKUP2" style="display:none"  value="~~BACKUP2~">
+		<input type="text" size="32" name="BACKUP3" id="BACKUP3" style="display:none"  value="~~BACKUP3~">
+		<input type="text" size="32" name="BACKUP4" id="BACKUP4" style="display:none"  value="~~BACKUP4~">
+		<input type="text" size="32" name="BACKUP5" id="BACKUP5" style="display:none"  value="~~BACKUP5~">
+		<input type="text" size="32" name="SAV" id="SAV" style="display:none"  value="">
 		<input type="submit" name="LOCAL_SAVE" id="LOCAL_SAVE" style="display:none" value="LOCAL_SAVE">
 	</form>
   </td>
   <td>&nbsp; &nbsp;</td>
 </tr> 
-  <tr> 
-    <td class="title" colspan="2" id="t3_title2"></td>
-  </tr> 
-<tr>
-    <td id="t3_DATE" width="30%"></td>
-    <td>&nbsp; &nbsp;</td>
-  </tr>
   
-<form method="post" name="WORMFORM2">    
+
   <tr id="cfgtr1"> 
-    <td><input size="32" name="CFG1" id="CFG1" class="handaer_text_content" value="test1" type="text" readonly></td>
     <td>
-	<input type="button" name="1" id="USE1" onClick="listuse(this.name)">
-    <input type="button" name="1" id="DEL1" onClick="listdel(this.name)">
+	<input size="32" name="show_BACKUP1" id="show_BACKUP1" class="handaer_text_content" value="~~BACKUP1~" type="text" readonly></td>
+    <td>
+	<input type="button" class="handaer_small_button" name="1" id="USE1" onClick="listuse(this.name)">&nbsp; &nbsp;
+    <input type="button" class="handaer_small_button" name="1" id="DEL1" onClick="listdel(this.name)">&nbsp; &nbsp;
 	</td>
   </tr>
   <tr id="cfgtr2"> 
-    <td><input size="32" name="CFG2" id="CFG2" class="handaer_text_content" value="test1" type="text" readonly></td>
     <td>
-	<input type="button" name="2" id="USE2" onClick="listuse(this.name)">
-    <input type="button" name="2" id="DEL2" onClick="listdel(this.name)">
+	<input size="32" name="show_BACKUP2" id="show_BACKUP2" class="handaer_text_content" value="~~BACKUP2~" type="text" readonly></td>
+    <td>
+	<input type="button" class="handaer_small_button" name="2" id="USE2" onClick="listuse(this.name)">&nbsp; &nbsp;
+    <input type="button" class="handaer_small_button" name="2" id="DEL2" onClick="listdel(this.name)">&nbsp; &nbsp;
 	</td>
   </tr>
   <tr id="cfgtr3"> 
-    <td><input size="32" name="CFG3" id="CFG3" class="handaer_text_content" value="test1" type="text" readonly></td>
     <td>
-	<input type="button" name="3" id="USE3" onClick="listuse(this.name)">
-    <input type="button" name="3" id="DEL3" onClick="listdel(this.name)">
+	<input size="32" name="show_BACKUP3" id="show_BACKUP3" class="handaer_text_content" value="~~BACKUP3~" type="text" readonly></td>
+    <td>
+	<input type="button" class="handaer_small_button" name="3" id="USE3" onClick="listuse(this.name)">&nbsp; &nbsp;
+    <input type="button" class="handaer_small_button" name="3" id="DEL3" onClick="listdel(this.name)">&nbsp; &nbsp;
 	</td>
   </tr>
   <tr id="cfgtr4"> 
-    <td><input size="32" name="CFG4" id="CFG4" class="handaer_text_content" value="test1" type="text" readonly></td>
     <td>
-	<input type="button" name="4" id="USE4" onClick="listuse(this.name)">
-    <input type="button" name="4" id="DEL4" onClick="listdel(this.name)">
+	<input size="32" name="show_BACKUP4" id="show_BACKUP4" class="handaer_text_content" value="~~BACKUP4~" type="text" readonly></td>
+    <td>
+	<input type="button" class="handaer_small_button" name="4" id="USE4" onClick="listuse(this.name)">&nbsp; &nbsp;
+    <input type="button" class="handaer_small_button" name="4" id="DEL4" onClick="listdel(this.name)">&nbsp; &nbsp;
 	</td>
   </tr>
   <tr id="cfgtr5"> 
-    <td><input size="32" name="CFG5" id="CFG5" class="handaer_text_content" value="test1" type="text" readonly></td>
     <td>
-	<input type="button" name="5" id="USE5" onClick="listuse(this.name)">
-    <input type="button" name="5" id="DEL5" onClick="listdel(this.name)">
+	<input size="32" name="show_BACKUP5" id="show_BACKUP5" class="handaer_text_content" value="~~BACKUP5~" type="text" readonly></td>
+    <td>
+	<input type="button" class="handaer_small_button" name="5" id="USE5" onClick="listuse(this.name)">&nbsp; &nbsp;
+    <input type="button" class="handaer_small_button" name="5" id="DEL5" onClick="listdel(this.name)">&nbsp; &nbsp;
 	</td>
   </tr>
+<form method="post" name="WORMFORM2">    
 	<input type="submit" name="CFG_MODIFY_USE" id="CFG_MODIFY_USE" style="display:none" value="CFG_MODIFY_USE">
 	<input type="submit" name="CFG_MODIFY_DEL" id="CFG_MODIFY_DEL" style="display:none" value="CFG_MODIFY_DEL">
 	<input type="text" style="display:none" name="ACT" id="ACT" size="20" maxlength="32">	

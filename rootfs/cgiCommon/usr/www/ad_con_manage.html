@@ -29,9 +29,13 @@ function initTranslation()
 	
 	trans_value("bCANCEL","conn bCANCEL");	
 	trans_value("bAPPLY","conn bAPPLY");
+	trans_inner("help_r","help");	
+
 }
 function CheckValue()
 {
+	Butterlate.setTextDomain("admin");
+	window.parent.Demo(_("admw settingwaiting"));	
 	button_commit("CONM_WORK");
 }
 function init()
@@ -42,8 +46,17 @@ function init()
 function listdel(value)
 {
 	document.getElementById("DELXXX").value=value;
-	alert("删除了"+value);
-	button_commit("DEL_CON");
+	if(confirm(_("conn delit1")+"MAC="+value+_("conn delit2")))
+	{
+		button_commit("DEL_CON");
+	}
+}
+function help()
+{
+	if (_("toplanguage")=="e")
+		window.location.href='../help/ad_con_manage_help_e.html';
+	else
+		window.location.href='../help/ad_con_manage_help_z.html';
 }
 </script>
 
@@ -52,7 +65,7 @@ function listdel(value)
 <body onload="init()">
 <div class="handaer_main">
 <table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
-<h1 id="title">无线接入管理</h1>
+<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="title">无线接入管理</h1>
 <form method="POST" name="wirelessconnection">
 <h2 id="des">管理当前已经接入的无线设备</h2>
 
@@ -63,8 +76,8 @@ function listdel(value)
   <tr> 
     <td id="t1_switch">控制开关</td>    
 	<td>
-	<input type="radio"  ~cWCONON_OFF:on~ name="WCONON_OFF" value="on" /><span id="onbutton">启用</span>
-	<input type="radio"  ~cWCONON_OFF:off~ name="WCONON_OFF" value="off" /><span id="offbutton">不启用</td>
+	<input type="radio"  ~cWCONON_OFF:on~ name="WCONON_OFF" id="WDSON_OFF1" value="on" /><label for="WDSON_OFF1"  id="onbutton">启用</label>
+	<input type="radio"  ~cWCONON_OFF:off~ name="WCONON_OFF" id="WDSON_OFF2" value="off" /><label for="WDSON_OFF2"  id="offbutton">不启用</label></td>
 	<td>&nbsp; &nbsp;</td>
 	<td>&nbsp; &nbsp;</td>
   </tr>
@@ -75,17 +88,9 @@ function listdel(value)
     <td id="t1_Set">配置</td>
   </tr>  
  ~Z:conmlist~
-  <tr>
-	<td>&nbsp; &nbsp;</td>
-	<td>&nbsp; &nbsp;</td>
-	<td>&nbsp; &nbsp;</td>
-    <td>
-		<input type="button"  class="handaer_small_button" name="ADDMRULE" id="ADDMRULE" value="添加" onClick="window.location.href='ad_con_add'">
-	</td>
-  </tr>
-
- <!--~~DHCPLIST~-->
 </table>
+<input type="button"  class="handaer_small_button" name="ADDMRULE" id="ADDMRULE" value="添加" onClick="window.location.href='ad_con_add'">
+
 <table id="buttontable">
 <tr align="center">
   <td>

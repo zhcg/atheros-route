@@ -1,13 +1,13 @@
 <html>
 <head>
 <title>DHCP</title>
-<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
 
-function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "table-row";}}
+function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "";}}
 function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
 function widget_display(widgetID){document.getElementById(widgetID).style.visibility = "visible";document.getElementById(widgetID).style.display = style_display_on();}
 
@@ -61,18 +61,27 @@ function isAllNum(str)
 	return 1;
 }
 
-function checkIpAddr(field, ismask)
+function checkIpAddr(field, ismask)//1447
 {
 	if (field.value == "") 
 	{
-		if(ismask)
+		if(ismask == 1)
+		{
+			alert(_("err IP empty"));
+		}
+		else if(ismask == 2)
 		{
 			alert(_("err sub empty"));
 		}
-		else
+		else if(ismask == 3)
 		{	
-			alert(_("err IP empty"));
+			alert(_("err gw empty"));
 		}
+		else if(ismask == 4)
+		{	
+			alert(_("err DNS empty"));
+		}
+
 		field.value = field.defaultValue;
 		field.focus();
 		return false;
@@ -80,18 +89,46 @@ function checkIpAddr(field, ismask)
 
 	if (isAllNum(field.value) == 0) 
 	{
-		alert(_("err format"));
+		if(ismask == 1)
+		{
+			alert(_("err IP format"));
+		}
+		else if(ismask == 2)
+		{	
+			alert(_("err sub format"));
+		}
+		else if(ismask == 3)
+		{	
+			alert(_("err gw format"));
+		}
+		else if(ismask == 4)
+		{
+			alert(_("err DNS format"));
+		}
 		field.value = field.defaultValue;
 		field.focus();
 		return false;
 	}
 
-	if (ismask)
+	if (ismask == 1)
 	{
-		if ((!checkRange(field.value, 1, 0, 256)) ||
-				(!checkRange(field.value, 2, 0, 256)) ||
-				(!checkRange(field.value, 3, 0, 256)) ||
-				(!checkRange(field.value, 4, 0, 256)))
+		if ((!checkRange(field.value, 1, 0, 255)) ||
+				(!checkRange(field.value, 2, 0, 255)) ||
+				(!checkRange(field.value, 3, 0, 255)) ||
+				(!checkRange(field.value, 4, 0, 255)))
+		{
+			alert(_("err IP format"));
+			field.value = field.defaultValue;
+			field.focus();
+			return false;
+		}
+	}
+	else if (ismask == 2)
+	{
+		if ((!checkRange(field.value, 1, 0, 255)) ||
+				(!checkRange(field.value, 2, 0, 255)) ||
+				(!checkRange(field.value, 3, 0, 255)) ||
+				(!checkRange(field.value, 4, 0, 254)))
 		{
 			alert(_("err sub format"));
 			field.value = field.defaultValue;
@@ -99,14 +136,27 @@ function checkIpAddr(field, ismask)
 			return false;
 		}
 	}
-	else 
+	else if(ismask == 3)
 	{
 		if ((!checkRange(field.value, 1, 0, 255)) ||
 				(!checkRange(field.value, 2, 0, 255)) ||
 				(!checkRange(field.value, 3, 0, 255)) ||
-				(!checkRange(field.value, 4, 1, 254)))
+				(!checkRange(field.value, 4, 1, 255)))
 		{
-			alert(_("err IP format"));
+			alert(_("err gw format"));
+			field.value = field.defaultValue;
+			field.focus();
+			return false;
+		}
+	}
+	else if(ismask == 4)
+	{
+		if ((!checkRange(field.value, 1, 0, 255)) ||
+				(!checkRange(field.value, 2, 0, 255)) ||
+				(!checkRange(field.value, 3, 0, 255)) ||
+				(!checkRange(field.value, 4, 1, 255)))
+		{
+			alert(_("err DNS format"));
 			field.value = field.defaultValue;
 			field.focus();
 			return false;
@@ -117,13 +167,21 @@ function checkIpAddr(field, ismask)
 		var reg = field.value.match(exp);
 		if(reg==null)
 		{
-			if(ismask)
+			if(ismask == 1)
 			{
+				alert(_("err IP format"));
+			}
+			else if(ismask == 2)
+			{	
 				alert(_("err sub format"));
 			}
-			else
+			else if(ismask == 3)
 			{	
-				alert(_("err IP format"));
+				alert(_("err gw format"));
+			}
+			else if(ismask == 4)
+			{
+				alert(_("err DNS format"));
 			}
 			field.value = field.defaultValue;
 			field.focus();
@@ -159,12 +217,12 @@ function CheckValue()
 {
 	if(document.WORKFORM.DHCPON_OFF[0].checked == true)
 	{
-		if (!checkIpAddr(document.WORKFORM.DHCP_BIP, false))
+		if (!checkIpAddr(document.WORKFORM.DHCP_BIP, 1))
 		{
 			document.WORKFORM.DHCP_BIP.select();
 			return false;
 		}
-		if (!checkIpAddr(document.WORKFORM.DHCP_EIP, false))
+		if (!checkIpAddr(document.WORKFORM.DHCP_EIP, 1))
 		{
 			document.WORKFORM.DHCP_EIP.select();
 			return false;
@@ -239,6 +297,8 @@ function CheckValue()
 		widget_disable("GW_IP");
 		widget_disable("GW_SUB");
 	}
+	Butterlate.setTextDomain("admin");
+	window.parent.Demo(_("admw settingwaiting"));
 	button_commit("DHCP_SET");
 	return true;
 }
@@ -271,6 +331,7 @@ function initTranslation()
 	trans_inner("t3_Expr","dhcp t3_Expr");	
 	trans_value("bCANCEL","lan bCANCEL");	
 	trans_value("bAPPLY","lan bAPPLY");
+	trans_inner("help_r","help");	
 }
 
 function initValue()
@@ -290,6 +351,7 @@ function switch_dhcp()
 		widget_hide("t2line");
 		widget_display("t3");
 		widget_display("t3line");
+		widget_display("ADDDHCP");
 	}
 	else
 	{
@@ -299,13 +361,40 @@ function switch_dhcp()
 		widget_hide("t2line");
 		widget_hide("t3");
 		widget_hide("t3line");
+		widget_hide("ADDDHCP");
 	}
 }
 function listdel(value)
 {
 	document.getElementById("DELXXX").value=value;
-	alert("删除了"+value);
-	button_commit("DEL_SDHCP");
+	if(confirm(_("dhcp delit1")+"MAC="+value+_("dhcp delit2")))
+	{
+		button_commit("DEL_SDHCP");
+	}
+	
+}
+function lismod(value)
+{
+	if(document.getElementById(value).checked == true)
+	{
+		document.getElementById("ON_OFF").value="ON";	
+	}
+	else
+	{
+		document.getElementById("ON_OFF").value="OFF";	
+	}
+	
+	document.getElementById("MODXXX").value=value;
+	//alert("修改了"+value +"  "+document.getElementById("ON_OFF").value);
+	
+	button_commit("MOD_SDHCP");
+}
+function help()
+{
+	if (_("toplanguage")=="e")
+		window.location.href='../help/ad_local_dhcp_help_e.html';
+	else
+		window.location.href='../help/ad_local_dhcp_help_z.html';
 }
 </script>
 </head>
@@ -313,7 +402,7 @@ function listdel(value)
 <body onLoad="initValue()">
 <div class="handaer_main">
 <table  width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td>
-<h1 id="title">DHCP服务器</h1>
+<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="title">DHCP服务器</h1>
 <p></p>
 
 <FORM method="POST" name="WORKFORM">
@@ -326,8 +415,8 @@ function listdel(value)
 </tr>
 <tr>
  <td class="head" id="t1_DHCPON_OFF">DHCP服务器</td>
-	<td><input type="radio"  ~cDHCPON_OFF:on~ name="DHCPON_OFF" value="on" onclick="switch_dhcp();" checked /><span id="onbutton"></span>
-	<input type="radio"  ~cDHCPON_OFF:off~ name="DHCPON_OFF" value="off" onclick="switch_dhcp();"/><span id="offbutton"></span>
+	<td><input type="radio"  ~cDHCPON_OFF:on~ name="DHCPON_OFF" id="DHCPON_OFF1" value="on" onclick="switch_dhcp();" checked /><label for="DHCPON_OFF1"  id="onbutton"></label>
+	<input type="radio"  ~cDHCPON_OFF:off~ name="DHCPON_OFF" id="DHCPON_OFF2" value="off" onclick="switch_dhcp();"/><label for="DHCPON_OFF2"  id="offbutton"></label>
 	</td>
 </tr>
 
@@ -355,6 +444,7 @@ function listdel(value)
   </td>
 </tr>
 </table>
+</form>
 <h1 id="t2line">  </h1>
 <table id="t2"  width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
   <tr> 
@@ -368,18 +458,9 @@ function listdel(value)
     <td id="t2_Modefy">编辑</td>
   </tr>
   ~Z:sdhcplist~ 
-   <tr>
-	<td>&nbsp; &nbsp;</td>
-	<td>&nbsp; &nbsp;</td>
-	<td>&nbsp; &nbsp;</td>
-	<td>&nbsp; &nbsp;</td>
-    <td>
-		<input type="button"  class="handaer_small_button" name="ADDDHCP" id="ADDDHCP" value="添加" onClick="window.location.href='ad_local_addsdhcp'">
-	</td>
-  </tr>
-  
 </table>
-<h1 id="t3line"> </h1>
+<input type="button"  class="handaer_small_button" name="ADDDHCP" id="ADDDHCP" value="添加" onClick="window.location.href='ad_local_addsdhcp'"><br>
+<h1 id="t3line">&nbsp; &nbsp; </h1>
 <table id="t3"  width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
   <tr> 
     <td class="title" colspan="5" id="t3_title">DHCP客户端</td>
@@ -394,12 +475,16 @@ function listdel(value)
   ~Z:dhcpclinetlist~ 
 </table>
 
-</form>
+
 <form method="POST" name="DELLIST">
 	<input style="display:none"  type="text" name="DELXXX" id="DELXXX" size="20" maxlength="32">
 	<input style="display:none" type="submit" name="DEL_SDHCP" id="DEL_SDHCP" value="DEL_SDHCP">
 </form>
-
+<form method="POST" name="MODLIST">
+	<input style="display:none"  type="text" name="MODXXX" id="MODXXX" size="20" maxlength="32">
+	<input style="display:none"  type="text" name="ON_OFF" id="ON_OFF" size="20" maxlength="32">
+	<input style="display:none" type="submit" name="MOD_SDHCP" id="MOD_SDHCP" value="MOD_SDHCP">
+</form>
 </td></tr></table> 
 </div>
 </body>

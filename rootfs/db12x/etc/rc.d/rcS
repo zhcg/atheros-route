@@ -17,10 +17,7 @@ mkdir -p /var/local/tmp/ppp/status
 mount -t ramfs -n none /tmp
 
 export PATH=$PATH:/etc/ath
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/lib
-cd /lib;
-ln -s libsqlite3.so.0.8.6 libsqlite3.so.0
-cd /root
+
 
 
 # for profile-based-optimization
@@ -65,25 +62,22 @@ export LAN_IF=eth1
 
 #yuhaolei for mac default display
 ETH0_MAC_2=`cfg -e | grep "ETH0_MAC" | awk -F "\"" '{print $2}'`
-if [ ETH0_MAC_2 != NULL ]; then
+if [ "${ETH0_MAC_2}" != "" ]; then
 	ifconfig eth0 hw ether $ETH0_MAC_2
 fi
 #yuhaolei
 
+#rm the old sta list by zzw
+rm /etc/.OldStaList
+
+/usr/bin/cal_check 
 ifconfig $WAN_IF up
 ifconfig $LAN_IF up
 /etc/rc.d/rc.network
 /etc/rc.d/rc.bridge
 . /etc/ath/apcfg
+/usr/sbin/set_ntpserver > /dev/null 2>&1
 
-#
-# Enable USB
-#
-insmod /lib/modules/2.6.31/usb/usbcore.ko
-insmod /lib/modules/2.6.31/usb/ehci-hcd.ko
-insmod /lib/modules/2.6.31/usb/usb-storage.ko
-insmod /lib/modules/2.6.31/usb/usbnet.ko
-insmod /lib/modules/2.6.31/usb/cdc_ether.ko
 
 #
 # Enable I2S
@@ -146,34 +140,12 @@ fi
 if [ "${WDSON_OFF}" != "on" -a "${DHCPON_OFF}" != "off" ]; then
 	/usr/sbin/udhcpd /etc/udhcpd.conf
 fi
-##
-## add si3000 and spi node
-##
-if [ -c /dev/spiS0 ]
-then
-	echo "/dev/spiS0 node exist"
-else
-	mknod /dev/spiS0 c 217 0
+if [ -f /etc/arp_ip_mac_on.conf ]; then
+	/usr/sbin/arp -f /etc/arp_ip_mac_on.conf
 fi
-if [ -c /dev/pcm0 ]
-then
-	echo "/dev/pcm0 node exist"
-else
-	mknod /dev/pcm0 c 252 0
-fi
-insmod /lib/modules/2.6.31/si3000/ath_si3000.ko
-insmod /lib/modules/2.6.31/stm32/ath_spi_stm32.ko
-
-mkdir -p /var/terminal_init/log
 
 /usr/bin/version_check &
-spi_rt_main & 
-terminal_dev_register &
-swipe_card &
-monitor_application  &
-
-/bin/reset_mips /bin/phone_serv_19200 &
 /bin/server &
-/usr/bin/cal_check &
 /bin/net_test &
 /usr/sbin/threethread &
+

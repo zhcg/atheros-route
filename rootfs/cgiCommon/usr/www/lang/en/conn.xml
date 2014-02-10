@@ -1,51 +1,60 @@
 <po>
-  <message msgid="conn bAPPLY" msgstr="Apply" />
-  <message msgid="conn bCANCEL" msgstr="Cancel" />
-  <message msgid="conn enable" msgstr="Enable" />
-  <message msgid="conn disable" msgstr="Disable" />
-  <message msgid="conn MODDHCP" msgstr="Modify" />
-  <message msgid="conn DELDHCP" msgstr="Delete" />
-  <message msgid="conn ADDDHCP" msgstr="Add" />
-  <message msgid="conn onbutton" msgstr="On" />
-  <message msgid="conn offbutton" msgstr="Off" />  
-  <message msgid="conn des" msgstr="Description" />  
-  <message msgid="conn mac" msgstr="MAC" />  
-  <message msgid="conn set" msgstr="IP" />    
-   <message msgid="conn bSAVE" msgstr="Save" />   
-   
-  <message msgid="clist title" msgstr="Accessed devices" />  
-  <message msgid="clist t1_title" msgstr="Cable equipment" />  
-  <message msgid="clist t2_title" msgstr="Wireless devices（Including the suspicious device）" />  
-  <message msgid="clist ip" msgstr="IP" />  
-  <message msgid="clist mac" msgstr="MAC" />  
-  <message msgid="clist name" msgstr="The device name" />  
-  <message msgid="clist rate" msgstr="Rate" />  
-  <message msgid="clist sig" msgstr="Signal strength" />  
-  
-  <message msgid="conm title" msgstr="Wireless access management" />  
-  <message msgid="conm des" msgstr="Management of accessed wireless devices " />  
-  <message msgid="conm t1_title" msgstr="Wireless access management" />  
-  <message msgid="conm t1_switch" msgstr="Wireless Switch" />  
-  
-  <message msgid="conm ADDMRULE" msgstr="Add" />  
+	<message msgid="conn bAPPLY" msgstr="Apply" />
+	<message msgid="conn bCANCEL" msgstr="Cancel" />
+	<message msgid="conn enable" msgstr="Enable" />
+	<message msgid="conn disable" msgstr="Disable" />
+	<message msgid="conn MODDHCP" msgstr="Modify" />
+	<message msgid="conn DELDHCP" msgstr="Delete" />
+	<message msgid="conn ADDDHCP" msgstr="Add" />
+	<message msgid="conn onbutton" msgstr="On" />
+	<message msgid="conn offbutton" msgstr="Off" />  
+	<message msgid="conn des" msgstr="Description" />  
+	<message msgid="conn mac" msgstr="MAC Address" />  
+	<message msgid="conn set" msgstr="Configure" />    
+	<message msgid="conn bSAVE" msgstr="Save" />   
+	<message msgid="conn delit1" msgstr="Are you sure to delete " /> 
+	<message msgid="conn delit2" msgstr=" management rule" /> 
+	<message msgid="conn mac_format" msgstr="for example(11:22:33:44:55:66)" />   
+	<message msgid="help" msgstr="Help" />
+	<message msgid="toplanguage" msgstr="e" />
+	<message msgid="settingwaiting" msgstr="Setting,Please Wait......" />
+	
+	<message msgid="clist title" msgstr="Connected Equipments" />  
+	<message msgid="clist des" msgstr="Displays HBD routing currently has access to the wired and wireless devices information" /> 
+	<message msgid="clist t1_title" msgstr="Cable equipment" />  
+	<message msgid="clist t2_title" msgstr="Wireless devices（Including the suspicious device）" />  
+	<message msgid="clist ip" msgstr="IP Address" />  
+	<message msgid="clist mac" msgstr="MAC Address" />  
+	<message msgid="clist name" msgstr="Device name" />  
+	<message msgid="clist rate" msgstr="Rate" />  
+	<message msgid="clist sig" msgstr="Signal strength" />  
 
-  <message msgid="addw title" msgstr="Add wireless access management of equipment information" />  
-  <message msgid="addw t1_title" msgstr="Add wireless access management entry" />  
-  <message msgid="addw t1_MAC" msgstr="MAC" />  
-  <message msgid="addw t1_Des" msgstr="Description" />  
+	<message msgid="conm title" msgstr="Wireless Access" />  
+	<message msgid="conm des" msgstr="Management of accessed wireless devices " />  
+	<message msgid="conm t1_title" msgstr="Wireless Access" />  
+	<message msgid="conm t1_switch" msgstr="Wireless access switch" />  
 
-  <message msgid="err MAC empty" msgstr="MAC is empty!" />
-  <message msgid="err IP empty" msgstr="IP is empty!" />
-  <message msgid="err sub empty" msgstr="Subnet mask is empty!" />
-  <message msgid="err user empty" msgstr="User name is empty!" />
-  <message msgid="err pwd empty" msgstr="Password is empty!" />
-  <message msgid="err time empty" msgstr="Time is empty!" />
-  
-  <message msgid="err MAC format" msgstr="MAC format error!" />
-  <message msgid="err IP format" msgstr="IP format error!" />
-  <message msgid="err sub format" msgstr="Subnet mask format error!" />
-  
-  <message msgid="err format" msgstr="Parameter format error!" />
-  <message msgid="err range" msgstr="Parameter range error!" />
-  <message msgid="err des empty" msgstr="Description is empty！" />
+	<message msgid="conm ADDMRULE" msgstr="Add" />  
+	
+	<message msgid="addw title" msgstr="Add wireless access management of equipment information" />  
+	<message msgid="addw t1_title" msgstr="Add wireless access management entry" />  
+	<message msgid="addw t1_MAC" msgstr="MAC Address" />  
+	<message msgid="addw t1_Des" msgstr="Description" />  
+
+	<message msgid="err MAC empty" msgstr="MAC is empty " />
+	<message msgid="err user empty" msgstr="User name is empty " />
+	<message msgid="err pwd empty" msgstr="Password is empty " />
+	<message msgid="err time empty" msgstr="Time is empty " />
+	<message msgid="err MAC format" msgstr="MAC format error,Please input as XX:XX:XX:XX:XX:XX" />
+	<message msgid="err format" msgstr="Parameter illegal " />
+	<message msgid="err range" msgstr="Parameter range error " />
+	<message msgid="err des empty" msgstr="Description is empty" />
+	<message msgid="err IP empty" msgstr="IP address can not be empty" />
+	<message msgid="err sub empty" msgstr="Subnet can not be empty" />
+	<message msgid="err gw empty" msgstr="Gateway can not be empty" />
+	<message msgid="err DNS empty" msgstr="DNS can not be empty" />
+	<message msgid="err IP format" msgstr="IP address illegal" />
+	<message msgid="err sub format" msgstr="Subnet address illegal" />	
+	<message msgid="err gw format" msgstr="Gateway address illegal" />
+	<message msgid="err DNS format" msgstr="DNS address illegal" />
 </po>

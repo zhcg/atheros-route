@@ -1,8 +1,8 @@
 <html>
 <head>
 <title>DHCP</title>
-<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
@@ -53,18 +53,27 @@ function isAllNum(str)
 	return 1;
 }
 
-function checkIpAddr(field, ismask)
+function checkIpAddr(field, ismask)//1447
 {
 	if (field.value == "") 
 	{
-		if(ismask)
+		if(ismask == 1)
+		{
+			alert(_("err IP empty"));
+		}
+		else if(ismask == 2)
 		{
 			alert(_("err sub empty"));
 		}
-		else
+		else if(ismask == 3)
 		{	
-			alert(_("err IP empty"));
+			alert(_("err gw empty"));
 		}
+		else if(ismask == 4)
+		{	
+			alert(_("err DNS empty"));
+		}
+
 		field.value = field.defaultValue;
 		field.focus();
 		return false;
@@ -72,18 +81,46 @@ function checkIpAddr(field, ismask)
 
 	if (isAllNum(field.value) == 0) 
 	{
-		alert(_("err format"));
+		if(ismask == 1)
+		{
+			alert(_("err IP format"));
+		}
+		else if(ismask == 2)
+		{	
+			alert(_("err sub format"));
+		}
+		else if(ismask == 3)
+		{	
+			alert(_("err gw format"));
+		}
+		else if(ismask == 4)
+		{
+			alert(_("err DNS format"));
+		}
 		field.value = field.defaultValue;
 		field.focus();
 		return false;
 	}
 
-	if (ismask)
+	if (ismask == 1)
 	{
-		if ((!checkRange(field.value, 1, 0, 256)) ||
-				(!checkRange(field.value, 2, 0, 256)) ||
-				(!checkRange(field.value, 3, 0, 256)) ||
-				(!checkRange(field.value, 4, 0, 256)))
+		if ((!checkRange(field.value, 1, 0, 255)) ||
+				(!checkRange(field.value, 2, 0, 255)) ||
+				(!checkRange(field.value, 3, 0, 255)) ||
+				(!checkRange(field.value, 4, 0, 255)))
+		{
+			alert(_("err IP format"));
+			field.value = field.defaultValue;
+			field.focus();
+			return false;
+		}
+	}
+	else if (ismask == 2)
+	{
+		if ((!checkRange(field.value, 1, 0, 255)) ||
+				(!checkRange(field.value, 2, 0, 255)) ||
+				(!checkRange(field.value, 3, 0, 255)) ||
+				(!checkRange(field.value, 4, 0, 254)))
 		{
 			alert(_("err sub format"));
 			field.value = field.defaultValue;
@@ -91,14 +128,27 @@ function checkIpAddr(field, ismask)
 			return false;
 		}
 	}
-	else 
+	else if(ismask == 3)
 	{
 		if ((!checkRange(field.value, 1, 0, 255)) ||
 				(!checkRange(field.value, 2, 0, 255)) ||
 				(!checkRange(field.value, 3, 0, 255)) ||
-				(!checkRange(field.value, 4, 1, 254)))
+				(!checkRange(field.value, 4, 1, 255)))
 		{
-			alert(_("err IP format"));
+			alert(_("err gw format"));
+			field.value = field.defaultValue;
+			field.focus();
+			return false;
+		}
+	}
+	else if(ismask == 4)
+	{
+		if ((!checkRange(field.value, 1, 0, 255)) ||
+				(!checkRange(field.value, 2, 0, 255)) ||
+				(!checkRange(field.value, 3, 0, 255)) ||
+				(!checkRange(field.value, 4, 1, 255)))
+		{
+			alert(_("err DNS format"));
 			field.value = field.defaultValue;
 			field.focus();
 			return false;
@@ -109,13 +159,21 @@ function checkIpAddr(field, ismask)
 		var reg = field.value.match(exp);
 		if(reg==null)
 		{
-			if(ismask)
+			if(ismask == 1)
 			{
+				alert(_("err IP format"));
+			}
+			else if(ismask == 2)
+			{	
 				alert(_("err sub format"));
 			}
-			else
+			else if(ismask == 3)
 			{	
-				alert(_("err IP format"));
+				alert(_("err gw format"));
+			}
+			else if(ismask == 4)
+			{
+				alert(_("err DNS format"));
 			}
 			field.value = field.defaultValue;
 			field.focus();
@@ -142,17 +200,17 @@ function CheckValue()
 	//	document.WORKFORM.GW_MAC.select();
 	//	return false;
 	//}
-	if (!checkIpAddr(document.WORKFORM.SR_DESIP, false))
+	if (!checkIpAddr(document.WORKFORM.SR_DESIP, 1))
 	{
 		document.WORKFORM.SR_DESIP.select();
 		return false;
 	}
-	if (!checkIpAddr(document.WORKFORM.SR_SUB, true))
+	if (!checkIpAddr(document.WORKFORM.SR_SUB, 2))
 	{
 		document.WORKFORM.SR_SUB.select();
 		return false;
 	}
-    if (!checkIpAddr(document.WORKFORM.SR_GW, false))
+    if (!checkIpAddr(document.WORKFORM.SR_GW, 3))
 	{
 		document.WORKFORM.SR_GW.select();
 		return false;
@@ -200,7 +258,6 @@ function initValue()
 <tr>
 <td class="title" colspan="2" id="t1_title">添加静态路由规则</td>
 </tr>
-
 <tr>
 	<td class="head" id="t1_Des">目的网络地址</td>
 	<td><input type="text" name="SR_DESIP" id="SR_DESIP" size="32" maxlength="32" class="handaer_text_content"></td>

@@ -48,6 +48,8 @@ function initTranslation()
 	
 	trans_value("bCANCEL","conn bCANCEL");
 	trans_value("bSAVE","conn bSAVE");
+
+	trans_inner("mac_format","conn mac_format");	
 }
 
 function initValue()
@@ -75,7 +77,7 @@ function initValue()
 </tr>
 <tr>
   <td class="head" id="t1_MAC">MAC地址</td>
-  <td><input type="text" name="MAC" id="MAC" size="32" maxlength="32" class="handaer_text_content"></td>
+  <td><input type="text" name="MAC" id="MAC" size="32" maxlength="32" class="handaer_text_content">&nbsp; &nbsp;<span id="mac_format"></span></td>
 </tr>
 
 <tr id="t1_hide1">

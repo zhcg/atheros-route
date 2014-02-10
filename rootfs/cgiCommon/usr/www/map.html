@@ -1,45 +1,35 @@
 <html>
-
 <head>
-
-<title>Wizard Internet Settings</title>
-
-<!--link rel="stylesheet" href="/style/normal_ws.css" type="text/css"-->
-
+<title></title>
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
-
+<style type="text/css">td img {display: block; border:none;}td{ color:#666666; font-family:"微软雅黑"; font-size:14px;}</style>
 <script type="text/javascript" src="/lang/b28n.js"></script>
-
 <script language="JavaScript" type="text/javascript">
 
 var wv;
 var intTimerID;
 var intTimeout = 100;
 var intStartTime;  
-var bolIsTimeout;                                                                                                          
-var objIMG = new Image();                                                 
-objIMG.onload =                                                           
-objIMG.onerror =                                                          
-function()                                                           
-{        
-        clearTimeout(intTimerID);
-		if(bolIsTimeout)
+var bolIsTimeout;
+var objIMG = new Image();
+objIMG.onload =
+objIMG.onerror =
+function()
+{
+	clearTimeout(intTimerID);
+	if(bolIsTimeout)
 		return;
-		wv = "on";
-        initTranslation();                                                    
-}                                                                                                                          
-function ping()                                                 
+	wv = "on";
+	initTranslation();
+}
+function ping()
 {                
-        intStartTime = +new Date();     
-
-        objIMG.src = "http://www.baidu.com" + "/" + intStartTime;
-		
-		bolIsTimeout=false;
-
-        intTimerID = setTimeout(timeout, intTimeout);           
-                                                                
-                                                           
-}                                                               
+	intStartTime = +new Date();     
+    objIMG.src = "http://www.baidu.com" + "/" + intStartTime;
+	bolIsTimeout=false;
+	intTimerID = setTimeout(timeout, intTimeout);
+}
 
 function timeout()
 {
@@ -47,150 +37,134 @@ function timeout()
 	bolIsTimeout=true;
 	initTranslation();
 }
-
-
-
-
 function initTranslation()
-
 {
-
-	var e = document.getElementById("m_bset");
-
+	var e = document.getElementById("SSID");
+	e.innerHTML = "("+document.getElementById("apssid").value + ")";
+	e = document.getElementById("m_bset");
 	e.value = _("admw m_bset");
 
-	
-
-	e = document.getElementById("internet");
-
-	e.innerHTML = _("admw internet");
-	
-
-	e = document.getElementById("wai");
-
-	e.innerHTML = _("admw wai");
-
-	
-	e = document.getElementById("nei");
-
-	e.innerHTML = _("admw nei")+ "("+document.getElementById("apssid").value + ")";
-	
-	
-
-	var bg = document.getElementById("logoimage");
-
 	if (_("toplanguage")=="e")
-
 	{
-
-		bg.src = "/images/luyou_e.gif";
-
+		e = document.getElementById("n11111111_r4_c1");
+		e.src = "/images/11111111_r4_c1_e.png";
+		e = document.getElementById("n11111111_r5_c1");
+		e.src = "/images/11111111_r5_c1_e.png";
+		e = document.getElementById("n11111111_r6_c1");
+		e.src = "/images/11111111_r6_c1_e.png";
+		e = document.getElementById("n11111111_r7_c1");
+		e.src = "/images/11111111_r7_c1_e.png";
+		e = document.getElementById("n11111111_r9_c1");
+		e.src = "/images/11111111_r9_c1_e.png";
 	}
-
 	else
-
 	{
-
-		bg.src = "/images/luyou.gif";
-
+		e = document.getElementById("n11111111_r4_c1");
+		e.src = "/images/11111111_r4_c1.png";
+		e = document.getElementById("n11111111_r5_c1");
+		e.src = "/images/11111111_r5_c1.png";
+		e = document.getElementById("n11111111_r6_c1");
+		e.src = "/images/11111111_r6_c1.png";
+		e = document.getElementById("n11111111_r7_c1");
+		e.src = "/images/11111111_r7_c1.png";
+		e = document.getElementById("n11111111_r9_c1");
+		e.src = "/images/11111111_r9_c1.png";
 	}
-
-
-
-	var w = document.getElementById("waitu");
-
-	var n = document.getElementById("neitu");
-
-
+	var w = document.getElementById("n11111111_r9_c2");
+	var n = document.getElementById("n11111111_r2_c3");
 	var nv = document.getElementById("neistatus").value;
 
-
 	if (wv=="on")
-
 	{
-
-		w.src = "/images/lianjie.gif";
-
+		w.src = "/images/11111111_r9_c2.png";//wai
 	}
-
 	else
-
 	{
-
-		w.src = "/images/weilianjie.gif";
-
+		w.src = "/images/11111111_r8_c2111.png";
 	}
-
 	
-
 	if (nv=="on")
-
 	{
-
-		n.src = "/images/qidong.gif";
-
+		n.src = "/images/11111111_r2_c3.png";//wifi
 	}
-
 	else
-
 	{
-
-		n.src = "/images/weiqidong.gif";
-
+		n.src = "/images/11111111_r2_c3111.png";
 	}
-
-		
-
 }
-
 function initValue()
-
 {
-
 	Butterlate.setTextDomain("admin");	
-
-	
 	ping();
-
 }
-
 
 </script>
-
-<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
-
 </head>
+<body bgcolor="#ffffff" onLoad="initValue()">
+<div align="center">
+<table style="display: inline-table;" border="0" cellpadding="0" cellspacing="0" width="801">
+<!-- fwtable fwsrc="2222222.fw.png" fwpage="页面 1" fwbase="11111111.png" fwstyle="Dreamweaver" fwdocid = "1846507314" fwnested="0" -->
+  <tr>
+   <td><img src="/images/spacer.gif" width="312" height="1" alt="" /></td>
+   <td><img src="/images/spacer.gif" width="41" height="1" alt="" /></td>
+   <td><img src="/images/spacer.gif" width="24" height="1" alt="" /></td>
+   <td><img src="/images/spacer.gif" width="41" height="1" alt="" /></td>
+   <td><img src="/images/spacer.gif" width="163" height="1" alt="" /></td>
+   <td><img src="/images/spacer.gif" width="169" height="1" alt="" /></td>
+   <td><img src="/images/spacer.gif" width="51" height="1" alt="" /></td>
+   <td><img src="/images/spacer.gif" width="1" height="1" alt="" /></td>
+  </tr>
 
-
-
-<body onLoad="initValue()">
-
-<div class="handaer_main2">
-
-<span class="handaer_txt1" id="internet"></span><span class="handaer_txt2" id="wai"></span><span class="handaer_txt3" id="nei"></span>
-
-
-
-<span class="handaer_txt4"><img id="waitu"/></span><span class="handaer_txt5"><img id="neitu"/></span>
-
-
-
-<div style="height:449px;"><img  usemap = "#router" border = "0" id="logoimage"/></div>
-
-    <map name = "router">
-
-      <area shape="rect" coords="20,250,400,500" href="wwai" target="pro" alt="网络设置">
-
-      <area shape="rect" coords="700,10,1100,300" href="w3" target="pro" alt="wifi设置">
-
-    </map>
-
- <p align="center"><input  name="m_normal" class="handaer_input" type="button" id="m_bset" onClick="window.location.href='w1'"/></p></div>
-
- 	<input type="text" style="display:none" name="waistatus" id="waistatus" size="20" maxlength="32" value="~~INTERNET_ON~">
-
+  <tr>
+   <td colspan="7"><img name="n11111111_r1_c1" src="/images/11111111_r1_c1.png" width="801" height="10" id="n11111111_r1_c1" alt="" /></td>
+   <td><img src="/images/spacer.gif" width="1" height="10" alt="" /></td>
+  </tr>
+  <tr>
+   <td colspan="2"><img name="n11111111_r2_c1" src="/images/11111111_r2_c1.png" width="353" height="65" id="n11111111_r2_c1" alt="" /></td>
+   <td colspan="2"><a href="w3" target="ifm"><img name="n11111111_r2_c3" width="65" height="65" id="n11111111_r2_c3" /></a></td>
+   <td colspan="3"><img name="n11111111_r2_c5" src="/images/11111111_r2_c5.png" width="383" height="65" id="n11111111_r2_c5" alt="" /></td>
+   <td><img src="/images/spacer.gif" width="1" height="65" alt="" /></td>
+  </tr>
+  <tr>
+   <td colspan="7"><img name="n11111111_r3_c1" src="/images/11111111_r3_c1.png" width="801" height="17" id="n11111111_r3_c1" alt="" /></td>
+   <td><img src="/images/spacer.gif" width="1" height="17" alt="" /></td>
+  </tr>
+  <tr>
+   <td colspan="5"><img name="n11111111_r4_c1" src="/images/11111111_r4_c1.png" width="581" height="21" id="n11111111_r4_c1" alt="" /></td>
+   <td ><span style="width:169;height:21;overflow:hidden;" id="SSID">(~~AP_SSID~)</span></td>
+   <td><img name="n11111111_r4_c7" src="/images/11111111_r4_c7.png" width="51" height="21" id="n11111111_r4_c7" alt="" /></td>
+   <td><img src="/images/spacer.gif" width="1" height="21" alt="" /></td>
+  </tr>
+  <tr>
+   <td colspan="7"><img name="n11111111_r5_c1" src="/images/11111111_r5_c1.png" width="801" height="92" id="n11111111_r5_c1" alt="" /></td>
+   <td><img src="/images/spacer.gif" width="1" height="92" alt="" /></td>
+  </tr>
+  <tr>
+   <td colspan="7"><img name="n11111111_r6_c1" src="/images/11111111_r6_c1.png" width="801" height="91" id="n11111111_r6_c1" alt="" /></td>
+   <td><img src="/images/spacer.gif" width="1" height="91" alt="" /></td>
+  </tr>
+  <tr>
+   <td rowspan="2" colspan="7"><img name="n11111111_r7_c1" src="/images/11111111_r7_c1.png" width="801" height="37" id="n11111111_r7_c1" alt="" /></td>
+   <td><img src="/images/spacer.gif" width="1" height="1" alt="" /></td>
+  </tr>
+  <tr>
+   <td><img src="/images/spacer.gif" width="1" height="36" alt="" /></td>
+  </tr>
+  <tr>
+   <td rowspan="2"><img name="n11111111_r9_c1" src="/images/11111111_r9_c1.png" width="312" height="121" id="n11111111_r9_c1" alt="" /></td>
+   <td colspan="2"><a href="w2" target="ifm"><img name="n11111111_r9_c2"  width="65" height="65" id="n11111111_r9_c2" /></a></td>
+   <td rowspan="2" colspan="4"><img name="n11111111_r9_c4" src="/images/11111111_r9_c4.png" width="424" height="121" id="n11111111_r9_c4" alt="" /></td>
+   <td><img src="/images/spacer.gif" width="1" height="65" alt="" /></td>
+  </tr>
+  <tr>
+   <td colspan="2"><img name="n11111111_r10_c2" src="/images/11111111_r10_c2.png" width="65" height="56" id="n11111111_r10_c2" alt="" /></td>
+   <td><img src="/images/spacer.gif" width="1" height="56" alt="" /></td>
+  </tr>
+</table>
+</div>
+<div align="center"><input  name="m_normal" class="handaer_input" style="BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BACKGROUND: none transparent scroll repeat 0% 0%; BORDER-BOTTOM-WIDTH: 0px;  BORDER-RIGHT-WIDTH: 0px; margin-top:10px;" type="button" id="m_bset" onClick="window.location.href='w1'"/></div>
+	<input type="text" style="display:none" name="waistatus" id="waistatus" size="20" maxlength="32" value="~~INTERNET_ON~">
 	<input type="text" style="display:none" name="neistatus" id="neistatus" size="20" maxlength="32" value="~~WIFION_OFF~">
-
 	<input type="text" style="display:none" name="apssid" id="apssid" size="20" maxlength="32" value="~~AP_SSID~">
 	<script language="JavaScript">
 	function myrefresh()
@@ -200,11 +174,4 @@ function initValue()
 	setTimeout('myrefresh()',7000); //指定1秒刷新一次
 	</script>
 </body>
-
-
-
 </html>
-
-
-
-

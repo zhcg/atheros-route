@@ -1,19 +1,24 @@
 <html>
 <head>
 <title>DHCP</title>
-<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
 var input_num=1;
-var day_week=0;
+var but_num=1;
+var day_week="";
 
 function widget_enable(widgetID){document.getElementById(widgetID).disabled = false;}
 function widget_disable(widgetID){document.getElementById(widgetID).disabled = true;}
 
 function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
 function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
+
+function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "table-row";}}
+function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
+function widget_display(widgetID){document.getElementById(widgetID).style.visibility = "visible";document.getElementById(widgetID).style.display = style_display_on();}
 
 function button_commit(buttonID){document.getElementById(buttonID).click();}
 
@@ -40,7 +45,7 @@ function CheckValue()
 		return false;
 	}
 	var re = /[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}/;
-	if (!re.test(document.WORKFORM.ADD_MAC.value))
+	if (!re.test(document.WORKFORM.ADD_MAC.value)||(document.WORKFORM.ADD_MAC.value.length > 17))
 	{
 		alert(_("err MAC format"));
 		document.WORKFORM.ADD_MAC.select();
@@ -49,30 +54,43 @@ function CheckValue()
 	     
 	if 	(checkValuerange(document.WORKFORM.TIMING_BH.value,0,23)==false)
 	{
-		alert(_("err range"));
+		alert(_("err time"));
 		document.WORKFORM.TIMING_BH.select();
 		return false;
 	}
 	if 	(checkValuerange(document.WORKFORM.TIMING_BM.value,0,59)==false)
 	{
-		alert(_("err range"));
+		alert(_("err time"));
 		document.WORKFORM.TIMING_BM.select();
 		return false;
 	}
 
 	if 	(checkValuerange(document.WORKFORM.TIMING_EH.value,0,23)==false)
 	{
-		alert(_("err range"));
+		alert(_("err time"));
 		document.WORKFORM.TIMING_EH.select();
 		return false;
 	}
 
 	if 	(checkValuerange(document.WORKFORM.TIMING_EM.value,0,59)==false)
 	{
-		alert(_("err range"));
+		alert(_("err time"));
 		document.WORKFORM.TIMING_EM.select();
 		return false;
 	}
+	if ((document.getElementById("x_1").checked == false)
+	&&(document.getElementById("x_2").checked == false)
+	&&(document.getElementById("x_3").checked == false)
+	&&(document.getElementById("x_4").checked == false)
+	&&(document.getElementById("x_5").checked == false)
+	&&(document.getElementById("x_6").checked == false)
+	&&(document.getElementById("x_7").checked == false)
+	)
+	{
+		alert(_("err week"));
+		return false;
+	}
+	
 	document.getElementById("PARC_RU_NUM").value = input_num;
 	widget_disable("x_1");
 	widget_disable("x_2");
@@ -111,47 +129,60 @@ function initTranslation()
 	
 	trans_value("bCANCEL","par bCANCEL");
 	trans_value("bSAVE","par bSAVE");	
+	trans_inner("help_r","help");
+	trans_inner("mac_format","par mac_format");		
 }
 
 function initValue()
 {
 	input_num=1;
-	day_week=0;
+	but_num=0;
 	Butterlate.setTextDomain("par");
 	initTranslation();
 	document.getElementById("WEEK").value="0";
+}
+function delnet(name)
+{
+	//alert("delete"+name);
+	widget_hide("NET"+name);
+	widget_disable("ADD_NET"+(parseInt(name)+1).toString());
 }
 function addnet()
 {
 	var orgvalue = document.getElementById("addinput").innerHTML;
 	input_num ++;
-	document.getElementById("addinput").innerHTML = orgvalue+'<br><input type="text" name="ADD_NET'+input_num+'" id="ADD_NET'+input_num+'" size="32" maxlength="32" class="handaer_text_content">';
+	but_num ++;
+	document.getElementById("addinput").innerHTML = orgvalue+'<span id="NET'+but_num+'"><br><input type="text" name="ADD_NET'+input_num+'" id="ADD_NET'+input_num+'" size="32" maxlength="32" class="handaer_text_content"/>&nbsp;<input type="button" style="color:red;font-size:20px;" value="×" name="'+but_num+'" onClick="delnet(this.name)"/><span>';
+	window.parent.iFrameHeight();
 }
 function daycount()
 {
-	day_week=0;
+	day_week="";
 	if(document.getElementById("x_1").checked == true)
-		day_week = 1 + day_week;
+		day_week = "1,";
 	if(document.getElementById("x_2").checked == true)
-		day_week = 10 + day_week;
+		day_week = day_week + "2,";
 	if(document.getElementById("x_3").checked == true)
-		day_week = 100 + day_week;
+		day_week = day_week + "3,";
 	if(document.getElementById("x_4").checked == true)
-		day_week = 1000 + day_week;
+		day_week = day_week + "4,";
 	if(document.getElementById("x_5").checked == true)
-		day_week = 10000 + day_week;
+		day_week = day_week + "5,";
 	if(document.getElementById("x_6").checked == true)
-		day_week = 100000 + day_week;
+		day_week = day_week + "6,";
 	if(document.getElementById("x_7").checked == true)
-		day_week = 1000000 + day_week;
+		day_week = day_week + "7,";
+		
+	day_week = day_week.substring(0,day_week.length-1);   
 }
+
 </script>
 </head>
 
 <body onLoad="initValue()">
 <div class="handaer_main">
 <table  width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td>
-<h1 id="title">访问管理</h1>
+</a></div><h1 id="title">访问管理</h1>
 <p></p>
 
 <FORM method="POST" name="WORKFORM">
@@ -165,27 +196,27 @@ function daycount()
 
 <tr> 
   <td class="head" id="t1_MAC">MAC地址</td>
-  <td><input type="text" name="ADD_MAC" id="ADD_MAC" size="32" maxlength="32" class="handaer_text_content"></td>
+  <td><input type="text" name="ADD_MAC" id="ADD_MAC" size="32" maxlength="32" class="handaer_text_content">&nbsp; &nbsp;<span id="mac_format"></span></td>
 </tr>
 
 <tr>
 	<td class="head" id="t1_NetL">网站列表</td>
 	<td>
 	<span id="addinput"><input type="text" name="ADD_NET1" id="ADD_NET1" size="32" maxlength="32" class="handaer_text_content"></span>
-	<input type="button" style="color:red;font-size:20px;" value="+" onClick="addnet()">
+	<br><input type="button" class="handaer_small_button"style="color:red;font-size:20px;" value="+" onClick="addnet()">
 	</td>
 </tr>
 
 <tr>
 	<td class="head" id="t1_Week">星期</td>
 	<td>
-		<input type="checkbox" name="x_1" id="x_1" value="1" onclick="daycount()"><span id="day1">星期一</span>&nbsp;
-		<input type="checkbox" name="x_2" id="x_2" value="10" onclick="daycount()"><span id="day2">星期二</span>&nbsp; 
-		<input type="checkbox" name="x_3" id="x_3" value="100" onclick="daycount()"><span id="day3">星期三</span>&nbsp; 
-		<input type="checkbox" name="x_4" id="x_4" value="1000" onclick="daycount()"><span id="day4">星期四</span>&nbsp;
-		<input type="checkbox" name="x_5" id="x_5" value="10000" onclick="daycount()"><span id="day5">星期五</span>&nbsp;
-		<input type="checkbox" name="x_6" id="x_6" value="100000" onclick="daycount()"><span id="day6">星期六</span>&nbsp;
-		<input type="checkbox" name="x_7" id="x_7" value="1000000" onclick="daycount()"><span id="day7">星期日</span>
+		<input type="checkbox" name="x_1" id="x_1" value="1" onclick="daycount()"><label for="x_1" id="day1">星期一</label>&nbsp;
+		<input type="checkbox" name="x_2" id="x_2" value="10" onclick="daycount()"><label for="x_2" id="day2">星期二</label>&nbsp; 
+		<input type="checkbox" name="x_3" id="x_3" value="100" onclick="daycount()"><label for="x_3" id="day3">星期三</label>&nbsp; 
+		<input type="checkbox" name="x_4" id="x_4" value="1000" onclick="daycount()"><label for="x_4" id="day4">星期四</label>&nbsp;
+		<input type="checkbox" name="x_5" id="x_5" value="10000" onclick="daycount()"><label for="x_5" id="day5">星期五</label>&nbsp;
+		<input type="checkbox" name="x_6" id="x_6" value="100000" onclick="daycount()"><label for="x_6" id="day6">星期六</label>&nbsp;
+		<input type="checkbox" name="x_7" id="x_7" value="1000000" onclick="daycount()"><label for="x_7" id="day7">星期日</label>
 		<input type="text" style="display:none" name="WEEK" id="WEEK" size="20" maxlength="32">	
 	</td>
 </tr>

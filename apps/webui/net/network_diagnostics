@@ -1,0 +1,112 @@
+#!/bin/sh
+
+BAIDU=www.baidu.com
+QQ=www.qq.com
+
+ping $BAIDU test
+
+if [ $? -eq 1 ]; then
+        PING_BD=NO
+else
+        PING_BD=OK
+fi
+
+if [ "$PING_BD" = "NO" ]; then
+	ping $QQ test
+	if [ $? -eq 1 ]; then
+		PING_QQ=NO
+	else
+		PING_QQ=OK
+	fi	
+fi
+
+if [ "$PING_QQ" = "NO" -a "$PING_BD" = "NO" ]; then
+	 cfg -a INTERNET_ON=off
+	 cfg -a PING_BD=NO
+	 cfg -a PING_QQ=NO
+	 NCHECK=no
+else
+	 cfg -a AUTOTYPE=`cfg -e | grep "WAN_MODE" |awk -F'=' '{print $2}'`
+	 cfg -a INTERNET_ON=on
+	 cfg -a PING_BD=OK
+	 cfg -a PING_QQ=OK
+	 NCHECK=yes
+fi
+
+cfg -c
+
+if [ "$NCHECK" = "yes" ]; then
+	exit 1
+fi
+#VAL="`ethreg -p 4 0x11 | awk -F' ' '/Read Reg/{print $5}'`"
+VAL="`ethreg -p 4 0x11 | grep "Read Reg" | sed 's/.* //g' `"
+VAL2=0x0400
+#echo $VAL
+VAL=$(($VAL&0x0400))
+#echo $VAL
+ 
+if [ $VAL -eq 1024 ];then
+	echo "WAN link on"
+else
+if [ $VAL -eq 0 ];then
+	echo "WAN link down"
+	cfg -a AUTOTYPE=none
+	cfg -c
+	exit 1
+fi
+fi
+
+#echo "begin"
+pppoe-stop > /dev/null 2>&1
+/usr/sbin/pppoe-connect > /tmp/log 2>&1 &
+
+killall udhcpc > /dev/null 2>&1
+udhcpc -i eth0 > /tmp/log2 2>&1 &
+
+count=0
+while [ $count -le 30 ]
+do
+#pppoe=`grep "CHAP authentication " /tmp/log `
+pppoe=`grep "pppoe discovery state is STATE_RECEIVED_PADO" /tmp/log `
+
+#echo $pppoe
+
+#echo "second"
+if [ ! -z "$pppoe" ];then
+        echo "PPPoE"
+#		killall udhcpc pppoe-connect pppoe > /dev/null 2>&1
+		killall udhcpc > /dev/null 2>&1
+		pppoe-stop > /dev/null 2>&1
+		killall pppoe-connect pppoe > /dev/null 2>&1
+		cfg -a AUTOTYPE=pppoe
+		cfg -c
+        exit 1
+fi
+#echo "third"
+
+dhcp=`grep "DHCP Client get a DHCPOFFER" /tmp/log2`
+#echo $dhcp
+#echo "fourth"
+if [ ! -z "$dhcp" ];then
+	echo "dynamic IP"
+#	killall udhcpc pppoe-connect pppoe > /dev/null 2>&1
+	killall udhcpc > /dev/null 2>&1
+	pppoe-stop > /dev/null 2>&1
+	killall pppoe-connect pppoe > /dev/null 2>&1
+	cfg -a AUTOTYPE=dhcp
+	cfg -c
+	exit 2
+fi
+count=`expr $count + 1`
+sleep 1
+done
+
+#killall udhcpc pppoe-connect pppoe > /dev/null 2>&1
+killall udhcpc > /dev/null 2>&1
+pppoe-stop > /dev/null 2>&1
+killall pppoe-connect pppoe > /dev/null 2>&1
+cfg -a AUTOTYPE=static
+cfg -c
+
+echo "Static IP"
+

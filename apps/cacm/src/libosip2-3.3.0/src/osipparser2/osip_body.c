@@ -62,7 +62,7 @@ osip_message_set_body (osip_message_t * sip, const char *buf, size_t length)
 {
   osip_body_t *body;
   int i;
-
+  printf("[%s][%s][%d][yangjilong]\n", __FILE__, __FUNCTION__, __LINE__);
   i = osip_body_init (&body);
   if (i != 0)
     return i;
@@ -97,7 +97,7 @@ osip_body_clone (const osip_body_t * body, osip_body_t ** dest)
   copy->length = body->length;
   memcpy (copy->body, body->body, body->length);
   copy->body[body->length] = '\0';
-
+  
   if (body->content_type != NULL)
     {
       i = osip_content_type_clone (body->content_type, &(copy->content_type));
@@ -143,7 +143,6 @@ int
 osip_body_set_contenttype (osip_body_t * body, const char *hvalue)
 {
   int i;
-
   if (body == NULL)
     return OSIP_BADPARAMETER;
   if (hvalue == NULL)
@@ -167,7 +166,6 @@ osip_body_set_header (osip_body_t * body, const char *hname, const char *hvalue)
 {
   osip_header_t *h;
   int i;
-
   if (body == NULL)
     return OSIP_BADPARAMETER;
   if (hname == NULL)
@@ -178,7 +176,7 @@ osip_body_set_header (osip_body_t * body, const char *hname, const char *hvalue)
   i = osip_header_init (&h);
   if (i != 0)
     return i;
-
+  
   h->hname = osip_strdup (hname);
   if (h->hname==NULL)
   {
@@ -191,7 +189,6 @@ osip_body_set_header (osip_body_t * body, const char *hname, const char *hvalue)
 	  osip_header_free(h);
 	  return OSIP_NOMEM;
   }
-
   osip_list_add (body->headers, h, -1);
   return OSIP_SUCCESS;
 }
@@ -269,7 +266,7 @@ osip_body_parse_header (osip_body_t * body,
           return OSIP_NOMEM;
         }
       osip_clrncpy (hvalue, colon_index + 1, (end_of_line - 2) - colon_index - 1);
-
+      
       /* really store the header in the sip structure */
       if (osip_strncasecmp (hname, "content-type", 12) == 0)
         i = osip_body_set_contenttype (body, hvalue);
@@ -410,7 +407,7 @@ osip_body_to_str (const osip_body_t * body, char **dest, size_t * str_length)
           ptr = osip_realloc (ptr, length);
           tmp_body = ptr + len;
         }
-
+      
       tmp_body = osip_str_append (tmp_body, tmp);
       osip_free (tmp);
       tmp_body = osip_strn_append (tmp_body, CRLF, 2);
@@ -458,7 +455,8 @@ osip_body_to_str (const osip_body_t * body, char **dest, size_t * str_length)
     }
   memcpy (tmp_body, body->body, body->length);
   tmp_body = tmp_body + body->length;
-
+  
+  
   /* end of this body */
   if (str_length != NULL)
     *str_length = tmp_body - ptr;

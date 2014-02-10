@@ -3,7 +3,7 @@
 .left{ float:left;}
 .right{ float:right;}
 .clear{ clear:both; }
-body {background-color:#ECEDEF; font-size:12px; font-family:"微软雅黑";}
+body {font-size:12px; font-family:"微软雅黑";}
 a{text-decoration: none; font-size: 12px;}
 
 /*  公共部分开始 */
@@ -44,13 +44,14 @@ color: #333; font-weight: 800; background:url(../images/button.gif) 0 0  no-repe
 width:138px; height:48px; 
 color: #333; font-weight: 800; background:url(../images/button2.gif) 0 0  no-repeat!important; cursor:hand; 
 }
-.handaer_small_button{ width:150px; height:25px; line-height:25px; background:url(../images/sbutton.png) 0 0  no-repeat!important; }
+.handaer_small_button{ width:150px; height:25px; line-height:25px; background:url(../images/sbutton.png) 0 0  no-repeat!important; cursor:hand; }
 .handaer_text{ border:1px solid #d0d0d0;}
 .handaer_text td{  border-bottom:1px solid #d0d0d0;}
 .handaer_text_content{ border:1px solid #d0d0d0!important; height:30px; line-height:30px;}
 .handaer_text_small_content{ border:1px solid #d0d0d0!important; height:20px; line-height:20px;}
 
 .handaer_main2{ background-color:#fff;overflow:hidden; padding:10px;}
+
 * html .handaer_main2{height:400px;overflow:visible;}
 .handaer_main2{min-height: 400px;overflow: visible;position: relative; font-size:14px; color:#848484;}
 .handaer_main2 span{ overflow:hidden;}
@@ -59,5 +60,5 @@ color: #333; font-weight: 800; background:url(../images/button2.gif) 0 0  no-rep
 .handaer_txt3{ position:absolute; left:900px; top:108px;}
 .handaer_txt4{ position:absolute; left:302px; top:380px;}
 .handaer_txt5{ position:absolute; left:776px; top:100px;}
-
+.handaer_main2  input{  BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BACKGROUND: none transparent scroll repeat 0% 0%; BORDER-BOTTOM-WIDTH: 0px;  BORDER-RIGHT-WIDTH: 0px; margin-top:10px;}
  option.selected {color: White;background-color: Cyan;}

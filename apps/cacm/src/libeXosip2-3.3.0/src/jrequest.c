@@ -642,7 +642,7 @@ generating_register (eXosip_reg_t * jreg, osip_message_t ** reg, char *transport
   }
 
   osip_message_set_content_length (*reg, "0");
-  //printf("__________%d [%s]\n", __LINE__, __FILE__);
+  printf("[%s][%s][%d][yangjilong]\n", __FILE__, __FUNCTION__, __LINE__);
   return OSIP_SUCCESS;
 }
 

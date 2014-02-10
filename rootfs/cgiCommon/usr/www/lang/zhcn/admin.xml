@@ -1,210 +1,217 @@
 ﻿<po>
-  <message msgid="admin disable" msgstr="停用" />
-  <message msgid="admin enable" msgstr="启用" />
-  <message msgid="admin apply" msgstr="应用" />
-  <message msgid="admin cancel" msgstr="取消" />
-  <message msgid="admin reset" msgstr="重设" />
-  <message msgid="admin scan" msgstr="搜寻" />
-  <message msgid="admin restart" msgstr="重启" />
-  
-  <message msgid="admw div_wan_title" msgstr="请您选择路由器WAN口的连接方式。所需参数在开通网络时，由网络运营商（中国电信、中国网通、中国铁通、中国移动、中国联通等）提供。" />
-  <message msgid="admw DHCP" msgstr="自动获取(动态IP)" />  
-  <message msgid="admw DHCPdisc" msgstr="宽带服务商没有提供任何参数，不用路由器时可直接上网，计算机不需要做任何设置。" />
-  <message msgid="admw SM" msgstr="手动设置(静态IP)" />
-  <message msgid="admw SMdisc" msgstr="宽带服务商提供固定的IP地址、子网掩码、网关、DNS服务器。" />
-  <message msgid="admw PPPOE" msgstr="宽带 (ADSL)" />
-  <message msgid="admw PPPOEdisc" msgstr="宽带服务商提供账户名和密码。" />
-  <message msgid="admw L2TPc" msgstr="L2TP客户端" />
-  <message msgid="admw PPTPc" msgstr="PPTP客户端" />
-  
-  <message msgid="admw SMD" msgstr="静态模式" />
-  <message msgid="admw IPA" msgstr="IP地址" />  
-  <message msgid="admw SubMask" msgstr="子网掩码" />  
-  <message msgid="admw defgw" msgstr="默认网关" />  
-  <message msgid="admw pDNSserver" msgstr="首选DNS服务器" />  
-  <message msgid="admw sDNSserver" msgstr="备选DNS服务器" />
-  
-  <message msgid="admw pppoemod" msgstr="PPPoE模式(ADSL)" />  
-  <message msgid="admw uname" msgstr="用户名" />  
-  <message msgid="admw pword" msgstr="密码" />  
-  <message msgid="admw vpword" msgstr="确认密码" />  
-  <message msgid="admw opmope" msgstr="工作模式" />  
-  
-  <message msgid="admw div_wireless_title" msgstr="请您设置您的WiFi账户和密码。您的无线设备将使用以下网络上网。" />  
-  <message msgid="admw wsetingst" msgstr="WiFi设置" />  
-  <message msgid="admw nname" msgstr="网络名称(SSID)" />  
-  <message msgid="admw security" msgstr="安全" />
-  <message msgid="admw wkey" msgstr="密钥" />
-  
-  <message msgid="admw opmode keepalive" msgstr="自动连接" />
-  <message msgid="admw opmode ondemand" msgstr="按需连接" />
-  <message msgid="admw opmode manual" msgstr="手动连接" />
-  <message msgid="admw opmode timing" msgstr="定时连接" />
-  
-  <message msgid="KAM" msgstr="按需连接：自动断线等待时间 " />
-  <message msgid="ODM" msgstr="手动连接：自动断线等待时间 " />
-  <message msgid="minutes" msgstr="分钟" />
-  <message msgid="seconds" msgstr="秒" />
-  
-  <message msgid="adminw L2TPM" msgstr="L2TP模式" />
-<message msgid="adminw L2TPSIP" msgstr="L2TP服务器IP地址" />
-<message msgid="adminw L2TPname" msgstr="用户名" />
-<message msgid="adminw L2TPpwd" msgstr="密码" />
-<message msgid="adminw L2TPAM" msgstr="地址模式" />
-<message msgid="adminw l2tpMs" msgstr="静态" />
-<message msgid="adminw l2tpMd" msgstr="动态" />
-<message msgid="adminw L2TPIP" msgstr="IP地址" />
-<message msgid="adminw L2TPSM" msgstr="子网掩码" />
-<message msgid="adminw L2TPDG" msgstr="默认网关" />
-<message msgid="adminw L2TPOM" msgstr="工作模式" />
-<message msgid="adminw L2TPka" msgstr="保持连接" />
-<message msgid="adminw L2TPMa" msgstr="手动" />
-<message msgid="adminw L2TP_KAM" msgstr="保持连接模式: 接收周期" />
-<message msgid="adminw L2TP_seconds" msgstr="秒" />
+	<message msgid="admin disable" msgstr="停用" />
+	<message msgid="admin enable" msgstr="启用" />
+	<message msgid="admin apply" msgstr="应用" />
+	<message msgid="admin cancel" msgstr="取消" />
+	<message msgid="admin reset" msgstr="重设" />
+	<message msgid="admin scan" msgstr="搜寻" />
+	<message msgid="admin restart" msgstr="重启" />
+	<message msgid="help" msgstr="帮助" />
+	<message msgid="toplanguage" msgstr="z" />
+	
+	<message msgid="admw div_wan_title" msgstr="请您选择HBD路由器WAN口的连接方式。所需参数在开通网络时，由网络运营商（中国电信、中国移动、中国联通等）提供" />
+	<message msgid="admw DHCP" msgstr="自动获取(动态IP)" />  
+	<message msgid="admw DHCPdisc" msgstr="网络运营商没有提供任何参数，HBD路由器将自动从网络运营商获取IP地址" />
+	<message msgid="admw SM" msgstr="手动设置(静态IP)" />
+	<message msgid="admw SMdisc" msgstr="网络运营商提供固定的IP地址、子网掩码、网关、DNS服务器" />
+	<message msgid="admw PPPOE" msgstr="宽带 (ADSL)" />
+	<message msgid="admw PPPOEdisc" msgstr="网络运营商提供上网账户名和密码" />
+	<message msgid="admw L2TPc" msgstr="L2TP客户端" />
+	<message msgid="admw PPTPc" msgstr="PPTP客户端" />
 
-<message msgid="adminw PPM" msgstr="PPTP 模式" />
-<message msgid="adminw PPSIP" msgstr="PPTP服务器IP地址" />
-<message msgid="adminw PPuname" msgstr="用户名" />
-<message msgid="adminw PPpwd" msgstr="密码" />
-<message msgid="adminw PPAM" msgstr="地址模式" />
-<message msgid="adminw PPS" msgstr="静态" />
-<message msgid="adminw PPD" msgstr="动态" />
-<message msgid="adminw PPIP" msgstr="IP地址" />
-<message msgid="adminw PPSM" msgstr="子网掩码" />
-<message msgid="adminw PPDG" msgstr="默认网关" />
-<message msgid="adminw PPOM" msgstr="工作模式" />
-<message msgid="adminw PPKA" msgstr="保持连接" />
-<message msgid="adminw PPma" msgstr="手动" />
-<message msgid="adminw PPtP_KAM" msgstr="保持连接模式: 接收周期" />
-<message msgid="adminw PPtP_seconds" msgstr="秒" />
+	<message msgid="admw STIP_title" msgstr="网络运营商提供固定的IP地址、子网掩码、网关、DNS服务器信息" />
+	<message msgid="admw PPP_title" msgstr="网络运营商提供上网帐户名和密码" />
+	
+	
+	<message msgid="admw SMD" msgstr="静态模式" />
+	<message msgid="admw IPA" msgstr="IP地址" />  
+	<message msgid="admw SubMask" msgstr="子网掩码" />  
+	<message msgid="admw defgw" msgstr="默认网关" />  
+	<message msgid="admw pDNSserver" msgstr="首选DNS服务器" />  
+	<message msgid="admw sDNSserver" msgstr="备选DNS服务器" />
 
-  <message msgid="admw RCMd" msgstr="请您选择HBD路由器（Base）的接入方式。以设置其WAN口参数，使路由器可以正常访问外部网络。" />  
-  <message msgid="admw int" msgstr="有线连接" />  
-  <message msgid="admw int1" msgstr="（连接进户线）" />  
-  <message msgid="admw wireless" msgstr="无线中继" />  
-  <message msgid="admw int2" msgstr="（连接到现有路由器的WiFi网络）" />
-  
-  <message msgid="admw RMd" msgstr="无线中继" />  
-  <message msgid="admw R_uname" msgstr="网络名称（SSID）" />  
-  <message msgid="admw R_pword" msgstr="密码" />  
+	<message msgid="admw pppoemod" msgstr="PPPoE模式(ADSL)" />  
+	<message msgid="admw uname" msgstr="用户名" />  
+	<message msgid="admw pword" msgstr="密码" />  
+	<message msgid="admw vpword" msgstr="确认密码" />  
+	<message msgid="admw opmope" msgstr="工作模式" />  
 
-  <message msgid="admw bBACK" msgstr="返回" />  
-  <message msgid="admw bNEXT" msgstr="下一步" />  
-  <message msgid="admw bCANCEL" msgstr="取消" />  
-  <message msgid="admw bAPPLY" msgstr="应用" />  
-  
-   <message msgid="admw w1title" msgstr="设置向导" />
-   <message msgid="admw w2title" msgstr="外网设置" />  
-   <message msgid="admw w3ttitle" msgstr="WiFi设置" />  
-   <message msgid="admw w4ttitle" msgstr="无线中继" />  
-   <message msgid="admw w5ttitle" msgstr="家长控制" />  
-   <message msgid="admw wwtitle" msgstr="外网/无线中继设置" />  
- 
-   <message msgid="admw modedes" msgstr="请您选择路由器WAN口的连接方式。所需参数在开通网络时，由网络运营商（中国电信、中国联通、中国铁通、中国移动等）提供。" />  
-   <message msgid="admw modedes1" msgstr="所需参数在开通网络时，由网络运营商（中国电信、中国联通、中国铁通、中国移动等）提供。" />  
-   <message msgid="admw wifides" msgstr="请您设置HBD路由的WiFi账户和密码。您的电脑、PAD、智能手机等将使用以下网络上网。" />  
-   <message msgid="admw wirelessdes" msgstr="请您选择要连接的WiFi。" />  
-   <message msgid="admw parentdes" msgstr="作为家长，您可以通过在本页进行设置，对孩子的上网时间和访问网页进行控制。" />  
-   
-   <message msgid="admw PPMAC" msgstr="家长PC的MAC地址" />
-   <message msgid="admw MPMAC" msgstr="当前管理PC的MAC地址" />
-   <message msgid="admw maccopy" msgstr="设置为家长PC" />
+	<message msgid="admw div_wireless_title" msgstr="请您设置您的WiFi账户和密码。您的无线设备将使用以下网络上网" />  
+	<message msgid="admw wsetingst" msgstr="WiFi设置" />  
+	<message msgid="admw nname" msgstr="网络名称(SSID)" />  
+	<message msgid="admw security" msgstr="安全" />
+	<message msgid="admw wkey" msgstr="密钥" />
+
+	<message msgid="admw opmode keepalive" msgstr="自动连接" />
+	<message msgid="admw opmode ondemand" msgstr="按需连接" />
+	<message msgid="admw opmode manual" msgstr="手动连接" />
+	<message msgid="admw opmode timing" msgstr="定时连接" />
+
+	<message msgid="KAM" msgstr="按需连接：自动断线等待时间 " />
+	<message msgid="ODM" msgstr="手动连接：自动断线等待时间 " />
+	<message msgid="minutes" msgstr="分钟" />
+	<message msgid="seconds" msgstr="秒" />
+
+	<message msgid="adminw L2TPM" msgstr="L2TP模式" />
+	<message msgid="adminw L2TPSIP" msgstr="L2TP服务器IP地址" />
+	<message msgid="adminw L2TPname" msgstr="用户名" />
+	<message msgid="adminw L2TPpwd" msgstr="密码" />
+	<message msgid="adminw L2TPAM" msgstr="地址模式" />
+	<message msgid="adminw l2tpMs" msgstr="静态" />
+	<message msgid="adminw l2tpMd" msgstr="动态" />
+	<message msgid="adminw L2TPIP" msgstr="IP地址" />
+	<message msgid="adminw L2TPSM" msgstr="子网掩码" />
+	<message msgid="adminw L2TPDG" msgstr="默认网关" />
+	<message msgid="adminw L2TPOM" msgstr="工作模式" />
+	<message msgid="adminw L2TPka" msgstr="保持连接" />
+	<message msgid="adminw L2TPMa" msgstr="手动" />
+	<message msgid="adminw L2TP_KAM" msgstr="保持连接模式: 接收周期" />
+	<message msgid="adminw L2TP_seconds" msgstr="秒" />
+
+	<message msgid="adminw PPM" msgstr="PPTP 模式" />
+	<message msgid="adminw PPSIP" msgstr="PPTP服务器IP地址" />
+	<message msgid="adminw PPuname" msgstr="用户名" />
+	<message msgid="adminw PPpwd" msgstr="密码" />
+	<message msgid="adminw PPAM" msgstr="地址模式" />
+	<message msgid="adminw PPS" msgstr="静态" />
+	<message msgid="adminw PPD" msgstr="动态" />
+	<message msgid="adminw PPIP" msgstr="IP地址" />
+	<message msgid="adminw PPSM" msgstr="子网掩码" />
+	<message msgid="adminw PPDG" msgstr="默认网关" />
+	<message msgid="adminw PPOM" msgstr="工作模式" />
+	<message msgid="adminw PPKA" msgstr="保持连接" />
+	<message msgid="adminw PPma" msgstr="手动" />
+	<message msgid="adminw PPtP_KAM" msgstr="保持连接模式: 接收周期" />
+	<message msgid="adminw PPtP_seconds" msgstr="秒" />
+
+	<message msgid="admw RCMd" msgstr="请您选择HBD路由器（Base）的接入方式,并设置其WAN口参数,使路由器可以正常访问外部网络" />  
+	<message msgid="admw int" msgstr="有线连接" />  
+	<message msgid="admw int1" msgstr="（连接网线）" />  
+	<message msgid="admw wireless" msgstr="无线中继" />  
+	<message msgid="admw int2" msgstr="（连接到现有其他路由器的WiFi网络）" />
+
+	<message msgid="admw RMd" msgstr="无线中继" />  
+	<message msgid="admw R_uname" msgstr="网络名称（SSID）" />  
+	<message msgid="admw R_pword" msgstr="密码" />  
+
+	<message msgid="admw bBACK" msgstr="返回" />  
+	<message msgid="admw bNEXT" msgstr="下一步" />  
+	<message msgid="admw bCANCEL" msgstr="取消" />  
+	<message msgid="admw bAPPLY" msgstr="应用" />  
+
+	<message msgid="admw w1title" msgstr="设置向导" />
+	<message msgid="admw w2title" msgstr="外网设置" />  
+	<message msgid="admw w3ttitle" msgstr="WiFi设置" />  
+	<message msgid="admw w4ttitle" msgstr="无线中继" />  
+	<message msgid="admw w5ttitle" msgstr="家长控制" />  
+	<message msgid="admw wwtitle" msgstr="外网/无线中继设置" />  
+
+	<message msgid="admw modedes" msgstr="请您选择HBD路由器WAN口的连接方式。所需参数在开通网络时，由网络运营商（中国电信、中国联通、中国铁通、中国移动等）提供" />  
+	<message msgid="admw modedes1" msgstr="所需参数在开通网络时，由网络运营商（中国电信、中国联通、中国铁通、中国移动等）提供" />  
+	<message msgid="admw wifides" msgstr="请您设置HBD路由的WiFi名称和密码。您的电脑、PAD、智能手机等将使用以下网络上网" />  
+	<message msgid="admw wirelessdes" msgstr="请您选择要连接的WiFi。注意:中继之后,请使用静态IP方式连接登录Web" />  
+	<message msgid="admw parentdes" msgstr="作为家长，您可以通过在本页进行设置，对孩子的上网时间和访问网页进行控制" />  
+
+	<message msgid="admw PPMAC" msgstr="家长PC的MAC地址" />
+	<message msgid="admw MPMAC" msgstr="当前管理PC的MAC地址" />
+	<message msgid="admw maccopy" msgstr="设置为家长PC" />
 
 	<message msgid="admin gsset" msgstr="基础设置" />    
 	<message msgid="admin gback" msgstr="返回主页" />    
 	<message msgid="admin gexit" msgstr="退    出" />    
 	<message msgid="admw otherbutton" msgstr="其他" />    
- 	<message msgid="admw advbutton" msgstr="高级" />
-	
-	<message msgid="admw AutoMode" msgstr="路由器自动选择上网方式（推荐使用）" />    
-	<message msgid="admw Autodisc" msgstr="选此模式，路由器会自动选择上网模式" />
+	<message msgid="admw advbutton" msgstr="高级" />
+
+	<message msgid="admw AutoMode" msgstr="HBD路由器自动选择连接方式（推荐使用）" />    
+	<message msgid="admw Autodisc" msgstr="选此模式，HBD路由器会自动选择连接方式" />
 	<message msgid="admw m_bset" msgstr="开始设置" />
-	
+
 	<message msgid="admw showp" msgstr="显示密码" />
 	<message msgid="admw optionXX" msgstr="(可选)" />
-	
+
 	<message msgid="admw auto_dhcp" msgstr="自动选择为动态获取模式" />
 	<message msgid="admw auto_sip" msgstr="自动选择为静态模式" />
 	<message msgid="admw auto_ppp" msgstr="自动选择为宽带连接模式" />
 	<message msgid="admw auto_l2tp" msgstr="自动选择为L2TP连接模式" />
 	<message msgid="admw auto_p2tp" msgstr="自动选择为P2TP连接模式" />
 	<message msgid="admw auto_fail" msgstr="自动选择失败,请您检查网络连接或者手动选择" />
-	
+
 	<message msgid="admw fresh" msgstr="扫描" />
-	<message msgid="admw Wlisttitle1" msgstr="WiFi列表" />
-	<message msgid="admw Wlisttitle2" msgstr="目前存在的WiFi:SSID(MAC)(信道)(加密方式 WPA-加密 None-不加密)" />
+	<message msgid="admw Wlisttitle1" msgstr="WiFi列表（扫描后可下拉选择）" />
+	<message msgid="admw Wlisttitle2" msgstr="目前存在的WiFi:网络名称(信号强度)" />
 	<message msgid="admw Wlisttitle3" msgstr="可下拉选择" />
-    <message msgid="toplanguage" msgstr="z" />
-    <message msgid="admin open" msgstr="不加密" />
-    <message msgid="admin jiami" msgstr="加密(推荐使用)" />
-	
-	<message msgid="admw wifiswitch" msgstr="网络开关" />
+	<message msgid="admw Alreadc" msgstr="当前已连接WiFi" />
+
+	<message msgid="admin open" msgstr="不加密" />
+	<message msgid="admin jiami" msgstr="加密(推荐使用)" />
+
+	<message msgid="admw wifiswitch" msgstr="无线开关" />
 	<message msgid="admw wdsswitch" msgstr="无线中继开关" />
 
 	<message msgid="admw onbutton" msgstr="启用" />
-    <message msgid="admw offbutton" msgstr="禁用" />
-    <message msgid="admw waiting" msgstr="正在检测,请您稍等......" />
-    <message msgid="admw settingwaiting" msgstr="正在配置,请您稍等......" />
-    <message msgid="admw uploadwaiting" msgstr="正在升级,请您稍等......" />
-	
-    <message msgid="admw ssidrequest" msgstr="  (1-24位字母、数字或下划线)" />
-    <message msgid="admw passwordrequest" msgstr="  (8-12位字母、数字或下划线)" />
-    <message msgid="admw passwordrequest1" msgstr="  (5-12位字母、数字或下划线)" />
-	
-    <message msgid="err lineout" msgstr="请您将网线插入WAN口!" />
-	
-	
-    <message msgid="err ip empty" msgstr="IP地址为空" />
+	<message msgid="admw offbutton" msgstr="禁用" />
+	<message msgid="admw waiting" msgstr="正在检测,请您稍等......" />
+	<message msgid="admw settingwaiting" msgstr="正在配置,请您稍等......" />
+	<message msgid="admw uploadwaiting" msgstr="正在升级,请您稍等......" />
+
+	<message msgid="admw ssidrequest" msgstr="  (1-24位字母、数字或下划线)" />
+	<message msgid="admw passwordrequest" msgstr="  (8-12位字母、数字或下划线)" />
+	<message msgid="admw passwordrequest1" msgstr="  (5-12位字母、数字或下划线)" />
+
+	<message msgid="err lineout" msgstr="请您将网线插入WAN口" />
+
+
+	<message msgid="err ip empty" msgstr="IP地址为空" />
 	<message msgid="err mask empty" msgstr="掩码为空" />
 
-    <message msgid="err name empty" msgstr="请您输入用户名" />
+	<message msgid="err name empty" msgstr="请您输入用户名" />
 	<message msgid="err SSID empty" msgstr="请您输入网络名称（SSID）" />   
 	<message msgid="err mac empty" msgstr="请您输入MAC地址" />   
-	
-    <message msgid="err pwd empty" msgstr="请您输入密码" />
+
+	<message msgid="err pwd empty" msgstr="请您输入密码" />
 	<message msgid="err key" msgstr="请您输入密钥" />
-	
-    <message msgid="err pwd mismatch" msgstr="密码前后不一致" />
+
+	<message msgid="err pwd mismatch" msgstr="密码前后不一致" />
 	<message msgid="err SSID length" msgstr="SSID长度错误" />
 	<message msgid="err pwd length" msgstr="密码长度错误" />
-	
+
 	<message msgid="err sRP" msgstr="请您指定自动断线等待" />
 	<message msgid="err sIT" msgstr="请您指定自动断线等待" />
-	
+
 	<message msgid="err number" msgstr="请您输入0-9之间的数字" />
-	<message msgid="err IPmormat" msgstr="IP地址格式错误" />
-	<message msgid="err Maskmormat" msgstr="掩码格式错误" />
-	
+	<message msgid="err IPmormat" msgstr="IP地址不合法" />
+	<message msgid="err Maskmormat" msgstr="掩码不合法" />
+
 	<message msgid="err keylen" msgstr="密钥长度必须是8-12位" />
 	<message msgid="err keychar" msgstr="密码中存在无效字符" />
-	<message msgid="err IP error" msgstr="WAN IP与本地IP不能位于相同网段，请您重新设置" />
-	
+	<message msgid="err IP error" msgstr="WAN口IP与本地IP不能位于相同网段，请您重新设置" />
+
 	<message msgid="admw internet" msgstr="互联网" />
 	<message msgid="admw wai" msgstr="外网/无线中继设置" />
 	<message msgid="admw nei" msgstr="WiFi设置" />
-	<message msgid="password change" msgstr="密码修改成功，重启路由器后生效" />
+	<message msgid="password change" msgstr="密码修改成功，重启HBD路由器后生效" />
 	<message msgid="admw securitydes" msgstr="修改路由Web管理页面的登录密码" />
-	
+
 	<message msgid="admw uploadtitle" msgstr="固件升级" />
 	<message msgid="admw uploaddes" msgstr="选择升级用镜像文件，进行本地升级" />
 	<message msgid="admw uploadfirware" msgstr="固件升级" />
 	<message msgid="admw up_selsectfile" msgstr="请您选择文件" />
 	<message msgid="admw Upload" msgstr="升级" />
-	<message msgid="err file empty" msgstr="请您选择升级文件!" />
-	<message msgid="upgrade success" msgstr="升级成功!" />
-	<message msgid="admw channelchoose" msgstr="信道选择" />
+	<message msgid="err file empty" msgstr="请您选择升级文件" />
+	<message msgid="upgrade success" msgstr="升级成功" />
+	<message msgid="admw channelchoose" msgstr="信道" />
 	<message msgid="admw channelauto" msgstr="自动" />
 
 	<message msgid="factory reset" msgstr="恢复出厂设置将丢失现有的配置，你确定要继续吗?" />
 	<message msgid="admw factitle" msgstr="恢复出厂设置" />
-	<message msgid="admw facdes" msgstr="将BASE的所有设置恢复至出厂状态。" />
+	<message msgid="admw facdes" msgstr="将HBD路由器的所有设置恢复至出厂状态" />
 	<message msgid="admw defaultset" msgstr="恢复出厂设置" />
-	
-	<message msgid="factory fail" msgstr="恢复出厂设置失败!" />
-	<message msgid="factory success" msgstr="恢复出厂设置成功!" />
-	<message msgid="upgrade success" msgstr="固件升级成功!" />
-	<message msgid="upgrade fail" msgstr="版本一致,固件未升级!" />
-	
+
+	<message msgid="factory fail" msgstr="恢复出厂设置失败" />
+	<message msgid="factory success" msgstr="恢复出厂设置成功" />
+	<message msgid="upgrade success" msgstr="固件升级成功" />
+	<message msgid="upgrade fail" msgstr="版本一致,固件未升级" />
+
 	<message msgid="admw offwifides" msgstr="WiFi已经禁用,无线中继无法使用" />
 	<message msgid="admw software" msgstr="当前软件版本" />
 	<message msgid="admw hardware" msgstr="硬件版本" />
@@ -216,11 +223,26 @@
 	<message msgid="err file format" msgstr="升级包与系统硬件不匹配，请您选择正确的升级包" />
 	<message msgid="err file upload" msgstr="文件上传失败" />
 	<message msgid="admw chfile" msgstr="选择文件" />
-    <message msgid="admw waring" msgstr="注意:升级过程完全自动,请您不要关闭电源,否则将导致BASE损坏而无法使用,升级过程约130秒,当升级结束后,BASE将自动重新启动" />	
+	<message msgid="admw waring" msgstr="注意:升级过程完全自动,请您不要关闭电源,否则将导致HBD路由器损坏而无法使用,升级过程约130秒,当升级结束后,HBD路由器将自动重新启动" />	
 	<message msgid="admw sysupgrade" msgstr="确认进行固件升级?" />
-	<message msgid="err dhcp null" msgstr="无法通过DHCP获取到WAN IP,请您检查是否为DHCP方式连接" />
-	<message msgid="err dhcp ip" msgstr="DHCP获取到WAN IP跟当前路由在同一个网段,请您在网关设置里面调整路由的网段" />
-	
+	<message msgid="err dhcp null" msgstr="无法自动获取到WAN口IP,请您检查是否为自动获取方式连接" />
+	<message msgid="err dhcp ip" msgstr="DHCP获取到WAN口IP跟当前路由在同一个网段,请您在高级设置-内网设置-网关设置里面修改路由的网段" />
+
 	<message msgid="man admin setting" msgstr="密码管理" />
 
+	<message msgid="err IP empty" msgstr="IP地址不能为空" />
+	<message msgid="err sub empty" msgstr="掩码不能为空" />
+	<message msgid="err gw empty" msgstr="网关不能为空" />
+	<message msgid="err DNS empty" msgstr="DNS不能为空" />
+
+	<message msgid="err IP format" msgstr="IP地址不合法" />
+	<message msgid="err sub format" msgstr="掩码地址不合法" />	
+	<message msgid="err gw format" msgstr="网关地址不合法" />
+	<message msgid="err DNS format" msgstr="DNS地址不合法" />
+
+	<message msgid="err Ruleexist" msgstr="条目已存在" />	
+	<message msgid="wan not connected" msgstr="请检查WAN口网线是否连接正常" />
+	
+	<message msgid="err no choose" msgstr="请扫描并选择您要连接的WiFi" />	
+	
 </po>

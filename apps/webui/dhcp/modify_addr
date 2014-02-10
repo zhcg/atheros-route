@@ -1,0 +1,34 @@
+#!/bin/sh
+
+IP_MAC_FILE=/etc/ip_mac.conf
+UDHCPD_FILE=/etc/udhcpd.conf
+
+MAC_ADDR=`cfg -e | grep "MODXXX" |awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`
+if [ -z $MAC_ADDR ];then
+	exit 2
+fi
+
+if [ x$1 = x ]; then
+	exit 1
+fi
+
+MOD_STATUS=$1
+
+str=$(grep -i -E "\<$MAC_ADDR\>" $IP_MAC_FILE $UDHCPD_FILE)
+if [ -z "$str" ];then
+        echo "the address is not exist"
+        exit 1
+else
+		echo "the address is exist"
+		if [ "$MOD_STATUS" = "ON" ];then
+			sed -i '/'$MAC_ADDR'/s/disable/enable/' $IP_MAC_FILE
+			IP_ADDR=`cat $IP_MAC_FILE | grep $MAC_ADDR | awk '{print $3}'`
+			echo "static_lease $MAC_ADDR $IP_ADDR" >>  $UDHCPD_FILE
+		elif [ "$MOD_STATUS" = "OFF" ];then
+			sed -i '/'$MAC_ADDR'/s/enable/disable/' $IP_MAC_FILE
+			sed -i '/'$MAC_ADDR'/d' $UDHCPD_FILE
+		else
+			exit 4
+		fi
+fi
+echo "modify dhcp static ip bind done"

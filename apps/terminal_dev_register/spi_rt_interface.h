@@ -2,7 +2,7 @@
 #define _SPI_RT_INTERFACE_H_
 
 #include "common_tools.h"
-#include "internetwork_communication.h"
+#include "communication_network.h"
 #include <sys/ipc.h>
 #include <semaphore.h>
 #include <sys/shm.h>
@@ -55,11 +55,13 @@ struct class_spi_rt_interface
     int (* send_data)(unsigned char uart, char *data, unsigned short len);
     int (* send_repeat_cmd)();
     int (* recv_data)(unsigned char uart, char *data, unsigned short len);
+    int (* recv_data2)(unsigned char uart, char *data, unsigned short len, struct timeval *timeout);
     int (* spi_send)(struct s_spi_rt_cmd *spi_rt_cmd);
     int (* send_spi_rt_cmd_msg)(int fd, struct s_spi_rt_cmd *spi_rt_cmd, struct timeval *tv);
     int (* recv_spi_rt_cmd_msg)(int fd, struct s_spi_rt_cmd *spi_rt_cmd, struct timeval *tv);
     int (* read_spi_rt_para)(int flag);
     int (* write_spi_rt_para)(int flag);
+    int (* spi_flush)(unsigned char uart, unsigned char flag);
     
     int spi_uart_sem_key;
     int spi_uart_sem_id;

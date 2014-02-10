@@ -1,44 +1,53 @@
 ﻿<po>
-  <message msgid="safe bAPPLY" msgstr="Apply" />
-  <message msgid="safe bCANCEL" msgstr="Cancel" />
-  <message msgid="safe enable" msgstr="Enable" />
-  <message msgid="safe disable" msgstr="Disable" />
-  <message msgid="safe MOD" msgstr="Modify" />
-  <message msgid="safe DEL" msgstr="Delete" />
-  <message msgid="safe ADD" msgstr="Add" />
-  <message msgid="safe onbutton" msgstr="On" />
-  <message msgid="safe offbutton" msgstr="Off" />  
-  <message msgid="safe des" msgstr="Description" />  
-  <message msgid="safe mac" msgstr="MAC" />    
-  <message msgid="safe IP" msgstr="IP" />    
-  <message msgid="safe tye" msgstr="Bunding" />    
-  <message msgid="safe set" msgstr="Settings" />    
-  <message msgid="safe bSAVE" msgstr="Save" />       
-  
-  <message msgid="ipmac title" msgstr="IP/MAC address bunding" />    
-  <message msgid="ipmac des" msgstr="The current IP address and MAC bunding list display and modify" />    
-  <message msgid="ipmac t1_title" msgstr="IP/MAC address bunding" />    
+	<message msgid="safe bAPPLY" msgstr="Apply" />
+	<message msgid="safe bCANCEL" msgstr="Cancel" />
+	<message msgid="safe enable" msgstr="Enable" />
+	<message msgid="safe disable" msgstr="Disable" />
+	<message msgid="safe MOD" msgstr="Modify" />
+	<message msgid="safe DEL" msgstr="Delete" />
+	<message msgid="safe ADD" msgstr="Add" />
+	<message msgid="safe onbutton" msgstr="On" />
+	<message msgid="safe offbutton" msgstr="Off" />  
+	<message msgid="safe des" msgstr="Description" />  
+	<message msgid="safe mac" msgstr="MAC Address" />    
+	<message msgid="safe IP" msgstr="IP Address" />    
+	<message msgid="safe tye" msgstr="Binding" />    
+	<message msgid="safe set" msgstr="Settings" />    
+	<message msgid="safe bSAVE" msgstr="Save" />       
+	<message msgid="safe delit1" msgstr="Are you sure to delete " />  
+	<message msgid="safe delit2" msgstr="binding rule?" />  
+	<message msgid="safe mac_format" msgstr="for example(11:22:33:44:55:66)" />   
+	<message msgid="help" msgstr="Help" />
+	<message msgid="toplanguage" msgstr="e" />
+	<message msgid="settingwaiting" msgstr="Setting,Please Wait......" />
+	
+	<message msgid="ipmac title" msgstr="ARP Binding" />    
+	<message msgid="ipmac des" msgstr="Display the current system ARP mapping table, and you can display and modify the ARP static bindings settings" /> 
+	<message msgid="ipmac t0_title" msgstr="System ARP mapping table" />   
+	<message msgid="ipmac t1_title" msgstr="ARP Static Binding" />    
 
-  <message msgid="addIPMAC Stye" msgstr="Bunding" />    
-  <message msgid="addIPMAC Snotstye" msgstr="Unbound" />    
+	<message msgid="addIPMAC Stye" msgstr="Binding" />    
+	<message msgid="addIPMAC Snotstye" msgstr="Unbound" />    
 
-  <message msgid="addIPMAC title" msgstr="Add IP/MAC bunding" />    
-  <message msgid="addIPMAC des" msgstr="Add the IP/MAC bunding entries" />    
-  <message msgid="addIPMAC t1_title" msgstr="Add IP/MAC bunding" />    
-  <message msgid="addIPMAC t1_MAC" msgstr="MAC" />    
-  <message msgid="addIPMAC t1_IP" msgstr="IP" />    
-  <message msgid="addIPMAC t1_Tye" msgstr="Bunding" />    
-  <message msgid="err MAC empty" msgstr="MAC is empty!" />
-  <message msgid="err IP empty" msgstr="IP is empty!" />
-  <message msgid="err sub empty" msgstr="Subnet mask is empty!" />
-  <message msgid="err user empty" msgstr="User name is empty!" />
-  <message msgid="err pwd empty" msgstr="Password is empty!" />
-  <message msgid="err time empty" msgstr="Time is empty!" />
-  
-  <message msgid="err MAC format" msgstr="MAC format error!" />
-  <message msgid="err IP format" msgstr="IP format error!" />
-  <message msgid="err sub format" msgstr="Subnet mask format error!" />
-  
-  <message msgid="err format" msgstr="Parameter format error!" />
-  <message msgid="err range" msgstr="Parameter range error!" />
+	<message msgid="addIPMAC title" msgstr="Add IP/MAC binding" />    
+	<message msgid="addIPMAC des" msgstr="Add the IP/MAC binding entries" />    
+	<message msgid="addIPMAC t1_title" msgstr="Add IP/MAC binding" />    
+	<message msgid="addIPMAC t1_MAC" msgstr="MAC Address" />    
+	<message msgid="addIPMAC t1_IP" msgstr="IP Address" />    
+	<message msgid="addIPMAC t1_Tye" msgstr="Binding" />    
+	<message msgid="err MAC empty" msgstr="MAC is empty " />
+	<message msgid="err user empty" msgstr="User name is empty " />
+	<message msgid="err pwd empty" msgstr="Password is empty " />
+	<message msgid="err time empty" msgstr="Time is empty " />
+	<message msgid="err MAC format" msgstr="MAC format error,Please input as XX:XX:XX:XX:XX:XX" />
+	<message msgid="err format" msgstr="Parameter illegal " />
+	<message msgid="err range" msgstr="Parameter range error " />
+	<message msgid="err IP empty" msgstr="IP address can not be empty" />
+	<message msgid="err sub empty" msgstr="Subnet can not be empty" />
+	<message msgid="err gw empty" msgstr="Gateway can not be empty" />
+	<message msgid="err DNS empty" msgstr="DNS can not be empty" />
+	<message msgid="err IP format" msgstr="IP address illegal" />
+	<message msgid="err sub format" msgstr="Subnet address illegal" />	
+	<message msgid="err gw format" msgstr="Gateway address illegal" />
+	<message msgid="err DNS format" msgstr="DNS address illegal" />
 </po>

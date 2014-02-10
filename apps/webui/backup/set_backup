@@ -1,0 +1,36 @@
+#!/bin/sh
+
+BACKUP_DIR="/etc/backup/"
+BACKUP_LIST="/etc/backup/backup_list.conf"
+
+
+if [ ! -d "$BACKUP_DIR" ]; then 
+	mkdir "$BACKUP_DIR" 
+fi 
+if [ ! -f "$BACKUP_LIST" ]; then
+	touch "$BACKUP_LIST"
+fi
+
+if [ x$1 = x ]; then
+	exit 1
+fi
+
+BACKUP_DATE=`cfg -e | grep "$1" |awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`
+if [ -z $BACKUP_DATE ];then
+	exit 1
+fi
+
+str=$(grep -i "\<$1\>" $BACKUP_LIST)
+
+if [ "$str" = "" ];then
+        echo "the backup is not exist"
+		echo  "$1 $BACKUP_DATE" >> $BACKUP_LIST
+		dd if=/dev/caldata of=$BACKUP_DIR/$BACKUP_DATE.bin
+		cp /etc/.staAcl $BACKUP_DIR/$BACKUP_DATE.staAcl
+		cp /etc/.staMac $BACKUP_DIR/$BACKUP_DATE.staMac
+else
+        echo "the backup is exist"
+        exit 1
+fi
+
+echo "backup done"

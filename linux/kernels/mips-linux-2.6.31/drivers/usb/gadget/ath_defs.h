@@ -154,6 +154,10 @@ do {						\
 #define ath_usb_error		printk
 #define ath_usb_warn		printk
 
+#define ATH_MAX_CTRL_REQ 2
+#define ATH_RCV_CTRL_REQ 0
+#define ATH_SND_CTRL_REQ 1
+
 /* Device/Host Capability Reg */
 #define ATH_USB_NON_EHCI_DCCPARAMS		(0x124)
 
@@ -175,12 +179,17 @@ do {						\
 #define ATH_USB_RESET_USB_PHY			(ATH_RESET_USB_PHY)
 #define ATH_USB_RESET_USBSUS_OVRIDE		(ATH_RESET_USBSUS_OVRIDE)
 #define ATH_USB_USB_MODE			(ATH_USB_MODE)
+#define ATH_USB_USB2_MODE                       (ATH_USB2_MODE)
+#define ATH_USB_HIGH_SPEED              	(1<<27) /* This bit reads the port speed */
+#define ATH_USB_SET_SERIAL_MODE         	(1<<29) /* This bit will enable the serial mode */
 
 #define ATH_USB_RESET				(ATH_RESET_BASE + 0x1C)
+#define ATH_USB2_RESET                          0xb80600c4
+
 #define ATH_USB_USB_CONFIG			(ATH_USB_CONFIG_BASE + 0x4)
 #define ATH_USB_USB_FLADJ_VAL			(ATH_USB_CONFIG_BASE)
 
-#define ath_usb_suspend_mode	1
+#define ath_usb_suspend_mode			1
 #if ath_usb_suspend_mode
 #define ATH_USB_PWRCTL				(ATH_USB_CONFIG_BASE + 0x0)
 #define ATH_USB_DEV_SUSPEND_CTRL		(ATH_USB_CONFIG_BASE + 0x8)
@@ -213,6 +222,11 @@ enum ath_hc_trans {
 	ATH_USB_TRANS_SERIAL,
 };
 
+/* USB Host selections based on IDs */
+enum ath_hc_ids{
+        ATH_USB_HOST0,
+        ATH_USB_HOST1
+};
 
 /* OTG Status/Control Reigser Defines */
 #define ATH_USB_OTGSC_IMASK	(0x5F000000)

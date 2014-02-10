@@ -70,18 +70,18 @@ function initTranslation()
 	trans_inner("manNTPServer2","man ntp server2");
 	
 	trans_inner("ntpswitch","man ntpswitch");
-	trans_inner("onbutton","man onbutton");	
-	trans_inner("offbutton","man offbutton");	
+	trans_inner("onbutton","man onbutton");
+	trans_inner("offbutton","man offbutton");
 	
 	trans_value("manNTPApply","man apply");
 	trans_value("manNTPCancel","man cancel");
+	trans_inner("help_r","help");	
 	 
 }
 function init()
 {
 	Butterlate.setTextDomain("man");
 	initTranslation();
-	syncWithHost();
 	switch_ntp();
 }
 
@@ -92,7 +92,27 @@ function NTPFormCheck()
 		if((document.NTP.NTPServerIP1.value == "")&&(document.NTP.NTPServerIP2.value == ""))
 		{
 			alert(_("man ntp err1"));
+			document.NTP.NTPServerIP1.focus();
 			return false;
+		}
+		if(document.NTP.NTPServerIP1.value != "")
+		{
+			if(checkIP(document.NTP.NTPServerIP1)==false)
+			{
+				alert(_("man ntp servererror"));
+				document.NTP.NTPServerIP1.focus();
+				return false;
+			}
+		}
+		if(document.NTP.NTPServerIP2.value != "")
+		{
+			if(checkIP(document.NTP.NTPServerIP2)==false)
+			{
+				alert(_("man ntp servererror"));
+				document.NTP.NTPServerIP2.focus();
+				return false;
+			}
+			
 		}
 	}
 	else
@@ -100,9 +120,61 @@ function NTPFormCheck()
 		widget_disable("NTPServerIP1");
 		widget_disable("NTPServerIP2"); 
 	}
+	Butterlate.setTextDomain("admin");
+	window.parent.Demo(_("admw settingwaiting"));
 	button_commit("TIMEZONE_SET");
 	return true;
 }
+function checkIP(temp)
+{
+	var ipArray,ip,j;
+	ip = temp.value;
+	if (ip.indexOf(" ")>=0)
+	{
+		ip = ip.replace(/ /g,"");
+		temp.value = ip;
+	}
+	if (ip.toLowerCase().indexOf("http://")==0)
+	{
+		ip = ip.slice(7);
+		temp.value = ip;
+	}
+	if (ip.toLowerCase().indexOf("https://")==0)
+	{
+		ip = ip.slice(8);
+		temp.value = ip;
+	}
+	if (ip.slice(ip.length-1)=="/")
+	{
+		ip = ip.slice(0,ip.length-1);
+		temp.value = ip;
+	}
+	if(/[A-Za-z_-]/.test(ip))
+	{
+		if(!/^([\w-]+\.)+((com)|(net)|(org)|(gov\.cn)|(info)|(cc)|(com\.cn)|(net\.cn)|(org\.cn)|(name)|(biz)|(tv)|(cn)|(mobi)|(name)|(sh)|(ac)|(io)|(tw)|(com\.tw)|(hk)|(com\.hk)|(ws)|(travel)|(us)|(tm)|(la)|(me\.uk)|(org\.uk)|(ltd\.uk)|(plc\.uk)|(in)|(eu)|(it)|(jp)|(co)|(me)|(mx)|(ca)|(ag)|(com\.co)|(net\.co)|(nom\.co)|(com\.ag)|(net\.ag)|(fr)|(org\.ag)|(am)|(asia)|(at)|(be)|(bz)|(com\.bz)|(net\.bz)|(net\.br)|(com\.br)|(de)|(es)|(com\.es)|(nom\.es)|(org\.es)|(fm)|(gs)|(co\.in)|(firm\.in)|(gen\.in)|(ind\.in)|(net\.in)|(org\.in)|(jobs)|(ms)|(com\.mx)|(nl)|(nu)|(co\.nz)|(net\.nz)|(org\.nz)|(tc)|(tk)|(org\.tw)|(idv\.tw)|(co\.uk)|(vg)|(ad)|(ae)|(af)|(ai)|(al)|(an)|(ao)|(aq)|(ar)|(as)|(au)|(aw)|(az)|(ba)|(bb)|(bd)|(bf)|(bg)|(bh)|(bi)|(bj)|(bm)|(bn)|(bo)|(br)|(bs)|(bt)|(bv)|(bw)|(by)|(cd)|(cf)|(cg)|(ch)|(ci)|(ck)|(cl)|(cm)|(cr)|(cu)|(cv)|(cx)|(cy)|(cz)|(dj)|(dk)|(dm)|(do)|(dz)|(ec)|(ee)|(eg)|(er)|(et)|(fi)|(fj)|(fk)|(fo)|(ga)|(gd)|(ge)|(gf)|(gg)|(gh)|(gi)|(gl)|(gm)|(gn)|(gp)|(gq)|(gr)|(gt)|(gu)|(gw)|(gy)|(hm)|(hn)|(hr)|(ht)|(hu)|(id)|(ie)|(il)|(im)|(iq)|(ir)|(is)|(je)|(jm)|(jo)|(ke)|(kg)|(kh)|(ki)|(km)|(kn)|(kr)|(kw)|(ky)|(kz)|(lb)|(lc)|(li)|(lk)|(lr)|(ls)|(lt)|(lu)|(lv)|(ly)|(ma)|(mc)|(md)|(mg)|(mh)|(mk)|(ml)|(mm)|(mn)|(mo)|(mp)|(mq)|(mr)|(mt)|(mu)|(mv)|(mw)|(my)|(mz)|(na)|(nc)|(ne)|(nf)|(ng)|(ni)|(no)|(np)|(nr)|(nz)|(om)|(pa)|(pe)|(pf)|(pg)|(ph)|(pk)|(pl)|(pm)|(pn)|(pr)|(ps)|(pt)|(pw)|(py)|(qa)|(re)|(ro)|(ru)|(rw)|(sa)|(sb)|(sc)|(sd)|(se)|(sg)|(si)|(sk)|(sl)|(sm)|(sn)|(sr)|(st)|(sv)|(sy)|(sz)|(td)|(tf)|(tg)|(th)|(tj)|(tl)|(tn)|(to)|(tr)|(tt)|(tz)|(ua)|(ug)|(uk)|(uy)|(uz)|(va)|(vc)|(ve)|(vi)|(vn)|(vu)|(wf)|(ye)|(yt)|(yu)|(za)|(zm)|(zw))$/i.test(ip))
+		{
+			return false;
+		}
+	}
+	else
+	{
+		ipArray = ip.split(".");
+		j = ipArray.length
+		if(j!=4)
+		{
+			return false;
+		}
+		for(var i=0;i<4;i++)
+		{
+			if(ipArray[i].length==0 || ipArray[i]>255)
+			{
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
 function syncWithHost()
 {
 	var currentTime = new Date();
@@ -146,25 +218,37 @@ function syncWithHost()
 	else
 		day_str = day;
 
-	var tmp = month_str + day_str + hours_str + minutes_str + year + " ";
-	document.NTP.PCTIME.value=year+'-'+month+'-'+day+'-'+hours+':'+minutes+':'+seconds;
+	document.TIMEFORM.PCTIME.value=year+'-'+month_str+'-'+day_str+'-'+hours_str+':'+minutes_str+':'+seconds_str;
+	
+	button_commit("TIME_SYNC");
 }
 function switch_ntp()
 {
 	if(document.NTP.NTPON_OFF[0].checked == true)
 	{
+		widget_display("timezones");
 		widget_display("servertr1");
 		widget_display("servertr2");
+		widget_enable("TIME_ZONE");
 		widget_enable("NTPServerIP1");
 		widget_enable("NTPServerIP2");
 	}
 	else
 	{
+		widget_hide("timezones");
 		widget_hide("servertr1");
 		widget_hide("servertr2");
+		widget_disable("TIME_ZONE");
 		widget_disable("NTPServerIP1");
 		widget_disable("NTPServerIP2");
 	}
+}
+function help()
+{
+	if (_("toplanguage")=="e")
+		window.location.href='../help/ad_man_timezone_help_e.html';
+	else
+		window.location.href='../help/ad_man_timezone_help_z.html';
 }
 </script>
 
@@ -173,9 +257,7 @@ function switch_ntp()
 <body onload="init()">
 <div class="handaer_main">
 <table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
-<h1 id="title"></h1>
-
-<form method="post" name="NTP">
+<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="title"></h1>
 <h2 id="des"></h2>
 <table width="100%" cellpadding="0" cellspacing="0" class="handaer_text">
 <tbody><tr>
@@ -184,75 +266,80 @@ function switch_ntp()
 <tr id="div_date">
 	<td class="head"  id="manNTPCurrentTime"></td>
 	<td>
-		<input size="24" name="PCTIME" id="PCTIME" class="handaer_text_content" value="" type="text" readonly>
+	<form method="post" name="TIMEFORM">
+		<input size="24" name="PCTIME" id="PCTIME" class="handaer_text_content" value="~Dtimenow~" type="text" readonly>
 		<input type="button"  class="handaer_small_button" value="Sync with host" id="manNTPSyncWithHost" name="manNTPSyncWithHost" onClick="syncWithHost()">
+		<input type="submit"  name="TIME_SYNC" id="TIME_SYNC" style="display:none" value="TIME_SYNC">
+	</form>
 	</td>
 </tr>
+<form method="post" name="NTP">
+
 <tr>
+ <td class="head" id="ntpswitch"></td>
+	<td><input type="radio"  ~cNTPON_OFF:on~ id="NTPON_OFF1" name="NTPON_OFF" value="on" onclick="switch_ntp();" checked /><label for="NTPON_OFF1" id="onbutton"></label>
+	<input type="radio"  ~cNTPON_OFF:off~ id="NTPON_OFF2" name="NTPON_OFF" value="off" onclick="switch_ntp();"/><label for="NTPON_OFF2" id="offbutton"></label>
+	</td>
+</tr>
+<tr id="timezones">
   <td class="head" id="manNTPTimeZone"></td>
   <td>
-    <select name="TIME_ZONE">
-      <option value="UCT_-11" id="manNTPMidIsland"></option>
-      <option value="UCT_-10" id="manNTPHawaii"></option>
-      <option value="NAS_-09" id="manNTPAlaska"></option>
-      <option value="PST_-08" id="manNTPPacific"></option>
-      <option value="MST_-07" id="manNTPMountain"></option>
-      <option value="MST_-07" id="manNTPArizona"></option>
-      <option value="CST_-06" id="manNTPCentral"></option>
-      <option value="UCT_-06" id="manNTPMidUS"></option>
-      <option value="UCT_-05" id="manNTPIndianaEast"></option>
-      <option value="EST_-05" id="manNTPEastern"></option>
-      <option value="AST_-04" id="manNTPAtlantic"></option>
-      <option value="UCT_-04" id="manNTPBolivia"></option>
-      <option value="UCT_-03" id="manNTPGuyana"></option>
-      <option value="EBS_-03" id="manNTPBrazilEast"></option>
-      <option value="NOR_-02" id="manNTPMidAtlantic"></option>
-      <option value="EUT_-01" id="manNTPAzoresIslands"></option>
-      <option value="UCT_000" id="manNTPGambia"></option>
-      <option value="GMT_000" id="manNTPEngland"></option>
-      <option value="MET_001" id="manNTPCzechRepublic"></option>
-      <option value="MEZ_001" id="manNTPGermany"></option>
-      <option value="UCT_001" id="manNTPTunisia"></option>
-      <option value="EET_002" id="manNTPGreece"></option>
-      <option value="SAS_002" id="manNTPSouthAfrica"></option>
-      <option value="IST_003" id="manNTPIraq"></option>
-      <option value="MSK_003" id="manNTPMoscowWinter"></option>
-      <option value="UCT_004" id="manNTPArmenia"></option>
-      <option value="UCT_005" id="manNTPPakistan"></option>
-      <option value="UCT_006" id="manNTPBangladesh"></option>
-      <option value="UCT_007" id="manNTPThailand"></option>
-      <option value="CST_008" id="manNTPChinaCoast"></option>
-      <option value="CCT_008" id="manNTPTaipei"></option>
-      <option value="SST_008" id="manNTPSingapore"></option>
-      <option value="AWS_008" id="manNTPAustraliaWA"></option>
-      <option value="JST_009" id="manNTPJapan"></option>
-      <option value="KST_009" id="manNTPKorean"></option>
-      <option value="UCT_010" id="manNTPGuam"></option>
-      <option value="AES_010" id="manNTPAustraliaQLD"></option>
-      <option value="UCT_011" id="manNTPSolomonIslands"></option>
-      <option value="UCT_012" id="manNTPFiji"></option>
-      <option value="NZS_012" id="manNTPNewZealand"></option>
+    <select name="TIME_ZONE" id="TIME_ZONE">
+      <option ~sTIME_ZONE:UCT_-11~ value="UCT_-11" id="manNTPMidIsland"></option>
+      <option ~sTIME_ZONE:UCT_-10~ value="UCT_-10" id="manNTPHawaii"></option>
+      <option ~sTIME_ZONE:NAS_-09~ value="NAS_-09" id="manNTPAlaska"></option>
+      <option ~sTIME_ZONE:PST_-08~ value="PST_-08" id="manNTPPacific"></option>
+      <option ~sTIME_ZONE:MST_-17~ value="MST_-17" id="manNTPMountain"></option>
+      <option ~sTIME_ZONE:MST_-07~ value="MST_-07" id="manNTPArizona"></option>
+      <option ~sTIME_ZONE:CST_-06~ value="CST_-06" id="manNTPCentral"></option>
+      <option ~sTIME_ZONE:UCT_-06~ value="UCT_-06" id="manNTPMidUS"></option>
+      <option ~sTIME_ZONE:UCT_-05~ value="UCT_-05" id="manNTPIndianaEast"></option>
+      <option ~sTIME_ZONE:EST_-05~ value="EST_-05" id="manNTPEastern"></option>
+      <option ~sTIME_ZONE:AST_-04~ value="AST_-04" id="manNTPAtlantic"></option>
+      <option ~sTIME_ZONE:UCT_-04~ value="UCT_-04" id="manNTPBolivia"></option>
+      <option ~sTIME_ZONE:UCT_-03~ value="UCT_-03" id="manNTPGuyana"></option>
+      <option ~sTIME_ZONE:EBS_-03~ value="EBS_-03" id="manNTPBrazilEast"></option>
+      <option ~sTIME_ZONE:NOR_-02~ value="NOR_-02" id="manNTPMidAtlantic"></option>
+      <option ~sTIME_ZONE:EUT_-01~ value="EUT_-01" id="manNTPAzoresIslands"></option>
+      <option ~sTIME_ZONE:UCT_000~ value="UCT_000" id="manNTPGambia"></option>
+      <option ~sTIME_ZONE:GMT_000~ value="GMT_000" id="manNTPEngland"></option>
+      <option ~sTIME_ZONE:MET_001~ value="MET_001" id="manNTPCzechRepublic"></option>
+      <option ~sTIME_ZONE:MEZ_001~ value="MEZ_001" id="manNTPGermany"></option>
+      <option ~sTIME_ZONE:UCT_001~ value="UCT_001" id="manNTPTunisia"></option>
+      <option ~sTIME_ZONE:EET_002~ value="EET_002" id="manNTPGreece"></option>
+      <option ~sTIME_ZONE:SAS_002~ value="SAS_002" id="manNTPSouthAfrica"></option>
+      <option ~sTIME_ZONE:IST_003~ value="IST_003" id="manNTPIraq"></option>
+      <option ~sTIME_ZONE:MSK_003~ value="MSK_003" id="manNTPMoscowWinter"></option>
+      <option ~sTIME_ZONE:UCT_004~ value="UCT_004" id="manNTPArmenia"></option>
+      <option ~sTIME_ZONE:UCT_005~ value="UCT_005" id="manNTPPakistan"></option>
+      <option ~sTIME_ZONE:UCT_006~ value="UCT_006" id="manNTPBangladesh"></option>
+      <option ~sTIME_ZONE:UCT_007~ value="UCT_007" id="manNTPThailand"></option>
+      <option ~sTIME_ZONE:CST_008~ value="CST_008" id="manNTPChinaCoast"></option>
+      <option ~sTIME_ZONE:CCT_008~ value="CCT_008" id="manNTPTaipei"></option>
+      <option ~sTIME_ZONE:SST_008~ value="SST_008" id="manNTPSingapore"></option>
+      <option ~sTIME_ZONE:AWS_008~ value="AWS_008" id="manNTPAustraliaWA"></option>
+      <option ~sTIME_ZONE:JST_009~ value="JST_009" id="manNTPJapan"></option>
+      <option ~sTIME_ZONE:KST_009~ value="KST_009" id="manNTPKorean"></option>
+      <option ~sTIME_ZONE:UCT_010~ value="UCT_010" id="manNTPGuam"></option>
+      <option ~sTIME_ZONE:AES_010~ value="AES_010" id="manNTPAustraliaQLD"></option>
+      <option ~sTIME_ZONE:UCT_011~ value="UCT_011" id="manNTPSolomonIslands"></option>
+      <option ~sTIME_ZONE:UCT_012~ value="UCT_012" id="manNTPFiji"></option>
+      <option ~sTIME_ZONE:NZS_012~ value="NZS_012" id="manNTPNewZealand"></option>
     </select>
   </td>
 </tr>
-<tr>
- <td class="head" id="ntpswitch"></td>
-	<td><input type="radio"  ~cNTPON_OFF:on~ name="NTPON_OFF" value="on" onclick="switch_ntp();" checked /><span id="onbutton"></span>
-	<input type="radio"  ~cNTPON_OFF:off~ name="NTPON_OFF" value="off" onclick="switch_ntp();"/><span id="offbutton"></span>
-	</td>
-</tr>
 <tr id="servertr1">
   <td class="head" id="manNTPServer1"></td>
-  <td><input size="32" maxlength="64" class="handaer_text_content" name="NTPServerIP1" id="NTPServerIP1" value="" type="text"></td>
+  <td><input size="32" maxlength="64" class="handaer_text_content" name="NTPServerIP1" id="NTPServerIP1" value="~~NTPServerIP1~" type="text"></td>
 </tr>
 <tr  id="servertr2">
   <td class="head" id="manNTPServer2"></td>
-  <td><input size="32" maxlength="64" class="handaer_text_content" name="NTPServerIP2" id="NTPServerIP2" value="" type="text"></td>
+  <td><input size="32" maxlength="64" class="handaer_text_content" name="NTPServerIP2" id="NTPServerIP2" value="~~NTPServerIP2~" type="text"></td>
 </tr>
 
 </tbody></table>
 
-<table cellpadding="0" cellspacing="0" class="handaer_text">
+<table width="100%" cellpadding="2" cellspacing="1">
   <tr align="center">
     <td>
       <input type="button"  class="handaer_input" value="Cancel"id="manNTPCancel" onClick="window.location.reload()">&nbsp; &nbsp;

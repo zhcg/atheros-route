@@ -1,84 +1,95 @@
 <po>
-  <message msgid="inet apply" msgstr="Apply" />
-  <message msgid="inet cancel" msgstr="Cancel" />
-  <message msgid="inet enable" msgstr="Enable" />
-  <message msgid="inet disable" msgstr="Disable" />
-  <message msgid="inet showp" msgstr="show password" />
-  <message msgid="inet settingwaiting" msgstr="Auto checking,please wait......" />
-  <message msgid="inet autocheck" msgstr="Automatic detection" />
-   <message msgid="inet bSAVE" msgstr="Save" />   
-   
-  <message msgid="inet mac" msgstr="MAC Address" />
-  <message msgid="inet ip" msgstr="IP Address" />
-  <message msgid="inet server" msgstr="Server IP" />
-  <message msgid="inet netmask" msgstr="Subnet Mask" />
-  <message msgid="inet lan2" msgstr="LAN 2" />
-  <message msgid="inet lan2 ip" msgstr="LAN2 IP Address" />
-  <message msgid="inet lan2 netmask" msgstr="LAN2 Subnet Mask" />
-  <message msgid="inet gateway" msgstr="Default Gateway" />
-  <message msgid="inet pri dns" msgstr="Primary DNS Server" />
-  <message msgid="inet sec dns" msgstr="Secondary DNS Server" />
-  <message msgid="inet user" msgstr="User Name" />
-  <message msgid="inet password" msgstr="Password" />
-  <message msgid="inet pass2" msgstr="Verify Password" />
-  <message msgid="inet hostname" msgstr="Hostname" />
-  <message msgid="inet cmacenable" msgstr="Enable" />
+	<message msgid="inet apply" msgstr="Apply" />
+	<message msgid="inet cancel" msgstr="Cancel" />
+	<message msgid="inet enable" msgstr="Enable" />
+	<message msgid="inet disable" msgstr="Disable" />
+	<message msgid="inet showp" msgstr="Show Password" />
+	<message msgid="inet settingwaiting" msgstr="Auto checking,please wait......" />
+	<message msgid="inet setwaiting" msgstr="Setting,please wait......" />
+	<message msgid="help" msgstr="Help" />
+	<message msgid="toplanguage" msgstr="e" />
+	<message msgid="settingwaiting" msgstr="Setting,Please Wait......" />
 
-  <message msgid="wan title" msgstr="Wide Area Network (WAN) Settings" />
-  <message msgid="wan introduction" msgstr="You may choose different connection type suitable for your environment. Besides, you may also configure parameters according to the selected connection type." />
-  <message msgid="wan connection type" msgstr="WAN Connection Type:" />
-  <message msgid="wan connection type static" msgstr="STATIC (fixed IP)" />
-  <message msgid="wan connection type dhcp" msgstr="DHCP (Auto config)" />
-  <message msgid="wan connection type pppoe" msgstr="PPPoE (ADSL)" />
-  <message msgid="wan connection type l2tp" msgstr="L2TP" />
-  <message msgid="wan connection type pptp" msgstr="PPTP" />
-  <message msgid="wan protocol opmode" msgstr="Operation Mode" />
-  <message msgid="wan protocol opmode keepalive" msgstr="Keep Alive" />
-  <message msgid="wan protocol opmode ondemand" msgstr="On Demand" />
-  <message msgid="wan protocol opmode manual" msgstr="Manual" />
-  <message msgid="wan protocol opmode timing" msgstr="Timing" />
-  <message msgid="PPPOE_TIMING" msgstr="Timing ：Timing Period" />
+	<message msgid="inet autocheck" msgstr="Automatic detection" />
+	<message msgid="inet bSAVE" msgstr="Save" />   
+
+	<message msgid="inet mac" msgstr="MAC Address" />
+	<message msgid="inet ip" msgstr="IP Address" />
+	<message msgid="inet server" msgstr="Server IP" />
+	<message msgid="inet netmask" msgstr="Subnet Mask" />
+	<message msgid="inet lan2" msgstr="LAN 2" />
+	<message msgid="inet lan2 ip" msgstr="LAN2 IP Address" />
+	<message msgid="inet lan2 netmask" msgstr="LAN2 Subnet Mask" />
+	<message msgid="inet gateway" msgstr="Default Gateway" />
+	<message msgid="inet pri dns" msgstr="Primary DNS Server" />
+	<message msgid="inet sec dns" msgstr="Secondary DNS Server" />
+	<message msgid="inet user" msgstr="User Name" />
+	<message msgid="inet password" msgstr="Password" />
+	<message msgid="inet pass2" msgstr="Verify Password" />
+	<message msgid="inet hostname" msgstr="Hostname" />
+	<message msgid="inet cmacenable" msgstr="Enable" />
 	
-  <message msgid="wan static mode" msgstr="Static Mode" />
-  <message msgid="wan dhcp mode" msgstr="DHCP Mode" />
-  <message msgid="wan pppoe mode" msgstr="PPPoE Mode" />
-  <message msgid="wan l2tp mode" msgstr="L2TP Mode" />
-  <message msgid="wan pptp mode" msgstr="PPTP Mode" />
-  <message msgid="wan 3G mode" msgstr="3G Mode" />
-  <message msgid="wan 3G modem" msgstr="USB 3G modem" />
-  <message msgid="wan address mode" msgstr="Address Mode" />
-  <message msgid="wan address mode static" msgstr="Static" />
-  <message msgid="wan address mode dynamic" msgstr="Dynamic" />
+	<message msgid="wan optionXX" msgstr="(optional)" />	
 
-  <message msgid="KAM" msgstr="Keep Alive Mode: Redial Period " />
-  <message msgid="ODM" msgstr="On demand Mode: Idle Time " />
-  <message msgid="minutes" msgstr="minutes" />
-  <message msgid="seconds" msgstr="seconds" />
-  
-  <message msgid="macc title" msgstr="Clone MAC address" />
-  <message msgid="macc des" msgstr="Set the BASE to the WAN MAC address (Note: only the LAN computer can use this function" />
-  <message msgid="macc t1_title" msgstr="Clone MAC address" />
-  <message msgid="macc t1_MACS" msgstr="Select the MAC address source" />
-  <message msgid="macc mactype0" msgstr="Use the default MAC address" />
-  <message msgid="macc mactype1" msgstr="Use the computer MAC address" />
-  <message msgid="macc mactype2" msgstr="Use MAC address" />
+	<message msgid="wan title" msgstr="WAN Settings" />
+	<message msgid="wan introduction" msgstr="You may choose different connection type suitable for your environment. Besides, you may also configure parameters according to the selected connection type." />
+	<message msgid="wan connection type" msgstr="WAN Connection Type:" />
+	<message msgid="wan connection type static" msgstr="STATIC (fixed IP)" />
+	<message msgid="wan connection type dhcp" msgstr="DHCP (Auto config)" />
+	<message msgid="wan connection type pppoe" msgstr="PPPoE (ADSL)" />
+	<message msgid="wan connection type l2tp" msgstr="L2TP" />
+	<message msgid="wan connection type pptp" msgstr="PPTP" />
+	<message msgid="wan protocol opmode" msgstr="Operation Mode" />
+	<message msgid="wan protocol opmode keepalive" msgstr="Keep Alive" />
+	<message msgid="wan protocol opmode ondemand" msgstr="On Demand" />
+	<message msgid="wan protocol opmode manual" msgstr="Manual" />
+	<message msgid="wan protocol opmode timing" msgstr="Timing" />
+	<message msgid="PPPOE_TIMING" msgstr="Timing ：Timing Period" />
 
-  <message msgid="err MAC empty" msgstr="MAC is empty!" />
-  <message msgid="err IP empty" msgstr="IP is empty!" />
-  <message msgid="err sub empty" msgstr="Subnet mask is empty!" />
-  <message msgid="err user empty" msgstr="User name is empty!" />
-  <message msgid="err pwd empty" msgstr="Password is empty!" />
-  <message msgid="err time empty" msgstr="Time is empty!" />
-  
-  <message msgid="err MAC format" msgstr="MAC format error!" />
-  <message msgid="err IP format" msgstr="IP format error!" />
-  <message msgid="err sub format" msgstr="Subnet mask format error!" />
-  
-  <message msgid="err format" msgstr="Parameter format error!" />
-  <message msgid="err range" msgstr="Parameter range error!" />
-  
-  
-  	<message msgid="wan auto_dhcp" msgstr="Automatically select DHCP mode" />
+	<message msgid="wan static mode" msgstr="Static Mode" />
+	<message msgid="wan dhcp mode" msgstr="DHCP Mode" />
+	<message msgid="wan pppoe mode" msgstr="PPPoE Mode" />
+	<message msgid="wan l2tp mode" msgstr="L2TP Mode" />
+	<message msgid="wan pptp mode" msgstr="PPTP Mode" />
+	<message msgid="wan 3G mode" msgstr="3G Mode" />
+	<message msgid="wan 3G modem" msgstr="USB 3G modem" />
+	<message msgid="wan address mode" msgstr="Address Mode" />
+	<message msgid="wan address mode static" msgstr="Static" />
+	<message msgid="wan address mode dynamic" msgstr="Dynamic" />
+
+	<message msgid="KAM" msgstr="Keep Alive Mode: Redial Period " />
+	<message msgid="ODM" msgstr="On demand Mode: Idle Time " />
+	<message msgid="minutes" msgstr="minutes" />
+	<message msgid="seconds" msgstr="seconds" />
+
+	<message msgid="macc title" msgstr="Clone MAC address" />
+	<message msgid="macc des" msgstr="Set the BASE to the WAN MAC address (Note: only the LAN device can use this function" />
+	<message msgid="macc t1_title" msgstr="Clone MAC address" />
+	<message msgid="macc t1_MACS" msgstr="Select the MAC address source" />
+	<message msgid="macc mactype0" msgstr="Use the default MAC address" />
+	<message msgid="macc mactype1" msgstr="Use the management device MAC address" />
+	<message msgid="macc mactype2" msgstr="Manually enter the MAC address" />
+
+	<message msgid="err MAC empty" msgstr="MAC is empty " />
+	<message msgid="err user empty" msgstr="User name is empty " />
+	<message msgid="err pwd empty" msgstr="Password is empty " />
+	<message msgid="err time empty" msgstr="Time is empty " />
+
+	<message msgid="err MAC format" msgstr="MAC format error,Please input as XX:XX:XX:XX:XX:XX" />
+
+	<message msgid="err format" msgstr="Parameter illegal " />
+	<message msgid="err range" msgstr="Parameter range error " />
+
+	<message msgid="err IP empty" msgstr="IP address can not be empty" />
+	<message msgid="err sub empty" msgstr="Subnet can not be empty" />
+	<message msgid="err gw empty" msgstr="Gateway can not be empty" />
+	<message msgid="err DNS empty" msgstr="DNS can not be empty" />
+	<message msgid="err IP format" msgstr="IP address illegal" />
+	<message msgid="err sub format" msgstr="Subnet address illegal" />	
+	<message msgid="err gw format" msgstr="Gateway address illegal" />
+	<message msgid="err DNS format" msgstr="DNS address illegal" />
+
+	<message msgid="wan auto_dhcp" msgstr="Automatically select DHCP mode" />
 	<message msgid="wan auto_sip" msgstr="Automatically select StaticIP mode" />
 	<message msgid="wan auto_ppp" msgstr="Automatically select PPPoE mode" />
 	<message msgid="wan auto_l2tp" msgstr="Automatically select L2TP mode" />

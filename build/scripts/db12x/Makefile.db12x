@@ -22,6 +22,11 @@ export SQUASHFSLZMADIR=$(TOPDIR)/build/squashfs-lzma
 export SQUASHFSFILE=$(BOARD_TYPE)$(BUILD_CONFIG)-squashfs
 export SSDK_DIR=$(ENETDIR)/s17_ssdk
 export NTFS_3G_DIR=$(TOPDIR)/apps/ntfs-3g-2010.10.2
+export NTP_ARMDIR=$(TOPDIR)/apps/ntpclient_arm
+export SI32178DIR=$(TOPDIR)/linux/drivers/si32178
+export SI32178MODPATH=$(INSTALL_ROOT)/lib/modules/$(KERNELVER)/si32178
+export SPI32178DIR=$(TOPDIR)/linux/drivers/spi32178
+export SPI32178MODPATH=$(INSTALL_ROOT)/lib/modules/$(KERNELVER)/spi32178
 #
 # Makefile for WASP Fusion build.  It has dependancies for both
 # the "common" build and the "jffs2" build.  This is unique for
@@ -101,7 +106,11 @@ else
 ifeq ($(strip ${ATH_SUPPORT_SPECTRAL}),1)
 db12x_build: common_mainline driver_build usb_build pci_build spectral_app_build $(BUILD_TYPE)_build art_mod
 else
-db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si3000_build si3000_app stm32_build stm32_app phone_9344    pppoe_build threethread channel webui terminal_dev_register cacm tester $(fs_build) makeotaimage makeoneimage 
+ifeq ($(BUILD_FOR_32178), yes)
+db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si32178_build spi32178_build phone_9344_32178 check_phone_status ntpclient_arm  pppoe_build threethread channel webui terminal_dev_register cacm tester $(fs_build) makeotaimage makeoneimage 
+else
+db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si3000_build si3000_app stm32_build stm32_app phone_9344  ntpclient_arm  pppoe_build threethread channel webui terminal_dev_register cacm tester $(fs_build) makeotaimage makeoneimage 
+endif
 #db12x_build: common_mainline i2s_build athplay_tools_fus usb_build $(fs_build)
 #db12x_build: common_mainline slic_build slic_app i2s_build athplay_tools_fus $(fs_build)
 #db12x_build: common_mainline gateway_build slic_build slic_app $(fs_build)
@@ -150,6 +159,17 @@ pppoe_build:
 	cp -ra $(TOPDIR)/apps/pppoe/rp-pppoe-3.8/configs/* $(INSTALL_ROOT)/etc/ppp
 	cp -ra $(TOPDIR)/apps/pppoe/rp-pppoe-3.8/scripts/* $(INSTALL_ROOT)/usr/sbin
 	
+#
+#ntp_build add by wangyu
+#
+ntpclient_arm:
+	@echo "staring compile ntpclient. "
+	cd  ${NTP_ARMDIR} && make
+	chmod 744 ${NTP_ARMDIR}/ntpclient
+	chmod 744 ${NTP_ARMDIR}/adjtimex
+	cp ${NTP_ARMDIR}/ntpclient $(INSTALL_ROOT)/usr/sbin
+	cp ${NTP_ARMDIR}/adjtimex $(INSTALL_ROOT)/usr/sbin
+
 #
 #threethread added by yhl 2013.10.29
 #
@@ -205,6 +225,11 @@ powercloud_build:
 	cp -rf $(TOPDIR)/apps/powercloud-client/output/* $(INSTALL_ROOT)/
 endif
 
+ukey_build:
+	@echo building ukey software
+	cd $(TOPDIR)/apps/ukey_syno && \
+	make && \
+	cp -f $(TOPDIR)/apps/ukey_syno/ukey_test $(INSTALL_ROOT)/
 samba_build:
 ifeq ($(BUILD_SAMBA),y)
 	@echo Building samba ver 3.0.24.....
@@ -280,11 +305,26 @@ webui:
 	cp -f version_check $(INSTALL_ROOT)/usr/bin;  \
 	cp -f dhcp/set_addr $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f dhcp/del_addr $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f dhcp/modify_addr $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f route/set_route $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f route/del_route $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f route/modify_route $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f arp/set_arp $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f arp/del_arp $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f arp/modify_arp $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f backup/set_backup $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f backup/del_backup $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f backup/var_backup $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f ntp/set_pctime $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f ntp/set_ntpserver $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f net/network_diagnostics $(INSTALL_ROOT)/usr/sbin;  \
 	cd firmware/; \
 	make; \
-	cp -f firmware_check $(INSTALL_ROOT)/usr/sbin; 
+	cp -f firmware_check $(INSTALL_ROOT)/usr/sbin; \
+	cp -f firmware_check2 $(INSTALL_ROOT)/usr/sbin; \
+	cd ./../arp; \
+	make; \
+	cp -f arp $(INSTALL_ROOT)/usr/sbin;
 	
 tester: 
 	cd ../apps/tester; \
@@ -330,11 +370,6 @@ phone_9344:
 	@echo making phone_9344 application
 	cd ../apps/pstn_test; make clean; make; \
 	echo before strip; \
-	$(STRIP) 20131111/libspi_rt.so; \
-	$(STRIP) 20131111/libterminal_authentication.so; \
-	$(STRIP) 20131111/libterminal_register.so; \
-	$(STRIP) 20131111/libcommon_tools.so; \
-	$(STRIP) 20131111/spi_rt_main; \
 	$(STRIP) phone/lib/libmediastreamer.so.1.0.0; \
 	$(STRIP) phone/lib/libogg.so.0.8.0; \
 	$(STRIP) phone/lib/libortp.so.8.0.0; \
@@ -357,11 +392,6 @@ phone_9344:
 	cp -af phone/lib/libspeex.so.1.5.0 $(INSTALL_ROOT)/lib; \
 	cp -af phone/lib/libspeex.so.1 $(INSTALL_ROOT)/lib; \
 	cp -af phone/lib/libspeex.so $(INSTALL_ROOT)/lib; \
-	cp -af 20131111/libspi_rt.so $(INSTALL_ROOT)/lib; \
-	cp -af 20131111/libterminal_authentication.so $(INSTALL_ROOT)/lib; \
-	cp -af 20131111/libterminal_register.so $(INSTALL_ROOT)/lib; \
-	cp -af 20131111/libcommon_tools.so $(INSTALL_ROOT)/lib; \
-	cp -af 20131111/spi_rt_main $(INSTALL_ROOT)/bin; \
 	cp -af pstn_serv_handaer/phone_serv_19200 $(INSTALL_ROOT)/bin; \
 	cp -af reset_mips  $(INSTALL_ROOT)/bin; \
 	echo finished making pstn_9344;
@@ -371,30 +401,40 @@ terminal_dev_register:
 	@echo making terminal_dev_register app
 	cd ../apps/terminal_dev_register; make clean; make; \
 	$(STRIP) sqlite-mips-linux/lib/libsqlite3.so.0.8.6; \
-	$(STRIP) libdatabase_management.so; \
+	$(STRIP) libdata_storager.so; \
 	$(STRIP) libspi_rt.so; \
 	$(STRIP) libterminal_authentication.so; \
 	$(STRIP) libterminal_register.so; \
+	$(STRIP) libcommunication.so; \
 	$(STRIP) libcommon_tools.so; \
 	$(STRIP) spi_rt_main; \
+        $(STRIP) spi_rt_uart1; \
+        $(STRIP) usb_stub; \
 	$(STRIP) terminal_dev_register; \
 	$(STRIP) terminal_init_test; \
 	$(STRIP) swipe_card; \
 	$(STRIP) monitor_application; \
 	cp -af sqlite-mips-linux/lib/libsqlite3.so.0.8.6 $(INSTALL_ROOT)/lib; \
 	cp -af sqlite-mips-linux/bin/sqlite3 $(INSTALL_ROOT)/bin; \
-	cp -af libdatabase_management.so $(INSTALL_ROOT)/lib; \
+	cp -af libdata_storager.so $(INSTALL_ROOT)/lib; \
 	cp -af libspi_rt.so $(INSTALL_ROOT)/lib; \
 	cp -af libterminal_authentication.so $(INSTALL_ROOT)/lib; \
 	cp -af libterminal_register.so $(INSTALL_ROOT)/lib; \
+	cp -af libcommunication.so $(INSTALL_ROOT)/lib; \
 	cp -af libcommon_tools.so $(INSTALL_ROOT)/lib; \
 	cp -af spi_rt_main $(INSTALL_ROOT)/bin; \
+	cp -af spi_rt_uart1 $(INSTALL_ROOT)/bin; \
+	cp -af usb_stub $(INSTALL_ROOT)/bin; \
 	cp -af terminal_dev_register $(INSTALL_ROOT)/bin; \
 	cp -af terminal_init_test $(INSTALL_ROOT)/bin; \
 	cp -af swipe_card $(INSTALL_ROOT)/bin; \
 	cp -af monitor_application $(INSTALL_ROOT)/bin; \
-        mkdir -p $(INSTALL_ROOT)/var/terminal_dev_register/; \
+        mkdir -p $(INSTALL_ROOT)/var/terminal_dev_register/db/; \
+        mkdir -p $(INSTALL_ROOT)/var/terminal_dev_register/log/; \
+        mkdir -p $(INSTALL_ROOT)/var/terminal_dev_register/fs/; \
 	cp -af config $(INSTALL_ROOT)/var/terminal_dev_register/; \
+	cp -af terminal_base_db $(INSTALL_ROOT)/var/terminal_dev_register/db/; \
+	cp -af fat_fs $(INSTALL_ROOT)/var/terminal_dev_register/fs/; \
 	echo finished making terminal_dev_register;	
 
 cacm:
@@ -481,10 +521,35 @@ usb_build: kernel_build
 ifneq ($(BUILD_CONFIG), _ap123)
 	cp -f ${USBDIR}/gadget/g_ether.ko ${USBMODPATH}
 	cp -f ${USBDIR}/gadget/ath_udc.ko ${USBMODPATH}
+	cp -f ${USBDIR}/gadget/g_file_storage.ko ${USBMODPATH}
 	cp -f ${KERNELPATH}/drivers/net/usb/usbnet.ko ${USBMODPATH}
 	cp -f ${KERNELPATH}/drivers/net/usb/cdc_ether.ko ${USBMODPATH}
 endif
 
+si32178_build: kernel_build
+	cd $(SI32178DIR) && rm -f *.o *.ko *.mod.*
+	$(MAKEARCH) -C $(KERNELPATH) SUBDIRS=$(SI32178DIR) modules
+	test -d $(SI32178MODPATH) || mkdir -p $(SI32178MODPATH)
+	cp $(SI32178DIR)/ath_si32178.ko $(SI32178MODPATH)
+
+spi32178_build: kernel_build
+	cd $(SPI32178DIR) && rm -f *.o *.ko *.mod.*
+	$(MAKEARCH) -C $(KERNELPATH) SUBDIRS=$(SPI32178DIR) modules
+	test -d $(SPI32178MODPATH) || mkdir -p $(SPI32178MODPATH)
+	cp $(SPI32178DIR)/ath_spi_si32178.ko $(SPI32178MODPATH)
+
+phone_9344_32178:
+	@echo making phone_9344_32178 application
+	cd ../apps/phone_9344_32178; make clean; make; \
+	$(STRIP) phone_control; \
+	cp -f phone_control $(INSTALL_ROOT)/bin;
+	
+check_phone_status:
+	@echo making check_phone_status application
+	cd ../apps/check_phone_status; make clean; make; \
+	$(STRIP) check_phone_status; \
+	cp -f check_phone_status $(INSTALL_ROOT)/bin;
+	
 uboot_mainline:
 	@echo making uboot...
 	cd $(BOOTLOADERDIR) && make db12x_config

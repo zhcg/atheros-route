@@ -1,119 +1,124 @@
 ﻿<po>
-  <message msgid="main disable" msgstr="Disable" />
-  <message msgid="main enable" msgstr="Enable" />
-  <message msgid="main apply" msgstr="Apply" />
-  <message msgid="main cancel" msgstr="Cancel" />
-  <message msgid="toplanguage" msgstr="e" />
-  <message msgid="main bSAVE" msgstr="Save" />   
-  
-  <message msgid="top_fast" msgstr="Quick Settings" />
-  <message msgid="top_adv" msgstr="Advanced Settings" />
-  <message msgid="top_admin" msgstr="Security Settings" />
-  <message msgid="top_exit" msgstr="EXIT" />
-  
-  <message msgid="advmenu treeapp_title" msgstr="Advanced Settings" />
-  <message msgid="advmenu treeapp_sysstatus" msgstr="System State" />
-  <message msgid="advmenu treeapp_wan" msgstr="Network Settings" />
-  <message msgid="advmenu treeapp_wan_set" msgstr="WAN Settings" />
-  <message msgid="advmenu treeapp_wan_macclone" msgstr="Clone MAC Address" />
-  
-  <message msgid="advmenu treeapp_local" msgstr="Network Settings" />
-  <message msgid="advmenu treeapp_local_dhcp" msgstr="DHCP Server" />
-  <message msgid="advmenu treeapp_local_gwset" msgstr="Gateway Settings" />
-  <message msgid="advmenu treeapp_local_rulist" msgstr="Routing Table Settings" />
-  
-  <message msgid="advmenu treeapp_conm" msgstr="Access management " />
-  <message msgid="advmenu treeapp_conm_list" msgstr="Connected Equipment List" />
-  <message msgid="advmenu treeapp_conm_ctrl" msgstr="Wireless Access Management" />
-  <message msgid="advmenu treeapp_wifi" msgstr="Wireless Settings" />
-  <message msgid="advmenu treeapp_wifi_basic" msgstr="Basic Settings" />
-  <message msgid="advmenu treeapp_wifi_adv" msgstr="Advanced Settings" />
-  <message msgid="advmenu treeapp_wifi_wds" msgstr="WDS" />
-  
-  <message msgid="advmenu treeapp_safe" msgstr="Safety Management" />
-  <message msgid="advmenu treeapp_safe_ipmac" msgstr="IP/MAC Address Binding" />
-  <message msgid="advmenu treeapp_par" msgstr="Parental Control" />
-  <message msgid="advmenu treeapp_par_set" msgstr="Parents Settings" />
-  <message msgid="advmenu treeapp_par_access" msgstr="Access Management" />
-  
-  <message msgid="advmenu treeapp_man" msgstr="System Management" />
-  <message msgid="advmenu treeapp_man_tz" msgstr="Time Settings" />
-  <message msgid="advmenu treeapp_man_cfgm" msgstr="Configuration Management" />
-  <message msgid="advmenu treeapp_man_upgrade" msgstr="Firmware Upgrade" />
-  <message msgid="advmenu treeapp_man_factory" msgstr="Restore Factory" />
-  <message msgid="advmenu treeapp_man_reboot" msgstr="Restart" />
-  <message msgid="advmenu treeapp_netcheck" msgstr="Network Diagnosis" />
-  
-  <message msgid="sset exit" msgstr="Are you sure you want to exit?" /> 
-  <message msgid="admw m_fast" msgstr="Quick Setting" />
-  <message msgid="admw m_normal" msgstr="Settings wizard" />
-  <message msgid="admw m_wan" msgstr="WAN settings" />
-  <message msgid="admw m_wifi" msgstr="WiFi settings" />
-  <message msgid="admw m_wirere" msgstr="Wireless relay" />
-  <message msgid="admw m_parent" msgstr="Parental control" />
-  <message msgid="admw m_upload" msgstr="Firmware upgrade" />
-  <message msgid="admw m_factory" msgstr="Factory Reset" />
-  
-  <message msgid="sysinfo t1_title" msgstr="System mode" />
-  <message msgid="sysinfo t1_softv" msgstr="The current software version" />
-  <message msgid="sysinfo t1_firmv" msgstr="The hardware version" />
-  <message msgid="sysinfo t2_title" msgstr="Internet" />
-  <message msgid="sysinfo t2_intnets" msgstr="Internet status" />
-  <message msgid="sysinfo t2_mac" msgstr="MAC" />
-  <message msgid="sysinfo t2_ip" msgstr="IP" />
-  <message msgid="sysinfo t2_ctpye" msgstr="Access mode" />
-  <message msgid="sysinfo t2_gw" msgstr="Gateway" />
-  <message msgid="sysinfo t3_title" msgstr="LAN" />
-  <message msgid="sysinfo t3_mac" msgstr="MAC" />
-  <message msgid="sysinfo t3_GW" msgstr="Gateway IP" />
-  <message msgid="sysinfo t4_title" msgstr="Wireless" />
-  <message msgid="sysinfo t4_wifis" msgstr="Wireless mode" />
-  <message msgid="sysinfo t4_name" msgstr="SSID" />
-  <message msgid="sysinfo t4_safes" msgstr="Security type" />
-  <message msgid="sysinfo t4_channel" msgstr="Wireless channel" />
-  <message msgid="sysinfo t4_wds" msgstr="WDS mode" />
-  
-  <message msgid="sysinfo ok" msgstr="Access to the Internet" />
-  <message msgid="sysinfo fail" msgstr="Unable to access the Internet" />
-  <message msgid="sysinfo on" msgstr="ON" />
-  <message msgid="sysinfo off" msgstr="OFF" />
-  <message msgid="sysinfo jiami" msgstr="Security" />
-  <message msgid="sysinfo open" msgstr="Open" />  
-  <message msgid="sysinfo unset" msgstr="Unset" /> 
-  
-  <message msgid="sysinfo dhcp" msgstr="DHCP" />
-  <message msgid="sysinfo static" msgstr="STATIC IP" />
-  <message msgid="sysinfo pppoe" msgstr="PPPOE(ADSL)" />
-  <message msgid="sysinfo l2tp" msgstr="L2TP" />
-  <message msgid="sysinfo pptp" msgstr="PPTP" />
-  
-  <message msgid="netcheck title" msgstr="Network check" />
-  <message msgid="netcheck des" msgstr="Detection of the type of network connection and the network PING" />
-  <message msgid="netcheck netc" msgstr="Start" />
-  <message msgid="netcheck checkingwaiting" msgstr="Please wait patiently" />
-  <message msgid="netcheck Result" msgstr="Result" />
-  <message msgid="netcheck t1_wantype" msgstr="Automatic detection of WAN type" />
-  <message msgid="netcheck t1_basetype" msgstr="BASE option type" />
-  <message msgid="netcheck t1_pngBD" msgstr="Result of ping www.baidu.com" />
-  <message msgid="netcheck t1_pingQQ" msgstr="Result of ping www.qq.com" />
-  
-  <message msgid="netcheck renetc" msgstr="Re diagnosis" />
+	<message msgid="main disable" msgstr="Disable" />
+	<message msgid="main enable" msgstr="Enable" />
+	<message msgid="main apply" msgstr="Apply" />
+	<message msgid="main cancel" msgstr="Cancel" />
+	<message msgid="toplanguage" msgstr="e" />
+	<message msgid="main bSAVE" msgstr="Save" />   
+	<message msgid="help" msgstr="Help" />
+	<message msgid="settingwaiting" msgstr="Setting,Please Wait......" />
 
-  <message msgid="netcheck r1" msgstr="Internet access failed, please check the Internet settings are correct" />
-  <message msgid="netcheck r2" msgstr="Access to the Internet, the network is normal" />
-  <message msgid="netcheck r3" msgstr="Please check the WAN cable" />
-  <message msgid="err MAC empty" msgstr="MAC is empty!" />
-  <message msgid="err IP empty" msgstr="IP is empty!" />
-  <message msgid="err sub empty" msgstr="Subnet mask is empty!" />
-  <message msgid="err user empty" msgstr="User name is empty!" />
-  <message msgid="err pwd empty" msgstr="Password is empty!" />
-  <message msgid="err time empty" msgstr="Time is empty!" />
-  
-  <message msgid="err MAC format" msgstr="MAC format error!" />
-  <message msgid="err IP format" msgstr="IP format error!" />
-  <message msgid="err sub format" msgstr="Subnet mask format error!" />
-  
-  <message msgid="err format" msgstr="Parameter format error!" />
-  <message msgid="err range" msgstr="Parameter range error!" />
+	<message msgid="top_fast" msgstr="Quick Settings" />
+	<message msgid="top_adv" msgstr="Advanced Settings" />
+	<message msgid="top_admin" msgstr="Security Settings" />
+	<message msgid="top_exit" msgstr="EXIT" />
+
+	<message msgid="advmenu treeapp_title" msgstr="Advanced Settings" />
+	<message msgid="advmenu treeapp_sysstatus" msgstr="System Info" />
+	<message msgid="advmenu treeapp_wan" msgstr="Network Settings" />
+	<message msgid="advmenu treeapp_wan_set" msgstr="WAN Settings" />
+	<message msgid="advmenu treeapp_wan_macclone" msgstr="Clone MAC Address" />
+
+	<message msgid="advmenu treeapp_local" msgstr="Network Settings" />
+	<message msgid="advmenu treeapp_local_dhcp" msgstr="DHCP Server" />
+	<message msgid="advmenu treeapp_local_gwset" msgstr="Gateway Settings" />
+	<message msgid="advmenu treeapp_local_rulist" msgstr="Routing Table Settings" />
+
+	<message msgid="advmenu treeapp_conm" msgstr="Access management " />
+	<message msgid="advmenu treeapp_conm_list" msgstr="Connected Equipments" />
+	<message msgid="advmenu treeapp_conm_ctrl" msgstr="Wireless Access" />
+	<message msgid="advmenu treeapp_wifi" msgstr="Wireless Settings" />
+	<message msgid="advmenu treeapp_wifi_basic" msgstr="Basic Settings" />
+	<message msgid="advmenu treeapp_wifi_adv" msgstr="Advanced Settings" />
+	<message msgid="advmenu treeapp_wifi_wds" msgstr="WDS Settings" />
+
+	<message msgid="advmenu treeapp_safe" msgstr="Safety Management" />
+	<message msgid="advmenu treeapp_safe_ipmac" msgstr="ARP Binding" />
+	<message msgid="advmenu treeapp_par" msgstr="Access Control" />
+	<message msgid="advmenu treeapp_par_set" msgstr="Parents Settings" />
+	<message msgid="advmenu treeapp_par_access" msgstr="Access Management" />
+
+	<message msgid="advmenu treeapp_man" msgstr="System Management" />
+	<message msgid="advmenu treeapp_man_tz" msgstr="Time Settings" />
+	<message msgid="advmenu treeapp_man_cfgm" msgstr="Configure Management" />
+	<message msgid="advmenu treeapp_man_upgrade" msgstr="Firmware Upgrade" />
+	<message msgid="advmenu treeapp_man_factory" msgstr="Restore Factory" />
+	<message msgid="advmenu treeapp_man_reboot" msgstr="System Restart" />
+	<message msgid="advmenu treeapp_netcheck" msgstr="Network Diagnosis" />
+
+	<message msgid="sset exit" msgstr="Are you sure you want to exit?" /> 
+	<message msgid="admw m_fast" msgstr="Quick Setting" />
+	<message msgid="admw m_normal" msgstr="Settings wizard" />
+	<message msgid="admw m_wan" msgstr="WAN settings" />
+	<message msgid="admw m_wifi" msgstr="WiFi settings" />
+	<message msgid="admw m_wirere" msgstr="WDS settings" />
+	<message msgid="admw m_parent" msgstr="Parental control" />
+	<message msgid="admw m_upload" msgstr="Firmware upgrade" />
+	<message msgid="admw m_factory" msgstr="Factory Reset" />
+
+	<message msgid="sysinfo title" msgstr="System Info" />
+	<message msgid="sysinfo t1_title" msgstr="Version Info" />
+	<message msgid="sysinfo t1_softv" msgstr="The current software version" />
+	<message msgid="sysinfo t1_firmv" msgstr="The hardware version" />
+	<message msgid="sysinfo t2_title" msgstr="Internet" />
+	<message msgid="sysinfo t2_intnets" msgstr="Internet status" />
+	<message msgid="sysinfo t2_mac" msgstr="MAC Address" />
+	<message msgid="sysinfo t2_ip" msgstr="IP Address" />
+	<message msgid="sysinfo t2_ctpye" msgstr="Access mode" />
+	<message msgid="sysinfo t2_gw" msgstr="Gateway" />
+	<message msgid="sysinfo t3_title" msgstr="LAN" />
+	<message msgid="sysinfo t3_mac" msgstr="MAC Address" />
+	<message msgid="sysinfo t3_GW" msgstr="Gateway IP" />
+	<message msgid="sysinfo t4_title" msgstr="Wireless" />
+	<message msgid="sysinfo t4_wifis" msgstr="Wireless mode" />
+	<message msgid="sysinfo t4_name" msgstr="SSID" />
+	<message msgid="sysinfo t4_safes" msgstr="Security type" />
+	<message msgid="sysinfo t4_channel" msgstr="Wireless channel" />
+	<message msgid="sysinfo t4_wds" msgstr="WDS" />
+
+	<message msgid="sysinfo ok" msgstr="Access to the Internet" />
+	<message msgid="sysinfo fail" msgstr="Unable to access the Internet" />
+	<message msgid="sysinfo on" msgstr="ON" />
+	<message msgid="sysinfo off" msgstr="OFF" />
+	<message msgid="sysinfo jiami" msgstr="Security" />
+	<message msgid="sysinfo open" msgstr="Open" />  
+	<message msgid="sysinfo unset" msgstr="Unset" /> 
+
+	<message msgid="sysinfo dhcp" msgstr="DHCP" />
+	<message msgid="sysinfo static" msgstr="STATIC IP" />
+	<message msgid="sysinfo pppoe" msgstr="PPPOE(ADSL)" />
+	<message msgid="sysinfo l2tp" msgstr="L2TP" />
+	<message msgid="sysinfo pptp" msgstr="PPTP" />
+
+	<message msgid="netcheck title" msgstr="Network check" />
+	<message msgid="netcheck des" msgstr="Detection of the type of network connection and the network PING" />
+	<message msgid="netcheck netc" msgstr="Start" />
+	<message msgid="netcheck checkingwaiting" msgstr="Please wait patiently" />
+	<message msgid="netcheck Result" msgstr="Result" />
+	<message msgid="netcheck t1_wantype" msgstr="Automatic detection of WAN type" />
+	<message msgid="netcheck t1_basetype" msgstr="BASE option type" />
+	<message msgid="netcheck t1_pngBD" msgstr="Result of ping www.baidu.com" />
+	<message msgid="netcheck t1_pingQQ" msgstr="Result of ping www.qq.com" />
+
+	<message msgid="netcheck renetc" msgstr="Re diagnosis" />
+
+	<message msgid="netcheck r1" msgstr="Internet access failed, please check the Internet settings are correct" />
+	<message msgid="netcheck r2" msgstr="Access to the Internet, the network is normal" />
+	<message msgid="netcheck r3" msgstr="Please check the WAN cable" />
+	<message msgid="err MAC empty" msgstr="MAC is empty " />
+	<message msgid="err user empty" msgstr="User name is empty " />
+	<message msgid="err pwd empty" msgstr="Password is empty " />
+	<message msgid="err time empty" msgstr="Time is empty " />
+	<message msgid="err MAC format" msgstr="MAC format error,Please input as XX:XX:XX:XX:XX:XX" />
+	<message msgid="err format" msgstr="Parameter illegal " />
+	<message msgid="err range" msgstr="Parameter range error " />
+	<message msgid="err IP empty" msgstr="IP address can not be empty" />
+	<message msgid="err sub empty" msgstr="Subnet can not be empty" />
+	<message msgid="err gw empty" msgstr="Gateway can not be empty" />
+	<message msgid="err DNS empty" msgstr="DNS can not be empty" />
+	<message msgid="err IP format" msgstr="IP address illegal" />
+	<message msgid="err sub format" msgstr="Subnet address illegal" />	
+	<message msgid="err gw format" msgstr="Gateway address illegal" />
+	<message msgid="err DNS format" msgstr="DNS address illegal" />
 </po>
 

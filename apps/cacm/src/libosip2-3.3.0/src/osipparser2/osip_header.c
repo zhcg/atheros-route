@@ -53,7 +53,7 @@ osip_message_set_header (osip_message_t * sip, const char *hname,
       return OSIP_NOMEM;
     }
   osip_clrncpy (h->hname, hname, strlen (hname));
-
+  
   if (hvalue != NULL)
     {                           /* some headers can be null ("subject:") */
       h->hvalue = (char *) osip_malloc (strlen (hvalue) + 1);
@@ -201,16 +201,17 @@ osip_message_header_get_byname (const osip_message_t * sip, const char *hname,
   i = pos;
   if (osip_list_size (&sip->headers) <= pos)
     return OSIP_UNDEFINED_ERROR;                  /* NULL */
+  
   while (osip_list_size (&sip->headers) > i)
-    {
+  {
       tmp = (osip_header_t *) osip_list_get (&sip->headers, i);
       if (osip_strcasecmp (tmp->hname, hname) == 0)
-        {
+      {
           *dest = tmp;
           return i;
-        }
+      }
       i++;
-    }
+  }
   return OSIP_UNDEFINED_ERROR;                    /* not found */
 }
 
@@ -259,7 +260,9 @@ osip_header_to_str (const osip_header_t * header, char **dest)
     return OSIP_NOMEM;
 
   if (header->hvalue != NULL)
+  {
     sprintf (*dest, "%s: %s", header->hname, header->hvalue);
+  }
   else
     sprintf (*dest, "%s: ", header->hname);
 

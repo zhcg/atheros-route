@@ -19,7 +19,7 @@ static int init_env();
 /**
  * 发送数据到PAD
  */
-static int send_msg_to_pad(int fd, char cmd, char *data);
+static int send_msg_to_pad(int fd, char cmd, char *data, unsigned short data_len);
 
 /**
  * 接收pad发送的报文包
@@ -168,17 +168,21 @@ struct s_cmd cmd_list[] =
     {0x1B, 0x00, "PPPOE_PWD",      "cfg -a PPPOE_PWD=",        "", ""},
     
     // 初始化设备
-    {0x1C, 0x00, "AP_STARTMODE",    "cfg -a 2860 AP_STARTMODE=",     "", ""},
+    {0x1C, 0x00, "AP_STARTMODE",    "cfg -a AP_STARTMODE=",     "", ""},
     // SSID
     {0x1D, 0x00, "AP_SSID",         "cfg -a AP_SSID=",         "", ""},
     {0x1E, 0x00, "AP_SSID_2",       "cfg -a AP_SSID_2=",       "", ""},
     {0x1F, 0x00, "AP_SSID_3",       "cfg -a AP_SSID_3=",       "", ""},
     
+    // AP_CYPHER
+    {0x20, 0x00, "AP_CYPHER",         "cfg -a AP_CYPHER=",         "", ""},
+    {0x21, 0x00, "AP_CYPHER_2",       "cfg -a AP_CYPHER_2=",       "", ""},
+    {0x22, 0x00, "AP_CYPHER_3",       "cfg -a AP_CYPHER_3=",       "", ""},
+    
     // 密码
     {0x30, 0x00, "PSK_KEY",         "cfg -a PSK_KEY=",         "", ""},
-    {0x31, 0x00, "PSK_KEY_2",       "cfg -a AP_SSID_2=",       "", ""},
+    {0x31, 0x00, "PSK_KEY_2",       "cfg -a PSK_KEY_2=",       "", ""},
     {0x32, 0x00, "PSK_KEY_3",       "cfg -a PSK_KEY_3=",       "", ""},
-    
 
     // 2.4G
     {0x33, 0x00, "AP_RADIO_ID",         "cfg -a AP_RADIO_ID=",            "", ""},
@@ -207,8 +211,11 @@ struct s_cmd cmd_list[] =
     {0x44, 0x00, "AP_SECFILE_3",       "cfg -a AP_SECFILE_3=",          "", ""},
     
     // 静态绑定
-    {0x45, 0x00, "MAC_BIND_1",         "cfg -a MAC_BIND_1=",         "", ""},
-    {0x46, 0x00, "IP_BIND_1",         "cfg -a IP_BIND_1=",          "", ""},
+    {0x45, 0x00, "ADD_MAC",        "cfg -a ADD_MAC=",         "", ""},
+    {0x46, 0x00, "ADD_IP",         "cfg -a ADD_IP=",          "", ""},
+    {0x47, 0x00, "ADD_STATUS",     "cfg -a ADD_STATUS=",      "", ""},
+    
+    {0x48, 0x00, "PPPOE_MODE",     "cfg -a PPPOE_MODE=",      "", ""},
 };
 #endif
 
@@ -264,25 +271,6 @@ void init_cmd_list()
 }
 #endif
 
-#if BOARDTYPE == 9344
-int init_usb()
-{
-    int res = 0;
-	/*
-    char buf[128] = {0};
-    // 打开串口并且初始化
-    if ((network_config.usb_pad_fd = open(USB_NODE, O_RDWR, 0644)) < 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "open failed", OPEN_ERR); 
-        return OPEN_ERR;
-    }
-    
-    sprintf(buf, "open %s (pad usb) and init success", USB_NODE);
-    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, buf, 0);
-	*/
-    return 0;
-}
-#endif
 /**
  * 初始化运行环境
  */
@@ -292,12 +280,6 @@ int init_env()
     int res = 0;
     char buf[64] = {0};
     
-    if ((res = common_tools.get_config()) < 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_config failed!", res);
-        return res;
-    }
-    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "The configuration file is read successfully!", 0);
     #if BOARDTYPE == 5350
     // 打开串口并且初始化
     if ((serial_pad_fd = open(common_tools.config->serial_pad, O_RDWR, 0644)) < 0)
@@ -308,7 +290,11 @@ int init_env()
     
     if ((res = common_tools.serial_init(serial_pad_fd, common_tools.config->serial_pad_baud)) < 0)
     {
-        close(serial_pad_fd);
+        if (serial_pad_fd != 0)
+        {
+            close(serial_pad_fd);
+            serial_pad_fd = 0;
+        }
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "serial_init failed", res);         
         return res;
     }
@@ -316,11 +302,12 @@ int init_env()
     sprintf(buf, "open %s (pad serial) and init success, baud:%d", common_tools.config->serial_pad, common_tools.config->serial_pad_baud);
     OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, buf, 0);
     #elif BOARDTYPE == 9344
-    if ((res = init_usb()) < 0)
+    if ((res = communication_network.make_server_link(USB_SOCKET_PORT)) < 0)
     {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "init_usb failed", res); 
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "make_server_link failed", res); 
         return res;
     }
+    network_config.usb_pad_fd = res;
     #endif
     
     memset(buf, 0, sizeof(buf));
@@ -329,15 +316,27 @@ int init_env()
     // 打开串口并且初始化
     if ((serial_5350_fd = open(common_tools.config->serial_5350, O_RDWR, 0644)) < 0)
     {
-        close(serial_pad_fd);
+        if (serial_pad_fd != 0)
+        {
+            close(serial_pad_fd);
+            serial_pad_fd = 0;
+        }
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "open failed", OPEN_ERR); 
         return OPEN_ERR;
     }
     
     if ((res = common_tools.serial_init(serial_5350_fd, common_tools.config->serial_5350_baud)) < 0)
     {
-        close(serial_pad_fd);
-        close(serial_5350_fd);
+        if (serial_pad_fd != 0)
+        {
+            close(serial_pad_fd);
+            serial_pad_fd = 0;
+        }
+        if (serial_5350_fd != 0)
+        {
+            close(serial_5350_fd);
+            serial_5350_fd = 0;
+        }
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "serial_init failed", res);   
         return res;
     }
@@ -347,17 +346,28 @@ int init_env()
     #endif
     
     // 建立服务器
-    if ((server_base_fd = internetwork_communication.make_server_link(common_tools.config->pad_client_port)) < 0)
+    if ((server_base_fd = communication_network.make_server_link(common_tools.config->pad_client_port)) < 0)
     {
-        close(serial_pad_fd);
-        close(serial_5350_fd);
+        if (serial_pad_fd != 0)
+        {
+            close(serial_pad_fd);
+            serial_pad_fd = 0;
+        }
+        if (serial_5350_fd != 0)
+        {
+            close(serial_5350_fd);
+            serial_5350_fd = 0;
+        }
+        #if BOARDTYPE == 9344
+        communication_usb.usb_exit();
+        #endif
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "make_server_link failed", server_base_fd); 
         return server_base_fd;
     }
     sprintf(buf, "The server is established successfully! port = %s", common_tools.config->pad_client_port);    
     OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, buf, 0);
     
-    #if BOARDTYPE == 5350
+    #if BOARDTYPE == 5350 || BOARDTYPE == 9344
     memcpy(network_config.cmd_list, cmd_list, sizeof(cmd_list));
     #endif
     PRINT_STEP("exit...\n");
@@ -367,7 +377,7 @@ int init_env()
 /**
  * 发送数据到PAD
  */
-int send_msg_to_pad(int fd, char cmd, char *data)
+int send_msg_to_pad(int fd, char cmd, char *data, unsigned short data_len)
 {
     PRINT_STEP("entry...\n");
     int res = 0;
@@ -382,7 +392,7 @@ int send_msg_to_pad(int fd, char cmd, char *data)
     }
     else
     {
-        buf_len = 2 + 2 + 1 + strlen(data) + 1;
+        buf_len = 2 + 2 + 1 + data_len + 1;
     }
     
     if ((send_buf = (char *)malloc(buf_len)) == NULL)
@@ -403,7 +413,7 @@ int send_msg_to_pad(int fd, char cmd, char *data)
     }
     else
     {
-        msg_len = strlen(data) + 1;
+        msg_len = data_len + 1;
         #if ENDIAN == 0
         memcpy(send_buf + 2, &msg_len, sizeof(unsigned short));
         #else
@@ -412,9 +422,9 @@ int send_msg_to_pad(int fd, char cmd, char *data)
         #endif
         
         send_buf[4] = cmd;
-        memcpy(send_buf + 5, data, strlen(data));
+        memcpy(send_buf + 5, data, data_len);
         
-        send_buf[buf_len - 1] = (cmd ^ common_tools.get_checkbit(data, NULL, 0, strlen(data), XOR, 1));
+        send_buf[buf_len - 1] = (cmd ^ common_tools.get_checkbit(data, NULL, 0, data_len, XOR, 1));
     }
     
     // 发送
@@ -465,14 +475,14 @@ int recv_msg_from_pad(int fd, struct s_pad_and_6410_msg *a_pad_and_6410_msg)
         if ((res = common_tools.recv_one_byte(fd, &tmp, &tv)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "recv_one_byte failed", res);
-            return common_tools.get_errno('P', res);;
+            return common_tools.get_errno('P', res);
         }
         a_pad_and_6410_msg->len += (tmp << 8);
         // 接收命令字
         if ((res = common_tools.recv_one_byte(fd, &a_pad_and_6410_msg->cmd, &tv)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "recv_one_byte failed", res); 
-            return common_tools.get_errno('P', res);;
+            return common_tools.get_errno('P', res);
         }        
         if ((a_pad_and_6410_msg->len - 1) > 0)          
         {
@@ -495,8 +505,9 @@ int recv_msg_from_pad(int fd, struct s_pad_and_6410_msg *a_pad_and_6410_msg)
         if ((res = common_tools.recv_one_byte(fd, &a_pad_and_6410_msg->check, &tv)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "recv_one_byte failed", res);
-            return common_tools.get_errno('P', res);;
+            return common_tools.get_errno('P', res);
         }
+        
         printf("\n"); 
         PRINT("___from pad end___\n");
         if ((a_pad_and_6410_msg->len - 1) > 0) 
@@ -1392,13 +1403,179 @@ int get_wan_state()
 {
     return 0;
 }
+
+/**
+ * 获取上网方式 动态 静态 pppoe
+ */
+static int get_wan_mode()
+{
+    int res = 0;
+    char *cmd = "cfg -s | grep \"WAN_MODE:=\"";
+    char buf[128] = {0};
+    
+    if ((res = common_tools.get_cmd_out(cmd, buf, sizeof(buf))) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_cmd_out failed!", res);
+        return res;
+    }
+    
+    if (memcmp(buf + strlen("WAN_MODE:="), "dhcp", strlen("dhcp")) == 0) // 动态 
+    {
+        return 1;
+    }
+    else if (memcmp(buf + strlen("WAN_MODE:="), "static", strlen("static")) == 0) // 静态 
+    {
+        return 2;
+    }
+    else if (memcmp(buf + strlen("WAN_MODE:="), "pppoe", strlen("pppoe")) == 0) // 拨号上网
+    {
+        return 3;
+    }
+    else 
+    {
+        return DATA_ERR;
+    }
+    return 0;
+}
+
+/**
+ * 动态IP设置
+ */
+static int wan_dhcp_config()
+{
+    system("udhcpc -b -i eth0 -h HBD-Route -s /etc/udhcpc.script");
+    return 0;
+}
+
+/**
+ * 静态IP设置
+ */
+static int wan_static_config()
+{
+    int res = 0;
+    char *cmd_get_ip = "cfg -s | grep \"WAN_IPADDR:=\"";
+    char *cmd_get_netmask = "cfg -s | grep \"WAN_NETMASK:=\"";
+    char *cmd_get_ipgw = "cfg -s | grep \"IPGW:=\"";
+    
+    char ip[64] = {0};
+    char netmask[64] = {0};
+    char ipgw[64] = {0};
+    
+    char buf[128] = {0};
+    if ((res = common_tools.get_cmd_out(cmd_get_ip, ip, sizeof(ip))) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_cmd_out failed!", res);
+        return res;
+    }
+    ip[strlen(ip) - 1] = '\0';
+    if ((res = common_tools.get_cmd_out(cmd_get_netmask, netmask, sizeof(netmask))) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_cmd_out failed!", res);
+        return res;
+    }
+    netmask[strlen(netmask) - 1] = '\0';
+    
+    sprintf(buf, "ifconfig eth0 %s netmask %s up", ip + strlen("WAN_IPADDR:="), netmask + strlen("WAN_NETMASK:="));
+    system(buf);
+    PRINT("buf = %s\n", buf);
+    memset(buf, 0, sizeof(buf));
+    
+    if ((res = common_tools.get_cmd_out(cmd_get_ipgw, ipgw, sizeof(ipgw))) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_cmd_out failed!", res);
+        return res;
+    }
+    ipgw[strlen(ipgw) - 1] = '\0';
+    sprintf(buf, "route add default gw %s dev eth0", ipgw + strlen("IPGW:="));
+    system(buf);
+    PRINT("buf = %s\n", buf);
+    return 0;
+}
+
+/**
+ * pppoe设置
+ */
+static int wan_pppoe_config()
+{
+    int res = 0;
+    char *cmd_get_user = "cfg -s | grep \"PPPOE_USER:=\"";
+    char *cmd_get_password = "cfg -s | grep \"PPPOE_PWD:=\"";
+    char pppoe_user[64] = {0};
+    char pppoe_pwd[64] = {0};
+    char buf[128] = {0};
+     
+    if ((res = common_tools.get_cmd_out(cmd_get_user, pppoe_user, sizeof(pppoe_user))) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_cmd_out failed!", res);
+        return res;
+    }
+    pppoe_user[strlen(pppoe_user) - 1] = '\0';
+    PRINT("pppoe_user = %s\n", pppoe_user);
+    if ((res = common_tools.get_cmd_out(cmd_get_password, pppoe_pwd, sizeof(pppoe_pwd))) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_cmd_out failed!", res);
+        return res;
+    }
+    pppoe_pwd[strlen(pppoe_pwd) - 1] = '\0';
+    PRINT("pppoe_pwd = %s\n", pppoe_pwd);
+    sprintf(buf, "pppoe-setup %s %s &", pppoe_user + strlen("PPPOE_USER:="), pppoe_pwd + strlen("PPPOE_PWD:="));
+    PRINT("buf = %s\n", buf);
+    system(buf);
+    
+    PRINT("before stop!\n");
+    system("pppoe-stop &");
+    PRINT("before start!\n");
+    system("pppoe-start &");
+    return 0;
+}
+
 /**
  * 使设置生效
  */
 int config_route_take_effect()
 {
+    int res = 0;
+    // 静态指定生效
+    system("killall udhcpd");
+    system("/etc/rc.d/rc.udhcpd");
+    system("/usr/sbin/set_addr");
+    system("/usr/sbin/udhcpd /etc/udhcpd.conf");
+    
+    // wifi 生效
     system("/etc/ath/apdown");
     system("/etc/ath/apup");
+    
+    if (get_wan_mode() == 1) // 动态 
+    {
+        if ((res = wan_dhcp_config()) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "wan_dhcp_config failed!", res);
+            return res;
+        }
+    }
+    else if (get_wan_mode() == 2) // 静态 
+    {
+        PRINT("before wan_static_config\n");
+        if ((res = wan_static_config()) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "wan_static_config failed!", res);
+            return res;
+        }
+        PRINT("after wan_static_config\n");
+    }
+    else if (get_wan_mode() == 3) // 拨号上网
+    {
+        if ((res = wan_pppoe_config()) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "wan_pppoe_config failed!", res);
+            return res;
+        }
+    }
+    else 
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data error!", res);
+        return DATA_ERR;
+    }
     return 0;
 }
 
@@ -1417,31 +1594,60 @@ int route_config(int index)
 {
     int res = 0;
     int i= 0, j = 0;
+    res = get_wan_mode();
+    
+    switch (res)
+    {
+        case 1: // 动态IP
+        {
+            PRINT("old wan mode is DHCP!\n");
+            system("killall udhcpc");
+            break;
+        }
+        case 2: // 静态IP
+        {
+            PRINT("old wan mode is static!\n");
+            break;
+        }
+        case 3: // PPPOE
+        {
+            PRINT("old wan mode is DHCP!\n");
+            system("pppoe-stop");
+            break;
+        }
+        default: // 不匹配
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "Option does not match!", MISMATCH_ERR);
+            return MISMATCH_ERR;
+        }
+    }
     for (i = 0, j = 1; i < sizeof(network_config.cmd_list) / sizeof(struct s_cmd); i++)
     {
-        //PRINT("network_config.cmd_list[i].cmd_bit = %02X, index = %d, j = %d\n", network_config.cmd_list[i].cmd_bit, index, j);
         if (j == network_config.cmd_list[i].cmd_bit)
         {
+            /*
             if (memcmp("\"\"", network_config.cmd_list[i].set_value, strlen(network_config.cmd_list[i].set_value)) != 0)
             {
-                PRINT("network_config.cmd_list[i].set_cmd_and_value = %s\n", network_config.cmd_list[i].set_cmd_and_value);
                 memset(network_config.cmd_list[i].set_cmd_and_value, 0, sizeof(network_config.cmd_list[i].set_cmd_and_value));
-                sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s \"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value);
+                sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s\"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value);
                 PRINT("network_config.cmd_list[i].set_cmd_and_value = %s\n", network_config.cmd_list[i].set_cmd_and_value);    
             }
-            
+            */
+            PRINT("exec: %s\n", network_config.cmd_list[i].set_cmd_and_value);
             if (system(network_config.cmd_list[i].set_cmd_and_value) < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "system failed!", SYSTEM_ERR);
                 return SYSTEM_ERR;
             } 
             j++;
+            /*
             if (memcmp("\"\"", network_config.cmd_list[i].set_value, strlen(network_config.cmd_list[i].set_value)) != 0)
             {
                 memset(network_config.cmd_list[i].set_cmd_and_value, 0, sizeof(network_config.cmd_list[i].set_cmd_and_value));
-                sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s %s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value);
+                sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value);
                 PRINT("network_config.cmd_list[i].set_cmd_and_value = %s\n", network_config.cmd_list[i].set_cmd_and_value);
             }
+            */
         }
         if (j > index)
         {
@@ -1853,7 +2059,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
                         pad_and_6410_msg.data = NULL;
                     }
                     // 数据发送到PAD                            
-                    if ((res = send_msg_to_pad(fd, 0XFA, NULL)) < 0)
+                    if ((res = send_msg_to_pad(fd, 0XFA, NULL, 0)) < 0)
                     {
                         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
                         continue;
@@ -1896,7 +2102,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
         
         if (i < (cmd_count - 1))
         {
-            if ((res = send_msg_to_pad(fd, 0x00, NULL)) < 0)
+            if ((res = send_msg_to_pad(fd, 0x00, NULL, 0)) < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
                 return res;
@@ -1934,7 +2140,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
             return res;
         }
         strncat(ssid1, network_config.base_mac, strlen(network_config.base_mac));
-        PRINT("ssid1 = %s\n", ssid1);
+        PRINT("ssid1 = %s network_config.base_mac = %s\n", ssid1, network_config.base_mac);
         if ((res = common_tools.get_rand_string(12, 0, wpapsk1, UTF8)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_rand_string failed", res);
@@ -1988,9 +2194,9 @@ int network_settings(int fd, int cmd_count, char cmd_word)
         }
         PRINT("_________________________________\n");
         #if BOARDTYPE == 6410 || BOARDTYPE == 9344
-        if ((res = database_management.insert(8, column_name, values, values_len)) < 0)
+        if ((res = database_management.update(8, column_name, values, values_len)) < 0)
         {
-            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_insert failed", res);
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_update failed", res);
             return res;
         }
         #elif BOARDTYPE == 5350
@@ -2002,7 +2208,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
         }
         PRINT("_________________________________\n");
         #endif
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "The database insert success!", 0);    
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "The database update success!", 0);    
     }
     
     common_tools.mac_add_colon(pad_mac);
@@ -2554,19 +2760,39 @@ int network_settings(int fd, int cmd_count, char cmd_word)
         }
     }
     #elif BOARDTYPE == 9344
+    PRINT("pad_cmd = %02X\n", (unsigned char)pad_cmd);
     for (i = 0; i < sizeof(network_config.cmd_list) / sizeof(struct s_cmd); i++)
     {   
+        //PRINT("%d %02X %s %s\n", index, network_config.cmd_list[i].cmd_word, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
         if ((unsigned char)pad_cmd == 0xFB) // 局域网络没有设置时
         {
             // 初始化设备项
             switch (network_config.cmd_list[i].cmd_word)
             {
+                case 0x1C: // STARTMODE 
+                {
+                    index++;
+                    network_config.cmd_list[i].cmd_bit = index;
+                    memcpy(network_config.cmd_list[i].set_value, "multi", strlen("multi"));
+                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
+                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
+                    break;
+                }
                 case 0x1D: // SSID1
                 {
                     index++;
                     network_config.cmd_list[i].cmd_bit = index;
                     sprintf(network_config.cmd_list[i].set_value, "%s", ssid1);
-                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
+                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s\"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
+                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
+                    break;
+                }
+                case 0x20: // AP_CYPHER
+                {
+                    index++;
+                    network_config.cmd_list[i].cmd_bit = index;
+                    memcpy(network_config.cmd_list[i].set_value, "TKIP CCMP", strlen("TKIP CCMP"));
+                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s\"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
                     PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
                     break;
                 }
@@ -2575,7 +2801,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
                     index++;
                     network_config.cmd_list[i].cmd_bit = index;
                     sprintf(network_config.cmd_list[i].set_value, "%s", wpapsk1);
-                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
+                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s\"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
                     PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
                     break;
                 }
@@ -2619,7 +2845,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
                 {
                     index++;
                     network_config.cmd_list[i].cmd_bit = index;
-                    memcpy(network_config.cmd_list[i].set_value, "2", strlen("2"));
+                    memcpy(network_config.cmd_list[i].set_value, "3", strlen("3"));
                     sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
                     PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
                     break;
@@ -2646,6 +2872,15 @@ int network_settings(int fd, int cmd_count, char cmd_word)
                     common_tools.mac_add_colon(network_config.base_mac);
                     #endif
                     sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
+                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
+                    break;
+                }
+                case 0x21: // AP_CYPHER
+                {
+                    index++;
+                    network_config.cmd_list[i].cmd_bit = index;
+                    memcpy(network_config.cmd_list[i].set_value, "TKIP CCMP", strlen("TKIP CCMP"));
+                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s\"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
                     PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
                     break;
                 }
@@ -2698,7 +2933,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
                 {
                     index++;
                     network_config.cmd_list[i].cmd_bit = index;
-                    memcpy(network_config.cmd_list[i].set_value, "2", strlen("2"));
+                    memcpy(network_config.cmd_list[i].set_value, "3", strlen("3"));
                     sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
                     PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
                     break;
@@ -2726,6 +2961,15 @@ int network_settings(int fd, int cmd_count, char cmd_word)
                     index++;
                     network_config.cmd_list[i].cmd_bit = index;
                     sprintf(network_config.cmd_list[i].set_value, "%s", pad_ip);
+                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
+                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
+                    break;
+                }
+                case 0x47: // 静态指定
+                {
+                    index++;
+                    network_config.cmd_list[i].cmd_bit = index;
+                    memcpy(network_config.cmd_list[i].set_value, "1", strlen("1"));
                     sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
                     PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
                     break;
@@ -2791,7 +3035,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
                         index++;
                         network_config.cmd_list[i].cmd_bit = index;
                         sprintf(network_config.cmd_list[i].set_value, "%s", wan_ipaddr);        
-                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
+                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s\"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
                         PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
                         break;
                     }
@@ -2800,7 +3044,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
                         index++;
                         network_config.cmd_list[i].cmd_bit = index;
                         sprintf(network_config.cmd_list[i].set_value, "%s", wan_netmask); 
-                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
+                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s\"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
                         PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
                         break;
                     }
@@ -2848,7 +3092,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
                         index++;
                         network_config.cmd_list[i].cmd_bit = index;
                         sprintf(network_config.cmd_list[i].set_value, "%s", wan_pppoe_user);
-                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
+                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s\"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
                         PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
                         break;
                     }
@@ -2857,7 +3101,16 @@ int network_settings(int fd, int cmd_count, char cmd_word)
                         index++;
                         network_config.cmd_list[i].cmd_bit = index;
                         sprintf(network_config.cmd_list[i].set_value, "%s", wan_pppoe_pass);
-                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
+                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s\"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
+                        PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);             
+                        break;
+                    }
+                    case 0x48:
+                    {
+                        index++;
+                        network_config.cmd_list[i].cmd_bit = index;
+                        memcpy(network_config.cmd_list[i].set_value, "auto", strlen("auto"));
+                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s\"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
                         PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);             
                         break;
                     }
@@ -2870,23 +3123,6 @@ int network_settings(int fd, int cmd_count, char cmd_word)
             }
             case 0x07: // SSID2设置
             {
-                #if BOARDTYPE == 5350
-                int ssid_count = 0;
-                char *column_name = "BssidNum";
-                if ((res = nvram_interface.select(NVRAM_RT5350, 1, (char (*)[30])column_name, (char (*) [100])buf)) < 0)
-                {
-                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "nvram_select failed!", res);
-                    return res;
-                }
-                if ((strlen(buf) == 0) || (memcmp("\"\"", buf, strlen(buf)) == 0))
-                {
-                    memset(buf, 0, sizeof(buf));
-                    sprintf(buf, "There is no (%s) record!", column_name);
-                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, buf, 0); 
-                    return NULL_ERR;
-                }
-                #endif
-                
                 switch(network_config.cmd_list[i].cmd_word)
                 {
                     case 0x1E: // SSID2
@@ -2894,7 +3130,16 @@ int network_settings(int fd, int cmd_count, char cmd_word)
                         index++;
                         network_config.cmd_list[i].cmd_bit = index;
                         sprintf(network_config.cmd_list[i].set_value, "%s", ssid2);
-                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
+                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s\"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
+                        PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
+                        break;
+                    }
+                    case 0x21: // AP_CYPHER
+                    {
+                        index++;
+                        network_config.cmd_list[i].cmd_bit = index;
+                        memcpy(network_config.cmd_list[i].set_value, "TKIP CCMP", strlen("TKIP CCMP"));
+                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s\"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
                         PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
                         break;
                     }
@@ -2903,7 +3148,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
                         index++;
                         network_config.cmd_list[i].cmd_bit = index;
                         sprintf(network_config.cmd_list[i].set_value, "%s", wpapsk2);
-                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
+                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s\"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
                         PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
                         break;
                     }
@@ -2948,7 +3193,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
                     {
                         index++;
                         network_config.cmd_list[i].cmd_bit = index;
-                        memcpy(network_config.cmd_list[i].set_value, "2", strlen("2"));
+                        memcpy(network_config.cmd_list[i].set_value, "3", strlen("3"));
                         sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
                         PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
                         break;
@@ -3110,7 +3355,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
     PRINT("after config_route_take_effect!\n");
     
     // 是否应该加延时
-    sleep(common_tools.config->route_reboot_time_sec);
+    //sleep(common_tools.config->route_reboot_time_sec);
     
     OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, " route configuration success!", 0);
     #endif
@@ -3126,7 +3371,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
         PRINT("buf = %s\n", buf);
         for (i = 0; i < common_tools.config->repeat; i++)
         {
-            if ((res = send_msg_to_pad(fd, 0x00, buf)) < 0)
+            if ((res = send_msg_to_pad(fd, 0x00, buf, strlen(buf))) < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
                 if (i != (common_tools.config->repeat - 1))
@@ -3162,7 +3407,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
                         pad_and_6410_msg.data = NULL;
                     }
                     // 数据发送到PAD                            
-                    if ((res = send_msg_to_pad(fd, 0XFA, NULL)) < 0)
+                    if ((res = send_msg_to_pad(fd, 0XFA, NULL, 0)) < 0)
                     {
                         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
                         continue;
@@ -3204,7 +3449,11 @@ int network_settings(int fd, int cmd_count, char cmd_word)
         }
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "Pad save SSID success!", 0);  
     }
+    #if BOARDTYPE == 5350
     if ((res = common_tools.get_network_state(common_tools.config->pad_ip, 4, 6)) < 0)
+    #elif BOARDTYPE == 9344
+    if ((res = common_tools.get_network_state(common_tools.config->pad_ip, 1, 3)) < 0)
+    #endif
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_network_state failed!", res);
         return (res == DATA_DIFF_ERR) ? LAN_ABNORMAL : res;

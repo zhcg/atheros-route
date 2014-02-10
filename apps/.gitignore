@@ -1,3 +1,4 @@
+busybox-1.01/procps/top.o
 si3000app/pcmtest_ioctl
 si3000app/pcmtest_rece
 si3000app/pcmtest_send
@@ -44,3 +45,4 @@ terminal_dev_register/terminal_init_test.o
 busybox-1.01/coreutils/chroot.o
 busybox-1.01/util-linux/pivot_root.o
 terminal_dev_register/swipe_card
+cacm/target/*

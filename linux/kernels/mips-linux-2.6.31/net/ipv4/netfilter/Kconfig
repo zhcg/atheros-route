@@ -431,3 +431,13 @@ config NF_CONNTRACK_RTSP
 
 endmenu
 
+config IP_NF_MATCH_MULTIURL
+        tristate 'multiurl match support'
+	depends on NETFILTER_ADVANCED
+	help
+       MULTIURL matching allows you to match packets based on the host
+       section of the http packet.
+
+       To compile it as a module, choose M here.  If unsure, say N.
+
+

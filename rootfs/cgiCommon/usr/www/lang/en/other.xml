@@ -1,0 +1,12 @@
+<po>
+	<message msgid="toplanguage" msgstr="e" />
+	<message msgid="wait" msgstr="Searching,Please wait............" />
+	<message msgid="R_SUCCESS" msgstr="Config Success " />
+	<message msgid="R_FAIL" msgstr="Config Fail " />
+	<message msgid="REBOOT" msgstr="HBD BASE is being restarted,Please wait......" />
+	<message msgid="CFGBACK" msgstr="Configuration import over, HBD BASE is being restarted , please wait......" />
+	<message msgid="FACTORY" msgstr="Restore factory settings over, HBD BASE is being restarted , please wait......" />
+	<message msgid="UPLOAD" msgstr="Firmware upgrade over, HBD BASE is being restarted , please wait......" />
+	<message msgid="settingwaiting" msgstr="Setting,Please Wait......" />
+	<message msgid="FUPLOAD" msgstr="Firmware upgrading,HBD BASE is being restarted later, please wait......" />
+</po>

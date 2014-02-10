@@ -123,13 +123,15 @@ MODULE_AUTHOR("Al Borchers");
 MODULE_AUTHOR("David Brownell");
 MODULE_LICENSE("GPL");
 
-static int use_acm = true;
+static int use_acm = false;//true;
 module_param(use_acm, bool, 0);
-MODULE_PARM_DESC(use_acm, "Use CDC ACM, default=yes");
+//MODULE_PARM_DESC(use_acm, "Use CDC ACM, default=yes");
+MODULE_PARM_DESC(use_acm, "Use CDC ACM, default=no");
 
-static int use_obex = false;
+static int use_obex = true;//false;
 module_param(use_obex, bool, 0);
-MODULE_PARM_DESC(use_obex, "Use CDC OBEX, default=no");
+//MODULE_PARM_DESC(use_obex, "Use CDC OBEX, default=no");
+MODULE_PARM_DESC(use_obex, "Use CDC OBEX, default=yes");
 
 static unsigned n_ports = 1;
 module_param(n_ports, uint, 0);

@@ -1,4 +1,4 @@
-#!/bin/sh
+  #!/bin/sh
 ####################################################################
 ## makeVAP
 ##
@@ -105,6 +105,8 @@ else
 	R_AMPDULIMIT=$AMPDULIMIT
 	R_TXCHAIN=$TX_CHAINMASK
 	R_RXCHAIN=$RX_CHAINMASK
+    R_WIFI_ADV_POWER=$WIFI_ADV_POWER
+    R_WIFI_ADV_RSTCTS=$WIFI_ADV_RSTCTS
 fi
 
 ESSID=$2
@@ -287,6 +289,10 @@ if [ "${RF}" = "RF" ]; then
     iwpriv ${APNAME} noedgech $NO_EDGE_CH
 
     iwpriv ${APNAME} mode $CH_MODE
+    
+    iwpriv wifi$IFNUM TXPwrOvr $R_WIFI_ADV_POWER
+
+    iwconfig ${APNAME} rts $WIFI_ADV_RSTCTS
 
     #
     # Check to see if we are in one of the 11NG bands that require
@@ -491,8 +497,18 @@ if [ "${IFNUM}" = "1" ]; then
     fi
 fi
 
-if [ "${AP_HIDESSID}" = "1" ]; then
-     iwpriv ${APNAME} hide_ssid 1
+#if [ "${AP_HIDESSID}" = "1" ]; then
+#     iwpriv ${APNAME} hide_ssid 1
+#fi
+
+if [ "${AP_HIDESSID}" = "1" -a "${APNAME}" = "ath0" ]; then                                             
+     iwpriv ${APNAME} hide_ssid 1                                            
+fi 
+if [ "${AP_HIDESSID_2}" = "1" -a "${APNAME}" = "ath1" ]; then                                             
+     iwpriv ${APNAME} hide_ssid 1                                          
+fi                                                                              
+if [ "${AP_HIDESSID_3}" = "1" -a "${APNAME}" = "ath2" ]; then                                             
+     iwpriv ${APNAME} hide_ssid 1                                                                                           
 fi
 
 ##

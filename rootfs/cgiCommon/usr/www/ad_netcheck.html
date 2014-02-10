@@ -3,76 +3,75 @@
 <title></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script type="text/javascript" src="/lang/b28n.js"></script>
-<script>
+<script language="JavaScript" type="text/javascript" src="/style/load.js"></script>
+<script language="JavaScript" type="text/javascript">
 function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
 function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
-function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "table-row";}}
+function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "";}}
 function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
 function widget_display(widgetID){document.getElementById(widgetID).style.visibility = "visible";document.getElementById(widgetID).style.display = style_display_on();}
-
-
+function button_commit(buttonID){document.getElementById(buttonID).click();}
 function initTranslation()
 {
 	trans_inner("title","netcheck title");
 	trans_inner("des","netcheck des");
-	trans_value("netc","netcheck netc");
-	trans_inner("checkingwaiting","netcheck checkingwaiting");
+	trans_value("netc","netcheck renetc");
 	trans_inner("Result","netcheck Result");
 	trans_inner("t1_wantype","netcheck t1_wantype");
 	trans_inner("t1_basetype","netcheck t1_basetype");
 	trans_inner("t1_pngBD","netcheck t1_pngBD");
 	trans_inner("t1_pingQQ","netcheck t1_pingQQ");
 }
-function doStuff()
-{
-  //do some things
-  setTimeout(continueExecution, 5000) //wait ten seconds before continuing
-}
 
-function continueExecution()
-{
-   	resultshow();//finish doing things after the pause
-}
 function init()
 {
 	Butterlate.setTextDomain("main");
 	initTranslation();
-	netcheckf();
-	doStuff();
-	document.getElementById("ss1").innerHTML=document.getElementById("s1").value;
-	document.getElementById("ss2").innerHTML=document.getElementById("s2").value;
-	document.getElementById("ss3").innerHTML=document.getElementById("s3").value;
-	document.getElementById("ss4").innerHTML=document.getElementById("s4").value;
 	
-
+	if((document.getElementById("INDEX").value == "14") || (document.getElementById("INDEX").value == 14))
+	{
+		window.parent.DialogHide();
+		resultshow();
+	}
+	else
+		netcheckf();		
 }
 
 function netcheckf()
 {
 	widget_hide("checkresultshow");
 	waitgifshow();
-	//document.getElementById('NETCHECK').click();
+	button_commit('NETCHECK');
 }
 function waitgifshow()
 {
-	widget_hide("des");
+	//widget_hide("des");
 	widget_hide("netc");
-	widget_display("waitshow");
-	widget_hide("checkresult");
-
+	//widget_hide("checkresult");
+	window.parent.Demo( _("netcheck checkingwaiting"));
 }
 function resultshow()
 {
-	widget_hide("des");
-	widget_hide("waitshow");
+	//widget_hide("des");
 	widget_display("netc");
-	trans_value("netc","netcheck renetc");
-	widget_display("checkresult");
 	
-	trans_inner("checkresultshow","netcheck r1");
+	widget_display("checkresult");
+	var p1 = document.getElementById("ping1").value;
+	var p2 = document.getElementById("ping2").value;
+	if((p1=="OK")&&(p2=="OK"))
+	{
+		document.getElementById("checkresultshow").style.color="green";
+		trans_inner("checkresultshow","netcheck r2");	
+	}
+	else
+	{
+		document.getElementById("checkresultshow").style.color="red";
+		trans_inner("checkresultshow","netcheck r1");
+	}
 
 	widget_display("checkresultshow");
 }
+
 </script>
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
@@ -82,45 +81,37 @@ function resultshow()
 <div class="handaer_main">
 <table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
 <h1 id="title">网络诊断</h1>
-<form method="post" name="NETCHECK">  
-<h2 id="des">检测网络连接类型和进行网络PING操作</h2> 
- <span id="checkresultshow" style="display:none;font-family:arial;color:red;font-size:20px;" ></span>
-	<input type="button" name="netc" id="netc" class="handaer_input" onclick="netcheckf();">
-    <input type="submit" name="NETCHECK" id="NETCHECK" style="display:none" value="NETCHECK">
-</form>
 
-<div id="waitshow" style="display:none" align="center">
-  <img align="center" src="/images/loading.gif"></img>
-  <p align="center" id="checkingwaiting">正在进行检测请稍候......</p>
-</div>
+<h2 id="des">检测网络连接类型和进行网络PING操作</h2> 
+<span id="checkresultshow" style="display:none;font-family:arial;color:red;font-size:20px;" ></span>
+
 
 <table id="checkresult"  width="100%" cellpadding="0" cellspacing="0"   style="display:none" class="handaer_text">
 <tr>
 	<td class="title" colspan="2" id="Result">诊断结果</td></tr>
 <tr>
 	<td class="head" id="t1_wantype">自动检测WAN口类型</td>
-	<td><span id="ss1" name="ss1"></span>
-	<input size="32" style="display:none" maxlength="64" name="s1" id="s1" value="~~AUTOTYPE~" type="text" readonly>
-
+	<td><input size="32" maxlength="64" name="type1" id="type1" value="~~AUTOTYPE~" type="text" readonly></td>
 </tr>
 <tr>
 	<td class="head" id="t1_basetype">BASE路由设置类型</td>
-	<td><span id="ss2" name="ss2"></span>
-	<input size="32" style="display:none" maxlength="64" name="s2" id="s2" value="~~WAN_MODE~" type="text" readonly>
+	<td><input size="32" maxlength="64" name="type2" id="type2" value="~~WAN_MODE~" type="text" readonly></td>
 </tr>
 
 <tr>
   <td class="head" id="t1_pngBD">PING百度结果</td>
-  	<td><span id="ss3" name="ss3"></span>
-	<input size="32" style="display:none" maxlength="64" name="s3" id="s3" value="~~PING_BD~" type="text" readonly>
+  <td><input size="32" maxlength="64" name="ping1" id="ping1" value="~~PING_BD~" type="text" readonly></td>
 </tr>
 <tr>
   <td class="head" id="t1_pingQQ">PING腾讯结果</td>
-  	<td><span id="ss4" name="ss4"></span>
-	<input size="32" style="display:none" maxlength="64" name="s4" id="s4" value="~~PING_QQ~" type="text" readonly>
+  <td><input size="32" maxlength="64" name="ping2" id="ping2" value="~~PING_QQ~" type="text" readonly></td>
 </tr>
 
 </table>
+<form method="post" name="WORKFORM">  
+	<input type="button" name="netc" id="netc" class="handaer_input" onclick="netcheckf();">
+    <input type="submit" name="NETCHECK" id="NETCHECK" style="display:none" value="NETCHECK">
+</form>
 </td>
 </tr>
 
@@ -128,6 +119,6 @@ function resultshow()
 
 </table>
 </div>
-
+	<input type="text" style="display:none" name="INDEX" id="INDEX" value="~~INDEX~">	
 </body>
 </html>

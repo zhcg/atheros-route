@@ -1,46 +1,54 @@
 <po>
-  <message msgid="safe bAPPLY" msgstr="应用" />
-  <message msgid="safe bCANCEL" msgstr="取消" />
-  <message msgid="safe enable" msgstr="启用" />
-  <message msgid="safe disable" msgstr="停用" />
-  <message msgid="safe MOD" msgstr="修改" />
-  <message msgid="safe DEL" msgstr="删除" />
-  <message msgid="safe ADD" msgstr="添加" />
-  <message msgid="safe onbutton" msgstr="启用" />
-  <message msgid="safe offbutton" msgstr="禁用" />  
-  <message msgid="safe des" msgstr="描述" />  
-  <message msgid="safe mac" msgstr="MAC地址" />    
-  <message msgid="safe IP" msgstr="IP地址" />    
-  <message msgid="safe tye" msgstr="绑定" />    
-  <message msgid="safe set" msgstr="删除" />    
-  <message msgid="safe bSAVE" msgstr="保存" />  
+	<message msgid="safe bAPPLY" msgstr="应用" />
+	<message msgid="safe bCANCEL" msgstr="取消" />
+	<message msgid="safe enable" msgstr="启用" />
+	<message msgid="safe disable" msgstr="停用" />
+	<message msgid="safe MOD" msgstr="修改" />
+	<message msgid="safe DEL" msgstr="删除" />
+	<message msgid="safe ADD" msgstr="添加" />
+	<message msgid="safe onbutton" msgstr="启用" />
+	<message msgid="safe offbutton" msgstr="禁用" />  
+	<message msgid="safe des" msgstr="描述" />  
+	<message msgid="safe mac" msgstr="MAC地址" />    
+	<message msgid="safe IP" msgstr="IP地址" />    
+	<message msgid="safe tye" msgstr="绑定" />    
+	<message msgid="safe set" msgstr="删除" />    
+	<message msgid="safe bSAVE" msgstr="保存" />  
+	<message msgid="safe delit1" msgstr="确定要删除" />  
+	<message msgid="safe delit2" msgstr="的绑定规则?" />  
+	<message msgid="safe mac_format" msgstr="例如(11:22:33:44:55:66)" />   
+	<message msgid="help" msgstr="帮助" />
+	<message msgid="toplanguage" msgstr="z" />
+	<message msgid="settingwaiting" msgstr="正在配置,请您稍等......" />
 	
-  <message msgid="ipmac title" msgstr="IP/MAC地址绑定" />    
-  <message msgid="ipmac des" msgstr="当前IP地址与MAC绑定列表显示与修改" />    
-  <message msgid="ipmac t1_title" msgstr="IP/MAC地址绑定" />    
-  
-  <message msgid="addIPMAC Stye" msgstr="绑定" />    
-  <message msgid="addIPMAC Snotstye" msgstr="未绑定" />    
+	<message msgid="ipmac title" msgstr="ARP绑定" />    
+	<message msgid="ipmac des" msgstr="显示当前系统ARP映射表,并且可以显示和修改ARP静态绑定设置" />    
+	<message msgid="ipmac t0_title" msgstr="系统ARP映射表" /> 
+	<message msgid="ipmac t1_title" msgstr="ARP静态绑定" /> 
 
-  <message msgid="addIPMAC title" msgstr="添加IP/MAC绑定" />    
-  <message msgid="addIPMAC des" msgstr="添加IP/MAC绑定条目" />    
-  <message msgid="addIPMAC t1_title" msgstr="添加IP/MAC绑定" />    
-  <message msgid="addIPMAC t1_MAC" msgstr="MAC地址" />    
-  <message msgid="addIPMAC t1_IP" msgstr="IP地址" />    
-  <message msgid="addIPMAC t1_Tye" msgstr="绑定" />    
+	<message msgid="addIPMAC Stye" msgstr="绑定" />    
+	<message msgid="addIPMAC Snotstye" msgstr="未绑定" />    
 
-  <message msgid="err MAC empty" msgstr="MAC地址不能为空" />
-  <message msgid="err IP empty" msgstr="IP地址不能为空" />
-  <message msgid="err sub empty" msgstr="掩码地址不能为空" />
-  <message msgid="err user empty" msgstr="用户名不能为空" />
-  <message msgid="err pwd empty" msgstr="密码不能为空" />
-  <message msgid="err time empty" msgstr="时间不能为空" />
-  
-  <message msgid="err MAC format" msgstr="MAC格式错误" />
-  <message msgid="err IP format" msgstr="IP地址格式错误" />
-  <message msgid="err sub format" msgstr="掩码格式错误" />
-  
-  <message msgid="err format" msgstr="参数格式错误" />
-  <message msgid="err range" msgstr="参数范围错误" />
+	<message msgid="addIPMAC title" msgstr="添加IP/MAC绑定" />    
+	<message msgid="addIPMAC des" msgstr="添加IP/MAC绑定条目" />    
+	<message msgid="addIPMAC t1_title" msgstr="添加IP/MAC绑定" />    
+	<message msgid="addIPMAC t1_MAC" msgstr="MAC地址" />    
+	<message msgid="addIPMAC t1_IP" msgstr="IP地址" />    
+	<message msgid="addIPMAC t1_Tye" msgstr="绑定" />    
 
+	<message msgid="err MAC empty" msgstr="MAC地址不能为空" />
+	<message msgid="err user empty" msgstr="用户名不能为空" />
+	<message msgid="err pwd empty" msgstr="密码不能为空" />
+	<message msgid="err time empty" msgstr="时间不能为空" />
+	<message msgid="err MAC format" msgstr="MAC格式错误,请按照XX:XX:XX:XX:XX:XX的格式输入" />
+	<message msgid="err format" msgstr="参数不合法" />
+	<message msgid="err range" msgstr="参数范围错误" />
+	<message msgid="err IP empty" msgstr="IP地址不能为空" />
+	<message msgid="err sub empty" msgstr="掩码不能为空" />
+	<message msgid="err gw empty" msgstr="网关不能为空" />
+	<message msgid="err DNS empty" msgstr="DNS不能为空" />
+	<message msgid="err IP format" msgstr="IP地址不合法" />
+	<message msgid="err sub format" msgstr="掩码地址不合法" />	
+	<message msgid="err gw format" msgstr="网关地址不合法" />
+	<message msgid="err DNS format" msgstr="DNS地址不合法" />
 </po>
