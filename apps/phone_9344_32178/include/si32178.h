@@ -20,7 +20,7 @@ typedef struct {
 int set_offhook();
 int set_onhook();
 int dial(int dialnum);
-int si32178_init(int a,int b,int c,int d,int e,int f);
+int si32178_init(int a,int b,int c,int d,int e,int f,int g,int h);
 int checkRingStatus(vdaaRingDetectStatusType * pStatus);
 int set_onhook_monitor();
 #endif

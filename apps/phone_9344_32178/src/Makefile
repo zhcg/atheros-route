@@ -1,7 +1,7 @@
 all:$(BIN)
 
 $(BIN):$(OBJ)
-		$(CC) -o $(BIN) $^ $(PHONE_LD_FLAGS) ../lib/si32178_v2.a ../lib/dflib.a
+		$(CC) -o $(BIN) $^ $(PHONE_LD_FLAGS) ../lib/si32178.a ../lib/dflib.a
 		@cp -rf $(BIN) ..
 		@rm -f $(BIN)
 

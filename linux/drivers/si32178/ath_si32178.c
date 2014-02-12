@@ -87,7 +87,7 @@ int slic_dma_open=0;
 #define DO_AUDIO_FILTER		//侧音处理
 
 #ifdef DO_AUDIO_FILTER
-static int compare_times = 11;//15;//默认比较数字半双工倍乘值
+static int compare_times = 15;//默认比较数字半双工倍乘值
 static int last_do_flag = 0;
 static int extra_do_filter_count=2;
 
@@ -327,16 +327,17 @@ int ath_slic_init(int mode)
 		memset(bufp, 0/*0xa5*/, (NUM_DESC*ath_slic_buf_size));
 		sc->sc_rmall_buf = bufp;
 	} else {
-		for(fpcnt=0; fpcnt<(NUM_DESC*ath_slic_buf_size); fpcnt++) {
+//		for(fpcnt=0; fpcnt<(NUM_DESC*ath_slic_buf_size); fpcnt++) {
 			/* Fill buffer pattern 0x11, 0x22 ..... For ex,
 			 * if slots_en = 3, Tx buffer is filled as 0x11,
                          * 0x22, 0x33.*/
-			icntr += 1 ; 
-			*(bufp+fpcnt) = icntr  | ( icntr << 4 ) ;
-			if (icntr == ath_slic_slots_en) {
-				icntr = 0;
-			}
-		}
+//			icntr += 1 ; 
+//			*(bufp+fpcnt) = icntr  | ( icntr << 4 ) ;
+//			if (icntr == ath_slic_slots_en) {
+//				icntr = 0;
+//			}
+//		}
+		memset(bufp, 0, (NUM_DESC*ath_slic_buf_size));
 		sc->sc_pmall_buf = bufp;
 	}
 
@@ -439,19 +440,20 @@ int ath_slic_open_mode(int mode)
 		dmabuf = &sc->sc_pbuf;
 		sc->popened = 1;
 		sc->ppause = 0;
+		memset(sc->sc_pmall_buf, 0, (NUM_DESC*ath_slic_buf_size));
 	}
 
 	desc = dmabuf->db_desc;
 	dmabuf->play_tail = 0;
 	dmabuf->tail = 0;
 
-	for (j = 0; j < NUM_DESC; j++) {
+//	for (j = 0; j < NUM_DESC; j++) {
 //		if (mode & SLIC_RX){
-			desc[j].OWN = 1;
+//			desc[j].OWN = 1;
 //		} else {
 // 			desc[j].OWN = 0;
 //		}
-	}
+//	}
 
 	return (0);
 

@@ -5,6 +5,7 @@
 #include "dtmf_extr.h"
 #include "fsk_external.h"
 #include "fsk_internal.h"
+
 struct class_phone_control phone_control =
 {
 	.phone_control_sockfd=0,//控制句柄
@@ -296,6 +297,7 @@ OFFHOOK_ERR:
 	snprintf(sendbuf, 23,"HEADR0011INUSING0014\r\n");
 	netWrite(dev->client_fd, sendbuf, strlen(sendbuf));
 	PRINT("INUSING\n");
+	usleep(200*1000);
 	if(dev->audio_client_fd > 0)
 	{
 		close(dev->audio_client_fd);
@@ -336,7 +338,7 @@ int do_cmd_onhook(dev_status_t *dev)
 			offhook();
 			dev->incoming = 0;
 			phone_control.global_incoming = 0;
-			usleep(500*1000);
+			usleep(300*1000);
 		}
 		phone_control.global_phone_is_using = 0;
 		dev->dev_is_using = 0;
@@ -501,7 +503,7 @@ int do_cmd_talkbackoffhook(dev_status_t* dev,char *sendbuf)
 	return 0;
 TALKBACKOFFHOOK_ERR:
 	memset(sendbuf,0,SENDBUF);
-	snprintf(sendbuf, 23,"HEADR0010INUSING0014\r\n");
+	snprintf(sendbuf, 23,"HEADR0011INUSING0014\r\n");
 	netWrite(dev->client_fd, sendbuf, strlen(sendbuf));
 	PRINT("INUSING\n");
 	if(dev->audio_client_fd > 0)
@@ -563,23 +565,23 @@ int do_cmd_heartbeat(dev_status_t *dev)
 	int i,j,count =0;
 
 	dev->tick_time++;
-	memset(dev->dev_name,' ',16);
-	for(i=0;i<CLIENT_NUM;i++)
-	{
-		if(devlist[i].client_fd == -1)
-			continue;
-		if(dev == &devlist[i])
-		{
-			sprintf(dev->dev_name,"%s%d","子机",i+1);
-		}
-	}
-	for(i=0;i<16;i++)
-	{
-		if(dev->dev_name[i] == '\0')
-		{
-			dev->dev_name[i]=' ';
-		}
-	}
+	//memset(dev->dev_name,' ',16);
+	//for(i=0;i<CLIENT_NUM;i++)
+	//{
+		//if(devlist[i].client_fd == -1)
+			//continue;
+		//if(dev == &devlist[i])
+		//{
+			//sprintf(dev->dev_name,"%s%d","子机",i+1);
+		//}
+	//}
+	//for(i=0;i<16;i++)
+	//{
+		//if(dev->dev_name[i] == '\0')
+		//{
+			//dev->dev_name[i]=' ';
+		//}
+	//}
 	return 0;
 }
 
@@ -1024,7 +1026,7 @@ int init_control()
 
 	phone_audio.init_audio();
 
-	if(si32178_init(0,0,5,5,10,1)==-1)
+	if(si32178_init(0,0,5,5,10,1,2,0)==-1)
 	{
 		PRINT("si32178 init fail\n");
 		exit(-1);
@@ -1598,7 +1600,7 @@ void* tcp_loop_recv(void* argv)
 			default:
 				for(i=0; i<CLIENT_NUM ; i++)
 				{
-					if(devlist[i].client_fd == -1)
+					if(devlist[i].client_fd == -1 || devlist[i].dying == 1)
 						continue;
 					if ( FD_ISSET(devlist[i].client_fd, &socket_fdset) )
 					{
@@ -1657,7 +1659,7 @@ void *phone_control_loop_accept(void* arg)
 {
 	PRINT("%s thread start.......\n",__FUNCTION__);
 	int clientfd;
-	int i;
+	int i,j;
 	fd_set fdset;
 	struct timeval tv;
 	struct timeval timeout;
@@ -1739,12 +1741,22 @@ void *phone_control_loop_accept(void* arg)
 					{
 						for(i=0; i<CLIENT_NUM; i++)
 						{
-							if(devlist[i].client_fd == -1){
+							if(devlist[i].client_fd == -1)
+							{
 								devlist[i].client_fd = clientfd;
 								devlist[i].control_reconnect=control_reconnect;
 								devlist[i].id = i;
 								memset(devlist[i].client_ip, 0, sizeof(devlist[i].client_ip));
 								memcpy(devlist[i].client_ip, new_ip, strlen(new_ip)+1);
+								memset(devlist[i].dev_name,' ',16);
+								sprintf(devlist[i].dev_name,"%s%d","子机",i+1);
+								for(j=0;j<16;j++)
+								{
+									if(devlist[i].dev_name[j] == '\0')
+									{
+										devlist[i].dev_name[j]=' ';
+									}
+								}							
 								generate_up_msg();
 								break;
 							}
@@ -2026,7 +2038,7 @@ int generate_up_msg()
 	memset(sendbuf,0,BUF_LEN);
 	for(i=0;i<CLIENT_NUM;i++)
 	{
-		if(devlist[i].client_fd == -1 || devlist[i].dying == 1 /*|| devlist[i].destroy_count >= 3*/ || devlist[i].tick_time == 0)
+		if(devlist[i].client_fd == -1 || devlist[i].dying == 1 /*|| devlist[i].destroy_count >= 3 || devlist[i].tick_time == 0*/)
 				continue;
 		ip_len = strlen(devlist[i].client_ip);
 		memset(tmpbuf1,0,BUF_LEN);
