@@ -338,7 +338,7 @@ int do_cmd_onhook(dev_status_t *dev)
 			offhook();
 			dev->incoming = 0;
 			phone_control.global_incoming = 0;
-			usleep(300*1000);
+			usleep(400*1000);
 		}
 		phone_control.global_phone_is_using = 0;
 		dev->dev_is_using = 0;
@@ -1026,7 +1026,7 @@ int init_control()
 
 	phone_audio.init_audio();
 
-	if(si32178_init(0,0,5,5,10,1,2,0)==-1)
+	if(si32178_init(0,0,5,5,10,1,1,0)==-1)
 	{
 		PRINT("si32178 init fail\n");
 		exit(-1);
