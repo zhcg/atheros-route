@@ -10,57 +10,6 @@
 <script language="JavaScript" type="text/javascript" src="/style/load.js"></script>
 <script type="text/javascript">
 
-var c ;
-var intTimerID;
-var intTimeout;
-var intStartTime;  
-var bolIsTimeout;
-var objIMG;
-
-function begin()
-{
-	c = document.getElementById("IPA").value;
-	//alert(a+b+c);
-	if(c=="")
-		c="10.10.10.254";
-
-	setTimeout(function(){ping();},100000);
-}
-
-function ping()
-{ 
-	intTimeout = 4000;
-	intStartTime;  
-	bolIsTimeout;
-	objIMG = new Image();
-	objIMG.onload =
-	objIMG.onerror =
-	function()
-	{
-		//alert("连接成功,准备跳转 bolIsTimeout"+bolIsTimeout);
-		clearTimeout(intTimerID);
-		if(bolIsTimeout)
-			return;
-		setTimeout(function(){window.parent.DialogHide();window.top.location.href="http://"+c+"/cgi-bin/"+"crupload";},5000);
-	}               
-	intStartTime = +new Date();     
-    //objIMG.src = "http://192.168.4.168"+"/" + intStartTime;
-    objIMG.src = "http://"+c+"/" + intStartTime;
-	//alert(objIMG.src);
-	intTimerID = setTimeout(timeout, intTimeout); 
-	bolIsTimeout=false;
-}                                                               
-
-function timeout()
-{
-	//alert("连接不成功");
-	bolIsTimeout=true;
-	{
-		//objIMG.src = "X:\\"; 
-		ping();
-	}
-}
-
 function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "table-row";}}
 function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
 function widget_display(widgetID){document.getElementById(widgetID).style.visibility = "visible";document.getElementById(widgetID).style.display = style_display_on();}
@@ -99,7 +48,7 @@ function upgradef()
 	{
 		
 		waitgifshow();
-		begin();
+		window.parent.begin(document.getElementById("IPA").value);
 		button_commit('UPGRADE');
 	}	
 }
@@ -157,8 +106,8 @@ function init()
 </td>
 </tr>
 </table>
-<input type="text" style="display:none" name="IPA" id="IPA" size="20" maxlength="32" value="~~AP_IPADDR~">
-</div>
 
+</div>
+<input type="text" style="display:none" name="IPA" id="IPA" size="20" maxlength="32" value="~~AP_IPADDR~">
 </body>
 </html>

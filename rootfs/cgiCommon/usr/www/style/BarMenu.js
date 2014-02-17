@@ -165,11 +165,11 @@ function BarMenu(id)
 		{
 			window.ifm.location.href="cgi-bin/ad_parentc_accept";
 		}
-		if(id=="bar-menu2-0-0-2-3-3-2-1-1")
+		if(id=="bar-menu2-0-0-2-3-3-2-1-2")
 		{
 			window.ifm.location.href="cgi-bin/ad_man_timezone";
 		}
-		if(id=="bar-menu2-0-0-2-3-3-2-1-1-5")
+		if(id=="bar-menu2-0-0-2-3-3-2-1-2-5")
 		{
 			window.ifm.location.href="cgi-bin/ad_netcheck";
 		}

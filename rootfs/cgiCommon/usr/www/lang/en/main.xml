@@ -27,6 +27,8 @@
 	<message msgid="advmenu treeapp_conm" msgstr="Access management " />
 	<message msgid="advmenu treeapp_conm_list" msgstr="Connected Equipments" />
 	<message msgid="advmenu treeapp_conm_ctrl" msgstr="Wireless Access" />
+	<message msgid="advmenu treeapp_conm_web" msgstr="Remote Web Management" />
+
 	<message msgid="advmenu treeapp_wifi" msgstr="Wireless Settings" />
 	<message msgid="advmenu treeapp_wifi_basic" msgstr="Basic Settings" />
 	<message msgid="advmenu treeapp_wifi_adv" msgstr="Advanced Settings" />
@@ -70,6 +72,10 @@
 	<message msgid="sysinfo t3_mac" msgstr="MAC Address" />
 	<message msgid="sysinfo t3_GW" msgstr="Gateway IP" />
 	<message msgid="sysinfo t4_title" msgstr="Wireless" />
+	
+	<message msgid="sysinfo t4_title1" msgstr="Network Band:2.4GHz" />
+	<message msgid="sysinfo t4_title2" msgstr="Network Band:5.0GHz" />
+
 	<message msgid="sysinfo t4_wifis" msgstr="Wireless mode" />
 	<message msgid="sysinfo t4_name" msgstr="SSID" />
 	<message msgid="sysinfo t4_safes" msgstr="Security type" />

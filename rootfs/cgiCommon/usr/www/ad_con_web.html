@@ -1,0 +1,87 @@
+﻿<html>
+<head>
+<title></title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+<script type="text/javascript" src="/lang/b28n.js"></script>
+<script>
+
+function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
+function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
+
+function button_commit(buttonID){document.getElementById(buttonID).click();}
+function initTranslation()
+{
+	trans_inner("title","conw title");
+	trans_inner("des","conw des");
+	trans_inner("t1_title","conw t1_title");
+	trans_inner("t1_switch","conw t1_switch");
+	
+	trans_inner("onbutton","conn onbutton");
+	trans_inner("offbutton","conn offbutton");
+	
+	trans_value("bCANCEL","conn bCANCEL");	
+	trans_value("bAPPLY","conn bAPPLY");
+	trans_inner("help_r","help");	
+
+}
+function CheckValue()
+{
+	Butterlate.setTextDomain("admin");
+	window.parent.Demo(_("admw settingwaiting"));	
+	button_commit("WEBCONM_WORK");
+}
+function init()
+{
+	Butterlate.setTextDomain("conn");
+	initTranslation();
+}
+
+function help()
+{
+	if (_("toplanguage")=="e")
+		window.location.href='../help/ad_con_web_help_e.html';
+	else
+		window.location.href='../help/ad_con_web_help_z.html';
+}
+</script>
+
+</head>
+
+<body onload="init()">
+<div class="handaer_main">
+<table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
+<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="title">远程Web管理</h1>
+<form method="POST" name="wirelessconnection">
+<h2 id="des">管理设备远程Web登录</h2>
+
+<table id="t1"  width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
+<tr>
+<td class="title" colspan="4" id="t1_title">远程Web管理</td>
+</tr>
+  <tr> 
+    <td id="t1_switch">远程登录</td>    
+	<td>
+	<input type="radio"  ~cWEBCONON_OFF:on~ name="WEBCONON_OFF" id="WEBCONON_OFF1" value="on" /><label for="WEBCONON_OFF1"  id="onbutton">启用</label>
+	<input type="radio"  ~cWEBCONON_OFF:off~ name="WEBCONON_OFF" id="WEBCONON_OFF2" value="off" /><label for="WEBCONON_OFF2"  id="offbutton">禁止</label></td>
+  </tr>
+</table>
+
+<table id="buttontable">
+<tr align="center">
+  <td>
+    <input type="button" name="bCANCEL" id="bCANCEL" class="handaer_input" value="Cancel" onClick="window.location.reload();">
+    <input type="button" name="bAPPLY" id="bAPPLY" class="handaer_input" value="Apply" onClick="CheckValue();">
+	<input type="submit" name="WEBCONM_WORK" id="WEBCONM_WORK" style="display:none" value="WEBCONM_WORK">
+  </td>
+</tr>
+</table>
+</form>
+
+</td></tr>
+</table>
+</div>
+
+</body>
+</html>

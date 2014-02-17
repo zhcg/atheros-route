@@ -36,7 +36,11 @@
 	<message msgid="admw opmope" msgstr="Operation Mode" />  
 
 	<message msgid="admw div_wireless_title" msgstr="Please set your WiFi account and password. Your wireless device will use the following network." />  
+
 	<message msgid="admw wsetingst" msgstr="WiFi Settings" />  
+	<message msgid="admw wsetingst1" msgstr="Network Band:2.4GHz" />  
+	<message msgid="admw wsetingst2" msgstr="Network Band:5.0GHz" />  
+	
 	<message msgid="admw nname" msgstr="Network Name (SSID)" />  
 	<message msgid="admw security" msgstr="Security" />
 	<message msgid="admw wkey" msgstr="KEY" />
@@ -92,6 +96,9 @@
 	<message msgid="admw int2" msgstr="Connect to an existing router for WiFi network" />  
 
 	<message msgid="admw RMd" msgstr="WDS Settings" />  
+	<message msgid="admw RMd1" msgstr="Network Band:2.4GHz" />  
+	<message msgid="admw RMd2" msgstr="Network Band:5.0GHz" />  
+	
 	<message msgid="admw R_uname" msgstr="WiFi Name(SSID)" />  
 	<message msgid="admw R_pword" msgstr="Password" />  
 
@@ -212,7 +219,7 @@
 	<message msgid="upgrade success" msgstr="Upgrade successfully " />
 	<message msgid="upgrade fail" msgstr="Version of the same, the firmware is not upgraded " />
 
-	<message msgid="admw offwifides" msgstr="wifi is off so WDS is not work" />
+	<message msgid="admw offwifides" msgstr="wifi of this Band is off so WDS is not work" />
 	<message msgid="admw software" msgstr="Softwsre Version" />
 	<message msgid="admw hardware" msgstr="Hardware Version" />
 	<message msgid="admw hidewifides" msgstr="Hide Wifi" />

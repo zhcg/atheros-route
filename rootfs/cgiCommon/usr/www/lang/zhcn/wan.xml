@@ -35,9 +35,9 @@
 	<message msgid="wan title" msgstr="WAN口设置" />
 	<message msgid="wan introduction" msgstr="请您选择HBD路由器WAN口的连接方式。所需参数在开通网络时，由网络运营商（中国电信、中国网通、中国铁通、中国移动、中国联通等）提供" />
 	<message msgid="wan connection type" msgstr="WAN口连接方式:" />
-	<message msgid="wan connection type static" msgstr="静态 (固定 IP)" />
-	<message msgid="wan connection type dhcp" msgstr="动态 (自动取得)" />
-	<message msgid="wan connection type pppoe" msgstr="PPPoE (ADSL)" />
+	<message msgid="wan connection type static" msgstr="手动设置(静态IP)" />
+	<message msgid="wan connection type dhcp" msgstr="自动获取(动态IP)" />
+	<message msgid="wan connection type pppoe" msgstr="宽带(ADSL)" />
 	<message msgid="wan connection type l2tp" msgstr="L2TP" />
 	<message msgid="wan connection type pptp" msgstr="PPTP" />
 	<message msgid="wan protocol opmode" msgstr="工作模式" />

@@ -34,6 +34,11 @@
 	<message msgid="conm t1_title" msgstr="Wireless Access" />  
 	<message msgid="conm t1_switch" msgstr="Wireless access switch" />  
 
+	<message msgid="conw title" msgstr="Remote Web management" />  
+	<message msgid="conw des" msgstr="Management of equipment remote Web login" />  
+	<message msgid="conw t1_title" msgstr="Remote Web management" />  
+	<message msgid="conw t1_switch" msgstr="Remote Login" />
+	
 	<message msgid="conm ADDMRULE" msgstr="Add" />  
 	
 	<message msgid="addw title" msgstr="Add wireless access management of equipment information" />  

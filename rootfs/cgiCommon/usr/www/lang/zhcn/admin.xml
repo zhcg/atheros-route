@@ -36,8 +36,12 @@
 	<message msgid="admw vpword" msgstr="确认密码" />  
 	<message msgid="admw opmope" msgstr="工作模式" />  
 
-	<message msgid="admw div_wireless_title" msgstr="请您设置您的WiFi账户和密码。您的无线设备将使用以下网络上网" />  
+	<message msgid="admw div_wireless_title" msgstr="请您设置您的WiFi名称和密码。您的无线设备将使用以下网络上网" />  
+
 	<message msgid="admw wsetingst" msgstr="WiFi设置" />  
+	<message msgid="admw wsetingst1" msgstr="网络频段:2.4GHz" />  
+	<message msgid="admw wsetingst2" msgstr="网络频段:5.0GHz" />  
+
 	<message msgid="admw nname" msgstr="网络名称(SSID)" />  
 	<message msgid="admw security" msgstr="安全" />
 	<message msgid="admw wkey" msgstr="密钥" />
@@ -91,6 +95,9 @@
 	<message msgid="admw int2" msgstr="（连接到现有其他路由器的WiFi网络）" />
 
 	<message msgid="admw RMd" msgstr="无线中继" />  
+	<message msgid="admw RMd1" msgstr="网络频段:2.4GHz" /> 
+	<message msgid="admw RMd2" msgstr="网络频段:5.0GHz" /> 
+
 	<message msgid="admw R_uname" msgstr="网络名称（SSID）" />  
 	<message msgid="admw R_pword" msgstr="密码" />  
 
@@ -212,7 +219,7 @@
 	<message msgid="upgrade success" msgstr="固件升级成功" />
 	<message msgid="upgrade fail" msgstr="版本一致,固件未升级" />
 
-	<message msgid="admw offwifides" msgstr="WiFi已经禁用,无线中继无法使用" />
+	<message msgid="admw offwifides" msgstr="本频段WiFi已经禁用,无线中继无法使用" />
 	<message msgid="admw software" msgstr="当前软件版本" />
 	<message msgid="admw hardware" msgstr="硬件版本" />
 	<message msgid="admw hidewifides" msgstr="隐藏网络" />

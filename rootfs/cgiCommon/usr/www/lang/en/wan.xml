@@ -34,8 +34,8 @@
 	<message msgid="wan title" msgstr="WAN Settings" />
 	<message msgid="wan introduction" msgstr="You may choose different connection type suitable for your environment. Besides, you may also configure parameters according to the selected connection type." />
 	<message msgid="wan connection type" msgstr="WAN Connection Type:" />
-	<message msgid="wan connection type static" msgstr="STATIC (fixed IP)" />
-	<message msgid="wan connection type dhcp" msgstr="DHCP (Auto config)" />
+	<message msgid="wan connection type static" msgstr="Manual settings (static IP)" />
+	<message msgid="wan connection type dhcp" msgstr="Automatic acquisition (dynamic IP)" />
 	<message msgid="wan connection type pppoe" msgstr="PPPoE (ADSL)" />
 	<message msgid="wan connection type l2tp" msgstr="L2TP" />
 	<message msgid="wan connection type pptp" msgstr="PPTP" />

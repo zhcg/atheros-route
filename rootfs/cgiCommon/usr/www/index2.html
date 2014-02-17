@@ -83,6 +83,8 @@ function tr()
 	trans_inner("treeapp_conm","advmenu treeapp_conm");
 	trans_inner("treeapp_conm_list","advmenu treeapp_conm_list");
 	trans_inner("treeapp_conm_ctrl","advmenu treeapp_conm_ctrl");
+	trans_inner("treeapp_conm_web","advmenu treeapp_conm_web");
+	
 	trans_inner("treeapp_wifi","advmenu treeapp_wifi");
 	trans_inner("treeapp_wifi_basic","advmenu treeapp_wifi_basic");
 	trans_inner("treeapp_wifi_adv","advmenu treeapp_wifi_adv");
@@ -223,9 +225,58 @@ function iFrameHeight()
 
 	xxx.height = max; 
 	document.getElementById("leftmenu").style.height=max; 
-
 } 
 //--> 
+
+var intTimerID;
+var intTimeout;
+var intStartTime;  
+var bolIsTimeout;
+var objIMG;
+var desIP;
+function begin(des)
+{
+	if(des=="")
+		desIP="10.10.10.254";
+	else
+		desIP=des;
+	setTimeout(function(){ping();},200000);
+}
+
+function jump2(des)
+{
+	setTimeout(function(){DialogHide();window.location.href="http://"+des;},5000);	
+
+}
+function ping()
+{ 
+	intTimeout = 500;
+	objIMG = new Image();
+	objIMG.onload =
+	objIMG.onerror =
+	function()
+	{
+		//alert("连接成功,准备跳转 bolIsTimeout"+bolIsTimeout);
+		clearTimeout(intTimerID);
+		if(bolIsTimeout)
+			return;
+		setTimeout(function(){DialogHide();window.location.href="http://"+desIP+"/cgi-bin/"+"crupload";},5000);
+	}               
+	intStartTime = +new Date();     
+    objIMG.src = "http://"+desIP+"/" + intStartTime;
+	intTimerID = setTimeout(timeout, intTimeout); 
+	bolIsTimeout=false;
+}                                                               
+
+function timeout()
+{
+	bolIsTimeout=true;
+	{
+		objIMG.src = "X:\\"; 
+		ping();
+	}
+}
+
 </script>
 </head>
 
@@ -291,6 +342,7 @@ function iFrameHeight()
                 <div class="section">
 					<div class="box2"><a href="cgi-bin/ad_con_list" target="ifm" id="treeapp_conm_list">已接入设备列表</a></div>
 					<div class="box2"><a href="cgi-bin/ad_con_manage" target="ifm" id="treeapp_conm_ctrl">无线接入控制</a></div>
+
                 </div>
 
                 <div class="box1"><font id="treeapp_safe">安全管理</font></div>
@@ -301,6 +353,7 @@ function iFrameHeight()
                 <div class="box1"><font id="treeapp_par">访问控制</font></div>
                 <div class="section">
 					<div class="box2"><a href="cgi-bin/ad_parentc_accept" target="ifm" id="treeapp_par_access">访问管理</a></div>
+					<div class="box2"><a href="cgi-bin/ad_con_web" target="ifm" id="treeapp_conm_web">远程Web管理</a></div>
                 </div>
 
                 <div class="box1"><font id="treeapp_man">系统管理</font></div>

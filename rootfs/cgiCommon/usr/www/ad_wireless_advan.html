@@ -6,7 +6,6 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
-var step_num;
 function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "table-row";}}
 function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
 function widget_display(widgetID){document.getElementById(widgetID).style.visibility = "visible";document.getElementById(widgetID).style.display = style_display_on();}
@@ -59,6 +58,33 @@ function CheckValue()
 		document.WORKFORM.WIFI_ADV_RSTCTS.select();
 		return false;
 	}
+
+
+	if(document.WORKFORM.BEACON_INT_3.value=="")
+	{
+		alert(_("err ssidtime empty"));
+		document.WORKFORM.BEACON_INT_3.select();
+		return false;
+	}
+	if (checkValuerange(document.WORKFORM.BEACON_INT_3.value,40,1000)==false)
+	{
+		alert(_("err ssidtime"));
+		document.WORKFORM.BEACON_INT_3.select();
+		return false;
+	}
+	if(document.WORKFORM.WIFI_ADV_RSTCTS_3.value=="")
+	{
+		alert(_("err rstcts empty"));
+		document.WORKFORM.WIFI_ADV_RSTCTS_3.select();
+		return false;
+	}
+	if (checkValuerange(document.WORKFORM.WIFI_ADV_RSTCTS_3.value,256,2346)==false)
+	{
+		alert(_("err rstcts"));
+		document.WORKFORM.WIFI_ADV_RSTCTS_3.select();
+		return false;
+	}	
+	
 	Butterlate.setTextDomain("admin");
 	window.parent.Demo(_("admw settingwaiting"));	
 	button_commit("WIRELESS_ADVSET");
@@ -69,17 +95,24 @@ function initTranslation()
 {
 	trans_inner("title","wless title");
 	trans_inner("des","wless des");
-	trans_inner("t1_title","wless t1_title");
-	//trans_inner("ti_pow","wless ti_pow");
-	//trans_inner("t1_high","wless t1_high");
-	//trans_inner("t1_mid","wless t1_mid");
-	//trans_inner("t1_low","wless t1_low");
+	trans_inner("A_title","wless title");
+	
+	trans_inner("t1_title","wless t1_title1");
 	trans_inner("t1_SSIDTime","wless t1_SSIDTime");
 	trans_inner("t1_RC","wless t1_RC");
 	trans_inner("t1_head","wless t1_head");
 	trans_inner("t1_long","wless t1_long");	
 	trans_inner("t1_shot","wless t1_shot");
 	trans_inner("auto","wless auto");
+	
+	trans_inner("t1_title2","wless t1_title2");
+	trans_inner("t1_SSIDTime2","wless t1_SSIDTime");
+	trans_inner("t1_RC2","wless t1_RC");
+	trans_inner("t1_head2","wless t1_head");
+	trans_inner("t1_long2","wless t1_long");	
+	trans_inner("t1_shot2","wless t1_shot");
+	trans_inner("auto2","wless auto");
+
 	trans_inner("help_r","help");	
 	
 	trans_value("bCANCEL","wless bCANCEL");
@@ -113,18 +146,12 @@ function help()
 <h2 id="des">修改配置无线高级参数</h2>
 
 <table id="t1"  width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
-<tr><td class="title" colspan="2" id="t1_title">无线高级设置</td></tr>
-
-<!--tr style="display:none" >
-  <td class="head" id="ti_pow">调整发射功率</td>
-  <td>
-    <select name="WIFI_ADV_POWER" size="1">
-      <option ~sWIFI_ADV_POWER:1~ value="1" id="t1_high">高</option>
-      <option ~sWIFI_ADV_POWER:2~ value="2" id="t1_mid">中</option>
-      <option ~sWIFI_ADV_POWER:2~ value="3" id="t1_low">低</option>
-    </select>
-  </td>
-</tr-->
+<tr>
+  <td class="title" colspan="2" id="A_title"></td>
+</tr>
+<tr>
+<td class="title2" colspan="2" id="t1_title">无线高级设置</td>
+</tr>
 
 <tr>
   <td class="head" id="t1_SSIDTime">广播SSID时间</td>
@@ -166,6 +193,53 @@ function help()
     <select name="SHORTGI" size="1">
 	  <option ~sSHORTGI:0~ value="0" id="t1_long">长</option>
       <option ~sSHORTGI:1~ value="1" id="t1_shot">短</option>
+    </select>
+  </td>
+</tr>
+</table>
+<!--5G--------------------------------------------------------------------------------------->
+<table id="t1"  width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
+<tr><td class="title2" colspan="2" id="t1_title2">无线高级设置</td></tr>
+<tr>
+  <td class="head" id="t1_SSIDTime2">广播SSID时间</td>
+  <td><input type="text" name="BEACON_INT_3" id="BEACON_INT_3" size="32" maxlength="32" class="handaer_text_content"  value="~~BEACON_INT_3~"><span>&nbsp;(40-1000)</span></td>
+</tr>
+<tr>
+  <td class="head" id="t1_RC2">RTS/CTS限值</td>
+  <td><input type="text" name="WIFI_ADV_RSTCTS_3" id="WIFI_ADV_RSTCTS_3" size="32" maxlength="32" class="handaer_text_content"  value="~~WIFI_ADV_RSTCTS_3~"><span>&nbsp;(256-2346)</span></td>
+</tr>
+
+<tr>
+  <td class="head">MCS</td>
+  <td>
+     <select name="TXRATE_3" size="1">
+		<option ~sTXRATE_3:0~ value="0" id="auto2">自动</option>
+		<option ~sTXRATE_3:0x80808080~ value="0x80808080">MCS0</option>
+		<option ~sTXRATE_3:0x81818181~ value="0x81818181">MCS1</option>
+		<option ~sTXRATE_3:0x82828282~ value="0x82828282">MCS2</option>
+		<option ~sTXRATE_3:0x83838383~ value="0x83838383">MCS3</option>
+		<option ~sTXRATE_3:0x84848484~ value="0x84848484">MCS4</option>
+		<option ~sTXRATE_3:0x85858585~ value="0x85858585">MCS5</option>
+		<option ~sTXRATE_3:0x86868686~ value="0x86868686">MCS6</option>
+		<option ~sTXRATE_3:0x87878787~ value="0x87878787">MCS7</option>
+		<option ~sTXRATE_3:0x88888888~ value="0x88888888">MCS8</option>
+		<option ~sTXRATE_3:0x89898989~ value="0x89898989">MCS9</option>
+		<option ~sTXRATE_3:0x8A8A8A8A~ value="0x8A8A8A8A">MCS10</option>
+		<option ~sTXRATE_3:0x8B8B8B8B~ value="0x8B8B8B8B">MCS11</option>
+		<option ~sTXRATE_3:0x8C8C8C8C~ value="0x8C8C8C8C">MCS12</option>
+		<option ~sTXRATE_3:0x8D8D8D8D~ value="0x8D8D8D8D">MCS13</option>
+		<option ~sTXRATE_3:0x8E8E8E8E~ value="0x8E8E8E8E">MCS14</option>
+		<option ~sTXRATE_3:0x8F8F8F8F~ value="0x8F8F8F8F">MCS15</option>
+    </select>
+  </td>
+</tr>
+
+<tr id="channel">
+  <td class="head" id="t1_head2">报头模式</td>
+  <td>
+    <select name="SHORTGI_3" size="1">
+	  <option ~sSHORTGI_3:0~ value="0" id="t1_long2">长</option>
+      <option ~sSHORTGI_3:1~ value="1" id="t1_shot2">短</option>
     </select>
   </td>
 </tr>

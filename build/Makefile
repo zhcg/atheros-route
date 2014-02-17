@@ -68,9 +68,9 @@ endif
 # this macro for 9344+32178 platform
 #	add new type for 32178 phone,xiaojun 2014.1.18 
 #
-#ifndef BUILD_FOR_32178
-#export BUILD_FOR_32178=yes
-#endif
+ifndef BUILD_FOR_32178
+export BUILD_FOR_32178=yes
+endif
 
 #
 # Include the specific configuration files from the config.boardtype file

@@ -2083,6 +2083,8 @@ void writeParameters(char *name,char *mode,unsigned long offset)
                 continue;
             if( !strcmp(config.Param[i].Name,"CONM_WORK") )
                 continue;
+            if( !strcmp(config.Param[i].Name,"WEBCONM_WORK") )
+                continue;
             if( !strcmp(config.Param[i].Name,"ADD_CONRULE") )
                 continue;
             if( !strcmp(config.Param[i].Name,"WIRELESS_ADVSET") )
@@ -5294,6 +5296,29 @@ int main(int argc,char **argv)
 		gohome =2;
 	}
 	
+	/*************************************
+    接入管理   远程web管理
+   *************************************/
+    if(strcmp(CFG_get_by_name("WEBCONM_WORK",valBuff),"WEBCONM_WORK") == 0 ) 
+    {
+        if(strcmp(CFG_get_by_name("WEBCONON_OFF",valBuff),"on") == 0 )
+        {
+            
+            Execute_cmd("iptables  -D INPUT -i eth0 -p tcp --dport 80 -j DROP",rspBuff);
+            fprintf(errOut,"\n%s  %d --------WEBCONM_WORK on--------- \n",__func__,__LINE__);
+        }
+        else if(strcmp(CFG_get_by_name("WEBCONON_OFF",valBuff),"off") == 0 )
+        {
+            
+            Execute_cmd("iptables  -A INPUT -i eth0 -p tcp --dport 80 -j DROP",rspBuff);
+            fprintf(errOut,"\n%s  %d --------WEBCONM_WORK off--------- \n",__func__,__LINE__);
+        }
+
+        writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+        writeParameters("/tmp/.apcfg","w+",0);
+        Result_tiaozhuan("yes",argv[0]);   
+        gohome =2;
+    }
    /*************************************
     无线设置    高级
    *************************************/

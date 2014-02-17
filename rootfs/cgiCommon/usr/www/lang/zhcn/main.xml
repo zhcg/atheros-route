@@ -26,6 +26,8 @@
 	<message msgid="advmenu treeapp_conm" msgstr="接入管理" />
 	<message msgid="advmenu treeapp_conm_list" msgstr="已接入设备列表" />
 	<message msgid="advmenu treeapp_conm_ctrl" msgstr="无线接入管理" />
+	<message msgid="advmenu treeapp_conm_web" msgstr="远程Web管理" />
+	
 	<message msgid="advmenu treeapp_wifi" msgstr="无线设置" />
 	<message msgid="advmenu treeapp_wifi_basic" msgstr="无线基本设置" />
 	<message msgid="advmenu treeapp_wifi_adv" msgstr="无线高级设置" />
@@ -70,6 +72,10 @@
 	<message msgid="sysinfo t3_mac" msgstr="MAC地址" />
 	<message msgid="sysinfo t3_GW" msgstr="网关IP" />
 	<message msgid="sysinfo t4_title" msgstr="无线网络" />
+	
+	<message msgid="sysinfo t4_title1" msgstr="网络频段:2.4GHz" />
+	<message msgid="sysinfo t4_title2" msgstr="网络频段:5.0GHz" />
+	
 	<message msgid="sysinfo t4_wifis" msgstr="无线状态" />
 	<message msgid="sysinfo t4_name" msgstr="网络名称" />
 	<message msgid="sysinfo t4_safes" msgstr="安全类型" />

@@ -27,7 +27,7 @@ rm /tmp/vars.$$
 ###################################################################################
 cfg -a ATH_countrycode=${ATH_countrycode:="156"}
 cfg -a HAL_VERSION=${HAL_VERSION:="HBD-Router-B6-V2"}
-cfg -a SOFT_VERSION=${SOFT_VERSION:="0.9.8.0"}
+cfg -a SOFT_VERSION=${SOFT_VERSION:="0.9.8.1"}
 cfg -a ADMPASS=${ADMPASS:="admin"}
 cfg -a WDSON_OFF=${WDSON_OFF:="off"}
 cfg -a DHCPON_OFF=${DHCPON_OFF:="on"}
@@ -45,6 +45,7 @@ cfg -a WAN_MODE=${WAN_MODE:="dhcp"}
 #cfg -a WAN_NETMASK=${WAN_NETMASK:="255.255.255.0"}
 cfg -a TIME_ZONE=${TIME_ZONE:="CST_008"}
 cfg -a NTPON_OFF=${NTPON_OFF:="on"}
+cfg -a WEBCONON_OFF=${WEBCONON_OFF:="on"}
 cfg -a NTPServerIP1=${NTPServerIP1:="202.120.2.101"}
 cfg -a NTPServerIP2=${NTPServerIP2:="210.72.145.44"}
 #
@@ -70,6 +71,7 @@ cfg -a AP_STARTMODE=${AP_STARTMODE:="standard"}
 cfg -a WIFION_OFF=${WIFION_OFF:="on"}
 cfg -a AP_RADIO_ID=${AP_RADIO_ID:=0}
 cfg -a AP_RADIO_ID_2=${AP_RADIO_ID_2:=0}
+
 export NUMRADIO_AHB=1
 
 
@@ -155,10 +157,13 @@ cfg -a RANDOM_SSID=${RANDOM_SSID:=0}
 ## AP Identification Section
 ##
 
-cfg -a AP_SSID="${AP_SSID:=Atheros_XSpan_2G}"
+mac1=`ifconfig | grep br0 | awk -F ' ' '{print $5}' | awk -F ':' '{print $5}'`
+mac2=`ifconfig | grep br0 | awk -F ' ' '{print $5}' | awk -F ':' '{print $6}'`
+
+cfg -a AP_SSID="${AP_SSID:=HBD_WIFI_2G_$mac1$mac2}"
 
 if [ "${AP_STARTMODE}" = "dual" ]; then
-cfg -a AP_SSID_2="${AP_SSID_2:=Atheros_XSpan_5G}"
+cfg -a AP_SSID_2="${AP_SSID_2:=HBD_WIFI_5G_$mac1$mac2}"
 fi
 
 ##

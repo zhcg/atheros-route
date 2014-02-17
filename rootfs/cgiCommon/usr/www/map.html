@@ -6,37 +6,6 @@
 <style type="text/css">td img {display: block; border:none;}td{ color:#666666; font-family:"微软雅黑"; font-size:14px;}</style>
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
-
-var wv;
-var intTimerID;
-var intTimeout = 100;
-var intStartTime;  
-var bolIsTimeout;
-var objIMG = new Image();
-objIMG.onload =
-objIMG.onerror =
-function()
-{
-	clearTimeout(intTimerID);
-	if(bolIsTimeout)
-		return;
-	wv = "on";
-	initTranslation();
-}
-function ping()
-{                
-	intStartTime = +new Date();     
-    objIMG.src = "http://www.baidu.com" + "/" + intStartTime;
-	bolIsTimeout=false;
-	intTimerID = setTimeout(timeout, intTimeout);
-}
-
-function timeout()
-{
-	wv = "off";
-	bolIsTimeout=true;
-	initTranslation();
-}
 function initTranslation()
 {
 	var e = document.getElementById("SSID");
@@ -70,19 +39,8 @@ function initTranslation()
 		e = document.getElementById("n11111111_r9_c1");
 		e.src = "/images/11111111_r9_c1.png";
 	}
-	var w = document.getElementById("n11111111_r9_c2");
 	var n = document.getElementById("n11111111_r2_c3");
 	var nv = document.getElementById("neistatus").value;
-
-	if (wv=="on")
-	{
-		w.src = "/images/11111111_r9_c2.png";//wai
-	}
-	else
-	{
-		w.src = "/images/11111111_r8_c2111.png";
-	}
-	
 	if (nv=="on")
 	{
 		n.src = "/images/11111111_r2_c3.png";//wifi
@@ -91,11 +49,21 @@ function initTranslation()
 	{
 		n.src = "/images/11111111_r2_c3111.png";
 	}
+	var wv = document.getElementById("waistatus").value;
+	var w = document.getElementById("n11111111_r9_c2");
+	if (wv=="on")
+	{
+		w.src = "/images/11111111_r9_c2.png";//wai
+	}
+	else
+	{
+		w.src = "/images/11111111_r8_c2111.png";
+	}
 }
 function initValue()
 {
 	Butterlate.setTextDomain("admin");	
-	ping();
+	initTranslation();
 }
 
 </script>

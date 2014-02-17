@@ -24,12 +24,25 @@ function initTranslation()
 	trans_inner("t3_title","sysinfo t3_title");
 	trans_inner("t3_mac","sysinfo t3_mac");
 	trans_inner("t3_GW","sysinfo t3_GW");
+	
 	trans_inner("t4_title","sysinfo t4_title");
+	
+
+	trans_inner("t4_title1","sysinfo t4_title1");
+	trans_inner("t4_title2","sysinfo t4_title2");
+
 	trans_inner("t4_wifis","sysinfo t4_wifis");
 	trans_inner("t4_name","sysinfo t4_name");
 	trans_inner("t4_safes","sysinfo t4_safes");
 	trans_inner("t4_channel","sysinfo t4_channel");
 	trans_inner("t4_wds","sysinfo t4_wds");
+	
+	trans_inner("t4_wifis2","sysinfo t4_wifis");
+	trans_inner("t4_name2","sysinfo t4_name");
+	trans_inner("t4_safes2","sysinfo t4_safes");
+	trans_inner("t4_channel2","sysinfo t4_channel");
+	trans_inner("t4_wds2","sysinfo t4_wds");
+
 }
 function init()
 {
@@ -163,6 +176,23 @@ function valueinit()
 		document.getElementById("ss14").innerHTML=_("sysinfo on");
 	else
 		document.getElementById("ss14").innerHTML=_("sysinfo off");
+		
+		
+	if(document.getElementById("s102").value == "on")
+		document.getElementById("ss102").innerHTML=_("sysinfo on");
+	else
+		document.getElementById("ss102").innerHTML=_("sysinfo off");
+		
+	if(document.getElementById("s122").value == "WPA")
+		document.getElementById("ss122").innerHTML=_("sysinfo jiami");
+	else
+		document.getElementById("ss122").innerHTML=_("sysinfo open");
+		
+	if(document.getElementById("s142").value == "on")
+		document.getElementById("ss142").innerHTML=_("sysinfo on");
+	else
+		document.getElementById("ss142").innerHTML=_("sysinfo off");
+	
 }
 
 </script>
@@ -210,7 +240,7 @@ function valueinit()
 </tr>
 <tr>
   <td class="head" id="t2_ctpye">接入方式</td>
-  <td><span id="ss6" name="ss6"></span><input size="32" style="display:none" maxlength="64" name="s6" id="s6" value="~~WAN_MODE~" type="text" readonly></td>
+  <td><span id="ss6" name="ss6"></span><input size="32" style="display:none" maxlength="64" name="s6" id="s6" value="dhcp" type="text" readonly></td>
 </tr>
 <tr>
   <td class="head" id="t2_gw">网关</td>
@@ -237,7 +267,11 @@ function valueinit()
  
 <h1></h1>
 <table width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
-<tr><td class="title" colspan="2" id="t4_title">无线网络</td></tr>
+<tr>
+	<td class="title" colspan="2" id="t4_title">无线网络</td></tr>
+<tr>
+<tr>
+	<td class="title2" colspan="2" id="t4_title1">无线网络</td></tr>
 <tr>
   <td class="head" id="t4_wifis">无线状态</td>
   <td><span name="ss10" id="ss10" ></span><input size="32" style="display:none" maxlength="64" name="s10" id="s10" value="~~WIFION_OFF~" type="text" readonly></td>
@@ -258,6 +292,31 @@ function valueinit()
   <td class="head" id="t4_wds">WDS状态</td>
   <td><span  name="ss14" id="ss14" ></span><input size="32" style="display:none" maxlength="64" name="s14" id="s14" value="~~WDSON_OFF~" type="text" readonly></td>
 </tr>
+
+
+<tr>
+	<td class="title2" colspan="2" id="t4_title2">无线网络</td></tr>
+<tr>
+  <td class="head" id="t4_wifis2">无线状态</td>
+  <td><span name="ss102" id="ss102" ></span><input size="32" style="display:none" maxlength="64" name="s10" id="s102" value="~~WIFION_OFF_2~" type="text" readonly></td>
+</tr>
+<tr>
+  <td class="head" id="t4_name2">网络名称</td>
+  <td><span id="ss112" name="ss112"></span><input size="32" style="display:none" maxlength="64" name="s112" id="s112" value="~~AP_SSID_2~" type="text" readonly></td>
+</tr>
+<tr>
+  <td class="head" id="t4_safes2">安全类型</td>
+  <td><span name="ss122" id="ss122"></span><input size="32" style="display:none" maxlength="64" name="s122" id="s122" value="~~AP_SECMODE_2~" type="text" readonly></td>
+</tr>
+<tr>
+  <td class="head" id="t4_channel2">无线信道</td>
+  <td><span id="ss132" name="ss132"></span><input size="32" style="display:none" maxlength="64" name="s132" id="s1322" value="~~AP_PRIMARY_CH_2~" type="text" readonly></td>
+</tr>
+<tr>
+  <td class="head" id="t4_wds2">WDS状态</td>
+  <td><span  name="ss142" id="ss142" ></span><input size="32" style="display:none" maxlength="64" name="s142" id="s142" value="~~WDSON_OFF_2~" type="text" readonly></td>
+</tr>
+
 </table>
 
 </td></tr>

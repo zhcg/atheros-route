@@ -52,6 +52,16 @@ td.title {
   font-size:14px;
  
 }
+td.title2 {
+  margin-left: 5px;
+  font-size: 9pt;
+  font-weight: bold;  
+  font-family: 微软雅黑, Arial, Helvetica, sans-serif;
+  background-color: #f0f0f0;
+  white-space: nowrap;
+  color: #000000
+ 
+}
 
 td.subtitle {
   background-color: #3C6EB4;

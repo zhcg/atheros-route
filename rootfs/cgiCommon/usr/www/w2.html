@@ -1208,58 +1208,71 @@ function workoutgw()
 <form method=post name="wizard_form">
 <!-- ============= Internet OP Mode ============= -->
 <h2 id="modedes"></h2>
-<table id="div_wan_opmode" width="640" border="0" cellpadding="2" cellspacing="1">
+<table id="div_wan_opmode" width="100%" border="0" cellpadding="2" cellspacing="1">
 <tr>
-  <td width="15px"><input id="wrad_1" type="radio" name="WAN_MODE" value="auto" checked></td><td><label style="font-size: 12pt; font-weight: bold;; margin-left: 8px; font-family: 微软雅黑, Arial, Helvetica, sans-serif; color: #000000" for="wrad_1" id="AutoMode" onclick=""></label></td>
+  <td>
+  <input style="font-size: 12pt; color: #000000" id="wrad_1" type="radio" name="WAN_MODE" value="auto" checked>
+  <label style="font-size: 12pt; font-weight: bold; margin-left: 20px; color: #000000" for="wrad_1" id="AutoMode" ></label>
+  </td>
 </tr>
 <tr>
-  <td>&nbsp; &nbsp;</td>
-  <td id="Autodisc"></td>
+  <td ><div style="margin-left: 43px;" id="Autodisc"></div></td>
 </tr> 
 <tr>
-  <td width="15px"><input id="wrad_2" type="radio" name="WAN_MODE" value="dhcp"></td><td><label style="font-size: 12pt; font-weight: bold;; margin-left: 8px; font-family: 微软雅黑, Arial, Helvetica, sans-serif; color: #000000" for="wrad_2" id="DHCPac" onclick=""></label></td>
+  <td>
+  <input style="font-size: 12pt; color: #000000" id="wrad_2" type="radio" name="WAN_MODE" value="dhcp">
+  <label style="font-size: 12pt; font-weight: bold; margin-left: 20px; color: #000000" for="wrad_2" id="DHCPac" onclick=""></label></td>
 </tr>
 <tr>
-  <td>&nbsp; &nbsp;</td>
-  <td id="DHCPdisc"></td>
+  <td><div style="margin-left: 43px;" id="DHCPdisc"></div></td>
 </tr> 
 <tr>
-  <td width="15px"><input id="wrad_3" type="radio" name="WAN_MODE" value="static"></td><td><label style="font-size: 12pt; font-weight: bold;; margin-left: 8px; font-family: 微软雅黑, Arial, Helvetica, sans-serif; color: #000000" for="wrad_3" id="SM" onclick=""></label></td>
+  <td>
+  <input style="font-size: 12pt; color: #000000" id="wrad_3" type="radio" name="WAN_MODE" value="static">
+  <label style="font-size: 12pt; font-weight: bold; margin-left: 20px; color: #000000" for="wrad_3" id="SM" onclick=""></label>
+  </td>
+
 </tr>
 <tr>
-  <td>&nbsp; &nbsp;</td>
-  <td id="SMdisc"></td>
+  <td><div style="margin-left: 43px;" id="SMdisc"></div></td>
 </tr>
-  <td width="15px"><input id="wrad_4" type="radio" name="WAN_MODE" value="pppoe"></td><td><label style="font-size: 12pt; font-weight: bold;; margin-left: 8px; font-family: 微软雅黑, Arial, Helvetica, sans-serif; color: #000000" for="wrad_4" id="PPPOE" onclick=""></label></td>
+  <td>
+  <input style="font-size: 12pt; color: #000000" id="wrad_4" type="radio" name="WAN_MODE" value="pppoe">
+  <label style="font-size: 12pt; font-weight: bold; margin-left: 20px; color: #000000" for="wrad_4" id="PPPOE" onclick=""></label>
+  </td>
 </tr>
 <tr>
-  <td>&nbsp; &nbsp;</td>
-  <td id="PPPOEdisc"></td>
+  <td><div style="margin-left: 43px;" id="PPPOEdisc"></div></td>
 </tr>
-<tr  style="display:none">
-  <td>&nbsp; &nbsp;</td>
+<tr style="display:none">
   <td><input id="otherbutton" type="button" value="其他" class="handaer_small_button" onClick="others()" /></td>
 </tr>
 <tr id="l2tptr1" style="display:none">
-  <td width="15px"><input  id="wrad_5" type="radio" name="WAN_MODE" value="l2tp"></td><td><label style="font-size: 12pt; font-weight: bold;; margin-left: 8px; font-family: 微软雅黑, Arial, Helvetica, sans-serif; color: #000000" for="wrad_5" onclick="">L2TP</label></td>
+  <td>
+  <input style="font-size: 12pt; color: #000000" id="wrad_5" type="radio" name="WAN_MODE" value="l2tp">
+  <label style="font-size: 12pt; font-weight: bold; margin-left: 20px; color: #000000" for="wrad_5" onclick="">L2TP</label>
+  </td>
 </tr>
 <tr id="l2tptr2" style="display:none">
-  <td>&nbsp; &nbsp;</td>
-  <td id="L2TPc"></th>
+  <td><div style="margin-left: 43px;" id="L2TPc"></div></td>
 </tr>
 <tr id="pptptr1" style="display:none">
-  <td width="15px"><input id="wrad_6" type="radio" name="WAN_MODE" value="pptp"></td><td><label style="font-size: 12pt; font-weight: bold;; margin-left: 8px; font-family: 微软雅黑, Arial, Helvetica, sans-serif; color: #000000" for="wrad_6" onclick="">PPTP</label></td>
+  <td>
+  <input style="font-size: 12pt; color: #000000" id="wrad_6" type="radio" name="WAN_MODE" value="pptp">
+  <label style="font-size: 12pt; font-weight: bold; margin-left: 20px; color: #000000" for="wrad_6" onclick="">PPTP</label>
+  </td>
 </tr>
 <tr id="pptptr2" style="display:none">
-  <td>&nbsp; &nbsp;</td>
-  <td id="PPTPc"></td>
+  <td><div style="margin-left: 43px;" id="PPTPc"></div></td>
 </tr>
 <tr style="display:none">
-  <td width="15px"><input id="wrad_7" type="radio" name="WAN_MODE" value="3g"></td><td><label style="font-size: 12pt; font-weight: bold;; margin-left: 8px; font-family: 微软雅黑, Arial, Helvetica, sans-serif; color: #000000" for="wrad_7" onclick="">3G</label></td>
+  <td>
+  <input style="font-size: 12pt; color: #000000" id="wrad_7" type="radio" name="WAN_MODE" value="3g">
+  <label style="font-size: 12pt; font-weight: bold; margin-left: 20px; color: #000000" for="wrad_7" onclick="">3G</label>
+  </td>
 </tr>
 <tr style="display:none">
-  <td>&nbsp; &nbsp;</td>
-  <td>3G Client</td>
+   <td><div style="margin-left: 43px;">3G Client</div></td>
 </tr>
 </table>
 
