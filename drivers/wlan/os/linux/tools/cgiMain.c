@@ -4542,7 +4542,7 @@ int main(int argc,char **argv)
 		CFG_get_by_name("WDSON_OFF",valBuff3);
 		CFG_get_by_name("WDSON_OFF_3",valBuff3_5g);
 //		fprintf(errOut,"[luodp] -----------  wds %s,%s----------%s,%s--------\n",valBuff3,valBuff5,
-			valBuff2_5g,valBuff3_5g);
+//			valBuff2_5g,valBuff3_5g);
 
 		//on
 		if((strcmp(valBuff3,"on") == 0)||(strcmp(valBuff3_5g,"on") == 0))
