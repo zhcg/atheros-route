@@ -109,6 +109,19 @@ else
     R_WIFI_ADV_RSTCTS=$WIFI_ADV_RSTCTS
 fi
 
+if [ "${IFNUM}" = "0" ]; then
+    R_WIFI_ADV_RSTCTS=$WIFI_ADV_RSTCTS
+    R_RATECTL=$RATECTL
+    R_MANRATE=$MANRATE
+    R_SHORTGI=$SHORTGI
+fi
+if [ "${IFNUM}" = "2" ]; then
+    R_WIFI_ADV_RSTCTS=$WIFI_ADV_RSTCTS_3
+    R_RATECTL=$RATECTL_3
+    R_MANRATE=$MANRATE_3
+    R_SHORTGI=$SHORTGI_3
+fi
+
 ESSID=$2
 BEACONINT=$4
 
@@ -292,7 +305,7 @@ if [ "${RF}" = "RF" ]; then
     
     iwpriv wifi$IFNUM TXPwrOvr $R_WIFI_ADV_POWER
 
-    iwconfig ${APNAME} rts $WIFI_ADV_RSTCTS
+    iwconfig ${APNAME} rts $R_WIFI_ADV_RSTCTS
 
     #
     # Check to see if we are in one of the 11NG bands that require
@@ -370,8 +383,8 @@ if [ "${RF}" = "RF" ]; then
     # If rate control is not auto, set the manual settings
     #
     
-    if [ "${RATECTL}" != "auto" ]; then
-        iwpriv ${APNAME} set11NRates $MANRATE
+    if [ "${R_RATECTL}" != "auto" ]; then
+        iwpriv ${APNAME} set11NRates $R_MANRATE
         iwpriv ${APNAME} set11NRetries $MANRETRIES
     fi
 
@@ -436,12 +449,19 @@ fi
 ## beacon interval to be 400 ms
 ##
 
-if [ "${BEACONINT}" != "" ]; then
+if [ "${BEACONINT}" != "" -a "${APNAME}" = "ath0" ]; then
     #
     # Beacon interval was specified
     #
 
     iwpriv ${APNAME} bintval ${BEACONINT}
+fi
+if [ "${BEACON_INT_3}" != "" -a "${APNAME}" = "ath2" ]; then
+    #
+    # Beacon interval was specified
+    #
+
+    iwpriv ${APNAME} bintval ${BEACON_INT_3}
 fi
 
 #VOW related configurations

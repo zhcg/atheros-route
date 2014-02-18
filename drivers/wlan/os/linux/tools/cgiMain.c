@@ -5333,17 +5333,25 @@ int main(int argc,char **argv)
 		//char valFragCfg[128];
 		char valRateCfg[128];
 		char valShorGiCfg[128];
+		char valBintCfg_3[128];	
+		char valRtsCfg_3[128];	
+		char valRateCfg_3[128];
+		char valShorGiCfg_3[128];
 		char valBuffTemp1[128];
 		char valBuffTemp2[128];
 
-	//	Execute_cmd("cfg -e | grep \"WIFI_ADV_POWER\" | awk -F \"=\" \'{print $2}\'",valTxPwrCfg);
-		Execute_cmd("cfg -e | grep \"BEACON_INT\" | awk -F \"AP_SSID=\" '{print $2}'",valBintCfg);
-		Execute_cmd("cfg -s | grep \"WIFI_ADV_RSTCTS\" | awk -F \"=\" \'{print $2}\'",valRtsCfg);
-		//Execute_cmd("cfg -s | grep \"WIFI_ADV_PTICH\" | awk -F \"=\" \'{print $2}\'",valFragCfg);
-		Execute_cmd("cfg -s | grep \"TXRATE\" | awk -F \"=\" \'{print $2}\'",valRateCfg);
-		Execute_cmd("cfg -s | grep \"SHORTGI\" | awk -F \"=\" \'{print $2}\'",valShorGiCfg);
+    //2G
+		Execute_cmd("cfg -e | grep \"BEACON_INT=\" | awk -F \"BEACON_INT=\" '{print $2}'",valBintCfg);
+		Execute_cmd("cfg -e | grep \"WIFI_ADV_RSTCTS=\" | awk -F \"WIFI_ADV_RSTCTS=\" \'{print $2}\'",valRtsCfg);
+		Execute_cmd("cfg -e | grep \"TXRATE=\" | awk -F \"TXRATE=\" \'{print $2}\'",valRateCfg);
+		Execute_cmd("cfg -e | grep \"SHORTGI=\" | awk -F \"SHORTGI=\" \'{print $2}\'",valShorGiCfg);
 
-    //set Beacon Intval
+    //5G
+		Execute_cmd("cfg -e | grep \"BEACON_INT_3\" | awk -F \"=\" '{print $2}'",valBintCfg_3);
+		Execute_cmd("cfg -e | grep \"WIFI_ADV_RSTCTS_3\" | awk -F \"=\" \'{print $2}\'",valRtsCfg_3);
+		Execute_cmd("cfg -e | grep \"TXRATE_3\" | awk -F \"=\" \'{print $2}\'",valRateCfg_3);
+		Execute_cmd("cfg -e | grep \"SHORTGI_3\" | awk -F \"=\" \'{print $2}\'",valShorGiCfg_3);
+    //set Beacon Intval (2G)
 		CFG_get_by_name("BEACON_INT",valBuffTemp1);
 		sprintf(valBuffTemp2,"%s\n<br>",valBuffTemp1);
 		if((strcmp(valBuffTemp2,valBintCfg) != 0)&&(strcmp(valBuffTemp2,"\n<br>") != 0))
@@ -5352,8 +5360,17 @@ int main(int argc,char **argv)
 			fprintf(errOut,"\n%s  %d BEACON_INT:%s \n",__func__,__LINE__, pChar);
 			Execute_cmd(pChar, rspBuff);
 		}
+    //set Beacon Intval (5G)
+		CFG_get_by_name("BEACON_INT_3",valBuffTemp1);
+		sprintf(valBuffTemp2,"%s\n<br>",valBuffTemp1);
+		if((strcmp(valBuffTemp2,valBintCfg_3) != 0)&&(strcmp(valBuffTemp2,"\n<br>") != 0))
+		{
+			sprintf(pChar,"iwpriv ath2 bintval %s  > /dev/null 2>&1",valBuffTemp2);
+			fprintf(errOut,"\n%s  %d BEACON_INT_3:%s \n",__func__,__LINE__, pChar);
+			Execute_cmd(pChar, rspBuff);
+		}
 
-    //set RTS
+    //set RTS (2G)
 		CFG_get_by_name("WIFI_ADV_RSTCTS",valBuffTemp1);
 		sprintf(valBuffTemp2,"%s\n<br>",valBuffTemp1);
 		if((strcmp(valBuffTemp2,valRtsCfg) != 0)&&(strcmp(valBuffTemp2,"\n<br>") != 0))
@@ -5363,8 +5380,18 @@ int main(int argc,char **argv)
 			Execute_cmd(pChar, rspBuff);
 
 		}
+    //set RTS (5G)
+		CFG_get_by_name("WIFI_ADV_RSTCTS_3",valBuffTemp1);
+		sprintf(valBuffTemp2,"%s\n<br>",valBuffTemp1);
+		if((strcmp(valBuffTemp2,valRtsCfg_3) != 0)&&(strcmp(valBuffTemp2,"\n<br>") != 0))
+		{
+			sprintf(pChar,"iwconfig ath2 rts %s  > /dev/null 2>&1",valBuffTemp2);
+        fprintf(errOut,"\n%s  %d WIFI_ADV_RSTCTS_3:%s \n",__func__,__LINE__, pChar);
+			Execute_cmd(pChar, rspBuff);
 
-    // set Rate
+		}
+
+    // set Rate (2G)
 		CFG_get_by_name("TXRATE",valBuffTemp1);
 		sprintf(valBuffTemp2,"%s\n<br>",valBuffTemp1);
 		if((strcmp(valBuffTemp2,valRateCfg) != 0)&&(strcmp(valBuffTemp2,"\n<br>") != 0))
@@ -5385,14 +5412,45 @@ int main(int argc,char **argv)
 			Execute_cmd(pChar, rspBuff);
 
 		}
+    // set Rate (5G)
+		CFG_get_by_name("TXRATE_3",valBuffTemp1);
+		sprintf(valBuffTemp2,"%s\n<br>",valBuffTemp1);
+		if((strcmp(valBuffTemp2,valRateCfg_3) != 0)&&(strcmp(valBuffTemp2,"\n<br>") != 0))
+		{
 
-        //set Short GI
+            if(strncmp(valBuffTemp2,"0x",2))
+            {
+		           CFG_set_by_name("RATECTL_3","auto");
+            }
+            else
+            {
+		           CFG_set_by_name("RATECTL_3","manual");
+            }
+
+		    CFG_set_by_name("MANRATE_3",valBuffTemp2);
+			sprintf(pChar,"iwpriv ath2 set11NRates %s  > /dev/null 2>&1",valBuffTemp2);
+        fprintf(errOut,"\n%s  %d TXRATE_3:%s \n",__func__,__LINE__, pChar);
+			Execute_cmd(pChar, rspBuff);
+
+		}
+
+        //set Short GI (2G)
 		CFG_get_by_name("SHORTGI",valBuffTemp1);
 		sprintf(valBuffTemp2,"%s\n<br>",valBuffTemp1);
 		if((strcmp(valBuffTemp2,valShorGiCfg) != 0)&&(strcmp(valBuffTemp2,"\n<br>") != 0))
 		{
 			sprintf(pChar,"iwpriv ath0 shortgi %s  > /dev/null 2>&1",valBuffTemp2);
 			fprintf(errOut,"\n%s  %d SHORTGI:%s \n",__func__,__LINE__, pChar);
+			Execute_cmd(pChar, rspBuff);
+
+		}
+        //set Short GI (5G)
+		CFG_get_by_name("SHORTGI_3",valBuffTemp1);
+		sprintf(valBuffTemp2,"%s\n<br>",valBuffTemp1);
+		if((strcmp(valBuffTemp2,valShorGiCfg_3) != 0)&&(strcmp(valBuffTemp2,"\n<br>") != 0))
+		{
+			sprintf(pChar,"iwpriv ath2 shortgi %s  > /dev/null 2>&1",valBuffTemp2);
+			fprintf(errOut,"\n%s  %d SHORTGI_3:%s \n",__func__,__LINE__, pChar);
 			Execute_cmd(pChar, rspBuff);
 
 		}
