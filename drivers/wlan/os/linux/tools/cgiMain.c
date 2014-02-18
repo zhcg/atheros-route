@@ -141,6 +141,8 @@ static char  *val4[100];
 static char  *val5[100];
 int lists=0;
 static int flaglist;
+static int flaglist_2;
+
 static int flaglist_route;
 static char *httpreferer=NULL;
 
@@ -611,47 +613,63 @@ char *processSpecial(char *paramStr, char *outBuff)
         break;
 
      case 'L'://update wifi list
-            {	
+		 {	
+			fprintf(errOut,"\nupdate wifi list ----------secArg:%s\n",secArg);
+			if(strcmp(secArg,"List")==0)
+			{		
 				if(flaglist!=1)
 					break;
-				/*int num;
-				//val1-mac,val2-ssid,val3-security,val4-channel
-				if(strcmp(val3[0],"on")==0)
-					sprintf(val3[0],"WPA");
-				else
-					sprintf(val3[0],"None");
-				outBuff +=sprintf(outBuff,"<option>%s(%s)(%s)(%s)</option>",val2[0],val1[0],val4[0],val3[0]);
-				for(num=1;num<lists;num++)
-				{
-					if(strcmp(val3[num]+4,"on")==0)
-						sprintf(val3[num]+4,"WPA");
-					else
-						sprintf(val3[num]+4,"None");
-					//fprintf(errOut,"[luodp] %s(%s)(%s)(%s) \n",val2[num]+4,val1[num]+4,val3[num]+4,val4[num]+4);
-					outBuff +=sprintf(outBuff,"<option>%s(%s)(%s)(%s)</option>",val2[num]+4,val1[num]+4,val4[num]+4,val3[num]+4);
-				}*/
+				
 				FILE *fp;
-                int ii;
-                char ch;
-                char tmpc[65536]={0};
-                if((fp=fopen("/tmp/wifilist","r"))==NULL)
-                {
-                    fprintf(errOut,"\n----------cannot open file  line:%d\n",__LINE__);
-                }
-                else
-                {
-                    while ((ch=fgetc(fp))!=EOF)
-                    {
-                        sprintf(tmpc+ii,"%c",ch);
-                        ii++;
-                    }
-                    if(strlen(tmpc)>0)
-                        outBuff += sprintf(outBuff,"%s",tmpc);
-                    fclose(fp);
-                    system("rm /tmp/wifilist");
-                }
-				flaglist=0;
-            }								
+				int ii;
+				char ch;
+				char tmpc[65536]={0};
+				if((fp=fopen("/tmp/wifilist","r"))==NULL)
+				{
+					fprintf(errOut,"\n----------cannot open file  line:%d\n",__LINE__);
+				}
+			else
+			{
+				while ((ch=fgetc(fp))!=EOF)
+				{
+					sprintf(tmpc+ii,"%c",ch);
+					ii++;
+				}
+				if(strlen(tmpc)>0)
+					outBuff += sprintf(outBuff,"%s",tmpc);
+					fclose(fp);
+					//system("rm /tmp/wifilist");
+				}
+				//flaglist=0;
+			}	
+			 if(strcmp(secArg,"List2")==0)
+ 	           {		
+				 if(flaglist_2!=1)
+					 break;
+			 
+				 FILE *fp_5g;
+				 int ii_5g;
+				 char ch_5g;
+				 char tmpc_5g[65536]={0};
+				 if((fp_5g=fopen("/tmp/wifilist_2","r"))==NULL)
+				 {
+					 fprintf(errOut,"\n----------cannot open file  line:%d\n",__LINE__);
+				 }
+				 else
+				 {
+					 while ((ch_5g=fgetc(fp_5g))!=EOF)
+					 {
+						 sprintf(tmpc_5g+ii_5g,"%c",ch_5g);
+						 ii_5g++;
+					 }
+					 if(strlen(tmpc_5g)>0)
+						 outBuff += sprintf(outBuff,"%s",tmpc_5g);
+					 fclose(fp_5g);
+					 //system("rm /tmp/wifilist_2");
+				 }
+				 //flaglist_2=0;
+            }
+     	}
         break;       
 
              case 'Z':
@@ -3445,6 +3463,7 @@ int main(int argc,char **argv)
     int             lock11=0;
     int             lock12=0;
 	int             lock13=0;
+    int             lock112=0;
     int             gohome = 3;
     /*
     ** Code Begins.
@@ -3959,6 +3978,119 @@ int main(int argc,char **argv)
 					flaglist=1;
                     lock11 = 1;
                 }
+				else if((parameterIndex==112)&&(lock112==0))//update wifilist_2
+                {
+					fprintf(errOut,"[luodp] do update wifilist_2\n");
+					num=0;
+					//do check ath2
+					//Execute_cmd("iwlist ath2 scanning > /tmp/scanlist", rspBuff);
+					system("iwlist ath2 scanning > /tmp/scanlist_2 2>&1");
+					//mac
+					Execute_cmd("cat /tmp/scanlist_2 | grep Cell | awk '{print $5}'", rspBuff1);
+					//fprintf(errOut,"\n-[luodp] %s\n",rspBuff1);
+					val1[num]=strtok(rspBuff1,"\n");
+					while(val1[num]) {
+						num++;
+						val1[num]=strtok(NULL,"\n"); 
+					}
+					//fprintf(errOut,"[luodp] new20\n");
+					//int i=0;
+					/*for(i=1;i<num-1;i++)
+					{
+						fprintf(errOut,"[luodp] %s\n",val1[i]+4);
+					}*/
+					num=0;
+					//Signal level
+					Execute_cmd("cat /tmp/scanlist_2 | grep Signal | awk '{print $3}' | cut -d \"-\" -f2", rspBuff5);
+					//fprintf(errOut,"\n[luodp] %s\n",rspBuff5);
+					val5[num]=strtok(rspBuff5,"\n");
+					while(val5[num]) {
+						num++;
+						val5[num]=strtok(NULL,"\n"); 
+					}
+					num=0;
+					//ssid
+					Execute_cmd("cat /tmp/scanlist_2 | grep ESSID | awk '{print $1}' | cut -d \"\\\"\" -f2", rspBuff2);
+					//fprintf(errOut,"\n[luodp] %s\n",rspBuff2);
+					val2[num]=strtok(rspBuff2,"\n");
+					while(val2[num]) {
+						num++;
+						val2[num]=strtok(NULL,"\n"); 
+					}
+					/*for(i=1;i<num-1;i++)
+					{
+						fprintf(errOut,"[luodp] %s\n",val2[i]+4);
+					}*/
+					num=0;
+					//security
+					Execute_cmd("cat /tmp/scanlist_2 | grep Encryption | awk '{print $2}' | cut -d \":\" -f2", rspBuff3);
+					//fprintf(errOut,"\n[luodp] %s\n",rspBuff);
+					val3[num]=strtok(rspBuff3,"\n");
+					while(val3[num]) {
+						num++;
+						val3[num]=strtok(NULL,"\n"); 
+					}
+					/*for(i=1;i<num-1;i++)
+					{
+						fprintf(errOut,"[luodp] %s\n",val3[i]+4);
+					}*/
+					num=0;
+					//channel
+					Execute_cmd("cat /tmp/scanlist_2 | grep Frequency | awk '{print $4}' | cut -d \")\" -f1", rspBuff4);
+					//fprintf(errOut,"\n[luodp] %s\n",rspBuff);
+					val4[num]=strtok(rspBuff4,"\n");
+					while(val4[num]) {
+						num++;
+						val4[num]=strtok(NULL,"\n"); 
+					}
+					/*for(i=1;i<num-1;i++)
+					{
+						fprintf(errOut,"[luodp] %s\n",val4[i]+4);
+					}*/
+					lists=num-1;
+					/*for(i=1;i<lists;i++)
+					{
+						fprintf(errOut,"[luodp] %s(%s)(%s)(%s)\n",val2[i]+4,val1[i]+4,val3[i]+4,val4[i]+4);
+					}*/
+					char cmdd[128]={0};
+                    FILE *fp;
+                    if((fp=fopen("/tmp/wifilist_2","w+"))==NULL)
+                    {
+                        fprintf(errOut,"\n----------cannot open file  line:%d\n",__LINE__);
+                        return;
+                    }
+					if(val3[0]!=NULL)
+					{
+						//val1-mac,val2-ssid,val3-security,val4-channel
+						if(strcmp(val2[0],""))
+						{
+							if(strcmp(val3[0],"on")==0)
+								sprintf(val3[0],"WPA");
+							else  
+								sprintf(val3[0],"None");
+							memset(cmdd,0x00,128);	
+							sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(%sdbm)</option>",val2[0],val1[0],val4[0],val3[0],val2[0],val5[0]);
+							fwrite(cmdd,strlen(cmdd),1,fp);
+						}
+						for(i=1;i<lists;i++)
+						{
+							memset(cmdd,0x00,128);
+							if(strcmp(val2[i]+4,""))
+							{
+								if(strcmp(val3[i]+4,"on")==0)
+									sprintf(val3[i]+4,"WPA");
+								else
+									sprintf(val3[i]+4,"None");
+								//fprintf(errOut,"[luodp] %s(%s)(%s)(%s) \n",val2[i]+4,val1[i]+4,val3[i]+4,val4[i]+4);
+								sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(%sdbm)</option>",val2[i]+4,val1[i]+4,val4[i]+4,val3[i]+4,val2[i]+4,val5[i]+4);
+								fwrite(cmdd,strlen(cmdd),1,fp);
+							}
+						}
+					}
+                    fclose(fp);
+					flaglist_2=1;
+                    lock112 = 1;
+                }
                 else if((parameterIndex==12)&&(lock12==0))//do wan mode detect
                 {
 					Execute_cmd("net_check", rspBuff);
@@ -4008,6 +4140,15 @@ int main(int argc,char **argv)
 					lock13 = 1;
 				}
                sprintf(Value,"%d",parameterIndex);
+            }
+			else
+            {
+                if(strcmp(argv[0],"ad_wireless_wds")==0)
+                {
+					flaglist_2=0;
+					flaglist=0;
+
+                }
             }
              fprintf(errOut,"Name:%s Value:%s\n",Name,Value);
              CFG_set_by_name(Name,Value);
@@ -4384,71 +4525,107 @@ int main(int argc,char **argv)
 		char valBuff3[128];	
 		char valBuff4[128];
 		char valBuff5[128];
+		char channel_5g[128];
+		char valBuff2_5g[128];	
+		char valBuff3_5g[128];	
+		char valBuff4_5g[128];
+		char valBuff5_5g[128];
 		int flag=0;
 		
 		//2.get old config from flash 
 		Execute_cmd("cfg -e | grep 'AP_SECMODE_2=' |  awk -F '\"' '{print $2}'",valBuff2);
 		Execute_cmd("cfg -e | grep 'WDSON_OFF=' | awk -F '=' '{print $2}'",valBuff5);
+
+		Execute_cmd("cfg -e | grep 'WDSON_OFF_3=' | awk -F '=' '{print $2}'",valBuff2_5g);
 		
 		//fprintf(errOut,"[luodp] wds %s,%s\n",valBuff2,valBuff5);
 		CFG_get_by_name("WDSON_OFF",valBuff3);
-		//off->on
-		if((strstr(valBuff5,valBuff3) == 0) && (strcmp(valBuff3,"on") == 0) )
+		CFG_get_by_name("WDSON_OFF_3",valBuff3_5g);
+//		fprintf(errOut,"[luodp] -----------  wds %s,%s----------%s,%s--------\n",valBuff3,valBuff5,
+			valBuff2_5g,valBuff3_5g);
+
+		//on
+		if((strcmp(valBuff3,"on") == 0)||(strcmp(valBuff3_5g,"on") == 0))
 		{
 			CFG_set_by_name("AP_STARTMODE","repeater");
 			CFG_set_by_name("DHCPON_OFF","off");
 			flag=1;
 		}
-		//on->off
-		if((strstr(valBuff,valBuff3) == 0) && (strcmp(valBuff3,"off") == 0) )
+		//off
+		if((strcmp(valBuff3,"off") == 0)&&(strcmp(valBuff3_5g,"off") == 0))
 		{
-			CFG_set_by_name("AP_STARTMODE","standard");
+//			CFG_set_by_name("AP_STARTMODE","standard");
+			if((strcmp(valBuff5,"on") == 0)||(strcmp(valBuff2_5g,"on") == 0))
+				CFG_set_by_name("AP_STARTMODE","dual");
 			CFG_set_by_name("DHCPON_OFF","on");
 			flag=2;
 		}
-		//on->on
-		if((strstr(valBuff5,valBuff3) != 0) && (strcmp(valBuff3,"on") == 0) )
-		{
-			//CFG_set_by_name("AP_STARTMODE","repeater");
-			CFG_set_by_name("DHCPON_OFF","off");
-			flag=3;
-		}
-		//off->off
-		if((strstr(valBuff,valBuff3) != 0) && (strcmp(valBuff3,"off") == 0) )
-		{
-			//CFG_set_by_name("AP_STARTMODE","standard");
-			CFG_set_by_name("DHCPON_OFF","on");
-			flag=4;
-		}
+
 		//2.save new config to flash 
 		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
         writeParameters("/tmp/.apcfg","w+",0);
 		//3.do new settings
 		if((flag==3)||(flag==1))
-		{		
-			CFG_get_by_name("AP_SECMODE_2",valBuff3);
-			if((strcmp(valBuff2,valBuff3) != 0)&&(strcmp(valBuff3,"None") != 0))
+		{
+		if(strcmp(valBuff3,"on") == 0){
+			CFG_get_by_name("STA_SECMODE",valBuff3);
+			if(strcmp(valBuff3,"None") != 0)
 			{
 				//AP_SECMODE=WPA
 				//AP_WPA=3 WPA/WPA2
 				//AP_CYPHER="TKIP CCMP"
 				//CFG_set_by_name("AP_RADIO_ID_2","0");
-				CFG_set_by_name("AP_SECMODE_2","WPA");
-				CFG_set_by_name("AP_WPA_2","3");
-				CFG_set_by_name("AP_CYPHER_2","TKIP CCMP");
-				CFG_set_by_name("AP_SECFILE_2","PSK"); 
+//				CFG_set_by_name("AP_SECMODE_2","WPA");
+//				CFG_set_by_name("AP_WPA_2","3");
+//				CFG_set_by_name("AP_CYPHER_2","TKIP CCMP");
+//				CFG_set_by_name("AP_SECFILE_2","PSK"); 
+				CFG_set_by_name("STA_SECMODE","WPA");
+				CFG_set_by_name("STA_WPA","3");
+				CFG_set_by_name("STA_CYPHER","TKIP CCMP");
+				CFG_set_by_name("STA_SECFILE","PSK"); 
 			}
-			if((strcmp(valBuff2,valBuff3) != 0)&&(strcmp(valBuff3,"WPA") != 0))
+			if(strcmp(valBuff3,"WPA") != 0)
 			{
 				//AP_SECMODE=WPA
 				//AP_WPA=3 WPA/WPA2
 				//AP_CYPHER="TKIP CCMP"
 				//CFG_set_by_name("AP_RADIO_ID_2","0");
-				CFG_set_by_name("AP_SECMODE_2","None");
+//				CFG_set_by_name("AP_SECMODE_2","None");
+				CFG_set_by_name("STA_SECMODE","None");
 			}
 			CFG_get_by_name("WDS_CHAN",channel);
 			CFG_set_by_name("AP_PRIMARY_CH",channel);
 			CFG_set_by_name("AP_PRIMARY_CH_2",channel);
+			}
+
+		
+		if(strcmp(valBuff3_5g,"on") == 0){
+			CFG_get_by_name("STA_SECMODE_2",valBuff4_5g);
+			if(strcmp(valBuff4_5g,"None") != 0)
+			{
+				//AP_SECMODE=WPA
+				//AP_WPA=3 WPA/WPA2
+				//AP_CYPHER="TKIP CCMP"
+				//CFG_set_by_name("AP_RADIO_ID_2","0");
+
+				CFG_set_by_name("STA_SECMODE_2","WPA");
+				CFG_set_by_name("STA_WPA_2","3");
+				CFG_set_by_name("STA_CYPHER_2","TKIP CCMP");
+				CFG_set_by_name("STA_SECFILE_2","PSK"); 
+			}
+			if(strcmp(valBuff4_5g,"WPA") != 0)
+			{
+				//AP_SECMODE=WPA
+				//AP_WPA=3 WPA/WPA2
+				//AP_CYPHER="TKIP CCMP"
+				//CFG_set_by_name("AP_RADIO_ID_2","0");
+//				CFG_set_by_name("AP_SECMODE_2","None");
+				CFG_set_by_name("STA_SECMODE_2","None");
+			}
+			CFG_get_by_name("WDS_CHAN_2",channel_5g);
+			CFG_set_by_name("AP_PRIMARY_CH_3",channel_5g);
+			CFG_set_by_name("AP_PRIMARY_CH_4",channel_5g);
+			}
 			//4.save new config to flash 
 			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
 			writeParameters("/tmp/.apcfg","w+",0);
@@ -4509,10 +4686,25 @@ int main(int argc,char **argv)
 		Execute_cmd(pChar, rspBuff);*/
 		if((flag==1)||(flag==3))
 		{
-			sprintf(pChar,"iwconfig ath0 channel %s  > /dev/null 2>&1",channel);	
-			Execute_cmd(pChar, rspBuff);
-			sprintf(pChar,"iwconfig ath1 channel %s  > /dev/null 2>&1",channel);	
-			Execute_cmd(pChar, rspBuff);
+			if(strcmp(valBuff3,"on") == 0){
+				sprintf(pChar,"iwconfig ath0 channel %s  > /dev/null 2>&1",channel);	
+				Execute_cmd(pChar, rspBuff);
+				sprintf(pChar,"iwconfig ath4 channel %s  > /dev/null 2>&1",channel);	
+				Execute_cmd(pChar, rspBuff);
+				
+				if(strcmp(valBuff3_5g,"on") == 0){
+					sprintf(pChar,"iwconfig ath2 channel %s  > /dev/null 2>&1",channel_5g);	
+					Execute_cmd(pChar, rspBuff);
+					sprintf(pChar,"iwconfig ath5 channel %s  > /dev/null 2>&1",channel_5g);	
+					Execute_cmd(pChar, rspBuff);
+				}
+			}
+			else {
+				sprintf(pChar,"iwconfig ath2 channel %s  > /dev/null 2>&1",channel_5g);	
+				Execute_cmd(pChar, rspBuff);
+				sprintf(pChar,"iwconfig ath4 channel %s  > /dev/null 2>&1",channel_5g);	
+				Execute_cmd(pChar, rspBuff);
+			}
 		}
 		/*Execute_cmd("iwpriv ath1 wds 1", rspBuff);
 		Execute_cmd("brctl addif br0 ath1", rspBuff);

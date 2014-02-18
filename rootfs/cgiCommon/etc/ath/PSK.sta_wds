@@ -1,0 +1,14 @@
+ap_scan=1
+network={
+~eSTA_SSID#!any~ ssid="~~STA_SSID#~"
+~eSTA_SSID#:any~ ssid=""
+~eSTA_SSID#:any~ bssid=~~ROOTAP_MAC#~
+~eSTA_SSID#!any~ scan_ssid=1
+~eSTA_WPA#:1~    proto=WPA
+~eSTA_WPA#:2~    proto=WPA2
+        key_mgmt=WPA-PSK
+        pairwise=~~STA_CYPHER#~
+~hPSK_KEY#!~        psk="~~STA_PSK_KEY#~"
+~hPSK_KEY#~        psk=~~STA_PSK_KEY#~
+}
+

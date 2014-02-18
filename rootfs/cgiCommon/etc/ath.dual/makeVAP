@@ -530,7 +530,12 @@ fi
 if [ "${AP_HIDESSID_3}" = "1" -a "${APNAME}" = "ath2" ]; then                                             
      iwpriv ${APNAME} hide_ssid 1                                                                                           
 fi
-
+if [ "${AP_HIDESSID_4}" = "1" -a "${APNAME}" = "ath3" ]; then                                             
+     iwpriv ${APNAME} hide_ssid 1                                                                                           
+fi
+if [ "${AP_HIDESSID_5}" = "1" -a "${APNAME}" = "ath4" ]; then                                             
+     iwpriv ${APNAME} hide_ssid 1                                                                                           
+fi
 ##
 ## Script Complete
 ##

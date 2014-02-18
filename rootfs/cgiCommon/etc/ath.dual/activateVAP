@@ -292,7 +292,19 @@ else
             #
             # This is a managed (station) node
             #
+	wds_flag=`iwpriv ${APNAME} get_wds | awk -F':' '{print $2}'`
+	if [ "${wds_flag}" -eq "1" ];then
+		if [ "${RADIO}" = "0" ]; then
+			APINDEX=0
+		fi
+		if [ "${RADIO}" = "1" ]; then
+			APINDEX=2
+		fi
+            cfg -t${APINDEX} /etc/ath/${SECFILE}.sta_wds ${APNAME} > /tmp/sup${APNAME}
+
+	else
             cfg -t${APINDEX} /etc/ath/${SECFILE}.sta ${APNAME} > /tmp/sup${APNAME}
+	fi
             if [ "${HOSTAPD_VER}" = "v0.5.9" ]; then
                 echo -e "\tsta ${APNAME}" >> /tmp/stalist$RADIO
                 echo -e "\t{" >> /tmp/stalist$RADIO
