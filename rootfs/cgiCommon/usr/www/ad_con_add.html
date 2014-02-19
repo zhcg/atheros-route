@@ -27,7 +27,18 @@ function CheckValue()
 		document.WORKFORM.MAC.select();
 		return false;
 	}
-
+	{
+		var mmac = document.WORKFORM.MAC.value;
+		var mmh = mmac.substr(0, 2);
+		var mmh_int=parseInt(mmh);
+		var lastb = mmh_int%2;
+		if(lastb==1)
+		{
+			alert(_("err MAC wuxiao"));
+			document.WORKFORM.MAC.select();
+			return false;
+		}
+	}
 	if (document.WORKFORM.DES.value.length == 0)
 	{
 		alert(_("err des empty"));

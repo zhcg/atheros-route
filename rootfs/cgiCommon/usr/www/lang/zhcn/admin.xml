@@ -40,7 +40,7 @@
 
 	<message msgid="admw wsetingst" msgstr="WiFi设置" />  
 	<message msgid="admw wsetingst1" msgstr="网络频段:2.4GHz" />  
-	<message msgid="admw wsetingst2" msgstr="网络频段:5.0GHz" />  
+	<message msgid="admw wsetingst2" msgstr="网络频段:5GHz" />  
 
 	<message msgid="admw nname" msgstr="网络名称(SSID)" />  
 	<message msgid="admw security" msgstr="安全" />
@@ -96,7 +96,7 @@
 
 	<message msgid="admw RMd" msgstr="无线中继" />  
 	<message msgid="admw RMd1" msgstr="网络频段:2.4GHz" /> 
-	<message msgid="admw RMd2" msgstr="网络频段:5.0GHz" /> 
+	<message msgid="admw RMd2" msgstr="网络频段:5GHz" /> 
 
 	<message msgid="admw R_uname" msgstr="网络名称（SSID）" />  
 	<message msgid="admw R_pword" msgstr="密码" />  
@@ -116,7 +116,7 @@
 	<message msgid="admw modedes" msgstr="请您选择HBD路由器WAN口的连接方式。所需参数在开通网络时，由网络运营商（中国电信、中国联通、中国铁通、中国移动等）提供" />  
 	<message msgid="admw modedes1" msgstr="所需参数在开通网络时，由网络运营商（中国电信、中国联通、中国铁通、中国移动等）提供" />  
 	<message msgid="admw wifides" msgstr="请您设置HBD路由的WiFi名称和密码。您的电脑、PAD、智能手机等将使用以下网络上网" />  
-	<message msgid="admw wirelessdes" msgstr="请您选择要连接的WiFi。注意:中继之后,请使用静态IP方式连接登录Web" />  
+	<message msgid="admw wirelessdes" msgstr="请您选择要连接的WiFi。注意:两种频段中继功能需分开生效;中继之后,请使用静态IP方式连接登录Web" />  
 	<message msgid="admw parentdes" msgstr="作为家长，您可以通过在本页进行设置，对孩子的上网时间和访问网页进行控制" />  
 
 	<message msgid="admw PPMAC" msgstr="家长PC的MAC地址" />
@@ -144,7 +144,7 @@
 	<message msgid="admw auto_fail" msgstr="自动选择失败,请您检查网络连接或者手动选择" />
 
 	<message msgid="admw fresh" msgstr="扫描" />
-	<message msgid="admw Wlisttitle1" msgstr="WiFi列表（扫描后可下拉选择）" />
+	<message msgid="admw Wlisttitle1" msgstr="WiFi列表" />
 	<message msgid="admw Wlisttitle2" msgstr="目前存在的WiFi:网络名称(信号强度)" />
 	<message msgid="admw Wlisttitle3" msgstr="可下拉选择" />
 	<message msgid="admw Alreadc" msgstr="当前已连接WiFi" />
@@ -237,6 +237,7 @@
 
 	<message msgid="man admin setting" msgstr="密码管理" />
 
+	<message msgid="err MAC wuxiao" msgstr="MAC地址不合法" />
 	<message msgid="err IP empty" msgstr="IP地址不能为空" />
 	<message msgid="err sub empty" msgstr="掩码不能为空" />
 	<message msgid="err gw empty" msgstr="网关不能为空" />

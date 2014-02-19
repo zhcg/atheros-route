@@ -73,6 +73,7 @@
 	<message msgid="macc mactype1" msgstr="使用当前管理终端MAC地址" />
 	<message msgid="macc mactype2" msgstr="手动输入MAC地址" />
 
+	<message msgid="err MAC wuxiao" msgstr="MAC地址不合法" />
 	<message msgid="err MAC empty" msgstr="MAC地址不能为空" />
 	<message msgid="err user empty" msgstr="用户名不能为空" />
 	<message msgid="err pwd empty" msgstr="密码不能为空" />

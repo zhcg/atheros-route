@@ -8,7 +8,11 @@
 	<message msgid="wless ADD" msgstr="Add" />
 	<message msgid="wless onbutton" msgstr="On" />
 	<message msgid="wless offbutton" msgstr="Off" />  
-	<message msgid="wless bSAVE" msgstr="Save" />   
+	<message msgid="wless bSAVE" msgstr="Save" /> 
+	
+	<message msgid="wless ms" msgstr="MS" />
+	<message msgid="wless byte" msgstr="BYTE" />
+
 	<message msgid="help" msgstr="Help" />
 	<message msgid="toplanguage" msgstr="e" />
 	<message msgid="settingwaiting" msgstr="Setting,Please Wait......" />
@@ -18,7 +22,7 @@
 	<message msgid="wless des" msgstr="Modify the configuration of wireless advanced parameters" />  
 
 	<message msgid="wless t1_title1" msgstr="Network Band:2.4GHz" />  
-	<message msgid="wless t1_title2" msgstr="Network Band:5.0GHz" />  
+	<message msgid="wless t1_title2" msgstr="Network Band:5GHz" />  
 
 	<message msgid="wless ti_pow" msgstr="Adjusting the transmit power" />  
 	<message msgid="wless t1_high" msgstr="High" />  
@@ -33,8 +37,9 @@
 
 	<message msgid="wless wifititle" msgstr="Wireless Basic Settings" />
 	<message msgid="wless wifititle1" msgstr="Network Band:2.4GHz" />
-	<message msgid="wless wifititle2" msgstr="Network Band:5.0GHz" />
+	<message msgid="wless wifititle2" msgstr="Network Band:5GHz" />
 
+	<message msgid="err MAC wuxiao" msgstr="MAC address illegal" />
 	<message msgid="err MAC empty" msgstr="MAC is empty " />
 	<message msgid="err user empty" msgstr="User name is empty " />
 	<message msgid="err pwd empty" msgstr="Password is empty " />

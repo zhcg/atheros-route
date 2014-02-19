@@ -74,7 +74,7 @@
 	<message msgid="sysinfo t4_title" msgstr="Wireless" />
 	
 	<message msgid="sysinfo t4_title1" msgstr="Network Band:2.4GHz" />
-	<message msgid="sysinfo t4_title2" msgstr="Network Band:5.0GHz" />
+	<message msgid="sysinfo t4_title2" msgstr="Network Band:5GHz" />
 
 	<message msgid="sysinfo t4_wifis" msgstr="Wireless mode" />
 	<message msgid="sysinfo t4_name" msgstr="SSID" />
@@ -111,6 +111,7 @@
 	<message msgid="netcheck r1" msgstr="Internet access failed, please check the Internet settings are correct" />
 	<message msgid="netcheck r2" msgstr="Access to the Internet, the network is normal" />
 	<message msgid="netcheck r3" msgstr="Please check the WAN cable" />
+	<message msgid="err MAC wuxiao" msgstr="MAC address illegal" />
 	<message msgid="err MAC empty" msgstr="MAC is empty " />
 	<message msgid="err user empty" msgstr="User name is empty " />
 	<message msgid="err pwd empty" msgstr="Password is empty " />

@@ -200,7 +200,18 @@ function CheckValue()
 		document.WORKFORM.ADD_MAC.select();
 		return false;
 	}
-	
+	{
+		var mmac = document.WORKFORM.ADD_MAC.value;
+		var mmh = mmac.substr(0, 2);
+		var mmh_int=parseInt(mmh);
+		var lastb = mmh_int%2;
+		if(lastb==1)
+		{
+			alert(_("err MAC wuxiao"));
+			document.WORKFORM.ADD_MAC.select();
+			return false;
+		}
+	}
 	if (!checkIpAddr(document.WORKFORM.ADD_IP, 1))
 	{
 		document.WORKFORM.ADD_IP.select();

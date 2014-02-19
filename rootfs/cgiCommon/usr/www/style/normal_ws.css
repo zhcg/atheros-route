@@ -77,7 +77,14 @@ td.head {
   white-space: nowrap;
   color: #000000
 }
-
+td.head_s {
+  width: 25%;
+  font-size: 9pt; 
+  font-family: 微软雅黑, Arial, Helvetica, sans-serif;
+  background-color: #f0f0f0;
+  white-space: nowrap;
+  color: #000000
+}
 td.head1 {
   width: 20%;
   font-size: 9pt; 

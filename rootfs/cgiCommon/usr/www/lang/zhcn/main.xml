@@ -74,7 +74,7 @@
 	<message msgid="sysinfo t4_title" msgstr="无线网络" />
 	
 	<message msgid="sysinfo t4_title1" msgstr="网络频段:2.4GHz" />
-	<message msgid="sysinfo t4_title2" msgstr="网络频段:5.0GHz" />
+	<message msgid="sysinfo t4_title2" msgstr="网络频段:5GHz" />
 	
 	<message msgid="sysinfo t4_wifis" msgstr="无线状态" />
 	<message msgid="sysinfo t4_name" msgstr="网络名称" />
@@ -113,6 +113,7 @@
 	<message msgid="netcheck r2" msgstr="可以访问互联网,网络正常" />
 	<message msgid="netcheck r3" msgstr="请您检查WAN口网线" />
 
+	<message msgid="err MAC wuxiao" msgstr="MAC地址不合法" />
 	<message msgid="err MAC empty" msgstr="MAC地址不能为空" />
 	<message msgid="err user empty" msgstr="用户名不能为空" />
 	<message msgid="err pwd empty" msgstr="密码不能为空" />

@@ -3,57 +3,62 @@
 <title></title>
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<style type="text/css">td img {display: block; border:none;}td{ color:#666666; font-family:"微软雅黑"; font-size:14px;}</style>
+<style type="text/css">td img {display: block;}</style>
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
 function initTranslation()
 {
-	var e = document.getElementById("SSID");
-	e.innerHTML = "("+document.getElementById("apssid").value + ")";
+	var e = document.getElementById("SSID1");
+	e.innerHTML = document.getElementById("apssid").value +"(2.4GHz)";
+	var e = document.getElementById("SSID2");
+	e.innerHTML = document.getElementById("apssid2").value +"(5GHz)";
+	
 	e = document.getElementById("m_bset");
 	e.value = _("admw m_bset");
 
 	if (_("toplanguage")=="e")
 	{
-		e = document.getElementById("n11111111_r4_c1");
-		e.src = "/images/11111111_r4_c1_e.png";
-		e = document.getElementById("n11111111_r5_c1");
-		e.src = "/images/11111111_r5_c1_e.png";
-		e = document.getElementById("n11111111_r6_c1");
-		e.src = "/images/11111111_r6_c1_e.png";
+		e = document.getElementById("n11111111_r1_c1");
+		e.src = "/images/22222222_r1_c1.png";
 		e = document.getElementById("n11111111_r7_c1");
-		e.src = "/images/11111111_r7_c1_e.png";
-		e = document.getElementById("n11111111_r9_c1");
-		e.src = "/images/11111111_r9_c1_e.png";
-	}
+		e.src = "/images/22222222_r7_c1.png";
+		e = document.getElementById("n11111111_r7_c4");
+		e.src = "/images/22222222_r7_c4.png";
+		e = document.getElementById("n11111111_r7_c5");
+		e.src = "/images/22222222_r7_c5.png";
+		e = document.getElementById("n11111111_r8_c1");
+		e.src = "/images/22222222_r8_c1.png";}
 	else
 	{
-		e = document.getElementById("n11111111_r4_c1");
-		e.src = "/images/11111111_r4_c1.png";
-		e = document.getElementById("n11111111_r5_c1");
-		e.src = "/images/11111111_r5_c1.png";
-		e = document.getElementById("n11111111_r6_c1");
-		e.src = "/images/11111111_r6_c1.png";
+		e = document.getElementById("n11111111_r1_c1");
+		e.src = "/images/11111111_r1_c1.png";
 		e = document.getElementById("n11111111_r7_c1");
 		e.src = "/images/11111111_r7_c1.png";
-		e = document.getElementById("n11111111_r9_c1");
-		e.src = "/images/11111111_r9_c1.png";
+		e = document.getElementById("n11111111_r7_c4");
+		e.src = "/images/11111111_r7_c4.png";
+		e = document.getElementById("n11111111_r7_c5");
+		e.src = "/images/11111111_r7_c5.png";
+		e = document.getElementById("n11111111_r8_c1");
+		e.src = "/images/11111111_r8_c1.png";
 	}
-	var n = document.getElementById("n11111111_r2_c3");
+	
+	var n = document.getElementById("n11111111_r6_c6");
 	var nv = document.getElementById("neistatus").value;
-	if (nv=="on")
+	var nv2 = document.getElementById("neistatus2").value;
+	if ((nv=="on")||(nv2=="on"))
 	{
-		n.src = "/images/11111111_r2_c3.png";//wifi
+		n.src = "/images/11111111_r6_c6.png";//wifi
 	}
 	else
 	{
 		n.src = "/images/11111111_r2_c3111.png";
 	}
 	var wv = document.getElementById("waistatus").value;
-	var w = document.getElementById("n11111111_r9_c2");
+	
+	var w = document.getElementById("n11111111_r6_c2");
 	if (wv=="on")
 	{
-		w.src = "/images/11111111_r9_c2.png";//wai
+		w.src = "/images/11111111_r6_c2.png";//wai
 	}
 	else
 	{
@@ -70,70 +75,83 @@ function initValue()
 </head>
 <body bgcolor="#ffffff" onLoad="initValue()">
 <div align="center">
-<table style="display: inline-table;" border="0" cellpadding="0" cellspacing="0" width="801">
-<!-- fwtable fwsrc="2222222.fw.png" fwpage="页面 1" fwbase="11111111.png" fwstyle="Dreamweaver" fwdocid = "1846507314" fwnested="0" -->
+<div height="50"></div>
+
+<table style="display: inline-table;" border="0" cellpadding="0" cellspacing="0" width="783">
+<!-- fwtable fwsrc="路由器中文版.fw.png" fwpage="页面 1" fwbase="11111111.png" fwstyle="Dreamweaver" fwdocid = "1846507314" fwnested="0" -->
+   <tr height="40">
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+   <td></td>
+  </tr>
+  
   <tr>
-   <td><img src="/images/spacer.gif" width="312" height="1" alt="" /></td>
-   <td><img src="/images/spacer.gif" width="41" height="1" alt="" /></td>
-   <td><img src="/images/spacer.gif" width="24" height="1" alt="" /></td>
-   <td><img src="/images/spacer.gif" width="41" height="1" alt="" /></td>
-   <td><img src="/images/spacer.gif" width="163" height="1" alt="" /></td>
-   <td><img src="/images/spacer.gif" width="169" height="1" alt="" /></td>
-   <td><img src="/images/spacer.gif" width="51" height="1" alt="" /></td>
+   <td><img src="/images/spacer.gif" width="68" height="1" alt="" /></td>
+   <td><img src="/images/spacer.gif" width="65" height="1" alt="" /></td>
+   <td><img src="/images/spacer.gif" width="414" height="1" alt="" /></td>
+   <td><img src="/images/spacer.gif" width="1" height="1" alt="" /></td>
+   <td><img src="/images/spacer.gif" width="70" height="1" alt="" /></td>
+   <td><img src="/images/spacer.gif" width="65" height="1" alt="" /></td>
+   <td><img src="/images/spacer.gif" width="100" height="1" alt="" /></td>
    <td><img src="/images/spacer.gif" width="1" height="1" alt="" /></td>
   </tr>
 
   <tr>
-   <td colspan="7"><img name="n11111111_r1_c1" src="/images/11111111_r1_c1.png" width="801" height="10" id="n11111111_r1_c1" alt="" /></td>
-   <td><img src="/images/spacer.gif" width="1" height="10" alt="" /></td>
+   <td colspan="7"><img name="n11111111_r1_c1" width="783" height="56" id="n11111111_r1_c1" alt="" /></td>
+   <td><img src="/images/spacer.gif" width="1" height="56" alt="" /></td>
   </tr>
   <tr>
-   <td colspan="2"><img name="n11111111_r2_c1" src="/images/11111111_r2_c1.png" width="353" height="65" id="n11111111_r2_c1" alt="" /></td>
-   <td colspan="2"><a href="w3" target="ifm"><img name="n11111111_r2_c3" width="65" height="65" id="n11111111_r2_c3" /></a></td>
-   <td colspan="3"><img name="n11111111_r2_c5" src="/images/11111111_r2_c5.png" width="383" height="65" id="n11111111_r2_c5" alt="" /></td>
-   <td><img src="/images/spacer.gif" width="1" height="65" alt="" /></td>
-  </tr>
-  <tr>
-   <td colspan="7"><img name="n11111111_r3_c1" src="/images/11111111_r3_c1.png" width="801" height="17" id="n11111111_r3_c1" alt="" /></td>
-   <td><img src="/images/spacer.gif" width="1" height="17" alt="" /></td>
-  </tr>
-  <tr>
-   <td colspan="5"><img name="n11111111_r4_c1" src="/images/11111111_r4_c1.png" width="581" height="21" id="n11111111_r4_c1" alt="" /></td>
-   <td ><span style="width:169;height:21;overflow:hidden;" id="SSID">(~~AP_SSID~)</span></td>
-   <td><img name="n11111111_r4_c7" src="/images/11111111_r4_c7.png" width="51" height="21" id="n11111111_r4_c7" alt="" /></td>
-   <td><img src="/images/spacer.gif" width="1" height="21" alt="" /></td>
-  </tr>
-  <tr>
-   <td colspan="7"><img name="n11111111_r5_c1" src="/images/11111111_r5_c1.png" width="801" height="92" id="n11111111_r5_c1" alt="" /></td>
-   <td><img src="/images/spacer.gif" width="1" height="92" alt="" /></td>
-  </tr>
-  <tr>
-   <td colspan="7"><img name="n11111111_r6_c1" src="/images/11111111_r6_c1.png" width="801" height="91" id="n11111111_r6_c1" alt="" /></td>
-   <td><img src="/images/spacer.gif" width="1" height="91" alt="" /></td>
-  </tr>
-  <tr>
-   <td rowspan="2" colspan="7"><img name="n11111111_r7_c1" src="/images/11111111_r7_c1.png" width="801" height="37" id="n11111111_r7_c1" alt="" /></td>
+   <td colspan="4"><img name="n11111111_r2_c1" src="/images/11111111_r2_c1.png" width="548" height="1" id="n11111111_r2_c1" alt="" /></td>
+   <td colspan="3"><img name="n11111111_r2_c5" src="/images/11111111_r2_c5.png" width="235" height="1" id="n11111111_r2_c5" alt="" /></td>
    <td><img src="/images/spacer.gif" width="1" height="1" alt="" /></td>
   </tr>
   <tr>
-   <td><img src="/images/spacer.gif" width="1" height="36" alt="" /></td>
+   <td rowspan="2" colspan="3"><img name="n11111111_r3_c1" src="/images/11111111_r3_c1.png" width="547" height="52" id="n11111111_r3_c1" alt="" /></td>
+   <td colspan="4"><span id="SSID1"style=" font-size:9px; color:#f6534e"></span></td>
+   <td><img src="/images/spacer.gif" width="1" height="24" alt="" /></td>
   </tr>
   <tr>
-   <td rowspan="2"><img name="n11111111_r9_c1" src="/images/11111111_r9_c1.png" width="312" height="121" id="n11111111_r9_c1" alt="" /></td>
-   <td colspan="2"><a href="w2" target="ifm"><img name="n11111111_r9_c2"  width="65" height="65" id="n11111111_r9_c2" /></a></td>
-   <td rowspan="2" colspan="4"><img name="n11111111_r9_c4" src="/images/11111111_r9_c4.png" width="424" height="121" id="n11111111_r9_c4" alt="" /></td>
+   <td colspan="4"><span id="SSID2"style=" font-size:9px; color:#f6534e"></span></td>
+   <td><img src="/images/spacer.gif" width="1" height="28" alt="" /></td>
+  </tr>
+  <tr>
+   <td colspan="7"><img name="n11111111_r5_c1" src="/images/11111111_r5_c1.png" width="783" height="42" id="n11111111_r5_c1" alt="" /></td>
+   <td><img src="/images/spacer.gif" width="1" height="42" alt="" /></td>
+  </tr>
+  <tr>
+   <td><img name="n11111111_r6_c1" src="/images/11111111_r6_c1.png" width="68" height="65" id="n11111111_r6_c1" alt="" /></td>
+   <td><a href="w2" target="ifm"><img border="0" name="n11111111_r6_c2" src="/images/11111111_r6_c2.png" width="65" height="65" id="n11111111_r6_c2" alt="" /></a></td>
+   <td colspan="3"><img name="n11111111_r6_c3" src="/images/11111111_r6_c3.png" width="485" height="65" id="n11111111_r6_c3" alt="" /></td>
+   <td><a href="w3" target="ifm"><img border="0" name="n11111111_r6_c6" src="/images/11111111_r6_c6.png" width="65" height="65" id="n11111111_r6_c6" alt="" /></a></td>
+   <td><img name="n11111111_r6_c7" src="/images/11111111_r6_c7.png" width="100" height="65" id="n11111111_r6_c7" alt="" /></td>
    <td><img src="/images/spacer.gif" width="1" height="65" alt="" /></td>
   </tr>
   <tr>
-   <td colspan="2"><img name="n11111111_r10_c2" src="/images/11111111_r10_c2.png" width="65" height="56" id="n11111111_r10_c2" alt="" /></td>
-   <td><img src="/images/spacer.gif" width="1" height="56" alt="" /></td>
+   <td colspan="3"><img name="n11111111_r7_c1"  width="547" height="57" id="n11111111_r7_c1" alt="" /></td>
+   <td><img name="n11111111_r7_c4"  width="1" height="57" id="n11111111_r7_c4" alt="" /></td>
+   <td colspan="3"><img name="n11111111_r7_c5"  width="235" height="57" id="n11111111_r7_c5" alt="" /></td>
+   <td><img src="/images/spacer.gif" width="1" height="57" alt="" /></td>
+  </tr>
+  <tr>
+   <td rowspan="2" colspan="7"><img name="n11111111_r8_c1" width="783" height="87" id="n11111111_r8_c1" alt="" /></td>
+   <td><img src="/images/spacer.gif" width="1" height="1" alt="" /></td>
+  </tr>
+  <tr>
+   <td><img src="/images/spacer.gif" width="1" height="86" alt="" /></td>
   </tr>
 </table>
 </div>
 <div align="center"><input  name="m_normal" class="handaer_input" style="BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BACKGROUND: none transparent scroll repeat 0% 0%; BORDER-BOTTOM-WIDTH: 0px;  BORDER-RIGHT-WIDTH: 0px; margin-top:10px;" type="button" id="m_bset" onClick="window.location.href='w1'"/></div>
 	<input type="text" style="display:none" name="waistatus" id="waistatus" size="20" maxlength="32" value="~~INTERNET_ON~">
 	<input type="text" style="display:none" name="neistatus" id="neistatus" size="20" maxlength="32" value="~~WIFION_OFF~">
+	<input type="text" style="display:none" name="neistatus2" id="neistatus2" size="20" maxlength="32" value="~~WIFION_OFF_3~">
 	<input type="text" style="display:none" name="apssid" id="apssid" size="20" maxlength="32" value="~~AP_SSID~">
+	<input type="text" style="display:none" name="apssid2" id="apssid2" size="20" maxlength="32" value="~~AP_SSID_3~">
 	<script language="JavaScript">
 	function myrefresh()
 	{

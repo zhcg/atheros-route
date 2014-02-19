@@ -100,6 +100,7 @@
 	<message msgid="man delete" msgstr="删除" />
 
 	<message msgid="err MAC empty" msgstr="MAC地址不能为空" />
+	<message msgid="err MAC wuxiao" msgstr="MAC地址不合法" />
 	<message msgid="err user empty" msgstr="用户名不能为空" />
 	<message msgid="err pwd empty" msgstr="密码不能为空" />
 	<message msgid="err time empty" msgstr="时间不能为空" />
@@ -117,4 +118,5 @@
 	<message msgid="err sub format" msgstr="掩码地址不合法" />	
 	<message msgid="err gw format" msgstr="网关地址不合法" />
 	<message msgid="err DNS format" msgstr="DNS地址不合法" />
+	
  </po>

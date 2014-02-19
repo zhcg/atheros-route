@@ -45,11 +45,23 @@ function chackMAC()
 			document.WORKFORM.ETH0_MAC.focus();
 			return false;
 		}
-		if (!re.test(document.WORKFORM.ETH0_MAC.value))
+		if ((!re.test(document.WORKFORM.ETH0_MAC.value)||(document.WORKFORM.ETH0_MAC.value.length > 17))
 		{
 			alert(_("err MAC format"));
 			document.WORKFORM.ETH0_MAC.focus();
 			return false;
+		}
+		{
+			var mmac = document.WORKFORM.ETH0_MAC.value;
+			var mmh = mmac.substr(0, 2);
+			var mmh_int=parseInt(mmh);
+			var lastb = mmh_int%2;
+			if(lastb==1)
+			{
+				alert(_("err MAC wuxiao"));
+				document.WORKFORM.ETH0_MAC.select();
+				return false;
+			}
 		}
 	}
 	window.parent.Demo(_("settingwaiting"));

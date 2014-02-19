@@ -112,7 +112,7 @@ function hidehead()
 function showpwd1()
 {
 	hidehead();
- 	document.getElementById("c1").innerHTML='<a href="cgi-bin/map" target="ifm" id="m_normal"  onclick="showpwd()" class="handaer_common"></a>';
+ 	document.getElementById("c1").innerHTML='<a href="cgi-bin/map" target="ifm" id="m_normal"  onclick="showpwd1()" class="handaer_common"></a>';
 	tr();
 }
 function showpwd2()
@@ -245,17 +245,13 @@ document.getElementById("ifm").width= winWidth-220;
 <dt id="m_fast1">快速设置</dt>
 	<dd><span id="c1"><a href="cgi-bin/map" target="ifm" id="m_normal" onClick="showpwd1()" class="handaer_common">设置向导</a></span></dd>
 	<dd><span id="c2"><a href="cgi-bin/w2" target="ifm" id="m_wan" onClick="showpwd2()">外网设置</a></span></dd>
-	<!--dd><span id="c3"><a href="cgi-bin/w4" target="ifm" id="m_wirere" onClick="showpwd3()">无线设置</a></span></dd-->
 	<dd><span id="c4"><a href="cgi-bin/w3" target="ifm" id="m_wifi" onClick="showpwd4()">WiFi设置</a></span></dd>
    </dl>
     </div>     
 </div>
 <!--  左侧结束 -->
 <div class="hbd_menu_r right"><!-- TemplateBeginEditable name="EditRegion3" -->
-<!--iframe src ="cgi-bin/map" frameborder="0" marginheight="0" marginwidth="0" scrolling="yes" id="ifm" name="ifm" onload="javascript:findDimensions();"-->
 <iframe src="cgi-bin/map" id="ifm" name="ifm" frameBorder=0 scrolling=no  onLoad="iFrameHeight()"></iframe>
-<!-- TemplateEndEditable --> </div> 
-
 <div class="clear"></div>
 </div>
 

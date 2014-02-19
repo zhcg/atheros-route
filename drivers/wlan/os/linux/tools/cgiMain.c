@@ -3956,7 +3956,7 @@ int main(int argc,char **argv)
 							else  
 								sprintf(val3[0],"None");
 							memset(cmdd,0x00,128);	
-							sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(%sdbm)</option>",val2[0],val1[0],val4[0],val3[0],val2[0],val5[0]);
+							sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(-%sdbm)</option>",val2[0],val1[0],val4[0],val3[0],val2[0],val5[0]);
 							fwrite(cmdd,strlen(cmdd),1,fp);
 						}
 						for(i=1;i<lists;i++)
@@ -3969,7 +3969,7 @@ int main(int argc,char **argv)
 								else
 									sprintf(val3[i]+4,"None");
 								//fprintf(errOut,"[luodp] %s(%s)(%s)(%s) \n",val2[i]+4,val1[i]+4,val3[i]+4,val4[i]+4);
-								sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(%sdbm)</option>",val2[i]+4,val1[i]+4,val4[i]+4,val3[i]+4,val2[i]+4,val5[i]+4);
+								sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(-%sdbm)</option>",val2[i]+4,val1[i]+4,val4[i]+4,val3[i]+4,val2[i]+4,val5[i]+4);
 								fwrite(cmdd,strlen(cmdd),1,fp);
 							}
 						}
@@ -4069,7 +4069,7 @@ int main(int argc,char **argv)
 							else  
 								sprintf(val3[0],"None");
 							memset(cmdd,0x00,128);	
-							sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(%sdbm)</option>",val2[0],val1[0],val4[0],val3[0],val2[0],val5[0]);
+							sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(-%sdbm)</option>",val2[0],val1[0],val4[0],val3[0],val2[0],val5[0]);
 							fwrite(cmdd,strlen(cmdd),1,fp);
 						}
 						for(i=1;i<lists;i++)
@@ -4082,7 +4082,7 @@ int main(int argc,char **argv)
 								else
 									sprintf(val3[i]+4,"None");
 								//fprintf(errOut,"[luodp] %s(%s)(%s)(%s) \n",val2[i]+4,val1[i]+4,val3[i]+4,val4[i]+4);
-								sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(%sdbm)</option>",val2[i]+4,val1[i]+4,val4[i]+4,val3[i]+4,val2[i]+4,val5[i]+4);
+								sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(-%sdbm)</option>",val2[i]+4,val1[i]+4,val4[i]+4,val3[i]+4,val2[i]+4,val5[i]+4);
 								fwrite(cmdd,strlen(cmdd),1,fp);
 							}
 						}
@@ -4838,11 +4838,15 @@ int main(int argc,char **argv)
 		{
 			//fprintf(errOut,"[luodp] %d",atoi(valBuff4));
 			//11NGHT40PLUS/11NGHT40MINUS
+			Execute_cmd("ifconfig ath0 down > /dev/null 2>&1", rspBuff);
+			Execute_cmd("ifconfig ath1 down > /dev/null 2>&1", rspBuff);
+			
 			if(strstr(valBuff10,"11NGHT40PLUS")!=0)
 			{
 				if(atoi(valBuff4)>=10)
 				{
 					Execute_cmd("iwpriv ath0 mode 11NGHT40MINUS", rspBuff);
+					Execute_cmd("iwpriv ath1 mode 11NGHT40MINUS", rspBuff);
 					CFG_set_by_name("AP_CHMODE","11NGHT40MINUS");
 				}
 			}else if(strstr(valBuff10,"11NGHT40MINUS")!=0)
@@ -4850,6 +4854,7 @@ int main(int argc,char **argv)
 				if(atoi(valBuff4)<=4)
 				{
 					Execute_cmd("iwpriv ath0 mode 11NGHT40PLUS", rspBuff);
+					Execute_cmd("iwpriv ath1 mode 11NGHT40PLUS", rspBuff);
 					CFG_set_by_name("AP_CHMODE","11NGHT40PLUS");
 				}
 			}
@@ -4858,6 +4863,10 @@ int main(int argc,char **argv)
 			//fprintf(errOut,"[luodp] SECMODE here7\n");
 			sprintf(pChar,"iwconfig ath0 channel %s  > /dev/null 2>&1",valBuff4);
 			Execute_cmd(pChar, rspBuff);
+			sprintf(pChar,"iwconfig ath1 channel %s  > /dev/null 2>&1",valBuff4);
+			Execute_cmd(pChar, rspBuff);
+			Execute_cmd("ifconfig ath0 up > /dev/null 2>&1", rspBuff);
+			Execute_cmd("ifconfig ath1 up > /dev/null 2>&1", rspBuff);			
 		}
 		//hide ssid
 		CFG_get_by_name("AP_HIDESSID",valBuff4);
@@ -5023,6 +5032,8 @@ int main(int argc,char **argv)
 		sprintf(valBuff5,"%s\n<br>",valBuff4);
 		if((strcmp(valBuff7_3,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0))
 		{
+			fprintf(errOut,"[luodp] 11NA %d",atoi(valBuff4));
+			#if 0
 			memcpy(valBuff4, "40", 2);
 			Execute_cmd("iwpriv ath2 mode 11NAHT40MINUS", rspBuff);
 			CFG_set_by_name("AP_CHMODE_3","11NAHT40MINUS");
@@ -5030,20 +5041,24 @@ int main(int argc,char **argv)
 			writeParameters("/tmp/.apcfg","w+",0);
 			sprintf(pChar,"iwconfig ath2 channel %s  > /dev/null 2>&1",valBuff4);
 			Execute_cmd(pChar, rspBuff);
-			#if 0
+			#endif
 			//11NAHT40PLUS/11NAHT40MINUS
-			if(strstr(valBuff10,"11NAHT40PLUS")!=0)
+			Execute_cmd("ifconfig ath2 down > /dev/null 2>&1", rspBuff);
+			Execute_cmd("ifconfig ath3 down > /dev/null 2>&1", rspBuff);
+			if(strstr(valBuff10_3,"11NAHT40PLUS")!=0)
 			{
-				if(atoi(valBuff4)>=10)
+				if(atoi(valBuff4)>=165)
 				{
 					Execute_cmd("iwpriv ath2 mode 11NAHT40MINUS", rspBuff);
+					Execute_cmd("iwpriv ath3 mode 11NAHT40MINUS", rspBuff);
 					CFG_set_by_name("AP_CHMODE_3","11NAHT40MINUS");
 				}
-			}else if(strstr(valBuff10,"11NAHT40MINUS")!=0)
+			}else if(strstr(valBuff10_3,"11NAHT40MINUS")!=0)
 			{
-				if(atoi(valBuff4)<=4)
+				if(atoi(valBuff4)<=149)
 				{
 					Execute_cmd("iwpriv ath2 mode 11NAHT40PLUS", rspBuff);
+					Execute_cmd("iwpriv ath3 mode 11NAHT40PLUS", rspBuff);
 					CFG_set_by_name("AP_CHMODE_3","11NAHT40PLUS");
 				}
 			}
@@ -5051,7 +5066,10 @@ int main(int argc,char **argv)
 			writeParameters("/tmp/.apcfg","w+",0);
 			sprintf(pChar,"iwconfig ath2 channel %s  > /dev/null 2>&1",valBuff4);
 			Execute_cmd(pChar, rspBuff);
-			#endif
+			sprintf(pChar,"iwconfig ath3 channel %s  > /dev/null 2>&1",valBuff4);
+			Execute_cmd(pChar, rspBuff);
+			Execute_cmd("ifconfig ath2 up > /dev/null 2>&1", rspBuff);
+			Execute_cmd("ifconfig ath3 up > /dev/null 2>&1", rspBuff);
 		}
 		
 		//hide ssid

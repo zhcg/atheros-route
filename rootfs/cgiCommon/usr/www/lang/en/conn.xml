@@ -14,7 +14,7 @@
 	<message msgid="conn bSAVE" msgstr="Save" />   
 	<message msgid="conn delit1" msgstr="Are you sure to delete " /> 
 	<message msgid="conn delit2" msgstr=" management rule" /> 
-	<message msgid="conn mac_format" msgstr="for example(11:22:33:44:55:66)" />   
+	<message msgid="conn mac_format" msgstr="for example(XX:XX:XX:XX:XX:XX)" />   
 	<message msgid="help" msgstr="Help" />
 	<message msgid="toplanguage" msgstr="e" />
 	<message msgid="settingwaiting" msgstr="Setting,Please Wait......" />
@@ -46,6 +46,7 @@
 	<message msgid="addw t1_MAC" msgstr="MAC Address" />  
 	<message msgid="addw t1_Des" msgstr="Description" />  
 
+	<message msgid="err MAC wuxiao" msgstr="MAC address illegal" />
 	<message msgid="err MAC empty" msgstr="MAC is empty " />
 	<message msgid="err user empty" msgstr="User name is empty " />
 	<message msgid="err pwd empty" msgstr="Password is empty " />

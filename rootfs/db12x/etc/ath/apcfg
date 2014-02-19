@@ -30,6 +30,7 @@ cfg -a HAL_VERSION=${HAL_VERSION:="HBD-Router-B6-V2"}
 cfg -a SOFT_VERSION=${SOFT_VERSION:="0.9.8.1"}
 cfg -a ADMPASS=${ADMPASS:="admin"}
 cfg -a WDSON_OFF=${WDSON_OFF:="off"}
+cfg -a WDSON_OFF_3=${WDSON_OFF_3:="off"}
 cfg -a DHCPON_OFF=${DHCPON_OFF:="on"}
 cfg -a BEACON_INT=${BEACON_INT:="100"}
 cfg -a BEACON_INT_3=${BEACON_INT_3:="100"}
@@ -73,6 +74,7 @@ cfg -a WLAN_ON_BOOT=${WLAN_ON_BOOT:="y"}
 #cfg -a AP_STARTMODE=${AP_STARTMODE:="standard"}
 cfg -a AP_STARTMODE=${AP_STARTMODE:="dual"}
 cfg -a WIFION_OFF=${WIFION_OFF:="on"}
+cfg -a WIFION_OFF_3=${WIFION_OFF_3:="on"}
 cfg -a AP_RADIO_ID=${AP_RADIO_ID:=0}
 cfg -a AP_RADIO_ID_2=${AP_RADIO_ID_2:=0}
 cfg -a AP_RADIO_ID_3=${AP_RADIO_ID_3:=1}
@@ -108,7 +110,7 @@ cfg -a AP_HIDESSID_4=${AP_HIDESSID_4:="1"}
 ## Set up the channel for dual mode
 ##
 
-cfg -a AP_PRIMARY_CH_3=${AP_PRIMARY_CH_3:=40}
+cfg -a AP_PRIMARY_CH_3=${AP_PRIMARY_CH_3:=157}
 cfg -a AP_CHMODE_3=${AP_CHMODE_3:="11NAHT40MINUS"}
 
 ##
@@ -170,16 +172,17 @@ cfg -a RANDOM_SSID=${RANDOM_SSID:=0}
 ## AP Identification Section
 ##
 
-mac1=`ifconfig | grep br0 | awk -F ' ' '{print $5}' | awk -F ':' '{print $5}'`
-mac2=`ifconfig | grep br0 | awk -F ' ' '{print $5}' | awk -F ':' '{print $6}'`
+mac1=`dd if=/dev/caldata of=/tmp/mac1 count=1 bs=1 skip=4116 > /dev/null 2>&1 | cat /tmp/mac1`
+mac2=`dd if=/dev/caldata of=/tmp/mac2 count=1 bs=1 skip=4117 > /dev/null 2>&1 | cat /tmp/mac2`
+mac3=`dd if=/dev/caldata of=/tmp/mac3 count=1 bs=1 skip=4119 > /dev/null 2>&1 | cat /tmp/mac3`
+mac4=`dd if=/dev/caldata of=/tmp/mac4 count=1 bs=1 skip=4120 > /dev/null 2>&1 | cat /tmp/mac4`
 
-cfg -a AP_SSID="${AP_SSID:=HBD_WIFI_2G_$mac1$mac2}"
-cfg -a AP_SSID_2="${AP_SSID_2:=HBD_WIFI_2G_Hide}"
+cfg -a AP_SSID="${AP_SSID:=HBD_WIFI_2G_${mac1}${mac2}${mac3}${mac4}}"
+cfg -a AP_SSID_2="${AP_SSID_2:=HBD_WIFI_2G_${mac1}${mac2}${mac3}${mac4}_Hide}"
 
 if [ "${AP_STARTMODE}" = "dual" ]; then
-#cfg -a AP_SSID_2="${AP_SSID_2:=HBD_WIFI_5G_$mac1$mac2}"
-cfg -a AP_SSID_3="${AP_SSID_3:=HBD_WIFI_5G_$mac1$mac2}"
-cfg -a AP_SSID_4="${AP_SSID_4:=HBD_WIFI_5G_Hide}"
+cfg -a AP_SSID_3="${AP_SSID_3:=HBD_WIFI_5G_${mac1}${mac2}${mac3}${mac4}}"
+cfg -a AP_SSID_4="${AP_SSID_4:=HBD_WIFI_5G_${mac1}${mac2}${mac3}${mac4}_Hide}"
 fi
 
 ##
@@ -307,7 +310,7 @@ fi
     ITER_RFPARAM="AP_RFPARAM$i"
     eval ITER_RADIO_ID=\$$ITER_RADIO_ID
     if [ "${ITER_RADIO_ID}" = "1" ]; then
-        export $ITER_RFPARAM=RF:$AP_PRIMARY_CH_2:$AP_CHMODE_2
+        export $ITER_RFPARAM=RF:$AP_PRIMARY_CH_3:$AP_CHMODE_3
 else
         export $ITER_RFPARAM=RF:$AP_PRIMARY_CH:$AP_CHMODE
 fi

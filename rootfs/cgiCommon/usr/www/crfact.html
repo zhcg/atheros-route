@@ -5,19 +5,18 @@
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script>
 
-
 function initTranslation()
 {
-
 	var b = document.getElementById("FACTORYRESULT").value;
-
-	if(b == "Atheros_XSpan_2G")
+	var s;
+	
+	s = b.substr(0, 11); 
+	if(s == "HBD_WIFI_2G")
 		alert(_("factory success"));	
 	else
 		alert(_("factory fail"));	
 
 	window.top.location.href="../index.html";
-
 }
 
 function init()

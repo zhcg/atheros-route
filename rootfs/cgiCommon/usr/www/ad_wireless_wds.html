@@ -92,7 +92,7 @@ function CheckWirelessValue()
 	{
 		if((document.getElementById("INDEX").value == "11") || (document.getElementById("INDEX").value == 11))
 		{
-			if(document.getElementById("STA_AP_SECMODE").value == "WPA")
+			if(document.getElementById("STA_SECMODE").value == "WPA")
 			{
 				if(document.getElementById("pwd").value =="")
 				{
@@ -104,25 +104,28 @@ function CheckWirelessValue()
 		}
 		else
 		{
-			alert(_("err no choose"));
-			return false;
+			if(document.getElementById("now_1").value == "")
+			{
+				alert(_("err no choose"));
+				return false;
+			}
 		}
 	}
 	else
 	{
 		document.getElementById("STA_SSID").disabled = true;	
-		document.getElementById("STA_ROOTAP_MAC").disabled = true;	
+		document.getElementById("ROOTAP_MAC").disabled = true;	
 		document.getElementById("pwd").disabled = true;	
 		document.getElementById("WFILIST").disabled = true;	 
 		document.getElementById("WDS_CHAN").disabled = true;	 
-		document.getElementById("STA_AP_SECMODE").disabled = true;	 
+		document.getElementById("STA_SECMODE").disabled = true;	 
 	}
 
 	if(document.wizard_form.WDSON_OFF_3[0].checked == true)
 	{
 		if((document.getElementById("INDEX").value == "112") || (document.getElementById("INDEX").value == 112))
 		{
-			if(document.getElementById("STA_AP_SECMODE_3").value == "WPA")
+			if(document.getElementById("STA_SECMODE_2").value == "WPA")
 			{
 				if(document.getElementById("pwd2").value =="")
 				{
@@ -134,22 +137,25 @@ function CheckWirelessValue()
 		}
 		else
 		{
-			alert(_("err no choose"));
-			return false;
+			if(document.getElementById("now_2").value == "")
+			{
+				alert(_("err no choose"));
+				return false;
+			}			
 		}
 	}
 	else
 	{
-		document.getElementById("STA_SSID_3").disabled = true;	
-		document.getElementById("STA_ROOTAP_MAC_3").disabled = true;	
+		document.getElementById("STA_SSID_2").disabled = true;	
+		document.getElementById("ROOTAP_MAC_2").disabled = true;	
 		document.getElementById("pwd2").disabled = true;	
 		document.getElementById("WFILIST_3").disabled = true;	 
-		document.getElementById("WDS_CHAN_3").disabled = true;	 
-		document.getElementById("STA_AP_SECMODE_3").disabled = true;	 
+		document.getElementById("WDS_CHAN_2").disabled = true;	 
+		document.getElementById("STA_SECMODE_2").disabled = true;	 
 	}
 
 	document.getElementById("WIFION_OFF").disabled = true;	 
-	document.getElementById("WIFION_OFF2").disabled = true;	 
+	document.getElementById("WIFION_OFF_3").disabled = true;	 
 	waitgifshow();
 	document.wizard_form.INDEX.disabled = true;
 	button_commit('WIRRE');
@@ -179,11 +185,11 @@ function showpwd()
 	
 	if(document.getElementById("cccc2").checked == true)
 	{
-		document.getElementById("pwdinput2").innerHTML='<input type="text" name="STA_PSK_KEY_3" id="pwd2" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
+		document.getElementById("pwdinput2").innerHTML='<input type="text" name="STA_PSK_KEY_2" id="pwd2" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
 	}
 	else
 	{
-		document.getElementById("pwdinput2").innerHTML='<input type="password" name="STA_PSK_KEY_3" id="pwd2" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
+		document.getElementById("pwdinput2").innerHTML='<input type="password" name="STA_PSK_KEY_2" id="pwd2" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
    }
  }
 function  WIFSwitch()
@@ -206,9 +212,9 @@ function  WIFSwitch()
 	ssss = myString.substr(c+2, d-c-2);
 	
 	document.getElementById("STA_SSID").value = s;//obj.options[index].text;
-	document.getElementById("STA_ROOTAP_MAC").value = ss;//obj.options[index].text;
+	document.getElementById("ROOTAP_MAC").value = ss;//obj.options[index].text;
 	document.getElementById("WDS_CHAN").value = sss;//obj.options[index].text;
-	document.getElementById("STA_AP_SECMODE").value = ssss;//obj.options[index].text;
+	document.getElementById("STA_SECMODE").value = ssss;//obj.options[index].text;
 	
 	if(ssss == "None")
 	{
@@ -243,20 +249,20 @@ function  WIFSwitch2()
 	sss = myString.substr(b+2, c-b-2);
 	ssss = myString.substr(c+2, d-c-2);
 	
-	document.getElementById("STA_SSID_3").value = s;//obj.options[index].text;
-	document.getElementById("STA_ROOTAP_MAC_3").value = ss;//obj.options[index].text;
-	document.getElementById("WDS_CHAN_3").value = sss;//obj.options[index].text;
-	document.getElementById("STA_AP_SECMODE_3").value = ssss;//obj.options[index].text;
+	document.getElementById("STA_SSID_2").value = s;//obj.options[index].text;
+	document.getElementById("ROOTAP_MAC_2").value = ss;//obj.options[index].text;
+	document.getElementById("WDS_CHAN_2").value = sss;//obj.options[index].text;
+	document.getElementById("STA_SECMODE_2").value = ssss;//obj.options[index].text;
 	
 	if(ssss == "None")
 	{
-		document.wizard_form.STA_PSK_KEY_3.disabled = true;
+		document.wizard_form.STA_PSK_KEY_2.disabled = true;
 		widget_hide("tt22");
 	}
 	else
 	{
 		widget_display("tt22");
-		document.wizard_form.STA_PSK_KEY_3.disabled = false;
+		document.wizard_form.STA_PSK_KEY_2.disabled = false;
 		document.getElementById("pwd2").value="";
 	}
 }
@@ -339,7 +345,14 @@ function initshow2()
 	else
 		widget_hide("dwsset22");
 }
+function checklistempty()
+{
+	if (document.getElementById("WFILIST").innerHTML=="")
+		widget_hide("WFILIST");
 
+	if (document.getElementById("WFILIST_3").innerHTML=="")
+		widget_hide("WFILIST_3");
+}
 function initValue()
 {
 	Butterlate.setTextDomain("admin");
@@ -353,14 +366,17 @@ function initValue()
 		show2 = 1;
 	else
 		show2 = 0;	
-		
+	
+	
 	if((document.getElementById("INDEX").value == "11") || (document.getElementById("INDEX").value == 11))
 	{
 
 		document.wizard_form.WDSON_OFF[0].checked = true;
 		window.parent.DialogHide();
 		initshow();
+		initshow2();
 		switch_wds();
+		switch_wds2();
 		WIFSwitch();
 		if(document.getElementById("WIFION_OFF_3").value=="off")
 		{
@@ -370,19 +386,22 @@ function initValue()
 			widget_hide("tt22");
 			widget_display("tishi2");
 		}
+		checklistempty();
 		return true;
 	}
-	else
-	{
-		widget_hide("WFILIST");
-	}
+	//else
+	//{
+	//	widget_hide("WFILIST");
+	//}
 	
 	if((document.getElementById("INDEX").value == "112") || (document.getElementById("INDEX").value == 112))
 	{
 
 		document.wizard_form.WDSON_OFF_3[0].checked = true;
 		window.parent.DialogHide();
+		initshow();
 		initshow2();
+		switch_wds();
 		switch_wds2();
 		WIFSwitch2();
 		if(document.getElementById("WIFION_OFF").value=="off")
@@ -393,12 +412,13 @@ function initValue()
 			widget_hide("tt2");
 			widget_display("tishi1");
 		}
+		checklistempty();
 		return true;
 	}
-	else
-	{
-		widget_hide("WFILIST_3");
-	}
+	//else
+	//{
+	//	widget_hide("WFILIST_3");
+	//}
 	initshow();
 	initshow2();
 	switch_wds();
@@ -425,6 +445,7 @@ function initValue()
 	{
 		widget_hide("buttontable");
 	}
+	checklistempty();
 }
 
 function help()
@@ -456,17 +477,17 @@ function help()
 </tr>
 
 <tr id="hide1">
-<td class="head" id="wdsswitch"></td>
+<td class="head_s" id="wdsswitch"></td>
 	<td>
 	<input type="radio" ~cWDSON_OFF:on~ id="rad_1" name="WDSON_OFF" value="on" onclick="switch_wds();" checked /><label for="rad_1" id="onbutton"></label>
 	<input type="radio" ~cWDSON_OFF:off~ id="rad_2" name="WDSON_OFF" value="off" onclick="switch_wds();"/><label for="rad_2" id="offbutton"></label>
 	<input style="display:none" name="STA_SSID" id="STA_SSID" maxlength=32 size=32 class="handaer_text_content" value="~~STA_SSID~">
-	<input style="display:none" name="STA_ROOTAP_MAC" id="STA_ROOTAP_MAC" maxlength=32 size=32 class="handaer_text_content" value="~~STA_ROOTAP_MAC~">
+	<input style="display:none" name="ROOTAP_MAC" id="ROOTAP_MAC" maxlength=32 size=32 class="handaer_text_content" value="~~ROOTAP_MAC~">
 	</td>
 </tr>
 <tr id="dwsset2">
   <td class="head" id="Alreadc">当前已连接WiFi</td>
-  <td><input  maxlength=32 size=32 value="~~STA_SSID~" readonly></td>
+  <td><input id="now_1" maxlength=32 size=32 value="~~STA_SSID~" readonly></td>
 </tr>
 
 <tr id="dwsset3">
@@ -497,18 +518,18 @@ function help()
 </tr>
 
 <tr id="hide2">
-<td class="head" id="wdsswitch2"></td>
+<td class="head_s" id="wdsswitch2"></td>
 	<td>
 	<input type="radio" ~cWDSON_OFF_3:on~ id="rad_12" name="WDSON_OFF_3" value="on" onclick="switch_wds2();" checked /><label for="rad_12" id="onbutton2"></label>
 	<input type="radio" ~cWDSON_OFF_3:off~ id="rad_22" name="WDSON_OFF_3" value="off" onclick="switch_wds2();"/><label for="rad_22" id="offbutton2"></label>
-	<input style="display:none" name="STA_SSID_3" id="STA_SSID_3" maxlength=32 size=32 class="handaer_text_content" value="~~STA_SSID_3~">
-	<input style="display:none" name="STA_ROOTAP_MAC_3" id="STA_ROOTAP_MAC_3" maxlength=32 size=32 class="handaer_text_content" value="~~STA_ROOTAP_MAC_3~">
+	<input style="display:none" name="STA_SSID_2" id="STA_SSID_2" maxlength=32 size=32 class="handaer_text_content" value="~~STA_SSID_2~">
+	<input style="display:none" name="ROOTAP_MAC_2" id="ROOTAP_MAC_2" maxlength=32 size=32 class="handaer_text_content" value="~~ROOTAP_MAC_2~">
 
 	</td>
 </tr>
 <tr id="dwsset22">
   <td class="head" id="Alreadc2">当前已连接WiFi</td>
-  <td><input  maxlength=32 size=32 value="~~STA_SSID_3~" readonly></td>
+  <td><input id="now_2" maxlength=32 size=32 value="~~STA_SSID_2~" readonly></td>
 </tr>
 
 <tr id="dwsset32">
@@ -521,7 +542,7 @@ function help()
  
 <tr style="display:none" id="tt22">
   <td class="head" id="R_pword2"></td>
-  <td><span id="pwdinput2"><input type="password" id="pwd2" name="STA_PSK_KEY_3" maxlength="32" size="32" class="handaer_text_content" value="~~STA_PSK_KEY_3~" /></span>&nbsp;<input type="checkbox" id="cccc2" onClick="showpwd2()"/>&nbsp;<label for="cccc2" id="showp2"></label></td>
+  <td><span id="pwdinput2"><input type="password" id="pwd2" name="STA_PSK_KEY_2" maxlength="32" size="32" class="handaer_text_content" value="~~STA_PSK_KEY_2~" /></span>&nbsp;<input type="checkbox" id="cccc2" onClick="showpwd2()"/>&nbsp;<label for="cccc2" id="showp2"></label></td>
 </tr>
 
 <tr style="display:none" id="tishi2">
@@ -538,9 +559,9 @@ function help()
 	<input type="submit" name="WIRRE" id="WIRRE" style="display:none" value="WIRRE">
 	<input type="text" style="display:none" name="INDEX" id="INDEX" value="~~INDEX~">
 	<input type="text" style="display:none" name="WDS_CHAN" id="WDS_CHAN" size="20" maxlength="32" value="~~WDS_CHAN~">	
-	<input type="text" style="display:none" name="STA_AP_SECMODE" id="STA_AP_SECMODE" size="20" maxlength="32" value="~~STA_AP_SECMODE~">	
-	<input type="text" style="display:none" name="WDS_CHAN_3" id="WDS_CHAN_3" size="20" maxlength="32" value="~~WDS_CHAN_3~">	
-	<input type="text" style="display:none" name="STA_AP_SECMODE_3" id="STA_AP_SECMODE_3" size="20" maxlength="32" value="~~STA_AP_SECMODE_3~">	
+	<input type="text" style="display:none" name="STA_SECMODE" id="STA_SECMODE" size="20" maxlength="32" value="~~STA_SECMODE~">	
+	<input type="text" style="display:none" name="WDS_CHAN_2" id="WDS_CHAN_2" size="20" maxlength="32" value="~~WDS_CHAN_2~">	
+	<input type="text" style="display:none" name="STA_SECMODE_2" id="STA_SECMODE_2" size="20" maxlength="32" value="~~STA_SECMODE_2~">	
   </td>
 </tr>
 </table>

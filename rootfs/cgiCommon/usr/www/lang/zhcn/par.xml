@@ -11,7 +11,7 @@
 	<message msgid="par work" msgstr="生效" />
 	<message msgid="par offwork" msgstr="失效" />  
 	<message msgid="par bSAVE" msgstr="保存" />  
-	<message msgid="par mac_format" msgstr="例如(11:22:33:44:55:66)" />   
+	<message msgid="par mac_format" msgstr="格式(XX:XX:XX:XX:XX:XX)" />   
 	<message msgid="help" msgstr="帮助" />
 	<message msgid="toplanguage" msgstr="z" />
 	<message msgid="settingwaiting" msgstr="正在配置,请您稍等......" />
@@ -54,6 +54,7 @@
 	<message msgid="paradd t1_Time" msgstr="时间" />  
 	<message msgid="paradd t1_Status" msgstr="状态" />  
 
+	<message msgid="err MAC wuxiao" msgstr="MAC地址不合法" />
 	<message msgid="err MAC empty" msgstr="MAC地址不能为空" />
 	<message msgid="err user empty" msgstr="用户名不能为空" />
 	<message msgid="err pwd empty" msgstr="密码不能为空" />

@@ -70,6 +70,7 @@
 	<message msgid="macc mactype1" msgstr="Use the management device MAC address" />
 	<message msgid="macc mactype2" msgstr="Manually enter the MAC address" />
 
+	<message msgid="err MAC wuxiao" msgstr="MAC address illegal" />
 	<message msgid="err MAC empty" msgstr="MAC is empty " />
 	<message msgid="err user empty" msgstr="User name is empty " />
 	<message msgid="err pwd empty" msgstr="Password is empty " />

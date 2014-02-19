@@ -186,20 +186,6 @@ function checkIpAddr(field, ismask)//1447
 
 function CheckValue()
 {
-	
-	//if (document.WORKFORM.GW_MAC.value.length == 0)
-	//{
-	//	alert(_("err MAC empty"));
-	//	document.WORKFORM.GW_MAC.select();
-	//	return false;
-	//}
-	//var re = /[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}/;
-	//if (!re.test(document.WORKFORM.GW_MAC.value)||(document.WORKFORM.GW_MAC.value.length > 17))
-	//{
-	//	alert(_("err MAC format"));
-	//	document.WORKFORM.GW_MAC.select();
-	//	return false;
-	//}
 	if (!checkIpAddr(document.WORKFORM.SR_DESIP, 1))
 	{
 		document.WORKFORM.SR_DESIP.select();

@@ -206,8 +206,8 @@ if [ "${AP_STARTMODE}" = "repeater" -o "${AP_STARTMODE}" = "repeater-ind" ]; the
     fi
 	VAP_NUM=$(($VAP_NUM+1))
 	
-	export STA_RFPARAM=RF:$AP_PRIMARY_CH_3:$AP_CHMODE
-	export STA_RFPARAM_2=RF:$AP_PRIMARY_CH_4:$AP_CHMODE_2
+	export STA_RFPARAM=RF:$AP_PRIMARY_CH:$AP_CHMODE
+	export STA_RFPARAM_3=RF:$AP_PRIMARY_CH_3:$AP_CHMODE_3
 	
 	wds_flag=`cfg -e | grep  WDSON_OFF= | awk -F'=' '{print $2}'`
 	if [ "${wds_flag}" = "on" ];then
@@ -227,7 +227,7 @@ if [ "${AP_STARTMODE}" = "repeater" -o "${AP_STARTMODE}" = "repeater-ind" ]; the
 	wds_flag_2=`cfg -e | grep  WDSON_OFF_3= | awk -F'=' '{print $2}'`
 	if [ "${wds_flag_2}" = "on" ];then
 	if [ "s$STA_SSID_2" != "s" ];then
- 	   makeVAP ${STAMODE} "$STA_SSID_2" $STA_RADIO_ID_2:$STA_RFPARAM_2
+ 	   makeVAP ${STAMODE} "$STA_SSID_2" $STA_RADIO_ID_2:$STA_RFPARAM_3
 	    if [ $? != 0 ]; then
 	        echo "Unable to create VAP!"
         	exit

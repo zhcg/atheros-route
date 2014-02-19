@@ -12,13 +12,17 @@
 	<message msgid="help" msgstr="帮助" />
 	<message msgid="toplanguage" msgstr="z" />
 	<message msgid="settingwaiting" msgstr="正在配置,请您稍等......" />
+
+	<message msgid="wless ms" msgstr="毫秒" />
+	<message msgid="wless byte" msgstr="字节" />
+
 	
 	<message msgid="wless title" msgstr="无线高级设置" />  
 	
 	<message msgid="wless des" msgstr="配置无线高级设置参数" />  
 
 	<message msgid="wless t1_title1" msgstr="网络频段:2.4GHz" />  
-	<message msgid="wless t1_title2" msgstr="网络频段:5.0GHz" />  
+	<message msgid="wless t1_title2" msgstr="网络频段:5GHz" />  
 	
 	<message msgid="wless ti_pow" msgstr="调整发射功率" />  
 	<message msgid="wless t1_high" msgstr="高" />  
@@ -33,8 +37,9 @@
 
 	<message msgid="wless wifititle" msgstr="无线基本设置" />
 	<message msgid="wless wifititle1" msgstr="网络频段:2.4GHz" />
-	<message msgid="wless wifititle2" msgstr="网络频段:5.0GHz" />
+	<message msgid="wless wifititle2" msgstr="网络频段:5GHz" />
 
+	<message msgid="err MAC wuxiao" msgstr="MAC地址不合法" />
 	<message msgid="err MAC empty" msgstr="MAC地址不能为空" />
 	<message msgid="err user empty" msgstr="用户名不能为空" />
 	<message msgid="err pwd empty" msgstr="密码不能为空" />

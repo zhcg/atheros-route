@@ -98,6 +98,7 @@
 
 	<message msgid="man use" msgstr="USE" />
 	<message msgid="man delete" msgstr="DELETE" />
+	<message msgid="err MAC wuxiao" msgstr="MAC address illegal" />
 	<message msgid="err MAC empty" msgstr="MAC is empty " />
 	<message msgid="err user empty" msgstr="User name is empty " />
 	<message msgid="err pwd empty" msgstr="Password is empty " />
