@@ -70,11 +70,14 @@ cfg -a WLAN_ON_BOOT=${WLAN_ON_BOOT:="y"}
 #
 #
 
-cfg -a AP_STARTMODE=${AP_STARTMODE:="standard"}
+cfg -a AP_STARTMODE=${AP_STARTMODE:="dual"}
 cfg -a WIFION_OFF=${WIFION_OFF:="on"}
 cfg -a AP_RADIO_ID=${AP_RADIO_ID:=0}
 cfg -a AP_RADIO_ID_2=${AP_RADIO_ID_2:=0}
-
+cfg -a AP_RADIO_ID_3=${AP_RADIO_ID_3:=1}
+cfg -a AP_RADIO_ID_4=${AP_RADIO_ID_4:=1}
+cfg -a STA_RADIO_ID=${STA_RADIO_ID:=0}
+cfg -a STA_RADIO_ID_2=${STA_RADIO_ID_2:=1}
 export NUMRADIO_AHB=1
 
 

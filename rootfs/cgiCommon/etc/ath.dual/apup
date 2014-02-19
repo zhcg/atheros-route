@@ -176,7 +176,10 @@ if [ "${AP_STARTMODE}" = "repeater" -o "${AP_STARTMODE}" = "repeater-ind" ]; the
         APMODE="ap-wds-ind"
         STAMODE="sta-wds-ind"
     fi
-	VAP_NUM=0
+
+    rm -rf /tmp/.apcfg
+
+    VAP_NUM=0
     makeVAP ${APMODE} "$AP_SSID" $AP_RADIO_ID:$AP_RFPARAM $BEACON_INT
     if [ $? != 0 ]; then
         echo "Unable to create VAP!"
@@ -202,6 +205,10 @@ if [ "${AP_STARTMODE}" = "repeater" -o "${AP_STARTMODE}" = "repeater-ind" ]; the
         exit
     fi
 	VAP_NUM=$(($VAP_NUM+1))
+	
+	export STA_RFPARAM=RF:$AP_PRIMARY_CH_3:$AP_CHMODE
+	export STA_RFPARAM_2=RF:$AP_PRIMARY_CH_4:$AP_CHMODE_2
+	
 	wds_flag=`cfg -e | grep  WDSON_OFF= | awk -F'=' '{print $2}'`
 	if [ "${wds_flag}" = "on" ];then
 	if [ "s$STA_SSID" != "s" ];then
@@ -260,6 +267,7 @@ if [ "${AP_STARTMODE}" = "repeater" -o "${AP_STARTMODE}" = "repeater-ind" ]; the
 	
 	if [ "${wds_flag_2}" = "on" ];then	
 	if [ "s$STA_SSID_2" != "s" ];then
+	rm -fr /tmp/sta_conf_filename
         activateVAP ath$VAP_NUM:$STA_RADIO_ID_2 br0 $STA_SECMODE_2 $STA_SECFILE_2 $WPS_ENABLE_2
 	if [ -f /tmp/sta_conf_filename ]; then
             wpa_supplicant `cat /tmp/sta_conf_filename` &

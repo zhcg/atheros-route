@@ -4670,6 +4670,7 @@ int main(int argc,char **argv)
 		CFG_get_by_name("WDS_MAC",mac);
 		sprintf(pChar,"iwconfig ath1 ap  %s",mac);
 		Execute_cmd(pChar, rspBuff);*/
+		#if 0
 		if((flag==1)||(flag==3))
 		{
 			if(strcmp(valBuff3,"on") == 0){
@@ -4692,6 +4693,7 @@ int main(int argc,char **argv)
 				Execute_cmd(pChar, rspBuff);
 			}
 		}
+		#endif
 		/*Execute_cmd("iwpriv ath1 wds 1", rspBuff);
 		Execute_cmd("brctl addif br0 ath1", rspBuff);
 		Execute_cmd("ifconfig ath1 up", rspBuff);*/
