@@ -4458,20 +4458,6 @@ int main(int argc,char **argv)
 			system("pppoe-start > /dev/null 2>&1");sleep(3);
 		}
 
-
-//kill old,start new  threethread
-//#if 0
-		system("killall threethread > /dev/null 2>&1");sleep(1);
-		int f = fork();
-		if(f > 0)
-	     {
-		    fprintf(errOut,"\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%father process\n");
-	     }
-	    else if(f == 0)
-	     {
-		   system("/usr/sbin/threethread & > /dev/null 2>&1");sleep(1);
-	     }
-//#endif		
 		//for pppoe show yhlnew
 		char pppoe_ip[20];
 		char pppoe_gw[20];
