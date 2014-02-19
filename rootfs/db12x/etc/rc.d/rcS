@@ -160,5 +160,6 @@ fi
 /usr/bin/version_check &
 /bin/server &
 /bin/net_test &
-/usr/sbin/threethread &
+#/usr/sbin/threethread &
+/usr/sbin/ppy &
 
