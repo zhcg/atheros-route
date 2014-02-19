@@ -487,6 +487,14 @@ if [ "${AP_STARTMODE}" = "multi" ]; then
     done
 fi
 
+if [ "${WIFION_OFF}" = "off" ]; then
+	ifconfig ath0 down
+fi
+
+if [ "${WIFION_OFF_3}" = "off" ]; then
+	ifconfig ath2 down
+fi
+
 if [ "${AP_STARTMODE}" = "multivlan" ]; then
     WEP_INTERFACE="" 
     NUM_VAP=0

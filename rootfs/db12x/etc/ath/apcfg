@@ -70,6 +70,7 @@ cfg -a WLAN_ON_BOOT=${WLAN_ON_BOOT:="y"}
 #
 #
 
+#cfg -a AP_STARTMODE=${AP_STARTMODE:="standard"}
 cfg -a AP_STARTMODE=${AP_STARTMODE:="dual"}
 cfg -a WIFION_OFF=${WIFION_OFF:="on"}
 cfg -a AP_RADIO_ID=${AP_RADIO_ID:=0}
@@ -98,14 +99,17 @@ cfg -a AP_CHMODE=${AP_CHMODE:="11NGHT40PLUS"}
 ##this is for setting default HIDESSID disable 
 ##
 cfg -a AP_HIDESSID=${AP_HIDESSID:="0"}
+cfg -a AP_HIDESSID_2=${AP_HIDESSID_2:="1"}
+cfg -a AP_HIDESSID_3=${AP_HIDESSID_3:="0"}
+cfg -a AP_HIDESSID_4=${AP_HIDESSID_4:="1"}
 
 
 ##
 ## Set up the channel for dual mode
 ##
 
-cfg -a AP_PRIMARY_CH_2=${AP_PRIMARY_CH_2:=40}
-cfg -a AP_CHMODE_2=${AP_CHMODE_2:="11NAHT40MINUS"}
+cfg -a AP_PRIMARY_CH_3=${AP_PRIMARY_CH_3:=40}
+cfg -a AP_CHMODE_3=${AP_CHMODE_3:="11NAHT40MINUS"}
 
 ##
 ## This is for pure G or pure N operations.  Hmmmm...
@@ -170,9 +174,12 @@ mac1=`ifconfig | grep br0 | awk -F ' ' '{print $5}' | awk -F ':' '{print $5}'`
 mac2=`ifconfig | grep br0 | awk -F ' ' '{print $5}' | awk -F ':' '{print $6}'`
 
 cfg -a AP_SSID="${AP_SSID:=HBD_WIFI_2G_$mac1$mac2}"
+cfg -a AP_SSID_2="${AP_SSID_2:=HBD_WIFI_2G_Hide}"
 
 if [ "${AP_STARTMODE}" = "dual" ]; then
-cfg -a AP_SSID_2="${AP_SSID_2:=HBD_WIFI_5G_$mac1$mac2}"
+#cfg -a AP_SSID_2="${AP_SSID_2:=HBD_WIFI_5G_$mac1$mac2}"
+cfg -a AP_SSID_3="${AP_SSID_3:=HBD_WIFI_5G_$mac1$mac2}"
+cfg -a AP_SSID_4="${AP_SSID_4:=HBD_WIFI_5G_Hide}"
 fi
 
 ##

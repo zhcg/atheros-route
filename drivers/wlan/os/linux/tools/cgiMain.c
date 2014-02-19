@@ -4713,7 +4713,15 @@ int main(int argc,char **argv)
 		char valBuff7[128];	
 		char valBuff8[128];	
 		char valBuff9[128];
-		char valBuff10[128];			
+		char valBuff10[128];
+		
+		char valBuff_3[128];	
+		char valBuff2_3[128];	
+		char valBuff4_3[128];	
+		char valBuff5_3[128];
+		char valBuff7_3[128];	
+		char valBuff8_3[128];	
+		char valBuff10_3[128];
 		int flag=0;
 
 		//1.get old value from flash
@@ -4729,6 +4737,15 @@ int main(int argc,char **argv)
 		Execute_cmd("cfg -e | grep \"AP_PRIMARY_CH=\" | awk -F \"=\" \'{print $2}\'",valBuff7);
 		Execute_cmd("cfg -e | grep \"AP_HIDESSID=\" | awk -F \"=\" \'{print $2}\'",valBuff8);
 		Execute_cmd("cfg -e | grep \"AP_CHMODE=\" | awk -F \"=\" \'{print $2}\'",valBuff10);
+
+		//get 5G's old value from flash
+		Execute_cmd("cfg -e | grep \"WIFION_OFF_3=\" | awk -F \"=\" \'{print $2}\'",valBuff_3);
+		Execute_cmd("cfg -e | grep \"AP_SSID_3=\" | awk -F \"AP_SSID_3=\" '{print $2}'",valBuff2_3);
+		Execute_cmd("cfg -s | grep \"PSK_KEY_3:\" | awk -F \"=\" \'{print $2}\'",valBuff4_3);
+		Execute_cmd("cfg -e | grep \"AP_SECMODE_3=\"",valBuff5_3);
+		Execute_cmd("cfg -e | grep \"AP_PRIMARY_CH_3=\" | awk -F \"=\" \'{print $2}\'",valBuff7_3);
+		Execute_cmd("cfg -e | grep \"AP_HIDESSID_3=\" | awk -F \"=\" \'{print $2}\'",valBuff8_3);
+		Execute_cmd("cfg -e | grep \"AP_CHMODE_3=\" | awk -F \"=\" \'{print $2}\'",valBuff10_3);
 		
 		//fprintf(errOut,"[luodp] WIFI: %s\n%s%s\n%s\n",valBuff,valBuff2,valBuff5,valBuff4);
 		//2.save new config to flash
@@ -4780,14 +4797,16 @@ int main(int argc,char **argv)
 		if((strstr(valBuff,valBuff3) == 0) && (strcmp(valBuff3,"on") == 0) )
 		{
 			//fprintf(errOut,"[luodp] SECMODE here3");
-			Execute_cmd("apup > /dev/null 2>&1", rspBuff);
+			//Execute_cmd("apup > /dev/null 2>&1", rspBuff);
+			Execute_cmd("ifconfig ath0 up > /dev/null 2>&1", rspBuff);
 			flag=3;
 		}
 		if((strstr(valBuff,valBuff3) == 0) && (strcmp(valBuff3,"off") == 0) )
 		{
 			//fprintf(errOut,"[luodp] SECMODE here4");
-			Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
-			flag=4;
+			//Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
+			Execute_cmd("ifconfig ath0 down > /dev/null 2>&1", rspBuff);
+			//flag=5;
 		}
 		//ssid [TODO]
 		CFG_get_by_name("AP_SSID",valBuff4);
@@ -4799,6 +4818,7 @@ int main(int argc,char **argv)
 			//fprintf(errOut,"[luodp] SECMODE here6");
 			sprintf(pChar,"iwconfig ath0 essid %s  > /dev/null 2>&1",valBuff4);
 			Execute_cmd(pChar, rspBuff);
+			#if 0
 			Execute_cmd("cfg -e | grep \"AP_SECMODE=\"",valBuff9);
 			if(strstr(valBuff9,"WPA") != 0)
 			{
@@ -4807,6 +4827,7 @@ int main(int argc,char **argv)
 				Execute_cmd("killall hostapd > /dev/null 2>&1",rspBuff);
 				Execute_cmd("hostapd -B /tmp/secath0 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
 			}
+			#endif
 		}
 		//channel
 		CFG_get_by_name("AP_PRIMARY_CH",valBuff4);
@@ -4877,10 +4898,232 @@ int main(int argc,char **argv)
 		}*/
 		else if(flag == 5)  /*deal password is changed, restart hostapd   by zzw*/
 		{
+			int i, j, k;
+			char pr_buf[50];
 			Execute_cmd("cfg -t0 /etc/ath/PSK.ap_bss ath0 > /tmp/secath0",rspBuff);
-			Execute_cmd("killall hostapd > /dev/null 2>&1",rspBuff);
+			//Execute_cmd("killall hostapd > /dev/null 2>&1",rspBuff);
+			/*get the hostapd for ath0's pid, to kill it, then restart it*/
+			Execute_cmd("ps | grep 'hostapd -B /tmp/secath0 -e /etc/wpa2/entropy' | awk -F ' ' '{print $1}'", valBuff);
+			fprintf(errOut,"the kill process is [%s] %d\n",valBuff, strlen(valBuff));
+			if(strstr(valBuff, "<br>"))
+			{
+				while(valBuff[i])
+				{
+					if(valBuff[i] == '\n')
+					{
+						k = 1;
+						break;
+					}
+					//fprintf(errOut," is [%c] \n", valBuff[i]);
+					i++;
+				}
+				if(k == 1)
+				{
+					memcpy(pr_buf, valBuff, i);
+					//fprintf(errOut," is [%s] \n", pr_buf);
+					sprintf(pChar, "kill %s > /dev/null 2>&1", pr_buf);
+					Execute_cmd(pChar, rspBuff);
+
+					j = i+5;
+					while(valBuff[i+5])
+					{
+						if(valBuff[i+5] == '\n')
+						{
+							k = 2;
+							break;
+						}
+						//fprintf(errOut," is [%c] \n", valBuff[i+5]);
+						i++;
+					}
+					if(k == 2)
+					{
+						memcpy(pr_buf, &valBuff[j], i+5-j);
+						//fprintf(errOut," is [%s] \n", pr_buf);
+						sprintf(pChar, "kill %s > /dev/null 2>&1", pr_buf);
+						Execute_cmd(pChar, rspBuff);
+					}
+				}
+			}
 			Execute_cmd("hostapd -B /tmp/secath0 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
 		}
+#if 1
+		/*deal with wifi 5G setting*/
+		flag = 0;
+		//do new config pid
+		//TODO key check
+		CFG_get_by_name("PSK_KEY_3",valBuff3);
+		//fprintf(errOut,"web PSK_KEY_3 is [%s] \n",valBuff3);
+		//fprintf(errOut,"flash PSK_KEY_3 is [%s] \n",valBuff4_3);
+		sprintf(valBuff6,"%s\n<br>",valBuff3);
+		if((strcmp(valBuff6,valBuff4_3) != 0)&&(strcmp(valBuff6,"\n<br>") != 0))
+		{
+			CFG_set_by_name("PSK_KEY_3",valBuff3);
+			flag = 5;
+		}
+		
+		//TODO SECMODE
+		CFG_get_by_name("AP_SECMODE_3",valBuff3);;
+		if((strstr(valBuff5_3,valBuff3) == 0)&&(strcmp(valBuff3,"None") != 0))
+		{
+			CFG_set_by_name("AP_SECMODE_3","WPA");
+			CFG_set_by_name("AP_WPA_3","3");
+			CFG_set_by_name("AP_CYPHER_3","TKIP CCMP");
+			CFG_set_by_name("AP_SECFILE_3","PSK"); 
+			flag = 5;
+		}
+		if((strstr(valBuff5_3,valBuff3) == 0)&&(strcmp(valBuff3,"WPA") != 0))
+		{
+			CFG_set_by_name("AP_SECMODE_3","None");
+			flag=2;
+		}
+		
+		//save new add  to flash 
+		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+		writeParameters("/tmp/.apcfg","w+",0);
+		
+		CFG_get_by_name("WIFION_OFF_3",valBuff3);
+		//fprintf(errOut,"web WIFION_OFF_3 is [%s] \n",valBuff3);
+		//fprintf(errOut,"flash WIFION_OFF_3 is [%s] \n",valBuff_3);
+		if((strstr(valBuff_3,valBuff3) == 0) && (strcmp(valBuff3,"on") == 0) )
+		{
+			Execute_cmd("ifconfig ath2 up > /dev/null 2>&1", rspBuff);
+		}
+		if((strstr(valBuff_3,valBuff3) == 0) && (strcmp(valBuff3,"off") == 0) )
+		{
+			//Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
+			Execute_cmd("ifconfig ath2 down > /dev/null 2>&1", rspBuff);
+			//flag = 5;
+		}
+		
+		//ssid [TODO]
+		CFG_get_by_name("AP_SSID_3",valBuff4);
+		//fprintf(errOut,"web AP_SSID_3 is [%s] \n",valBuff4);
+		//fprintf(errOut,"flash AP_SSID_3 is [%s] \n",valBuff2_3);
+		sprintf(valBuff5,"\"%s\"\n<br>",valBuff4);
+		if((strcmp(valBuff2_3,valBuff5) != 0)&&(flag==0)&&(strcmp(valBuff3,"on") == 0))
+		{
+			sprintf(pChar,"iwconfig ath2 essid %s  > /dev/null 2>&1",valBuff4);
+			Execute_cmd(pChar, rspBuff);
+			//flag = 5;
+			/*Execute_cmd("cfg -e | grep \"AP_SECMODE_3=\"",valBuff9);
+			if(strstr(valBuff9,"WPA") != 0)
+			{
+				//TODO
+				fprintf(errOut,"restart hostapd \n");
+				Execute_cmd("cfg -t0 /etc/ath/PSK.ap_bss ath2 > /tmp/secath2",rspBuff);
+				Execute_cmd("killall hostapd > /dev/null 2>&1",rspBuff);
+				Execute_cmd("hostapd -B /tmp/secath2 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+			}*/
+		}
+		
+		//channel
+		CFG_get_by_name("AP_PRIMARY_CH_3",valBuff4);
+		//fprintf(errOut," web valBuff4 is [%s] \n",valBuff4);
+		//fprintf(errOut," flash valBuff7_3 is [%s] \n",valBuff7_3);
+		sprintf(valBuff5,"%s\n<br>",valBuff4);
+		if((strcmp(valBuff7_3,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0))
+		{
+			memcpy(valBuff4, "40", 2);
+			Execute_cmd("iwpriv ath2 mode 11NAHT40MINUS", rspBuff);
+			CFG_set_by_name("AP_CHMODE_3","11NAHT40MINUS");
+			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+			writeParameters("/tmp/.apcfg","w+",0);
+			sprintf(pChar,"iwconfig ath2 channel %s  > /dev/null 2>&1",valBuff4);
+			Execute_cmd(pChar, rspBuff);
+			#if 0
+			//11NAHT40PLUS/11NAHT40MINUS
+			if(strstr(valBuff10,"11NAHT40PLUS")!=0)
+			{
+				if(atoi(valBuff4)>=10)
+				{
+					Execute_cmd("iwpriv ath2 mode 11NAHT40MINUS", rspBuff);
+					CFG_set_by_name("AP_CHMODE_3","11NAHT40MINUS");
+				}
+			}else if(strstr(valBuff10,"11NAHT40MINUS")!=0)
+			{
+				if(atoi(valBuff4)<=4)
+				{
+					Execute_cmd("iwpriv ath2 mode 11NAHT40PLUS", rspBuff);
+					CFG_set_by_name("AP_CHMODE_3","11NAHT40PLUS");
+				}
+			}
+			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+			writeParameters("/tmp/.apcfg","w+",0);
+			sprintf(pChar,"iwconfig ath2 channel %s  > /dev/null 2>&1",valBuff4);
+			Execute_cmd(pChar, rspBuff);
+			#endif
+		}
+		
+		//hide ssid
+		CFG_get_by_name("AP_HIDESSID_3",valBuff4);
+		//fprintf(errOut,"web valBuff4 is [%s] \n",valBuff4);
+		//fprintf(errOut,"flash valBuff8_3 is [%s] \n",valBuff8_3);
+		sprintf(valBuff5,"%s\n<br>",valBuff4);
+		if((strcmp(valBuff8_3,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0)&&(strcmp(valBuff4,"1") == 0))
+		{
+			Execute_cmd("iwpriv ath2 hide_ssid 1  > /dev/null 2>&1", rspBuff);
+		}
+		if((strcmp(valBuff8_3,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0)&&(strcmp(valBuff4,"0") == 0))
+		{
+			Execute_cmd("iwpriv ath2 hide_ssid 0  > /dev/null 2>&1", rspBuff);
+		}
+		if(flag==2)
+		{
+			Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
+			Execute_cmd("apup > /dev/null 2>&1", rspBuff);
+		}
+		else if(flag == 5)  /*deal password is changed, restart hostapd   by zzw*/
+		{
+			int i, j, k;
+			char pr_buf[50];
+			Execute_cmd("cfg -t3 /etc/ath/PSK.ap_bss ath2 > /tmp/secath2",rspBuff);
+			//Execute_cmd("killall hostapd > /dev/null 2>&1",rspBuff);
+			/*get the hostapd for ath2's pid, to kill it, then restart it*/
+			Execute_cmd("ps | grep 'hostapd -B /tmp/secath2 -e /etc/wpa2/entropy' | awk -F ' ' '{print $1}'", valBuff);
+			fprintf(errOut,"the kill process is [%s] %d\n",valBuff, strlen(valBuff));
+			if(strstr(valBuff, "<br>"))
+			{
+				while(valBuff[i])
+				{
+					if(valBuff[i] == '\n')
+					{
+						k = 1;
+						break;
+					}
+					//fprintf(errOut," is [%c] \n", valBuff[i]);
+					i++;
+				}
+				if(k == 1)
+				{
+					memcpy(pr_buf, valBuff, i);
+					//fprintf(errOut," is [%s] \n", pr_buf);
+					sprintf(pChar, "kill %s > /dev/null 2>&1", pr_buf);
+					Execute_cmd(pChar, rspBuff);
+
+					j = i+5;
+					while(valBuff[i+5])
+					{
+						if(valBuff[i+5] == '\n')
+						{
+							k = 2;
+							break;
+						}
+						//fprintf(errOut," is [%c] \n", valBuff[i+5]);
+						i++;
+					}
+					if(k == 2)
+					{
+						memcpy(pr_buf, &valBuff[j], i+5-j);
+						//fprintf(errOut," is [%s] \n", pr_buf);
+						sprintf(pChar, "kill %s > /dev/null 2>&1", pr_buf);
+						Execute_cmd(pChar, rspBuff);
+					}
+				}
+			}
+			Execute_cmd("hostapd -B /tmp/secath2 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+		}
+#endif
+		
 		gohome =1;
     }
 	//login settings
