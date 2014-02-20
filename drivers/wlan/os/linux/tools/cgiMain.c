@@ -4462,8 +4462,8 @@ int main(int argc,char **argv)
 			fprintf(errOut,"auto pppoe-setup cmdstr-----%s\n",cmdstr);
 			system(cmdstr);
 
-            system("pppoe-stop > /dev/null 2>&1");sleep(3);
-			system("pppoe-start > /dev/null 2>&1");sleep(3);
+            system("pppoe-stop > /dev/null 2>&1");sleep(5);
+			system("pppoe-start > /dev/null 2>&1");sleep(5);
 		}
 		else if(!strncmp(pppoe_mode,"demand",6))
 		{  
@@ -4477,8 +4477,8 @@ int main(int argc,char **argv)
 			fprintf(errOut,"demand pppoe-setup cmdstr-----%s\n",cmdstr);
 			system(cmdstr);
 
-			system("pppoe-stop > /dev/null 2>&1");sleep(3);
-			system("pppoe-start > /dev/null 2>&1");sleep(3);
+			system("pppoe-stop > /dev/null 2>&1");sleep(5);
+			system("pppoe-start > /dev/null 2>&1");sleep(5);
 		}//demand mode
 		else if(!strncmp(pppoe_mode,"manual",6))
 		{
@@ -4492,8 +4492,8 @@ int main(int argc,char **argv)
 			fprintf(errOut,"manual pppoe-setup cmdstr-----%s\n",cmdstr);
 			system(cmdstr);   
 			
-            system("pppoe-stop > /dev/null 2>&1");sleep(3);
-			system("pppoe-start > /dev/null 2>&1");sleep(3);
+            system("pppoe-stop > /dev/null 2>&1");sleep(5);
+			system("pppoe-start > /dev/null 2>&1");sleep(5);
 		}//manual mode		
 		else if(!strncmp(pppoe_mode,"timing",6))	
 		{ 
@@ -4507,8 +4507,8 @@ int main(int argc,char **argv)
 			fprintf(errOut,"timing pppoe-setup cmdstr-----%s\n",cmdstr);
 			system(cmdstr);
 
-            system("pppoe-stop > /dev/null 2>&1");sleep(3);
-			system("pppoe-start > /dev/null 2>&1");sleep(3);
+            //system("pppoe-stop > /dev/null 2>&1");sleep(3);
+			//system("pppoe-start > /dev/null 2>&1");sleep(3);
 		}
 
 		//for pppoe show yhlnew
