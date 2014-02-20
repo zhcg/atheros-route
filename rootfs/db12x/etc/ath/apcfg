@@ -204,13 +204,22 @@ cfg -a AP_MODE_8=${AP_MODE_8:="ap"}
 export MAX_VAPS_PER_RADIO=8
 
 cfg -a AP_SECMODE=${AP_SECMODE:="None"}
-cfg -a AP_SECMODE_2=${AP_SECMODE_2:="None"}
+cfg -a AP_SECMODE_2=${AP_SECMODE_2:="WPA"}
 cfg -a AP_SECMODE_3=${AP_SECMODE_3:="None"}
-cfg -a AP_SECMODE_4=${AP_SECMODE_4:="None"}
+cfg -a AP_SECMODE_4=${AP_SECMODE_4:="WPA"}
 cfg -a AP_SECMODE_5=${AP_SECMODE_5:="None"}
 cfg -a AP_SECMODE_6=${AP_SECMODE_6:="None"}
 cfg -a AP_SECMODE_7=${AP_SECMODE_7:="None"}
 cfg -a AP_SECMODE_8=${AP_SECMODE_8:="None"}
+
+cfg -a PSK_KEY_2=12345678
+cfg -a PSK_KEY_4=12345678
+
+cfg -a AP_WPA_2=3
+cfg -a AP_WPA_4=3
+
+cfg -a AP_CYPHER_2="TKIP CCMP"
+cfg -a AP_CYPHER_4="TKIP CCMP"
 
 ##
 ## Set default secfile to PSK, only valid in WPA mode
