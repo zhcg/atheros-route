@@ -137,6 +137,12 @@ if [ "${AP_STARTMODE}" = "standard" ]; then
         exit
     fi
     activateVAP ath0:$AP_RADIO_ID br0 $AP_SECMODE $AP_SECFILE $WPS_ENABLE $WPS_VAP_TIE
+    makeVAP ap "$AP_SSID_2" $AP_RADIO_ID_2:$AP_RFPARAM_2 $BEACON_INT
+    if [ $? != 0 ]; then
+        echo "Unable to create VAP!"
+        exit
+    fi
+    activateVAP ath1:$AP_RADIO_ID_2 br0 $AP_SECMODE_2 $AP_SECFILE_2 $WPS_ENABLE_2 $WPS_VAP_TIE_2
 fi
 
 ##
