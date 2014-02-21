@@ -989,6 +989,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 
                     Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
                     Execute_cmd("wlanconfig ath0 list sta > /etc/.STAlist 2>&1", rspBuff);
+					Execute_cmd("wlanconfig ath2 list sta > /etc/.STAlist2 2>&1", rspBuff);  /*for 5G*/
 
 					fprintf(errOut,"\n%s  %d  to open [dhcpclinetlist]\n",__func__,__LINE__);
 
@@ -1197,6 +1198,58 @@ char *processSpecial(char *paramStr, char *outBuff)
                             }
                         }
                          fclose(flist);
+
+						 /*for 5G sta list*/
+						flist = fopen("/etc/.STAlist2", "r");    /*  /etc/.STAlist2   */
+						fgets(STAbuf, 128, flist);
+						while(fgets(STAbuf, 128, flist))
+						{
+							/*compare MAC*/
+							memset(buf, 0, sizeof(buf));
+							memset(mac_buf, 0, sizeof(mac_buf));
+							strncpy(buf, STAbuf, 17);
+							for(i = 0, j = 0 ; i < 6; i++, j+=3)
+								sprintf(&mac_buf[j], "%02x:", lease.mac[i]);
+
+							//fprintf(errOut,"\n%s  %d mac_buf:%s buf:%s\n",__func__,__LINE__,mac_buf,buf);
+							if(strncmp(buf, mac_buf, 17) == 0)
+							{//wireless
+								outBuff += sprintf(outBuff,"<tr>");
+								outBuff += sprintf(outBuff,"<td>%d</td>",num);
+								num++; 
+
+								if (strlen(lease.hostname) > 0)
+									outBuff += sprintf(outBuff,"<td>%s</td>",lease.hostname);
+								else
+									outBuff += sprintf(outBuff,"<td><br /></td>");
+
+								addr.s_addr = lease.ip;
+								expires = ntohl(lease.expires);
+								outBuff += sprintf(outBuff,"<td>%s</td>", inet_ntoa(addr));
+
+								//outBuff += sprintf(outBuff,"<td>%02x", lease.mac[0]);
+								//for (i = 1; i < 6; i++)
+								//     outBuff += sprintf(outBuff,":%02x", lease.mac[i]);
+								strncpy(buf, mac_buf, 17);
+								outBuff += sprintf(outBuff,"<td>%s</td>", buf);
+
+								outBuff += sprintf(outBuff,"</td>");
+
+								memset(rate_buf, 0, sizeof(rate_buf));
+								strncpy(rate_buf, &STAbuf[29], 5);
+								outBuff += sprintf(outBuff,"<td>%sbit/s</td>",rate_buf);
+								//printf("the sta's rate is %s\n", rate_buf);
+
+								/*get the Signal strength */
+								memset(rssi_buf, 0, sizeof(rssi_buf));
+								strncpy(rssi_buf, &STAbuf[35], 5);
+								outBuff += sprintf(outBuff,"<td>-%s dBm</td>",rssi_buf);//printf("the RSSI is %s\n", rssi_buf);    
+
+								outBuff += sprintf(outBuff,"</tr>");
+								break;
+							}
+						}
+						fclose(flist);
                     }
                     fclose(fp);
                 }
@@ -4409,8 +4462,8 @@ int main(int argc,char **argv)
 			fprintf(errOut,"auto pppoe-setup cmdstr-----%s\n",cmdstr);
 			system(cmdstr);
 
-            system("pppoe-stop > /dev/null 2>&1");sleep(3);
-			system("pppoe-start > /dev/null 2>&1");sleep(3);
+            system("pppoe-stop > /dev/null 2>&1");sleep(5);
+			system("pppoe-start > /dev/null 2>&1");sleep(5);
 		}
 		else if(!strncmp(pppoe_mode,"demand",6))
 		{  
@@ -4424,8 +4477,8 @@ int main(int argc,char **argv)
 			fprintf(errOut,"demand pppoe-setup cmdstr-----%s\n",cmdstr);
 			system(cmdstr);
 
-			system("pppoe-stop > /dev/null 2>&1");sleep(3);
-			system("pppoe-start > /dev/null 2>&1");sleep(3);
+			system("pppoe-stop > /dev/null 2>&1");sleep(5);
+			system("pppoe-start > /dev/null 2>&1");sleep(5);
 		}//demand mode
 		else if(!strncmp(pppoe_mode,"manual",6))
 		{
@@ -4439,8 +4492,8 @@ int main(int argc,char **argv)
 			fprintf(errOut,"manual pppoe-setup cmdstr-----%s\n",cmdstr);
 			system(cmdstr);   
 			
-            system("pppoe-stop > /dev/null 2>&1");sleep(3);
-			system("pppoe-start > /dev/null 2>&1");sleep(3);
+            system("pppoe-stop > /dev/null 2>&1");sleep(5);
+			system("pppoe-start > /dev/null 2>&1");sleep(5);
 		}//manual mode		
 		else if(!strncmp(pppoe_mode,"timing",6))	
 		{ 
@@ -4454,8 +4507,8 @@ int main(int argc,char **argv)
 			fprintf(errOut,"timing pppoe-setup cmdstr-----%s\n",cmdstr);
 			system(cmdstr);
 
-            system("pppoe-stop > /dev/null 2>&1");sleep(3);
-			system("pppoe-start > /dev/null 2>&1");sleep(3);
+            //system("pppoe-stop > /dev/null 2>&1");sleep(3);
+			//system("pppoe-start > /dev/null 2>&1");sleep(3);
 		}
 
 		//for pppoe show yhlnew

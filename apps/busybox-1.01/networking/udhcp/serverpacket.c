@@ -232,6 +232,7 @@ void add_staMac()
 	struct staList oldstalist;
 	
 	system("wlanconfig ath0 list sta > /etc/.STAlist");
+	system("wlanconfig ath2 list sta > /etc/.STAlist2");  /*for 5G*/
 	
 	/*if the /etc/.OldStaList is not exit, creat it*/
 	if((fp = fopen(OLD_STAFILE, "r")) == NULL)     /*  /etc/.OldStaList  */
@@ -264,6 +265,40 @@ void add_staMac()
 		{
 			fp = fopen(OLD_STAFILE, "r");			/*  /etc/.OldStaList  */
 		}
+		while(fread(&oldstalist, sizeof oldstalist, 1, fp) == 1)
+		{
+			LOG(LOG_INFO, "buf is %s, oldmac is %s", buf, oldstalist.macAddr);
+			if(strcmp(buf, oldstalist.macAddr) == 0)
+			{
+				ret = 1;
+				break;
+			}
+		}
+		LOG(LOG_INFO, "ret is %d", ret);
+		if(ret == 0)
+		{
+			fclose(fp);
+			fp = fopen(OLD_STAFILE, "at");
+			memset(&oldstalist, 0, sizeof(oldstalist));
+        	strncpy(oldstalist.macAddr, buf, 17);
+			fwrite(&oldstalist, sizeof(oldstalist), 1, fp);
+		}
+		fclose(fp);
+		open =  1;
+    }
+	fclose(flist);
+
+	/*for 5G*/
+	flist = fopen("/etc/.STAlist2", "r");    /*  /etc/.STAlist2   */
+	fgets(STAbuf, 128, flist);
+    while(fgets(STAbuf, 128, flist))
+    {
+    	int ret = 0;
+    	memset(buf, 0, sizeof buf);
+		strncpy(buf, STAbuf, 17);
+		LOG(LOG_INFO, "open is %d", open);
+
+		fp = fopen(OLD_STAFILE, "r");			/*  /etc/.OldStaList  */
 		while(fread(&oldstalist, sizeof oldstalist, 1, fp) == 1)
 		{
 			LOG(LOG_INFO, "buf is %s, oldmac is %s", buf, oldstalist.macAddr);
