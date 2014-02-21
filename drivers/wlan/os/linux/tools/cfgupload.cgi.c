@@ -3,8 +3,38 @@
 #include "stdlib.h"
 #include "dirent.h"
 #include <assert.h>
+#include "filelist.h"
 
 static FILE *errOut;
+
+void restore_file(char *filename)
+{
+    FILE *p = NULL;
+    char cmd[255]={0};
+    char buff[255]={0};
+    int addr = 64*1024;
+    int len = 0;
+    int i = 0;
+
+    while(strlen(backup_file_list[i]) !=0)
+    {
+        sprintf(cmd,"dd if=%s bs=1 count=8 skip=%d 2> /dev/null",filename, addr);
+
+        p = popen(cmd ,"r");
+        fgets(buff, 9, p);
+
+        addr +=8;
+        len=atoi(buff);
+        memset(cmd,0,255);
+        memset(buff,0,255);
+        sprintf(cmd,"dd if=%s of=%s bs=1 count=%d skip=%d >/dev/null 2>&1",filename, backup_file_list[i], len, addr);
+        system(cmd);
+        addr +=len;
+        fclose(p);
+        i++;
+    }
+
+}
 
 static int atoii (char *zzzz)
 {
@@ -323,7 +353,10 @@ error:
                             Reboot_tiaozhuan("cfgback","index.html");
 				//reconfig
 				int i;
-				sprintf(cmdd,"dd if=%s of=/dev/caldata   > /dev/null 2>&1",filePath);
+
+                restore_file(filePath);
+
+				sprintf(cmdd,"dd if=%s of=/dev/caldata bs=1024 count=64  > /dev/null 2>&1",filePath);
 				i = 5;
 				while(i--)
 				{

@@ -90,7 +90,7 @@ fi
 ##
 
 if [ "${IFNUM}" = "1" ]; then
-    R_SHORTGI=$SHORTGI_2
+    #R_SHORTGI=$SHORTGI_2
 	R_CWMMODE=$CWMMODE_2
     R_AMPDUENABLE=$AMPDUENABLE_2
 	R_AMPDUFRAMES=$AMPDUFRAMES_2
@@ -98,7 +98,7 @@ if [ "${IFNUM}" = "1" ]; then
 	R_TXCHAIN=$TX_CHAINMASK_2
 	R_RXCHAIN=$RX_CHAINMASK_2
 else
-    R_SHORTGI=$SHORTGI
+    #R_SHORTGI=$SHORTGI
 	R_CWMMODE=$CWMMODE
     R_AMPDUENABLE=$AMPDUENABLE
 	R_AMPDUFRAMES=$AMPDUFRAMES
@@ -109,18 +109,6 @@ else
     R_WIFI_ADV_RSTCTS=$WIFI_ADV_RSTCTS
 fi
 
-if [ "${IFNUM}" = "0" ]; then
-    R_WIFI_ADV_RSTCTS=$WIFI_ADV_RSTCTS
-    R_RATECTL=$RATECTL
-    R_MANRATE=$MANRATE
-    R_SHORTGI=$SHORTGI
-fi
-if [ "${IFNUM}" = "2" ]; then
-    R_WIFI_ADV_RSTCTS=$WIFI_ADV_RSTCTS_3
-    R_RATECTL=$RATECTL_3
-    R_MANRATE=$MANRATE_3
-    R_SHORTGI=$SHORTGI_3
-fi
 
 ESSID=$2
 BEACONINT=$4
@@ -279,6 +267,19 @@ if [ "${AP_CHANBW}" != "" ]; then
     #
 
     iwpriv ${APNAME} chanbw ${AP_CHANBW}
+fi
+
+if [ "${APNAME}" = "ath0" ]; then
+    R_WIFI_ADV_RSTCTS=$WIFI_ADV_RSTCTS
+    R_RATECTL=$RATECTL
+    R_MANRATE=$MANRATE
+    R_SHORTGI=$SHORTGI
+fi
+if [ "${APNAME}" = "ath2" ]; then
+    R_WIFI_ADV_RSTCTS=$WIFI_ADV_RSTCTS_3
+    R_RATECTL=$RATECTL_3
+    R_MANRATE=$MANRATE_3
+    R_SHORTGI=$SHORTGI_3
 fi
 
 #####################################################################

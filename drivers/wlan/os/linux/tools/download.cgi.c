@@ -3,10 +3,13 @@
 	#include<string.h>
 	#include<sys/stat.h>
 	#include<unistd.h>
+    #include "filelist.h"
 
 	#define MAX_FILE_LEN  (1024*30)
 	#define DOWNLOAD_FILE_PATH	"/tmp/"
 	#define DOWNLOAD_FILE_NAME	"cal.bin"
+
+
 static FILE *errOut;
 	const char *staFile = "/etc/.staMac";
 	struct staList
@@ -16,7 +19,38 @@ static FILE *errOut;
 		char staDesc[80];
 		struct staList *next;
 	};
+void backup_file(void)
+{
+    int i = 0;
+    int len=0;
+    char cmd[255]={0};
+    char rspBuff[255]={0};
+    int addr = 64*1024;
 
+    struct stat sb;
+
+    while(strlen(backup_file_list[i]) !=0)
+    {
+        memset(&sb,0,sizeof(struct stat));
+		stat(backup_file_list[i], &sb); //取文件的大小
+        memset(cmd,0,255);
+        sprintf(cmd,"echo \"%8d\" | dd of=/tmp/cal.bin bs=1 count=8 seek=%d > /dev/null 2>&1", sb.st_size, addr);
+        printf("%s\n", cmd);
+        system(cmd);
+        addr += 8;
+
+        memset(cmd,0,255);
+        sprintf(cmd,"cat %s >> /tmp/cal.bin 2> /dev/null", backup_file_list[i]);
+        addr += sb.st_size;
+        //printf("%s\n", cmd);
+        system(cmd);
+
+        i++;
+    }
+
+}
+
+    
 	int main(){
 		errOut = fopen("/dev/ttyS0","w");
 		FILE *fp, *fpp;
@@ -26,6 +60,9 @@ static FILE *errOut;
 		struct staList stalist;
 		
 		system("dd if=/dev/caldata of=/tmp/cal.bin  > /dev/null 2>&1");
+
+        backup_file();
+
 		if ((fp = fopen("/tmp/cal.bin", "ab")) != NULL) 
 		{
 			fwrite("\nstaMac=\n", 9, 1, fp);
