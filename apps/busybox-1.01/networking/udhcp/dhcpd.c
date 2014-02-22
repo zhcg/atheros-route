@@ -81,12 +81,12 @@ void deal_staControl()
 		{
 			memset(con_buf, 0, 20);
 			fgets(con_buf, 8, fp);
-			if(!strncmp(con_buf, "enable", 6))
+			if(!strncmp(con_buf, "disable", 6))
 			{
 				fclose(fp);
 				exit(0);
 			}
-			else if(!strncmp(con_buf, "disable", 7))
+			else if(!strncmp(con_buf, "enable", 7))
 			{
 				fclose(fp);
 				if ((fp1 = fopen("/etc/.staMac", "r")) == NULL) 
