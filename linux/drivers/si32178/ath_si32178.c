@@ -466,7 +466,7 @@ int ath_slic_open(struct inode *inode, struct file *filp)
 	int opened = 0, j;
 	slic_dma_buf_t *dmabuf;
 	ath_mbox_dma_desc *desc;
-//	slic_buf_t *scbuf;
+	slic_buf_t *scbuf;
 	unsigned long desc_p;
 	printk(KERN_CRIT "ath_slic_open ...\n");
 #if 1
@@ -514,7 +514,12 @@ int ath_slic_open(struct inode *inode, struct file *filp)
 	{
 		ath_slic_open_mode(SLIC_RX);
 		dmabuf = &sc->sc_rbuf;
+		scbuf = dmabuf->db_buf;
 		desc_p = (unsigned long) dmabuf->db_desc_p;
+		memset(sc->sc_rmall_buf, 0, NUM_DESC * ath_slic_buf_size);
+		for (j = 0; j < NUM_DESC; j++) {
+ 			dma_cache_sync(NULL, scbuf[j].bf_vaddr, ath_slic_buf_size, DMA_FROM_DEVICE);
+		}
 		ath_slic_dma_start(desc_p, 1);
 //		printk("Slic Start sc_rbuf DMA\n");
 	}
@@ -522,7 +527,12 @@ int ath_slic_open(struct inode *inode, struct file *filp)
 	{
 		ath_slic_open_mode(SLIC_TX);
 		dmabuf = &sc->sc_pbuf;
+		scbuf = dmabuf->db_buf;
 		memset(&sc_pbuf_flag, 0, sizeof(sc_pbuf_flag));
+		memset(sc->sc_pmall_buf, 0, NUM_DESC * ath_slic_buf_size);
+		for (j = 0; j < NUM_DESC; j++) {
+ 			dma_cache_sync(NULL, scbuf[j].bf_vaddr, ath_slic_buf_size, DMA_TO_DEVICE);
+		}
 		desc_p = (unsigned long) dmabuf->db_desc_p;
 		ath_slic_dma_start(desc_p, 0);
 //		printk("Slic Start sc_pbuf DMA\n");
@@ -929,10 +939,18 @@ int ath_slic_ioctl(struct inode *inode, struct file *filp,
 			break;
 		case SLIC_RELEASE:
 			{
+				int j;
 				ath_slic_softc_t *sc = &sc_buf_var;
+				slic_dma_buf_t *dmabuf;
+				slic_buf_t *scbuf;;
+				dmabuf = &sc->sc_pbuf;
+				scbuf = dmabuf->db_buf;
 				slic_dma_open = 0;
 				//清空写缓存
 				memset(sc->sc_pmall_buf, 0, NUM_DESC * ath_slic_buf_size);
+				for (j = 0; j < NUM_DESC; j++) {
+					dma_cache_sync(NULL, scbuf[j].bf_vaddr, ath_slic_buf_size, DMA_TO_DEVICE);
+				}
 				printk("Slic release...\n");
 			}
 			break;
