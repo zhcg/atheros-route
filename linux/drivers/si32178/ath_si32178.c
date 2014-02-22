@@ -518,7 +518,7 @@ int ath_slic_open(struct inode *inode, struct file *filp)
 		desc_p = (unsigned long) dmabuf->db_desc_p;
 		memset(sc->sc_rmall_buf, 0, NUM_DESC * ath_slic_buf_size);
 		for (j = 0; j < NUM_DESC; j++) {
- 			s(NULL, scbuf[j].bf_vaddr, ath_slic_buf_size, DMA_FROM_DEVICE);
+ 			dma_cache_sync(NULL, scbuf[j].bf_vaddr, ath_slic_buf_size, DMA_FROM_DEVICE);
 		}
 		ath_slic_dma_start(desc_p, 1);
 //		printk("Slic Start sc_rbuf DMA\n");
@@ -537,8 +537,10 @@ int ath_slic_open(struct inode *inode, struct file *filp)
 		ath_slic_dma_start(desc_p, 0);
 //		printk("Slic Start sc_pbuf DMA\n");
 	}
+	
 	do_echo_filter = 0;
 	return (0);
+
 }
 
 /* Receive */
