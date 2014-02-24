@@ -57,6 +57,7 @@ function switch_security_mode()
 		document.getElementById("div_security_key").style.display = "none";
 		document.wizard_form.PSK_KEY.disabled = true;
 	}
+	window.parent.iFrameHeight();
 }
 
 function switch_security_mode2()
@@ -70,6 +71,7 @@ function switch_security_mode2()
 		document.getElementById("div_security_key2").style.display = "none";
 		document.wizard_form.PSK_KEY_3.disabled = true;
 	}
+	window.parent.iFrameHeight();
 }
 
 function CheckWirelessValue()

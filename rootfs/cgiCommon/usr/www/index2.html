@@ -1,11 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<!-- TemplateBeginEditable name="doctitle" -->
 <title>HBD router settings</title>
-<!-- TemplateEndEditable -->
-<!-- TemplateBeginEditable name="head" -->
-<!-- TemplateEndEditable -->
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
@@ -42,28 +38,21 @@ function initLanguage()
 	var cook="no";
 	if (document.cookie.length > 0) {
 		var s = document.cookie.indexOf("language=");
-		//alert("s:"+s);
 		var e = document.cookie.indexOf(";", s);
-		//alert("e:"+e);
 		if (s != -1) 
 		{
 			if (e == -1)
 			{
-				//alert("e=-1:"+e);
 				cook = document.cookie.substring(s+9);
-				//alert("cook:"+cook);
 			}
 			else
 			{
-				//alert("e!=-1:"+e);
 				cook = document.cookie.substring(s+9, e);
-				//alert("cook:"+cook);
 			}
 		}
 	}
 	if((cook != "zhcn")&&(cook != "en"))
 	{
-		//alert("cook:language=zhcn"+cook);
 		document.cookie="language=zhcn; path=/";
 		window.location.reload();
 	}
@@ -227,54 +216,68 @@ function iFrameHeight()
 	document.getElementById("leftmenu").style.height=max; 
 } 
 //--> 
-
-var intTimerID;
-var intTimeout;
-var intStartTime;  
-var bolIsTimeout;
-var objIMG;
+var xmlHttp;
 var desIP;
-function begin(des)
+var destination;
+
+function createXMLHttpRequest()
+{
+	if(window.ActiveXObject)
+	{
+		xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	else if(window.XMLHttpRequest)
+	{
+		xmlHttp=new XMLHttpRequest();
+	}
+}
+function  handleStateChange()
+{
+	if(xmlHttp.readyState==4)
+	{
+		if(xmlHttp.status==200)
+		{
+			window.location.href=destination;
+		}
+	}
+}
+
+function jump2(des)
 {
 	if(des=="")
 		desIP="10.10.10.254";
 	else
 		desIP=des;
-	setTimeout(function(){ping();},200000);
+	setTimeout(function(){jump2request();},5000);	
 }
 
-function jump2(des)
+function jump2request()
 {
-	setTimeout(function(){DialogHide();window.location.href="http://"+des;},5000);	
-
+	setTimeout(function(){jump2request();},5000);
+	createXMLHttpRequest();
+	xmlHttp.onreadystatechange=handleStateChange;
+	destination = "http://"+desIP;
+	xmlHttp.open("GET","http://"+desIP+"/simpleResponse.xml?now=" + new Date().getTime(),true);
+	xmlHttp.send(null);
 }
-function ping()
-{ 
-	intTimeout = 500;
-	objIMG = new Image();
-	objIMG.onload =
-	objIMG.onerror =
-	function()
-	{
-		//alert("连接成功,准备跳转 bolIsTimeout"+bolIsTimeout);
-		clearTimeout(intTimerID);
-		if(bolIsTimeout)
-			return;
-		setTimeout(function(){DialogHide();window.location.href="http://"+desIP+"/cgi-bin/"+"crupload";},5000);
-	}               
-	intStartTime = +new Date();     
-    objIMG.src = "http://"+desIP+"/" + intStartTime;
-	intTimerID = setTimeout(timeout, intTimeout); 
-	bolIsTimeout=false;
-}                                                               
 
-function timeout()
+function ttzhuan(dIP)
 {
-	bolIsTimeout=true;
-	{
-		objIMG.src = "X:\\"; 
-		ping();
-	}
+	if(dIP=="")
+		desIP="10.10.10.254";
+	else
+		desIP=dIP;
+		
+	setTimeout(function(){startRequest();},100000);
+}
+function startRequest()
+{
+	setTimeout(function(){startRequest();},8000);
+	createXMLHttpRequest();
+	xmlHttp.onreadystatechange=handleStateChange;
+	destination ="http://"+desIP+"/cgi-bin/"+"crupload";
+	xmlHttp.open("GET","http://"+desIP+"/simpleResponse.xml?now=" + new Date().getTime(),true);
+	xmlHttp.send(null);
 }
 
 </script>

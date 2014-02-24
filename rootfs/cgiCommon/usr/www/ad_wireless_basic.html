@@ -70,6 +70,7 @@ function switch_security_mode()
 		widget_hide("div_security_key");
 		document.wizard_form.PSK_KEY.disabled = true;
 	}
+	window.parent.iFrameHeight();
 }
 function switch_security_mode2()
 {
@@ -80,6 +81,7 @@ function switch_security_mode2()
 		widget_hide("div_security_key2");
 		document.wizard_form.PSK_KEY_3.disabled = true;
 	}
+	window.parent.iFrameHeight();
 }
 function CheckWirelessValue()
 {
@@ -277,7 +279,6 @@ function switch_wifi2()
 		widget_hide("channel2");
 	}
 	window.parent.iFrameHeight();
-
 }
 function waitgifshow()
 {

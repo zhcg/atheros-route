@@ -5111,20 +5111,20 @@ int main(int argc,char **argv)
 			Execute_cmd("ifconfig ath3 down > /dev/null 2>&1", rspBuff);
 			if((atoi(valBuff4) == 165))
 			{
-				Execute_cmd("iwpriv ath2 mode 11A", rspBuff);
-				Execute_cmd("iwpriv ath3 mode 11A", rspBuff);
+				Execute_cmd("iwpriv ath2 mode 11A > /dev/null 2>&1", rspBuff);
+				Execute_cmd("iwpriv ath3 mode 11A > /dev/null 2>&1", rspBuff);
 				CFG_set_by_name("AP_CHMODE_3","11A");
 			}
 			else if( (atoi(valBuff4) == 149) || (atoi(valBuff4) == 157) )
 			{
-				Execute_cmd("iwpriv ath2 mode 11NAHT40PLUS", rspBuff);
-				Execute_cmd("iwpriv ath3 mode 11NAHT40PLUS", rspBuff);
+				Execute_cmd("iwpriv ath2 mode 11NAHT40PLUS > /dev/null 2>&1", rspBuff);
+				Execute_cmd("iwpriv ath3 mode 11NAHT40PLUS > /dev/null 2>&1", rspBuff);
 				CFG_set_by_name("AP_CHMODE_3","11NAHT40PLUS");
 			}
 			else if((atoi(valBuff4) == 161) || (atoi(valBuff4) == 153))
 			{
-				Execute_cmd("iwpriv ath2 mode 11NAHT40MINUS", rspBuff);
-				Execute_cmd("iwpriv ath3 mode 11NAHT40MINUS", rspBuff);
+				Execute_cmd("iwpriv ath2 mode 11NAHT40MINUS > /dev/null 2>&1", rspBuff);
+				Execute_cmd("iwpriv ath3 mode 11NAHT40MINUS > /dev/null 2>&1", rspBuff);
 				CFG_set_by_name("AP_CHMODE_3","11NAHT40MINUS");
 			}
 			#if 0
