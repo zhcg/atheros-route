@@ -224,7 +224,11 @@ int destroy_client(dev_status_t *dev)
 			dev->attach=0;
 			dev->audio_reconnect=0;
 			clean_who_is_online();
-		}
+			if(phone_control.vloop > 3 || phone_control.vloop < -3)
+				led_control(LED_LINE_IN);
+			else
+				led_control(LED_LINE_OUT);
+}
 		stopaudio(dev,PSTN);
 	}
 	if(dev->talkbacking == 1 || dev->talkbacked == 1)
