@@ -842,9 +842,11 @@ int UartTestDo(unsigned char *ppacket,int bytes)
 int write_passage(char type,unsigned char *packet,int bytes)
 {
 	PRINT("%s\n",__FUNCTION__);
+	//PRINT("type = 0x%x\n",type);
 	int i = 0;
 	for(i=0;i<PASSAGE_NUM;i++)
 	{
+		//PRINT("passage_list[%d].type = 0x%x\n",i,passage_list[i].type);
 		if(passage_list[i].type == type)
 		{
 			PRINT("%s\n",passage_list[i].passage_name);
@@ -1154,29 +1156,29 @@ int UartPacketDis(unsigned char *ppacket,int bytes)
 
 	switch(ppacket[PACKET_DIR_INDEX])
 	{
-		case 0x10:
+		case TYPE_STM32:
 			PRINT("UartStm32\r\n");
 			rtn = UartStm32Do(ppacket,bytes);
 			break;
-		case 0x20:
+		case TYPE_USB_PASSAGE:
 			PRINT("UsbPassage\r\n");
 			if(factory_test(ppacket+7,len_tmp-1) == -1)
 			{
-				rtn = UartPassageDo(TYPE_UART_PASSAGE,ppacket,bytes);
+				rtn = UartPassageDo(TYPE_USB_PASSAGE,ppacket,bytes);
 			}
 			break;
-		case 0x30:
+		case TYPE_UART_PASSAGE:
 			PRINT("UartPassage\r\n");
 			rtn = UartPassageDo(TYPE_UART_PASSAGE,ppacket,bytes);
 			break;
-		case 0x40:
+		case TYPE_SPI_PASSAGE:
 			PRINT("SpiPassage\r\n");
 			rtn = UartPassageDo(TYPE_SPI_PASSAGE,ppacket,bytes);
 			break;
-		case 0x50:
-			PRINT("UartTest\r\n");
-			rtn = UartTestDo(ppacket,bytes);
-			break;
+		//case TYPE_PHONE_PASSAGE:
+			//PRINT("UartTest\r\n");
+			//rtn = UartTestDo(ppacket,bytes);
+			//break;
 		default:
 			rtn = -1;
 			break;
