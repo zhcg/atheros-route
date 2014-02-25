@@ -43,6 +43,7 @@ void ath_hs_uart_init(void)
 	 * clk_step = (temp / (serial_clk)) * (clk_scale + 1);
 	 */
 
+
 	// UART1 Out of Reset
 	ath_reg_wr(ATH_RESET,
 		ath_reg_rd(ATH_RESET) & ~RST_RESET_UART1_RESET_MASK);
@@ -64,6 +65,7 @@ void ath_hs_uart_init(void)
 	ath_reg_wr(ATH_HS_UART_INT_EN, 0x1);
 
 	// GPIO Settings for HS_UART
+#if 0
 	// Enabling UART1_TD as output on GPIO10
 	data = ath_reg_rd(ATH_GPIO_OUT_FUNCTION2);
 	data = (data & ~GPIO_OUT_FUNCTION2_ENABLE_GPIO_10_MASK) |
@@ -80,10 +82,33 @@ void ath_hs_uart_init(void)
 	data = (data & 0xffffebff) | 0xa00;
 	ath_reg_wr(ATH_GPIO_OE, data);
 
+
 	// Enabling UART1_RD,UART1_CTS as inputs on GPIO 9, 11
 	ath_reg_wr(ATH_GPIO_IN_ENABLE9, 0xb090000);
-
 	// GPIO_IN_ENABLE9
+
+#else
+
+	ath_reg_rmw_set(ATH_GPIO_FUNCTIONS,
+				ATH_GPIO_FUNCTION_JTAG_DISABLE);
+
+	data = ath_reg_rd(ATH_GPIO_OE);
+	data = (data & 0xfffffffe) | 0x02;
+//	data = (data & 0xfffffffe) | 0x800;
+
+	ath_reg_wr(ATH_GPIO_OE, data);
+
+	// Enabling UART1_TD as outputs on GPIO0	
+	data = ath_reg_rd(ATH_GPIO_OUT_FUNCTION0);
+	data = (data & ~GPIO_OUT_FUNCTION0_ENABLE_GPIO_0_MASK) |
+		ATH_GPIO_OUT_FUNCTION0_ENABLE_GPIO_0(0x4f);
+	ath_reg_wr(ATH_GPIO_OUT_FUNCTION0, data);
+	// Enabling UART1_RD as inputs on GPIO1
+	ath_reg_wr(ATH_GPIO_IN_ENABLE9, 0x10000);
+
+#endif
+
+	
 	// CLOCK Settings
 	data = ath_reg_rd(ATH_HS_UART_CLK);
 	data = (data & 0xff000000) | clk_step | (clk_scale << 16);
@@ -261,7 +286,7 @@ static int ath_hs_uart_break_ctl(struct tty_struct *tty, int break_state)
 
 static void ath_hs_uart_wait_until_sent(struct tty_struct *tty, int timeout)
 {
-	//printk("%s called\n", __func__);
+	printk("%s called\n", __func__);
 	udelay(100);
 	return;
 }
@@ -301,10 +326,16 @@ static const struct tty_operations ath_hs_uart_ops = {
 static irqreturn_t ath_hs_uart_isr(int irq, void *dev_id)
 {
 	ath_hs_uart_softc_t	*sc = dev_id;
+	uint8_t	ch = ath_hs_uart_get_poll();
+	u_int32_t data = ath_reg_rd(ATH_HS_UART_INT_STATUS);
 
-	tty_insert_flip_char(sc->tty->ttys[0], ath_hs_uart_get_poll(), TTY_NORMAL);
-	ath_reg_wr(ATH_HS_UART_INT_STATUS, 0xffffffff);
-	tty_flip_buffer_push(sc->tty->ttys[0]);
+	if (sc->tty->ttys[0]) {
+		tty_insert_flip_char(sc->tty->ttys[0], ch, TTY_NORMAL);
+		ath_reg_wr(ATH_HS_UART_INT_STATUS, 0xffffffff);
+		tty_flip_buffer_push(sc->tty->ttys[0]);
+	} else {
+		ath_reg_wr(ATH_HS_UART_INT_STATUS, 0xffffffff);
+	}
 	return IRQ_HANDLED;
 }
 
@@ -333,7 +364,14 @@ static int __init ath_hs_uart_user_init(void)
 	tty->type		= TTY_DRIVER_TYPE_SERIAL;
 	tty->subtype		= SERIAL_TYPE_NORMAL;
 	tty->init_termios	= tty_std_termios;
-	tty->init_termios.c_cflag = B115200 | CS8 | CREAD | HUPCL | CLOCAL;
+	tty->init_termios.c_iflag = 0;
+	tty->init_termios.c_oflag = 0;
+	tty->init_termios.c_lflag = ~(ISIG | ECHO | ICANON | NOFLSH);
+	tty->init_termios.c_cflag = B115200 | CS8 | CREAD | HUPCL | CLOCAL & (~PARENB) & (~CSTOPB);
+
+    tty->init_termios.c_cc[VMIN] = 1;
+    tty->init_termios.c_cc[VTIME] = 0;
+
 	tty->init_termios.c_ispeed = tty->init_termios.c_ospeed = ATH_HS_UART_BAUD;
 	tty->flags		= TTY_DRIVER_REAL_RAW | TTY_DRIVER_DYNAMIC_DEV;
 	tty->driver_state	= &ath_hs_uart_softc;
