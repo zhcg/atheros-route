@@ -21,7 +21,8 @@ int main(int argc,char **argv)
 	pthread_t audiorecv_pthread;
 	pthread_t audio_readwrite_pthread;
 	pthread_t audio_incoming_pthread;
-	
+	pthread_t passage_pthread;
+
 	init_control();
 
 	pthread_create(&handle_up_msg_pthread,NULL,(void*)handle_up_msg,NULL);
@@ -53,6 +54,10 @@ int main(int argc,char **argv)
 	//control accept
 	pthread_create(&phone_control_pthread,NULL,(void*)phone_control_loop_accept,NULL);
 
+	//passage
+	pthread_create(&passage_pthread,NULL,(void*)passage_pthread_func,NULL);
+
+	pthread_join(passage_pthread,NULL);
 	pthread_join(audio_incoming_pthread,NULL);
 	pthread_join(handle_down_msg_pthread,NULL);
 	pthread_join(handle_up_msg_pthread,NULL);

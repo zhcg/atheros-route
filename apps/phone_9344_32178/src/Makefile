@@ -10,4 +10,3 @@ $(BIN):$(OBJ)
 
 clean:
 		rm -f $(BIN) $(OBJ) ../$(BIN)
-		
