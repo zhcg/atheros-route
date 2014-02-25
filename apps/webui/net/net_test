@@ -7,9 +7,9 @@ do
 ping $BAIDU test
 
 if [ $? -eq 1 ]; then
-        cfg -a INTERNET_ON=off
+        cfg -w INTERNET_ON=off
 else
-        cfg -a INTERNET_ON=on
+        cfg -w INTERNET_ON=on
 fi
 
 #cfg -c
