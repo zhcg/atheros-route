@@ -22,9 +22,54 @@ then
 else
 	mknod /dev/slic c 252 0
 fi
+if [ -c /dev/spipassage ]
+then
+	echo "/dev/spipassage node exist"
+else
+	mknod /dev/spipassage c 200 2
+fi
+if [ -c /dev/usbpassage ]
+then
+	echo "/dev/usbpassage node exist"
+else
+	mknod /dev/usbpassage c 200 0
+fi
+if [ -c /dev/uartpassage ]
+then
+	echo "/dev/uartpassage node exist"
+else
+	mknod /dev/uartpassage c 200 1
+fi
+if [ -c /dev/phonepassage ]
+then
+	echo "/dev/phonepassage node exist"
+else
+	mknod /dev/phonepassage c 200 3
+fi
+if [ -c /dev/MyModule ]
+then
+	echo "/dev/MyModule node exist"
+else
+	mknod /dev/MyModule c 180 192
+fi
+if [ -c /lib/libsqlite3.so.0 ]
+then
+	echo "sqlite found"
+else
+	ln -s /lib/libsqlite3.so.0.8.6 /lib/libsqlite3.so.0
+fi
 
 insmod /lib/modules/2.6.31/si32178/ath_si32178.ko
 insmod /lib/modules/2.6.31/spi32178/ath_spi_si32178.ko
+insmod /lib/modules/2.6.31/passage/spi/spi_passage.ko
+insmod /lib/modules/2.6.31/passage/usb/usb_passage.ko
+insmod /lib/modules/2.6.31/passage/uart/uart_passage.ko
+insmod /lib/modules/2.6.31/passage/phone/phone_passage.ko
+insmod /lib/modules/2.6.31/USB_module/module.ko
+
+sleep 7
+
+/bin/modules_server &
 
 /bin/phone_control &
 /bin/check_phone_status &
