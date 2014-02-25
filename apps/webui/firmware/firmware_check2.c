@@ -52,7 +52,7 @@ void parse_staControl(FILE *fp)
 		
 		if(!strncmp(buf, "staMac=", 7))
 		{
-			system("rm /etc/.staMac");
+			system("rm -rf /etc/.staMac");
 			fpp = fopen("/etc/.staMac", "at");
 			while(fread(&stalist, sizeof stalist, 1, fp) == 1)
 			{

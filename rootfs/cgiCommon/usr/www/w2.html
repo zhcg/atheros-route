@@ -273,7 +273,7 @@ function connectionTypeSwitch()
 		{
 			document.wizard_form.PPPOE_MODE.disabled = false;
 		}
-		pppoeOPModeSwitch();
+		//pppoeOPModeSwitch();
 	}
 	else if (document.wizard_form.WAN_MODE[4].checked == true) {
 		document.getElementById("div_wan_l2tp").style.visibility = "visible";
@@ -1026,28 +1026,24 @@ function initValue()
 			document.wizard_form.WAN_MODE[2].checked = true;
 			setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_sip"));},100);
 			change_step(1);
-			
 		}
 		else if(zidong == "dhcp")
 		{
 			document.wizard_form.WAN_MODE[1].checked = true;
 			setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_dhcp"));},100);
 			change_step(1);
-		
 		}
 		else if(zidong == "pppoe")
 		{
 			document.wizard_form.WAN_MODE[3].checked = true;
 			setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_ppp"));},100);
 			change_step(1);
-		
 		}
 		else if(zidong == "l2tp")
 		{
 			document.wizard_form.WAN_MODE[4].checked = true;
 			setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_l2tp"));},100);
 			change_step(1);
-	
 		}
 		else if(zidong == "p2tp")
 		{
