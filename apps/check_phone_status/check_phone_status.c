@@ -79,14 +79,15 @@ int get_cmd_out(char *cmd, char *buf, unsigned short buf_len)
 int main(int argc, char ** argv)
 {
     char *phone_cmd = "ps | grep phone_control | sed '/grep/'d | sed '/\\[phone_control\\]/'d | sed '/sed/'d";
-    char buf[128] = {0};
+    char *modules_cmd = "ps | grep modules_server | sed '/grep/'d | sed '/\\[modules_server\\]/'d | sed '/sed/'d";
+	char buf[128] = {0};
 
     while (1)
     {
         if (get_cmd_out(phone_cmd, buf, sizeof(buf)) < 0)
         {
             printf("get_cmd_out failed!\n");
-			continue;
+			goto NEXT;
         }
         else
         {
@@ -95,6 +96,23 @@ int main(int argc, char ** argv)
                 printf("phone_control stop!\n");
                 system("/bin/phone_control &");
                 printf("phone_control restart!\n");
+            }
+        }
+NEXT:
+        usleep(200*1000);
+        memset(buf,0,128);
+        if (get_cmd_out(modules_cmd, buf, sizeof(buf)) < 0)
+        {
+            printf("get_cmd_out failed!\n");
+			continue;
+        }
+        else
+        {
+            if (strlen(buf) == 0)
+            {
+                printf("modules_server stop!\n");
+                system("/bin/modules_server &");
+                printf("modules_server restart!\n");
             }
         }
         sleep(5);
