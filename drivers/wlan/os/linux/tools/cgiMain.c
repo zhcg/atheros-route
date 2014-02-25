@@ -199,6 +199,51 @@ static inline int isNumericOnly(char *pStr)
     return 0;
 }
 
+char *get_webuicfg(char *name, char *value)
+{
+    FILE *f;
+    char buff[255] = {0};
+    char syncWord[5];
+    char            *vPtr;
+
+    f = fopen("/tmp/.webuicfg","a+");
+    if ( !f )
+    {
+          modePrintf("open file error");
+          exit(-1);
+    }
+    fread(&syncWord,4,1,f);
+
+    while( !feof(f) )
+    {
+         fgets(buff,256,f);
+
+         if( buff[0] == 0 )
+            break;
+
+         if(vPtr=strchr(buff,0x0a))
+             *vPtr = 0;  // extract the line feed
+         else
+             break;      // No line feed, bad line.
+
+         vPtr = strchr(buff,'=');
+
+         if(!vPtr)
+             break;
+         else
+             *vPtr++ = 0;
+
+         if(!strcmp(buff,name))
+         {
+             strcpy(value,vPtr);
+             break;
+         }
+    }
+
+    fclose(f);
+    return value;
+}
+
 
 /******************************************************************************/
 /*!
@@ -434,7 +479,8 @@ char *processSpecial(char *paramStr, char *outBuff)
     */
 
     CFG_get_by_name(translateName(paramStr,paramIndexName),paramRawVal);
-
+    if(*paramRawVal == '\0')
+        get_webuicfg(translateName(paramStr,paramIndexName),paramRawVal);
 
     if(ModeFlag)
     {
@@ -3609,6 +3655,58 @@ int main(int argc,char **argv)
 
             ModeFlag = 1;
             translateFile(argv[2]);
+            exit(0);
+        }
+        else if(!strncmp(argv[1],"-w",2))
+        {
+            char    *vname;
+            char    *vval;
+            FILE    *f;
+
+            memset(&config,0,sizeof(config));
+
+            f = fopen("/tmp/.webuicfg","a+");
+            if ( !f )
+            {
+                modePrintf("open file error");
+                exit(-1);
+            }
+
+            fillParamStruct(f);
+            fclose(f);
+
+
+            if(argc == 2)
+            {
+                for(i=0;i<config.numParams;i++)
+                {
+                    if(shellEncode(config.Param[i].Val,valBuff))
+                        printf("export %s=\"%s\"\n",config.Param[i].Name,valBuff);
+                    else
+                        printf("export %s=%s\n",config.Param[i].Name,valBuff);
+                }
+                exit(0);
+            }
+
+            ModeFlag = 1;
+            vname = argv[2];
+
+            if(vval=strchr(argv[2],'='))
+                *vval++ = 0;
+            else
+            {
+                modePrintf("Mal formed string %s",argv[2]);
+                exit(-1);
+            }
+
+            /*
+            ** If setting fails, return a -1 (for scripts)
+            */
+
+            if( CFG_set_by_name(vname,vval) )
+                exit(-1);
+
+            writeParameters("/tmp/.webuicfg","w+",0);
             exit(0);
         }
         else if(!strncmp(argv[1],"-a",2))

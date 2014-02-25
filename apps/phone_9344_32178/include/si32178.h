@@ -23,4 +23,5 @@ int dial(int dialnum);
 int si32178_init(int a,int b,int c,int d,int e,int f,int g,int h);
 int checkRingStatus(vdaaRingDetectStatusType * pStatus);
 int set_onhook_monitor();
+int getFXOstatus(char *vloop,short *iloop,unsigned char *FDTStatus);
 #endif

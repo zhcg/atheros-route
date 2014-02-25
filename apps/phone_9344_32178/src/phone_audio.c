@@ -354,7 +354,7 @@ void* AudioIncomingThreadCallBack(void* argv)
 
 				if(phone_control.get_fsk == 0)
 				{
-				//	fwrite(audioincoming_buf, 1, read_ret , dtmffile);
+					//fwrite(audioincoming_buf, 1, read_ret , dtmffile);
 					if(DtmfDo((signed short *)audioincoming_buf,read_ret/2) == 2)
 					{
 						PRINT("get dtmf num...\n");
@@ -384,6 +384,8 @@ void* AudioIncomingThreadCallBack(void* argv)
 
 void *AudioReadWriteThreadCallBack(void *argv)
 {
+	int optval;
+	int optlen = sizeof(int);
 	int valid_bytes;
 	int write_bytes;
 	int send_ret;
@@ -561,7 +563,8 @@ START_WRITE:
 			if(recv_ret < 1)//或者小于0。则表示socket异常，此处需要同时处理其他线程的错误
 			{
 TBED_RECV_ERROR:
-				if(errno == EAGAIN)
+				getsockopt(devp->audio_client_fd,SOL_SOCKET,SO_ERROR,&optval, &optlen);
+				if(errno == EAGAIN && optval == 0)
 				{
 					//usleep(10*1000);
 					goto START_SEND;
@@ -612,7 +615,8 @@ START_SEND:
 				send_ret = send(devp->audio_client_fd,&input_stream_buffer[phone_audio.input_stream_rp],valid_bytes,MSG_DONTWAIT);
 				if(send_ret < 1)//或者小于0。则表示socket异常。发送线程中有错不处理其他，只需要处理自身就行
 				{
-					if(errno == EAGAIN)
+					getsockopt(devp->audio_client_fd,SOL_SOCKET,SO_ERROR,&optval, &optlen);
+					if(errno == EAGAIN && optval == 0)
 					{
 						usleep(15*1000);
 						continue;
@@ -655,7 +659,8 @@ START_SEND:
 void* AudioSendThreadCallBack(void* argv)
 {
 	PRINT("AudioSendThreadCallBack is running....\n");
-
+	int optval;
+	int optlen = sizeof(int);
 	int valid_bytes;
 	int send_ret;
 	int print_loop = 0;
@@ -709,7 +714,8 @@ void* AudioSendThreadCallBack(void* argv)
 				send_ret = send(devp->audio_client_fd,audio_sendbuf,valid_bytes/2,MSG_DONTWAIT);
 				if(send_ret < 1)//或者小于0。则表示socket异常。发送线程中有错不处理其他，只需要处理自身就行
 				{
-					if(errno == EAGAIN)
+					getsockopt(devp->audio_client_fd,SOL_SOCKET,SO_ERROR,&optval, &optlen);
+					if(errno == EAGAIN && optval == 0)
 					{
 						usleep(10*1000);
 						continue;
@@ -760,7 +766,8 @@ void* AudioSendThreadCallBack(void* argv)
 				send_ret = send(devp->audio_client_fd,&output_stream_buffer[phone_audio.output_stream_rp],valid_bytes,MSG_DONTWAIT);
 				if(send_ret < 1)//或者小于0。则表示socket异常。发送线程中有错不处理其他，只需要处理自身就行
 				{
-					if(errno == EAGAIN)
+					getsockopt(devp->audio_client_fd,SOL_SOCKET,SO_ERROR,&optval, &optlen);
+					if(errno == EAGAIN && optval == 0)
 					{
 						usleep(10*1000);
 						continue;
@@ -802,7 +809,8 @@ void* AudioSendThreadCallBack(void* argv)
 void* AudioRecvThreadCallBack(void* argv)
 {
 	PRINT("AudioRecvThreadCallBack is running....\n");
-
+	int optval;
+	int optlen = sizeof(int);
 	int free_bytes;
 	int i,j;
 	int recv_ret,recv_bytes;
@@ -842,7 +850,8 @@ void* AudioRecvThreadCallBack(void* argv)
 				recv_ret = recv(devp->audio_client_fd,tmp_buf,1600,MSG_DONTWAIT);
 				if(recv_ret < 1)//或者小于0。则表示socket异常，此处需要同时处理其他线程的错误
 				{
-					if(errno == EAGAIN)
+					getsockopt(devp->audio_client_fd,SOL_SOCKET,SO_ERROR,&optval, &optlen);
+					if(errno == EAGAIN && optval == 0)
 					{
 						usleep(10*1000);
 						continue;
@@ -874,7 +883,8 @@ void* AudioRecvThreadCallBack(void* argv)
 				recv_ret = recv(devp->audio_client_fd,tmp_buf,1600,MSG_DONTWAIT);
 				if(recv_ret < 1)//或者小于0。则表示socket异常，此处需要同时处理其他线程的错误
 				{
-					if(errno == EAGAIN)
+					getsockopt(devp->audio_client_fd,SOL_SOCKET,SO_ERROR,&optval, &optlen);
+					if(errno == EAGAIN && optval == 0)
 					{
 						usleep(10*1000);
 						continue;
@@ -919,7 +929,9 @@ void* AudioRecvThreadCallBack(void* argv)
 			if(recv_ret < 1)//或者小于0。则表示socket异常，此处需要同时处理其他线程的错误
 			{
 RECV_ERROR:
-				if(errno == EAGAIN)
+				getsockopt(devp->audio_client_fd,SOL_SOCKET,SO_ERROR,&optval, &optlen);
+				//PRINT("optval = %d\n",optval);
+				if(errno == EAGAIN && optval == 0)
 				{
 					usleep(10*1000);
 					continue;
@@ -970,7 +982,8 @@ RECV_ERROR:
 			if(recv_ret < 1)//或者小于0。则表示socket异常，此处需要同时处理其他线程的错误
 			{
 TB_RECV_ERROR:
-				if(errno == EAGAIN)
+				getsockopt(devp->audio_client_fd,SOL_SOCKET,SO_ERROR,&optval, &optlen);
+				if(errno == EAGAIN && optval == 0)
 				{
 					usleep(10*1000);
 					continue;
