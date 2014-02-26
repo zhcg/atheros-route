@@ -189,10 +189,10 @@ fi
 ## Set the default modes for multi configuration
 ##
 
-cfg -a AP_MODE=${AP_MODE:="ap"}
-cfg -a AP_MODE_2=${AP_MODE_2:="ap"}
-cfg -a AP_MODE_3=${AP_MODE_3:="ap"}
-cfg -a AP_MODE_4=${AP_MODE_4:="ap"}
+cfg -a AP_MODE=${AP_MODE:="ap-wds"}
+cfg -a AP_MODE_2=${AP_MODE_2:="ap-wds"}
+cfg -a AP_MODE_3=${AP_MODE_3:="ap-wds"}
+cfg -a AP_MODE_4=${AP_MODE_4:="ap-wds"}
 cfg -a AP_MODE_5=${AP_MODE_5:="ap"}
 cfg -a AP_MODE_6=${AP_MODE_6:="ap"}
 cfg -a AP_MODE_7=${AP_MODE_7:="ap"}

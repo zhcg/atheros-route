@@ -4669,11 +4669,13 @@ int main(int argc,char **argv)
 		char pChar[128];
 		char mac[128];
 		char channel[128];
+		char channel_buf[128];
 		char valBuff2[128];	
 		char valBuff3[128];	
 		char valBuff4[128];
 		char valBuff5[128];
 		char channel_5g[128];
+		char channel_buf_5g[128];
 		char valBuff2_5g[128];	
 		char valBuff3_5g[128];	
 		char valBuff4_5g[128];
@@ -4742,8 +4744,11 @@ int main(int argc,char **argv)
 				CFG_set_by_name("STA_SECMODE","None");
 			}
 			CFG_get_by_name("WDS_CHAN",channel);
+			CFG_get_by_name("AP_PRIMARY_CH",channel_buf);
+//			fprintf(errOut,"[luodp] -----------  wds %s\n",channel_buf);
+			CFG_set_by_name("AP_PRIMARY_CH_BACK",channel_buf);
+			
 			CFG_set_by_name("AP_PRIMARY_CH",channel);
-			CFG_set_by_name("AP_PRIMARY_CH_2",channel);
 			}
 
 		
@@ -4771,14 +4776,34 @@ int main(int argc,char **argv)
 				CFG_set_by_name("STA_SECMODE_2","None");
 			}
 			CFG_get_by_name("WDS_CHAN_2",channel_5g);
+			CFG_get_by_name("AP_PRIMARY_CH_3",channel_buf_5g);
+//			fprintf(errOut,"[luodp] -----------  wds channel_buf_5g %s\n",channel_buf_5g);
+			CFG_set_by_name("AP_PRIMARY_CH_BACK_3",channel_buf_5g);
 			CFG_set_by_name("AP_PRIMARY_CH_3",channel_5g);
-			CFG_set_by_name("AP_PRIMARY_CH_4",channel_5g);
 			}
 			//4.save new config to flash 
 			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
 			writeParameters("/tmp/.apcfg","w+",0);
 		}
 		//5.do settings
+		
+		if(strcmp(valBuff3,"off") == 0)
+		{
+			CFG_get_by_name("AP_PRIMARY_CH_BACK",channel_buf);
+//			fprintf(errOut,"[luodp] -----------  wds %s\n",channel_buf);
+			CFG_set_by_name("AP_PRIMARY_CH",channel_buf);
+		}
+
+		
+		if(strcmp(valBuff3_5g,"off") == 0)
+		{
+			CFG_get_by_name("AP_PRIMARY_CH_BACK_3",channel_buf_5g);
+//			fprintf(errOut,"[luodp] -----------  wds channel_buf_5g %s\n",channel_buf_5g);
+			CFG_set_by_name("AP_PRIMARY_CH_3",channel_buf_5g);
+		}
+		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+		writeParameters("/tmp/.apcfg","w+",0);
+
 		//TODO if close do commit no ath1
 		if(flag==2) //on->off
 		{
