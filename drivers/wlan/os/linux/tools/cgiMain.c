@@ -4977,7 +4977,8 @@ int main(int argc,char **argv)
 			//AP_CYPHER="TKIP CCMP"
 			//fprintf(errOut,"[luodp] SECMODE here2");
 			CFG_set_by_name("AP_SECMODE","None");
-			flag=2;
+			//flag=2;
+			Execute_cmd("iwpriv ath0 authmode 1 > /dev/null 2>&1", rspBuff);
 		}
 		//4.save new add  to flash 
 		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
@@ -5182,7 +5183,8 @@ int main(int argc,char **argv)
 		if((strstr(valBuff5_3,valBuff3) == 0)&&(strcmp(valBuff3,"WPA") != 0))
 		{
 			CFG_set_by_name("AP_SECMODE_3","None");
-			flag=2;
+			//flag=2;
+			Execute_cmd("iwpriv ath2 authmode 1 > /dev/null 2>&1", rspBuff);
 		}
 		
 		//save new add  to flash 
