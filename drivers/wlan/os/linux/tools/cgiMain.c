@@ -3658,6 +3658,133 @@ int main(int argc,char **argv)
             translateFile(argv[2]);
             exit(0);
         }
+        else if(!strncmp(argv[1],"-b",2))
+        {
+        //    CFG_set_by_name("WIRELESS_ADVSET","WIRELESS_ADVSET");
+        //viqjeee
+            char    *vval;
+            int i=0, j=0;
+            int err_flag =0;
+            char vname[10][10][64] =
+            {
+                {"WAN_MODE"  },  
+                {"WAN_MODE","IPGW","WAN_IPADDR","WAN_NETMASK","PRIDNS","SECDNS"  },  
+                {"WAN_MODE","PPPOE_USER","PPPOE_PWD"  },  
+                {"AP_SSID_2","AP_SSID_4","PSK_KEY_2","PSK_KEY_4" },  
+                {"ADD_MAC","ADD_IP","ADD_STATUS"  }
+            };
+
+
+            if(argc < 3)
+            {
+                modePrintf("Invalid argument\n");
+                exit(-1);
+            }
+            switch(argv[2][0])
+            {
+            case '0':
+                 printf("DHCP\n");
+                 if(argc !=4)
+                 {
+                    err_flag=1;
+                    break;
+                 }
+
+                 for (i = 0; i < 1; i++) 
+                 {
+                     printf(" %s=%s ", vname[0][i], argv[i+3]);
+                     CFG_set_by_name(vname[0][i],argv[i+3]);
+                 }
+                 CFG_set_by_name("DHCP","DHCP");
+                 break;
+
+            case '1':
+                 printf("SIP\n");
+                 if(argc !=9)
+                 {
+                    err_flag=1;
+                    break;
+                 }
+
+                 for (i = 0; i < 6; i++) 
+                 {
+                     printf(" %s=%s ", vname[1][i], argv[i+3]);
+                     CFG_set_by_name(vname[1][i],argv[i+3]);
+                 }
+                 CFG_set_by_name("SIP","SIP");
+                 break;
+                
+            case '2':
+                 printf("PPP\n");
+                 if(argc !=6)
+                 {
+                    err_flag=1;
+                    break;
+                 }
+
+                 for (i = 0; i < 3; i++) 
+                 {
+                     printf(" %s=%s ", vname[2][i], argv[i+3]);
+                     CFG_set_by_name(vname[2][i],argv[i+3]);
+                 }
+                 CFG_set_by_name("PPP","PPP");
+                 break;
+
+            case '3':
+                 printf("WIRELESS\n");
+                 if(argc !=7)
+                 {
+                    err_flag=1;
+                    break;
+                 }
+
+                 for (i = 0; i < 4; i++) 
+                 {
+                     printf(" %s=%s ", vname[3][i], argv[i+3]);
+                     CFG_set_by_name(vname[3][i],argv[i+3]);
+                 }
+                 CFG_set_by_name("WIRELESS","WIRELESS");
+                 break;
+
+            case '4':
+                 printf("ADD_STATICDHCP\n");
+                 if(argc !=6)
+                 {
+                    err_flag=1;
+                    break;
+                 }
+
+                 for (i = 0; i < 3; i++) 
+                 {
+                     printf(" %s=%s ", vname[4][i], argv[i+3]);
+                     CFG_set_by_name(vname[4][i],argv[i+3]);
+                 }
+                 CFG_set_by_name("ADD_STATICDHCP","ADD_STATICDHCP");
+                 break;
+
+            default:
+                 break;
+            }
+
+            if(err_flag)
+            {
+                printf("\n Usage :\n");
+
+                for (i = 0; i < 4; i++) 
+                {
+                    printf("\n cfg -b %d ", i);
+                    while(vname[i][j][0] != '\0')
+                    {
+                        printf(" <%s>", vname[i][j]);
+                        j++;
+                    }
+                    j=0;
+                }
+                exit(0);
+            }
+
+            //exit(0);
+        }
         else if(!strncmp(argv[1],"-w",2))
         {
             char    *vname;
@@ -5371,6 +5498,126 @@ int main(int argc,char **argv)
 			Execute_cmd("ifconfig ath2 up > /dev/null 2>&1", rspBuff);
 		}
 #endif
+
+
+//viqjeee
+/************** 2G and 5G hide ap **********/
+
+
+	memset(valBuff4, 0, 128);
+	memset(pChar, 0, 128);
+	CFG_get_by_name("AP_SSID_2",valBuff4);
+	sprintf(pChar,"iwconfig ath1 essid %s  > /dev/null 2>&1",valBuff4);
+	Execute_cmd(pChar, rspBuff);
+
+	memset(valBuff4, 0, 128);
+	memset(pChar, 0, 128);
+	CFG_get_by_name("AP_SSID_4",valBuff4);
+	sprintf(pChar,"iwconfig ath3 essid %s  > /dev/null 2>&1",valBuff4);
+	Execute_cmd(pChar, rspBuff);
+
+
+	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+	writeParameters("/tmp/.apcfg","w+",0);
+	//CFG_get_by_name("PSK_KEY_2",valBuff3);
+
+            //2G
+			int i,j,k;
+            char pr_buf[50];
+			Execute_cmd("cfg -t2 /etc/ath/PSK.ap_bss ath1 > /tmp/secath1",rspBuff);
+			/*get the hostapd for ath0's pid, to kill it, then restart it*/
+			Execute_cmd("ps | grep 'hostapd -B /tmp/secath1 -e /etc/wpa2/entropy' | awk -F ' ' '{print $1}'", valBuff);
+			fprintf(errOut,"the kill process is [%s] %d\n",valBuff, strlen(valBuff));
+			if(strstr(valBuff, "<br>"))
+			{
+				while(valBuff[i])
+				{
+					if(valBuff[i] == '\n')
+					{
+						k = 1;
+						break;
+					}
+					i++;
+				}
+				if(k == 1)
+				{
+					memcpy(pr_buf, valBuff, i);
+					sprintf(pChar, "kill %s > /dev/null 2>&1", pr_buf);
+					Execute_cmd(pChar, rspBuff);
+
+					j = i+5;
+					while(valBuff[i+5])
+					{
+						if(valBuff[i+5] == '\n')
+						{
+							k = 2;
+							break;
+						}
+						i++;
+					}
+					if(k == 2)
+					{
+						memcpy(pr_buf, &valBuff[j], i+5-j);
+						sprintf(pChar, "kill %s > /dev/null 2>&1", pr_buf);
+						Execute_cmd(pChar, rspBuff);
+					}
+				}
+			}
+			Execute_cmd("hostapd -B /tmp/secath1 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+
+			Execute_cmd("ifconfig ath1 down > /dev/null 2>&1", rspBuff);
+			Execute_cmd("ifconfig ath1 up > /dev/null 2>&1", rspBuff);
+
+
+            //5G
+			i=0;j=0;k=0;
+            memset(pr_buf,0,50);
+			Execute_cmd("cfg -t4 /etc/ath/PSK.ap_bss ath3 > /tmp/secath3",rspBuff);
+			/*get the hostapd for ath0's pid, to kill it, then restart it*/
+			Execute_cmd("ps | grep 'hostapd -B /tmp/secath3 -e /etc/wpa2/entropy' | awk -F ' ' '{print $1}'", valBuff);
+			fprintf(errOut,"the kill process is [%s] %d\n",valBuff, strlen(valBuff));
+			if(strstr(valBuff, "<br>"))
+			{
+				while(valBuff[i])
+				{
+					if(valBuff[i] == '\n')
+					{
+						k = 1;
+						break;
+					}
+					i++;
+				}
+				if(k == 1)
+				{
+					memcpy(pr_buf, valBuff, i);
+					sprintf(pChar, "kill %s > /dev/null 2>&1", pr_buf);
+					Execute_cmd(pChar, rspBuff);
+
+					j = i+5;
+					while(valBuff[i+5])
+					{
+						if(valBuff[i+5] == '\n')
+						{
+							k = 2;
+							break;
+						}
+						i++;
+					}
+					if(k == 2)
+					{
+						memcpy(pr_buf, &valBuff[j], i+5-j);
+						sprintf(pChar, "kill %s > /dev/null 2>&1", pr_buf);
+						Execute_cmd(pChar, rspBuff);
+					}
+				}
+			}
+			Execute_cmd("hostapd -B /tmp/secath3 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+
+			Execute_cmd("ifconfig ath3 down > /dev/null 2>&1", rspBuff);
+			Execute_cmd("ifconfig ath3 up > /dev/null 2>&1", rspBuff);
+
+
+/******************************************/
 		
 		gohome =1;
     }

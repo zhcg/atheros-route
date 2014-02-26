@@ -787,7 +787,22 @@ if [ "${IS_WPA}" != "" -o "${IS_WPS}" != "" ]; then
     fi
     else
         if [ -f /tmp/conf_filename ]; then
-            hostapd  -B `cat /tmp/conf_filename` -e /etc/wpa2/entropy
+            secath=`cat /tmp/conf_filename |cut -c 1-12`
+	        if [ "${secath}" != "" ]; then
+                hostapd  -B $secath -e /etc/wpa2/entropy
+            fi
+            secath=`cat /tmp/conf_filename |cut -c 14-25`
+	        if [ "${secath}" != "" ]; then
+                hostapd  -B $secath -e /etc/wpa2/entropy
+            fi
+            secath=`cat /tmp/conf_filename |cut -c 27-38`
+	        if [ "${secath}" != "" ]; then
+                hostapd  -B $secath -e /etc/wpa2/entropy
+            fi
+            secath=`cat /tmp/conf_filename |cut -c 40-51`
+	        if [ "${secath}" != "" ]; then
+                hostapd  -B $secath -e /etc/wpa2/entropy
+            fi
         fi
 	if [ "${AP_STARTMODE}" != "repeater" ]; then
         	if [ -f /tmp/sta_conf_filename ]; then

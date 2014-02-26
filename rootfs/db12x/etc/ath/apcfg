@@ -212,8 +212,8 @@ cfg -a AP_SECMODE_6=${AP_SECMODE_6:="None"}
 cfg -a AP_SECMODE_7=${AP_SECMODE_7:="None"}
 cfg -a AP_SECMODE_8=${AP_SECMODE_8:="None"}
 
-cfg -a PSK_KEY_2=12345678
-cfg -a PSK_KEY_4=12345678
+#cfg -a PSK_KEY_2=${PSK_KEY_2:="12345678"}
+#cfg -a PSK_KEY_4=${PSK_KEY_4:="12345678"}
 
 cfg -a AP_WPA_2=3
 cfg -a AP_WPA_4=3
