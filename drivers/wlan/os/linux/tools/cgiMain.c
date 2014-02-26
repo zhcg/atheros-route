@@ -139,6 +139,7 @@ static char  *val2[100];
 static char  *val3[100];
 static char  *val4[100];
 static char  *val5[100];
+static char  buf[100];//wangyu add  for ath scan
 int lists=0;
 static int flaglist;
 static int flaglist_2;
@@ -4048,7 +4049,7 @@ int main(int argc,char **argv)
 					}
 					num=0;
 					//ssid
-					Execute_cmd("cat /tmp/scanlist | grep ESSID | awk '{print $1}' | cut -d \"\\\"\" -f2", rspBuff2);
+					Execute_cmd("cat /tmp/scanlist | grep ESSID | awk '{print $1}' | cut -d \":\" -f2", rspBuff2);
 					//fprintf(errOut,"\n[luodp] %s\n",rspBuff2);
 					val2[num]=strtok(rspBuff2,"\n");
 					while(val2[num]) {
@@ -4100,27 +4101,31 @@ int main(int argc,char **argv)
 					if(val3[0]!=NULL)
 					{
 						//val1-mac,val2-ssid,val3-security,val4-channel
-						if(strcmp(val2[0],""))
+						if(strcmp(val2[0],"\"\""))
 						{
 							if(strcmp(val3[0],"on")==0)
 								sprintf(val3[0],"WPA");
 							else  
 								sprintf(val3[0],"None");
 							memset(cmdd,0x00,128);	
-							sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(-%sdbm)</option>",val2[0],val1[0],val4[0],val3[0],val2[0],val5[0]);
+							memset(buf,0x00,100);	
+							memcpy(buf,val2[0]+1,(strlen(val2[0])-2));
+							sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(-%sdbm)</option>",buf,val1[0],val4[0],val3[0],buf,val5[0]);
 							fwrite(cmdd,strlen(cmdd),1,fp);
 						}
 						for(i=1;i<lists;i++)
 						{
 							memset(cmdd,0x00,128);
-							if(strcmp(val2[i]+4,""))
+							if(strcmp(val2[i]+4,"\"\""))
 							{
 								if(strcmp(val3[i]+4,"on")==0)
 									sprintf(val3[i]+4,"WPA");
 								else
 									sprintf(val3[i]+4,"None");
 								//fprintf(errOut,"[luodp] %s(%s)(%s)(%s) \n",val2[i]+4,val1[i]+4,val3[i]+4,val4[i]+4);
-								sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(-%sdbm)</option>",val2[i]+4,val1[i]+4,val4[i]+4,val3[i]+4,val2[i]+4,val5[i]+4);
+								memset(buf,0x00,100);	
+								memcpy(buf,val2[i]+5,(strlen(val2[i]+4)-2));
+								sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(-%sdbm)</option>",buf,val1[i]+4,val4[i]+4,val3[i]+4,buf,val5[i]+4);
 								fwrite(cmdd,strlen(cmdd),1,fp);
 							}
 						}
@@ -4161,7 +4166,7 @@ int main(int argc,char **argv)
 					}
 					num=0;
 					//ssid
-					Execute_cmd("cat /tmp/scanlist_2 | grep ESSID | awk '{print $1}' | cut -d \"\\\"\" -f2", rspBuff2);
+					Execute_cmd("cat /tmp/scanlist_2 | grep ESSID | awk '{print $1}' | cut -d \":\" -f2", rspBuff2);
 					//fprintf(errOut,"\n[luodp] %s\n",rspBuff2);
 					val2[num]=strtok(rspBuff2,"\n");
 					while(val2[num]) {
@@ -4213,27 +4218,33 @@ int main(int argc,char **argv)
 					if(val3[0]!=NULL)
 					{
 						//val1-mac,val2-ssid,val3-security,val4-channel
-						if(strcmp(val2[0],""))
+						if(strcmp(val2[0],"\"\""))
 						{
 							if(strcmp(val3[0],"on")==0)
 								sprintf(val3[0],"WPA");
 							else  
 								sprintf(val3[0],"None");
-							memset(cmdd,0x00,128);	
-							sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(-%sdbm)</option>",val2[0],val1[0],val4[0],val3[0],val2[0],val5[0]);
+							memset(cmdd,0x00,128);
+							memset(buf,0x00,100);	
+							memcpy(buf,val2[0]+1,(strlen(val2[0])-2));
+		//					fprintf(errOut,"[luodp] buff----------- %s\n",buf);
+							sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(-%sdbm)</option>",buf,val1[0],val4[0],val3[0],buf,val5[0]);
 							fwrite(cmdd,strlen(cmdd),1,fp);
 						}
 						for(i=1;i<lists;i++)
 						{
 							memset(cmdd,0x00,128);
-							if(strcmp(val2[i]+4,""))
+							if(strcmp(val2[i]+4,"\"\""))
 							{
 								if(strcmp(val3[i]+4,"on")==0)
 									sprintf(val3[i]+4,"WPA");
 								else
 									sprintf(val3[i]+4,"None");
 								//fprintf(errOut,"[luodp] %s(%s)(%s)(%s) \n",val2[i]+4,val1[i]+4,val3[i]+4,val4[i]+4);
-								sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(-%sdbm)</option>",val2[i]+4,val1[i]+4,val4[i]+4,val3[i]+4,val2[i]+4,val5[i]+4);
+								memset(buf,0x00,100);	
+								memcpy(buf,val2[i]+5,(strlen(val2[i]+4)-2));
+	//							fprintf(errOut,"[luodp] buff----------- %s\n",buf);
+								sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(-%sdbm)</option>",buf,val1[i]+4,val4[i]+4,val3[i]+4,buf,val5[i]+4);
 								fwrite(cmdd,strlen(cmdd),1,fp);
 							}
 						}
@@ -4777,8 +4788,10 @@ int main(int argc,char **argv)
 			if(strstr(valBuff,"off") == 0)
 			{
 				//[TODO]sta mode
-				Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
-				Execute_cmd("apup > /dev/null 2>&1", rspBuff);
+//				Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
+//				Execute_cmd("apup > /dev/null 2>&1", rspBuff);
+				Execute_cmd("repeatVAP > /dev/null 2>&1", rspBuff);
+
 				//kill udhcpd
 				//[TODO]if dhcp no exist ,then up
 				//Execute_cmd("ps | grep udhcpd",rspBuff);
@@ -4801,8 +4814,9 @@ int main(int argc,char **argv)
 				Execute_cmd("killall udhcpd > /dev/null 2>&1",rspBuff);
 				//fprintf(errOut,"[luodp] wds open\n");
 				//[TODO]sta mode
-				Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
-				Execute_cmd("apup > /dev/null 2>&1", rspBuff);
+	//			Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
+	//			Execute_cmd("apup > /dev/null 2>&1", rspBuff);
+				Execute_cmd("repeatVAP > /dev/null 2>&1", rspBuff);
 			}
 		}
 		/*CFG_get_by_name("AP_RADIO_ID_2",valBuff);

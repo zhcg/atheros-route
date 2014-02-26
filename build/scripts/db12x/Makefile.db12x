@@ -320,6 +320,7 @@ webui:
 	cp -f upgrade/upgrade_stage2 $(INSTALL_ROOT)/usr/bin; \
 	cp -f cal_check $(INSTALL_ROOT)/usr/bin;		\
 	cp -f version_check $(INSTALL_ROOT)/usr/bin;  \
+	cp -f repeatVAP $(INSTALL_ROOT)/usr/bin;  \
 	cp -f dhcp/set_addr $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f dhcp/del_addr $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f dhcp/modify_addr $(INSTALL_ROOT)/usr/sbin;  \

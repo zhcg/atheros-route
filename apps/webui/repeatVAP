@@ -1,0 +1,87 @@
+#!/bin/sh
+
+ath_num=`ifconfig  | grep -c ath`
+
+if [ "$ath_num" = "5" ];then
+	/etc/ath/killVAP ath4
+else if [ "$ath_num" = "6" ];then
+	/etc/ath/killVAP ath4	
+	/etc/ath/killVAP ath5
+fi
+fi
+
+wifi_flag=`cfg -e | grep  WIFION_OFF= | awk -F'=' '{print $2}'`
+wifi_flag_2=`cfg -e | grep  WIFION_OFF_3= | awk -F'=' '{print $2}'`
+
+if [ "${wifi_flag}" = "on" ];then
+ifconfig ath0 down;ifconfig ath0 up
+ifconfig ath1 down;ifconfig ath1 up
+fi
+
+if [ "${wifi_flag_2}" = "on" ];then
+ifconfig ath2 down;ifconfig ath2 up
+ifconfig ath3 down;ifconfig ath3 up
+fi
+
+. /etc/ath/apcfg
+
+APMODE="ap-wds"
+STAMODE="sta-wds"
+
+VAP_NUM=3
+wds_flag=`cfg -e | grep  WDSON_OFF= | awk -F'=' '{print $2}'`
+
+if [ "${wds_flag}" = "on" ];then
+	if [ "s$STA_SSID" != "s" ];then
+		makeVAP ${STAMODE} "$STA_SSID" $STA_RADIO_ID:$STA_RFPARAM
+	    	if [ $? != 0 ]; then
+	        	echo "Unable to create VAP!"
+        		exit
+		fi
+		VAP_NUM=$(($VAP_NUM+1))
+		if [ "${STA_SECMODE}" != "WPA" -a "${ROOTAP_MAC}" != "" ]; then
+        		iwconfig ath$VAP_NUM ap $ROOTAP_MAC
+		fi
+	fi
+fi
+	
+wds_flag_2=`cfg -e | grep  WDSON_OFF_3= | awk -F'=' '{print $2}'`
+if [ "${wds_flag_2}" = "on" ];then
+	if [ "s$STA_SSID_2" != "s" ];then
+		makeVAP ${STAMODE} "$STA_SSID_2" $STA_RADIO_ID_2:$STA_RFPARAM_3
+		if [ $? != 0 ]; then
+	        	echo "Unable to create VAP!"
+        		exit
+		fi
+		VAP_NUM=$(($VAP_NUM+1))
+	    	if [ "${STA_SECMODE_2}" != "WPA" -a "${ROOTAP_MAC_2}" != "" ]; then
+        		iwconfig ath$VAP_NUM ap $ROOTAP_MAC_2
+	    	fi
+	fi
+fi
+	
+VAP_NUM=4
+
+if [ "${wds_flag}" = "on" ];then
+	if [ "s$STA_SSID" != "s" ];then
+	        activateVAP ath$VAP_NUM:$STA_RADIO_ID br0 $STA_SECMODE $STA_SECFILE $WPS_ENABLE
+		VAP_NUM=$(($VAP_NUM+1))
+		if [ -f /tmp/sta_conf_filename ]; then
+		        wpa_supplicant `cat /tmp/sta_conf_filename` &
+			sleep 2
+	        fi
+    	fi
+fi
+	
+if [ "${wds_flag_2}" = "on" ];then	
+	if [ "s$STA_SSID_2" != "s" ];then
+		rm -fr /tmp/sta_conf_filename
+	        activateVAP ath$VAP_NUM:$STA_RADIO_ID_2 br0 $STA_SECMODE_2 $STA_SECFILE_2 $WPS_ENABLE_2
+		if [ -f /tmp/sta_conf_filename ]; then
+		        wpa_supplicant `cat /tmp/sta_conf_filename` &
+        	fi
+    	fi
+fi
+
+
+
