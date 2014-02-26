@@ -1,0 +1,18 @@
+
+#!/bin/sh
+
+cat /tmp/.apcfg | while read LINE                                               
+do                                                                              
+        if [ "$LINE" = "WEBCONON_OFF=on" ];then                                  
+                iptables  -D INPUT -i eth0 -p tcp --dport 80 -j DROP                                                               
+                exit 1                                                          
+        else                                                                    
+                                                                                
+                if [ "$LINE" = "WEBCONON_OFF=off" ];then                        
+                iptables  -A INPUT -i eth0 -p tcp --dport 80 -j DROP                                                                  
+                exit 1                                                          
+                fi                                                              
+        fi                                                                      
+                                                                                
+done
+
