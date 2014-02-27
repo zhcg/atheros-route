@@ -2806,7 +2806,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
     system(cmd_buf); // 
     
     memset(cmd_buf, 0, sizeof(cmd_buf));
-    snprintf(cmd_buf, sizeof(cmd_buf), "cfg -b 4 %s %s", pad_mac, pad_ip);
+    snprintf(cmd_buf, sizeof(cmd_buf), "cfg -b 4 %s %s 1", pad_mac, pad_ip);
     PRINT("cmd_buf = %s\n", cmd_buf);
     system(cmd_buf); // 静态绑定
     

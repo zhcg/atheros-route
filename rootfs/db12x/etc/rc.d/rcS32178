@@ -74,3 +74,11 @@ sleep 7
 /bin/phone_control &
 /bin/check_phone_status &
 
+
+#yangjilong add
+ln -s /lib/libosipparser2.so.4.2.0  /lib/libosipparser2.so.4
+ln -s /lib/libosip2.so.4.2.0 /lib/libosip2.so.4
+ln -s /lib/libeXosip2.so.4.2.0 /lib/libeXosip2.so.4
+
+terminal_dev_register &
+monitor_application &
