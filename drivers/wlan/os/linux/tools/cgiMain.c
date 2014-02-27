@@ -3615,6 +3615,12 @@ int main(int argc,char **argv)
 
     if(argc > 1)
     {
+    
+    if(FactoryDefault == 0)
+		CFG_set_by_name("FACTORY_RESET","0");
+	if(FactoryDefault == 1)
+		CFG_set_by_name("FACTORY_RESET","1");
+	
         if(!strncmp(argv[1],"-t",2))
         {
             /*
@@ -3898,6 +3904,7 @@ int main(int argc,char **argv)
 
             CFG_remove_by_name(argv[2]);
             FactoryDefault = 0;
+			CFG_set_by_name("FACTORY_RESET","0");
             writeParameters("/tmp/.apcfg","w+",0);
             exit(0);
         }
@@ -3984,6 +3991,7 @@ int main(int argc,char **argv)
             Execute_cmd("rm -rf /etc/wpa2/*.conf;/etc/ath/apcfg", rspBuff);	
             //backup FACTORY flag
             CFG_set_by_name("FACTORY","1");
+			CFG_set_by_name("FACTORY_RESET","1");
 			//backup version
 			CFG_set_by_name("SOFT_VERSION",valBuff);
 			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
