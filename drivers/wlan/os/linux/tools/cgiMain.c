@@ -3614,13 +3614,7 @@ int main(int argc,char **argv)
     //fprintf(errOut,"%s  %d\n",__func__,__LINE__);
 
     if(argc > 1)
-    {
-    
-    if(FactoryDefault == 0)
-		CFG_set_by_name("FACTORY_RESET","0");
-	if(FactoryDefault == 1)
-		CFG_set_by_name("FACTORY_RESET","1");
-	
+    {	
         if(!strncmp(argv[1],"-t",2))
         {
             /*
@@ -3904,7 +3898,6 @@ int main(int argc,char **argv)
 
             CFG_remove_by_name(argv[2]);
             FactoryDefault = 0;
-			CFG_set_by_name("FACTORY_RESET","0");
             writeParameters("/tmp/.apcfg","w+",0);
             exit(0);
         }
@@ -3980,6 +3973,7 @@ int main(int argc,char **argv)
 			CFG_get_by_name("SOFT_VERSION",valBuff);
             memset(&config,0,sizeof(config));
             FactoryDefault = 1;
+			CFG_set_by_name("FACTORY_RESET","0");
             writeParameters(NVRAM,"w+", NVRAM_OFFSET);
             writeParameters("/tmp/.apcfg","w+",0);
 #ifndef ATH_SINGLE_CFG
@@ -3991,7 +3985,7 @@ int main(int argc,char **argv)
             Execute_cmd("rm -rf /etc/wpa2/*.conf;/etc/ath/apcfg", rspBuff);	
             //backup FACTORY flag
             CFG_set_by_name("FACTORY","1");
-			CFG_set_by_name("FACTORY_RESET","1");
+
 			//backup version
 			CFG_set_by_name("SOFT_VERSION",valBuff);
 			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
@@ -4005,6 +3999,10 @@ int main(int argc,char **argv)
 			system("rm -f /etc/.staAcl /etc/.staMac");//wangyu add for wireless client manage
 			system("rm -f  /etc/arp_ip_mac_on.conf /etc/arp_ip_mac_off.conf");//wangyu add for arp  ip and mac address bond operation
 			system("rm -f /etc/route.conf");//wangyu add for static route list
+
+			CFG_set_by_name("FACTORY_RESET","1");
+			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            writeParameters("/tmp/.apcfg","w+",0);
 #else
             system("rm -rf /tmp/WSC*.conf");
 #endif /* #ifndef ATH_SINGLE_CFG */
