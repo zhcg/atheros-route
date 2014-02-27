@@ -10,6 +10,9 @@ TERMINAL_DEV_REGISTEROBJ = terminal_dev_register.o network_config.o request_cmd.
 TERMINAL_INIT_TESTBIN = terminal_init_test
 TERMINAL_INIT_TESTOBJ = terminal_init_test.o network_config.o
 
+INTERFACE_TESTBIN = interface_test
+INTERFACE_TESTOBJ = interface_test.o network_config.o
+
 SPI_MAINBIN = spi_rt_main
 SPI_MAINOBJ = spi_rt_main.o
 
@@ -51,7 +54,7 @@ SQLITE_DIR=./sqlite-mips-linux
 #编译 动态库
 all:so app
 so:$(COMMON_TOOLSBIN) $(DATA_STORAGERBIN) $(COMMUNICATIONBIN) $(SPI_RTBIN) $(TERMINAL_AUTHENTICATIONBIN) $(TERMINAL_REGISTERBIN)
-app:$(TERMINAL_DEV_REGISTERBIN) $(TERMINAL_INIT_TESTBIN) $(SPI_MAINBIN) $(SPI_RT_UART1BIN) $(SWIPE_CARDBIN) $(MONITOR_APPBIN) $(USB_STUBBIN)
+app:$(TERMINAL_DEV_REGISTERBIN) $(INTERFACE_TESTBIN) $(TERMINAL_INIT_TESTBIN) $(SPI_MAINBIN) $(SPI_RT_UART1BIN) $(SWIPE_CARDBIN) $(MONITOR_APPBIN) $(USB_STUBBIN)
 
 #编译 终端初始化 整体测试执行文件
 $(TERMINAL_DEV_REGISTERBIN):$(TERMINAL_DEV_REGISTEROBJ) 
@@ -59,6 +62,12 @@ $(TERMINAL_DEV_REGISTERBIN):$(TERMINAL_DEV_REGISTEROBJ)
 	-@ echo ":::::::::::::::::terminal_dev_register ok:::::::::::::::::"
 	-@ echo
 	
+#编译终端初始化 测试
+$(INTERFACE_TESTBIN):$(INTERFACE_TESTOBJ) 
+	$(GCC) -o $@ $^ -I. -lpthread -L. -lcommon_tools -lterminal_authentication -lterminal_register -lspi_rt -ldata_storager -lcommunication -L$(SQLITE_DIR)/lib -lsqlite3
+	-@ echo ":::::::::::::::::interface_test ok:::::::::::::::::"
+	-@ echo
+
 #编译终端初始化 测试
 $(TERMINAL_INIT_TESTBIN):$(TERMINAL_INIT_TESTOBJ) 
 	$(GCC) -o $@ $^ -I. -lpthread -L. -lcommon_tools -lterminal_authentication -lterminal_register -lspi_rt -ldata_storager -lcommunication -L$(SQLITE_DIR)/lib -lsqlite3
@@ -127,5 +136,5 @@ $(TERMINAL_AUTHENTICATIONBIN):$(TERMINAL_AUTHENTICATIONOBJ) -lcommon_tools
 clean:
 	-rm *.o -rf
 	-rm *.so -rf
-	-rm $(TERMINAL_DEV_REGISTERBIN) $(TERMINAL_INIT_TESTBIN) $(SPI_MAINBIN) $(SPI_RT_UART1BIN) -rf
+	-rm $(TERMINAL_DEV_REGISTERBIN) $(INTERFACE_TESTBIN) $(TERMINAL_INIT_TESTBIN) $(SPI_MAINBIN) $(SPI_RT_UART1BIN) -rf
 	-rm $(SWIPE_CARDBIN) $(MONITOR_APPBIN) $(USB_STUBBIN) -rf

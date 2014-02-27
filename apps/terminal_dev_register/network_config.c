@@ -302,13 +302,26 @@ int init_env()
     sprintf(buf, "open %s (pad serial) and init success, baud:%d", common_tools.config->serial_pad, common_tools.config->serial_pad_baud);
     OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, buf, 0);
     #elif BOARDTYPE == 9344
+    
+    #if USB_INTERFACE == 1
+    PRINT("USB_SOCKET_PORT = %s\n", USB_SOCKET_PORT);
     if ((res = communication_network.make_server_link(USB_SOCKET_PORT)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "make_server_link failed", res); 
         return res;
     }
+    #elif USB_INTERFACE == 2
+    PRINT("USB_NODE = %s\n", USB_NODE);
+    if ((res = open(USB_NODE, O_RDWR, 0644)) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "open failed", OPEN_ERR); 
+        return OPEN_ERR;
+    }
+    
+    #endif // USB_INTERFACE == 2
+    
     network_config.usb_pad_fd = res;
-    #endif
+    #endif // BOARDTYPE == 9344
     
     memset(buf, 0, sizeof(buf));
     
@@ -1680,7 +1693,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
     const char *mask__rule = "^((255.255.255.(0|128|192|224|240|248|252))|(255.255.(0|128|192|224|240|248|252|254|255).0)|(255.(0|128|192|224|240|248|252|254|255).0.0)|((128|192|224|240|248|252|254|255).0.0.0))$";
     const char *mac_rule = "^[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}$";
     
-    char pad_sn[37] = {0};
+    char pad_sn[SN_LEN + 3] = {0};
     char pad_mac[20] = {0};
     char pad_ip[16] = {0};
     
@@ -1703,6 +1716,8 @@ int network_settings(int fd, int cmd_count, char cmd_word)
     char wan_pppoe_user[64] = {0};
     char wan_pppoe_pass[64] = {0};
     
+    char cmd_buf[256] = {0};
+    
     struct s_6410_and_5350_msg _6410_and_5350_msg;
     struct s_pad_and_6410_msg pad_and_6410_msg;
     memset(&_6410_and_5350_msg, 0, sizeof(struct s_6410_and_5350_msg));
@@ -1724,7 +1739,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
     unsigned char count = 0;
     #endif
     
-    PRINT("cmd_word = %02X cmd_count = %02X\n", cmd_word, cmd_count);
+    PRINT("fd = %d, cmd_word = %02X cmd_count = %02X\n", fd, cmd_word, cmd_count);
     #if 0
     if (((cmd_word == 0x01) && (cmd_count != 7)) || ((cmd_word == 0x02) && (cmd_count != 11)) || 
         ((cmd_word == 0x03) && (cmd_count != 6)) || ((cmd_word == 0x07) && (cmd_count != 3)) || 
@@ -2761,468 +2776,45 @@ int network_settings(int fd, int cmd_count, char cmd_word)
     }
     #elif BOARDTYPE == 9344
     PRINT("pad_cmd = %02X\n", (unsigned char)pad_cmd);
-    for (i = 0; i < sizeof(network_config.cmd_list) / sizeof(struct s_cmd); i++)
-    {   
-        //PRINT("%d %02X %s %s\n", index, network_config.cmd_list[i].cmd_word, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-        if ((unsigned char)pad_cmd == 0xFB) // 局域网络没有设置时
+    
+    memset(cmd_buf, 0, sizeof(cmd_buf));
+    // 网络设置项
+    switch (cmd_word)
+    {
+        case 0x01: // 动态IP
         {
-            // 初始化设备项
-            switch (network_config.cmd_list[i].cmd_word)
-            {
-                case 0x1C: // STARTMODE 
-                {
-                    index++;
-                    network_config.cmd_list[i].cmd_bit = index;
-                    memcpy(network_config.cmd_list[i].set_value, "multi", strlen("multi"));
-                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                    break;
-                }
-                case 0x1D: // SSID1
-                {
-                    index++;
-                    network_config.cmd_list[i].cmd_bit = index;
-                    sprintf(network_config.cmd_list[i].set_value, "%s", ssid1);
-                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s\"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                    break;
-                }
-                case 0x20: // AP_CYPHER
-                {
-                    index++;
-                    network_config.cmd_list[i].cmd_bit = index;
-                    memcpy(network_config.cmd_list[i].set_value, "TKIP CCMP", strlen("TKIP CCMP"));
-                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s\"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                    break;
-                }
-                case 0x30: // SSID1 密码
-                {
-                    index++;
-                    network_config.cmd_list[i].cmd_bit = index;
-                    sprintf(network_config.cmd_list[i].set_value, "%s", wpapsk1);
-                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s\"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                    break;
-                }
-                case 0x33: // 2.4
-                {
-                    index++;
-                    network_config.cmd_list[i].cmd_bit = index;
-                    memcpy(network_config.cmd_list[i].set_value, "0", strlen("0"));
-                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                    break;
-                }
-                case 0x36: // 模式
-                {
-                    index++;
-                    network_config.cmd_list[i].cmd_bit = index;
-                    memcpy(network_config.cmd_list[i].set_value, "ap", strlen("ap"));
-                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                    break;
-                }
-                case 0x39: // 隐藏
-                {
-                    index++;
-                    network_config.cmd_list[i].cmd_bit = index;
-                    memcpy(network_config.cmd_list[i].set_value, "1", strlen("1"));
-                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                    break;
-                }
-                case 0x3C: // 加密
-                {
-                    index++;
-                    network_config.cmd_list[i].cmd_bit = index;
-                    memcpy(network_config.cmd_list[i].set_value, "WPA", strlen("WPA"));
-                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                    break;
-                }
-                case 0x3F: // 加密
-                {
-                    index++;
-                    network_config.cmd_list[i].cmd_bit = index;
-                    memcpy(network_config.cmd_list[i].set_value, "3", strlen("3"));
-                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                    break;
-                }
-                case 0x42: // 加密
-                {
-                    index++;
-                    network_config.cmd_list[i].cmd_bit = index;
-                    memcpy(network_config.cmd_list[i].set_value, "PSK", strlen("PSK"));
-                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                    break;
-                }
-                case 0x1E: // SSID2
-                {
-                    index++;
-                    network_config.cmd_list[i].cmd_bit = index;
-                    // 正式生产时，打开开关
-                    #if 0
-                    memcpy(network_config.cmd_list[i].set_value, "Hander_ap", strlen("Hander_ap"));
-                    #else
-                    common_tools.mac_del_colon(network_config.base_mac);
-                    memcpy(network_config.cmd_list[i].set_value, network_config.base_mac,strlen(network_config.base_mac));
-                    common_tools.mac_add_colon(network_config.base_mac);
-                    #endif
-                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                    break;
-                }
-                case 0x21: // AP_CYPHER
-                {
-                    index++;
-                    network_config.cmd_list[i].cmd_bit = index;
-                    memcpy(network_config.cmd_list[i].set_value, "TKIP CCMP", strlen("TKIP CCMP"));
-                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s\"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                    break;
-                }
-                case 0x31: // SSID2 密码
-                {
-                    index++;
-                    network_config.cmd_list[i].cmd_bit = index;
-                    sprintf(network_config.cmd_list[i].set_value, "%s", "administrator");
-                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                    break;
-                }
-                case 0x34: // 2.4
-                {
-                    index++;
-                    network_config.cmd_list[i].cmd_bit = index;
-                    memcpy(network_config.cmd_list[i].set_value, "0", strlen("0"));
-                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                    break;
-                }
-                case 0x37: // 模式
-                {
-                    index++;
-                    network_config.cmd_list[i].cmd_bit = index;
-                    memcpy(network_config.cmd_list[i].set_value, "ap", strlen("ap"));
-                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                    break;
-                }
-                case 0x3A: // 隐藏
-                {
-                    index++;
-                    network_config.cmd_list[i].cmd_bit = index;
-                    memcpy(network_config.cmd_list[i].set_value, "0", strlen("0"));
-                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                    break;
-                }
-                case 0x3D: // 加密
-                {
-                    index++;
-                    network_config.cmd_list[i].cmd_bit = index;
-                    memcpy(network_config.cmd_list[i].set_value, "WPA", strlen("WPA"));
-                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                    break;
-                }
-                case 0x40: // 加密
-                {
-                    index++;
-                    network_config.cmd_list[i].cmd_bit = index;
-                    memcpy(network_config.cmd_list[i].set_value, "3", strlen("3"));
-                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                    break;
-                }
-                case 0x43: // 加密
-                {
-                    index++;
-                    network_config.cmd_list[i].cmd_bit = index;
-                    memcpy(network_config.cmd_list[i].set_value, "PSK", strlen("PSK"));
-                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                    break;
-                }
-                case 0x45: // 静态指定1 mac
-                {
-                    index++;
-                    network_config.cmd_list[i].cmd_bit = index;
-                    sprintf(network_config.cmd_list[i].set_value, "%s", pad_mac);
-                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                    break;
-                }
-                case 0x46: // 静态指定1 IP
-                {
-                    index++;
-                    network_config.cmd_list[i].cmd_bit = index;
-                    sprintf(network_config.cmd_list[i].set_value, "%s", pad_ip);
-                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                    break;
-                }
-                case 0x47: // 静态指定
-                {
-                    index++;
-                    network_config.cmd_list[i].cmd_bit = index;
-                    memcpy(network_config.cmd_list[i].set_value, "1", strlen("1"));
-                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                    break;
-                }
-                #if BOARDTYPE == 6410 
-                case 0x33: // 静态指定2
-                {
-                    index++;
-                    network_config.cmd_list[i].cmd_bit = index;
-                    sprintf(network_config.cmd_list[i].set_value, "%s;%s", network_config.base_mac, network_config.base_ip);
-                    sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                    PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                    break;
-                }
-                #endif
-                default:
-                {
-                    break;
-                }
-            }
+            snprintf(cmd_buf, sizeof(cmd_buf), "cfg -b 0 dhcp");
+            break;
         }
-        
-        // 网络设置项
-        switch (cmd_word)
+        case 0x02: // 静态IP
         {
-            case 0x01: // 动态IP
-            case 0x08: // 动态IP
-            {
-                switch(network_config.cmd_list[i].cmd_word)
-                {
-                    case 0x14:
-                    {
-                        index++;
-                        network_config.cmd_list[i].cmd_bit = index;
-                        memcpy(network_config.cmd_list[i].set_value, "dhcp", strlen("dhcp"));
-                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                        PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                        break;
-                    }
-                    default:
-                    {
-                        break;
-                    }
-                }
-                break;
-            }
-            case 0x02: // 静态IP
-            case 0x09: // 静态IP
-            {
-                switch(network_config.cmd_list[i].cmd_word)
-                {
-                    case 0x14: // 模式
-                    {
-                        index++;
-                        network_config.cmd_list[i].cmd_bit = index;
-                        memcpy(network_config.cmd_list[i].set_value, "static", strlen("static"));
-                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                        PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                        break;
-                    }
-                    case 0x15:
-                    {
-                        index++;
-                        network_config.cmd_list[i].cmd_bit = index;
-                        sprintf(network_config.cmd_list[i].set_value, "%s", wan_ipaddr);        
-                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s\"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                        PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                        break;
-                    }
-                    case 0x16:
-                    {
-                        index++;
-                        network_config.cmd_list[i].cmd_bit = index;
-                        sprintf(network_config.cmd_list[i].set_value, "%s", wan_netmask); 
-                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s\"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                        PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                        break;
-                    }
-                    case 0x17:
-                    {
-                        index++;
-                        network_config.cmd_list[i].cmd_bit = index;
-                        sprintf(network_config.cmd_list[i].set_value, "%s", wan_gateway); 
-                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                        PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                        break;
-                    }
-                    case 0x18:
-                    {
-                        index++;
-                        network_config.cmd_list[i].cmd_bit = index;
-                        sprintf(network_config.cmd_list[i].set_value, "%s", wan_primary_dns);
-                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                        PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                        break;
-                    }
-                    default:
-                    {
-                        break;
-                    }
-                } 
-                break;              
-            }
-            case 0x03: // PPPOE
-            case 0x0A: // PPPOE
-            {
-                switch(network_config.cmd_list[i].cmd_word)
-                {
-                    case 0x14: // 模式
-                    {
-                        index++;
-                        network_config.cmd_list[i].cmd_bit = index;
-                        memcpy(network_config.cmd_list[i].set_value, "pppoe", strlen("pppoe"));
-                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                        PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                        break;
-                    }
-                    case 0x1A:
-                    {
-                        index++;
-                        network_config.cmd_list[i].cmd_bit = index;
-                        sprintf(network_config.cmd_list[i].set_value, "%s", wan_pppoe_user);
-                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s\"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                        PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                        break;
-                    }
-                    case 0x1B:
-                    {
-                        index++;
-                        network_config.cmd_list[i].cmd_bit = index;
-                        sprintf(network_config.cmd_list[i].set_value, "%s", wan_pppoe_pass);
-                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s\"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                        PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);             
-                        break;
-                    }
-                    case 0x48:
-                    {
-                        index++;
-                        network_config.cmd_list[i].cmd_bit = index;
-                        memcpy(network_config.cmd_list[i].set_value, "auto", strlen("auto"));
-                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s\"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                        PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);             
-                        break;
-                    }
-                    default:
-                    {
-                        break;
-                    }
-                }
-                break;
-            }
-            case 0x07: // SSID2设置
-            {
-                switch(network_config.cmd_list[i].cmd_word)
-                {
-                    case 0x1E: // SSID2
-                    {
-                        index++;
-                        network_config.cmd_list[i].cmd_bit = index;
-                        sprintf(network_config.cmd_list[i].set_value, "%s", ssid2);
-                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s\"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                        PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                        break;
-                    }
-                    case 0x21: // AP_CYPHER
-                    {
-                        index++;
-                        network_config.cmd_list[i].cmd_bit = index;
-                        memcpy(network_config.cmd_list[i].set_value, "TKIP CCMP", strlen("TKIP CCMP"));
-                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s\"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                        PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                        break;
-                    }
-                    case 0x31: // SSID2 密码
-                    {
-                        index++;
-                        network_config.cmd_list[i].cmd_bit = index;
-                        sprintf(network_config.cmd_list[i].set_value, "%s", wpapsk2);
-                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s\"%s\"", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                        PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                        break;
-                    }
-                    case 0x34: // 2.4
-                    {
-                        index++;
-                        network_config.cmd_list[i].cmd_bit = index;
-                        memcpy(network_config.cmd_list[i].set_value, "0", strlen("0"));
-                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                        PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                        break;
-                    }
-                    case 0x37: // 模式
-                    {
-                        index++;
-                        network_config.cmd_list[i].cmd_bit = index;
-                        memcpy(network_config.cmd_list[i].set_value, "ap", strlen("ap"));
-                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                        PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                        break;
-                    }
-                    case 0x3A: // 隐藏
-                    {
-                        index++;
-                        network_config.cmd_list[i].cmd_bit = index;
-                        memcpy(network_config.cmd_list[i].set_value, "0", strlen("0"));
-                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                        PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                        break;
-                    }
-                    case 0x3D: // 加密
-                    {
-                        index++;
-                        network_config.cmd_list[i].cmd_bit = index;
-                        // auth 需要改
-                        memcpy(network_config.cmd_list[i].set_value, "WPA", strlen("WPA"));
-                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                        PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                        break;
-                    }
-                    case 0x40: // 加密
-                    {
-                        index++;
-                        network_config.cmd_list[i].cmd_bit = index;
-                        memcpy(network_config.cmd_list[i].set_value, "3", strlen("3"));
-                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                        PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                        break;
-                    }
-                    case 0x43: // 加密
-                    {
-                        index++;
-                        network_config.cmd_list[i].cmd_bit = index;
-                        memcpy(network_config.cmd_list[i].set_value, "PSK", strlen("PSK"));
-                        sprintf(network_config.cmd_list[i].set_cmd_and_value, "%s%s", network_config.cmd_list[i].set_cmd, network_config.cmd_list[i].set_value); 
-                        PRINT("%2d %s %s\n", network_config.cmd_list[i].cmd_bit, network_config.cmd_list[i].set_value, network_config.cmd_list[i].set_cmd_and_value);
-                        break;
-                    }
-                    default:
-                    {
-                        break;
-                    }
-                }
-                break;
-            }
-            default:
-            {
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "option does not mismatching!", P_MISMATCH_ERR);
-                return P_MISMATCH_ERR;
-            }
+            snprintf(cmd_buf, sizeof(cmd_buf), "cfg -b 1 static %s %s %s %s", wan_gateway, wan_ipaddr, wan_netmask, wan_primary_dns); 
+            break;
+        }
+        case 0x03: // PPPOE
+        {
+            snprintf(cmd_buf, sizeof(cmd_buf), "cfg -b 2 pppoe %s %s %s %s", wan_pppoe_user, wan_pppoe_pass); 
+            break;
+        }
+        default:
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "option does not mismatching!", P_MISMATCH_ERR);
+            return P_MISMATCH_ERR;
         }
     }
+    PRINT("cmd_buf = %s\n", cmd_buf);
+    system(cmd_buf); // 
+    
+    memset(cmd_buf, 0, sizeof(cmd_buf));
+    snprintf(cmd_buf, sizeof(cmd_buf), "cfg -b 4 %s %s", pad_mac, pad_ip);
+    PRINT("cmd_buf = %s\n", cmd_buf);
+    system(cmd_buf); // 静态绑定
+    
+    memset(cmd_buf, 0, sizeof(cmd_buf));
+    snprintf(cmd_buf, sizeof(cmd_buf), "cfg -b 3 %s_2G %s_5G %s %s", ssid1, ssid1, wpapsk1, wpapsk1);
+    PRINT("cmd_buf = %s\n", cmd_buf);
+    system(cmd_buf); // 隐藏WIFI设置
     #endif
-    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "make cmd success!", 0);
     
     #if BOARDTYPE == 6410
     // 保存路由状态    
@@ -3339,25 +2931,11 @@ int network_settings(int fd, int cmd_count, char cmd_word)
     
     OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, " route configuration success!", 0);
     #elif BOARDTYPE == 9344
-    if ((res = route_config(index)) < 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "route_config failed", res);
-        PERROR("route_config2 failed!\n");
-        return res;
-    }
-    
-    // 使路由设置成功
-    if ((res = config_route_take_effect()) < 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "config_route_take_effect failed", res);
-        return res;
-    }
-    PRINT("after config_route_take_effect!\n");
     
     // 是否应该加延时
     //sleep(common_tools.config->route_reboot_time_sec);
     
-    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, " route configuration success!", 0);
+    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "exec cmd success!", 0);
     #endif
     
     if ((unsigned char)pad_cmd == 0xFB)

@@ -8,12 +8,17 @@
 #include "request_cmd.h"
 static time_t start_time;
 static unsigned short dev_count = 0;
-void *dev_info = NULL;
+static void *dev_info = NULL;
 
 /**
  * 初始化请求命令
  */
 static int init();
+
+/**
+ * 此线程处理网络设置和终端初始化
+ */
+static void * request_cmd_0x01_02_03_07_08_09_0A_pthread(void* para);
 
 /**
  * 请求命令字分析 网络设置 和 注册
@@ -136,6 +141,11 @@ static int cancel_mac_and_ip_bind();
 static int get_success_buf(char *buf);
 
 /**
+ * 打印设备列表
+ */
+static int print_dev_table(unsigned short dev_count, void *dev_info);
+
+/**
  * 判断此设备是否在此表中
  * 0:不存在
  * 1:存在
@@ -146,7 +156,7 @@ static int is_in_dev_table(unsigned short dev_count, void *dev_info, struct s_de
 /**
  * 添加指定行 （内存）
  */
-static int add_dev_info(unsigned short *dev_count, void *dev_info, struct s_dev_register *dev_register);
+static int add_dev_info(unsigned short *dev_count, void **dev_info, struct s_dev_register *dev_register);
 
 /**
  * 更新指定行串码和串码时间
@@ -156,7 +166,7 @@ static int update_dev_info_code(unsigned short dev_count, void *dev_info, struct
 /**
  * 删除指定行（内存）
  */
-static int delete_dev_info(unsigned short *dev_count, void *dev_info, struct s_dev_register *dev_register);
+static int delete_dev_info(unsigned short *dev_count, void **dev_info, struct s_dev_register *dev_register);
 
 /**
  * 查询内存表（内存）
@@ -167,6 +177,11 @@ static int select_dev_info(unsigned short dev_count, void *dev_info, char *buf, 
  * 串码对比
  */
 static int dev_code_comparison(unsigned short dev_count, void *dev_info, struct s_dev_register *dev_register);
+
+/**
+ *  判断是否在数据库（数据库）
+ */
+static int is_in_dev_database(struct s_dev_register *dev_register);
 
 /**
  * 添加指定行 （数据库）
@@ -192,31 +207,6 @@ static int database_select_dev_info(char *buf, unsigned short len);
 struct class_request_cmd request_cmd = 
 {
     .init = init,
-    .request_cmd_0x01_02_03_07_08_09_0A = request_cmd_0x01_02_03_07_08_09_0A,
-    
-    .request_cmd_0x04 = request_cmd_0x04,
-    .request_cmd_0x05 = request_cmd_0x05,
-    .request_cmd_0x06 = request_cmd_0x06,
-    .request_cmd_0x0B = request_cmd_0x0B,
-    .request_cmd_0x0C = request_cmd_0x0C,
-    .request_cmd_0x0D = request_cmd_0x0D,
-    
-    #if CTSI_SECURITY_SCHEME == 2
-    .request_cmd_0x0E = request_cmd_0x0E,
-    .request_cmd_0x0F = request_cmd_0x0F,
-    .request_cmd_0x50 = request_cmd_0x50,
-    .request_cmd_0x51 = request_cmd_0x51,
-    #endif // CTSI_SECURITY_SCHEME == 2
-    
-    #if BOARDTYPE == 9344
-    .request_cmd_0x52 = request_cmd_0x52,
-    .request_cmd_0x53 = request_cmd_0x53,
-    .request_cmd_0x54 = request_cmd_0x54,
-    .request_cmd_0x55 = request_cmd_0x55,
-    .request_cmd_0x56 = request_cmd_0x56,
-    .request_cmd_0x57 = request_cmd_0x57,
-    #endif // BOARDTYPE == 9344
-    
     .request_cmd_analyse = request_cmd_analyse,
     .init_data_table = init_data_table,
     
@@ -232,7 +222,311 @@ int init()
 {
     common_tools.work_sum->work_sum = 1;
     start_time = time(0);
-return 0;
+    return 0;
+}
+
+/**
+ * 此线程处理网络设置和终端初始化
+ */
+void * request_cmd_0x01_02_03_07_08_09_0A_pthread(void* para)
+{
+    PRINT("request_cmd_0x01_02_03_07_08_09_0A_pthread entry!\n");
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);          //允许退出线程
+    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS,   NULL);   //设置立即取消
+
+    int i = 0;
+    int res = 0, ret = 0;
+    struct s_terminal_dev_register * terminal_dev_register = (struct s_terminal_dev_register *)para;
+
+    int fd = terminal_dev_register->fd;
+    int len = 0;
+    unsigned short insert_len = 0;
+    char *buf = NULL;
+    char port[10] = {0};
+    char columns_name[3][30] = {0};
+    char columns_value[3][100] = {0};
+    
+    PRINT("fd = %d\n", fd);
+    // 相关设置 （包括设备认证和SIP信息获取）
+    if ((res = network_config.network_settings(fd, terminal_dev_register->cmd_count, terminal_dev_register->cmd_word)) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "network_config failed", res);
+        network_config.pthread_recv_flag = 0;
+        PERROR("network_settings failed!\n");
+        pthread_mutex_unlock(&network_config.recv_mutex);
+        PERROR("network_settings failed!\n");
+        goto EXIT;
+    }
+    PRINT("after network_settings !\n");
+    PRINT("*network_config.network_flag = %d\n", *network_config.network_flag);
+    if (*network_config.network_flag == 1) // 说明此时是网络设置 7799
+    {
+        memcpy(port, common_tools.config->pad_server_port2, strlen(common_tools.config->pad_server_port2));
+        PRINT("port = %s\n", port);
+    }
+    else // 7789
+    {
+        memcpy(port, common_tools.config->pad_server_port, strlen(common_tools.config->pad_server_port));
+        PRINT("port = %s\n", port);
+    }
+    
+    // 连接PAD端服务器
+    for (i = 0; i < common_tools.config->repeat; i++)
+    {
+        if ((*network_config.server_pad_fd = communication_network.make_client_link(common_tools.config->pad_ip, port)) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "make_client_link failed", *network_config.server_pad_fd);
+            if (i != (common_tools.config->repeat - 1))
+            {
+                sleep(3);
+                continue;
+            }
+        }
+        break;
+    }
+
+    // 连接失败时
+    if (*network_config.server_pad_fd < 0)
+    {
+        res = *network_config.server_pad_fd;
+        ret = common_tools.get_errno('P', *network_config.server_pad_fd);
+    }
+    else
+    {
+        #if BOARDTYPE == 5350
+        // 网口时关闭
+        if (terminal_dev_register->communication_mode == 1)
+        {
+            PRINT("fd = %d\n", fd);
+            close(fd);
+        }
+        terminal_dev_register->communication_mode = 0;
+        
+        #elif BOARDTYPE == 9344
+        
+        PRINT("before close! fd = %d terminal_dev_register->fd = %d\n", fd, terminal_dev_register->fd);
+        #if USB_INTERFACE == 1
+        shutdown(fd, SHUT_RDWR);
+        PERROR("after shutdown\n");
+        close(fd);
+        #elif USB_INTERFACE == 2
+        
+        // 网口时关闭
+        if (terminal_dev_register->communication_mode == 1)
+        {
+            PRINT("fd = %d\n", fd);
+            close(fd);
+        }
+        terminal_dev_register->communication_mode = 0;
+        
+        #endif // USB_INTERFACE == 2
+        
+        #endif // BOARDTYPE == 9344
+        fd = *network_config.server_pad_fd;
+    }
+
+    if ((res == 0) && (ret == 0) && (*network_config.network_flag == 1)) // 说明此时是网络设置
+    {
+        if ((res = network_config.send_msg_to_pad(fd, 0x00, NULL, 0)) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
+            goto EXIT;
+        }
+    }
+    else if ((res == 0) && (ret == 0))
+    {
+        #if USER_REGISTER
+        len = strlen("network_config.base_sn:") + strlen("network_config.base_mac:") + strlen("network_config.base_ip:") +
+            strlen(network_config.base_sn) + strlen(network_config.base_mac) + strlen(network_config.base_ip) +
+            strlen(terminal_register.respond_pack->base_user_name) + strlen(terminal_register.respond_pack->base_password) +
+            strlen(terminal_register.respond_pack->pad_user_name) + strlen(terminal_register.respond_pack->pad_password) +
+            strlen(terminal_register.respond_pack->sip_ip_address) + strlen(terminal_register.respond_pack->sip_port) +
+            strlen(terminal_register.respond_pack->heart_beat_cycle) + strlen(terminal_register.respond_pack->business_cycle) + 12;
+        PRINT("len = %d\n", len);
+
+        if ((buf = (char *)malloc(len)) == NULL)
+        {
+            res = MALLOC_ERR;
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "malloc failed", res);
+            goto EXIT;
+        }
+
+        memset(buf, 0, len);
+        sprintf(buf, "network_config.base_sn:%s,network_config.base_mac:%s,network_config.base_ip:%s,%s,%s,%s,%s,%s,%s,%s,%s,", network_config.base_sn, network_config.base_mac, network_config.base_ip,
+            terminal_register.respond_pack->base_user_name, terminal_register.respond_pack->base_password,
+            terminal_register.respond_pack->pad_user_name, terminal_register.respond_pack->pad_password,
+            terminal_register.respond_pack->sip_ip_address, terminal_register.respond_pack->sip_port,
+            terminal_register.respond_pack->heart_beat_cycle, terminal_register.respond_pack->business_cycle);
+
+        #else // 不进行设备认证时
+
+        memset(columns_name, 0, sizeof(columns_name));
+        memset(columns_value, 0, sizeof(columns_value));
+        memcpy(columns_name[0], "base_sn", strlen("base_sn"));
+        memcpy(columns_name[1], "base_mac", strlen("base_mac"));
+        memcpy(columns_name[2], "base_ip", strlen("base_ip"));
+
+        #if BOARDTYPE == 5350
+        if ((res = nvram_interface.select(RT5350_FREE_SPACE, 3, columns_name, columns_value)) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "nvram_select failed!", res);
+            goto EXIT;
+        }
+        #elif BOARDTYPE == 9344
+        if ((res = database_management.select(3, columns_name, columns_value)) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_select failed!", res);
+            goto EXIT;
+        }
+        #endif
+        len = strlen("base_sn:") + strlen("base_mac:") + strlen("base_ip:") +
+        strlen(columns_value[0]) + strlen(columns_value[1]) + strlen(columns_value[2]) + 4;
+        PRINT("len = %d\n", len);
+
+        if ((buf = (char *)malloc(len)) == NULL)
+        {
+            res = MALLOC_ERR;
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "malloc failed", res);
+            goto EXIT;
+        }
+
+        memset(buf, 0, len);
+        sprintf(buf, "base_sn:%s,base_mac:%s,base_ip:%s,", columns_value[0], columns_value[1], columns_value[2]);
+        #endif
+
+        PRINT("%s\n", buf);
+
+        // 正确信息发送到PAD
+        if ((res = network_config.send_msg_to_pad(fd, 0x00, buf, strlen(buf))) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
+            goto EXIT;
+        }
+
+        #if 0 // 启动CACM
+        if ((res = terminal_authentication.start_up_CACM()) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "start_up_CACM failed!", res);
+            goto EXIT;
+        }
+        #endif
+    }
+
+EXIT:
+    PRINT("res = %d\n", res);
+    if (buf != NULL)
+    {
+        free(buf);
+        buf = NULL;
+    }
+
+     // 当如上操作出现错误时，返回错误原因
+    if (((res < 0) && (res != STOP_CMD)) || (ret < 0))
+    {
+        if (res == 0)
+        {
+            res = ret;
+        }
+
+        if (common_tools.get_user_prompt(res, &buf) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_user_prompt failed", res);
+            if (buf != NULL)
+            {
+                free(buf);
+                buf = NULL;
+            }
+        }
+        else
+        {
+            PRINT("strlen(buf) = %d\n", strlen(buf));
+            if ((res = network_config.send_msg_to_pad(fd, 0xFF, buf, strlen(buf))) < 0)
+            {
+                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed!", res);
+            }
+            if (buf != NULL)
+            {
+                free(buf);
+                buf = NULL;
+            }
+        }
+    }
+    else if (res == STOP_CMD)
+    {
+        if ((res = network_config.send_msg_to_pad(fd, 0x00, NULL, 0)) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed!", res);
+        }
+    }
+
+    if (((unsigned char)*network_config.cmd != 0xFF) && (*network_config.network_flag != 1)) // *network_config.cmd  等于如下值时 0x00 0xFC 0xFB 0xFD 0xFE，插入数据库
+    {
+        memset(columns_name[0], 0, sizeof(columns_name[0]));
+        memset(columns_value[0], 0, sizeof(columns_value[0]));
+        memcpy(columns_name[0], "register_state", strlen("register_state"));
+
+        sprintf(columns_value[0], "%d", (unsigned char)*network_config.cmd);
+        insert_len = strlen(columns_value[0]);
+        PRINT("columns_value[0] = %s\n", columns_value[0]);
+
+        for (i = 0; i < common_tools.config->repeat; i++)
+        {
+            #if BOARDTYPE == 6410 || BOARDTYPE == 9344
+            if ((ret = database_management.update(1, columns_name, columns_value, &insert_len)) < 0)
+            {
+                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_update failed!", ret);
+                continue;
+            }
+            #elif BOARDTYPE == 5350
+            if ((ret = nvram_interface.insert(RT5350_FREE_SPACE, 1, columns_name, columns_value, &insert_len)) < 0)
+            {
+                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "nvram_insert failed!", ret);
+                continue;
+            }
+            #endif
+            break;
+        }
+        if (ret < 0)
+        {
+            res = ret;
+            PRINT("insert failed!\n");
+        }
+    }
+    PRINT("before close! fd = %d terminal_dev_register->fd = %d\n", fd, terminal_dev_register->fd);
+    #if BOARDTYPE == 5350
+    // 网口时关闭
+    if (terminal_dev_register->communication_mode == 1)
+    {
+        close(fd);
+    }
+    terminal_dev_register->communication_mode = 0;
+    
+    #elif BOARDTYPE == 9344
+    
+    #if USB_INTERFACE == 1
+    PRINT("before close! fd = %d terminal_dev_register->fd = %d\n", fd, terminal_dev_register->fd);
+    shutdown(fd, SHUT_RDWR);
+    PERROR("after shutdown\n");
+    close(fd);
+    PERROR("after close\n");
+    #elif USB_INTERFACE == 2
+    
+    // 网口时关闭
+    if (terminal_dev_register->communication_mode == 1)
+    {
+        close(fd);
+    }
+    terminal_dev_register->communication_mode = 0;
+    
+    #endif // USB_INTERFACE == 2
+    
+    #endif // BOARDTYPE == 9344
+    *network_config.network_flag = 0;
+    network_config.init_cmd_list();  // 初始化命令结构体
+    request_cmd.init_data_table(&terminal_dev_register->data_table);
+    terminal_dev_register->network_config_fd = 0;
+    terminal_dev_register->config_now_flag = 0;
+    return (void *)res;
 }
 
 /**
@@ -257,31 +551,47 @@ int request_cmd_0x01_02_03_07_08_09_0A(struct s_terminal_dev_register * terminal
         *network_config.network_flag = 1;
         PRINT("*network_config.network_flag = %d\n", *network_config.network_flag);
     }
-
+    
     if ((res = network_config.send_msg_to_pad(fd, 0x00, NULL, 0)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
         return res;
     }
-
-    pthread_mutex_lock(&terminal_dev_register->mutex);
-
-    pthread_cond_signal(&terminal_dev_register->cond);
-
-    pthread_mutex_unlock(&terminal_dev_register->mutex);
-
-
-    pthread_mutex_lock(&terminal_dev_register->mutex);
-    terminal_dev_register->mutex_lock_flag = 1;
-    pthread_cond_wait(&terminal_dev_register->cond, &terminal_dev_register->mutex);
-
-    if (terminal_dev_register->pad_cmd_handle_id == 0)
+    
+    // terminal_dev_register->config_now_flag == 0:说明此时没有在设置
+    if (terminal_dev_register->config_now_flag == 0)
     {
-        // 线程创建失败
-        res = PTHREAD_CREAT_ERR;
+        if (pthread_create(&terminal_dev_register->request_cmd_0x01_02_03_07_08_09_0A_id, NULL, (void*)request_cmd_0x01_02_03_07_08_09_0A_pthread, (void *)terminal_dev_register) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "pthread_create failed!", PTHREAD_CREAT_ERR);
+            return PTHREAD_CREAT_ERR;
+        }
     }
-    pthread_mutex_unlock(&terminal_dev_register->mutex);
-
+    
+    // 这将该子线程的状态设置为detached,则该线程运行结束后会自动释放所有资源（非阻塞，可立即返回）
+    if (pthread_detach(terminal_dev_register->request_cmd_0x01_02_03_07_08_09_0A_id) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "pthread_detach failed!", PTHREAD_CREAT_ERR);
+        
+        #if BOARDTYPE == 5350
+        pthread_mutex_lock(&nvram_interface.mutex);
+        #endif
+        
+        pthread_cancel(terminal_dev_register->request_cmd_0x01_02_03_07_08_09_0A_id);
+        PRINT("after pthread_cancel!\n");
+        
+        // 是否需要pthread_join
+        pthread_join(terminal_dev_register->request_cmd_0x01_02_03_07_08_09_0A_id, NULL);
+        
+        #if BOARDTYPE == 5350
+        pthread_mutex_unlock(&nvram_interface.mutex);
+        #endif
+        
+        return PTHREAD_CREAT_ERR;
+    }
+    // 说明此时正在配置
+    terminal_dev_register->config_now_flag = 1;
+    terminal_dev_register->network_config_fd = fd;
     return res;
 }
 
@@ -301,6 +611,9 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
 
     int i = 0;
     char *buf = NULL;
+    unsigned short len = 0;
+    unsigned short buf_len = 0;
+    
     char buf_tmp[256] = {0}; 
     char pad_mac[18] = {0};
     
@@ -397,10 +710,11 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
         }
         case 0xFE:
         {
-            #if USER_REGISTER == 0
+            #if USER_REGISTER == 0 // 0：不做终端认证流程
             *network_config.pad_cmd = 0x00;
             *network_config.cmd = 0x00;
-            #else
+            
+            #else // 1：做终端认证流程
             if ((res = terminal_register.user_register(terminal_dev_register->data_table.pad_sn, terminal_dev_register->data_table.pad_mac)) < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "user_register failed!", res);
@@ -413,7 +727,7 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
 
             sprintf(columns_value[0], "%d", (unsigned char)*network_config.pad_cmd);
             buf_len = strlen(columns_value[0]);
-            terminal_dev_register->data_table = *network_config.pad_cmd;
+            terminal_dev_register->cmd_word = *network_config.pad_cmd;
             for (i = 0; i < common_tools.config->repeat; i++)
             {
                 #if BOARDTYPE == 6410 || BOARDTYPE == 9344
@@ -466,11 +780,7 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
                 terminal_register.respond_pack->heart_beat_cycle, terminal_register.respond_pack->business_cycle);
 
     	    PRINT("%s\n", buf);
-            if ((res = network_config.send_msg_to_pad(fd, 0x00, buf, strlen(buf))) < 0)
-            {
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
-                break;
-            }
+    	    len = strlen(buf);
             #endif
 
             if (*network_config.pad_cmd != 0x00)
@@ -487,6 +797,11 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_success_buf failed", res);
             }
+            else 
+            {
+                len = strlen(buf);    
+            }
+            
             #endif
             register_state = 0x00;
             break;
@@ -518,7 +833,7 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
         }
 
         // 数据发送到PAD
-        if ((res = network_config.send_msg_to_pad(fd, register_state, buf, 0)) < 0)
+        if ((res = network_config.send_msg_to_pad(fd, register_state, buf, len)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
             continue;
@@ -704,7 +1019,7 @@ int request_cmd_0x05(struct s_terminal_dev_register * terminal_dev_register)
 
     #elif BOARDTYPE == 9344
     
-    if (len != (34 + 12 + 4)) // 序列号 mac 串码
+    if (len != (SN_LEN + 12 + 4)) // 序列号 mac 串码
     {
         res = P_LENGTH_ERR;
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "length error!", res);
@@ -712,8 +1027,8 @@ int request_cmd_0x05(struct s_terminal_dev_register * terminal_dev_register)
     }
     // 注册命令，PAD将随机生成的4字节串码发给base
     memset(&dev_register, 0, sizeof(struct s_dev_register));
-    memcpy(&(dev_register.dev_mac), terminal_dev_register->data + 34, 12);
-    memcpy(&(dev_register.dev_code), terminal_dev_register->data + 34 + 12, 4);
+    memcpy(&(dev_register.dev_mac), terminal_dev_register->data + SN_LEN, 12);
+    memcpy(&(dev_register.dev_code), terminal_dev_register->data + SN_LEN + 12, 4);
 
     if ((res = update_dev_info_code(dev_count, dev_info, &dev_register)) < 0)
     {
@@ -733,7 +1048,9 @@ int request_cmd_0x05(struct s_terminal_dev_register * terminal_dev_register)
 }
 
 /**
- * 请求命令字分析 0x06 5350时 注销默认SSID；9344时 注册命令，智能设备将 设备名称、id、mac发送给BASE
+ * 请求命令字分析 0x06 
+ * 5350时 注销默认SSID；
+ * 9344时 注册命令，智能设备将 设备名称、id、mac发送给BASE
  */
 int request_cmd_0x06(struct s_terminal_dev_register * terminal_dev_register)
 {
@@ -846,7 +1163,8 @@ int request_cmd_0x06(struct s_terminal_dev_register * terminal_dev_register)
     }
     sleep(1);
 	system("reboot");
-    #elif BOARDTYPE == 9344
+    
+#elif BOARDTYPE == 9344
     
     // 注册命令，智能设备将 设备名称、id、mac发送给BASE
     memset(&dev_register, 0, sizeof(struct s_dev_register));
@@ -884,19 +1202,27 @@ int request_cmd_0x06(struct s_terminal_dev_register * terminal_dev_register)
         return res;
     }
     memcpy(dev_register.dev_mac, terminal_dev_register->data + index, length);
-
-    if ((res = add_dev_info(&dev_count, dev_info, &dev_register)) < 0)
+    
+    PRINT("dev_register.dev_name = %s\n", dev_register.dev_name);
+    PRINT("dev_register.dev_id = %s\n", dev_register.dev_id);
+    PRINT("dev_register.dev_mac = %s\n", dev_register.dev_mac);
+    
+    if ((res = add_dev_info(&dev_count, &dev_info, &dev_register)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "add_dev_info failed!", res);
         return res;
     }
-
+    
+    PRINT("dev_count = %d\n", dev_count);
+    print_dev_table(dev_count, dev_info);
+    PRINT("after print_dev_table dev_info = %p\n", dev_info);
+    
     if ((res = network_config.send_msg_to_pad(fd, 0x00, NULL, 0)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
         return res;
     }
-#endif
+#endif // BOARDTYPE == 9344
     return res;
 }
 
@@ -1265,7 +1591,7 @@ int request_cmd_0x0B(struct s_terminal_dev_register * terminal_dev_register)
             }
         }
     }
-    #endif
+    #endif // BOARDTYPE == 9344
     else
     {
         res = DATA_ERR;
@@ -1440,10 +1766,10 @@ int request_cmd_0x0C(struct s_terminal_dev_register * terminal_dev_register)
         return res;
     }
     // 2.取消绑定
-    cancel_mac_and_ip_bind();
+    //cancel_mac_and_ip_bind();
     // 3.
     system("cfg -x");
-    sleep(1);
+    sleep(3);
     system("reboot");
     #endif
     
@@ -1482,7 +1808,7 @@ int request_cmd_0x0E(struct s_terminal_dev_register * terminal_dev_register)
     int res = 0;
     int fd = terminal_dev_register->fd;
     unsigned char register_state = (unsigned char)terminal_dev_register->data_table.register_state;
-    char device_token[16] = {0};
+    char device_token[TOKENLEN] = {0};
     
     if (register_state != 0x00) // PAD没有注册成功
     {
@@ -1497,7 +1823,7 @@ int request_cmd_0x0E(struct s_terminal_dev_register * terminal_dev_register)
         return res;
     }
 
-    if ((res = network_config.send_msg_to_pad(fd, 0x00, device_token, 16)) < 0)
+    if ((res = network_config.send_msg_to_pad(fd, 0x00, device_token, TOKENLEN)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
         return res;
@@ -1618,33 +1944,39 @@ int request_cmd_0x52(struct s_terminal_dev_register * terminal_dev_register)
 int request_cmd_0x53(struct s_terminal_dev_register * terminal_dev_register)
 {
     int res = 0;
-    int fd = terminal_dev_register->fd;
-    unsigned char register_state = (unsigned char)terminal_dev_register->data_table.register_state;
+    int fd = terminal_dev_register->network_config_fd;
     
     if (terminal_dev_register->config_now_flag == 1)
     {
         #if BOARDTYPE == 5350
         pthread_mutex_lock(&nvram_interface.mutex);
         #endif
-        pthread_cancel(terminal_dev_register->pad_cmd_handle_id);
+        
+        pthread_cancel(terminal_dev_register->request_cmd_0x01_02_03_07_08_09_0A_id);
         PRINT("after pthread_cancel!\n");
-
+        
+        // 是否需要pthread_join
+        pthread_join(terminal_dev_register->request_cmd_0x01_02_03_07_08_09_0A_id, NULL);
+        
         #if BOARDTYPE == 5350
         pthread_mutex_unlock(&nvram_interface.mutex);
         #endif
+        
         // 判断锁状态(需要跟踪)
         if(pthread_mutex_trylock(&network_config.recv_mutex) == EBUSY)
         {
             PRINT("pad_cmd_handle pthread lock now!\n");
-            pthread_mutex_unlock(&network_config.recv_mutex);
         }
         else
         {
-            PRINT("serial pthread lock now!\n");
+            PRINT("lock now!\n");
             pthread_mutex_unlock(&network_config.recv_mutex);
         }
+        if (fd != 0)
+        {
+            close(fd);
+        }
     }
-
     /*
     if ((res = network_config.send_msg_to_pad(fd, 0x00, NULL, 0)) < 0)
     {
@@ -1652,6 +1984,7 @@ int request_cmd_0x53(struct s_terminal_dev_register * terminal_dev_register)
         return res;;
     }
     */
+    terminal_dev_register->network_config_fd = 0;
     return res;
 }
 
@@ -1665,9 +1998,9 @@ int request_cmd_0x54(struct s_terminal_dev_register * terminal_dev_register)
     int fd = terminal_dev_register->fd;
     unsigned char register_state = (unsigned char)terminal_dev_register->data_table.register_state;
     
-    int index = 1;
+    int index = 0;
     unsigned short length = 0;
-
+    
 #if BOARDTYPE == 9344
     struct s_dev_register dev_register;
     memset(&dev_register, 0, sizeof(struct s_dev_register));
@@ -1681,16 +2014,44 @@ int request_cmd_0x54(struct s_terminal_dev_register * terminal_dev_register)
     }
     
     memset(&dev_register, 0, sizeof(struct s_dev_register));
-    length = terminal_dev_register->data[index++] + terminal_dev_register->data[index++] << 8;
+    length = terminal_dev_register->data[index++];
+    length += terminal_dev_register->data[index++] << 8;
+    PRINT("length = %d %02X\n", length, length);
+    if (length != 12)
+    {
+        res = P_DATA_ERR;
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data error!", res);
+        return res;
+    }
     memcpy(dev_register.dev_mac, terminal_dev_register->data + index, length);
     index += length;
     
-    length = terminal_dev_register->data[index++] + terminal_dev_register->data[index++] << 8;
+    length = terminal_dev_register->data[index++];
+    length += terminal_dev_register->data[index++] << 8;
+    PRINT("length = %d %02X\n", length, length);
+    if (length != 8)
+    {
+        res = P_DATA_ERR;
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data error!", res);
+        return res;
+    }
     memcpy(dev_register.dev_id, terminal_dev_register->data + index, length);
     index += length;
 
-    length = terminal_dev_register->data[index++] + terminal_dev_register->data[index++] << 8;
-    memcpy(&dev_register.dev_code, terminal_dev_register->data + index, length);
+    length = terminal_dev_register->data[index++];
+    length += terminal_dev_register->data[index++] << 8;
+    PRINT("length = %d %02X\n", length, length);
+    if (length != 4)
+    {
+        res = P_DATA_ERR;
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data error!", res);
+        return res;
+    }
+    memcpy(dev_register.dev_code, terminal_dev_register->data + index, length);
+    
+    PRINT("dev_register.dev_mac = %s\n", dev_register.dev_mac);
+    PRINT("dev_register.dev_id = %s\n", dev_register.dev_id);
+    PRINT("dev_register.dev_code = %s\n", dev_register.dev_code);
     
     if ((res = dev_code_comparison(dev_count, dev_info, &dev_register)) < 0)
     {
@@ -1703,13 +2064,14 @@ int request_cmd_0x54(struct s_terminal_dev_register * terminal_dev_register)
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
         return res;
     }
-
+    
     // 从内存中删除
-    if ((res = delete_dev_info(&dev_count, dev_info, &dev_register)) < 0)
+    if ((res = delete_dev_info(&dev_count, &dev_info, &dev_register)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "delete_dev_info failed", res);
         return res;
     }
+    PRINT("after delete_dev_info \n");
     
     // 插入数据库
     if ((res = database_insert_dev_info(&dev_register)) < 0)
@@ -1717,6 +2079,7 @@ int request_cmd_0x54(struct s_terminal_dev_register * terminal_dev_register)
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "database_insert_dev_info failed", res);
         return res;
     }
+    PRINT("after database_insert_dev_info \n");
     return res;
 }
 /**
@@ -1728,6 +2091,7 @@ int request_cmd_0x55(struct s_terminal_dev_register * terminal_dev_register)
     int fd = terminal_dev_register->fd;
     unsigned char register_state = (unsigned char)terminal_dev_register->data_table.register_state;
     
+    unsigned short len = 0;
     char buf[1024] = {0};
 
     if (register_state != 0x00) // PAD没有注册成功
@@ -1736,14 +2100,15 @@ int request_cmd_0x55(struct s_terminal_dev_register * terminal_dev_register)
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no init!", res);
         return res;
     }
-        
+    
     if ((res = select_dev_info(dev_count, dev_info, buf, sizeof(buf))) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "select_dev_info failed!", res);
         return res;
     }
-
-    if ((res = network_config.send_msg_to_pad(fd, 0x00, buf, 0)) < 0)
+    len = strlen(buf);
+    PRINT("buf = %s\n", buf);
+    if ((res = network_config.send_msg_to_pad(fd, 0x00, buf, len)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
         return res;
@@ -1759,6 +2124,7 @@ int request_cmd_0x56(struct s_terminal_dev_register * terminal_dev_register)
     int fd = terminal_dev_register->fd;
     unsigned char register_state = (unsigned char)terminal_dev_register->data_table.register_state;
     
+    unsigned short len = 0;
     char buf[1024] = {0};
 
     if (register_state != 0x00) // PAD没有注册成功
@@ -1773,8 +2139,9 @@ int request_cmd_0x56(struct s_terminal_dev_register * terminal_dev_register)
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "database_select_dev_info failed!", res);
         return res;
     }
-
-    if ((res = network_config.send_msg_to_pad(fd, 0x00, buf, 0)) < 0)
+    len = strlen(buf);
+    
+    if ((res = network_config.send_msg_to_pad(fd, 0x00, buf, len)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
         return res;
@@ -1803,7 +2170,7 @@ int request_cmd_0x57(struct s_terminal_dev_register * terminal_dev_register)
         return res;
     }
     
-    memcpy(dev_register.dev_mac, terminal_dev_register->data + 35, 12);
+    memcpy(dev_register.dev_mac, terminal_dev_register->data + SN_LEN, 12);
     if ((res = database_delete_dev_info(&dev_register)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "database_delete_dev_info failed!", res);
@@ -1833,7 +2200,7 @@ static int request_cmd_analyse(struct s_terminal_dev_register * terminal_dev_reg
     memset(&tpend, 0, sizeof(struct timeval));
 
     int fd = terminal_dev_register->fd;
-    int mode = terminal_dev_register->mode;
+    int mode = terminal_dev_register->communication_mode;
     
     struct s_pad_and_6410_msg pad_and_6410_msg;
     memset(&pad_and_6410_msg, 0, sizeof(struct s_pad_and_6410_msg));
@@ -1843,7 +2210,6 @@ static int request_cmd_analyse(struct s_terminal_dev_register * terminal_dev_reg
     int index = 0;
     unsigned char cmd = 0;
     
-    memset(&tpstart, 0, sizeof(struct timeval));
     gettimeofday(&tpstart, NULL); // 得到当前时间
     
     // 接收pad发送的数据
@@ -1856,7 +2222,7 @@ static int request_cmd_analyse(struct s_terminal_dev_register * terminal_dev_reg
     PRINT("pad_and_6410_msg.cmd = %02X, mode = %02X\n", pad_and_6410_msg.cmd, mode);
     switch (mode)
     {
-        case 0:
+        case 0: // 非网络
         {
             switch (pad_and_6410_msg.cmd)
             {
@@ -1879,7 +2245,7 @@ static int request_cmd_analyse(struct s_terminal_dev_register * terminal_dev_reg
             }
             break;
         }
-        case 1:
+        case 1: // 网络
         {
             switch (pad_and_6410_msg.cmd)
             {
@@ -1890,15 +2256,15 @@ static int request_cmd_analyse(struct s_terminal_dev_register * terminal_dev_reg
                 #if BOARDTYPE == 5350
                 case 0x05:   //0x05: 生成默认ssid，用于外围设备的接入
                 case 0x06:   //0x06: 注销默认ssid
-                #elif BOARDTYPE == 9344
-                case 0x05:   //0x05: 注册命令，PAD将随机生成的4字节串码发给base
-                case 0x06:   //0x06: 注册命令，智能设备将 设备名称、id、mac发送给BASE
-                #endif
                 case 0x07:   //0x07: 无线网络设置
                 case 0x08:   //0x08: 动态IP
                 case 0x09:   //0x09: 静态IP
                 case 0x0A:   //0x0A: PPPOE
                 case 0x0B:   //0x0B: 网络设置询问和无线设置询问
+                #elif BOARDTYPE == 9344
+                case 0x05:   //0x05: 注册命令，PAD将随机生成的4字节串码发给base
+                case 0x06:   //0x06: 注册命令，智能设备将 设备名称、id、mac发送给BASE
+                #endif // BOARDTYPE == 9344
                 case 0x0C:   //0x0C: 恢复出厂（终端初始化前的状态）
                 case 0x0D:   //0x0D: 查看Base版本
                 #if CTSI_SECURITY_SCHEME == 2
@@ -1906,7 +2272,7 @@ static int request_cmd_analyse(struct s_terminal_dev_register * terminal_dev_reg
                 case 0x0F:   //0x0F: 获取位置令牌
                 case 0x50:   //0x50: 重新生成身份令牌
                 case 0x51:   //0x51: 重新生成身份令牌
-                #endif
+                #endif // CTSI_SECURITY_SCHEME == 2
                 case 0x52:   //0x52: 查看WAN口
                 case 0x53:   //0x53: 取消当前配置
                 #if BOARDTYPE == 9344
@@ -1914,7 +2280,7 @@ static int request_cmd_analyse(struct s_terminal_dev_register * terminal_dev_reg
                 case 0x55:   //0x55：PAD扫描“发送注册申请”的设备
                 case 0x56:   //0x56：查询已经注册的设备
                 case 0x57:   //0x57：注销命令，删除匹配序列号的行
-                #endif
+                #endif // BOARDTYPE == 9344
                 {
                     cmd = pad_and_6410_msg.cmd;
                     break;
@@ -1961,10 +2327,12 @@ static int request_cmd_analyse(struct s_terminal_dev_register * terminal_dev_reg
             case 0x01: // 设置命令时
             case 0x02:
             case 0x03:
+            #if BOARDTYPE == 5350
             case 0x07:
             case 0x08:
             case 0x09:
             case 0x0A:
+            #endif // BOARDTYPE == 5350
             {
                 index = 1;
                 break;
@@ -1976,7 +2344,7 @@ static int request_cmd_analyse(struct s_terminal_dev_register * terminal_dev_reg
             }
         }
 
-        if (strlen(terminal_dev_register->data_table.pad_sn) != 34)
+        if (strlen(terminal_dev_register->data_table.pad_sn) != SN_LEN)
         {
             res = NO_RECORD_ERR;
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "There is no (pad_sn) record!", res);
@@ -2004,7 +2372,7 @@ static int request_cmd_analyse(struct s_terminal_dev_register * terminal_dev_reg
     PRINT("pad_and_6410_msg.len = %d\n", pad_and_6410_msg.len);
     terminal_dev_register->length = pad_and_6410_msg.len - 1;
     memset(terminal_dev_register->data, 0, sizeof(terminal_dev_register->data));
-    memcpy(terminal_dev_register->data, pad_and_6410_msg.data, pad_and_6410_msg.len);
+    memcpy(terminal_dev_register->data, pad_and_6410_msg.data, (pad_and_6410_msg.len - 1));
     
     // 判断命令字
     switch (cmd)
@@ -2012,10 +2380,12 @@ static int request_cmd_analyse(struct s_terminal_dev_register * terminal_dev_reg
         case 0x01:
         case 0x02:
         case 0x03:
+        #if BOARDTYPE == 5350
         case 0x07:
         case 0x08:
         case 0x09:
         case 0x0A:
+        #endif // BOARDTYPE == 5350
         {
             terminal_dev_register->cmd_word = cmd;
             terminal_dev_register->cmd_count = pad_and_6410_msg.data[0];
@@ -2037,11 +2407,13 @@ static int request_cmd_analyse(struct s_terminal_dev_register * terminal_dev_reg
             res = request_cmd_0x06(terminal_dev_register);
             break;
         }
+        #if BOARDTYPE == 5350
         case 0x0B:
         {
             res = request_cmd_0x0B(terminal_dev_register);
             break;
         }
+        #endif // BOARDTYPE == 5350
         case 0x0C:
         {
             res = request_cmd_0x0C(terminal_dev_register);
@@ -2122,6 +2494,7 @@ EXIT:
     PRINT("res = %d\n", res);
     if (res < 0)
     {
+        common_tools.work_sum->work_failed_sum++; // 记录测试失败次数
         // 获取用户提示
         if (common_tools.get_user_prompt(res, &buf) < 0)
         {
@@ -2145,12 +2518,17 @@ EXIT:
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send success!", 0);
         }
-        close(fd);
-        terminal_dev_register->fd = 0;
+        
+        if (mode == 1) // 网络通信
+        {
+            close(fd);
+            terminal_dev_register->fd = 0;
+        }
     }
     else 
     {
-        if (terminal_dev_register->config_now_flag != 1)
+        common_tools.work_sum->work_success_sum++; // 记录测试正确次数
+        if ((terminal_dev_register->config_now_flag != 1) && (mode == 1))
         {
             close(fd);
             terminal_dev_register->fd = 0;
@@ -2168,16 +2546,9 @@ EXIT:
         pad_and_6410_msg.data = NULL;
     }
     
-    if (*network_config.server_pad_fd > 0)
-    {
-        close(*network_config.server_pad_fd);
-        *network_config.server_pad_fd = 0;
-    }
-    
+    // 统计测试情况
     gettimeofday(&tpend, NULL);
-    common_tools.work_sum->work_failed_sum++;
     common_tools.make_menulist(start_time, tpstart, tpend);
-
     common_tools.work_sum->work_sum++;
 
     network_config.pthread_flag = 0;
@@ -2373,6 +2744,28 @@ int get_success_buf(char *buf)
 }
 
 /**
+ * 打印设备列表
+ */
+int print_dev_table(unsigned short dev_count, void *dev_info)
+{
+    if (dev_info == NULL)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data is NULL!", NULL_ERR);
+        return NULL_ERR;
+    }
+    
+    int i = 0;
+    struct s_dev_register *dev_tmp;
+    PRINT("dev_count = %d\n", dev_count);
+    for (i = 0; i < dev_count; i++)
+    {
+        dev_tmp = (struct s_dev_register *)(dev_info + i * sizeof(struct s_dev_register));
+        PRINT("%d %s %s %s %s\n", i, dev_tmp->dev_name, dev_tmp->dev_id, dev_tmp->dev_mac, dev_tmp->dev_code);
+    }
+    return 0;
+}
+
+/**
  * 判断此设备是否在此表中
  * 0:不存在
  * 1:存在
@@ -2408,7 +2801,7 @@ int is_in_dev_table(unsigned short dev_count, void *dev_info, struct s_dev_regis
 /**
  * 添加指定行 （内存）
  */
-int add_dev_info(unsigned short *dev_count, void *dev_info, struct s_dev_register *dev_register)
+int add_dev_info(unsigned short *dev_count, void **dev_info, struct s_dev_register *dev_register)
 {
     int res = 0;
     int malloc_len = sizeof(struct s_dev_register);
@@ -2419,9 +2812,9 @@ int add_dev_info(unsigned short *dev_count, void *dev_info, struct s_dev_registe
         return NULL_ERR;
     }
 
-    if (dev_info == NULL)
+    if (*dev_info == NULL)
     {
-        if ((dev_info = malloc(malloc_len)) == NULL)
+        if ((*dev_info = malloc(malloc_len)) == NULL)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "malloc failed", MALLOC_ERR);
             return MALLOC_ERR;
@@ -2429,13 +2822,13 @@ int add_dev_info(unsigned short *dev_count, void *dev_info, struct s_dev_registe
     }
     else
     {
-        res = is_in_dev_table(*dev_count, dev_info, dev_register);
+        res = is_in_dev_table(*dev_count, *dev_info, dev_register);
         PRINT("res = %d\n", res);
         switch (res)
         {
             case 0: // 不存在
             {
-                if ((dev_info = realloc(dev_info, malloc_len)) == NULL)
+                if ((*dev_info = realloc(*dev_info, malloc_len)) == NULL)
                 {
                     OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "realloc failed", MALLOC_ERR);
                     return MALLOC_ERR;
@@ -2444,7 +2837,8 @@ int add_dev_info(unsigned short *dev_count, void *dev_info, struct s_dev_registe
             }
             case 1: // 已存在
             {
-                return 0;
+                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "This record already exists!", res);
+                return REPEAT_ERR;
             }
             default:
             {
@@ -2452,8 +2846,11 @@ int add_dev_info(unsigned short *dev_count, void *dev_info, struct s_dev_registe
             }
         }
     }
-    memcpy(dev_info + *dev_count * malloc_len, dev_register, malloc_len);
-    *dev_count++;
+    memcpy((*dev_info) + (*dev_count) * malloc_len, dev_register, malloc_len);
+    (*dev_count)++;
+    PRINT("*dev_count = %d\n", *dev_count);
+    print_dev_table(*dev_count, *dev_info);
+    PRINT("after print_dev_table *dev_info = %p\n", *dev_info);
     return 0;
 }
 
@@ -2475,8 +2872,8 @@ int update_dev_info_code(unsigned short dev_count, void *dev_info, struct s_dev_
         dev_tmp = (struct s_dev_register *)(dev_info + i * sizeof(struct s_dev_register));
         if (memcmp(dev_tmp->dev_mac, dev_register->dev_mac, strlen(dev_register->dev_mac)) == 0)
         {
-            PRINT("dev_register->dev_code = %08X\n", dev_register->dev_code);
-            dev_tmp->dev_code = dev_register->dev_code;
+            PRINT("dev_register->dev_code = %s\n", dev_register->dev_code);
+            memcpy(dev_tmp->dev_code, dev_register->dev_code, 4);
             dev_tmp->end_time = time(NULL) + 1800;  // 有效期30分钟
             return 0;
         }
@@ -2487,17 +2884,16 @@ int update_dev_info_code(unsigned short dev_count, void *dev_info, struct s_dev_
 /**
  * 删除指定行（内存）
  */
-int delete_dev_info(unsigned short *dev_count, void *dev_info, struct s_dev_register *dev_register)
+int delete_dev_info(unsigned short *dev_count, void **dev_info, struct s_dev_register *dev_register)
 {
     int res = 0;
-    res = is_in_dev_table(*dev_count, dev_info, dev_register);
+    res = is_in_dev_table(*dev_count, *dev_info, dev_register);
     PRINT("res = %d\n", res);
     switch (res)
     {
         case 0:
         {
             return 0;
-            break;
         }
         case 1:
         {
@@ -2510,16 +2906,35 @@ int delete_dev_info(unsigned short *dev_count, void *dev_info, struct s_dev_regi
     }
 
     int i = 0;
+    void *dev_info_tmp = NULL;
     struct s_dev_register *dev_tmp;
     for (i = 0; i < *dev_count; i++)
     {
-        dev_tmp = (struct s_dev_register *)(dev_info + i * sizeof(struct s_dev_register));
+        dev_tmp = (struct s_dev_register *)((*dev_info) + i * sizeof(struct s_dev_register));
         PRINT("dev_tmp->dev_mac = %s\n", dev_tmp->dev_mac);
         if (memcmp(dev_tmp->dev_mac, dev_register->dev_mac, strlen(dev_register->dev_mac)) == 0)
         {
-            memcpy(dev_tmp, dev_info + sizeof(struct s_dev_register), *dev_count - i - 1);
-            *dev_count--;
-            free(dev_info + *dev_count * sizeof(struct s_dev_register));
+            memset(dev_register->dev_name, 0, sizeof(dev_register->dev_name));
+            memcpy(dev_register->dev_name, dev_tmp->dev_name, strlen(dev_tmp->dev_name));
+            
+            memset(dev_tmp, 0, sizeof(struct s_dev_register));
+            memcpy(dev_tmp, dev_tmp + sizeof(struct s_dev_register), ((*dev_count) - i - 1) * sizeof(struct s_dev_register));
+            (*dev_count)--;
+            
+            if (*dev_count == 0)
+            {
+                free(*dev_info);
+                *dev_info = NULL;
+            }
+            else 
+            {
+                if ((dev_info_tmp = realloc(*dev_info, (*dev_count) * sizeof(struct s_dev_register))) == NULL)
+                {
+                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "realloc failed", MALLOC_ERR);
+                    return MALLOC_ERR;
+                }
+                *dev_info = dev_info_tmp;
+            }
             return 0;
         }
     }
@@ -2534,14 +2949,19 @@ int select_dev_info(unsigned short dev_count, void *dev_info, char *buf, unsigne
     if (dev_info == NULL)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data is NULL!", NULL_ERR);
-        return NULL_ERR;
+        return NO_REQUEST_ERR;
     }
     if (buf == NULL)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data is NULL!", NULL_ERR);
         return NULL_ERR;
     }
-
+    if (dev_count == 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "dev table is NULL!", NULL_ERR);
+        return NO_REQUEST_ERR;
+    }
+    
     int i = 0;
     unsigned short buf_len = 0;
     struct s_dev_register *dev_tmp;
@@ -2549,9 +2969,10 @@ int select_dev_info(unsigned short dev_count, void *dev_info, char *buf, unsigne
     {
         dev_tmp = (struct s_dev_register *)(dev_info + i * sizeof(struct s_dev_register));
 
-        snprintf(buf + buf_len, len - buf_len, "%s,%s\n", dev_tmp->dev_name, dev_tmp->dev_id);
-        buf_len = strlen(dev_tmp->dev_name) + strlen(dev_tmp->dev_id) + 2;
+        snprintf(buf + buf_len, len - buf_len, "%s,%s,%s;", dev_tmp->dev_name, dev_tmp->dev_id, dev_tmp->dev_mac);
+        buf_len = strlen(dev_tmp->dev_name) + strlen(dev_tmp->dev_id) + strlen(dev_tmp->dev_mac) + 3;
     }
+    PRINT("buf = %s\n", buf);
     return 0;
 }
 
@@ -2580,12 +3001,19 @@ int dev_code_comparison(unsigned short dev_count, void *dev_info, struct s_dev_r
         dev_tmp = (struct s_dev_register *)(dev_info + i * sizeof(struct s_dev_register));
         if (memcmp(dev_tmp->dev_mac, dev_register->dev_mac, strlen(dev_register->dev_mac)) == 0)
         {
-            if ((dev_tmp->end_time - time(NULL)) < 0)
+            if (dev_tmp->end_time == 0) // 说明PAD端还没有发送串码
+            {
+                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "don't have dev_code!", NON_EXISTENT_ERR);
+                return NON_EXISTENT_ERR;
+            }
+            if ((dev_tmp->end_time - time(NULL)) < 0) // 说明此时串码过期
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "dev_code timeout!", OVERDUE_ERR);
+                dev_tmp->end_time = 0;
+                memset(dev_tmp->dev_code, 0, sizeof(dev_tmp->dev_code));
                 return OVERDUE_ERR;
             }
-            if (dev_tmp->dev_code != dev_register->dev_code)
+            if (memcmp(dev_tmp->dev_code, dev_register->dev_code, 4) != 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "dev_code error!", IDENTIFYING_CODE_ERR);
                 return IDENTIFYING_CODE_ERR;
@@ -2602,6 +3030,66 @@ int dev_code_comparison(unsigned short dev_count, void *dev_info, struct s_dev_r
     return 0;
 }
 
+
+/**
+ * 判断是否在数据库（数据库）
+ * 0:不存在
+ * 1:存在
+ * < 0:错误
+ */
+int is_in_dev_database(struct s_dev_register *dev_register)
+{
+    int res = 0;
+    int i = 0;
+    unsigned short len = 0;
+    char buf[1024] = {0};
+    char *tmp = NULL;
+    char *index = NULL;
+    char *row_index = NULL;
+    
+    char columns_name[3][30] = {"device_name", "device_id", "device_mac"};
+    if ((res = database_management.select_table(3, columns_name, buf, sizeof(buf))) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_select_table failed!", res);
+        return res;
+    }
+    
+    index = buf;
+    len = strlen(buf);
+    
+    while (1) 
+    {
+        if ((index != NULL) && ((index - buf) >= len))
+        {
+            return 0;
+        }
+        
+        if ((tmp = strstr(index, ";")) == NULL)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "To match the string was not found in the buffer!", STRSTR_ERR);
+            return STRSTR_ERR;
+        }
+        *tmp = '\0';
+        row_index = index;
+        index = tmp + 1;
+        
+        // device_mac
+        if ((tmp = strrchr(row_index, ',')) == NULL)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "To match the string was not found in the buffer!", STRSTR_ERR);
+            return STRSTR_ERR;
+        }
+        PRINT("tmp = %s\n", tmp + 1);
+        PRINT("dev_register->dev_mac = %s\n", dev_register->dev_mac);
+        
+        if (memcmp(tmp + 1, dev_register->dev_mac, 12) == 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_select_table failed!", res);
+            return 1;
+        }
+    }
+}
+
 /**
  * 添加指定行 （数据库）
  */
@@ -2611,17 +3099,38 @@ int database_insert_dev_info(struct s_dev_register *dev_register)
     char columns_name[4][30] = {"device_name", "device_id", "device_mac", "device_code"};
     char columns_value[4][100] = {0};
     unsigned short columns_value_len[4] = {0};
-
+    
+    res = is_in_dev_database(dev_register);
+    switch (res)
+    {
+        case 0: // 不存在
+        {
+            break;
+        }
+        case 1: // 数据库中已经存在
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "This record already exists!", REPEAT_ERR);
+            return REPEAT_ERR;
+        }
+        default:
+        {
+            return res;
+        }    
+    }
+    
     memcpy(columns_value[0], dev_register->dev_name, strlen(dev_register->dev_name));
     memcpy(columns_value[1], dev_register->dev_id, strlen(dev_register->dev_id));
     memcpy(columns_value[2], dev_register->dev_mac, strlen(dev_register->dev_mac));
-    sprintf(columns_value[3], "%d", dev_register->dev_code);
-
+    memcpy(columns_value[3], dev_register->dev_code, strlen(dev_register->dev_code));
+    
     columns_value_len[0] = strlen(columns_value[0]);
     columns_value_len[1] = strlen(columns_value[1]);
     columns_value_len[2] = strlen(columns_value[2]);
     columns_value_len[3] = strlen(columns_value[3]);
-
+    
+    PRINT("%s %s %s %s\n", dev_register->dev_name, dev_register->dev_id, dev_register->dev_mac, dev_register->dev_code);
+    PRINT("%s %s %s %s\n", columns_value[0], columns_value[1], columns_value[2], columns_value[3]);
+    
     if ((res = database_management.insert(4, columns_name, columns_value, columns_value_len)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_insert failed!", res);
@@ -2638,7 +3147,25 @@ int database_delete_dev_info(struct s_dev_register *dev_register)
     int res = 0;
     char columns_name[1][30] = {"device_mac"};
     char columns_value[1][100] = {0};
-
+    
+    res = is_in_dev_database(dev_register);
+    switch (res)
+    {
+        case 0: // 不存在
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "There is no this record!", NO_RECORD_ERR);
+            return NO_RECORD_ERR;
+        }
+        case 1: // 数据库中已经存在
+        {
+            break;
+        }
+        default:
+        {
+            return res;
+        }    
+    }
+    
     memcpy(columns_value[0], dev_register->dev_mac, strlen(dev_register->dev_mac));
     if ((res = database_management.delete_row(1, columns_name, columns_value)) < 0)
     {
@@ -2654,11 +3181,16 @@ int database_delete_dev_info(struct s_dev_register *dev_register)
 int database_select_dev_info(char *buf, unsigned short len)
 {
     int res = 0;
-    char columns_name[2][30] = {"dev_name", "device_id"};
-    if ((res = database_management.select_table(2, columns_name, buf, len)) < 0)
+    char columns_name[3][30] = {"device_name", "device_id", "device_mac"};
+    if ((res = database_management.select_table(3, columns_name, buf, len)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_select_table failed!", res);
         return res;
+    }
+    if (strlen(buf) == 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "There is no this record!", NON_EXISTENT_ERR);
+        return NON_EXISTENT_ERR;
     }
     return 0;
 }

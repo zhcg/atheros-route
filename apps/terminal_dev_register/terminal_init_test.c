@@ -79,8 +79,8 @@ int main(int argc, char **argv)
     unsigned int success_count = 0;
     unsigned int failed_count = 0;
     
-    char device_token[100] = {0};
-    char position_token[100] = {0};
+    char device_token[TOKENLEN] = {0};
+    char position_token[TOKENLEN] = {0};
     
     strcpy(log_bug, "failed log:");
     for (i = 0; i < atoi(argv[2]); i++)
@@ -195,7 +195,7 @@ int main(int argc, char **argv)
         }
         else if (strcmp(argv[1], "h") == 0) // 获取base sn and mac
         {
-            char sn[35] = {0};
+            char sn[SN_LEN + 1] = {0};
             char mac[18] = {0};
             if ((res = terminal_register.get_base_sn_and_mac(sn, mac)) < 0)
             {
@@ -610,7 +610,6 @@ int main(int argc, char **argv)
                 PERROR("return_device_token failed!\n");
                 return res;
             }
-            PRINT("device_token = %s\n", device_token);
             PRINT_BUF_BY_HEX(device_token, NULL, sizeof(device_token), __FILE__, __FUNCTION__, __LINE__);
             return 0;
         }
@@ -621,7 +620,6 @@ int main(int argc, char **argv)
                 PERROR("return_position_token failed!\n");
                 return res;
             }
-            PRINT("position_token = %s\n", position_token);
             return 0;
         }
         else if (strcmp(argv[1], "v") == 0) // 从平台重获取设备令牌并返回
@@ -631,7 +629,6 @@ int main(int argc, char **argv)
                 PERROR("rebuild_device_token failed!\n");
                 return res;
             }
-            PRINT("device_token = %s\n", device_token);
         }
         else if (strcmp(argv[1], "w") == 0) // 从平台重获取位置令牌并返回
         {
@@ -640,7 +637,6 @@ int main(int argc, char **argv)
                 PERROR("rebuild_position_token failed!\n");
                 return res;
             }
-            PRINT("position_token = %s\n", position_token);
             return 0;
         }
         #endif

@@ -19,8 +19,9 @@
 #endif 
 #include "communication_network.h"
 
-#define SPI_RECV_PHONE_STATE 0 // 1:从spi中读取数据 0：从本地socket中读取
 #define CACM_STOP 0
+#define PHONE_STATE_NODE "/dev/uartpassage"
+#define PHONE_STATE_INTERFACE 3 // 电话线状态接口 1：spi interface接口读取； 2：接收本地socket；3：直接读取 节点uartpassage
 
 enum CACM_ERR_NUM 
 { 
@@ -98,7 +99,7 @@ struct s_flash_info
 
 struct s_cacm
 {
-    char base_sn[35];
+    char base_sn[SN_LEN + 1];
     char user_name[64];
     char password[64];
     char proxy_ip[64];
@@ -137,11 +138,13 @@ struct class_cacm_tools
     int (* init_logout)(struct s_cacm *cacm);
     int (* send_message)(struct s_cacm *cacm, char *buf);
     
-    #if SPI_RECV_PHONE_STATE // spi中读取数据
+    #if PHONE_STATE_INTERFACE == 1
     int (* recv_phone_state_msg)(char *buf, unsigned short len, struct timeval *timeout);
-    #else
+    #elif PHONE_STATE_INTERFACE == 2 
     int (* recv_phone_state_msg)(int fd, char *buf, unsigned short len, struct timeval *timeout);
-    #endif
+    #elif PHONE_STATE_INTERFACE == 3 
+    int (* recv_phone_state_msg)(int fd, char *buf, unsigned short len, struct timeval *timeout);
+    #endif // PHONE_STATE_INTERFACE == 3 
     
     int (* phone_state_msg_unpack)(struct s_cacm *cacm, char *buf, unsigned short buf_len);
     int (* phone_state_monitor)(struct s_cacm *cacm, char *buf, unsigned short buf_len, struct timeval *timeout);

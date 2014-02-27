@@ -4,7 +4,6 @@
 #include "common_tools.h"
 #include "spi_rt_interface.h"
 #include "communication_network.h"
-#include "communication_serial.h"
 
 // 录音时使用
 #if RECORD_DEBUG 
@@ -19,6 +18,10 @@
 
 #define SI3000 "/dev/pcm0"
 #endif
+
+#define SPI_NODE "/dev/spipassage" // spi数据节点
+
+#define PHONE_CHANNEL_INTERFACE 3 // 电话线路接口 1:串口 2:spi_rt_interface 提供的库 3：直接操作节点
 
 // 结构体定义
 struct class_communication_serial
@@ -50,11 +53,23 @@ struct class_communication_serial
     int (* recv_display_msg)();
     #else
     int (* recv_display_msg)(char *phone_num);
-    #endif
+    #endif //CTSI_SECURITY_SCHEME == 1
     int (* refuse_to_answer)(); // 拒接接听
+    
+    //int (* send_data)(unsigned char *data, struct s_data_list *a_data_list, unsigned int data_len, struct timeval *tv);
     int (* phone_state_monitor)(unsigned char cmd);
-    int (* send_data)(unsigned char *data, struct s_data_list *a_data_list, unsigned int data_len, struct timeval *tv);
-    #endif
+    #if PHONE_CHANNEL_INTERFACE == 1
+
+    #elif PHONE_CHANNEL_INTERFACE == 2
+    
+    #elif PHONE_CHANNEL_INTERFACE == 3
+    int (* send_data)(char *data, unsigned int data_len, struct timeval *tv);
+    int (* recv_data)(char *data, unsigned int data_len, struct timeval *tv);
+    
+    int (* relay_change)(int flag);
+    #endif // PHONE_CHANNEL_INTERFACE == 3
+    
+    #endif //BOARDTYPE == 5350 || BOARDTYPE == 9344
     
 };
 

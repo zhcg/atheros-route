@@ -136,6 +136,9 @@
 #define TERMINAL_LOCAL_SOCKET_NAME "/var/terminal_init/log/.socket_name"
 #define TERMINAL_LOCAL_SERVER_PORT "53535"
 
+#define SN_LEN 18 // 序列号长度 包括18字节SN
+#define TOKENLEN 16 // 令牌长度16
+
 /**
  * 枚举和结构体定义
  */
@@ -223,6 +226,7 @@ enum ERROR_NUM
 	PIPE_ERR,              // 创建管道失败 
 	PTHREAD_CREAT_ERR,     // 线程创建错误 -200
 	PTHREAD_CANCEL_ERR,    // 线程终止错误 
+	PTHREAD_DETACH_ERR,    // 子线程的状态设置为detached错误
 	
 	PTHREAD_LOCK_ERR,      // 获取锁错误 
 	PTHREAD_UNLOCK_ERR,    // 解锁失败错误
@@ -231,9 +235,9 @@ enum ERROR_NUM
 	PPPOE_LINK_FAILED,     // 连接失败 
 	PPPOE_NO_DNS_SERVER_INFO, // 不存在DNS服务器  
 	PHONE_LINE_ERR,        // 电话线状态异常错误 
-	POSITION_AUTH_ERR,     // 位置认证失败
+	POSITION_AUTH_ERR,     // 位置认证失败 -190
 	
-	REGCOMP_ERR,           // 编译正则表达式 -190
+	REGCOMP_ERR,           // 编译正则表达式 
 	REGEXEC_ERR,           // 匹配字符串 
 	READ_ERR,              // 文件读取错误 
 	P_READ_ERR,            // 文件读取错误 
@@ -244,8 +248,8 @@ enum ERROR_NUM
 	SHMDT_ERR,             // 把共享内存脱离进程 
 	SHMCTL_ERR,            // 释放共享内存 
 	
-	SEMGET_ERR,            // 信号量获取失败 
-	SEMCTL_ERR,            // 信号量设置失败 -180 
+	SEMGET_ERR,            // 信号量获取失败 -180 
+	SEMCTL_ERR,            // 信号量设置失败 
 	SEMOP_ERR,             // 信号量操作失败 
 	SEM_OPEN_ERR,          // 创建命名信号量  
 	SEM_WAIT_ERR,          // 信号量减一 
@@ -255,8 +259,8 @@ enum ERROR_NUM
 	SERVER_ERR,            // 服务器端错误 
 	SQLITE_OPEN_ERR,       // 数据库打开错误
 	SQLITE_EXEC_ERR,       // sql语句执行错误 
-	SQLITE_GET_TABLE_ERR,  // 数据库查询错误 
-	SELECT_ERR,            // 轮询等待错误 -170
+	SQLITE_GET_TABLE_ERR,  // 数据库查询错误 -170 
+	SELECT_ERR,            // 轮询等待错误 
 	SELECT_NULL_ERR,       // 轮询为空错误 
 	P_SELECT_NULL_ERR,     // 轮询为空错误 
 	S_SELECT_NULL_ERR,     // 轮询为空错误 
@@ -265,8 +269,8 @@ enum ERROR_NUM
 	SETATTR_ERR,           // 属性设置错误 
 	SYSTEM_ERR,            // 执行shell命令失败
 	STRSTR_ERR,            // strstr错误 
-	SN_BASE_ERR,           // base序列号错误
-	SN_PAD_ERR,            // PAD序列号错误 -160 
+	SN_BASE_ERR,           // base序列号错误 -160
+	SN_PAD_ERR,            // PAD序列号错误 
 	TIMEOUT_ERR,           // 时间超时错误 
 	WRITE_ERR,             // 文件写入错误 
 	WRONGFUL_PAD_ERR,      // PAD不合法 
@@ -276,9 +280,10 @@ enum ERROR_NUM
 	S_WRITE_ERR,           // 文件写入错误
 	
 	NO_REQUEST_ERR,        // 无请求错误
-	IDENTIFYING_CODE_ERR,  // 验证码错误
+	IDENTIFYING_CODE_ERR,  // 验证码错误  -150
 	OVERDUE_ERR,           // 请求数据过期
 	NON_EXISTENT_ERR,      // 请求数据不存在
+	REPEAT_ERR,            // 重复操作
 };
 
 //错误码
@@ -636,8 +641,8 @@ struct s_deal_message_84
  */
 struct s_dial_back_respond
 {
-	char BASE_id[35];                         // BASE_id 34
-	char PAD_id[35];                          // PAD_id  34
+	char BASE_id[SN_LEN + 1];                 // BASE_id SN_LEN
+	char PAD_id[SN_LEN + 1];                  // PAD_id  SN_LEN
 	
 	#if CTSI_SECURITY_SCHEME == 1
 	long base_random;                         // 终端随机数
@@ -704,7 +709,7 @@ struct class_common_tools
     int (* get_wan_mac)(char *mac);
     // 项目无关
     // 字符串操作
-//  int (* BCD_to_string)(char* p_src, int src_size, char* p_dst, int dst_size);
+    int (* BCD_to_string)(char* p_src, int src_size, char* p_dst, int dst_size);
 //  int (* make_data_middle)(char *data, int data_len, int array_len);
     int (* long_to_str)(unsigned long src, char *dst, unsigned char dst_len);
     int (* str_in_str)(const void *src, unsigned short src_len, const char dest, unsigned short dest_len);
@@ -721,7 +726,7 @@ struct class_common_tools
     // 时间操作
     char* (* get_datetime_buf)();
 //  int (* get_service_use_time)(time_t start_time, char *service_use_time);
-//  double (* get_use_time)(struct timeval start, struct timeval end);
+    double (* get_use_time)(struct timeval start, struct timeval end);
 //  int (* time_out)(struct timeval *start, struct timeval *end);
     int (* set_start_time)(char *start_time);
     

@@ -258,8 +258,9 @@ struct class_common_tools common_tools =
     make_serial_data_file, 
     #endif
     get_phone_stat, get_network_state, get_user_prompt, get_errno, get_list_MAC, get_MAC, get_wan_mac,
+    BCD_to_string,
     long_to_str, str_in_str, memncat, trim, match_str, mac_add_horizontal, mac_add_colon, mac_del_colon, mac_format_conversion, add_quotation_marks,
-    del_quotation_marks, get_datetime_buf, set_start_time,
+    del_quotation_marks, get_datetime_buf, get_use_time, set_start_time,
     recv_one_byte, recv_data, recv_data_head, send_one_byte, send_data, list_tail_add_data, list_head_del_data,
     list_free, list_get_data, get_cmd_out, serial_init, get_checkbit, print_buf_by_hex, get_rand_string, start_up_application
 };
@@ -1774,6 +1775,8 @@ int get_user_prompt(int error_num, char **out_buf)
     	case OPEN_ERR:              // 文件打开错误
     	case PIPE_ERR:              // 创建管道失败 
     	case PTHREAD_CREAT_ERR:     // 线程创建错误	
+    	case PTHREAD_CANCEL_ERR:    // 线程终止错误 
+    	case PTHREAD_DETACH_ERR:    // 子线程的状态设置为detached错误
     	case READ_ERR:              // 文件读取错误
     	case SQLITE_OPEN_ERR:       // 数据库打开错误
     	case SQLITE_EXEC_ERR:       // sql语句执行错误
@@ -1911,6 +1914,13 @@ int get_user_prompt(int error_num, char **out_buf)
 	    {
             state_num = 28;  //状态码
             memcpy(prompt, "请求数据不存在！", sizeof(prompt) - 1);  // 提示信息
+            len = strlen(prompt);
+            break;
+        }
+        case REPEAT_ERR:            // 重复操作
+        {
+            state_num = 29;  //状态码
+            memcpy(prompt, "重复操作！", sizeof(prompt) - 1);  // 提示信息
             len = strlen(prompt);
             break;
         }
@@ -2132,7 +2142,7 @@ int get_wan_mac(char *mac)
     int res = 0;
     
     // 获取ath00的mac
-    char *cmd = "ifconfig | grep ath0 | awk '{print $5}'";
+    char *cmd = "ifconfig ath0 | grep ath0 | awk '{print $5}'";
     char buf[18] = {0};
     
     if (mac == NULL)

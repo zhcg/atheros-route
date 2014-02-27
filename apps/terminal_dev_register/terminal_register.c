@@ -211,14 +211,14 @@ static int respond_data_unpack(void *respond_buf, void *out_buf, unsigned int le
 }
 
 /**
- * 对响应的数据解包，判断数据是否正确
+ * 对响应的数据打包
  */
 static int request_data_pack(char **send_pack, char (*columns_value)[100])
 {
     int count = 0;
     int res = 0;
     unsigned int buf_len = 0;
-    char device_token[16] = {0};
+    char device_token[TOKENLEN] = {0};
     struct s_request_pack request_pack;
     memset((void *)&request_pack, 0, sizeof(struct s_request_pack));
     
@@ -235,8 +235,9 @@ static int request_data_pack(char **send_pack, char (*columns_value)[100])
     common_tools.mac_add_horizontal(columns_value[3]);
     sprintf(request_pack.pad_id, "padId:%s,", columns_value[0]);
     sprintf(request_pack.pad_mac, "padMac:%s,", columns_value[1]);
-    sprintf(request_pack.base_id, "baseId:%s,", columns_value[2]);    
+    sprintf(request_pack.base_id, "baseId:%s,", columns_value[2]);
     sprintf(request_pack.base_mac, "baseMac:%s,", columns_value[3]);
+    // 设备令牌转成字符串 16 * 2 
     if (terminal_authentication.static_device_flag == 0)
     {
         if ((res = terminal_authentication.return_device_token(device_token)) < 0)
@@ -244,15 +245,20 @@ static int request_data_pack(char **send_pack, char (*columns_value)[100])
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "return_device_token failed!", res);
             return res;
         }
-        PRINT_BUF_BY_HEX(device_token, NULL, 16, __FILE__, __FUNCTION__, __LINE__);
+        PRINT("before PRINT_BUF_BY_HEX res = %d\n", res);
+        PRINT_BUF_BY_HEX(device_token, NULL, TOKENLEN, __FILE__, __FUNCTION__, __LINE__);
+        PRINT("after PRINT_BUF_BY_HEX\n");
     }
     memcpy(request_pack.token, "token:", strlen("token:"));
-    memcpy(request_pack.token + strlen("token:"), terminal_authentication.static_device_token, sizeof(terminal_authentication.static_device_token));
+    
+    // 把设备令牌16字节 转成 字符串
+    common_tools.BCD_to_string(terminal_authentication.static_device_token, sizeof(terminal_authentication.static_device_token), request_pack.token + strlen("token:"), sizeof(request_pack.token) - strlen("token:"));
+    PRINT("request_pack.token = %s\n", request_pack.token);
     
     request_pack.total_len = sizeof(request_pack.total_len) + sizeof(request_pack.message_type)
             + strlen(request_pack.version) + strlen(request_pack.func_id) + strlen(request_pack.start_time) 
-            + strlen(request_pack.base_id) + strlen(request_pack.base_mac) 
-            + strlen(request_pack.pad_id) + strlen(request_pack.pad_mac) + strlen("token:") + sizeof(device_token); 
+            + strlen(request_pack.base_id) + strlen(request_pack.base_mac)
+            + strlen(request_pack.pad_id) + strlen(request_pack.pad_mac) + strlen(request_pack.token); 
     
     // 动态申请
     if ((*send_pack = (char *)malloc(request_pack.total_len + 1)) == NULL)
@@ -295,8 +301,8 @@ static int request_data_pack(char **send_pack, char (*columns_value)[100])
     common_tools.memncat(*send_pack, request_pack.pad_mac, count, strlen(request_pack.pad_mac));
     count += strlen(request_pack.pad_mac);
     
-    common_tools.memncat(*send_pack, request_pack.token, count, strlen("token:") + sizeof(device_token));
-    count += strlen("token:") + sizeof(device_token);
+    common_tools.memncat(*send_pack, request_pack.token, count, strlen(request_pack.token));
+    count += strlen(request_pack.token);
     return count;
 }
 
@@ -305,12 +311,6 @@ static int request_data_pack(char **send_pack, char (*columns_value)[100])
  */
 static int get_base_sn_and_mac(char *base_sn, char *base_mac)
 {
-    #if 0
-    strcpy(base_sn, "01A1010100100312122001B85AFEFFF00D");
-    strcpy(base_mac, "B85AFEFFF00D");
-    return 0;
-    #endif
-    
     PRINT_STEP("entry...\n");
     int res = 0;
     int i = 0;
@@ -344,7 +344,7 @@ static int get_base_sn_and_mac(char *base_sn, char *base_mac)
 	}
 	
     
-	memcpy(base_sn, tmp + 3, 34);
+	memcpy(base_sn, tmp + 3, SN_LEN);
     
     tmp = strstr(cmd_buf, "mac=");    
     if (tmp == NULL)
@@ -370,7 +370,7 @@ static int get_base_sn_and_mac(char *base_sn, char *base_mac)
 	    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "base sn not find!", DATA_ERR);
         return DATA_ERR;
 	}
-    memcpy(base_sn, tmp + 3, 22);
+    memcpy(base_sn, tmp + 3, SN_LEN);
     
     if ((res = common_tools.get_wan_mac(mac_tmp)) < 0)
     {
@@ -380,7 +380,6 @@ static int get_base_sn_and_mac(char *base_sn, char *base_mac)
     PRINT("mac_tmp = %s\n", mac_tmp);
     common_tools.mac_del_colon(mac_tmp);
     
-    strncat(base_sn, mac_tmp, strlen(mac_tmp));
     memcpy(base_mac, mac_tmp, strlen(mac_tmp));
     PRINT("base_mac = %s\n", base_mac);
     #endif
@@ -477,17 +476,18 @@ static int get_sip_info(char *pad_sn, char *pad_mac)
     }
     
     // 数据打包
-    if ((buf_len = request_data_pack(&buf, columns_value)) < 0)
+    if ((res = request_data_pack(&buf, columns_value)) < 0)
     {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "request_data_pack failed!", buf_len);
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "request_data_pack failed!", res);
         if (buf != NULL)
         {
             free(buf);
             buf = NULL;
         }
-        return buf_len;
+        return res;
     }
-
+    buf_len = res;
+    PRINT("buf_len = %d\n", buf_len);
     PRINT_BUF_BY_HEX(buf, NULL, buf_len, __FILE__, __FUNCTION__, __LINE__);
     PRINT("[%s]\n", buf + 6);
     
@@ -522,11 +522,13 @@ static int get_sip_info(char *pad_sn, char *pad_mac)
         close(fd);
         return common_tools.get_errno('S', res);
     }
+    PRINT("buf_len = %d\n", buf_len);
     
     #if ENDIAN == 1
-    buf_len = DATA_ENDIAN_CHANGE_SHORT(buf_len);
+    buf_len = DATA_ENDIAN_CHANGE_LONG(buf_len);
     #endif
     
+    PRINT("buf_len = %d\n", buf_len);
     if ((buf = (char *)malloc(buf_len - 3)) == NULL)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "malloc failed!", res);
@@ -692,8 +694,8 @@ static int user_register(char *pad_sn, char *pad_mac)
     }
     
     #else
-    char device_token[100] = {0};
-    //char position_token[100] = {0};
+    char device_token[TOKENLEN] = {0};
+    //char position_token[TOKENLEN] = {0};
     if ((res = terminal_authentication.rebuild_device_token(device_token)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "rebuild_device_token failed!", res);

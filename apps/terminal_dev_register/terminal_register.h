@@ -16,12 +16,12 @@ struct s_request_pack
     char func_id[27];                 // 功能编号，字符串：数字和下划线组成
     char start_time[26];              // 请求开始时间， 数字，单位为毫秒 
     
-    char base_id[43];                 // BASE：“01A1010100100312122001”+ “DM9000 MAC” 等两段组成，
+    char base_id[SN_LEN + 8 + 1];     // BASE：“01A1010100100312122001”+ “DM9000 MAC” 等两段组成，
                                       // 如某个Base网卡DM9000的MAC是：11:33:55:77:99:0A，
-                                      // 则该Base的SN是：01A101010010031212200111335577990A 。34字节
-                                      // 6 + 1 + 34 + 1 = 42
+                                      // 则该Base的SN是：01A101010010031212200111335577990A 。SN_LEN字节
+                                      // 6 + 1 + SN_LEN + 1 = SN_LEN + 8 + 1
     char base_mac[27];                // 7 + 1 + 17 + 1 = 26
-    char pad_id[43];                  // 34字节 来自于PAD
+    char pad_id[SN_LEN + 8 + 1];      // 34字节 来自于PAD
     char pad_mac[27];                 // 6 + 1 + 17 = 25
     char token[128];                  // BASE_ID+PAD_ID+电话号码+8字节随机数 
 };

@@ -431,6 +431,7 @@ terminal_dev_register:
         $(STRIP) usb_stub; \
 	$(STRIP) terminal_dev_register; \
 	$(STRIP) terminal_init_test; \
+	$(STRIP) interface_test; \
 	$(STRIP) swipe_card; \
 	$(STRIP) monitor_application; \
 	cp -af sqlite-mips-linux/lib/libsqlite3.so.0.8.6 $(INSTALL_ROOT)/lib; \
@@ -446,6 +447,7 @@ terminal_dev_register:
 	cp -af usb_stub $(INSTALL_ROOT)/bin; \
 	cp -af terminal_dev_register $(INSTALL_ROOT)/bin; \
 	cp -af terminal_init_test $(INSTALL_ROOT)/bin; \
+	cp -af interface_test $(INSTALL_ROOT)/bin; \
 	cp -af swipe_card $(INSTALL_ROOT)/bin; \
 	cp -af monitor_application $(INSTALL_ROOT)/bin; \
         mkdir -p $(INSTALL_ROOT)/var/terminal_dev_register/db/; \
@@ -470,6 +472,7 @@ cacm:
 	cp -af target/lib/libosipparser2.so.4.2.0 $(INSTALL_ROOT)/lib; \
 	cp -af target/lib/libosipparser2.la $(INSTALL_ROOT)/lib; \
 	cp -af target/bin/cacm $(INSTALL_ROOT)/bin; \
+        mkdir -p $(INSTALL_ROOT)/var/cacm/log/; \
 	echo finished making cacm;	
 
 WIRELESSTOOLNAMES := athstats athstatsclear 80211stats athkey athchans athctrl\

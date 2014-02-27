@@ -136,66 +136,6 @@ static int send_message(struct s_cacm *cacm, char *buf)
     return 0;
 }
 
-
-
-#if SPI_RECV_PHONE_STATE == 1// spi中读取数据
-/**
- * 接收电话线状态包
- */
-static int recv_phone_state_msg(char *buf, unsigned short len, struct timeval *timeout)
-{
-    int res = 0;
-    
-    while (1)
-    {
-        if ((res = spi_rt_interface.recv_data(UART1, &buf[0], 1)) < 0)
-        {
-            PERROR("recv_data failed!\n");
-            return res;
-        }
-        
-        if ((unsigned char)buf[0] == 0xAA)
-        {
-            PRINT("recv head success!\n");
-            break;
-        }
-    }
-    
-    if ((res = spi_rt_interface.recv_data(UART1, buf + 1, 3)) < 0)
-    {
-        PERROR("recv_data failed!\n");
-        return res;
-    }
-    PRINT_BUF_BY_HEX(buf, NULL, 4, __FILE__, __FUNCTION__, __LINE__);
-    return 0;
-}
-
-#else // 本地socket中读取数据
-/**
- * 接收电话线状态包
- */
-static int recv_phone_state_msg(int fd, char *buf, unsigned short len, struct timeval *timeout)
-{
-    int res = 0;
-    buf[0] = 0x5A;
-    buf[1] = 0xA5;
-    
-    if ((res = common_tools.recv_data_head(fd, buf, 2, timeout)) < 0)
-    {
-        PERROR("recv_data_head failed!\n");
-        return res;
-    }
-    
-    if ((res = common_tools.recv_data(fd, buf + 2, NULL, 4, timeout)) < 0)
-    {
-        PERROR("recv_data failed!\n");
-        return res;
-    }    
-    
-    return 0;
-}
-#endif
-
 /**
  * 接收电话线状态包
  */
@@ -269,7 +209,39 @@ int phone_state_msg_unpack(struct s_cacm *cacm, char *buf, unsigned short buf_le
     return 0;
 }
 
-#if SPI_RECV_PHONE_STATE == 1
+#if PHONE_STATE_INTERFACE == 1
+
+/**
+ * 接收电话线状态包
+ */
+static int recv_phone_state_msg(char *buf, unsigned short len, struct timeval *timeout)
+{
+    int res = 0;
+    
+    while (1)
+    {
+        if ((res = spi_rt_interface.recv_data(UART1, &buf[0], 1)) < 0)
+        {
+            PERROR("recv_data failed!\n");
+            return res;
+        }
+        
+        if ((unsigned char)buf[0] == 0xAA)
+        {
+            PRINT("recv head success!\n");
+            break;
+        }
+    }
+    
+    if ((res = spi_rt_interface.recv_data(UART1, buf + 1, 3)) < 0)
+    {
+        PERROR("recv_data failed!\n");
+        return res;
+    }
+    PRINT_BUF_BY_HEX(buf, NULL, 4, __FILE__, __FUNCTION__, __LINE__);
+    return 0;
+}
+
 /**
  * 监听电话线状态
  */
@@ -291,7 +263,32 @@ static int phone_state_monitor(struct s_cacm *cacm, char *buf, unsigned short bu
     
     return 0;
 }
-#else
+
+#elif PHONE_STATE_INTERFACE == 2
+
+/**
+ * 接收电话线状态包
+ */
+static int recv_phone_state_msg(int fd, char *buf, unsigned short len, struct timeval *timeout)
+{
+    int res = 0;
+    buf[0] = 0x5A;
+    buf[1] = 0xA5;
+    
+    if ((res = common_tools.recv_data_head(fd, buf, 2, timeout)) < 0)
+    {
+        PERROR("recv_data_head failed!\n");
+        return res;
+    }
+    
+    if ((res = common_tools.recv_data(fd, buf + 2, NULL, 4, timeout)) < 0)
+    {
+        PERROR("recv_data failed!\n");
+        return res;
+    }    
+    
+    return 0;
+}
 
 /**
  * 监听电话线状态
@@ -352,7 +349,54 @@ static int phone_state_monitor(struct s_cacm *cacm, char *buf, unsigned short bu
     return 0;
 }
 
-#endif
+#elif PHONE_STATE_INTERFACE == 3
+
+/**
+ * 接收电话线状态包
+ */
+static int recv_phone_state_msg(int fd, char *buf, unsigned short len, struct timeval *timeout)
+{
+    int res = 0;
+    buf[0] = 0x5A;
+    buf[1] = 0xA5;
+    
+    if ((res = common_tools.recv_data_head(fd, buf, 2, timeout)) < 0)
+    {
+        PERROR("recv_data_head failed!\n");
+        return res;
+    }
+    
+    if ((res = common_tools.recv_data(fd, buf + 2, NULL, 4, timeout)) < 0)
+    {
+        PERROR("recv_data failed!\n");
+        return res;
+    }    
+    
+    return 0;
+}
+
+/**
+ * 监听电话线状态
+ */
+static int phone_state_monitor(struct s_cacm *cacm, char *buf, unsigned short buf_len, struct timeval *timeout)
+{
+    int res = 0;
+    
+    if ((res = recv_phone_state_msg(cacm->fd, buf, buf_len, timeout)) < 0)
+    {    
+        PERROR("recv_phone_state_msg failed!\n");
+        return res;
+    }
+    
+    if ((res = phone_state_msg_unpack(cacm, buf, buf_len)) < 0)
+    {
+        PERROR("phone_state_msg_unpack failed!\n");
+        return res;
+    }
+    return 0;
+}
+
+#endif // PHONE_STATE_INTERFACE == 3
 
 /**
  * 获取当前cpu使用情况

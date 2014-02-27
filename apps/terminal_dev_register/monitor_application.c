@@ -500,7 +500,7 @@ static int monitor_app()
 	
 	unsigned char send_buf[40] = {0};
 	unsigned char recv_buf[6] = {0};
-	char pad_sn[35] = {0};
+	char pad_sn[SN_LEN + 1] = {0};
 	unsigned int business_cycle = 0;
 	int count = 0; // 记录延时的次数 count * DELAYS >= business_cycle
 	
@@ -737,8 +737,8 @@ static int monitor_app()
                 	    continue;
                 	}
                     #endif
-                    memcpy(send_buf + 5, columns_value[0], 34);
-                    send_buf[39] = common_tools.get_checkbit(send_buf + 4, NULL, 0, 35, XOR, 1);
+                    memcpy(send_buf + 5, columns_value[0], SN_LEN);
+                    send_buf[39] = common_tools.get_checkbit(send_buf + 4, NULL, 0, SN_LEN + 1, XOR, 1);
                     
                     tv.tv_sec = 5;
                     if ((res = common_tools.send_data(client_fd, send_buf, NULL, sizeof(send_buf), &tv)) < 0)

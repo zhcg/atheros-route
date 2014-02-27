@@ -549,6 +549,7 @@ int rebuild_device_token(char *device_token)
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "make_client_link failed!", fd_client);
         return common_tools.get_errno('S', fd_client);     
     }
+    PRINT("link server success!\n");
     
     char columns_name[2][30] = {"base_sn", "pad_sn"};
     char columns_value[2][100] = {0};
@@ -658,13 +659,13 @@ int rebuild_device_token(char *device_token)
         return common_tools.get_errno('S', res);
     }
     
-    memcpy(device_token, dial_back_respond.device_token, 16);
-    memcpy(terminal_authentication.static_device_token, dial_back_respond.device_token, 16);
+    memcpy(device_token, dial_back_respond.device_token, TOKENLEN);
+    memcpy(terminal_authentication.static_device_token, dial_back_respond.device_token, TOKENLEN);
     close(fd_client);
     
     terminal_authentication.static_device_flag = 1;
-    PRINT_BUF_BY_HEX(dial_back_respond.device_token, NULL, 16, __FILE__, __FUNCTION__, __LINE__);
-    PRINT_BUF_BY_HEX(terminal_authentication.static_device_token, NULL, 16, __FILE__, __FUNCTION__, __LINE__);
+    PRINT_BUF_BY_HEX(dial_back_respond.device_token, NULL, TOKENLEN, __FILE__, __FUNCTION__, __LINE__);
+    PRINT_BUF_BY_HEX(terminal_authentication.static_device_token, NULL, TOKENLEN, __FILE__, __FUNCTION__, __LINE__);
     return 0;
 }
 
@@ -745,8 +746,8 @@ int rebuild_position_token(char *position_token)
     {
         memcpy(dial_back_respond.device_token, terminal_authentication.static_device_token, sizeof(terminal_authentication.static_device_token));
     }
-	PRINT_BUF_BY_HEX(terminal_authentication.static_device_token, NULL, 16, __FILE__, __FUNCTION__, __LINE__);
-	PRINT_BUF_BY_HEX(dial_back_respond.device_token, NULL, 16, __FILE__, __FUNCTION__, __LINE__);
+	PRINT_BUF_BY_HEX(terminal_authentication.static_device_token, NULL, TOKENLEN, __FILE__, __FUNCTION__, __LINE__);
+	PRINT_BUF_BY_HEX(dial_back_respond.device_token, NULL, TOKENLEN, __FILE__, __FUNCTION__, __LINE__);
 	
 	srand((unsigned int)time(NULL));
 	base_random = rand();
@@ -793,6 +794,8 @@ int rebuild_position_token(char *position_token)
     }
     
     PRINT("________________0x2001\n");
+    
+    #if RELAY_CHANGE == 0
     PRINT("SPI_UART1_MUTEX_SOCKET_PORT = %s\n", SPI_UART1_MUTEX_SOCKET_PORT);
     // 发送暂停接收命令到PSTN
     if ((res = communication_network.make_client_link("127.0.0.1", SPI_UART1_MUTEX_SOCKET_PORT)) < 0)
@@ -842,6 +845,17 @@ int rebuild_position_token(char *position_token)
     close(client_fd);
     
     PRINT("________________send stop cmd!\n");
+    #else // 继电器  从SI32919切换到95R54
+    if ((res = communication_serial.relay_change(0)) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "relay_change failed!", res);
+        close(fd_client);
+        close(client_fd);
+        common_tools.list_free(&data_list);
+        return res;
+    }
+    #endif  // RELAY_CHANGE == 0
+    
     // PSTN呼叫
     if ((res = communication_serial.cmd_call(common_tools.config->center_phone)) < 0)
     {
@@ -976,11 +990,11 @@ int rebuild_position_token(char *position_token)
         goto EXIT;
     }
     common_tools.list_free(&data_list);
-    memcpy(position_token, dial_back_respond.position_token, 16);
-    memcpy(terminal_authentication.static_position_token, dial_back_respond.position_token, 16);
+    memcpy(position_token, dial_back_respond.position_token, TOKENLEN);
+    memcpy(terminal_authentication.static_position_token, dial_back_respond.position_token, TOKENLEN);
     PRINT("________________0x2005\n");
     
-    PRINT_BUF_BY_HEX(dial_back_respond.position_token, NULL, 16, __FILE__, __FUNCTION__, __LINE__);
+    PRINT_BUF_BY_HEX(dial_back_respond.position_token, NULL, TOKENLEN, __FILE__, __FUNCTION__, __LINE__);
     
     terminal_authentication.static_position_flag = 1;
     #if 0 // 由于方案修改，启动CACM在开机之后，由监控程序检测是否有必要启动
@@ -1004,6 +1018,9 @@ EXIT:
     {
         close(fd_client);
     }
+    
+    // 是否切换继电器
+    #if RELAY_CHANGE == 0
     if ((ret = communication_network.make_client_link("127.0.0.1", SPI_UART1_MUTEX_SOCKET_PORT)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "make_local_socket_client_link failed!", res);
@@ -1027,6 +1044,13 @@ EXIT:
     }
     sleep(1);
     close(client_fd);
+    
+    #else // 1 从95R54切换到SI32919
+    if ((res = communication_serial.relay_change(1)) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "relay_change failed!", res);
+    }
+    #endif // RELAY_CHANGE == 0
     return res;
 }
 

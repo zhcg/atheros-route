@@ -136,6 +136,9 @@ static int init_thread_run_env(struct s_cacm * cacm)
 {
     int res = 0;
     
+    #if PHONE_STATE_INTERFACE == 1
+    #elif PHONE_STATE_INTERFACE == 2
+    
     // 创建本地socket，接收电话线状态的上报
     if ((res = communication_network.make_server_link(CACM_SOCKCT_PORT)) < 0)
     {
@@ -143,8 +146,21 @@ static int init_thread_run_env(struct s_cacm * cacm)
         return res;
     }
     cacm->fd = res;
+    
+    #elif PHONE_STATE_INTERFACE == 3
+    
+    // 打开/dev/uartpassage，接收电话线状态的上报
+    if ((res = open(PHONE_STATE_NODE, O_RDWR, 0644)) < 0)
+    {
+        PERROR("open failed!\n");
+        return res;
+    }
+    cacm->fd = res;
+    
+    #endif // PHONE_STATE_INTERFACE == 3
     return 0;
 }
+
 /**
  * 紧急事件上报 电话线插拔等（实时）
  */
@@ -156,17 +172,13 @@ static void * real_time_event(void* para)
     char send_buf[1024] = {0};
     struct timeval timeout;
     memset(&timeout, 0, sizeof(struct timeval));
-     
-    #if SPI_RECV_PHONE_STATE == 1
     
-    #else
     // 初始化运行环境
     if ((res = init_thread_run_env((struct s_cacm *)para)) < 0)
     {
         PERROR("init_thread_run_env failed!\n");
         return (void *)res;
     }
-    #endif
     
     while (1)
     {
@@ -526,12 +538,11 @@ int main (int argc, char *argv[])
     struct s_cacm cacm;
     memset((void *)&cacm, 0, sizeof(struct s_cacm));
     
-    if ((res = common_tools.get_config()) < 0)
-    {
-        PERROR("cacm_init failed!\n");
-        return res; 
-    }   
-    
+	if ((res = common_tools.get_config()) < 0)
+	{
+        PERROR("get_config failed!\n");
+        return res;
+	}
     // 初始化
     if ((res = cacm_init(&cacm)) < 0) 
     {

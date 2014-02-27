@@ -13,6 +13,8 @@
 #include "communication_network.h"
 #include "communication_serial.h"
 
+#define RELAY_CHANGE 1 // 是否切换继电器 1 切换
+
 // 数据结构定义
 struct class_terminal_authentication
 {
@@ -21,8 +23,8 @@ struct class_terminal_authentication
     int (* delete_token)();
     int (* update_token)();
     #else
-    char static_device_token[16];
-    char static_position_token[16];
+    char static_device_token[TOKENLEN];
+    char static_position_token[TOKENLEN];
     char static_device_flag;
     char static_position_flag;
     int (* return_device_token)(char *device_token);

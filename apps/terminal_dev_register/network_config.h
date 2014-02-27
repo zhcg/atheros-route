@@ -10,8 +10,15 @@
 #endif
 
 #define READONLY_ROOTFS 1
-#define USER_REGISTER 0 // 1：做终端认证流程
-#define USB_NODE ""
+#define USER_REGISTER 1 // 1：做终端认证流程
+
+#define USB_NODE "/dev/usbpassage" // usb 节点
+
+#ifndef USB_NODE // 如果没有定义USB_NODE宏
+#define USB_INTERFACE 1 // 1：通过读取socket转发数据；2：读取USB节点
+#else 
+#define USB_INTERFACE 2 // 1：通过读取socket转发数据；2：读取USB节点
+#endif // ifndef USB_NODE
 
 // pad和6410交互包结构
 struct s_pad_and_6410_msg
@@ -87,7 +94,7 @@ struct class_network_config
     int (* route_config)(int index);
     #endif
     
-    char base_sn[35];
+    char base_sn[SN_LEN + 1];
     char base_mac[18];
     char base_ip[16];
     struct s_cmd cmd_list[40];

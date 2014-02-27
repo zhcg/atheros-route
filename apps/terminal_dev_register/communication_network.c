@@ -175,7 +175,6 @@ int make_server_link(const char *port)
 	if (bind(sock_fd, (struct sockaddr*)&server, sizeof(server)) < 0)
 	{
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "server bind failed!", BIND_ERR);
-        PERROR("bind failed!\n"); 
 		close(sock_fd);
 		return BIND_ERR;
 	}
@@ -269,52 +268,146 @@ int make_local_socket_client_link(const char *socket_name)
 	PRINT_STEP("exit...\n");
 	return sock_fd;  
 }
-
+#if 1
 /**
  * 建立一个TCP客户端连接，获得socket 2013-01-08
  */
 int make_client_link(const char *ip, const char *port)
 {
     PRINT_STEP("entry...\n");
+    int res = 0;
+    int len = 0;
     int sock_fd = 0;
 	struct sockaddr_in client;
     char buf[128] = {0};
-	// 建立套接字  	
+	// 1.建立套接字  	
 	if ((sock_fd = socket(PF_INET, SOCK_STREAM, 0)) < 0) 
 	{  		
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "client socket failed!", SOCKET_ERR);        
 		return SOCKET_ERR;  
 	}  
 	
-	//使用命令行中指定的名字连接套接字
+	// 2.使用命令行中指定的名字连接套接字
 	client.sin_family = PF_INET;
 	client.sin_addr.s_addr = inet_addr(ip);
 	client.sin_port = htons(atoi(port));
 	sprintf(buf, "ip = %s, port = %s; connect start!", ip, port);
 	OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, buf, 0);
-	#if 0
-	// 设置为
+	
+	// 3.设置为非阻塞
 	if (fcntl(sock_fd, F_SETFL, fcntl(sock_fd, F_GETFL, 0) | O_NONBLOCK) < 0)
 	{
 	    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "fcntl failed!", FCNTL_ERR);        
         close(sock_fd);
 		return FCNTL_ERR; 
 	}
-	#endif	
-	if (connect(sock_fd, (struct sockaddr*)&client, sizeof(client)) < 0)
-    {  		
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "client connect failed!", CONNECT_ERR);        
-        close(sock_fd);
-        //fcntl(sock_fd, F_SETFL, fcntl(sock_fd, F_GETFL, 0) & ~O_NONBLOCK);
-		return CONNECT_ERR;  
+	
+	// 4.建立connect连接，此时socket设置为非阻塞，connect调用后，无论连接是否建立立即返回-1
+	//   同时将errno设置为EINPROGRESS, 表示此时tcp三次握手仍旧进行
+	res = connect(sock_fd, (struct sockaddr*)&client, sizeof(client));
+	if (res == -1)
+    {
+        if (errno != EINPROGRESS) // errno不是EINPROGRESS，则说明连接错误，程序结束
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "connect failed!", CONNECT_ERR);        
+            close(sock_fd);
+            return CONNECT_ERR;
+        }
+        
+        struct timeval tv = {5, 0};
+        fd_set rfdset, wfdset; 
+        FD_ZERO(&rfdset);
+        FD_ZERO(&wfdset);
+        FD_SET(sock_fd, &rfdset);
+        FD_SET(sock_fd, &wfdset);
+        
+        switch (select(sock_fd + 1, &rfdset, &wfdset, NULL, &tv))
+        {
+            case -1:
+            {
+                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "select failed!", SELECT_ERR);
+                close(sock_fd);
+                return SELECT_ERR;
+            }
+            case 0:
+            {
+                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "select no data recv!", SELECT_NULL_ERR);
+                close(sock_fd);
+                return SELECT_NULL_ERR;
+            }
+            default:
+            {
+                if ((FD_ISSET(sock_fd, &rfdset) > 0) || (FD_ISSET(sock_fd, &wfdset) > 0)) 
+                {
+                    len = sizeof(res);
+                    getsockopt(sock_fd, SOL_SOCKET, SO_ERROR, &res, (socklen_t *)&len);    
+                    if (res == 0)
+                    {
+                        PRINT("connect ok!\n");
+                    }
+                    else 
+                    {
+                        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "connect failed!", CONNECT_ERR);
+                        close(sock_fd);
+                        return CONNECT_ERR;
+                    }
+                }
+                else 
+                {
+                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "connect failed!", CONNECT_ERR);
+                    close(sock_fd);
+                    return CONNECT_ERR;
+                }
+                break;
+            }      
+        }
 	}
-	//fcntl(sock_fd, F_SETFL, fcntl(sock_fd, F_GETFL, 0) & ~O_NONBLOCK);
+	else if (res == 0) // 当客户端和服务器端在同一台主机上的时候，connect回马上结束，并返回0
+    {
+        PRINT("local server\n");
+    }
+	
+    // 设置为阻塞
+	fcntl(sock_fd, F_SETFL, fcntl(sock_fd, F_GETFL, 0) & ~O_NONBLOCK);
+	OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "connect ok!", 0);
+	PRINT_STEP("exit...\n");
+	return sock_fd;  
+}
+#else
+int make_client_link(const char *ip, const char *port)
+{
+    PRINT_STEP("entry...\n");
+    int res = 0;
+    int len = 0;
+    int sock_fd = 0;
+	struct sockaddr_in client;
+    char buf[128] = {0};
+	// 1.建立套接字  	
+	if ((sock_fd = socket(PF_INET, SOCK_STREAM, 0)) < 0) 
+	{  		
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "client socket failed!", SOCKET_ERR);        
+		return SOCKET_ERR;  
+	}  
+	
+	// 2.使用命令行中指定的名字连接套接字
+	client.sin_family = PF_INET;
+	client.sin_addr.s_addr = inet_addr(ip);
+	client.sin_port = htons(atoi(port));
+	sprintf(buf, "ip = %s, port = %s; connect start!", ip, port);
+	OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, buf, 0);
+	
+	if (connect(sock_fd, (struct sockaddr*)&client, sizeof(client)) == -1)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "connect failed!", CONNECT_ERR);        
+        close(sock_fd);
+        return CONNECT_ERR;
+	}
 	OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "connect ok!", 0);
 	PRINT_STEP("exit...\n");
 	return sock_fd;  
 }
 
-
+#endif
 /**
  * 把通过tcp连接向平台发送的数据进行打包
  */
@@ -566,8 +659,6 @@ int IP_msg_pack2(struct s_data_list *a_data_list, struct s_dial_back_respond *a_
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "rsa_encrypt failed!", res); 
                 return res;
             }
-            //PRINT_BUF_BY_HEX(a_dial_back_respond->base_random, NULL, sizeof(a_dial_back_respond->base_random), __FILE__, __FUNCTION__, __LINE__);
-            //PRINT_BUF_BY_HEX(dest, NULL, sizeof(dest), __FILE__, __FUNCTION__, __LINE__);
             
             memcpy(IP_msg.valid_data + strlen(a_dial_back_respond->BASE_id) + strlen(a_dial_back_respond->PAD_id), dest, sizeof(dest));
             
@@ -600,7 +691,7 @@ int IP_msg_pack2(struct s_data_list *a_data_list, struct s_dial_back_respond *a_
         case 0x2000: // 请求
         {
             IP_msg.data_len += strlen(a_dial_back_respond->BASE_id);
-            IP_msg.data_len += 16;
+            IP_msg.data_len += TOKENLEN;
             IP_msg.data_len += sizeof(dest);
             
             if ((IP_msg.valid_data = malloc(IP_msg.data_len + 1)) == NULL)
@@ -612,8 +703,8 @@ int IP_msg_pack2(struct s_data_list *a_data_list, struct s_dial_back_respond *a_
             
             // 设备令牌加密
             
-            memcpy(IP_msg.valid_data + strlen(a_dial_back_respond->BASE_id), a_dial_back_respond->device_token, 16);
-            PRINT_BUF_BY_HEX(a_dial_back_respond->device_token, NULL, 16, __FILE__, __FUNCTION__, __LINE__);
+            memcpy(IP_msg.valid_data + strlen(a_dial_back_respond->BASE_id), a_dial_back_respond->device_token, TOKENLEN);
+            PRINT_BUF_BY_HEX(a_dial_back_respond->device_token, NULL, TOKENLEN, __FILE__, __FUNCTION__, __LINE__);
             // 终端随机数mac加密
             if ((res = safe_strategy.rsa_encrypt(a_dial_back_respond->base_random_mac, sizeof(a_dial_back_respond->base_random_mac), common_tools.config->public_key, dest)) < 0)
             {
@@ -621,7 +712,7 @@ int IP_msg_pack2(struct s_data_list *a_data_list, struct s_dial_back_respond *a_
                 return res;
             }
             
-            memcpy(IP_msg.valid_data + strlen(a_dial_back_respond->BASE_id) + 16, dest, sizeof(dest));
+            memcpy(IP_msg.valid_data + strlen(a_dial_back_respond->BASE_id) + TOKENLEN, dest, sizeof(dest));
             break;
         }
         case 0x2003: // 接收呼叫请求
@@ -756,8 +847,8 @@ int IP_msg_unpack(struct s_data_list *a_data_list, struct s_dial_back_respond *a
         #if CTSI_SECURITY_SCHEME == 1
         case 0x2001:
         {
-            char BASE_id[35] = {0};
-            memcpy(BASE_id, IP_msg.valid_data, 34);
+            char BASE_id[SN_LEN + 1] = {0};
+            memcpy(BASE_id, IP_msg.valid_data, SN_LEN);
             if (strcmp(BASE_id, a_dial_back_respond->BASE_id) != 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "the data is different!", S_DATA_ERR);
@@ -765,18 +856,18 @@ int IP_msg_unpack(struct s_data_list *a_data_list, struct s_dial_back_respond *a
                 IP_msg.valid_data = NULL;
                 return S_DATA_ERR;  
             }
-            a_dial_back_respond->result_num = *(IP_msg.valid_data + 34);
+            a_dial_back_respond->result_num = *(IP_msg.valid_data + SN_LEN);
             
             if (a_dial_back_respond->result_num != 0)
             {
                 free(IP_msg.valid_data);
                 IP_msg.valid_data = NULL;
-                if ((a_dial_back_respond->failed_reason = malloc(IP_msg.data_len - 34)) == NULL)
+                if ((a_dial_back_respond->failed_reason = malloc(IP_msg.data_len - SN_LEN)) == NULL)
                 {
                     OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "list_get_data failed!", MALLOC_ERR);
                     return MALLOC_ERR;
                 }
-                memcpy(a_dial_back_respond->failed_reason, IP_msg.valid_data + 35, (IP_msg.data_len - 35));
+                memcpy(a_dial_back_respond->failed_reason, IP_msg.valid_data + SN_LEN + 1, (IP_msg.data_len - SN_LEN - 1));
                 return LOGIN_FAILED;
             }
             break;
@@ -987,7 +1078,7 @@ int IP_msg_unpack2(char *buf, unsigned short buf_len, struct s_dial_back_respond
     int index = 0;
     char answer[2] = {0};
     char src[8] = {0};
-    char token[16] = {0};
+    char token[TOKENLEN] = {0};
     struct s_IP_msg IP_msg;
     
     IP_msg.version = buf[0];

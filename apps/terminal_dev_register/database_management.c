@@ -71,7 +71,7 @@ int sqlite3_insert(unsigned char columns_count, char (*columns_name)[30], char (
         return NULL_ERR;
     }
     
-    if (sqlite3_open(common_tools.config->db, &REGISTERTB) != 0)
+    if (sqlite3_open(common_tools.config->db, &db) != 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, sqlite3_errmsg(db), SQLITE_OPEN_ERR);
         return SQLITE_OPEN_ERR;
@@ -408,13 +408,22 @@ int sqlite3_select_table(unsigned char columns_count, char (*columns_name)[30], 
     }
     
     PRINT("row_count = %d, column_count = %d\n", row_count, column_count);
+    index = column_count;
     for (i = 0; i < row_count; i++)
     {
         for (j = 0; j < column_count; j++)
         {
-            
+            strcat(buf, result_buf[index]);
+            if (j != (column_count - 1))
+            {
+                strcat(buf, ",");
+            }
+            ++index;
         }
+        strcat(buf, ";");
     }
+    PRINT("buf = %s\n", buf);
+    
     sqlite3_free_table(result_buf);
     sqlite3_close(db);
     PRINT_STEP("exit...\n");

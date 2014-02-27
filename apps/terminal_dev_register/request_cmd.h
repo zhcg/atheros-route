@@ -15,19 +15,20 @@
 
 struct s_dev_register
 {
+    char flag;
     char dev_name[32];
     char dev_id[16];
     char dev_mac[16];
-    int dev_code;
+    char dev_code[5];
 
     time_t end_time;
 };
 
 struct s_data_table // 此结构对应数据库
 {
-    char base_sn[35];
+    char base_sn[SN_LEN + 1];
     char base_mac[18];
-    char pad_sn[35];
+    char pad_sn[SN_LEN + 1];
     char pad_mac[18];
     unsigned char register_state;
 
@@ -40,20 +41,17 @@ struct s_data_table // 此结构对应数据库
 struct s_terminal_dev_register
 {
     int fd;
+    int network_config_fd; // 备份设置时的fd
     int cmd_count; // 接收命令的个数
     unsigned short length; // 数据包长度
     char data[256];
     
-    pthread_mutex_t mutex; // 线程创建锁
-    pthread_cond_t cond;   // 线程创建条件量
-    pthread_t pad_cmd_handle_id; // 配置线程id
+    pthread_t request_cmd_0x01_02_03_07_08_09_0A_id; // 配置线程id
     
     volatile char cmd_word; // 命令字
     volatile char config_now_flag; // 正在配置标准 1：代表正在配置
-    volatile char transmission_mode; // 交易模式 0代表网口 1 代表串口
-    volatile char mutex_lock_flag; // 加锁标志位
-    volatile char mode; // 请求方式
-
+    volatile char communication_mode; // 交易模式 0代表网口 1 代表串口
+    
     struct s_data_table data_table;
 };
 
@@ -61,33 +59,7 @@ struct s_terminal_dev_register
 struct class_request_cmd
 {
     int (* init)();
-    int (* request_cmd_0x01_02_03_07_08_09_0A)(struct s_terminal_dev_register * terminal_dev_register);
-    
-    int (* request_cmd_0x04)(struct s_terminal_dev_register * terminal_dev_register);
-    int (* request_cmd_0x05)(struct s_terminal_dev_register * terminal_dev_register);
-    int (* request_cmd_0x06)(struct s_terminal_dev_register * terminal_dev_register);
-    int (* request_cmd_0x0B)(struct s_terminal_dev_register * terminal_dev_register);
-    int (* request_cmd_0x0C)(struct s_terminal_dev_register * terminal_dev_register);
-    int (* request_cmd_0x0D)(struct s_terminal_dev_register * terminal_dev_register);
-    
-    #if CTSI_SECURITY_SCHEME == 2
-    int (* request_cmd_0x0E)(struct s_terminal_dev_register * terminal_dev_register);
-    int (* request_cmd_0x0F)(struct s_terminal_dev_register * terminal_dev_register);
-    int (* request_cmd_0x50)(struct s_terminal_dev_register * terminal_dev_register);
-    int (* request_cmd_0x51)(struct s_terminal_dev_register * terminal_dev_register);
-    #endif // CTSI_SECURITY_SCHEME == 2
-    
-    int (* request_cmd_0x52)(struct s_terminal_dev_register * terminal_dev_register);
-    int (* request_cmd_0x53)(struct s_terminal_dev_register * terminal_dev_register);
-    
-    #if BOARDTYPE == 9344
-    int (* request_cmd_0x54)(struct s_terminal_dev_register * terminal_dev_register);
-    int (* request_cmd_0x55)(struct s_terminal_dev_register * terminal_dev_register);
-    int (* request_cmd_0x56)(struct s_terminal_dev_register * terminal_dev_register);
-    int (* request_cmd_0x57)(struct s_terminal_dev_register * terminal_dev_register);
-    #endif // BOARDTYPE == 9344
     int (* request_cmd_analyse)(struct s_terminal_dev_register * terminal_dev_register);
-    
     int (* init_data_table)(struct s_data_table *data_table);
     
     #if BOARDTYPE == 9344

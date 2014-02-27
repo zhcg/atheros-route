@@ -991,10 +991,10 @@ int PSTN_msg_deal_pack(struct s_data_list *a_data_list, void *para)
 	        }
 	        
 	        i = 0;
-	        deal_message_87.news_content_87.valid_data_zone[i] = 34;
+	        deal_message_87.news_content_87.valid_data_zone[i] = SN_LEN;
 	        i++;
-	        memcpy((deal_message_87.news_content_87.valid_data_zone + i), ((struct s_dial_back_respond *)para)->BASE_id, 34);	       
-	        i += 34;
+	        memcpy((deal_message_87.news_content_87.valid_data_zone + i), ((struct s_dial_back_respond *)para)->BASE_id, SN_LEN);	       
+	        i += SN_LEN;
 	        
 	        deal_message_87.news_content_87.valid_data_zone[i] = sizeof(((struct s_dial_back_respond *)para)->base_random);
 	        i++;
