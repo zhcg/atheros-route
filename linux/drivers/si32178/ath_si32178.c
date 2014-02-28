@@ -87,7 +87,9 @@ int slic_dma_open=0;
 #define DO_AUDIO_FILTER		//侧音处理
 
 #ifdef DO_AUDIO_FILTER
-static int compare_times = 15;//默认比较数字半双工倍乘值
+static int compare_times = 20;//15;//默认比较数字半双工倍乘值
+static int compare_times_min = 40;//低音抑制参数
+//static int compare_times_max = 25;
 static int last_do_flag = 0;
 static int extra_do_filter_count=2;
 
@@ -95,7 +97,7 @@ static int do_echo_filter=0;
 
 //侧音处理
 
-static int AudioDriverReadFilterDo(char *pplay_pos, char *precord_pos)
+static int AudioDriverReadFilterDo(char *pplay_pos, char *precord_pos, int len)
 {
 	int i;
 	signed short *psh_start;
@@ -103,7 +105,8 @@ static int AudioDriverReadFilterDo(char *pplay_pos, char *precord_pos)
 	unsigned int record_energy = 0;
 	int short_count;
 	
-	short_count = SLIC_BUF_SIZE/2;
+//	short_count = SLIC_BUF_SIZE/2;
+	short_count = len/2;
 	psh_start = (signed short *)pplay_pos;
 	for(i = 0;i < short_count;i++)
 	{
@@ -111,7 +114,12 @@ static int AudioDriverReadFilterDo(char *pplay_pos, char *precord_pos)
 	}
 	
 	play_energy /= short_count;
-	play_energy *= compare_times;
+	if(play_energy < 260)
+		play_energy *= compare_times_min;
+//	else if(play_energy > 4000)
+//		play_energy *= compare_times_max;
+	else
+		play_energy *= compare_times;
 	play_energy /= 100;
 	
 	psh_start = (signed short *)precord_pos;
@@ -625,7 +633,7 @@ ssize_t ath_slic_read(struct file * filp, char __user * buf,
 			postion_w = prev_tail(pl_dmabuf->play_tail);
 			postion_w = space_valid(postion_w, postion_r);
 			
-			AudioDriverReadFilterDo(pl_scbuf[postion_w].bf_vaddr,scbuf[tail].bf_vaddr);
+			AudioDriverReadFilterDo(pl_scbuf[postion_w].bf_vaddr,scbuf[tail].bf_vaddr, desc[tail].length);
 		}
 #endif
 			retval = copy_to_user(buf + offset, scbuf[tail].bf_vaddr, desc[tail].length);

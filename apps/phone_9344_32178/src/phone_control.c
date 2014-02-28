@@ -1227,7 +1227,8 @@ int init_control()
 
 	phone_audio.init_audio();
 
-	if(si32178_init(0,0,5,5,10,1,1,0)==-1)
+//	if(si32178_init(0,0,5,5,10,1,1,0)==-1)
+	if(si32178_init(0,0,5,2,10,1,1,0)==-1)
 	{
 		PRINT("si32178 init fail\n");
 		exit(-1);
