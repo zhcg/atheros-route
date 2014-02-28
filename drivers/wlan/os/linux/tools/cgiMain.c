@@ -5641,7 +5641,7 @@ int main(int argc,char **argv)
             exit(1);
          }
          memset(cmdd,0x00,128);
-         sprintf(cmdd,"/:admin:%s",CFG_get_by_name("ADMPASS" ,valBuff));
+         sprintf(cmdd,"/index.html:admin:%s\n",CFG_get_by_name("ADMPASS" ,valBuff));
          fwrite(cmdd,strlen(cmdd),1,fp);
 	 memset(cmdd,0x00,128);
   	 sprintf(cmdd,"/index2.html:admin:%s",valBuff);
