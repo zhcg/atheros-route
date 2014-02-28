@@ -5643,6 +5643,10 @@ int main(int argc,char **argv)
          memset(cmdd,0x00,128);
          sprintf(cmdd,"/:admin:%s",CFG_get_by_name("ADMPASS" ,valBuff));
          fwrite(cmdd,strlen(cmdd),1,fp);
+	 memset(cmdd,0x00,128);
+  	 sprintf(cmdd,"/index2.html:admin:%s",valBuff);
+	 fwrite(cmdd,strlen(cmdd),1,fp);
+
          fclose(fp);
          writeParameters(NVRAM,"w+", NVRAM_OFFSET);
          writeParameters("/tmp/.apcfg","w+",0);

@@ -31,7 +31,7 @@ h1 {font-size: 24px;}
 .bar-menu .box2-hover {border-color: #fff;border-width: 1px;border-style: none none dotted none;font-family:"微软雅黑";background:#ECEDEF;cursor:pointer;text-indent:3em;}
 .bar-menu .box3{ font-size: 14px;padding-left:20px;height:40px; line-height:40px; color:#D0D0D0; border-bottom:1px solid #d0d0d0;font-weight:800;}
 </style>
-<script language="JavaScript" type="text/javascript">
+<script language="JavaScript" type="text/javascript">
 function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
 function initLanguage()
 {
@@ -134,7 +134,7 @@ function style_display_on()
 }
 function switchsa()//quick to adv
 {
-	window.location.href="/";
+	window.location.href="index.html";
 }
 
 function switchas()//adv to quick
@@ -293,7 +293,7 @@ function startRequest()
 <a href="javascript:void(0)" id="top_en" onClick="en()">English</a> 
 </div>
 <div class="handaer_top_r_bottom">   
-<a href="cgi-bin/adminset" target="ifm" id="top_admin"></a> 
+<a href="cgi-bin/adminset?adminset=yes" target="ifm" id="top_admin"></a> 
 <a href="javascript:void(0)" id="top_fast" onClick="switchsa()"></a>
 </div>
 </div>
@@ -322,50 +322,52 @@ function startRequest()
 				<div class="section"></div>
 
                 <div class="box1"><font id="treeapp_wan">外网设置</font></div>
-                <div class="section">
-					<div class="box2"><a href="cgi-bin/ad_wan_set" target="ifm" id="treeapp_wan_set">WAN设置</a></div>
-					<div class="box2"><a href="cgi-bin/ad_wan_MACclone" target="ifm" id="treeapp_wan_macclone">MAC地址克隆</a></div>
+                
+		<div class="section">
+					<div class="box2"><a href="cgi-bin/ad_wan_set?ad_wan_set=yes" target="ifm" id="treeapp_wan_set">WAN设置</a></div>
+					<div class="box2"><a href="cgi-bin/ad_wan_MACclone?ad_wan_MACclone=yes" target="ifm" id="treeapp_wan_macclone">MAC地址克隆</a></div>
                 </div>
 
                 <div class="box1"><font id="treeapp_local">内网设置</font></div>
-                <div class="section">
-					<div class="box2"><a href="cgi-bin/ad_local_dhcp" target="ifm" id="treeapp_local_dhcp">DHCP</a></div>
-					<div class="box2"><a href="cgi-bin/ad_local_gwset" target="ifm" id="treeapp_local_gwset">网关设置</a></div>					
-					<div class="box2"><a href="cgi-bin/ad_local_rulist" target="ifm" id="treeapp_local_rulist">路由表设置</a></div>
+    
+            <div class="section">
+					<div class="box2"><a href="cgi-bin/ad_local_dhcp?ad_local_dhcp=yes" target="ifm" id="treeapp_local_dhcp">DHCP</a></div>
+					<div class="box2"><a href="cgi-bin/ad_local_gwset?ad_local_gwset=yes" target="ifm" id="treeapp_local_gwset">网关设置</a></div>					
+					<div class="box2"><a href="cgi-bin/ad_local_rulist?ad_local_rulist=yes" target="ifm" id="treeapp_local_rulist">路由表设置</a></div>
                 </div>
 
                 <div class="box1"><font id="treeapp_wifi">无线设置</font></div>
                 <div class="section">
-                    <div class="box2"><a href="cgi-bin/ad_wireless_basic" target="ifm" id="treeapp_wifi_basic">基本设置</a></div>
-					<div class="box2"><a href="cgi-bin/ad_wireless_advan" target="ifm" id="treeapp_wifi_adv">高级设置</a></div>
-					<div class="box2"><a href="cgi-bin/ad_wireless_wds" target="ifm" id="treeapp_wifi_wds">无线中继</a></div>
+                    <div class="box2"><a href="cgi-bin/ad_wireless_basic?ad_wireless_basic=yes" target="ifm" id="treeapp_wifi_basic">基本设置</a></div>
+					<div class="box2"><a href="cgi-bin/ad_wireless_advan?ad_wireless_advan=yes" target="ifm" id="treeapp_wifi_adv">高级设置</a></div>
+					<div class="box2"><a href="cgi-bin/ad_wireless_wds?ad_wireless_wds=yes" target="ifm" id="treeapp_wifi_wds">无线中继</a></div>
                 </div>
 
                 <div class="box1"><font id="treeapp_conm">接入管理</font></div>
                 <div class="section">
-					<div class="box2"><a href="cgi-bin/ad_con_list" target="ifm" id="treeapp_conm_list">已接入设备列表</a></div>
-					<div class="box2"><a href="cgi-bin/ad_con_manage" target="ifm" id="treeapp_conm_ctrl">无线接入控制</a></div>
+					<div class="box2"><a href="cgi-bin/ad_con_list?ad_con_list=yes" target="ifm" id="treeapp_conm_list">已接入设备列表</a></div>
+					<div class="box2"><a href="cgi-bin/ad_con_manage?ad_con_manage=yes" target="ifm" id="treeapp_conm_ctrl">无线接入控制</a></div>
 
                 </div>
 
                 <div class="box1"><font id="treeapp_safe">安全管理</font></div>
                 <div class="section">
-					<div class="box2" id="Fire1"><a href="cgi-bin/ad_safe_IPMAC" target="ifm" id="treeapp_safe_ipmac">IP/MAC绑定</a></div>
+					<div class="box2" id="Fire1"><a href="cgi-bin/ad_safe_IPMAC?ad_safe_IPMAC=yes" target="ifm" id="treeapp_safe_ipmac">IP/MAC绑定</a></div>
                 </div>
 
                 <div class="box1"><font id="treeapp_par">访问控制</font></div>
                 <div class="section">
-					<div class="box2"><a href="cgi-bin/ad_parentc_accept" target="ifm" id="treeapp_par_access">访问管理</a></div>
-					<div class="box2"><a href="cgi-bin/ad_con_web" target="ifm" id="treeapp_conm_web">远程Web管理</a></div>
+					<div class="box2"><a href="cgi-bin/ad_parentc_accept?ad_parentc_accept=yes" target="ifm" id="treeapp_par_access">访问管理</a></div>
+					<div class="box2"><a href="cgi-bin/ad_con_web?ad_con_web=yes" target="ifm" id="treeapp_conm_web">远程Web管理</a></div>
                 </div>
 
                 <div class="box1"><font id="treeapp_man">系统管理</font></div>
                 <div class="section">
-                    <div class="box2"><a href="cgi-bin/ad_man_timezone" target="ifm" id="treeapp_man_tz">时间设置</a></div>
-                    <div class="box2"><a href="cgi-bin/ad_man_cfgsave" target="ifm" id="treeapp_man_cfgm">配置管理</a></div>
-                    <div class="box2"><a href="cgi-bin/ad_man_upgrade" target="ifm" id="treeapp_man_upgrade">固件升级</a></div>
-                    <div class="box2"><a href="cgi-bin/ad_man_factory" target="ifm" id="treeapp_man_factory">恢复出厂</a></div>
-                    <div class="box2"><a href="cgi-bin/ad_man_reboot" target="ifm" id="treeapp_man_reboot">重启</a></div>
+                    <div class="box2"><a href="cgi-bin/ad_man_timezone?ad_man_timezone=yes" target="ifm" id="treeapp_man_tz">时间设置</a></div>
+                    <div class="box2"><a href="cgi-bin/ad_man_cfgsave?ad_man_cfgsave=yes" target="ifm" id="treeapp_man_cfgm">配置管理</a></div>
+                    <div class="box2"><a href="cgi-bin/ad_man_upgrade?ad_man_upgrade=yes" target="ifm" id="treeapp_man_upgrade">固件升级</a></div>
+                    <div class="box2"><a href="cgi-bin/ad_man_factory?ad_man_factory=yes" target="ifm" id="treeapp_man_factory">恢复出厂</a></div>
+                    <div class="box2"><a href="cgi-bin/ad_man_reboot?ad_man_reboot=yes" target="ifm" id="treeapp_man_reboot">重启</a></div>
                 </div>
 
                  <div class="box1"><font id="treeapp_netcheck" >网络诊断</font></div>
@@ -383,7 +385,7 @@ function startRequest()
 </div>
 <!--  左侧结束 -->
 <div class="hbd_menu_r right">
-<iframe src="cgi-bin/ad_sysinfo" id="ifm" name="ifm" frameBorder=0 scrolling=no  onLoad="iFrameHeight()"></iframe>
+<iframe src="cgi-bin/ad_sysinfo?ad_sysinfo=yes" id="ifm" name="ifm" frameBorder=0 scrolling=no  onLoad="iFrameHeight()"></iframe>
 </div> 
 
 <div class="clear"></div>

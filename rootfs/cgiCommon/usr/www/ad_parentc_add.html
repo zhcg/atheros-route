@@ -6,6 +6,21 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
+var hbd;
+function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)","i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r!=null) return (r[2]); return null;
+}
+hbd=GetQueryString("ad_parentc_add");
+if(hbd)
+{
+
+}
+else
+{
+        window.location.href="/index.html";
+}
 var input_num=1;
 var but_num=1;
 var day_week="";
@@ -256,7 +271,7 @@ function daycount()
 <table id="buttontable">
 <tr align="center">
   <td>
-    <input type="button" name="cancel_motion" id="bCANCEL" class="handaer_input" value="Cancel" onClick="window.location.href='ad_parentc_accept'">
+    <input type="button" name="cancel_motion" id="bCANCEL" class="handaer_input" value="Cancel" onClick="window.location.href='ad_parentc_accept?ad_parentc_accept=yes'">
     <input type="button" name="bSAVE" id="bSAVE" class="handaer_input" value="Apply" onClick="CheckValue()">
 	<input type="submit" name="ADD_PARC" id="ADD_PARC" style="display:none" value="ADD_PARC">
 	<input type="text" style="display:none" name="PARC_RU_NUM" id="PARC_RU_NUM" size="20" maxlength="32">

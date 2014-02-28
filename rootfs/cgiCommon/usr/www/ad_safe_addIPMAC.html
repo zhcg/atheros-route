@@ -7,7 +7,21 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
+var hbd;
+function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)","i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r!=null) return (r[2]); return null;
+}
+hbd=GetQueryString("ad_safe_addIPMAC");
+if(hbd)
+{
 
+}
+else
+{
+        window.location.href="/index.html";
+}
 function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
 function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
 function button_commit(buttonID){document.getElementById(buttonID).click();}
@@ -286,7 +300,7 @@ function initValue()
 <table id="buttontable">
 <tr align="center">
   <td>
-    <input type="button" name="cancel_motion" id="bCANCEL" class="handaer_input" value="Cancel" onClick="window.location.href='ad_safe_IPMAC'">
+    <input type="button" name="cancel_motion" id="bCANCEL" class="handaer_input" value="Cancel" onClick="window.location.href='ad_safe_IPMAC?ad_safe_IPMAC=yes'">
     <input type="button" name="bSAVE" id="bSAVE" class="handaer_input" value="Apply" onClick="CheckValue()">
 	<input type="submit" name="ADD_IPMACBIND" id="ADD_IPMACBIND" style="display:none" value="ADD_IPMACBIND">
   </td>

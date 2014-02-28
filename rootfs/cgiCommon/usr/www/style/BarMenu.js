@@ -138,40 +138,40 @@ function BarMenu(id)
 		//alert(id);
 		if(id=="bar-menu2-0")
 		{
-			window.ifm.location.href="cgi-bin/ad_sysinfo";
+			window.ifm.location.href="cgi-bin/ad_sysinfo?ad_sysinfo=yes";
 		}
 		if(id=="bar-menu2-0-0")
 		{
-			window.ifm.location.href="cgi-bin/ad_wan_set";
+			window.ifm.location.href="cgi-bin/ad_wan_set?ad_wan_set=yes";
 		}
 
 		if(id=="bar-menu2-0-0-2")
 		{
-			window.ifm.location.href="cgi-bin/ad_local_dhcp";
+			window.ifm.location.href="cgi-bin/ad_local_dhcp?ad_local_dhcp=yes";
 		}
 		if(id=="bar-menu2-0-0-2-3")
 		{
-			window.ifm.location.href="cgi-bin/ad_wireless_basic";
+			window.ifm.location.href="cgi-bin/ad_wireless_basic?ad_wireless_basic=yes";
 		}
 		if(id=="bar-menu2-0-0-2-3-3")
 		{
-			window.ifm.location.href="cgi-bin/ad_con_list";
+			window.ifm.location.href="cgi-bin/ad_con_list?ad_con_list=yes";
 		}
 		if(id=="bar-menu2-0-0-2-3-3-2")
 		{
-			window.ifm.location.href="cgi-bin/ad_safe_IPMAC";
+			window.ifm.location.href="cgi-bin/ad_safe_IPMAC?ad_safe_IPMAC=yes";
 		}
 		if(id=="bar-menu2-0-0-2-3-3-2-1")
 		{
-			window.ifm.location.href="cgi-bin/ad_parentc_accept";
+			window.ifm.location.href="cgi-bin/ad_parentc_accept?ad_parentc_accept=yes";
 		}
 		if(id=="bar-menu2-0-0-2-3-3-2-1-2")
 		{
-			window.ifm.location.href="cgi-bin/ad_man_timezone";
+			window.ifm.location.href="cgi-bin/ad_man_timezone?ad_man_timezone=yes";
 		}
 		if(id=="bar-menu2-0-0-2-3-3-2-1-2-5")
 		{
-			window.ifm.location.href="cgi-bin/ad_netcheck";
+			window.ifm.location.href="cgi-bin/ad_netcheck?ad_netcheck=yes";
 		}
     }
 

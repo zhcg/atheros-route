@@ -6,6 +6,24 @@
 <style type="text/css">td img {display: block;}</style>
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
+
+var hbd;
+function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)","i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r!=null) return (r[2]); return null;
+}
+hbd=GetQueryString("map"); 
+if(hbd)
+{
+
+}
+else
+{
+        window.location.href="/index.html";
+
+}
+
 function initTranslation()
 {
 	var e = document.getElementById("SSID1");
@@ -125,9 +143,9 @@ function initValue()
   </tr>
   <tr>
    <td><img name="n11111111_r6_c1" src="/images/11111111_r6_c1.png" width="68" height="65" id="n11111111_r6_c1" alt="" /></td>
-   <td><a href="w2" target="ifm"><img border="0" name="n11111111_r6_c2" src="/images/11111111_r6_c2.png" width="65" height="65" id="n11111111_r6_c2" alt="" /></a></td>
+   <td><a href="w2?w2=yes" target="ifm"><img border="0" name="n11111111_r6_c2" src="/images/11111111_r6_c2.png" width="65" height="65" id="n11111111_r6_c2" alt="" /></a></td>
    <td colspan="3"><img name="n11111111_r6_c3" src="/images/11111111_r6_c3.png" width="485" height="65" id="n11111111_r6_c3" alt="" /></td>
-   <td><a href="w3" target="ifm"><img border="0" name="n11111111_r6_c6" src="/images/11111111_r6_c6.png" width="65" height="65" id="n11111111_r6_c6" alt="" /></a></td>
+   <td><a href="w3?w3=yes" target="ifm"><img border="0" name="n11111111_r6_c6" src="/images/11111111_r6_c6.png" width="65" height="65" id="n11111111_r6_c6" alt="" /></a></td>
    <td><img name="n11111111_r6_c7" src="/images/11111111_r6_c7.png" width="100" height="65" id="n11111111_r6_c7" alt="" /></td>
    <td><img src="/images/spacer.gif" width="1" height="65" alt="" /></td>
   </tr>
@@ -146,7 +164,7 @@ function initValue()
   </tr>
 </table>
 </div>
-<div align="center"><input  name="m_normal" class="handaer_input" style="BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BACKGROUND: none transparent scroll repeat 0% 0%; BORDER-BOTTOM-WIDTH: 0px;  BORDER-RIGHT-WIDTH: 0px; margin-top:10px;" type="button" id="m_bset" onClick="window.location.href='w1'"/></div>
+<div align="center"><input  name="m_normal" class="handaer_input" style="BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BACKGROUND: none transparent scroll repeat 0% 0%; BORDER-BOTTOM-WIDTH: 0px;  BORDER-RIGHT-WIDTH: 0px; margin-top:10px;" type="button" id="m_bset" onClick="window.location.href='w1?w1=yes'"/></div>
 	<input type="text" style="display:none" name="waistatus" id="waistatus" size="20" maxlength="32" value="~~INTERNET_ON~">
 	<input type="text" style="display:none" name="neistatus" id="neistatus" size="20" maxlength="32" value="~~WIFION_OFF~">
 	<input type="text" style="display:none" name="neistatus2" id="neistatus2" size="20" maxlength="32" value="~~WIFION_OFF_3~">
@@ -155,7 +173,7 @@ function initValue()
 	<script language="JavaScript">
 	function myrefresh()
 	{
-		window.location.href="map";
+		window.location.href="map?map=yes";
 	}
 	setTimeout('myrefresh()',7000); //指定1秒刷新一次
 	</script>

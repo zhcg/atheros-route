@@ -6,7 +6,21 @@
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script>
+var hbd;
+function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)","i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r!=null) return (r[2]); return null;
+}
+hbd=GetQueryString("ad_con_manage");
+if(hbd)
+{
 
+}
+else
+{
+        window.location.href="/index.html";
+}
 function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
 function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
 
@@ -87,7 +101,7 @@ function help()
   </tr>  
  ~Z:conmlist~
 </table>
-<input type="button"  class="handaer_small_button" name="ADDMRULE" id="ADDMRULE" value="添加" onClick="window.location.href='ad_con_add'">
+<input type="button"  class="handaer_small_button" name="ADDMRULE" id="ADDMRULE" value="添加" onClick="window.location.href='ad_con_add?ad_con_add=yes'">
 
 <table id="buttontable">
 <tr align="center">

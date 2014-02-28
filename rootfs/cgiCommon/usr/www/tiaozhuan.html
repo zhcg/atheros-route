@@ -8,10 +8,10 @@
 
 </head>
 
-<body>
+<body>
 <input type="text" style="display:none" name="RESULT" id="RESULT" size="20" maxlength="32" value="~~RESULT~">
 <input type="text" style="display:none" name="PAGE" id="PAGE" size="20" maxlength="32" value="~~PAGE~">
-<script type="text/javascript">
+<script type="text/javascript">var hbd;function GetQueryString(name) {        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)","i");        var r = window.location.search.substr(1).match(reg);        if (r!=null) return (r[2]); return null;}hbd=GetQueryString("tiaozhuan"); if(hbd){}else{        window.location.href="index.html";}
 Butterlate.setTextDomain("other");
 var a = document.getElementById("RESULT").value;
 var b = document.getElementById("PAGE").value;
@@ -23,8 +23,9 @@ else
 {
 	window.parent.Demo2(_("R_FAIL"));
 }
-
-setTimeout(function(){window.parent.DialogHide();if(b=="map"){window.parent.showpwd1();}window.location.href=b;},1000);
+var hbd;
+hbd = b+"?"+b+"=yes";
+setTimeout(function(){window.parent.DialogHide();if(b=="map"){window.parent.showpwd1();}window.location.href=hbd;},1000);
 </script>
 
 </body>

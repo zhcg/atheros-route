@@ -1755,7 +1755,7 @@ FORBIDDEN:      /* protect listing /cgi-bin */
 	else {
 #endif  /* CONFIG_FEATURE_HTTPD_CGI */
 		if(purl[-1] == '/')
-			strcpy(purl, "index.html");
+			strcpy(purl, "home.html");
 		if ( stat(test, &sb ) == 0 ) {
 			config->ContentLength = sb.st_size;
 			config->last_mod = sb.st_mtime;

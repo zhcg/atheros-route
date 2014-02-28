@@ -113,21 +113,21 @@ function switchsa()//quick to adv
 
 function hidehead()
 {
-  document.getElementById("c1").innerHTML='<a href="cgi-bin/map" target="ifm" id="m_normal" onclick="showpwd1()"></a>';
-  document.getElementById("c2").innerHTML='<a href="cgi-bin/w2" target="ifm" id="m_wan"  onclick="showpwd2()"></a>';
+  document.getElementById("c1").innerHTML='<a href="cgi-bin/map?map=yes" target="ifm" id="m_normal" onclick="showpwd1()"></a>';
+  document.getElementById("c2").innerHTML='<a href="cgi-bin/w2?w2=yes" target="ifm" id="m_wan"  onclick="showpwd2()"></a>';
   //document.getElementById("c3").innerHTML='<a href="cgi-bin/w4" target="ifm" id="m_wirere" onclick="showpwd3()"></a>';
-  document.getElementById("c4").innerHTML='<a href="cgi-bin/w3" target="ifm" id="m_wifi" onclick="showpwd4()"></a>';
+  document.getElementById("c4").innerHTML='<a href="cgi-bin/w3?w3=yes" target="ifm" id="m_wifi" onclick="showpwd4()"></a>';
 }
 function showpwd1()
 {
 	hidehead();
- 	document.getElementById("c1").innerHTML='<a href="cgi-bin/map" target="ifm" id="m_normal"  onclick="showpwd1()" class="handaer_common"></a>';
+ 	document.getElementById("c1").innerHTML='<a href="cgi-bin/map?map=yes" target="ifm" id="m_normal"  onclick="showpwd1()" class="handaer_common"></a>';
 	tr();
 }
 function showpwd2()
 {
 	hidehead();
- 	document.getElementById("c2").innerHTML='<a href="cgi-bin/w2" target="ifm" id="m_wan"  onclick="showpwd2()" class="handaer_common"></a>';
+ 	document.getElementById("c2").innerHTML='<a href="cgi-bin/w2?w2=yes" target="ifm" id="m_wan"  onclick="showpwd2()" class="handaer_common"></a>';
 	tr();
 }
 function showpwd3()
@@ -139,7 +139,7 @@ function showpwd3()
 function showpwd4()
 {
 	hidehead();
- 	document.getElementById("c4").innerHTML='<a href="cgi-bin/w3" target="ifm" id="m_wifi" onclick="showpwd4()" class="handaer_common"></a>';
+ 	document.getElementById("c4").innerHTML='<a href="cgi-bin/w3?w3=yes" target="ifm" id="m_wifi" onclick="showpwd4()" class="handaer_common"></a>';
 	tr();
 }
 
@@ -230,7 +230,7 @@ document.getElementById("ifm").width= winWidth-220;
 <a href="javascript:void(0)" id="top_en" onClick="en()">English</a> 
 </div>
 <div class="handaer_top_r_bottom">   
-<a href="cgi-bin/adminset" target="ifm" id="top_admin"></a> 
+<a href="cgi-bin/adminset?adminset=yes" target="ifm" id="top_admin"></a> 
 <a href="javascript:void(0)" id="top_adv" onClick="switchsa()"></a>
 </div>
 </div>
@@ -252,15 +252,15 @@ document.getElementById("ifm").width= winWidth-220;
 <div class="handaer_left" id="leftmenu" style="background-color:#ECEDEF;">
 <dl>
 <dt id="m_fast1">快速设置</dt>
-	<dd><span id="c1"><a href="cgi-bin/map" target="ifm" id="m_normal" onClick="showpwd1()" class="handaer_common">设置向导</a></span></dd>
-	<dd><span id="c2"><a href="cgi-bin/w2" target="ifm" id="m_wan" onClick="showpwd2()">外网设置</a></span></dd>
-	<dd><span id="c4"><a href="cgi-bin/w3" target="ifm" id="m_wifi" onClick="showpwd4()">WiFi设置</a></span></dd>
+	<dd><span id="c1"><a href="cgi-bin/map?map=yes" target="ifm" id="m_normal" onClick="showpwd1()" class="handaer_common">设置向导</a></span></dd>
+	<dd><span id="c2"><a href="cgi-bin/w2?w2=yes" target="ifm" id="m_wan" onClick="showpwd2()">外网设置</a></span></dd>
+	<dd><span id="c4"><a href="cgi-bin/w3?w3=yes" target="ifm" id="m_wifi" onClick="showpwd4()">WiFi设置</a></span></dd>
    </dl>
     </div>     
 </div>
 <!--  左侧结束 -->
 <div class="hbd_menu_r right"><!-- TemplateBeginEditable name="EditRegion3" -->
-<iframe src="cgi-bin/map" id="ifm" name="ifm" frameBorder=0 scrolling=no  onLoad="iFrameHeight()"></iframe>
+<iframe src="cgi-bin/map?map=yes" id="ifm" name="ifm" frameBorder=0 scrolling=no  onLoad="iFrameHeight()"></iframe>
 <div class="clear"></div>
 </div>
 

@@ -6,7 +6,21 @@
 <link rel="stylesheet" href="../style/normal_ws.css" type="text/css">
 <script type="text/javascript" src="../lang/b28n.js"></script>
 <script type="text/javascript">
+var hbd;
+function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)","i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r!=null) return (r[2]); return null;
+}
+hbd=GetQueryString("reboot");
+if(hbd)
+{
 
+}
+else
+{
+        window.location.href="/index.html";
+}
 var xmlHttpreboot;
 var desIPreboot;
 var destnation;
