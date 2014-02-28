@@ -164,6 +164,6 @@ fi
 /bin/server &
 /bin/net_test &
 #/usr/sbin/threethread &
-/usr/sbin/ppy &
+#/usr/sbin/ppy &
 /usr/sbin/web_control &
 

@@ -4659,128 +4659,7 @@ int main(int argc,char **argv)
 		}
 		gohome =1;
     }
-	//wan mode pppoe
-	//pppoe and advanced options below ,added by yhl 
-	if((strcmp(CFG_get_by_name("PPP",valBuff),"PPP") == 0 ) || (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 ))
-	{	
-		char pppoe_mode[10];						
-		char three_thread_buf[128];						
-		char tmp_Buff[10];	
-		char cmdstr[128];
-		char route_gw[20];
-		
-		memset(pppoe_mode,'\0',10);
-		memset(three_thread_buf,'\0',128);
-		memset(tmp_Buff,'\0',10);
-		memset(cmdstr,'\0',128);
-		memset(route_gw,'\0',20);
-		int flag=0; 
-		
-		Execute_cmd("cfg -e | grep 'WAN_MODE='",valBuff);              
-		if(strstr(valBuff,"dhcp") != 0)
-		{                                           
-			Execute_cmd("killall udhcpc > /dev/null 2>&1", rspBuff);               
-		}
-		if (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 ) 
-		{ 
-					flag=1; 
-		}            
-		CFG_get_by_name("PPPOE_MODE",pppoe_mode);
-		fprintf(errOut,"user select pppoe_mode:%s\n",pppoe_mode);
-		if(flag!=1)
-		{
-			writeParameters(NVRAM,"w+", NVRAM_OFFSET);//save new config to flash 
-			writeParameters("/tmp/.apcfg","w+",0);
-		}
-		if(!strncmp(pppoe_mode,"auto",4))
-		{  
-			char	usernameBuff[128];
-			char	passBuff[128];
-						  
-			CFG_get_by_name("PPPOE_USER",usernameBuff);
-			CFG_get_by_name("PPPOE_PWD",passBuff);
 
-			sprintf(cmdstr,"pppoe-setup %s %s > /dev/null 2>&1",usernameBuff,passBuff);
-			fprintf(errOut,"auto pppoe-setup cmdstr-----%s\n",cmdstr);
-			system(cmdstr);
-
-            system("pppoe-stop > /dev/null 2>&1");sleep(5);
-			system("pppoe-start > /dev/null 2>&1");sleep(5);
-		}
-		else if(!strncmp(pppoe_mode,"demand",6))
-		{  
-			char	usernameBuff[128];
-			char	passBuff[128];
-						  
-			CFG_get_by_name("PPPOE_USER",usernameBuff);
-			CFG_get_by_name("PPPOE_PWD",passBuff);
-			
-			sprintf(cmdstr,"pppoe-setup %s %s > /dev/null 2>&1",usernameBuff,passBuff);
-			fprintf(errOut,"demand pppoe-setup cmdstr-----%s\n",cmdstr);
-			system(cmdstr);
-
-			system("pppoe-stop > /dev/null 2>&1");sleep(5);
-			system("pppoe-start > /dev/null 2>&1");sleep(5);
-		}//demand mode
-		else if(!strncmp(pppoe_mode,"manual",6))
-		{
-			char	usernameBuff[128];
-			char	passBuff[128];
-						  
-			CFG_get_by_name("PPPOE_USER",usernameBuff);
-			CFG_get_by_name("PPPOE_PWD",passBuff);
-			
-			sprintf(cmdstr,"pppoe-setup %s %s > /dev/null 2>&1",usernameBuff,passBuff);
-			fprintf(errOut,"manual pppoe-setup cmdstr-----%s\n",cmdstr);
-			system(cmdstr);   
-			
-            system("pppoe-stop > /dev/null 2>&1");sleep(5);
-			system("pppoe-start > /dev/null 2>&1");sleep(5);
-		}//manual mode		
-		else if(!strncmp(pppoe_mode,"timing",6))	
-		{ 
-			char	usernameBuff[128];
-			char	passBuff[128];
-						  
-			CFG_get_by_name("PPPOE_USER",usernameBuff);
-			CFG_get_by_name("PPPOE_PWD",passBuff);
-			
-			sprintf(cmdstr,"pppoe-setup %s %s > /dev/null 2>&1",usernameBuff,passBuff);
-			fprintf(errOut,"timing pppoe-setup cmdstr-----%s\n",cmdstr);
-			system(cmdstr);
-
-            //system("pppoe-stop > /dev/null 2>&1");sleep(3);
-			//system("pppoe-start > /dev/null 2>&1");sleep(3);
-		}
-
-		//for pppoe show yhlnew
-		char pppoe_ip[20];
-		char pppoe_gw[20];
-		char pppoe_mask[20];
-		
-		Execute_cmd("ifconfig | grep P-t-P | awk -F ' ' '{print$2}'| awk -F ':' '{print$2}'", pppoe_ip);
-		Execute_cmd("ifconfig | grep P-t-P | awk -F ' ' '{print$3}'| awk -F ':' '{print$2}'", pppoe_gw);
-		Execute_cmd("ifconfig | grep P-t-P | awk -F ' ' '{print$4}'| awk -F ':' '{print$2}'", pppoe_mask);
-
-		CFG_set_by_name("WAN_IPADDR3",pppoe_ip);
-		CFG_set_by_name("AP_NETMASK3",pppoe_mask);
-		CFG_set_by_name("IPGW3",pppoe_gw);
-
-		//add ppp0 route default gw if losing
-		if(!strstr(Execute_cmd("echo `route -n|grep ppp0|awk -F ' ' '{print$8}'`",route_gw),"ppp0 ppp0"))
-		     {
-		      Execute_cmd("route add default gw `route -n | grep ppp0 |awk -F ' ' '{print$1}'|awk 'NR==1'` > /dev/null 2>&1",route_gw);
-               fprintf(errOut,"\nPPP0 LOST,ADD ONE\n");
-			 }
-		//save new config to flash 
-		if(flag!=1)
-		{
-			writeParameters(NVRAM,"w+", NVRAM_OFFSET);//save new config to flash 
-			writeParameters("/tmp/.apcfg","w+",0);
-		}
-		gohome =1;
-	}
-	//pppoe and advanced options  above
 
 	//wan mode l2tp
      if((strcmp(CFG_get_by_name("L2TP",valBuff),"L2TP") == 0 ) ||(strcmp(CFG_get_by_name("L2TPW",valBuff),"L2TPW") == 0 ))
@@ -5627,6 +5506,135 @@ int main(int argc,char **argv)
 		
 		gohome =1;
     }
+
+///pppyhl
+	//wan mode pppoe
+	//pppoe and advanced options below ,added by yhl 
+	if((strcmp(CFG_get_by_name("PPP",valBuff),"PPP") == 0 ) || (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 ))
+	{	
+			char pppoe_mode[10];						
+			char three_thread_buf[128]; 					
+			char tmp_Buff[10];	
+			char cmdstr[128];
+			char route_gw[20];
+			
+			memset(pppoe_mode,'\0',10);
+			memset(three_thread_buf,'\0',128);
+			memset(tmp_Buff,'\0',10);
+			memset(cmdstr,'\0',128);
+			memset(route_gw,'\0',20);
+			int flag=0; 
+			
+			Execute_cmd("cfg -e | grep 'WAN_MODE='",valBuff);			   
+			if(strstr(valBuff,"dhcp") != 0)
+			{											
+				Execute_cmd("killall udhcpc > /dev/null 2>&1", rspBuff);			   
+			}
+			if (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 ) 
+			{ 
+						flag=1; 
+			}			 
+			CFG_get_by_name("PPPOE_MODE",pppoe_mode);
+			fprintf(errOut,"user select pppoe_mode:%s\n",pppoe_mode);
+			if(flag!=1)
+			{
+				writeParameters(NVRAM,"w+", NVRAM_OFFSET);//save new config to flash 
+				writeParameters("/tmp/.apcfg","w+",0);
+			}
+			if(!strncmp(pppoe_mode,"auto",4))
+			{  
+				char	usernameBuff[128];
+				char	passBuff[128];
+							  
+				CFG_get_by_name("PPPOE_USER",usernameBuff);
+				CFG_get_by_name("PPPOE_PWD",passBuff);
+	
+				sprintf(cmdstr,"pppoe-setup %s %s > /dev/null 2>&1",usernameBuff,passBuff);
+				//fprintf(errOut,"auto pppoe-setup cmdstr-----%s\n",cmdstr);
+				system(cmdstr);
+	
+				system("pppoe-stop > /dev/null 2>&1");sleep(2);
+				system("pppoe-start > /dev/null 2>&1");sleep(5);
+			}
+			else if(!strncmp(pppoe_mode,"demand",6))
+			{  
+				char	usernameBuff[128];
+				char	passBuff[128];
+							  
+				CFG_get_by_name("PPPOE_USER",usernameBuff);
+				CFG_get_by_name("PPPOE_PWD",passBuff);
+				
+				sprintf(cmdstr,"pppoe-setup %s %s > /dev/null 2>&1",usernameBuff,passBuff);
+				//fprintf(errOut,"demand pppoe-setup cmdstr-----%s\n",cmdstr);
+				system(cmdstr);
+	
+				//system("pppoe-stop > /dev/null 2>&1");sleep(2);
+				//system("pppoe-start > /dev/null 2>&1");sleep(5);
+			}//demand mode
+			else if(!strncmp(pppoe_mode,"manual",6))
+			{
+				char	usernameBuff[128];
+				char	passBuff[128];
+							  
+				CFG_get_by_name("PPPOE_USER",usernameBuff);
+				CFG_get_by_name("PPPOE_PWD",passBuff);
+				
+				sprintf(cmdstr,"pppoe-setup %s %s > /dev/null 2>&1",usernameBuff,passBuff);
+				//fprintf(errOut,"manual pppoe-setup cmdstr-----%s\n",cmdstr);
+				system(cmdstr);   
+				
+				system("pppoe-stop > /dev/null 2>&1");sleep(2);
+				system("pppoe-start > /dev/null 2>&1");sleep(5);
+			}//manual mode		
+			else if(!strncmp(pppoe_mode,"timing",6))	
+			{ 
+				char	usernameBuff[128];
+				char	passBuff[128];
+							  
+				CFG_get_by_name("PPPOE_USER",usernameBuff);
+				CFG_get_by_name("PPPOE_PWD",passBuff);
+				
+				sprintf(cmdstr,"pppoe-setup %s %s > /dev/null 2>&1",usernameBuff,passBuff);
+				//fprintf(errOut,"timing pppoe-setup cmdstr-----%s\n",cmdstr);
+				system(cmdstr);
+	
+				//system("pppoe-stop > /dev/null 2>&1");sleep(2);
+				//system("pppoe-start > /dev/null 2>&1");sleep(5);
+			}
+	
+			//for pppoe show yhlnew
+			char pppoe_ip[20];
+			char pppoe_gw[20];
+			char pppoe_mask[20];
+			
+			Execute_cmd("ifconfig | grep P-t-P | awk -F ' ' '{print$2}'| awk -F ':' '{print$2}'", pppoe_ip);
+			Execute_cmd("ifconfig | grep P-t-P | awk -F ' ' '{print$3}'| awk -F ':' '{print$2}'", pppoe_gw);
+			Execute_cmd("ifconfig | grep P-t-P | awk -F ' ' '{print$4}'| awk -F ':' '{print$2}'", pppoe_mask);
+	
+			CFG_set_by_name("WAN_IPADDR3",pppoe_ip);
+			CFG_set_by_name("AP_NETMASK3",pppoe_mask);
+			CFG_set_by_name("IPGW3",pppoe_gw);
+	
+			//add ppp0 route default gw if losing
+			if(!strstr(Execute_cmd("echo `route -n|grep ppp0|awk -F ' ' '{print$8}'`",route_gw),"ppp0 ppp0"))
+				 {
+				  Execute_cmd("route add default gw `route -n | grep ppp0 |awk -F ' ' '{print$1}'|awk 'NR==1'` > /dev/null 2>&1",route_gw);
+				  fprintf(errOut,"\nPPP0 LOST,ADD ONE\n");
+				 }
+			//save new config to flash 
+			if(flag!=1)
+			{
+				writeParameters(NVRAM,"w+", NVRAM_OFFSET);//save new config to flash 
+				writeParameters("/tmp/.apcfg","w+",0);
+			}
+			gohome =1;
+			//kill old,run new ppy
+		    system("killall ppy > /dev/null 2>&1");sleep(1);
+			//system("/usr/sbin/ppy & > /dev/null 2>&1");sleep(1);
+			system("/usr/sbin/ppy & > /dev/null 2>&1");
+		}
+
+///pppoe above
 	//login settings
      if(strcmp(CFG_get_by_name("ADMINSET",valBuff),"ADMINSET") == 0 )
     {
