@@ -44,7 +44,11 @@
 #define CMD_x "x"
 #define CMD_y "y"
 #define CMD_z "z"
+
+#define CMD_C "C"
+#define CMD_L "L"
 #define CMD_R "R"
+
 
 #define CMD_print "print" // 打印设置的环境变量
 #define CMD_set "set" // 设置指定环境变量的值
@@ -1027,6 +1031,33 @@ int cmd_z()
 
 }
 
+/**
+ * 命令字 C 切换控制电话和CACM通路的继电器
+ */
+int cmd_C(int mode)
+{
+    int res = 0;
+    if ((res = communication_serial.relay_change(mode)) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "relay_change failed!", res);
+        return res;
+    }
+    return res;
+}
+
+/**
+ * 命令字 L 关闭和打开回环
+ */
+int cmd_L(unsigned char mode)
+{
+    int res = 0;
+    if ((res = communication_serial.loop_manage(mode)) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "loop_manage failed!", res);
+        return res;
+    }
+    return res;
+}
 
 /**
  * 命令字 R 终端认证和获取sip服务器账号等信息
@@ -1107,6 +1138,8 @@ int cmd_help()
     PRINT("y 连接服务器\n");
     PRINT("z USB通路测试\n");
     
+    PRINT("C 切换控制电话和CACM通路的继电器\n");
+    PRINT("L 关闭和打开回环\n");
     PRINT("R 终端认证和获取sip服务器账号\n");
     return 0;
 }
@@ -1128,6 +1161,7 @@ int analyse_cmd(unsigned short cmd_count, char *cmd_buf)
     char phone[13] = {0};
     char ip[16] = {0};
     char port[8] = {0};
+    unsigned char mode = 0;
     
     if (cmd_count == 0)
     {
@@ -1271,6 +1305,14 @@ int analyse_cmd(unsigned short cmd_count, char *cmd_buf)
         {
             word = 'z';
         }
+        else if (strcmp(index, CMD_C) == 0)
+        {
+            word = 'C';
+        }
+        else if (strcmp(index, CMD_L) == 0)
+        {
+            word = 'L';
+        }
         else if (strcmp(index, CMD_R) == 0)
         {
             word = 'R';
@@ -1334,6 +1376,16 @@ int analyse_cmd(unsigned short cmd_count, char *cmd_buf)
         else if ((word == 'd') || (word == 'e') || (word == 'f'))
         {
             snprintf(phone, sizeof(phone), "%s", index);
+        }
+        else if (word == 'C')
+        {
+            mode = (unsigned char)atoi(index);
+            PRINT("mode = %d, index = %s\n", mode, index);
+        }
+        else if (word == 'L')
+        {
+            mode = (unsigned char)atoi(index);
+            PRINT("mode = %d, index = %s\n", mode, index);
         }
         else
         {
@@ -1507,6 +1559,16 @@ int analyse_cmd(unsigned short cmd_count, char *cmd_buf)
             case 'z':
             {
                 res = cmd_z();
+                break;
+            }
+            case 'C':
+            {
+                res = cmd_C(mode);
+                break;
+            }
+            case 'L':
+            {
+                res = cmd_L(mode);
                 break;
             }
             case 'R':

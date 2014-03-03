@@ -85,6 +85,18 @@ static int refuse_to_answer(); // 拒接接听
 
 #elif PHONE_CHANNEL_INTERFACE == 3
 
+static unsigned int spi_node_fd = 0; // spi节点描述符
+
+/**
+ * 初始化
+ */
+static int init();
+
+/**
+ * 释放
+ */
+static int release();
+
 /**
  * 发送
  */
@@ -98,9 +110,14 @@ static int send_data(char *data, unsigned int data_len, struct timeval *tv);
 static int recv_data(char *data, unsigned int data_len, struct timeval *tv);
 
 /**
- * 接收
+ * 继电器切换
  */
-static int relay_change(int flag);
+static int relay_change(unsigned char mode);
+
+/**
+ * 回环控制
+ */
+static int loop_manage(unsigned char mode);
 
 #endif // PHONE_CHANNEL_INTERFACE == 3
 
@@ -135,7 +152,9 @@ struct class_communication_serial communication_serial =
     cmd_on_hook, cmd_call, cmd_off_hook, recv_display_msg,refuse_to_answer,
     phone_state_monitor, send_data, recv_data,
     #if PHONE_CHANNEL_INTERFACE == 3
+    //init, release,
     relay_change,
+    loop_manage,
     #endif
     #endif // BOARDTYPE == 5350 || BOARDTYPE == 9344
 };
@@ -2584,6 +2603,7 @@ int cmd_on_hook()
     
     for (j = 0; j < common_tools.config->repeat; j++)
     {
+        tv.tv_sec = 5;
         if ((res = send_data(buf, sizeof(buf), &tv))< 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_data failed!", res);
@@ -2592,7 +2612,8 @@ int cmd_on_hook()
         
         for (i = 0; i < sizeof(head); i++)
         {
-            if ((res = recv_data(&head[i], sizeof(head[i]), &tv)) != sizeof(head[i]))
+            tv.tv_sec = 5;
+            if ((res = recv_data(&head[i], sizeof(head[i]), &tv)) < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data_head failed!", res);
                 return res;
@@ -2612,7 +2633,8 @@ int cmd_on_hook()
             }
         }
         
-        if ((res = recv_data(&cmd, sizeof(cmd), &tv)) != sizeof(cmd))
+        tv.tv_sec = 5;
+        if ((res = recv_data(&cmd, sizeof(cmd), &tv)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data failed!", res);
             return res;
@@ -2624,7 +2646,8 @@ int cmd_on_hook()
             continue;
         }
         
-        if ((res = recv_data(recv_buf, sizeof(recv_buf), &tv)) != sizeof(recv_buf))
+        tv.tv_sec = 5;
+        if ((res = recv_data(recv_buf, sizeof(recv_buf), &tv)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data failed!", res);
             continue;
@@ -2638,6 +2661,7 @@ int cmd_on_hook()
     }
     
     *(common_tools.phone_status_flag) = 0;
+    release();
     PRINT_STEP("exit...\n");
     return 0;
 }
@@ -2661,6 +2685,7 @@ int cmd_off_hook()
     
     for (j = 0; j < common_tools.config->repeat; j++)
     {
+        tv.tv_sec = 5;
         if ((res = send_data(buf, sizeof(buf), &tv))< 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_data failed!", res);
@@ -2672,7 +2697,8 @@ int cmd_off_hook()
         // A55A C1 02 02 00 00 C1
         for (i = 0; i < sizeof(head); i++)
         {
-            if ((res = recv_data(&head[i], sizeof(head[i]), &tv)) != sizeof(head[i]))
+            tv.tv_sec = 5;
+            if ((res = recv_data(&head[i], sizeof(head[i]), &tv)) < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data_head failed!", res);
                 return res;
@@ -2692,7 +2718,8 @@ int cmd_off_hook()
             }
         }
         
-        if ((res = recv_data(&cmd, sizeof(cmd), &tv)) != sizeof(cmd))
+        tv.tv_sec = 5;
+        if ((res = recv_data(&cmd, sizeof(cmd), &tv)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data failed!", res);
             return res;
@@ -2704,7 +2731,8 @@ int cmd_off_hook()
             continue;
         }
         
-        if ((res = recv_data(recv_buf, sizeof(recv_buf), &tv)) != sizeof(recv_buf))
+        tv.tv_sec = 5;
+        if ((res = recv_data(recv_buf, sizeof(recv_buf), &tv)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data failed!", res);
             return res;
@@ -2751,7 +2779,8 @@ int cmd_call(char *phone)
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "cmd_off_hook failed!", res);
     	return res; 
     }
-    
+    PRINT("res = %d\n", res);
+    PRINT("phone = %s\n", phone);
     if ((send_buf = malloc(strlen(phone) + 7)) == NULL)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "malloc failed!", MALLOC_ERR);
@@ -2775,12 +2804,17 @@ int cmd_call(char *phone)
     send_buf[1] = 0x5A;
     send_buf[2] = 0x78;
     send_buf[3] = strlen(phone); // 包长度
-    memcpy(send_buf + 4, phone, strlen(phone));
+    for (i = 0; i < strlen(phone); i++)
+    {
+        send_buf[i + 4] = phone[i] - '0';
+    }
+    // memcpy(send_buf + 4, phone, strlen(phone));
     send_buf[strlen(phone) + 4] = common_tools.get_checkbit(send_buf, NULL, 2, strlen(phone) + 2, XOR, 1);
     sleep(1);
     
     for (j = 0; j < common_tools.config->repeat; j++)
     {
+        tv.tv_sec = 5;
         // 打开参数回复
         if ((res = send_data(open_reply_buf, sizeof(open_reply_buf), &tv))< 0)
         {
@@ -2791,7 +2825,8 @@ int cmd_call(char *phone)
         // 接收同步头
         for (i = 0; i < sizeof(head); i++)
         {
-            if ((res = recv_data(&head[i], sizeof(head[i]), &tv)) != sizeof(head[i]))
+            tv.tv_sec = 5;
+            if ((res = recv_data(&head[i], sizeof(head[i]), &tv)) < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data_head failed!", res);
                 return res;
@@ -2810,7 +2845,9 @@ int cmd_call(char *phone)
                 }
             }
         }
-        if ((res = recv_data(&cmd, sizeof(cmd), &tv)) != sizeof(cmd))
+        
+        tv.tv_sec = 5;
+        if ((res = recv_data(&cmd, sizeof(cmd), &tv)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data failed!", res);
             continue;
@@ -2822,8 +2859,9 @@ int cmd_call(char *phone)
             continue;
         }
         
+        tv.tv_sec = 5;
         // A5 5A F0 02 F7 FE 00 FB
-        if ((res = recv_data(reply_recv_buf, sizeof(reply_recv_buf), &tv)) != sizeof(reply_recv_buf))
+        if ((res = recv_data(reply_recv_buf, sizeof(reply_recv_buf), &tv)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data_head failed!", res);
             continue;
@@ -2845,6 +2883,7 @@ int cmd_call(char *phone)
     
     for (j = 0; j < common_tools.config->repeat; j++)
     {
+        tv.tv_sec = 5;
         // 发送号码
         if ((res = send_data(send_buf, strlen(phone) + 5, &tv))< 0)
         {
@@ -2855,7 +2894,8 @@ int cmd_call(char *phone)
         // 接收同步头
         for (i = 0; i < sizeof(head); i++)
         {
-            if ((res = recv_data(&head[i], sizeof(head[i]), &tv)) != sizeof(head[i]))
+            tv.tv_sec = 5;
+            if ((res = recv_data(&head[i], sizeof(head[i]), &tv)) < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data_head failed!", res);
                 return res;
@@ -2874,10 +2914,12 @@ int cmd_call(char *phone)
                 }
             }
         }
+        
+        tv.tv_sec = 5;
         // 接收包根据号码的不同而不同 C9 + 36 = FF
         // A55A C2 0A FEFE C9CDC6CEC9C9C6C7 00 C5 接收包
         // A55A 42 0A 0101 3632393136363938    45 发送包
-        if ((res = recv_data(&cmd, sizeof(cmd), &tv)) != sizeof(cmd))
+        if ((res = recv_data(&cmd, sizeof(cmd), &tv)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data failed!", res);
             goto EXIT;
@@ -2888,7 +2930,8 @@ int cmd_call(char *phone)
             continue;
         }
         
-        if ((res = recv_data(recv_buf, strlen(phone) + 5, &tv)) != (strlen(phone) + 5))
+        tv.tv_sec = 5;
+        if ((res = recv_data(recv_buf, strlen(phone) + 5, &tv)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data failed!", res);
             goto EXIT;
@@ -2930,6 +2973,7 @@ EXIT:
     *(common_tools.phone_status_flag) = 1;
     
     // 关闭参数回复
+    tv.tv_sec = 5;
     if ((ret = send_data(close_reply_buf, sizeof(close_reply_buf), &tv)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_data failed!", res);
@@ -2978,7 +3022,8 @@ int recv_display_msg(char *phone_num)
     {
         for (i = 0; i < sizeof(head); i++)
         {
-            if ((res = spi_rt_interface.recv_data(UART1, &head[i], sizeof(head[i]))) != sizeof(head[i]))
+            tv.tv_sec = 5;
+            if ((res = recv_data(&head[i], sizeof(head[i]), &tv)) < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data_head failed!", res);
                 return res;
@@ -2998,7 +3043,8 @@ int recv_display_msg(char *phone_num)
             }
         }
         
-        if ((res = recv_data(&cmd, sizeof(cmd), &tv)) != sizeof(cmd))
+        tv.tv_sec = 5;
+        if ((res = recv_data(&cmd, sizeof(cmd), &tv)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data failed!", res);
             return res;
@@ -3013,7 +3059,8 @@ int recv_display_msg(char *phone_num)
         
         if (cmd == 0x03)
         {
-            if ((res = recv_data(ring_buf, sizeof(ring_buf), &tv)) != sizeof(ring_buf))
+            tv.tv_sec = 5;
+            if ((res = recv_data(ring_buf, sizeof(ring_buf), &tv)) < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data failed!", res);
                 return res;
@@ -3036,7 +3083,8 @@ int recv_display_msg(char *phone_num)
             continue;
         }
         
-        if ((res = recv_data(&buf_len, sizeof(buf_len), &tv)) != sizeof(buf_len))
+        tv.tv_sec = 5;
+        if ((res = recv_data(&buf_len, sizeof(buf_len), &tv)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data failed!", res);
             return res;
@@ -3046,13 +3094,16 @@ int recv_display_msg(char *phone_num)
         buf_tmp[0] = cmd;
         buf_tmp[1] = buf_len;
         
-        if ((res = recv_data(buf_tmp + 2, buf_len, &tv)) != buf_len)
+        tv.tv_sec = 5;
+        if ((res = recv_data(buf_tmp + 2, buf_len, &tv)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data failed!", res);
             return res;
         }
+        
+        tv.tv_sec = 5;
         PRINT("checkbit = %02X\n", checkbit);
-        if ((res = recv_data(&checkbit, sizeof(checkbit), &tv)) != sizeof(checkbit))
+        if ((res = recv_data(&checkbit, sizeof(checkbit), &tv)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data failed!", res);
             return res;
@@ -3194,6 +3245,7 @@ int refuse_to_answer()
     
     for (j = 0; j < common_tools.config->repeat; j++)
     {
+        tv.tv_sec = 5;
         // 打开参数回复
         if ((res = send_data(open_reply_buf, sizeof(open_reply_buf), &tv))< 0)
         {
@@ -3204,7 +3256,8 @@ int refuse_to_answer()
         // 接收同步头
         for (i = 0; i < sizeof(head); i++)
         {
-            if ((res = spi_rt_interface.recv_data(UART1, &head[i], sizeof(head[i]))) != sizeof(head[i]))
+            tv.tv_sec = 5;
+            if ((res = recv_data(&head[i], sizeof(head[i]), &tv)) < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data_head failed!", res);
                 return res;
@@ -3223,7 +3276,9 @@ int refuse_to_answer()
                 }
             }
         }
-        if ((res = recv_data(&cmd, sizeof(cmd), &tv)) != sizeof(cmd))
+        
+        tv.tv_sec = 5;
+        if ((res = recv_data(&cmd, sizeof(cmd), &tv)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data failed!", res);
             continue;
@@ -3235,8 +3290,9 @@ int refuse_to_answer()
             continue;
         }
         
+        tv.tv_sec = 5;
         // A5 5A F0 02 F7 FE 00 FB
-        if ((res = recv_data(reply_recv_buf, sizeof(reply_recv_buf), &tv)) != sizeof(reply_recv_buf))
+        if ((res = recv_data(reply_recv_buf, sizeof(reply_recv_buf), &tv)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data_head failed!", res);
             continue;
@@ -3259,6 +3315,7 @@ int refuse_to_answer()
     // 第一步：打开话路 A5 5A 4A 01 95 DE
     for (j = 0; j < common_tools.config->repeat; j++)
     {
+        tv.tv_sec = 5;
         // 发送命令
         if ((res = send_data(open_channel_buf, sizeof(open_channel_buf), &tv))< 0)
         {
@@ -3269,7 +3326,8 @@ int refuse_to_answer()
         // 接收回复 A5 5A CA 01 6A 00 A1
         for (i = 0; i < sizeof(head); i++)
         {
-            if ((res = recv_data(&head[i], sizeof(head[i]), &tv)) != sizeof(head[i]))
+            tv.tv_sec = 5;
+            if ((res = recv_data(&head[i], sizeof(head[i]), &tv)) < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data_head failed!", res);
                 continue;
@@ -3289,7 +3347,8 @@ int refuse_to_answer()
             }
         }
         
-        if ((res = recv_data(&cmd, sizeof(cmd), &tv)) != sizeof(cmd))
+        tv.tv_sec = 5;
+        if ((res = recv_data(&cmd, sizeof(cmd), &tv)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data failed!", res);
             continue;
@@ -3297,7 +3356,8 @@ int refuse_to_answer()
         PRINT("cmd = %02X\n", cmd);
         if (cmd == 0xCA)
         {
-            if ((res = recv_data(buf, sizeof(buf), &tv)) != sizeof(buf))
+            tv.tv_sec = 5;
+            if ((res = recv_data(buf, sizeof(buf), &tv)) < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data failed!", res);
                 continue;
@@ -3315,7 +3375,8 @@ int refuse_to_answer()
         }
         else if (cmd == 0x03) // 振铃
         {
-            if ((res = recv_data(ring_buf, sizeof(ring_buf), &tv)) != sizeof(ring_buf))
+            tv.tv_sec = 5;
+            if ((res = recv_data(ring_buf, sizeof(ring_buf), &tv)) < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data failed!", res);
                 goto EXIT;
@@ -3347,6 +3408,7 @@ int refuse_to_answer()
     // 第三步：关闭话路 A5 5A 4A 01 94 DF
     for (j = 0; j < common_tools.config->repeat; j++)
     {
+        tv.tv_sec = 5;
         // 发送命令
         if ((res = send_data(close_channel_buf, sizeof(close_channel_buf), &tv))< 0)
         {
@@ -3357,7 +3419,8 @@ int refuse_to_answer()
         // 接收回复 A5 5A CA 01 6B 00 A0
         for (i = 0; i < sizeof(head); i++)
         {
-            if ((res = recv_data(&head[i], sizeof(head[i]), &tv)) != sizeof(head[i]))
+            tv.tv_sec = 5;
+            if ((res = recv_data(&head[i], sizeof(head[i]), &tv)) < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data_head failed!", res);
                 continue;
@@ -3377,7 +3440,8 @@ int refuse_to_answer()
             }
         }
         
-        if ((res = recv_data(&cmd, sizeof(cmd), &tv)) != sizeof(cmd))
+        tv.tv_sec = 5;
+        if ((res = recv_data(&cmd, sizeof(cmd), &tv)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data failed!", res);
             continue;
@@ -3385,7 +3449,8 @@ int refuse_to_answer()
         
         if (cmd == 0xCA)
         {
-            if ((res = recv_data(buf, sizeof(buf), &tv)) != sizeof(buf))
+            tv.tv_sec = 5;
+            if ((res = recv_data(buf, sizeof(buf), &tv)) < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data failed!", res);
                 continue;
@@ -3403,7 +3468,8 @@ int refuse_to_answer()
         }
         else if (cmd == 0x03) // 振铃
         {
-            if ((res = recv_data(ring_buf, sizeof(ring_buf), &tv)) != sizeof(ring_buf))
+            tv.tv_sec = 5;
+            if ((res = recv_data(ring_buf, sizeof(ring_buf), &tv)) < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data failed!", res);
                 goto EXIT;
@@ -3439,11 +3505,46 @@ EXIT:
     return res;
 }
 
+
+/**
+ * 初始化
+ */
+int init()
+{
+    int res = 0;
+    if (spi_node_fd != 0)
+    {
+        close(spi_node_fd);
+        spi_node_fd = 0;
+    }
+    
+    if ((res = open(SPI_NODE, O_RDWR, 0644)) < 0)
+    {  	
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "open failed!", OPEN_ERR);
+    	return OPEN_ERR;
+    }
+    spi_node_fd = res;
+    PRINT("spi_node_fd = %d\n", spi_node_fd);
+    return 0;
+}
+
+/**
+ * 释放
+ */
+int release()
+{
+    if (spi_node_fd != 0)
+    {
+        close(spi_node_fd);
+        spi_node_fd = 0;
+    }
+    return 0;
+}
+
 int send_data(char *data, unsigned int data_len, struct timeval *tv)
 {
     PRINT_STEP("entry...\n");
     int res = 0;
-    int fd = 0;
     
     if (data == NULL)
     {
@@ -3451,20 +3552,20 @@ int send_data(char *data, unsigned int data_len, struct timeval *tv)
         return NULL_ERR;
     }
     
-    if ((fd = open(SPI_NODE, O_RDWR, 0644)) < 0)
-    {  	
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "open failed!", fd);
-    	return OPEN_ERR;
+    if (spi_node_fd == 0)
+    {
+        if ((res = init()) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "init failed!", res);
+            return res;
+        }
     }
-    
-	if ((res = common_tools.send_data(fd, data, NULL, data_len, tv)) < 0)
+	if ((res = common_tools.send_data(spi_node_fd, data, NULL, data_len, tv)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_data failed!", res);
-        close(fd);
+        release();
         return res;
     }
-    
-    close(fd);
     PRINT_STEP("exit...\n");
     return 0;
 }
@@ -3475,7 +3576,6 @@ int send_data(char *data, unsigned int data_len, struct timeval *tv)
  */
 int recv_data(char *data, unsigned int data_len, struct timeval *tv)
 {
-    int fd = 0;
     int res = 0;
     
     if (data == NULL)
@@ -3484,27 +3584,29 @@ int recv_data(char *data, unsigned int data_len, struct timeval *tv)
         return NULL_ERR;
     }
     
-    if ((fd = open(SPI_NODE, O_RDWR, 0644)) < 0)
-    {  	
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "open failed!", fd);
-    	return OPEN_ERR;
+    if (spi_node_fd == 0)
+    {
+        if ((res = init()) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "init failed!", res);
+            return res;
+        }
     }
     
-    if ((res = common_tools.recv_data(fd, data, NULL, data_len, tv)) < 0)
+    if ((res = common_tools.recv_data(spi_node_fd, data, NULL, data_len, tv)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "recv_data failed!", res);
-        close(fd);
+        release();
     	return res;
     }
-    close(fd);
-    return 0;
+    return res;
 }
 
 
 /**
  * 切换继电器
  */
-int relay_change(int flag)
+int relay_change(unsigned char mode)
 {
     // A5 5A 4A 01 94 DF  切到CACM
     // A5 5A 4A 01 95 DE  切到打电话 
@@ -3513,7 +3615,7 @@ int relay_change(int flag)
     char send_phone_buf[6] = {0xA5, 0x5A, 0x4A, 0x01, 0x95, 0xDE};
     struct timeval tv = {5, 0};
     
-    if (flag == 1) // 从95R54切换到SI32919
+    if (mode == 1) // 从95R54切换到SI32919
     {
         if ((res = send_data(send_phone_buf, sizeof(send_phone_buf), &tv)) < 0)
         {
@@ -3521,7 +3623,7 @@ int relay_change(int flag)
             return res;
         }
     }
-    else if (flag == 0) // 从SI32919切换到95R54
+    else if (mode == 0) // 从SI32919切换到95R54
     {
         if ((res = send_data(send_cacm_buf, sizeof(send_cacm_buf), &tv)) < 0)
         {
@@ -3537,6 +3639,41 @@ int relay_change(int flag)
     return 0;
 }
 
+/**
+ * 回环控制
+ */
+int loop_manage(unsigned char mode)
+{
+    // A5 5A 70 02 09 00 7B 关闭回环
+    // A5 5A 70 02 09 01 7A 打开回环 
+    int res = 0;
+    char loop_close_buf[7] = {0xA5, 0x5A, 0x70, 0x02, 0x09, 0x00, 0x7B};
+    char loop_open_buf[7] = {0xA5, 0x5A, 0x70, 0x02, 0x09, 0x01, 0x7A};
+    struct timeval tv = {5, 0};
+    
+    if (mode == 1) // 打开回环 
+    {
+        if ((res = send_data(loop_open_buf, sizeof(loop_open_buf), &tv)) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_data failed!", res);
+            return res;
+        }
+    }
+    else if (mode == 0) // 关闭回环
+    {
+        if ((res = send_data(loop_close_buf, sizeof(loop_close_buf), &tv)) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_data failed!", res);
+            return res;
+        }
+    }
+    else
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data error!", DATA_ERR);
+        return DATA_ERR;
+    }
+    return 0;
+}
 #endif // PHONE_CHANNEL_INTERFACE == 3
 
 /**

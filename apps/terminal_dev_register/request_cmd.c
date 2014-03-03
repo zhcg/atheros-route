@@ -615,7 +615,7 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
     unsigned short buf_len = 0;
     
     char buf_tmp[256] = {0}; 
-    char pad_mac[18] = {0};
+    char pad_mac[21] = {0};
     
     char columns_name[1][30] = {0};
     char columns_value[1][100] = {0};
@@ -637,7 +637,8 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
         case 0xFB:
         {
              // 此时需查看pad_mac是否为空
-            if (strlen(terminal_dev_register->data_table.pad_mac) != 12)
+            PRINT("terminal_dev_register->data_table.pad_mac = %s\n", terminal_dev_register->data_table.pad_mac);
+            if (strlen(terminal_dev_register->data_table.pad_mac) == 12)
             {
                 // 获取10.10.10.100的mac
                 strcpy(buf_tmp, "arping -c 1 -w 1 -I br0 10.10.10.100 | grep '\\[' | awk '{print $5}'");
@@ -650,7 +651,7 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
 
                 if (strlen(pad_mac) > 0)
                 {
-                    memcpy(buf_tmp, pad_mac + 1, strlen(pad_mac) - 2);
+                    memcpy(buf_tmp, pad_mac + 1, 17);
                     memset(pad_mac, 0, sizeof(pad_mac));
                     memcpy(pad_mac, buf_tmp, strlen(buf_tmp));
                     memset(buf_tmp, 0, sizeof(buf_tmp));

@@ -63,10 +63,14 @@ struct class_communication_serial
     #elif PHONE_CHANNEL_INTERFACE == 2
     
     #elif PHONE_CHANNEL_INTERFACE == 3
+    // int (* init)();
+    // int (* release)();
+
     int (* send_data)(char *data, unsigned int data_len, struct timeval *tv);
     int (* recv_data)(char *data, unsigned int data_len, struct timeval *tv);
     
-    int (* relay_change)(int flag);
+    int (* relay_change)(unsigned char mode);
+    int (* loop_manage)(unsigned char mode);
     #endif // PHONE_CHANNEL_INTERFACE == 3
     
     #endif //BOARDTYPE == 5350 || BOARDTYPE == 9344

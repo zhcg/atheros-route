@@ -626,6 +626,7 @@ static int monitor_app()
     char * const swipe_card_app_argv[] = {"swipe_card", NULL};
     while (1)
     {
+        #if BOARDTYPE == 5350
         // STUB
         if (common_tools.get_cmd_out(spi_cmd, buf, sizeof(buf)) < 0)
         {
@@ -647,6 +648,28 @@ static int monitor_app()
             }
             //PRINT("spi_rt_main is running...\n");
         }
+        
+        // 刷卡
+        if (common_tools.get_cmd_out(swipe_card_cmd, buf, sizeof(buf)) < 0)
+        {
+            PERROR("get_cmd_out failed!\n");
+            continue;
+        }
+        else
+        {
+            if (strlen(buf) == 0)
+            {
+                PRINT("swipe_card stop!\n");
+                if ((res = common_tools.start_up_application("/bin/swipe_card", swipe_card_app_argv, 0)) < 0)
+                {
+                    PERROR("start_up_application failed!\n");
+                    continue;
+                }
+                PRINT("swipe_card restart!\n");
+            }
+            //PRINT("swipe_card is running...\n");
+        }
+        #endif
         
         // 终端初始化
         if (common_tools.get_cmd_out(terminal_init_cmd, buf, sizeof(buf)) < 0)
@@ -672,27 +695,6 @@ static int monitor_app()
                 PRINT("terminal_init restart!\n");
             }
             //PRINT("terminal_init is running...\n");
-        }
-        
-        // 刷卡
-        if (common_tools.get_cmd_out(swipe_card_cmd, buf, sizeof(buf)) < 0)
-        {
-            PERROR("get_cmd_out failed!\n");
-            continue;
-        }
-        else
-        {
-            if (strlen(buf) == 0)
-            {
-                PRINT("swipe_card stop!\n");
-                if ((res = common_tools.start_up_application("/bin/swipe_card", swipe_card_app_argv, 0)) < 0)
-                {
-                    PERROR("start_up_application failed!\n");
-                    continue;
-                }
-                PRINT("swipe_card restart!\n");
-            }
-            //PRINT("swipe_card is running...\n");
         }
         
         #if SSID3_MONITOR
