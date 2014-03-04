@@ -1,4 +1,4 @@
-obj-m :=module.o                       
+obj-m := as532h.o                       
 #module-objs := file1.o file.o       
 #GCC = /home/workspace/chenyujun/9344_Bluetooth/9344/build/gcc-4.3.3/build_mips/staging_dir/usr/bin/mips-linux-uclibc-gcc
 #KDIR :=/home/workspace/chenyujun/9344_Bluetooth/9344/linux/kernels/mips-linux-2.6.31

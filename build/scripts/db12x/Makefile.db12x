@@ -35,8 +35,8 @@ export SPIPASSAGEDIR=$(TOPDIR)/linux/drivers/passage/spi
 export SPIPASSAGEMODPATH=$(INSTALL_ROOT)/lib/modules/$(KERNELVER)/passage/spi
 export PHONEPASSAGEDIR=$(TOPDIR)/linux/drivers/passage/phone
 export PHONEPASSAGEMODPATH=$(INSTALL_ROOT)/lib/modules/$(KERNELVER)/passage/phone
-export USBMODULEDIR=$(TOPDIR)/linux/drivers/USB_module
-export USBMODULEMODPATH=$(INSTALL_ROOT)/lib/modules/$(KERNELVER)/USB_module
+export AS532HDIR=$(TOPDIR)/linux/drivers/as532h
+export AS532HMODPATH=$(INSTALL_ROOT)/lib/modules/$(KERNELVER)/as532h
 #
 # Makefile for WASP Fusion build.  It has dependancies for both
 # the "common" build and the "jffs2" build.  This is unique for
@@ -117,7 +117,7 @@ ifeq ($(strip ${ATH_SUPPORT_SPECTRAL}),1)
 db12x_build: common_mainline driver_build usb_build pci_build spectral_app_build $(BUILD_TYPE)_build art_mod
 else
 ifeq ($(BUILD_FOR_32178), yes)
-db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si32178_build spi32178_build phone_9344_32178 check_phone_status modules_server usbpassage_build uartpassage_build spipassage_build phonepassage_build usbmodule_build ntpclient_arm  ppy pppoe_build channel webui terminal_dev_register cacm tester $(fs_build) makeotaimage makeoneimage 
+db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si32178_build spi32178_build phone_9344_32178 check_phone_status modules_server usbpassage_build uartpassage_build spipassage_build phonepassage_build as532h_build ntpclient_arm  ppy pppoe_build channel webui terminal_dev_register cacm tester $(fs_build) makeotaimage makeoneimage 
 else
 db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si3000_build si3000_app stm32_build stm32_app phone_9344  ntpclient_arm  ppy pppoe_build channel webui terminal_dev_register cacm tester $(fs_build) makeotaimage makeoneimage 
 endif
@@ -584,11 +584,11 @@ phonepassage_build: kernel_build
 	test -d $(PHONEPASSAGEMODPATH) || mkdir -p $(PHONEPASSAGEMODPATH)
 	cp $(PHONEPASSAGEDIR)/phone_passage.ko $(PHONEPASSAGEMODPATH)
 
-usbmodule_build: kernel_build
-	cd $(USBMODULEDIR) && rm -f *.o *.ko *.mod.*
-	$(MAKEARCH) -C $(KERNELPATH) SUBDIRS=$(USBMODULEDIR) modules
-	test -d $(USBMODULEMODPATH) || mkdir -p $(USBMODULEMODPATH)
-	cp $(USBMODULEDIR)/module.ko $(USBMODULEMODPATH)
+as532h_build: kernel_build
+	cd $(AS532HDIR) && rm -f *.o *.ko *.mod.*
+	$(MAKEARCH) -C $(KERNELPATH) SUBDIRS=$(AS532HDIR) modules
+	test -d $(AS532HMODPATH) || mkdir -p $(AS532HMODPATH)
+	cp $(AS532HDIR)/as532h.ko $(AS532HMODPATH)
 
 phone_9344_32178:
 	@echo making phone_9344_32178 application

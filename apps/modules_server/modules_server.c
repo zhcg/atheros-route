@@ -1,5 +1,6 @@
 #include "modules_server.h"
 #include "as532.h"
+#include "stm32_update.h"
 
 int global_server_fd;
 int global_uart_fd;
@@ -19,13 +20,21 @@ int stm32_ver_req = 0;
 int stm32_ver_des_req = 0;
 int stm32_ver_req_times = 0;
 int stm32_ver_des_req_times = 0;
+int r54_test_ver_req_times = 0;
 short global_port;
 char global_ip[20];
 int stm32_updating = 0;
 int as532_updating = 0;
 int factory_test_stm32 = 0;
+int factory_test_r54 = 0;
+int factory_test_r54_called = 0;
+int factory_test_r54_called_times = 0;
 struct UKey *global_pukey;
 struct itimerval value;
+unsigned char r54_test_ver_buf[BUFFER_LEN]={};
+unsigned char r54_test_called_buf[BUFFER_LEN]={};
+int r54_test_ver_buf_wp = 0;;
+int r54_test_called_buf_wp = 0;;
 const char hex_to_asc_table[16] = {0x30,0x31,0x32,0x33,0x34,0x35,0x36,0x37,
 	0x38,0x39,0x41,0x42,0x43,0x44,0x45,0x46};
 	
@@ -33,10 +42,15 @@ const char soft_version[4]={
 	//phone_control
 	0x00,0x00,0x00,0x01,
 };
+char offhook[] = {0xa5,0x5a,0x41,0x00,0x41};
+char onhook[] = {0xa5,0x5a,0x5e,0x00,0x5e};
+char dialup[] = {0xa5,0x5a,0x78,0x0C,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x2A,0x00,0x23,0x7C};
+char switch_cacm[] = {0xa5,0x5a,0x4a,0x01,0x94,0xdf};
+char switch_32178[] = {0xa5,0x5a,0x4a,0x01,0x95,0xde};
 
 int ComFunChangeHexBufferToAsc(unsigned char *hexbuf,int hexlen,char *ascstr)
 {
-	unsigned char i;
+	int i;
 	unsigned char ch,h,l;
 	char *pdes = ascstr;
 	for(i = 0;i < hexlen;i++)
@@ -51,10 +65,10 @@ int ComFunChangeHexBufferToAsc(unsigned char *hexbuf,int hexlen,char *ascstr)
 	return hexlen * 2;
 }
 //输出一个数组的内容，以十六进制模式
-void ComFunPrintfBuffer(unsigned char *pbuffer,unsigned char len)
+void ComFunPrintfBuffer(unsigned char *pbuffer,int len)
 {
 	char *pstr;
-	pstr = (char *)malloc(512);
+	pstr = (char *)malloc(BUFFER_SIZE_1K);
 	if(pstr == NULL)
 		return;
 	ComFunChangeHexBufferToAsc(pbuffer,len,pstr);
@@ -64,11 +78,82 @@ void ComFunPrintfBuffer(unsigned char *pbuffer,unsigned char len)
 	free((void *)pstr);
 }
 
+int parse_r54_ver(unsigned char *buf,int *bytes)
+{
+	int i,ret = 0;
+	char databuf[BUFFER_LEN] = {0};
+	PRINT("parse_r54_ver :");
+	ComFunPrintfBuffer(buf,*bytes);
+	if(*bytes == 0)
+	{
+		PRINT("1\n");
+		ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_STM32_1,FACTORY_TEST_CMD_STM32_R54,FAIL,0x01,NULL,0);
+		generate_stm32_down_msg(databuf,ret,TYPE_USB_PASSAGE);
+		memset(buf,BUFFER_LEN,0);
+		*bytes = 0;
+		return 0;
+	}
+	//00 A5 5A F1 B40200AEB40D02240048
+	PRINT("buf[1] = 0x%X\n",buf[1]);
+	PRINT("buf[2] = 0x%X\n",buf[2]);
+	PRINT("buf[3] = 0x%X\n",buf[3]);
+	for(i=0;i<(*bytes-2);i++)
+	{
+		if((buf[i] == (unsigned char)0xA5) && (buf[i+1] == (unsigned char)0x5A) && (buf[i+2] == (unsigned char)0xF1))
+		{
+			PRINT("ack : 0x%X\n",buf[buf[i+3]+i+4]);
+			if(buf[buf[i+3]+i+4] == (unsigned char)0x00)
+			{
+				PRINT("2\n");
+				ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_STM32_1,FACTORY_TEST_CMD_STM32_R54,SUCCESS,0x00,NULL,0);
+				generate_stm32_down_msg(databuf,ret,TYPE_USB_PASSAGE);
+				memset(buf,BUFFER_LEN,0);
+				*bytes = 0;
+				return 0;
+			}
+		}
+	}
+	ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_STM32_1,FACTORY_TEST_CMD_STM32_R54,FAIL,0x01,NULL,0);
+	generate_stm32_down_msg(databuf,ret,TYPE_USB_PASSAGE);
+	memset(buf,BUFFER_LEN,0);
+	PRINT("3\n");
+	*bytes = 0;
+	return 0;
+}
+
+void check_r54_test_called_func()
+{
+	if(factory_test_r54_called == 1)
+	{
+		if(factory_test_r54_called_times == 170)
+		{
+			PRINT("factory_test_r54_called timeout\n");
+			int ret = 0;
+			char databuf[BUFFER_LEN] = {0};
+			//char sendbuf[BUFFER_SIZE_4K] = {0};
+			//09超时设备无响应
+			ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_9344_1,FACTORY_TEST_CMD_9344_R54_CALLED,FAIL,0x09,NULL,0);
+			generate_stm32_down_msg(databuf,ret,TYPE_USB_PASSAGE);
+			generate_stm32_down_msg(switch_32178,6,TYPE_SPI_PASSAGE);
+			factory_test_r54_called = 0;
+			factory_test_r54_called_times = 0;
+			r54_test_called_buf_wp = 0;
+			memset(r54_test_called_buf,0,BUFFER_LEN);
+			
+		}
+		factory_test_r54_called_times ++;
+	}
+	else
+	{
+		factory_test_r54_called_times = 0;
+	}
+}
+
 void check_stm32_ver_req_func()
 {
 	if(stm32_ver_req == 1)
 	{
-		if(stm32_ver_req_times == 20)
+		if(stm32_ver_req_times == 10)
 		{
 			PRINT("stm32_ver_req timeout\n");
 			if(factory_test_stm32 == 1)
@@ -97,7 +182,7 @@ void check_stm32_ver_des_req_func()
 {
 	if(stm32_ver_des_req == 1)
 	{
-		if(stm32_ver_des_req_times == 20)
+		if(stm32_ver_des_req_times == 10)
 		{
 			PRINT("stm32_ver_des_req timeout\n");
 			
@@ -112,6 +197,25 @@ void check_stm32_ver_des_req_func()
 	}
 }
 
+void check_r54_test_ver_func()
+{
+	if(factory_test_r54 == 1)
+	{
+		if(r54_test_ver_req_times == 6)
+		{
+			PRINT("check_r54_test_ver timeout\n");
+			parse_r54_ver(r54_test_ver_buf,&r54_test_ver_buf_wp);
+			factory_test_r54 = 0;
+			r54_test_ver_req_times = 0;
+		}
+		r54_test_ver_req_times ++;
+	}
+	else
+	{
+		r54_test_ver_req_times = 0;
+	}
+}
+
 //定时器处理函数
 void timer_do(int signo)
 {
@@ -120,6 +224,8 @@ void timer_do(int signo)
 		case SIGALRM:
 			check_stm32_ver_req_func();
 			check_stm32_ver_des_req_func();
+			check_r54_test_ver_func();
+			check_r54_test_called_func();
 			signal(SIGALRM, timer_do);
 			break;
 	}
@@ -127,9 +233,115 @@ void timer_do(int signo)
 	return;
 }
 
+int init_as532()
+{
+	int ret = 0;
+	int ret_err = 0;
+	global_sg_fd = user_open_usb(SGNAME);
+	//PRINT("open sg file fd = %d\n" ,global_sg_fd);
+	if (global_sg_fd < 0)
+	{
+		PRINT("failed to open 532 usr_mode,try boot_mode\n");
+		usb_fd = boot_open_usb(USBNAME);
+		if(usb_fd < 0 )
+		{
+			PRINT("open usb boot error!\n");
+			return -1;
+		}
+		PRINT("init as532 default\n");
+	
+		usleep(50000);
+		
+		ret = LoadDatFile(DEFAULT_AS532_IMAGE);
+		if(ret != 1)
+		{
+			PRINT("update as532 failed,cause load dat file err!\r\n");
+			ret_err = -2; //读取文件失败
+			goto INIT_532_ERR;
+		}
+		
+		ret = BootAsDatFileCheck();
+		if(ret != 1)
+		{
+			PRINT("update as532 failed,cause dat file err!\r\n");
+			ret_err = -3; //文件校验失败
+			goto INIT_532_ERR;
+		}
+
+		ret = BootAsSendIspStart();
+		if(ret != 1)
+		{
+			PRINT("send isp start command,but not get response!\r\n");	
+			ret_err = -4; //532应答失败
+			goto INIT_532_ERR;
+		}
+		usleep(10000);
+		ret = BootAsSendConfig();
+		if(ret != 1)
+		{
+			PRINT("send config command,but not get response!\r\n");	
+			ret_err = -4; //532应答失败
+			goto INIT_532_ERR;
+		}
+		ret = BootAsSendData();
+		if(ret != 1)
+		{
+			PRINT("update as532 failed,cause transefer data err!\r\n");
+			ret_err = -5; //发送数据失败
+			goto INIT_532_ERR;
+		}
+		ret = BootAsSendCheck();
+		if(ret != 1)
+		{
+			PRINT("update as532 failed,cause check err!\r\n");
+			ret_err = -6; //数据校验失败
+			goto INIT_532_ERR;
+		}
+		PRINT("Default as532 Success!!!\r\n");
+		boot_close_usb(&usb_fd);
+		usleep(10000*1000);
+		init_key(global_pukey);
+		return 0 ;
+INIT_532_ERR:
+		boot_close_usb(&usb_fd);
+		init_key(global_pukey);
+		return ret_err;
+    }
+    else
+    {       
+		close(global_sg_fd);
+		global_sg_fd = -1;
+	}
+	return 0;
+}
+
+int init_stm32()
+{
+	int ret = 0;
+	if(global_uart_fd < 0)
+		return -1;
+	if(CmdGetVersion() == -1)
+	{
+		if(CmdGetVersion() == -1)
+		{
+			if (BinFileHeadCheck(STM32_BIN_NAME) != 0)
+				return -2;
+			if((ret = CmdStart()) != 0)
+				return -3;
+			if((ret = Update(STM32_BIN_NAME)) != 0)
+				return -4;
+			if((ret = CmdEnd()) != 0)
+				return -5;
+			PRINT("default Stm32 success !!!\n");
+		}
+	}
+	PRINT("STM32 ---- Ok!\n");
+	return 0 ;
+}
+
 void init_env(void)
 {
-	int sockfd,on,i;
+	int sockfd,on,i,ret;
 	
 	struct sockaddr_in servaddr,cliaddr;
 
@@ -160,6 +372,12 @@ void init_env(void)
 	
 	global_pukey = (struct UKey *)alloc_UKey();
 	global_pukey->p_hdr = (struct  sg_io_hdr *)alloc_io_hdr();
+
+	ret = init_as532();
+	if(ret != 0)
+		PRINT("As532 ---- Not Ok!%d\n",ret);
+	else
+		PRINT("AS532 ---- Ok!\n");
 		
 	global_sg_fd = user_open_usb(SGNAME);
 	//PRINT("open sg file fd = %d\n" ,global_sg_fd);
@@ -174,7 +392,7 @@ void init_env(void)
 		global_pukey->fd = global_sg_fd;
 	}
 	
-	global_uart_fd = open(UARTNAME,O_RDWR);
+	global_uart_fd = open(UARTNAME,O_RDWR | O_NONBLOCK);
 	if(global_uart_fd < 0)
 	{
 		PRINT("open uart error\n");
@@ -185,6 +403,9 @@ void init_env(void)
 	{
 		serialConfig(global_uart_fd,B115200);
 		PRINT("open uart success\n");
+		ret = init_stm32();
+		if(ret != 0)
+			PRINT("Stm32 ---- Not Ok!%d\n",ret);
 	}
 	
 	for(i=0;i<PASSAGE_NUM;i++)
@@ -205,9 +426,9 @@ void init_env(void)
 	//启动定时器
 	signal(SIGALRM, timer_do);
 	value.it_value.tv_sec = 0;
-	value.it_value.tv_usec = 50*1000;
+	value.it_value.tv_usec = 100*1000;
 	value.it_interval.tv_sec = 0;
-	value.it_interval.tv_usec = 50*1000;
+	value.it_interval.tv_usec = 100*1000;
 	setitimer(ITIMER_REAL, &value, NULL);
 
 }
@@ -331,6 +552,7 @@ int do_cmd_stm32_update()
 	{
 		PRINT("stm32 update success!\n");
 	}
+	stm32_updating = 0;
 }
 
 int boot_open_usb(char *dev)
@@ -412,7 +634,7 @@ int as532_update()
 		global_pukey->fd = user_open_usb(SGNAME);
 		if(global_pukey->fd < 0)
 		{
-			PRINT("open usb error after 532 updating!!\n");
+			PRINT("open usb error  532 booting!!\n");
 			ret_err = -7;
 			goto AS532_UPDATE_ERR;
 		}
@@ -422,7 +644,7 @@ int as532_update()
 	
 	usleep(50000);
 	
-	ret = LoadDatFile();
+	ret = LoadDatFile(DATNAME);
 	if(ret != 1)
 	{
 		PRINT("update as532 failed,cause load dat file err!\r\n");
@@ -468,7 +690,7 @@ int as532_update()
 		goto AS532_UPDATE_ERR;
 	}
 	boot_close_usb(&usb_fd);
-	PRINT("update as532 Over!!!\r\n");
+	PRINT("update as532 Success!!!\r\n");
 	usleep(10000*1000);
 	init_key(global_pukey);
 	global_pukey->fd = user_open_usb(SGNAME);
@@ -705,7 +927,7 @@ int serialConfig(int serial_fd, speed_t baudrate)
 	cfsetospeed(&options, baudrate /*B9600*/); //*
 	tcsetattr(serial_fd,TCSANOW,&options);//the change occurs immediately
 
-	printf("serial config finished\n");
+	PRINT("serial config finished\n");
 	return 0;
 }
 
@@ -810,7 +1032,7 @@ int UartGetVerDes(unsigned char *pppacket,int bytes)
 }
 int UartCallBoot(unsigned char *pppacket,int bytes)
 {
-	PRINT("UartGetVerDes is called\r\n");
+	PRINT("UartCallBoot is called\r\n");
 	return 0;
 }
 
@@ -911,18 +1133,20 @@ int generate_test_up_msg(char *sendbuf,char cmd1,char cmd2,char result_type,char
 
 int start_test()
 {
-	//int f = fork();
-	//if(f > 0)
-	//{
-		//PRINT("%s\n",__FUNCTION__);
-	//}
-	//else if(f == 0)
-	//{
-		//if(system(FACTORY_TEST_PROGRAM)!= -1)
-		//{
-			//PRINT("start test success\n");
-		//}
-	//}
+	char databuf[BUFFER_LEN] = {0};
+	int ret = 0;
+	ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_CONTROL_1,FACTORY_TEST_CMD_CONTROL_START,SUCCESS,0x00,NULL,0);
+	generate_stm32_down_msg(databuf,ret,TYPE_USB_PASSAGE);
+	stm32_ver_des_req = 0;
+	stm32_ver_req = 0;
+	factory_test_r54 = 0;
+	factory_test_r54_called = 0;
+	factory_test_stm32 = 0;
+	r54_test_called_buf_wp = 0;
+	memset(r54_test_called_buf,0,BUFFER_LEN);
+	generate_stm32_down_msg(switch_32178,6,TYPE_SPI_PASSAGE);
+
+	return 0;
 }
 
 int factory_test_cmd_as532_ver()
@@ -948,6 +1172,28 @@ int factory_test_cmd_as532_ver()
 		generate_stm32_down_msg(databuf,ret,TYPE_USB_PASSAGE);
 	}
 	return 0;
+}
+
+int factory_test_cmd_as532_test()
+{
+	unsigned char spiBuffer[100] = {0};
+	int spiBufferLen =0;
+	int ret = 0;
+    unsigned char databuf[BUFFER_LEN] = {0};
+	init_key(global_pukey);
+	ret = testSpi(global_pukey, spiBuffer, &spiBufferLen );
+	if (ret != 0) 
+	{
+		PRINT(" send version data error\n");
+		ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_AS532_1,FACTORY_TEST_CMD_AS532_TEST,FAIL,/*(char)ret*/1,spiBuffer,0);
+		generate_stm32_down_msg(databuf,ret,TYPE_USB_PASSAGE);
+	}
+	else
+	{ 
+		PRINT("send version success\n");  
+		ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_AS532_1,FACTORY_TEST_CMD_AS532_TEST,SUCCESS,0,spiBuffer,spiBufferLen);
+		generate_stm32_down_msg(databuf,ret,TYPE_USB_PASSAGE);
+	}
 }
 
 int factory_test_cmd_stm32_ver()
@@ -1004,13 +1250,60 @@ int factory_test_cmd_9344_led2()
 	return 0;
 }
 
+int factory_test_cmd_stm32_r54()
+{
+	char r54_ver_test[] = {0xa5,0x5a,0x71,0x00,0x71};
+	generate_stm32_down_msg(r54_ver_test,5,TYPE_SPI_PASSAGE);
+	factory_test_r54 = 1;
+	return 0;
+}
+
+int factory_test_cmd_all_test()
+{
+	return 0;
+}
+
+void factory_test_cmd_9344_r54_call_func(void *argv)
+{
+	int ret = 0;
+    unsigned char databuf[BUFFER_LEN] = {0};
+	generate_stm32_down_msg(switch_cacm,6,TYPE_SPI_PASSAGE);
+	usleep(500*1000);
+	generate_stm32_down_msg(offhook,5,TYPE_SPI_PASSAGE);
+	sleep(1);
+	generate_stm32_down_msg(dialup,17,TYPE_SPI_PASSAGE);
+	sleep(3);
+	generate_stm32_down_msg(onhook,5,TYPE_SPI_PASSAGE);
+	sleep(1);
+	generate_stm32_down_msg(switch_32178,6,TYPE_SPI_PASSAGE);
+	
+	ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_9344_1,FACTORY_TEST_CMD_9344_R54_CALL,SUCCESS,0,NULL,0);
+	generate_stm32_down_msg(databuf,ret,TYPE_USB_PASSAGE);
+}
+
+int factory_test_cmd_9344_r54_call()
+{
+	pthread_t r54_pthread;
+	pthread_create(&r54_pthread,NULL,(void*)factory_test_cmd_9344_r54_call_func,NULL);
+
+	return 0;
+}
+
+int factory_test_cmd_9344_r54_called()
+{
+	factory_test_r54_called = 1;
+	generate_stm32_down_msg(switch_cacm,6,TYPE_SPI_PASSAGE);
+	
+	return 0;
+}
+
 int factory_test_down_control(char cmd)
 {
 	switch(cmd)
 	{
 		case FACTORY_TEST_CMD_CONTROL_START:
 			PRINT("FACTORY_TEST_CMD_CONTROL_START\n");
-			//start_test();
+			start_test();
 			break;
 		case FACTORY_TEST_CMD_CONTROL_STOP:
 			PRINT("FACTORY_TEST_CMD_CONTROL_STOP\n");
@@ -1034,6 +1327,7 @@ int factory_test_down_stm32(char cmd)
 			PRINT("FACTORY_TEST_CMD_STM32_PIC\n");
 			break;
 		case FACTORY_TEST_CMD_STM32_R54:
+			factory_test_cmd_stm32_r54();
 			PRINT("FACTORY_TEST_CMD_STM32_R54\n");
 			break;
 		default:
@@ -1043,8 +1337,6 @@ int factory_test_down_stm32(char cmd)
 
 int factory_test_down_as532(char cmd)
 {
-	//char sendbuf[2]={0,0};
-	int index = 0;
 	switch(cmd)
 	{
 		case FACTORY_TEST_CMD_AS532_VER:
@@ -1053,6 +1345,20 @@ int factory_test_down_as532(char cmd)
 			break;
 		case FACTORY_TEST_CMD_AS532_TEST:
 			PRINT("FACTORY_TEST_CMD_AS532_TEST\n");
+			factory_test_cmd_as532_test();
+			break;
+		default:
+			break;
+	}
+}
+
+int factory_test_down_all(char cmd)
+{
+	switch(cmd)
+	{
+		case FACTORY_TEST_CMD_ALL_TEST:
+			PRINT("FACTORY_TEST_CMD_ALL_TEST\n");
+			factory_test_cmd_all_test();
 			break;
 		default:
 			break;
@@ -1071,6 +1377,7 @@ int factory_test_down_9344(char cmd)
 			break;
 		case FACTORY_TEST_CMD_9344_LED1:
 			PRINT("FACTORY_TEST_CMD_9344_LED1\n");
+			//do_cmd_stm32_update();
 			//factory_test_cmd_9344_led1();
 			break;
 		case FACTORY_TEST_CMD_9344_LED2:
@@ -1085,6 +1392,14 @@ int factory_test_down_9344(char cmd)
 			sendbuf[index++]=cmd;
 			write_passage((char)TYPE_PHONE_PASSAGE,sendbuf,index);
 			break;
+		case FACTORY_TEST_CMD_9344_R54_CALL:
+			PRINT("FACTORY_TEST_CMD_9344_R54_CALL\n");
+			factory_test_cmd_9344_r54_call();
+			break;
+		case FACTORY_TEST_CMD_9344_R54_CALLED:
+			PRINT("FACTORY_TEST_CMD_9344_R54_CALLED\n");
+			factory_test_cmd_9344_r54_called();
+			break;	
 		default:
 			break;
 	}
@@ -1121,6 +1436,9 @@ int factory_test(unsigned char *packet,int bytes)
 		case FACTORY_TEST_CMD_DOWN_9344_1:
 			factory_test_down_9344(packet[FACTORY_TEST_CMD_2_POS]);
 			break;
+		case FACTORY_TEST_CMD_DOWN_ALL_1:
+			factory_test_down_all(packet[FACTORY_TEST_CMD_2_POS]);
+			break;
 		default:
 			PRINT("cmd undef\n");
 			break;
@@ -1128,19 +1446,69 @@ int factory_test(unsigned char *packet,int bytes)
 	return 0;
 }
 
+int factory_test_r54_ver(unsigned char *packet,int bytes)
+{
+	if(BUFFER_LEN - r54_test_ver_buf_wp < bytes)
+		bytes = BUFFER_LEN - r54_test_ver_buf_wp;
+	memcpy(r54_test_ver_buf+r54_test_ver_buf_wp,packet,bytes);
+	r54_test_ver_buf_wp += bytes;
+	return 0;
+}
+
+int factory_test_r54_called_func(unsigned char *packet,int bytes)
+{
+	//A5 5A 05 12 01 01 02 04 38 31 36 34 01 08 30 33 30
+	memcpy(r54_test_called_buf+r54_test_called_buf_wp,packet,bytes);
+	r54_test_called_buf_wp += bytes;
+	int i,ret = 0;
+	char databuf[BUFFER_LEN]= {0};
+	if(bytes < 5)
+	{
+		return 1;
+	}
+	for(i=0;i<r54_test_called_buf_wp-1;i++)
+	{
+		if(r54_test_called_buf[i] == (unsigned char)0xA5 && r54_test_called_buf[i+1] == (unsigned char)0x5A)
+		{
+			if(r54_test_called_buf[i+2] == (unsigned char)0x04)
+			{
+				ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_9344_1,FACTORY_TEST_CMD_9344_R54_CALLED,SUCCESS,0,&packet[i+4],packet[i+3]);
+				generate_stm32_down_msg(databuf,ret,TYPE_USB_PASSAGE);
+				factory_test_r54_called = 0;
+				r54_test_called_buf_wp = 0;
+				memset(r54_test_called_buf,0,BUFFER_LEN);
+				generate_stm32_down_msg(switch_32178,6,TYPE_SPI_PASSAGE);
+				return 0;
+			}
+			if(r54_test_called_buf[i+2] == (unsigned char)0x05)
+			{
+				ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_9344_1,FACTORY_TEST_CMD_9344_R54_CALLED,SUCCESS,0,&r54_test_called_buf[i+8],r54_test_called_buf[i+7]);
+				generate_stm32_down_msg(databuf,ret,TYPE_USB_PASSAGE);
+				factory_test_r54_called = 0;
+				r54_test_called_buf_wp = 0;
+				memset(r54_test_called_buf,0,BUFFER_LEN);
+				generate_stm32_down_msg(switch_32178,6,TYPE_SPI_PASSAGE);
+				return 0;
+			}
+		}
+	}
+	return 1;
+}
+
 int UartPacketDis(unsigned char *ppacket,int bytes)
 {
 	int rtn = 0;
 	//EA FF 5A A5 00 00 10 00 00 DATA XX
 	//EA FF 5A A5 00 00 10
-	PRINT("Command Packet data::\r\n");
+	PRINT("Command Packet data:: ");
 	ComFunPrintfBuffer(ppacket,bytes);
+	//PRINT("bytes = %d\n",bytes);
 	if(ppacket[0]!=(unsigned char)STM32_UP_HEAD_BYTE1_1 || ppacket[1]!=(unsigned char)STM32_UP_HEAD_BYTE2_1 || ppacket[2]!=(unsigned char)STM32_UP_HEAD_BYTE3_1 || ppacket[3]!=(unsigned char)STM32_UP_HEAD_BYTE4_1) 
 	{
 		PRINT("wrong data\n");
 		return -1;
 	}
-	int uart,len_tmp=0;
+	int len_tmp=0;
 	int xor=0;
 	unsigned char *bufp = ppacket;
 	len_tmp = ((ppacket[4]) << 8);
@@ -1173,7 +1541,18 @@ int UartPacketDis(unsigned char *ppacket,int bytes)
 			break;
 		case TYPE_SPI_PASSAGE:
 			PRINT("SpiPassage\r\n");
-			rtn = UartPassageDo(TYPE_SPI_PASSAGE,ppacket,bytes);
+			if(factory_test_r54 == 1)
+			{
+				rtn = factory_test_r54_ver(ppacket+7,len_tmp-1);
+			}
+			if(factory_test_r54_called == 1)
+			{
+				rtn = factory_test_r54_called_func(ppacket+7,len_tmp-1);
+			}			
+			else
+			{
+				rtn = UartPassageDo(TYPE_SPI_PASSAGE,ppacket,bytes);
+			}
 			break;
 		//case TYPE_PHONE_PASSAGE:
 			//PRINT("UartTest\r\n");

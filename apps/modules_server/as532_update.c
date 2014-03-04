@@ -446,12 +446,12 @@ int BootAsSendIspStart(void)
 	return 1;	
 }
 
-int LoadDatFile(void)
+int LoadDatFile(char *dat)
 {
 	FILE *pfile;
 	int ret,read_bytes;
 
-	pfile = fopen(DATNAME,"rb");
+	pfile = fopen(dat,"rb");
 	if(pfile == 0)
 	{
 		printf("%s->%d->%s::Load dat file failed!\r\n",__FILE__,__LINE__,__FUNCTION__);

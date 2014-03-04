@@ -484,7 +484,7 @@ static int skel_post_reset(struct usb_interface *intf)
 }
 
 static struct usb_driver skel_driver = {
-	.name =		"ModuleUsb",
+	.name =		"As532h_driver",
 	.probe =	skel_probe,
 	.disconnect =	skel_disconnect,
 	.suspend =	skel_suspend,

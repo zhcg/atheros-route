@@ -8,8 +8,10 @@
 #define UARTPASSAGE	"/dev/uartpassage"
 #define SPIPASSAGE	"/dev/spipassage"
 #define SGNAME		"/dev/sg0"
-#define USBNAME		"/dev/MyModule"
-#define DATNAME		"/ElfDate.dat"
+#define USBNAME		"/dev/as532h"
+#define DATNAME		"/root/ElfDate.dat"
+#define DEFAULT_AS532_IMAGE "/root/Default_ElfDate.dat"
+#define STM32_BIN_NAME "/root/stm32_app_packet.bin"
 #define SERVER_PORT	53232
 #define BUFFER_LEN 512
 #define BUFFER_SIZE_1K	1024
@@ -66,11 +68,13 @@
 #define FACTORY_TEST_CMD_DOWN_STM32_1	0X01
 #define FACTORY_TEST_CMD_DOWN_AS532_1	0X02
 #define FACTORY_TEST_CMD_DOWN_9344_1	0X03
+#define FACTORY_TEST_CMD_DOWN_ALL_1		0X04
 //UP
 #define FACTORY_TEST_CMD_UP_CONTROL_1	0X80
 #define FACTORY_TEST_CMD_UP_STM32_1		0X81
 #define FACTORY_TEST_CMD_UP_AS532_1		0X82
 #define FACTORY_TEST_CMD_UP_9344_1		0X83
+#define FACTORY_TEST_CMD_UP_ALL_1		0X84
 
 //start、stop
 #define FACTORY_TEST_CMD_CONTROL_START	0X0A
@@ -88,6 +92,11 @@
 #define FACTORY_TEST_CMD_9344_LED2		0X02
 #define FACTORY_TEST_CMD_9344_CALL		0X03
 #define FACTORY_TEST_CMD_9344_CALLED	0X04
+#define FACTORY_TEST_CMD_9344_R54_CALL	0X06
+#define FACTORY_TEST_CMD_9344_R54_CALLED	0X07
+
+//all
+#define FACTORY_TEST_CMD_ALL_TEST		0X03
 
 
 enum cmd_type {
@@ -113,15 +122,20 @@ typedef struct __passage
 	char passage_name[20];
 }Passage;
 
+int parse_r54_ver(unsigned char *buf,int *bytes);
+void check_r54_test_called_func();
 void check_stm32_ver_req_func();
 void check_stm32_ver_des_req_func();
+void check_r54_test_ver_func();
 void timer_do(int signo);
+int init_as532();
+int init_stm32();
+void boot_close_usb(int *fd);
 void init_env(void);
 int ComFunChangeHexBufferToAsc(unsigned char *hexbuf,int hexlen,char *ascstr);
-void ComFunPrintfBuffer(unsigned char *pbuffer,unsigned char len);
+void ComFunPrintfBuffer(unsigned char *pbuffer,int len);
 void loop_recv(void *argv);
 void uart_loop_recv(void *argv);
-int generate_stm32_down_msg(char *databuf,int databuf_len,int passage);
 int do_cmd_532_show(char *sendbuf);
 int do_cmd_532_ver(char *outbuf,int *len);
 int do_cmd_532_ver_des(char *outbuf,int *len);
@@ -141,9 +155,23 @@ int UartPacketDis(unsigned char *ppacket,int bytes);
 unsigned char *PacketSearchHead(void);
 int UartPacketRcv(unsigned char *des_packet_buffer,int *packet_size);
 void passage_thread_func(void *argv);
+int factory_test(unsigned char *packet,int bytes);
+int factory_test_cmd_9344_r54_call();
+int factory_test_cmd_9344_led1();
+int factory_test_cmd_9344_led2();
+int factory_test_cmd_9344_ver();
 int factory_test_cmd_as532_ver();
 int factory_test_cmd_stm32_ver();
+int factory_test_down_9344(char cmd);
+int factory_test_down_all(char cmd);
+int factory_test_down_as532(char cmd);
+int factory_test_down_control(char cmd);
+int factory_test_down_stm32(char cmd);
+int factory_test_cmd_stm32_r54();
+int factory_test_r54_ver(unsigned char *packet,int bytes);
+int factory_test_r54_called_func(unsigned char *packet,int bytes);
 int generate_test_up_msg(char *sendbuf,char cmd1,char cmd2,char result_type,char err_code,char *result,int result_len);
+int generate_stm32_down_msg(char *databuf,int databuf_len,int passage);
 
 extern int usb_fd;
 
