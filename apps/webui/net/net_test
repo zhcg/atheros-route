@@ -7,9 +7,9 @@ do
 ping $BAIDU test
 
 if [ $? -eq 1 ]; then
-        cfg -w INTERNET_ON=off
+        echo "0">/usr/www/ping.xml
 else
-        cfg -w INTERNET_ON=on
+        echo "1">/usr/www/ping.xml
 fi
 
 #cfg -c

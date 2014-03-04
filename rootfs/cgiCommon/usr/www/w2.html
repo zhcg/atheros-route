@@ -13,7 +13,7 @@ function GetQueryString(name) {
         var r = window.location.search.substr(1).match(reg);
         if (r!=null) return (r[2]); return null;
 }
-hbd=GetQueryString("w2");
+hbd=GetQueryString("INDEX");
 if(hbd)
 {
 
@@ -161,6 +161,7 @@ function change_step(offset)
 		{
 			waitgifshow();
 			document.wizard_form.AUTOTYPE.disabled=true;
+			window.parent.pppoe_tiaozhuan();
 			button_commit('PPP');
 		}
 		else if (document.wizard_form.WAN_MODE[4].checked == true) 
@@ -185,7 +186,7 @@ function change_step(offset)
 	}
 	else
 	{
-		window.location.href="w2";
+		window.location.href="w2?INDEX=00";
 	}
 	window.parent.iFrameHeight();
 	return true;

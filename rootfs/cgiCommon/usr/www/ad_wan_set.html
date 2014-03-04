@@ -561,6 +561,7 @@ function CheckValue()
 		disableall();
 		enablePPPOE();
 		setwaitgifshow();
+		window.parent.pppoe_tiaozhuan2();
 		button_commit('PPP');
 	}
 	else if (document.wanCfg.WAN_MODE.selectedIndex == 3) //L2TP
@@ -1099,7 +1100,7 @@ function help()
     <input type="submit" name="P2TP" id="P2TP" style="display:none" value="P2TP">
 	<input type="text" style="display:none" name="INDEX" id="INDEX" value="~~INDEX~">	
 	<input type="text" style="display:none" name="AUTOTYPE" id="AUTOTYPE" size="20" maxlength="32" value="~~AUTOTYPE~">	
-	<input type="button" name="AUTOGET" id="AUTOGET" style="display:none" value="AUTOGET" onClick="window.location.href='ad_wan_set?INDEX=12'">
+	<input type="button" name="AUTOGET" id="AUTOGET" style="display:none" value="AUTOGET" onClick="window.location.href='ad_wan_set?INDEX=12&ad_wan_set=yes'">
 	<input type="text" style="display:none" name="AP_locatIP" id="AP_locatIP" size="20" maxlength="32" value="~~AP_IPADDR~">		
   </td>
 </tr>

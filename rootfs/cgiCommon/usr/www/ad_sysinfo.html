@@ -59,12 +59,59 @@ function initTranslation()
 	trans_inner("t4_wds2","sysinfo t4_wds");
 
 }
+	var xmlreq;
+	var desIPreboot;	
+
+	function createxmlreq()
+	{
+		if(window.ActiveXObject)
+		{
+			xmlreq=new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		else if(window.XMLHttpRequest)
+		{
+			xmlreq=new XMLHttpRequest();
+		}
+	}
+
+	function rebootRequest()
+	{
+		//setTimeout(function(){rebootRequest();},1000);
+		createxmlreq();
+		xmlreq.onreadystatechange=handleState;
+		desIPreboot = document.getElementById("IPA").value;
+		xmlreq.open("GET","http://"+desIPreboot+"/ping.xml?now=" + new Date().getTime(),true);
+		xmlreq.send(null);
+	}
+	function handleState()
+	{
+		if(xmlreq.readyState==4)
+		{
+			if(xmlreq.status==200)
+			{
+				if ((xmlreq.responseText=="1")||(xmlreq.responseText==1))
+					document.getElementById("ss3").innerHTML=_("sysinfo ok");
+				else
+					document.getElementById("ss3").innerHTML=_("sysinfo fail");
+			}
+			else
+			{
+				//alert("3"+xmlreq.status);
+			}
+		}
+		else
+		{
+			//alert("2"+xmlreq.readyState);
+		}
+	}
+
 function init()
 {
 	Butterlate.setTextDomain("main");
 	initTranslation();
 
 	valueinit();
+	rebootRequest();
 }
 	//上网状态	INTERNET_ON	on提供为可上网，off提示为不可以上网	
 	//无线状态	WIFION_OFF	on提示为开启off提示为未开启	
@@ -85,10 +132,7 @@ function valueinit()
 	var wtype;
 	wtype = document.getElementById("s6").value;
 
-	if(document.getElementById("s3").value == "on")
-		document.getElementById("ss3").innerHTML=_("sysinfo ok");
-	else
-		document.getElementById("ss3").innerHTML=_("sysinfo fail");
+
 	//IP/MASK
 	{
 		if(wtype=="static")
@@ -339,6 +383,6 @@ function valueinit()
 </td></tr>
 </table>
 </div>
-
+	<input type="text" style="display:none" name="IPA" id="IPA" size="20" maxlength="32" value="~~AP_IPADDR~">
 </body>
 </html>

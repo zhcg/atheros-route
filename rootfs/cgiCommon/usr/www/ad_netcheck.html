@@ -11,7 +11,7 @@ function GetQueryString(name) {
         var r = window.location.search.substr(1).match(reg);
         if (r!=null) return (r[2]); return null;
 }
-hbd=GetQueryString("ad_netcheck");
+hbd=GetQueryString("INDEX");
 if(hbd)
 {
 
@@ -98,10 +98,16 @@ function resultshow()
 <h1 id="title">网络诊断</h1>
 
 <h2 id="des">检测网络连接类型和进行网络PING操作</h2> 
-<span id="checkresultshow" style="display:none;font-family:arial;color:red;font-size:20px;" ></span>
+
 <table id="checkresult"  width="100%" cellpadding="0" cellspacing="0"  style="display:none" class="handaer_text">
 <tr>
-	<td class="title" colspan="2" id="Result">诊断结果</td></tr>
+	<td class="title" colspan="2" id="Result">诊断结果</td>
+</tr>
+
+<tr>
+	<td colspan="2"><span id="checkresultshow" style="display:none;font-family:arial;color:red;font-size:20px;" ></span></td>
+</tr>
+
 <tr>
 	<td class="head" id="t1_wantype">自动检测WAN口类型</td>
 	<td><input size="32" maxlength="64" name="type1" id="type1" value="~~AUTOTYPE~" type="text" readonly></td>
