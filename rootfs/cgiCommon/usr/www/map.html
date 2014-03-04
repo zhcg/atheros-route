@@ -71,17 +71,7 @@ function initTranslation()
 	{
 		n.src = "/images/11111111_r2_c3111.png";
 	}
-	var wv = document.getElementById("waistatus").value;
 	
-	var w = document.getElementById("n11111111_r6_c2");
-	if (wv=="on")
-	{
-		w.src = "/images/11111111_r6_c2.png";//wai
-	}
-	else
-	{
-		w.src = "/images/11111111_r8_c2111.png";
-	}
 }
 function initValue()
 {
@@ -143,9 +133,9 @@ function initValue()
   </tr>
   <tr>
    <td><img name="n11111111_r6_c1" src="/images/11111111_r6_c1.png" width="68" height="65" id="n11111111_r6_c1" alt="" /></td>
-   <td><a href="w2?w2=yes" target="ifm"><img border="0" name="n11111111_r6_c2" src="/images/11111111_r6_c2.png" width="65" height="65" id="n11111111_r6_c2" alt="" /></a></td>
+   <td><a href="w2?INDEX=00" target="ifm"><img border="0" name="n11111111_r6_c2"  width="65" height="65" id="n11111111_r6_c2" alt="" /></a></td>
    <td colspan="3"><img name="n11111111_r6_c3" src="/images/11111111_r6_c3.png" width="485" height="65" id="n11111111_r6_c3" alt="" /></td>
-   <td><a href="w3?w3=yes" target="ifm"><img border="0" name="n11111111_r6_c6" src="/images/11111111_r6_c6.png" width="65" height="65" id="n11111111_r6_c6" alt="" /></a></td>
+   <td><a href="w3?w3=yes" target="ifm"><img border="0" name="n11111111_r6_c6" width="65" height="65" id="n11111111_r6_c6" alt="" /></a></td>
    <td><img name="n11111111_r6_c7" src="/images/11111111_r6_c7.png" width="100" height="65" id="n11111111_r6_c7" alt="" /></td>
    <td><img src="/images/spacer.gif" width="1" height="65" alt="" /></td>
   </tr>
@@ -164,18 +154,72 @@ function initValue()
   </tr>
 </table>
 </div>
-<div align="center"><input  name="m_normal" class="handaer_input" style="BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BACKGROUND: none transparent scroll repeat 0% 0%; BORDER-BOTTOM-WIDTH: 0px;  BORDER-RIGHT-WIDTH: 0px; margin-top:10px;" type="button" id="m_bset" onClick="window.location.href='w1?w1=yes'"/></div>
+<div align="center"><input  name="m_normal" class="handaer_input" style="BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BACKGROUND: none transparent scroll repeat 0% 0%; BORDER-BOTTOM-WIDTH: 0px;  BORDER-RIGHT-WIDTH: 0px; margin-top:10px;" type="button" id="m_bset" onClick="window.location.href='w1?INDEX=00'"/></div>
 	<input type="text" style="display:none" name="waistatus" id="waistatus" size="20" maxlength="32" value="~~INTERNET_ON~">
 	<input type="text" style="display:none" name="neistatus" id="neistatus" size="20" maxlength="32" value="~~WIFION_OFF~">
 	<input type="text" style="display:none" name="neistatus2" id="neistatus2" size="20" maxlength="32" value="~~WIFION_OFF_3~">
 	<input type="text" style="display:none" name="apssid" id="apssid" size="20" maxlength="32" value="~~AP_SSID~">
 	<input type="text" style="display:none" name="apssid2" id="apssid2" size="20" maxlength="32" value="~~AP_SSID_3~">
+	<input type="text" style="display:none" name="IPA" id="IPA" size="20" maxlength="32" value="~~AP_IPADDR~">
 	<script language="JavaScript">
-	function myrefresh()
+
+	var xmlreq;
+	var timeID;
+	var desIPreboot;	
+	var w;
+	function createxmlreq()
 	{
-		window.location.href="map?map=yes";
+		//alert("1");
+		if(window.ActiveXObject)
+		{
+			xmlreq=new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		else if(window.XMLHttpRequest)
+		{
+			xmlreq=new XMLHttpRequest();
+		}
 	}
-	setTimeout('myrefresh()',7000); //指定1秒刷新一次
+
+	function rebootRequest()
+	{
+		clearTimeout(timeID);
+		timeID = setTimeout(function(){rebootRequest();},1000);
+		createxmlreq();
+		xmlreq.onreadystatechange=handleState;
+		desIPreboot = document.getElementById("IPA").value;
+		//xmlreq.open("GET","ping.xml?now=" + new Date().getTime(),true);
+		xmlreq.open("GET","http://"+desIPreboot+"/ping.xml?now=" + new Date().getTime(),true);
+		xmlreq.send(null);
+	}
+	function handleState()
+	{
+		if(xmlreq.readyState==4)
+		{
+			if(xmlreq.status==200)
+			{
+				//alert(xmlreq.responseText);
+				w = document.getElementById("n11111111_r6_c2");
+				if ((xmlreq.responseText=="1")||(xmlreq.responseText==1))
+				{
+					w.src = "/images/11111111_r6_c2.png";//wai
+					
+				}
+				else
+				{
+					w.src = "/images/11111111_r8_c2111.png";
+				}
+			}
+			else
+			{
+				//alert("3"+xmlreq.status);
+			}
+		}
+		else
+		{
+			//alert("2"+xmlreq.readyState);
+		}
+	}
+	rebootRequest();
 	</script>
 </body>
 </html>
