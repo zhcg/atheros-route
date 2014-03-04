@@ -5835,16 +5835,20 @@ int main(int argc,char **argv)
 		unsigned char* ptmp;
 		unsigned char dhcp_b[20],dhcp_e[20],net_seg[20],net_seg2[20],tmp[20],tmp2[20];
 		unsigned char pChar[128];
+		char valBuff[50];
+		char valBuff2[50];
 		
 		int num,i=0;
 
 		CFG_get_by_name("AP_IPADDR",br0_ip);
 		CFG_get_by_name("AP_NETMASK",br0_sub);
+		Execute_cmd("cfg -e | grep AP_IPADDR= | awk -F '=' '{print $2}'",valBuff);
+		Execute_cmd("cfg -e | grep \"AP_NETMASK=\" | awk -F \"=\" \'{print $2}\'",valBuff2);
 
 		Execute_cmd("ifconfig eth0|grep 'inet addr:'|awk -F ' ' '{print$2}'|awk -F ':' '{print$2}'", eth0_ip);
 		peth0_ip=strtok(eth0_ip,"\n");
   	
-		if(strcmp(peth0_ip,br0_ip))//TODO
+		if(strcmp(peth0_ip, br0_ip) && (!strstr(valBuff, br0_ip) || !strstr(valBuff2, br0_sub)) )//TODO
 		{
 		   sprintf(pChar,"ifconfig br0 %s netmask %s up > /dev/null 2>&1",br0_ip,br0_sub);
 		   system(pChar);
@@ -5899,21 +5903,28 @@ int main(int argc,char **argv)
 		    }
 		 fprintf(errOut,"\ndhcp_b:%s\ndhcp_e:%s\n",dhcp_b,dhcp_e);
 
-		 CFG_set_by_name("DHCP_BIP",dhcp_b);
-		 CFG_set_by_name("DHCP_EIP",dhcp_e);
-		 
-		 CFG_get_by_name("DHCPON_OFF",tmp);
-		    if(strcmp(tmp,"on")==0)
-		  	 {
-		  	 system("killall udhcpd > /dev/null 2>&1");			 
-			 system("/etc/rc.d/rc.udhcpd > /dev/null 2>&1");
-			 system("/usr/sbin/set_addr > /dev/null 2>&1");		 
-			 system("/usr/sbin/udhcpd /etc/udhcpd.conf > /dev/null 2>&1");
-
-		  	}
-        //write to flash
+		CFG_set_by_name("DHCP_BIP",dhcp_b);
+		CFG_set_by_name("DHCP_EIP",dhcp_e);
+		//write to flash
 		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-        writeParameters("/tmp/.apcfg","w+",0);
+		writeParameters("/tmp/.apcfg","w+",0);
+
+		CFG_get_by_name("DHCPON_OFF",tmp);
+		if(strcmp(tmp,"on")==0)
+		{
+			system("killall udhcpd > /dev/null 2>&1");			 
+			system("/etc/rc.d/rc.udhcpd > /dev/null 2>&1");
+			system("/usr/sbin/set_addr > /dev/null 2>&1");		 
+			system("/usr/sbin/udhcpd /etc/udhcpd.conf > /dev/null 2>&1");
+
+		}
+
+		//reboot hostapd
+		Execute_cmd("killall hostapd > /dev/null 2>&1",rspBuff);
+		Execute_cmd("hostapd -B /tmp/secath0 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+		Execute_cmd("hostapd -B /tmp/secath1 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+		Execute_cmd("hostapd -B /tmp/secath2 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+		Execute_cmd("hostapd -B /tmp/secath3 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
 	   }//end eth0_ip != br0_ip
 	   else
 	   {
@@ -5936,8 +5947,7 @@ int main(int argc,char **argv)
 				 exit(1);
 		
        } 
-        
-       gohome =2;
+		gohome =2;
     }
     
     /*************************************

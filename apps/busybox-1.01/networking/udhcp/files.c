@@ -26,6 +26,9 @@
  */
 #define READ_CONFIG_BUF_SIZE 80
 
+#define ALL_ACCESS  "/var/run/.allAccess"
+#define UDHCPD_FILE  "/var/run/udhcpd.leases"
+
 /* on these functions, make sure you datatype matches */
 static int read_ip(const char *line, void *arg)
 {
@@ -332,7 +335,9 @@ void write_leases(void)
 	time_t curr = time(0);
 	unsigned long tmp_time;
 	int ret;
-	const char *Write_flag = "/var/run/.staWriteFlag";
+	int open;
+	struct dhcpOfferedAddr access_lease;
+	struct dhcpOfferedAddr access_lease2;
 
 	if (!(fp = fopen(server_config.lease_file, "w"))) {
 		LOG(LOG_ERR, "Unable to open %s for writing", server_config.lease_file);
@@ -351,13 +356,21 @@ void write_leases(void)
 				else leases[i].expires -= curr;
 			} /* else stick with the time we got */
 			leases[i].expires = htonl(leases[i].expires);
-			
-			//LOG(LOG_INFO, "[write_leases]leases[i].hostname is %s", leases[i].hostname);
-			/*if the ip is not using, do not write to file*/
-			//ret = deal_offline_sta(leases[i].hostname, leases[i].chaddr, leases[i].yiaddr);
-			//LOG(LOG_INFO, "[write_leases]the return is %d", ret);
-			//if(ret)
-			//	continue;
+
+			#if 1
+			if((fpp = fopen(ALL_ACCESS, "r")) != NULL)     /*  /var/run/.allAccess  */
+			{
+		        while(fread(&access_lease, sizeof access_lease, 1, fpp) == 1)
+		        {
+					if(!strcmp(access_lease.chaddr, leases[i].chaddr))
+					{
+						if(strlen(leases[i].hostname) == 0)
+							strcpy(leases[i].hostname, access_lease.hostname);
+					}
+		        }
+				fclose(fpp);
+			}
+			#endif
 			
 			fwrite(&leases[i], sizeof(struct dhcpOfferedAddr), 1, fp);
 
@@ -372,12 +385,53 @@ void write_leases(void)
 		system(buf);
 	}
 
-	/*set a flag to make web read udhcpd.relases
-	if ( fpp = fopen(Write_flag, "w")) 
+	/*write all dhcp client to /var/run/.allAccess*/
+	if((fp = fopen(ALL_ACCESS, "r")) == NULL)     /*  /var/run/.allAccess  */
 	{
-		fwrite("writeok", sizeof("writeok"), 1, fpp);
+		open = 1;
+		fp = fopen(ALL_ACCESS, "at");
+		fpp = fopen(UDHCPD_FILE, "r");    /*  /var/run/udhcpd.leases   */
+        
+        while(fread(&access_lease, sizeof access_lease, 1, fpp) == 1)
+        {
+			fwrite(&access_lease, sizeof(access_lease), 1, fp);
+        }
 		fclose(fpp);
-	}*/
+		fclose(fp);
+	}
+	fpp = fopen(UDHCPD_FILE, "r");    /*  /var/run/udhcpd.leases   */
+    while(fread(&access_lease, sizeof access_lease, 1, fpp) == 1)
+    {
+    	int ret = 0;
+
+		if(open == 1)
+		{
+			fp = fopen(ALL_ACCESS, "r");			/*  /etc/.OldStaList  */
+		}
+		while(fread(&access_lease2, sizeof access_lease2, 1, fp) == 1)
+		{
+			if(strcmp(access_lease.chaddr, access_lease2.chaddr) == 0)
+			{
+				ret = 1;
+				break;
+			}
+		}
+		LOG(LOG_INFO, "ret is %d", ret);
+		if(ret == 0)
+		{
+			fclose(fp);
+			fp = fopen(ALL_ACCESS, "at");
+			memset(&access_lease2, 0, sizeof(access_lease2));
+        	strcpy(access_lease2.chaddr, access_lease.chaddr);
+			strcpy(access_lease2.hostname, access_lease.hostname);
+			access_lease2.yiaddr = access_lease.yiaddr;
+			access_lease2.expires = access_lease.expires;
+			fwrite(&access_lease2, sizeof(access_lease2), 1, fp);
+		}
+		fclose(fp);
+		open =  1;
+    }
+	fclose(fpp);
 	LOG(LOG_INFO, "write OK");
 }
 
