@@ -46,13 +46,13 @@ then
 else
 	mknod /dev/phonepassage c 200 3
 fi
-if [ -c /dev/MyModule ]
+if [ -c /dev/as532h ]
 then
-	echo "/dev/MyModule node exist"
+	echo "/dev/as532h node exist"
 else
-	mknod /dev/MyModule c 180 192
+	mknod /dev/as532h c 180 192
 fi
-if [ -c /lib/libsqlite3.so.0 ]
+if [ -s /lib/libsqlite3.so.0 ]
 then
 	echo "sqlite found"
 else
@@ -65,7 +65,7 @@ insmod /lib/modules/2.6.31/passage/spi/spi_passage.ko
 insmod /lib/modules/2.6.31/passage/usb/usb_passage.ko
 insmod /lib/modules/2.6.31/passage/uart/uart_passage.ko
 insmod /lib/modules/2.6.31/passage/phone/phone_passage.ko
-insmod /lib/modules/2.6.31/USB_module/module.ko
+insmod /lib/modules/2.6.31/as532h/as532h.ko
 
 sleep 7
 

@@ -20,6 +20,7 @@
 #include "common.h"
 #include "stm32_update.h"
 #include "file.h"
+#include "modules_server.h"
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 typedef enum __REQ_RSP_CODE
@@ -35,7 +36,6 @@ typedef enum __REQ_RSP_CODE
 	REQ_RSP_WRITE_FLASH_ERR = 0X13,
 }REQ_RSP_CODE;
 
-char *filefs = "/root/stm32_app_packet.bin";
 
 int fsfd;
 unsigned int update_bin_file_size;
@@ -43,7 +43,8 @@ unsigned char stm_format_version[4] = {0x00,0x00,0x00,0x00};
 unsigned char bin_format_version[4] = {0x00,0x00,0x00,0x00};
 unsigned char bin_file_head[8] = {0x41,0x70,0x70,0x42,0x69,0x6E,0x20,0x20};
 unsigned char packet_req_head[4] = {0xFE,0xEF,0xA5,0x5A};
-unsigned char packet_rsp_head[4] = {0xFF,0xEA,0x5A,0xA5};
+unsigned char packet_rsp_head_1[4] = {0xEA,0xFF,0x5A,0xA5};
+unsigned char packet_rsp_head_2[4] = {0xFF,0xEA,0x5A,0xA5};
 
 unsigned char update_req_buffer[UPDATE_REQ_BUF_SIZE];
 unsigned char update_rsp_buffer[UPDATE_RSP_BUF_SIZE];
@@ -62,7 +63,7 @@ int stm32_update()
     int read_or_write;
 	int update;
 
-//	update_bin_file_size = get_file_size(filefs);
+//	update_bin_file_size = get_file_size(STM32_BIN_NAME);
 //	PRINT("get_file_size = %d \n", update_bin_file_size);
 
 //	while(1){	
@@ -73,7 +74,7 @@ int stm32_update()
         //return -1;
     //}
 
-	if (BinFileHeadCheck(filefs) == 0){
+	if (BinFileHeadCheck(STM32_BIN_NAME) == 0){
 		update = 0;
 		if((ret = CmdGetVersion()) != 0){
 			update = 1;
@@ -97,7 +98,7 @@ int stm32_update()
 //			usleep(500 * 1000);
 			if((ret = CmdStart()) != 0)
 				return -4;
-			if((ret = Update(filefs)) != 0)
+			if((ret = Update(STM32_BIN_NAME)) != 0)
 				return -5;
 			if((ret = CmdEnd()) != 0)
 				return -6;
@@ -290,9 +291,9 @@ int read_data(int fd, void *buf, int len)
     	ret = read(fd, (char*)(buf + count), len);
     	if (ret < 1) {
 			fprintf(stderr, "Read error %s errno = %d\n", strerror(errno), errno);
-        	break;
+        	continue;
 		}
-
+		
 		count += ret;
 		len = len - ret;
 	}
@@ -512,8 +513,13 @@ static int PacketHeadSearch(unsigned char *pbuf,int offset,int valid_bytes)
 	j = valid_bytes - RSP_CMD_MIN_BYTES;
 	for(i = offset;i <= j;i++)
 	{		
-		if((ppcom[i] == packet_rsp_head[0]) && (ppcom[i + 1] == packet_rsp_head[1]) && 
-			(ppcom[i + 2] == packet_rsp_head[2]) && (ppcom[i + 3] == packet_rsp_head[3]))
+		if((ppcom[i] == packet_rsp_head_1[0]) && (ppcom[i + 1] == packet_rsp_head_1[1]) && 
+			(ppcom[i + 2] == packet_rsp_head_1[2]) && (ppcom[i + 3] == packet_rsp_head_1[3]))
+		{
+			return i;	
+		}
+		if((ppcom[i] == packet_rsp_head_2[0]) && (ppcom[i + 1] == packet_rsp_head_2[1]) && 
+			(ppcom[i + 2] == packet_rsp_head_2[2]) && (ppcom[i + 3] == packet_rsp_head_2[3]))
 		{
 			return i;	
 		}
@@ -561,14 +567,17 @@ int UpdateRspRcv(unsigned char *prcv_buffer,int buf_size)
 		}
 //		PRINT("get respond .... \n");
 
-//		usleep(50 * 1000);
+		usleep(50 * 1000);
 //		ret = read_data(global_uart_fd, prcv_buffer, (buf_size - rcv_index));
 		ret = read(global_uart_fd, (prcv_buffer + rcv_index), (buf_size - rcv_index));
-
+		//PRINT("ret = %d\n",ret);
 //		for(i=0; i<ret; i++)
 //			   PRINT("read_data ret = %x \n", prcv_buffer[i]);
-
-		rcv_index += ret;
+		if(ret > 0)
+		{
+			//ComFunPrintfBuffer(prcv_buffer + rcv_index,ret);
+			rcv_index += ret;
+		}
 
 		if(rcv_index > 0)
 		{
@@ -615,22 +624,22 @@ int OrgReBootPacket(unsigned char *psend_buf)
 	psend_buf[index++] = 0x5A;
 //第一级数据长度，高位在前		
 	psend_buf[index++] = 0x00;
-	psend_buf[index++] = 0x09;
+	psend_buf[index++] = 0x02;
 //数据通道为STM32自身
 	psend_buf[index++] = 0x10;
 //第二级包头
-	psend_buf[index++] = 0xFE;
-	psend_buf[index++] = 0xEF;
-	psend_buf[index++] = 0xA5;
-	psend_buf[index++] = 0x5A;
+	//psend_buf[index++] = 0xFE;
+	//psend_buf[index++] = 0xEF;
+	//psend_buf[index++] = 0xA5;
+	//psend_buf[index++] = 0x5A;
 //第二级数据长度，高位在前		
-	psend_buf[index++] = 0x00;	
-	psend_buf[index++] = 0x01;	
+	//psend_buf[index++] = 0x00;	
+	//psend_buf[index++] = 0x01;	
 //第二级命令
 	psend_buf[index++] = UPDATE_REBOOT_CMD;
 //第二级校验字节	
-	check_byte = PacketXorGenerate((psend_buf+7),(index-7));	
-	psend_buf[index++] = check_byte;
+	//check_byte = PacketXorGenerate((psend_buf+7),(index-7));	
+	//psend_buf[index++] = check_byte;
 //第一级校验字节
 	check_byte = PacketXorGenerate(psend_buf,index);	
 	psend_buf[index++] = check_byte;
@@ -666,13 +675,13 @@ int CmdReBoot(void)
 	if(ret >= RSP_CMD_MIN_BYTES)
 	{
 		//判断响应
-		if((update_rsp_buffer[6] != UPDATE_REBOOT_CMD))
+		if((update_rsp_buffer[6] != (char)0X10) || (update_rsp_buffer[7] != UPDATE_REBOOT_CMD))
 		{
 			PRINT("%s command respond error \n", __FUNCTION__);
 			return -1;				
 		}	
 		{
-			switch(update_rsp_buffer[7])
+			switch(update_rsp_buffer[8])
 			{
 				case REQ_RSP_OK:
 					PRINT("%s command execute OK! \n", __FUNCTION__);
@@ -706,34 +715,6 @@ int OrgGetVerPacket(unsigned char *psend_buf)
 {
 	int index = 0;
 	unsigned char check_byte;
-#if 0
-//第一级包头
-	psend_buf[index++] = 0xEF;
-	psend_buf[index++] = 0xFE;
-	psend_buf[index++] = 0xA5;
-	psend_buf[index++] = 0x5A;
-//第一级数据长度，高位在前		
-	psend_buf[index++] = 0x00;
-	psend_buf[index++] = 0x09;
-//数据通道为STM32自身
-	psend_buf[index++] = 0x10;
-//第二级包头
-	psend_buf[index++] = 0xFE;
-	psend_buf[index++] = 0xEF;
-	psend_buf[index++] = 0xA5;
-	psend_buf[index++] = 0x5A;
-//第二级数据长度，高位在前		
-	psend_buf[index++] = 0x00;	
-	psend_buf[index++] = 0x01;	
-//第二级命令
-	psend_buf[index++] = UPDATE_GETVER_CMD;
-//第二级校验字节	
-	check_byte = PacketXorGenerate((psend_buf+7),(index-7));	
-	psend_buf[index++] = check_byte;
-//第一级校验字节
-	check_byte = PacketXorGenerate(psend_buf,index);	
-	psend_buf[index++] = check_byte;	
-#endif
 
 //第一级包头
 	psend_buf[index++] = 0xEF;
@@ -742,22 +723,11 @@ int OrgGetVerPacket(unsigned char *psend_buf)
 	psend_buf[index++] = 0x5A;
 //第一级数据长度，高位在前		
 	psend_buf[index++] = 0x00;
-	psend_buf[index++] = 0x0B;
+	psend_buf[index++] = 0x02;
 //数据通道为STM32自身
-	psend_buf[index++] = 0x20;
-//第二级包头
-	psend_buf[index++] = 0x00;
-	psend_buf[index++] = 0x07;
-	psend_buf[index++] = 0xA5;
-	psend_buf[index++] = 0x5A;
-//第二级数据长度，高位在前		
-	psend_buf[index++] = 0x00;	
-	psend_buf[index++] = 0x03;	
-//第二级命令
 	psend_buf[index++] = 0x10;
-	psend_buf[index++] = 0x00;
-	psend_buf[index++] = 0x10;
-//第二级校验字节	
+
+	psend_buf[index++] = 0x80;
 
 //第一级校验字节
 	check_byte = PacketXorGenerate(psend_buf,index);	
@@ -792,17 +762,17 @@ int CmdGetVersion(void)
 	if(ret >= RSP_CMD_MIN_BYTES)
 	{
 		//判断响应
-		if((update_rsp_buffer[6] != UPDATE_GETVER_CMD))
+		if((update_rsp_buffer[6] != (char)0X10) || (update_rsp_buffer[7] != UPDATE_GETVER_CMD))
 		{
 			PRINT("%s command respond error \n", __FUNCTION__);
 			return -1;				
 		}	
 		{
-			switch(update_rsp_buffer[7])
+			switch(update_rsp_buffer[8])
 			{
 				case REQ_RSP_OK:
 					PRINT("%s command execute OK! \n", __FUNCTION__);					
-					memcpy((void *)(stm_format_version),(void *)(update_rsp_buffer + 8),sizeof(stm_format_version));
+					memcpy((void *)(stm_format_version),(void *)(update_rsp_buffer + 9),sizeof(stm_format_version));
 					PRINT("major version: %d\n", stm_format_version[0]);
 					PRINT("minor version: %d\n", stm_format_version[1]);
 					PRINT("sub version: %d\n", (stm_format_version[2] << 8) + stm_format_version[3]);					
@@ -860,6 +830,7 @@ int CmdStart(void)
 	int ret;
 	int packet_bytes;
 	int i;
+	int msg_head_type = 0;
 	PRINT("Enter %s ......\n", __FUNCTION__);
 	packet_bytes = OrgStartPacket(update_req_buffer, UPDATE_APP_START_ADD, update_bin_file_size);
 //	PRINT("update_req_buffer:  \n");
@@ -868,6 +839,7 @@ int CmdStart(void)
 //	PRINT("\n");
 	//发送命令请求
 	ret = write_data(global_uart_fd, update_req_buffer, packet_bytes);
+	//ComFunPrintfBuffer(update_req_buffer,packet_bytes);
 	if (ret != packet_bytes){
 		fprintf(stderr, "%s request error %s\n", __FUNCTION__, strerror(errno));
 	}
@@ -1005,16 +977,16 @@ int Update(const char *path)
 	int timeout = 0;
 	unsigned int update_packet_num,last_packet_len;
 	unsigned char bin_file_buffer[UPDATE_DATA_MAX_BYTES];
-	fd = open(filefs, O_RDONLY, 0);
+	fd = open(STM32_BIN_NAME, O_RDONLY, 0);
 //	PRINT("fsfd = %d \n", fd);
 	if (fd < 0) {
-		fprintf(stderr, "open <%s> error %s\n", filefs, strerror(errno));
+		fprintf(stderr, "open <%s> error %s\n", STM32_BIN_NAME, strerror(errno));
 		return -1;
 	}
 	update_packet_num = (update_bin_file_size / UPDATE_DATA_MAX_BYTES);
 	last_packet_len = (update_bin_file_size % UPDATE_DATA_MAX_BYTES);
 	lseek(fd, BIN_FILE_HEAD_BYTES, SEEK_SET);
-//	PRINT("Update::: \n");
+	//PRINT("update_packet_num::: %d\n",update_packet_num);
 	for(i = 1; i <= update_packet_num; i++){
 		timeout = 0;
 		ret = read_data(fd, bin_file_buffer, UPDATE_DATA_MAX_BYTES);
@@ -1126,10 +1098,10 @@ int BinFileHeadCheck(const char *path)
 	int i,ret,fd;
 	unsigned short crc_check,crc_ret;
 	unsigned char bin_file_buffer[BIN_FILE_HEAD_BYTES];
-	fd = open(filefs, O_RDONLY, 0);
-	PRINT("fsfd = %d \n", fd);
+	fd = open(STM32_BIN_NAME, O_RDONLY, 0);
+	//PRINT("fsfd = %d \n", fd);
 	if (fd < 0) {
-		fprintf(stderr, "open <%s> error %s\n", filefs, strerror(errno));
+		fprintf(stderr, "open <%s> error %s\n", STM32_BIN_NAME, strerror(errno));
 		return -1;
 	}
 	ret = read_data(fd, bin_file_buffer, BIN_FILE_HEAD_BYTES);

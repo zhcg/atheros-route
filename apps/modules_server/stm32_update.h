@@ -1,6 +1,7 @@
 #ifndef __STM32_UPDATE__
 #define __STM32_UPDATE__
 
+
 #define BIN_FILE_HEAD_BYTES	18
 #define UPDATE_DATA_MAX_BYTES	1024
 #define UPDATE_APP_START_ADD	0X08008000
@@ -16,6 +17,9 @@
 #define UPDATE_REBOOT_CMD		(0X82)
 
 #define RSP_CMD_MIN_BYTES 9
+
+#define MSG_HEAD_TYPE_USER	1
+#define MSG_HEAD_TYPE_BOOT	2
 
 int setup_port(int fd, int baud, int databits, int parity, int stopbits);
 int reset_port(int fd);

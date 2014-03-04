@@ -280,6 +280,20 @@ function startRequest()
 	xmlHttp.send(null);
 }
 
+function pppoe_tiaozhuan2()
+{
+	setTimeout(function()
+	{
+		Butterlate.setTextDomain("other");
+		Demo2(_("R_SUCCESS"));
+		
+		setTimeout(function()
+		{
+			DialogHide();
+			window.ifm.location.href="cgi-bin/ad_wan_set?ad_wan_set=yes";
+		},1000);
+	},10000);
+}
 </script>
 </head>
 

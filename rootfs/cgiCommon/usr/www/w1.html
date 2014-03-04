@@ -13,7 +13,7 @@ function GetQueryString(name) {
         var r = window.location.search.substr(1).match(reg);
         if (r!=null) return (r[2]); return null;
 }
-hbd=GetQueryString("w1");
+hbd=GetQueryString("INDEX");
 if(hbd)
 {
 
@@ -194,6 +194,7 @@ function change_step(offset)
 		{
 			waitgifshow();
 			disableunneedSettings();
+			window.parent.pppoe_tiaozhuan();
 			button_commit('PPPW');
 		}
 		else if (document.wizard_form.WAN_MODE[4].checked == true) 
@@ -217,7 +218,7 @@ function change_step(offset)
 	}
 	else
 	{
-		window.location.href="w1";
+		window.location.href="w1?INDEX=00";
 	}
 	window.parent.iFrameHeight();
 	return true;
