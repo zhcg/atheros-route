@@ -21,7 +21,7 @@
 int main(int argc,char **argv)
 {
 
-    int mac_data[20] = {0};
+    unsigned char mac_data[20] = {0};
 	char  mac_buff[20];
 	int i;
 	FILE		*f;
@@ -43,10 +43,7 @@ int main(int argc,char **argv)
 		}
 		
 	//	printf("open file success\n");
-		if(!strncmp(argv[1],"br0",3))
-		{
-			fseek(f, BR0_OFFSET, SEEK_SET);
-		}
+
 
 		if(!strncmp(argv[1],"eth0",4))
 		{

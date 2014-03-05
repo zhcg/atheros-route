@@ -22,7 +22,7 @@
 int main(int argc,char **argv)
 {
 
-    char buff[20] = {0};
+    unsigned char buff[20] = {0};
 	int i;
 	FILE		*f;
 
@@ -41,16 +41,6 @@ int main(int argc,char **argv)
 	        return (-1);
 		}
 	//	printf("open file success\n");
-		if(!strncmp(argv[1],"br0",3))
-		{
-			fseek(f, BR0_OFFSET, SEEK_SET);
-//			fread(buff,17,1,f);
-//
-//			for(i=0;i<17;i++)
-//			{		
-//				printf("%c:",buff[i]);
-//			}
-		}
 		if(!strncmp(argv[1],"eth0",4))
 		{
 			fseek(f, ETH0_OFFSET, SEEK_SET);
