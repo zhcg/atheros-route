@@ -341,6 +341,7 @@ webui:
 	make; \
 	cp -f get_mac $(INSTALL_ROOT)/usr/sbin; \
 	cp -f set_mac $(INSTALL_ROOT)/usr/sbin; \
+	cp -f set_macaddr $(INSTALL_ROOT)/usr/sbin; \
 	cd ..; \
 	cd firmware/; \
 	make; \
