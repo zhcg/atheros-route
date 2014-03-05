@@ -3,11 +3,11 @@
 BACKUP_LIST="/etc/backup/backup_list.conf"
 #mac factory
 #backup
-if [ -f /etc/mac.bin ]; then
-	cfg -a ETH0_DFMAC=`cat /etc/mac.bin`
-	cfg -a ETH0_MAC=`cat /etc/mac.bin`
-	cfg -a BR0_MAC=`ifconfig | grep br0 | awk -F ' ' '{print$5}'`
-fi
+#if [ -f /etc/mac.bin ]; then
+##	cfg -a ETH0_DFMAC=`cat /etc/mac.bin`
+#	cfg -a ETH0_MAC=`cat /etc/mac.bin`
+#	cfg -a BR0_MAC=`ifconfig | grep br0 | awk -F ' ' '{print$5}'`
+#fi
 
 if [ -f "$BACKUP_LIST" ]; then
 

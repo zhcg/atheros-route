@@ -5729,15 +5729,18 @@ int main(int argc,char **argv)
         fprintf(errOut,"\n%s  %d MAC_CLONE \n",__func__,__LINE__);
 		char mymac[128];
 		char str[128];
-		char *mymac2;	
+		char mymac2[128];	
 		char tmp[128];
 		char tmp2[128];
 		char ipaddr[128],*ipaddr2;		
 		char linenum[128];
 		
-		Execute_cmd("cat /etc/mac.bin",mymac);
-		mymac2=strtok(mymac,"\n");
-		
+//		Execute_cmd("cat /etc/mac.bin",mymac);
+//		mymac2=strtok(mymac,"\n");
+		Execute_cmd("/usr/sbin/get_mac eth0",mymac);
+		strncpy(mymac2,mymac,17);
+//		fprintf(errOut,"\n.........%s.............\n",mymac);
+
 		CFG_get_by_name("MACTYPE",tmp);
 		//0 -factory mac ,1-pc mac,2 -user input
 		
