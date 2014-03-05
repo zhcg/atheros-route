@@ -39,6 +39,7 @@ struct class_phone_control phone_control =
 	.ring_pos_count = 0,
 	.passage_fd = -1,
 	.called_test = 0,
+	.called_test_times = 0,
 	.vloop = 0,
 };
 
@@ -49,7 +50,23 @@ int phone_control_fd[2];
 char tb_sendbuf[SENDBUF]={0};
 unsigned char nothing_to_do_buf[BUFFER_SIZE_1K];
 
+struct timeval print_tv;	
+char print_time_buf_tmp[64] = {0};
+char print_time_buf[256] = {0};	
+
 static const char ringon[3]={0x03,0x00,0x03};
+
+char *system_time()
+{
+	memset(print_time_buf, 0, sizeof(print_time_buf));
+	memset(&print_tv, 0, sizeof(print_tv));
+	
+	gettimeofday(&print_tv, NULL);
+	strftime(print_time_buf_tmp, sizeof(print_time_buf_tmp), "%T:", localtime(&print_tv.tv_sec));    
+	sprintf(print_time_buf, "%s%03d", print_time_buf_tmp, print_tv.tv_usec/1000);
+	return print_time_buf;
+}
+
 //打印16进制
 const char hex_to_asc_table[16] = {0x30,0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,0x39,0x41,0x42,0x43,0x44,0x45,0x46};
 int ComFunChangeHexBufferToAsc(unsigned char *hexbuf,int hexlen,char *ascstr)
@@ -169,6 +186,8 @@ int sqlite3_interface(char *tb_name,char *data_name, char *data_value,char *wher
 int destroy_client(dev_status_t *dev)
 {
 	PRINT("%s\n",__FUNCTION__);
+	if(dev->client_fd == -1)
+		return 0;
 	PRINT("ip = %s\n",dev->client_ip);
 	char sendbuf[SENDBUF]={0};
 	int i,j,k,count=0;
@@ -1227,7 +1246,6 @@ int init_control()
 
 	phone_audio.init_audio();
 
-//	if(si32178_init(0,0,5,5,10,1,1,0)==-1)
 	if(si32178_init(0,0,5,2,10,1,1,0)==-1)
 	{
 		PRINT("si32178 init fail\n");
@@ -1807,8 +1825,8 @@ void *loop_check_ring(void * argv)
 int getoutcmd(char *buf,int ret,dev_status_t* dev)
 {
 	char *pbuf=buf;
-	//~ PRINT("phone_control.cli_req_buf_wp = %d\n",phone_control.cli_req_buf_wp);
-	//~ PRINT("phone_control.cli_req_buf_rp = %d\n",phone_control.cli_req_buf_rp);
+	// PRINT("phone_control.cli_req_buf_wp = %d\n",phone_control.cli_req_buf_wp);
+	// PRINT("phone_control.cli_req_buf_rp = %d\n",phone_control.cli_req_buf_rp);
 
 	memset(&cli_req_buf[phone_control.cli_req_buf_wp], 0, sizeof(cli_request_t));
 	memcpy(cli_req_buf[phone_control.cli_req_buf_wp].head,pbuf,5);
@@ -1853,6 +1871,8 @@ void* tcp_loop_recv(void* argv)
 	char *pbuf=msg;
 	char sendbuf[SENDBUF]={0};
 	char length_more[3]={0};
+	int optval;
+	int optlen = sizeof(int);
 
 	fd_set socket_fdset;
 	struct timeval tv;
@@ -1888,7 +1908,17 @@ void* tcp_loop_recv(void* argv)
 					if ( FD_ISSET(devlist[i].client_fd, &socket_fdset) )
 					{
 						memset(msg,0,BUFFER_SIZE_2K);
-						ret=recv(devlist[i].client_fd,msg+tmp_ret,BUFFER_SIZE_2K,0);
+						getsockopt(devlist[i].client_fd,SOL_SOCKET,SO_ERROR,&optval, &optlen);
+						PRINT("optval = %d\n",optval);
+						if(optval == 0)
+						{
+							ret=recv(devlist[i].client_fd,msg+tmp_ret,BUFFER_SIZE_2K,0);
+							PRINT("ret = %d\n",ret);						
+						}
+						else
+						{
+							ret = -1;
+						}
 						if(ret<0)
 						{
 							PRINT("read failed\n");
@@ -2272,6 +2302,24 @@ void check_audio_reconnect()
 	}
 }
 
+void called_test_func()
+{
+	if(phone_control.called_test)
+	{
+		phone_control.called_test_times++;
+		if(phone_control.called_test_times == 90)//超过18秒
+		{
+			PRINT("called timeout!!\n");
+			phone_control.called_test = 0;
+			phone_control.called_test_times = 0;
+		}
+	}
+	else
+	{
+		phone_control.called_test_times = 0;
+	}
+}
+
 //定时器处理函数
 void check_dev_tick(int signo)
 {
@@ -2283,6 +2331,7 @@ void check_dev_tick(int signo)
 			send_tb_ringon();
 			check_audio_reconnect();
 			get_code_timeout_func();
+			called_test_func();
 			signal(SIGALRM, check_dev_tick);
 			break;
 	}
@@ -2489,6 +2538,30 @@ int dialup_test()
 	//pcm_ret = GenerateCodePcmData("8161",4,dial_buf,Big_Endian);
 	char *dial_p = dial_buf;
 	PRINT("pcm_ret = %d\n",pcm_ret);
+	//ioctl(phone_audio.phone_audio_pcmfd,SLIC_RELEASE,0);
+	//ioctl(phone_audio.phone_audio_pcmfd,SLIC_INIT,0);
+	if(phone_audio.phone_audio_pcmfd != -1)
+	{
+		close(phone_audio.phone_audio_pcmfd);
+		phone_audio.phone_audio_pcmfd = -1;
+	}
+	usleep(100*1000);
+	if(phone_audio.phone_audio_pcmfd == -1)
+	{
+		int pcm_fd=open(PCMNAME,O_RDWR);
+		if(pcm_fd<0)
+		{
+			perror("open pcm fail,again!\n");
+			pcm_fd=open(PCMNAME,O_RDWR);
+			if(pcm_fd<0)
+				return -1;
+		}
+		PRINT("audio open_success\n");
+
+		phone_audio.phone_audio_pcmfd = pcm_fd;
+	}
+	usleep(200*1000);
+
 	while(1)
 	{
 		w_ret = write(phone_audio.phone_audio_pcmfd,dial_p,BUFFER_SIZE_1K);
@@ -2523,6 +2596,7 @@ int call_test()
 	sleep(1);
 	onhook();
 	set_onhook_monitor();
+	ioctl(phone_audio.phone_audio_pcmfd,SLIC_RELEASE,0);
 	start_read_incoming();
 	return ret;
 }
@@ -2550,14 +2624,17 @@ void passage_pthread_func(void *argv)
 					continue;
 				if(recvbuf[2] == (char)0x03 && recvbuf[3] == (char)0x03)
 				{
-					PRINT("CALL!!\n");
+					PRINT("CALL_TEST!!\n");
 					if(call_test()==0)
 						write(phone_control.passage_fd,successbuf,6);
 					else
 						write(phone_control.passage_fd,failbuf,6);
 				}
 				if(recvbuf[2] == (char)0x03 && recvbuf[3] == (char)0x04)
+				{
+					PRINT("CALLED_TEST!!\n");
 					phone_control.called_test = 1;
+				}
 			}
 		}
 		usleep(100*1000);

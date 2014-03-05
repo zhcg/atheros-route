@@ -45,6 +45,13 @@
 #define PRINT(format, ...)
 #endif
 
+//#if PRINT_INFO==1
+//#define PRINT(format, ...) printf("[%s][%s][-%d-] "format"",system_time(),__FUNCTION__,__LINE__,##__VA_ARGS__)
+//#else
+//#define PRINT(format, ...)
+//#endif
+
+
 #define MAX(A,B) ((A)>(B))?(A):(B)
 
 #define CLIENT_NUM 4	//设备数目限制

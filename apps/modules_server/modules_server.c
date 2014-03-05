@@ -1184,13 +1184,13 @@ int factory_test_cmd_as532_test()
 	ret = testSpi(global_pukey, spiBuffer, &spiBufferLen );
 	if (ret != 0) 
 	{
-		PRINT(" send version data error\n");
+		PRINT(" send test data error\n");
 		ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_AS532_1,FACTORY_TEST_CMD_AS532_TEST,FAIL,/*(char)ret*/1,spiBuffer,0);
 		generate_stm32_down_msg(databuf,ret,TYPE_USB_PASSAGE);
 	}
 	else
 	{ 
-		PRINT("send version success\n");  
+		PRINT("send test success\n");  
 		ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_AS532_1,FACTORY_TEST_CMD_AS532_TEST,SUCCESS,0,spiBuffer,spiBufferLen);
 		generate_stm32_down_msg(databuf,ret,TYPE_USB_PASSAGE);
 	}
