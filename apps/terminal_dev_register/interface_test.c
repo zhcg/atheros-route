@@ -45,6 +45,7 @@
 #define CMD_y "y"
 #define CMD_z "z"
 
+#define CMD_B "B"
 #define CMD_C "C"
 #define CMD_L "L"
 #define CMD_R "R"
@@ -1032,6 +1033,40 @@ int cmd_z()
 }
 
 /**
+ * 命令字 B 测试PIC单片机运行
+ */
+int cmd_B()
+{
+    int res = 0;
+    int fd = 0;
+    struct timeval tv = {5, 0}; 
+    char buf[7] = {0xA5, 0x5A, 0xE1, 0x02, 0xE5, 0x00, 0xE5};
+    
+    if ((res = open("/dev/uartpassage", O_RDWR, 0644)) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "open failed!", OPEN_ERR);
+        return OPEN_ERR;
+    }
+    fd = res;
+    if ((res = common_tools.send_data(fd, buf, NULL, sizeof(buf), &tv)) < 0)
+    {
+        PRINT("send_data failed!\n");
+        close(fd);
+        return res;
+    }
+    
+    memset(buf, 0, sizeof(buf));
+    if ((res = common_tools.recv_data(fd, buf, NULL, sizeof(buf), &tv)) < 0)
+    {
+        PRINT("send_data failed!\n");
+        close(fd);
+        return res;
+    }
+    close(fd);
+    return res;
+}
+
+/**
  * 命令字 C 切换控制电话和CACM通路的继电器
  */
 int cmd_C(int mode)
@@ -1138,6 +1173,7 @@ int cmd_help()
     PRINT("y 连接服务器\n");
     PRINT("z USB通路测试\n");
     
+    PRINT("B 测试PIC单片机运行\n");
     PRINT("C 切换控制电话和CACM通路的继电器\n");
     PRINT("L 关闭和打开回环\n");
     PRINT("R 终端认证和获取sip服务器账号\n");
@@ -1304,6 +1340,10 @@ int analyse_cmd(unsigned short cmd_count, char *cmd_buf)
         else if (strcmp(index, CMD_z) == 0)
         {
             word = 'z';
+        }
+        else if (strcmp(index, CMD_B) == 0)
+        {
+            word = 'B';
         }
         else if (strcmp(index, CMD_C) == 0)
         {
@@ -1559,6 +1599,11 @@ int analyse_cmd(unsigned short cmd_count, char *cmd_buf)
             case 'z':
             {
                 res = cmd_z();
+                break;
+            }
+            case 'B':
+            {
+                res = cmd_B();
                 break;
             }
             case 'C':

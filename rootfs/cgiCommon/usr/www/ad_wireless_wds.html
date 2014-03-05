@@ -211,75 +211,75 @@ function  WIFSwitch()
 {
 	var obj=document.getElementById("WFILIST");
 	var index=obj.selectedIndex; //序号，取当前选中选项的序号
-	
-	var myString=obj.options[index].id;
-	
-	var a = myString.indexOf("(");
-	var b = myString.indexOf(")(");
-	var c = myString.lastIndexOf(")(");
-	var d = myString.lastIndexOf(")");
-	
-	var s, ss, sss, ssss;// 声明变量。
-	
-    s = myString.substr(0, a); // 获取子字符串。
-    ss = myString.substr(a+1, b-a-1); // 获取子字符串。
-	sss = myString.substr(b+2, c-b-2);
-	ssss = myString.substr(c+2, d-c-2);
-	
-	document.getElementById("STA_SSID").value = s;//obj.options[index].text;
-	document.getElementById("ROOTAP_MAC").value = ss;//obj.options[index].text;
-	document.getElementById("WDS_CHAN").value = sss;//obj.options[index].text;
-	document.getElementById("STA_SECMODE").value = ssss;//obj.options[index].text;
-	
-	if(ssss == "None")
-	{
-		document.wizard_form.STA_PSK_KEY.disabled = true;
-		widget_hide("tt2");
+		if((index!=-1)&&(index!="-1"))	{
+		var myString=obj.options[index].id;
+		
+		var a = myString.indexOf("(");
+		var b = myString.indexOf(")(");
+		var c = myString.lastIndexOf(")(");
+		var d = myString.lastIndexOf(")");
+		
+		var s, ss, sss, ssss;// 声明变量。
+		
+		s = myString.substr(0, a); // 获取子字符串。
+		ss = myString.substr(a+1, b-a-1); // 获取子字符串。
+		sss = myString.substr(b+2, c-b-2);
+		ssss = myString.substr(c+2, d-c-2);
+		
+		document.getElementById("STA_SSID").value = s;//obj.options[index].text;
+		document.getElementById("ROOTAP_MAC").value = ss;//obj.options[index].text;
+		document.getElementById("WDS_CHAN").value = sss;//obj.options[index].text;
+		document.getElementById("STA_SECMODE").value = ssss;//obj.options[index].text;
+		
+		if(ssss == "None")
+		{
+			document.wizard_form.STA_PSK_KEY.disabled = true;
+			widget_hide("tt2");
 
-	}
-	else
-	{
-		widget_display("tt2");
-		document.wizard_form.STA_PSK_KEY.disabled = false;
-		document.getElementById("pwd").value="";
-	}
+		}
+		else
+		{
+			widget_display("tt2");
+			document.wizard_form.STA_PSK_KEY.disabled = false;
+			document.getElementById("pwd").value="";
+		}	}
 }
 
 function  WIFSwitch2()
 {
 	var obj=document.getElementById("WFILIST_3");
 	var index=obj.selectedIndex; //序号，取当前选中选项的序号
-	
-	var myString=obj.options[index].id;
-	
-	var a = myString.indexOf("(");
-	var b = myString.indexOf(")(");
-	var c = myString.lastIndexOf(")(");
-	var d = myString.lastIndexOf(")");
-	
-	var s, ss, sss, ssss;// 声明变量。
-	
-    s = myString.substr(0, a); // 获取子字符串。
-    ss = myString.substr(a+1, b-a-1); // 获取子字符串。
-	sss = myString.substr(b+2, c-b-2);
-	ssss = myString.substr(c+2, d-c-2);
-	
-	document.getElementById("STA_SSID_2").value = s;//obj.options[index].text;
-	document.getElementById("ROOTAP_MAC_2").value = ss;//obj.options[index].text;
-	document.getElementById("WDS_CHAN_2").value = sss;//obj.options[index].text;
-	document.getElementById("STA_SECMODE_2").value = ssss;//obj.options[index].text;
-	
-	if(ssss == "None")
-	{
-		document.wizard_form.STA_PSK_KEY_2.disabled = true;
-		widget_hide("tt22");
-	}
-	else
-	{
-		widget_display("tt22");
-		document.wizard_form.STA_PSK_KEY_2.disabled = false;
-		document.getElementById("pwd2").value="";
-	}
+		if((index!=-1)&&(index!="-1"))	{
+		var myString=obj.options[index].id;
+		
+		var a = myString.indexOf("(");
+		var b = myString.indexOf(")(");
+		var c = myString.lastIndexOf(")(");
+		var d = myString.lastIndexOf(")");
+		
+		var s, ss, sss, ssss;// 声明变量。
+		
+		s = myString.substr(0, a); // 获取子字符串。
+		ss = myString.substr(a+1, b-a-1); // 获取子字符串。
+		sss = myString.substr(b+2, c-b-2);
+		ssss = myString.substr(c+2, d-c-2);
+		
+		document.getElementById("STA_SSID_2").value = s;//obj.options[index].text;
+		document.getElementById("ROOTAP_MAC_2").value = ss;//obj.options[index].text;
+		document.getElementById("WDS_CHAN_2").value = sss;//obj.options[index].text;
+		document.getElementById("STA_SECMODE_2").value = ssss;//obj.options[index].text;
+		
+		if(ssss == "None")
+		{
+			document.wizard_form.STA_PSK_KEY_2.disabled = true;
+			widget_hide("tt22");
+		}
+		else
+		{
+			widget_display("tt22");
+			document.wizard_form.STA_PSK_KEY_2.disabled = false;
+			document.getElementById("pwd2").value="";
+		}	}
 }
 function refreshwds()
 {
@@ -582,8 +582,8 @@ function help()
 </table>
 <!--/form-->
 <div style="display:none">    
-	<input type="button" name="REFRESHWFi" id="REFRESHWFi" style="display:none" value="REFRESHWFi" onClick="window.location.href='ad_wireless_wds?INDEX=11'">
-	<input type="button" name="REFRESHWFi2" id="REFRESHWFi2" style="display:none" value="REFRESHWFi2" onClick="window.location.href='ad_wireless_wds?INDEX=112'">
+	<input type="button" name="REFRESHWFi" id="REFRESHWFi" style="display:none" value="REFRESHWFi" onClick="window.location.href='ad_wireless_wds?INDEX=11&ad_wireless_wds=yes'">
+	<input type="button" name="REFRESHWFi2" id="REFRESHWFi2" style="display:none" value="REFRESHWFi2" onClick="window.location.href='ad_wireless_wds?INDEX=112&ad_wireless_wds=yes'">
 	<input type="text" style="display:none" name="WIFION_OFF" id="WIFION_OFF" size="20" maxlength="32" value="~~WIFION_OFF~">	
 	<input type="text" style="display:none" name="WIFION_OFF_3" id="WIFION_OFF_3" size="20" maxlength="32" value="~~WIFION_OFF_3~">	
 </div>

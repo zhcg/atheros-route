@@ -893,8 +893,18 @@ int rebuild_position_token(char *position_token)
         res = ret;
         goto EXIT;
     }
+    // 由于挂机后，95R54会自动把继电器切到SI32919
+    #if RELAY_CHANGE == 1 // 继电器  从SI32919切换到95R54
+    if ((ret = communication_serial.relay_change(0)) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "relay_change failed!", ret);
+        res = ret;
+        goto EXIT;
+    }
+    #endif  // RELAY_CHANGE == 1
     
     PRINT("________________hook\n");
+    
     // 0x2002解包
     if ((res = communication_network.msg_unpack2(buf, res, &dial_back_respond)) < 0)
     {
@@ -921,7 +931,9 @@ int rebuild_position_token(char *position_token)
         goto EXIT;
     }
     PRINT("________________0x2003\n");
+    
     #if 1
+    
     dial_back_respond.call_result = 0; // 呼叫状态
     PRINT("dial_back_respond.phone_num = %s\n", dial_back_respond.phone_num);
     // 接收来电
@@ -948,7 +960,10 @@ int rebuild_position_token(char *position_token)
     {
         PRINT("refuse_to_answer ok\n");
     }
+    
+    // 由于挂机后，95R54会自动把继电器切到SI32919，所以不用手动切换到SI32919
     #endif
+    
     // 0x2004呼叫结果请求打包
     dial_back_respond.cmd = 0x2004;
     if ((res = communication_network.msg_pack2(&data_list, &dial_back_respond)) < 0)

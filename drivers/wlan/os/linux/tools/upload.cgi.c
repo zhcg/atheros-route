@@ -104,7 +104,7 @@ static void  Reboot_tiaozhuan(char* res,char * gopage)
     printf("<HTML><HEAD>\r\n");
     printf("</head><body>");
 
-    sprintf(temp,"<script language=javascript>window.location.href=\"reboot?RESULT=%s?PAGE=%s\";</script>",res,gopage);
+    sprintf(temp,"<script language=javascript>window.location.href=\"reboot?RESULT=%s?PAGE=%s&reboot=yes\";</script>",res,gopage);
     printf(temp);
     printf("</body></html>");
 }
@@ -278,7 +278,7 @@ error:
          printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
          printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
          printf("</head><body>");
- 	     printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err file upload\"));window.location.href=\"ad_man_upgrade\";</script>");
+ 	     printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err file upload\"));window.location.href=\"ad_man_upgrade?ad_man_upgrade=yes\";</script>");
          printf("</body></html>");
     }
 	//打印信息到网页的隐藏的iframe中
@@ -317,7 +317,7 @@ error:
 				printf("<div style=\"font-size: 14pt; font-weight: bold; margin-left: 10px; font-family: 微软雅黑, Arial, Helvetica, sans-serif; color: #848484;border-bottom:1px dotted #d0d0d0; padding-bottom:10px; margin-bottom:10px;height:30px; line-height:30px; padding:5px;\">固件升级</div>\n");	
 				printf("<p align=\"center\" style=\"font-size: 9pt; margin-left: 10px; font-family: 微软雅黑, Arial, Helvetica, sans-serif; color: #848484\">升级完成,正在重启BASE..........</p><br>\n");	
 				printf("<p align=\"center\" style=\"font-size: 9pt; margin-left: 10px; font-family: 微软雅黑, Arial, Helvetica, sans-serif; color: #848484\">The upgrade was completed, restartting BASE..........</p><br>\n");	
-				printf("<script  language=javascript>setTimeout(function(){window.location.href=\"crupload\";},140000);</script>");
+				printf("<script  language=javascript>setTimeout(function(){window.location.href=\"crupload?crupload=yes\";},140000);</script>");
 				printf("</body></html>");	
                 #endif
                             //Reboot_tiaozhuan("upload","index.html");
@@ -334,7 +334,7 @@ error:
 				 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
 				 printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
 				 printf("</head><body>");
-				 printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err file format\"));window.location.href=\"ad_man_upgrade\";</script>");
+				 printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err file format\"));window.location.href=\"ad_man_upgrade?ad_man_upgrade=yes\";</script>");
 				 printf("</body></html>");
 			}
 	}

@@ -3022,7 +3022,6 @@ int recv_display_msg(char *phone_num)
     {
         for (i = 0; i < sizeof(head); i++)
         {
-            tv.tv_sec = 5;
             if ((res = recv_data(&head[i], sizeof(head[i]), &tv)) < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data_head failed!", res);
@@ -3043,7 +3042,6 @@ int recv_display_msg(char *phone_num)
             }
         }
         
-        tv.tv_sec = 5;
         if ((res = recv_data(&cmd, sizeof(cmd), &tv)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data failed!", res);
@@ -3059,7 +3057,6 @@ int recv_display_msg(char *phone_num)
         
         if (cmd == 0x03)
         {
-            tv.tv_sec = 5;
             if ((res = recv_data(ring_buf, sizeof(ring_buf), &tv)) < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data failed!", res);
@@ -3083,7 +3080,6 @@ int recv_display_msg(char *phone_num)
             continue;
         }
         
-        tv.tv_sec = 5;
         if ((res = recv_data(&buf_len, sizeof(buf_len), &tv)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data failed!", res);
@@ -3094,15 +3090,12 @@ int recv_display_msg(char *phone_num)
         buf_tmp[0] = cmd;
         buf_tmp[1] = buf_len;
         
-        tv.tv_sec = 5;
         if ((res = recv_data(buf_tmp + 2, buf_len, &tv)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data failed!", res);
             return res;
         }
         
-        tv.tv_sec = 5;
-        PRINT("checkbit = %02X\n", checkbit);
         if ((res = recv_data(&checkbit, sizeof(checkbit), &tv)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "recv_data failed!", res);
@@ -3117,7 +3110,7 @@ int recv_display_msg(char *phone_num)
             return res;
         }
         
-        //PRINT("checkbit = %02X, res = %02X\n", checkbit, res);
+        PRINT("checkbit = %02X, res = %02X\n", checkbit, res);
         if (checkbit != (char)res)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__,  "check failed!", CHECK_DIFF_ERR);

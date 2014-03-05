@@ -26,6 +26,7 @@
 ** include files
 */
 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -2860,7 +2861,7 @@ int set_addr_bind(void)
                 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
                 printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
                 printf("</head><body>");
-                printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"lan\");window.parent.DialogHide();alert(_(\"err IPMAC exist\"));window.location.href=\"ad_local_addsdhcp\";</script>");
+                printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"lan\");window.parent.DialogHide();alert(_(\"err IPMAC exist\"));window.location.href=\"ad_local_addsdhcp?ad_local_addsdhcp=yes\";</script>");
                 printf("</body></html>");
                 result = 1;
 			}
@@ -2959,7 +2960,7 @@ int add_arp(void)
                 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
                 printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
                 printf("</head><body>");
-                printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"lan\");window.parent.DialogHide();alert(_(\"err IPMAC exist\"));window.location.href=\"ad_safe_IPMAC\";</script>");
+                printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"lan\");window.parent.DialogHide();alert(_(\"err IPMAC exist\"));window.location.href=\"ad_safe_IPMAC?ad_safe_IPMAC=yes\";</script>");
                 printf("</body></html>");
                 result = 1;
 		}
@@ -4499,11 +4500,11 @@ int main(int argc,char **argv)
                  
 			if((strcmp(argv[0],"w1")==0)||(strcmp(argv[0],"w2")==0)||(strcmp(argv[0],"w3")==0)||(strcmp(argv[0],"w4")==0)||(strcmp(argv[0],"wwai")==0))
 			{
-			    sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"wan not connected\"));window.parent.showpwd1();window.location.href=\"map\";</script>");
+			    sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"wan not connected\"));window.parent.showpwd1();window.location.href=\"map?map=yes\";</script>");
 			}
 			else
 			{
-			    sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"wan not connected\"));window.location.href=\"%s\";</script>",argv[0]);
+			    sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"wan not connected\"));window.location.href=\"%s?%s=yes\";</script>",argv[0],argv[0]);
 			}
 			printf(tempu);
 			printf("</body></html>");
@@ -4561,11 +4562,11 @@ int main(int argc,char **argv)
                  
                             if((strcmp(argv[0],"w1")==0)||(strcmp(argv[0],"w2")==0)||(strcmp(argv[0],"w3")==0)||(strcmp(argv[0],"w4")==0)||(strcmp(argv[0],"wwai")==0))
                             {
-                                sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err dhcp null\"));window.parent.showpwd1();window.location.href=\"map\";</script>");
+                                sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err dhcp null\"));window.parent.showpwd1();window.location.href=\"map?map=yes\";</script>");
                             }
                             else
                             {
-                                sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err dhcp null\"));window.location.href=\"%s\";</script>",argv[0]);
+                                sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err dhcp null\"));window.location.href=\"%s?%s=yes\";</script>",argv[0],argv[0]);
                             }
 				 printf(tempu);
 				 printf("</body></html>");
@@ -4595,11 +4596,11 @@ int main(int argc,char **argv)
 				 printf("</head><body>");
                             if((strcmp(argv[0],"w1")==0)||(strcmp(argv[0],"w2")==0)||(strcmp(argv[0],"w3")==0)||(strcmp(argv[0],"w4")==0)||(strcmp(argv[0],"wwai")==0))
                             {
-                                sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err dhcp ip\"));window.parent.showpwd1();window.location.href=\"map\";</script>");
+                                sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err dhcp ip\"));window.parent.showpwd1();window.location.href=\"map?map=yes\";</script>");
                             }
                             else
                             {
-                                sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err dhcp ip\"));window.location.href=\"%s\";</script>",argv[0]);
+                                sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err dhcp ip\"));window.location.href=\"%s?%s=yes\";</script>",argv[0],argv[0]);
                             }
 
 				 printf(tempu2);
@@ -5668,7 +5669,8 @@ int main(int argc,char **argv)
          printf("<HTML><HEAD>\r\n");
          printf("<meta http-equiv=\"Content-Type\" content=\"text/html;charset=UTF-8\">");
          printf("</head><body>");
-         printf("<script  language=javascript>setTimeout(function(){window.opener=null;window.open('http://10.10.10.254','_top');},1000);</script>");
+         printf("<script  language=javascript>setTimeout(function(){window.opener=null;window.open('/home.html','_top');},1000);</script>");
+         //printf("<script  language=javascript>setTimeout(function(){window.opener=null;window.open('http://10.10.10.254','_top');},1000);</script>");
          printf("</body></html>");
          gohome =2;
     }
@@ -5727,15 +5729,18 @@ int main(int argc,char **argv)
         fprintf(errOut,"\n%s  %d MAC_CLONE \n",__func__,__LINE__);
 		char mymac[128];
 		char str[128];
-		char *mymac2;	
+		char mymac2[128];	
 		char tmp[128];
 		char tmp2[128];
 		char ipaddr[128],*ipaddr2;		
 		char linenum[128];
 		
-		Execute_cmd("cat /etc/mac.bin",mymac);
-		mymac2=strtok(mymac,"\n");
-		
+//		Execute_cmd("cat /etc/mac.bin",mymac);
+//		mymac2=strtok(mymac,"\n");
+		Execute_cmd("/usr/sbin/get_mac eth0",mymac);
+		strncpy(mymac2,mymac,17);
+//		fprintf(errOut,"\n.........%s.............\n",mymac);
+
 		CFG_get_by_name("MACTYPE",tmp);
 		//0 -factory mac ,1-pc mac,2 -user input
 		
@@ -5835,16 +5840,20 @@ int main(int argc,char **argv)
 		unsigned char* ptmp;
 		unsigned char dhcp_b[20],dhcp_e[20],net_seg[20],net_seg2[20],tmp[20],tmp2[20];
 		unsigned char pChar[128];
+		char valBuff[50];
+		char valBuff2[50];
 		
 		int num,i=0;
 
 		CFG_get_by_name("AP_IPADDR",br0_ip);
 		CFG_get_by_name("AP_NETMASK",br0_sub);
+		Execute_cmd("cfg -e | grep AP_IPADDR= | awk -F '=' '{print $2}'",valBuff);
+		Execute_cmd("cfg -e | grep \"AP_NETMASK=\" | awk -F \"=\" \'{print $2}\'",valBuff2);
 
 		Execute_cmd("ifconfig eth0|grep 'inet addr:'|awk -F ' ' '{print$2}'|awk -F ':' '{print$2}'", eth0_ip);
 		peth0_ip=strtok(eth0_ip,"\n");
   	
-		if(strcmp(peth0_ip,br0_ip))//TODO
+		if(strcmp(peth0_ip, br0_ip) && (!strstr(valBuff, br0_ip) || !strstr(valBuff2, br0_sub)) )//TODO
 		{
 		   sprintf(pChar,"ifconfig br0 %s netmask %s up > /dev/null 2>&1",br0_ip,br0_sub);
 		   system(pChar);
@@ -5899,21 +5908,28 @@ int main(int argc,char **argv)
 		    }
 		 fprintf(errOut,"\ndhcp_b:%s\ndhcp_e:%s\n",dhcp_b,dhcp_e);
 
-		 CFG_set_by_name("DHCP_BIP",dhcp_b);
-		 CFG_set_by_name("DHCP_EIP",dhcp_e);
-		 
-		 CFG_get_by_name("DHCPON_OFF",tmp);
-		    if(strcmp(tmp,"on")==0)
-		  	 {
-		  	 system("killall udhcpd > /dev/null 2>&1");			 
-			 system("/etc/rc.d/rc.udhcpd > /dev/null 2>&1");
-			 system("/usr/sbin/set_addr > /dev/null 2>&1");		 
-			 system("/usr/sbin/udhcpd /etc/udhcpd.conf > /dev/null 2>&1");
-
-		  	}
-        //write to flash
+		CFG_set_by_name("DHCP_BIP",dhcp_b);
+		CFG_set_by_name("DHCP_EIP",dhcp_e);
+		//write to flash
 		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-        writeParameters("/tmp/.apcfg","w+",0);
+		writeParameters("/tmp/.apcfg","w+",0);
+
+		CFG_get_by_name("DHCPON_OFF",tmp);
+		if(strcmp(tmp,"on")==0)
+		{
+			system("killall udhcpd > /dev/null 2>&1");			 
+			system("/etc/rc.d/rc.udhcpd > /dev/null 2>&1");
+			system("/usr/sbin/set_addr > /dev/null 2>&1");		 
+			system("/usr/sbin/udhcpd /etc/udhcpd.conf > /dev/null 2>&1");
+
+		}
+
+		//reboot hostapd
+		Execute_cmd("killall hostapd > /dev/null 2>&1",rspBuff);
+		Execute_cmd("hostapd -B /tmp/secath0 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+		Execute_cmd("hostapd -B /tmp/secath1 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+		Execute_cmd("hostapd -B /tmp/secath2 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+		Execute_cmd("hostapd -B /tmp/secath3 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
 	   }//end eth0_ip != br0_ip
 	   else
 	   {
@@ -5930,14 +5946,13 @@ int main(int argc,char **argv)
 				 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
 				 printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
 				 printf("</head><body>");
-                 sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err WANsame\"));window.location.href=\"%s\";</script>",argv[0]);
+                 sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err WANsame\"));window.location.href=\"%s?%s=yes\";</script>",argv[0],argv[0]);
 				 printf(tempu2);
 				 printf("</body></html>");
 				 exit(1);
 		
        } 
-        
-       gohome =2;
+		gohome =2;
     }
     
     /*************************************
@@ -6566,7 +6581,7 @@ int main(int argc,char **argv)
 					printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
 					printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
 					printf("</head><body>");
-					sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err Ruleexist\"));window.location.href=\"%s\";</script>",argv[0]);
+					sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err Ruleexist\"));window.location.href=\"%s?%s=yes\";</script>",argv[0],argv[0]);
 					printf(tempu2);
 					printf("</body></html>");
 					exit(1);

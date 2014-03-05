@@ -337,6 +337,10 @@ webui:
 	cp -f ntp/set_ntpserver $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f net/network_diagnostics $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f net/web_control $(INSTALL_ROOT)/usr/sbin;  \
+	cd mac_addr/; \
+	make; \
+	cp -f get_mac $(INSTALL_ROOT)/usr/sbin; \
+	cd ..; \
 	cd firmware/; \
 	make; \
 	cp -f firmware_check $(INSTALL_ROOT)/usr/sbin; \

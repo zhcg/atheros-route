@@ -66,9 +66,12 @@ export LAN_IF=eth1
 
 
 #yuhaolei for mac default display
-ETH0_MAC_2=`cfg -e | grep "ETH0_MAC" | awk -F "\"" '{print $2}'`
-if [ "${ETH0_MAC_2}" != "" ]; then
-	ifconfig eth0 hw ether $ETH0_MAC_2
+MACTYPE_FLAG=`cfg -e | grep "MACTYPE" | awk -F "\"" '{print $2}'`
+if [ "${MACTYPE_FLAG}" != "0" ]; then
+	ETH0_MAC_2=`cfg -e | grep "ETH0_MAC" | awk -F "\"" '{print $2}'`
+	if [ "${ETH0_MAC_2}" != "" ]; then
+		ifconfig eth0 hw ether $ETH0_MAC_2
+	fi
 fi
 #yuhaolei
 
@@ -149,15 +152,16 @@ fi
 if [ -f /etc/arp_ip_mac_on.conf ]; then
 	/usr/sbin/arp -f /etc/arp_ip_mac_on.conf
 fi
-if [ ! -f /etc/mac.bin ]; then
-	echo "mac.bin backup"
-	echo "Backup mac at `date`"  >> /etc/maclog.txt
-	ifconfig | grep eth0 | awk -F ' ' '{print $5}' > /etc/mac.bin
-	cfg -a ETH0_DFMAC=`cat /etc/mac.bin`
-	cfg -a ETH0_MAC=`cat /etc/mac.bin`
-	cfg -a BR0_MAC=`ifconfig | grep br0 | awk -F ' ' '{print$5}'`
-	cfg -c
-fi
+
+#if [ ! -f /etc/mac.bin ]; then
+#	echo "mac.bin backup"
+#	echo "Backup mac at `date`"  >> /etc/maclog.txt
+#	ifconfig | grep eth0 | awk -F ' ' '{print $5}' > /etc/mac.bin
+#	cfg -a ETH0_DFMAC=`cat /etc/mac.bin`
+#	cfg -a ETH0_MAC=`cat /etc/mac.bin`
+#	cfg -a BR0_MAC=`ifconfig | grep br0 | awk -F ' ' '{print$5}'`
+#	cfg -c
+#fi
 
 
 /usr/bin/version_check &
