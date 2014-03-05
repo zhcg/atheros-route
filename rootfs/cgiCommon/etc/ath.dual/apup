@@ -500,6 +500,11 @@ fi
 if [ "${WIFION_OFF_3}" = "off" ]; then
 	ifconfig ath2 down
 fi
+if [ "${WIFION_OFF}" = "off" -a "${WIFION_OFF_3}" = "off" ]; then
+echo disable > /dev/wifiled
+else
+echo enable > /dev/wifiled
+fi
 
 if [ "${AP_STARTMODE}" = "multivlan" ]; then
     WEP_INTERFACE="" 

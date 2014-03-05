@@ -4926,6 +4926,7 @@ int main(int argc,char **argv)
 		char valBuff8_3[128];	
 		char valBuff10_3[128];
 		int flag=0;
+        int led_flag=0;
 
 		//1.get old value from flash
 		Execute_cmd("cfg -e | grep \"WIFION_OFF=\" | awk -F \"=\" \'{print $2}\'",valBuff);
@@ -5003,14 +5004,16 @@ int main(int argc,char **argv)
 			//fprintf(errOut,"[luodp] SECMODE here3");
 			//Execute_cmd("apup > /dev/null 2>&1", rspBuff);
 			Execute_cmd("ifconfig ath0 up > /dev/null 2>&1", rspBuff);
+			Execute_cmd("echo enable > /dev/wifiled", rspBuff);
 			flag=3;
 		}
-		if((strstr(valBuff,valBuff3) == 0) && (strcmp(valBuff3,"off") == 0) )
+		if(strcmp(valBuff3,"off") == 0) 
 		{
 			//fprintf(errOut,"[luodp] SECMODE here4");
 			//Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
 			Execute_cmd("ifconfig ath0 down > /dev/null 2>&1", rspBuff);
 			//flag=5;
+            led_flag++;
 		}
 		//ssid [TODO]
 		CFG_get_by_name("AP_SSID",valBuff4);
@@ -5210,13 +5213,18 @@ int main(int argc,char **argv)
 		if((strstr(valBuff_3,valBuff3) == 0) && (strcmp(valBuff3,"on") == 0) )
 		{
 			Execute_cmd("ifconfig ath2 up > /dev/null 2>&1", rspBuff);
+			Execute_cmd("echo enable > /dev/wifiled", rspBuff);
 		}
-		if((strstr(valBuff_3,valBuff3) == 0) && (strcmp(valBuff3,"off") == 0) )
+		if(strcmp(valBuff3,"off") == 0)
 		{
 			//Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
 			Execute_cmd("ifconfig ath2 down > /dev/null 2>&1", rspBuff);
 			//flag = 5;
+            led_flag++;
 		}
+        if(led_flag==2)
+			Execute_cmd("echo disable > /dev/wifiled", rspBuff);
+            
 		
 		//ssid [TODO]
 		CFG_get_by_name("AP_SSID_3",valBuff4);
