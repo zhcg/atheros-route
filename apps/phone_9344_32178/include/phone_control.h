@@ -140,6 +140,7 @@ struct class_phone_control
 	int ring_count;
 	int passage_fd;
 	int called_test;
+	int called_test_times;
 	char vloop; //电话线插入检测
 };
 
