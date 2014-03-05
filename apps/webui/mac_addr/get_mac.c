@@ -11,10 +11,11 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#define BR0_OFFSET 4098
-#define WIFI1_OFFSET 20482
 #define ETH0_OFFSET 0
-#define ETH1_OFFSET 6
+#define BR0_OFFSET 6
+#define WIFI0_OFFSET 4098
+#define WIFI1_OFFSET 20482
+
 
 #define NAME  "/dev/caldata"
 
@@ -26,11 +27,11 @@ int main(int argc,char **argv)
 	FILE		*f;
 
 	if(  argc !=  2){
-		printf("usage:get_mac eth0/br0 \n");
+		printf("usage:get_mac eth0/br0/wifi0/wifi1 \n");
 		return 1;
 	}
 
-	if((!strncmp(argv[1],"br0",3))||(!strncmp(argv[1],"eth0",4))||(!strncmp(argv[1],"wifi1",5))){
+	if((!strncmp(argv[1],"br0",3))||(!strncmp(argv[1],"eth0",4))||(!strncmp(argv[1],"wifi0",5))||(!strncmp(argv[1],"wifi1",5))){
 		memset(buff,0,sizeof(buff));
 		
 		f = fopen(NAME,"r");
@@ -53,6 +54,14 @@ int main(int argc,char **argv)
 		if(!strncmp(argv[1],"eth0",4))
 		{
 			fseek(f, ETH0_OFFSET, SEEK_SET);
+		}
+		if(!strncmp(argv[1],"br0",3))
+		{
+			fseek(f, BR0_OFFSET, SEEK_SET);
+		}		
+		if(!strncmp(argv[1],"wifi0",5))
+		{
+			fseek(f, WIFI0_OFFSET, SEEK_SET);
 		}
 		
 		if(!strncmp(argv[1],"wifi1",5))

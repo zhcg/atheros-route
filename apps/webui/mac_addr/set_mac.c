@@ -30,7 +30,7 @@ int main(int argc,char **argv)
 		printf("usage:set_mac eth0/br0/wifi0/wifi1 00:11:22:33:44:55 \n");
 		return 1;
 	}
-	if((!strncmp(argv[1],"br0",3))||(!strncmp(argv[1],"eth0",4))||(!strncmp(argv[1],"wifi0",5))||(!strncmp(argv[1],"wifi0",5))){
+	if((!strncmp(argv[1],"br0",3))||(!strncmp(argv[1],"eth0",4))||(!strncmp(argv[1],"wifi0",5))||(!strncmp(argv[1],"wifi1",5))){
 
 		memset(mac_buff,0,sizeof(mac_buff));
 		strncpy(mac_buff,argv[2],17);
@@ -52,7 +52,10 @@ int main(int argc,char **argv)
 		{
 			fseek(f, ETH0_OFFSET, SEEK_SET);
 		}
-		
+		if(!strncmp(argv[1],"br0",3))
+		{
+			fseek(f, BR0_OFFSET, SEEK_SET);
+		}		
 		if(!strncmp(argv[1],"wifi0",5))
 		{
 			fseek(f, WIFI0_OFFSET, SEEK_SET);
