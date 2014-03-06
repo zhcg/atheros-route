@@ -138,7 +138,7 @@ static int cancel_mac_and_ip_bind();
 /**
  * 获取BASE中存储的信息给PAD
  */
-static int get_success_buf(char *buf);
+static int get_success_buf(char **buf);
 
 /**
  * 打印设备列表
@@ -620,6 +620,7 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
     char columns_name[1][30] = {0};
     char columns_value[1][100] = {0};
     unsigned short insert_len = 0;
+    unsigned char insert_flag = 0;
     
     // 说明此时正在设置
     if (terminal_dev_register->config_now_flag == 1)
@@ -675,7 +676,6 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
             }
             if ((unsigned char)*network_config.pad_cmd != 0xFD)
             {
-                register_state = 0xFB;
                 break;
             }
         }
@@ -705,15 +705,12 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
 
             if ((unsigned char)*network_config.pad_cmd != 0xFE)
             {
-                register_state = 0xFD;
                 break;
             }
         }
         case 0xFE:
         {
             #if USER_REGISTER == 0 // 0：不做终端认证流程
-            *network_config.pad_cmd = 0x00;
-            *network_config.cmd = 0x00;
             
             #else // 1：做终端认证流程
             if ((res = terminal_register.user_register(terminal_dev_register->data_table.pad_sn, terminal_dev_register->data_table.pad_mac)) < 0)
@@ -721,90 +718,28 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "user_register failed!", res);
                 break;
             }
-
-            memset(columns_name[0], 0, sizeof(columns_name[0]));
-            memset(columns_value[0], 0, sizeof(columns_value[0]));
-            memcpy(columns_name[0], "register_state", strlen("register_state"));
-
-            sprintf(columns_value[0], "%d", (unsigned char)*network_config.pad_cmd);
-            buf_len = strlen(columns_value[0]);
-            terminal_dev_register->cmd_word = *network_config.pad_cmd;
-            for (i = 0; i < common_tools.config->repeat; i++)
-            {
-                #if BOARDTYPE == 6410 || BOARDTYPE == 9344
-                if ((res = database_management.update(1, columns_name, columns_value, &buf_len)) < 0)
-                {
-                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_update failed!", res);
-                    continue;
-                }
-                #elif BOARDTYPE == 5350
-                if ((res = nvram_interface.insert(RT5350_FREE_SPACE, 1, columns_name, columns_value, &buf_len)) < 0)
-                {
-                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "nvram_insert failed!", res);
-                    continue;
-                }
-                #endif
-                break;
-            }
-
-            if (res < 0)
-            {
-                break;
-            }
-            memset(network_config.base_sn, 0, sizeof(network_config.base_sn));
-            memset(network_config.base_mac, 0, sizeof(network_config.base_mac));
-            memset(network_config.base_ip, 0, sizeof(network_config.base_ip));
-            memcpy(network_config.base_sn, columns_name[2], strlen(columns_name[2]));
-            memcpy(network_config.base_mac, columns_name[3], strlen(columns_name[3]));
-            memcpy(network_config.base_ip, columns_name[4], strlen(columns_name[4]));
-
-            len = strlen("network_config.base_sn:") + strlen("network_config.base_mac:") + strlen("network_config.base_ip:") +
-                strlen(network_config.base_sn) + strlen(network_config.base_mac) + strlen(network_config.base_ip) +
-                strlen(terminal_register.respond_pack->base_user_name) + strlen(terminal_register.respond_pack->base_password) +
-                strlen(terminal_register.respond_pack->pad_user_name) + strlen(terminal_register.respond_pack->pad_password) +
-                strlen(terminal_register.respond_pack->sip_ip_address) + strlen(terminal_register.respond_pack->sip_port) +
-                strlen(terminal_register.respond_pack->heart_beat_cycle) + strlen(terminal_register.respond_pack->business_cycle) + 12;
-            PRINT("len = %d\n", len);
-
-            if ((buf = (char *)malloc(len)) == NULL)
-            {
-                res = MALLOC_ERR;
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "malloc failed", res);
-                break;
-            }
-
-            memset(buf, 0, len);
-            sprintf(buf, "network_config.base_sn:%s,network_config.base_mac:%s,network_config.base_ip:%s,%s,%s,%s,%s,%s,%s,%s,%s,", network_config.base_sn, network_config.base_mac, network_config.base_ip,
-                terminal_register.respond_pack->base_user_name, terminal_register.respond_pack->base_password,
-                terminal_register.respond_pack->pad_user_name, terminal_register.respond_pack->pad_password,
-                terminal_register.respond_pack->sip_ip_address, terminal_register.respond_pack->sip_port,
-                terminal_register.respond_pack->heart_beat_cycle, terminal_register.respond_pack->business_cycle);
-
-    	    PRINT("%s\n", buf);
-    	    len = strlen(buf);
             #endif
-
-            if (*network_config.pad_cmd != 0x00)
-            {
-                register_state = 0xFE;
-                break;
-            }
+            
+            *network_config.pad_cmd = 0x00;
+            *network_config.cmd = 0x00;
         }
         case 0x00: // 当已经初始化成功时，PAD询问，BASE把SSID等信息发送到PAD
         {
             #if BOARDTYPE == 9344
             // 打包
-            if ((res = get_success_buf(buf)) < 0)
+            res = get_success_buf(&buf);
+            PRINT("buf = %s\n", buf);
+            if (res < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_success_buf failed", res);
             }
             else 
             {
-                len = strlen(buf);    
+                len = strlen(buf);
             }
             
             #endif
-            register_state = 0x00;
+            
             break;
         }
         default:
@@ -824,7 +759,8 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
     {
         goto EXIT;
     }
-
+    
+    
     for (i = 0; i < common_tools.config->repeat; i++)
     {
         if (pad_and_6410_msg.data != NULL)
@@ -832,9 +768,18 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
             free(pad_and_6410_msg.data);
             pad_and_6410_msg.data = NULL;
         }
-
+        
+        if (register_state == 0xFA)
+        {
+            res = network_config.send_msg_to_pad(fd, register_state, NULL, len);
+        }
+        else
+        {
+            res = network_config.send_msg_to_pad(fd, *network_config.pad_cmd, buf, len);
+        }
+        
         // 数据发送到PAD
-        if ((res = network_config.send_msg_to_pad(fd, register_state, buf, len)) < 0)
+        if (res < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
             continue;
@@ -872,7 +817,7 @@ EXIT:
         memset(columns_value[0], 0, sizeof(columns_value[0]));
         memcpy(columns_name[0], "register_state", strlen("register_state"));
 
-        sprintf(columns_value[0], "%d", register_state);
+        sprintf(columns_value[0], "%d", *network_config.pad_cmd);
         insert_len = strlen(columns_value[0]);
         PRINT("columns_value[0] = %s\n", columns_value[0]);
 
@@ -898,7 +843,7 @@ EXIT:
             res = ret;
             PRINT("insert failed!\n");
         }
-        terminal_dev_register->data_table.register_state = register_state;
+        terminal_dev_register->data_table.register_state = *network_config.pad_cmd;
     }
     return res;
 }
@@ -2674,7 +2619,7 @@ int cancel_mac_and_ip_bind()
 /**
  * 获取BASE中存储的信息给PAD
  */
-int get_success_buf(char *buf)
+int get_success_buf(char **buf)
 {
     int res = 0;
     int len = 0;
@@ -2702,16 +2647,15 @@ int get_success_buf(char *buf)
         strlen(columns_value[12]) + 14;
 
     PRINT("len = %d\n", len);
-    if ((buf = (char *)malloc(len)) == NULL)
+    if ((*buf = (char *)malloc(len)) == NULL)
     {
         res = MALLOC_ERR;
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "malloc failed", res);
         return res;
     }
 
-    memset(buf, 0, len);
-    sprintf(buf, "base_sn:%s,base_mac:%s,base_ip:%s,base_user_name:%s,base_password:%s,pad_user_name:%s, \
-        pad_password:%s,sip_ip:%s,sip_port:%s,heart_beat_cycle:%s,business_cycle:%s,ssid_user_name:%s,ssid_password:%s",
+    memset(*buf, 0, len);
+    sprintf(*buf, "base_sn:%s,base_mac:%s,base_ip:%s,base_user_name:%s,base_password:%s,pad_user_name:%s,pad_password:%s,sip_ip:%s,sip_port:%s,heart_beat_cycle:%s,business_cycle:%s,ssid_user_name:%s,ssid_password:%s",
         columns_value[0], columns_value[1], columns_value[2], columns_value[3], columns_value[4], columns_value[5],
         columns_value[6], columns_value[7], columns_value[8], columns_value[9], columns_value[10], columns_value[11],
         columns_value[12]);
@@ -2730,17 +2674,17 @@ int get_success_buf(char *buf)
         strlen(columns_value[0]) + strlen(columns_value[1]) + strlen(columns_value[2]) + strlen(columns_value[3]) + strlen(columns_value[4]) + 6;
 
     PRINT("len = %d\n", len);
-    if ((buf = (char *)malloc(len)) == NULL)
+    if ((*buf = (char *)malloc(len)) == NULL)
     {
         res = MALLOC_ERR;
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "malloc failed", res);
         return res;
     }
 
-    memset(buf, 0, len);
-    sprintf(buf, "base_sn:%s,base_mac:%s,base_ip:%s,ssid_user_name:%s,ssid_password:%s,", columns_value[0], columns_value[1], columns_value[2], columns_value[3], columns_value[4]);
+    memset(*buf, 0, len);
+    sprintf(*buf, "base_sn:%s,base_mac:%s,base_ip:%s,ssid_user_name:%s,ssid_password:%s,", columns_value[0], columns_value[1], columns_value[2], columns_value[3], columns_value[4]);
     #endif
-    PRINT("%s\n", buf);
+    PRINT("%s\n", *buf);
     return 0;
 }
 
