@@ -101,4 +101,5 @@
 	<message msgid="err sub format" msgstr="掩码地址不合法" />	
 	<message msgid="err gw format" msgstr="网关地址不合法" />
 	<message msgid="err DNS format" msgstr="DNS地址不合法" />
+	<message msgid="err MAC no" msgstr="管理终端MAC获取失败" />
  </po>

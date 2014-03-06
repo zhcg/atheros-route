@@ -171,7 +171,7 @@ function BarMenu(id)
 		}
 		if(id=="bar-menu2-0-0-2-3-3-2-1-2-5")
 		{
-			window.ifm.location.href="cgi-bin/ad_netcheck?ad_netcheck=yes";
+			window.ifm.location.href="cgi-bin/ad_netcheck?INDEX=00";
 		}
     }
 

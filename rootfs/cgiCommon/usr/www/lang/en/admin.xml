@@ -163,6 +163,7 @@
 	<message msgid="admw waiting" msgstr="Please Wait......" />
 	<message msgid="admw settingwaiting" msgstr="Setting,Please Wait......" />
 	<message msgid="admw uploadwaiting" msgstr="Upgrading,Please Wait......" />
+	<message msgid="admw settingmanual" msgstr="Setting,Please Wait......If the page long time not jump, please manually" />
 
 	<message msgid="admw ssidrequest" msgstr="  (1-24 letters, numbers, or underscore)" />
 	<message msgid="admw passwordrequest" msgstr="  (8-12 letters, numbers or underscore)" />

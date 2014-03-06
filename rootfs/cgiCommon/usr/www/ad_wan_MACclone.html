@@ -78,6 +78,15 @@ function chackMAC()
 			}
 		}
 	}
+	else if(document.WORKFORM.MACTYPE[1].checked == true)
+	{
+		if (document.WORKFORM.ETH0_MAC.value.length == 0)
+		{
+			alert(_("err MAC no"));
+			document.WORKFORM.ETH0_MAC.focus();
+			return false;
+		}
+	}
 	window.parent.Demo(_("settingwaiting"));
 	widget_enable("ETH0_MAC");
 	button_commit("MAC_CLONE");

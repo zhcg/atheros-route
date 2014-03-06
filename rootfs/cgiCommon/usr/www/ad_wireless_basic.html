@@ -211,8 +211,6 @@ function CheckWirelessValue()
 		document.wizard_form.AP_SECMODE_3.disabled = true;
 		document.getElementById("pwd2").disabled = true;	   
 	}	
-	
-	
 	waitgifshow();
 	button_commit("WIRELESS");
 	return true;
@@ -297,7 +295,7 @@ function switch_wifi2()
 }
 function waitgifshow()
 {
-	window.parent.Demo( _("admw settingwaiting"));
+	window.parent.Demo(_("admw settingmanual"));
 }
 function inithidewifi()
 {

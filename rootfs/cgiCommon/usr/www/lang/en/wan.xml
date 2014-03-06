@@ -96,4 +96,6 @@
 	<message msgid="wan auto_l2tp" msgstr="Automatically select L2TP mode" />
 	<message msgid="wan auto_p2tp" msgstr="Automatically select P2TP mode" />
 	<message msgid="wan auto_fail" msgstr="Automatically select fail,please check the internet connection or select manually " />
+	<message msgid="err MAC no" msgstr="Access management terminal MAC failed" />
+	
  </po>

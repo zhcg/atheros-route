@@ -12,7 +12,7 @@ function GetQueryString(name) {
         var r = window.location.search.substr(1).match(reg);
         if (r!=null) return (r[2]); return null;
 }
-hbd=GetQueryString("reboot");
+hbd=GetQueryString("RESULT");
 if(hbd)
 {
 
@@ -25,6 +25,7 @@ var xmlHttpreboot;
 var desIPreboot;
 var destnation;
 var timeID;
+var a;
 function rebootcreateXMLHttpRequest()
 {
 	if(window.ActiveXObject)
@@ -52,7 +53,7 @@ function  reboothandleStateChange()
 		if(xmlHttpreboot.status==200)
 		{
 			clearTimeout(timeID);
-			setTimeout(function(){window.top.location.href=destnation;},3000);
+			setTimeout(function(){window.top.location.href=destnation;},4000);
 		}
 	}
 }

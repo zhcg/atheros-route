@@ -160,6 +160,7 @@
 	<message msgid="admw waiting" msgstr="正在检测,请您稍等......" />
 	<message msgid="admw settingwaiting" msgstr="正在配置,请您稍等......" />
 	<message msgid="admw uploadwaiting" msgstr="正在升级,请您稍等......" />
+	<message msgid="admw settingmanual" msgstr="正在配置,请您稍等......若页面长时间未跳转，请手动连接" />
 
 	<message msgid="admw ssidrequest" msgstr="  (1-24位字母、数字或下划线)" />
 	<message msgid="admw passwordrequest" msgstr="  (8-12位字母、数字或下划线)" />

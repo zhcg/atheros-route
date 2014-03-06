@@ -219,6 +219,7 @@ function iFrameHeight()
 var xmlHttp;
 var desIP;
 var destination;
+var timeID;
 
 function createXMLHttpRequest()
 {
@@ -233,6 +234,20 @@ function createXMLHttpRequest()
 }
 function  handleStateChange()
 {
+	//alert("handleStateChange"+xmlHttp.readyState+" "+xmlHttp.status);
+
+	if(xmlHttp.readyState==4)
+	{
+		//if(xmlHttp.status==200)
+		//{
+			window.location.href=destination;
+		//}
+	}
+}
+function  handleStateChange2()
+{
+	//alert("handleStateChange"+xmlHttp.readyState+" "+xmlHttp.status);
+
 	if(xmlHttp.readyState==4)
 	{
 		if(xmlHttp.status==200)
@@ -248,15 +263,18 @@ function jump2(des)
 		desIP="10.10.10.254";
 	else
 		desIP=des;
-	setTimeout(function(){jump2request();},5000);	
+	//alert("desIP"+desIP);
+	setTimeout(function(){jump2request();},3000);	
 }
 
 function jump2request()
 {
-	setTimeout(function(){jump2request();},5000);
+	clearTimeout(timeID);
+	timeID=setTimeout(function(){jump2request();},1000);
 	createXMLHttpRequest();
 	xmlHttp.onreadystatechange=handleStateChange;
 	destination = "http://"+desIP;
+	//alert("desIP"+destination);
 	xmlHttp.open("GET","http://"+desIP+"/simpleResponse.xml?now=" + new Date().getTime(),true);
 	xmlHttp.send(null);
 }
@@ -274,7 +292,7 @@ function startRequest()
 {
 	setTimeout(function(){startRequest();},8000);
 	createXMLHttpRequest();
-	xmlHttp.onreadystatechange=handleStateChange;
+	xmlHttp.onreadystatechange=handleStateChange2;
 	destination ="http://"+desIP+"/cgi-bin/"+"crupload";
 	xmlHttp.open("GET","http://"+desIP+"/simpleResponse.xml?now=" + new Date().getTime(),true);
 	xmlHttp.send(null);
