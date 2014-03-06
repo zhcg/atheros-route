@@ -5593,8 +5593,8 @@ int main(int argc,char **argv)
 				//fprintf(errOut,"manual pppoe-setup cmdstr-----%s\n",cmdstr);
 				system(cmdstr);   
 				
-				system("pppoe-stop > /dev/null 2>&1");sleep(2);
-				system("pppoe-start > /dev/null 2>&1");sleep(5);
+				//system("pppoe-stop > /dev/null 2>&1");sleep(2);
+				//system("pppoe-start > /dev/null 2>&1");sleep(5);
 			}//manual mode		
 			else if(!strncmp(pppoe_mode,"timing",6))	
 			{ 
@@ -5639,9 +5639,14 @@ int main(int argc,char **argv)
 			}
 			gohome =1;
 			//kill old,run new ppy
-		    system("killall ppy > /dev/null 2>&1");sleep(1);
+		    ////////system("killall ppy > /dev/null 2>&1");sleep(1);
 			//system("/usr/sbin/ppy & > /dev/null 2>&1");sleep(1);
-			system("/usr/sbin/ppy & > /dev/null 2>&1");
+			////////system("/usr/sbin/ppy & > /dev/null 2>&1");
+			system("killall pppoe-ppy > /dev/null 2>&1");sleep(3);//ppy is in pppoe-ppy script
+			system("killall ppy > /dev/null 2>&1");sleep(3);
+			system("ppy > /dev/null 2>&1 &");sleep(2);//bash  avoid let syntax error
+			//system("sleep 1 && reboot &");
+
 		}
 
 ///pppoe above
