@@ -6,21 +6,6 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
-var hbd;
-function GetQueryString(name) {
-        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)","i");
-        var r = window.location.search.substr(1).match(reg);
-        if (r!=null) return (r[2]); return null;
-}
-hbd=GetQueryString("ad_wireless_wds");
-if(hbd)
-{
-
-}
-else
-{
-        window.location.href="/index.html";
-}
 var show = 0;
 var show2 = 0;
 function button_commit(buttonID){document.getElementById(buttonID).click();}
@@ -582,8 +567,8 @@ function help()
 </table>
 <!--/form-->
 <div style="display:none">    
-	<input type="button" name="REFRESHWFi" id="REFRESHWFi" style="display:none" value="REFRESHWFi" onClick="window.location.href='ad_wireless_wds?INDEX=11&ad_wireless_wds=yes'">
-	<input type="button" name="REFRESHWFi2" id="REFRESHWFi2" style="display:none" value="REFRESHWFi2" onClick="window.location.href='ad_wireless_wds?INDEX=112&ad_wireless_wds=yes'">
+	<input type="button" name="REFRESHWFi" id="REFRESHWFi" style="display:none" value="REFRESHWFi" onClick="window.location.href='ad_wireless_wds?INDEX=11'">
+	<input type="button" name="REFRESHWFi2" id="REFRESHWFi2" style="display:none" value="REFRESHWFi2" onClick="window.location.href='ad_wireless_wds?INDEX=112'">
 	<input type="text" style="display:none" name="WIFION_OFF" id="WIFION_OFF" size="20" maxlength="32" value="~~WIFION_OFF~">	
 	<input type="text" style="display:none" name="WIFION_OFF_3" id="WIFION_OFF_3" size="20" maxlength="32" value="~~WIFION_OFF_3~">	
 </div>
