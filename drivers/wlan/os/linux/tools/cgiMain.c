@@ -3992,7 +3992,8 @@ int main(int argc,char **argv)
 			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
             writeParameters("/tmp/.apcfg","w+",0);
 			//[TODO] reset any args
-			system("echo \"/:admin:admin\" > /etc/httpd.conf");
+			system("echo \"/index.html:admin:admin\" > /etc/httpd.conf");
+			system("echo \"/index2.html:admin:admin\" > /etc/httpd.conf");
 			//MAC and BACKUP
 			system("/usr/sbin/var_backup > /dev/null 2>&1");
 			system("cat /dev/null > /etc/ath/iptables/parc");
