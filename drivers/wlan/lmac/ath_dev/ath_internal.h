@@ -789,6 +789,7 @@ struct ath_vap {
 
 #endif
 
+#if 0
 #define ATH_GET_VAP_ID(bssid, hwbssid, id)                              \
     do {                                                                \
        u_int8_t hw_bssid = (hwbssid[0] >> 4) & (ATH_BCBUF - 1);         \
@@ -799,7 +800,18 @@ struct ath_vap {
            id =0;                                                       \
        }                                                                \
     } while (0)
-    
+
+#else
+#define ATH_GET_VAP_ID(bssid, hwbssid, id)                              \
+    do {                                                                \
+       if (bssid[5] < hwbssid[5] )  {                                   \
+           id = bssid[5]+256-hwbssid[5];                                \
+       } else {                                                         \
+           id = bssid[5]-hwbssid[5];                                    \
+       }                                                                \
+    } while (0)
+
+#endif
        
 #if 0                                                                
 #define ATH_SET_VAP_BSSID(bssid, hwbssid, id)                        \
