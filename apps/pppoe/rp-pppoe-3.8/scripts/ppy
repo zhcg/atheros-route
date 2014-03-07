@@ -1,0 +1,94 @@
+#! /bin/sh
+
+  #get ts--starting ppy time
+  hh=`date +%H`
+  mm=`date +%M`
+  ss=`date +%S`
+      hh=`expr $hh \* 3600`
+      mm=`expr $mm \* 60`
+      ts=`expr $hh + $mm`
+      ts=`expr $ts + $ss`
+      
+  man_flag=1
+      
+  while [ true ] ; do
+    sleep 1
+    pppoe_mode=`grep 'PPPOE_MODE' /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-6`
+    wan_mode=`grep 'WAN_MODE' /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-5`
+    ppp0=`route -n|grep ppp0|awk -F ' ' '{print$8}'|awk 'NR==1'`
+    sta_addr=`wlanconfig ath0 list | grep ADDR |awk '{print $1}'|cut -c1-4`
+   
+    #update tn
+    hh=`date +%H`
+    mm=`date +%M`
+    ss=`date +%S` 
+      hh=`expr $hh \* 3600`
+      mm=`expr $mm \* 60`
+      tn=`expr $hh + $mm` 
+      tn=`expr $tn + $ss`
+        
+    #update ts,if ADDR
+    if [ "$sta_addr" = "ADDR" ]; then
+      hh=`date +%H`
+      mm=`date +%M`
+      ss=`date +%S`
+      hh=`expr $hh \* 3600`
+      mm=`expr $mm \* 60`
+      ts=`expr $hh + $mm`
+      ts=`expr $ts + $ss`
+    fi
+    
+    #tim mode
+    if [ "$wan_mode" = "pppoe" ] && [ "$pppoe_mode" = "timing" ]; then
+       tim_bh=`grep 'PPPOE_TIMING_BH' /tmp/.apcfg | awk -F '=' '{ print $2 }'`
+       tim_bm=`grep 'PPPOE_TIMING_BM' /tmp/.apcfg | awk -F '=' '{ print $2 }'`
+       tim_eh=`grep 'PPPOE_TIMING_EH' /tmp/.apcfg | awk -F '=' '{ print $2 }'`
+       tim_em=`grep 'PPPOE_TIMING_EM' /tmp/.apcfg | awk -F '=' '{ print $2 }'`
+ 
+      tim_bh=`expr $tim_bh \* 3600`
+      tim_bm=`expr $tim_bm \* 60`
+      b_time=`expr $tim_bh + $tim_bm` 
+        
+      tim_eh=`expr $tim_eh \* 3600`
+      tim_em=`expr $tim_em \* 60`
+      e_time=`expr $tim_eh + $tim_em` 
+               
+       if [ $tn -gt $b_time ] && [ $tn -lt $e_time ]; then 
+          pppoe-start > /dev/null 2>&1
+          sleep 7
+       else
+          pppoe-stop > /dev/null 2>&1
+          sleep 2
+       fi
+    fi
+    
+    #dem mode
+    if [ "$wan_mode" = "pppoe" ] && [ "$pppoe_mode" = "demand" ]; then
+       dem_t0=`grep 'PPPOE_DEMAND' /tmp/.apcfg | awk -F '=' '{ print $2 }'`
+       dem_time=`expr $ts + $dem_t0`      
+       if [ "$sta_addr" = "ADDR" ] && [ "$ppp0" != "ppp0" ]; then
+          pppoe-start > /dev/null 2>&1
+          sleep 7  
+       elif [ $tn -lt $dem_time ] && [ "$ppp0" != "ppp0" ]; then
+          pppoe-start > /dev/null 2>&1
+          sleep 7
+       elif [ $tn -gt $dem_time ]; then
+          pppoe-stop > /dev/null 2>&1
+          sleep 2
+       fi
+   fi
+   
+   #man mode
+   if [ "$wan_mode" = "pppoe" ] && [ "$pppoe_mode" = "manual" ] && [ $man_flag -eq 1 ]; then
+      man_t0=`grep 'PPPOE_DEMAND' /tmp/.apcfg | awk -F '=' '{ print $2 }'`
+      man_time=`expr $ts + $man_t0`
+      if [ $tn -lt $man_time ] && [ "$ppp0" != "ppp0" ]; then
+        pppoe-start > /dev/null 2>&1
+        sleep 7
+      elif [ $tn -gt $man_time ]; then
+        pppoe-stop > /dev/null 2>&1
+        man_flag=0
+        sleep 2
+      fi
+   fi
+done
