@@ -6073,6 +6073,7 @@ int main(int argc,char **argv)
 		unsigned char pChar[128];
 		char valBuff[50];
 		char valBuff2[50];
+		char valBuff3[1000];
 		
 		int num,i=0;
 
@@ -6081,10 +6082,15 @@ int main(int argc,char **argv)
 		Execute_cmd("cfg -e | grep AP_IPADDR= | awk -F '=' '{print $2}'",valBuff);
 		Execute_cmd("cfg -e | grep \"AP_NETMASK=\" | awk -F \"=\" \'{print $2}\'",valBuff2);
 
-		Execute_cmd("ifconfig eth0|grep 'inet addr:'|awk -F ' ' '{print$2}'|awk -F ':' '{print$2}'", eth0_ip);
-		peth0_ip=strtok(eth0_ip,"\n");
-  	
-		if(strcmp(peth0_ip, br0_ip) && (!strstr(valBuff, br0_ip) || !strstr(valBuff2, br0_sub)) )//TODO
+		
+		Execute_cmd("ifconfig eth0", valBuff3);
+		if(strstr(valBuff3,"inet addr:"))
+			{
+              Execute_cmd("ifconfig eth0|grep 'inet addr:'|awk -F ' ' '{print$2}'|awk -F ':' '{print$2}'", eth0_ip);
+			  peth0_ip=strtok(eth0_ip,"\n");
+		    }
+		
+		if((!strstr(valBuff3,"inet addr:"))||(strstr(valBuff3,"inet addr:")&&(strcmp(peth0_ip, br0_ip) && (!strstr(valBuff, br0_ip) || !strstr(valBuff2, br0_sub)))))
 		{
 		   sprintf(pChar,"ifconfig br0 %s netmask %s up > /dev/null 2>&1",br0_ip,br0_sub);
 		   system(pChar);
