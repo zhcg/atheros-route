@@ -404,8 +404,8 @@ ath_ampdu_input(struct ath_softc *sc, struct ath_node *an, wbuf_t wbuf, ieee8021
 	       	((wh->i_addr1[IEEE80211_ADDR_LEN - 1] & sc->sc_bssidmask[IEEE80211_ADDR_LEN - 1]) == 
 			(sc->sc_myaddr[IEEE80211_ADDR_LEN - 1] & sc->sc_bssidmask[IEEE80211_ADDR_LEN - 1])))  {
 #else
-        if (OS_MEMCMP(&(wh->i_addr1[1]), &(sc->sc_myaddr[1]), IEEE80211_ADDR_LEN - 1)) {
-            if ((wh->i_addr1[0] & sc->sc_bssidmask[0]) == (sc->sc_myaddr[0] & sc->sc_bssidmask[0])) {
+        if (OS_MEMCMP(&(wh->i_addr1[1]), &(sc->sc_myaddr[1]), IEEE80211_ADDR_LEN - 2)) {
+            if ((wh->i_addr1[5] & sc->sc_bssidmask[5]) == (sc->sc_myaddr[5] & sc->sc_bssidmask[5])) {
 #endif
                 wbuf_free(wbuf);
                 return -1;

@@ -780,12 +780,10 @@ struct ath_vap {
 #define ATH_SET_VAP_BSSID_MASK(bssid_mask)      ((bssid_mask)[0] &= ~(((ATH_BCBUF-1) << 4) | 0x02))
 #else
 #define ATH_SET_VAP_BSSID_MASK(bssid_mask)							\
-    do {											\
-	((bssid_mask)[5] = 0x00);                                  \
-	((bssid_mask)[4] = 0x00);                                  \
-	((bssid_mask)[3] = 0x00);                                  \
+    do {										                 	\
+	((bssid_mask)[5] &= ~(0x01));            \
+	((bssid_mask)[0] &= ~(0x02));            \
     } while(0)
-//#define ATH_SET_VAP_BSSID_MASK(bssid_mask)      ((bssid_mask)[5] = 0xF0)
 
 #endif
 
@@ -829,14 +827,11 @@ struct ath_vap {
 #define ATH_SET_VAP_BSSID(bssid, hwbssid, id)                        \
     do {                                                             \
         if (id) {                                                    \
-            (bssid)[5] = hwbssid[5] + id;                            \
-            if (hwbssid[5] + id > 255) {                                  \
-                (bssid)[5] = 0;                                      \
-                (bssid)[4] = hwbssid[4] + 1;                          \
-                if (hwbssid[4] + 1 > 255) {                                  \
-                    (bssid)[4] = 0;                                      \
-                    (bssid)[3] = hwbssid[3] + 1;                          \
-                }                                                        \
+            if (id==2) {                                             \
+                (bssid)[0] |= (0x02);                                \
+            }                                                        \
+            else {                                                   \
+                (bssid)[5] = hwbssid[5] + id;                        \
             }                                                        \
         }                                                            \
     } while(0)
