@@ -21,7 +21,7 @@
 int main(int argc,char **argv)
 {
 
-    unsigned mac_data[20] = {0};
+    unsigned int mac_data[20] = {0};
 	char  mac_buff[20];
 	int i;
 	FILE		*f;

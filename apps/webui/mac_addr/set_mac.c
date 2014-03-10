@@ -21,7 +21,7 @@
 int main(int argc,char **argv)
 {
 
-    unsigned char mac_data[20] = {0};
+    unsigned int mac_data[20] = {0};
 	char  mac_buff[20];
 	int i;
 	FILE		*f;
@@ -34,6 +34,7 @@ int main(int argc,char **argv)
 
 		memset(mac_buff,0,sizeof(mac_buff));
 		strncpy(mac_buff,argv[2],17);
+	//	printf("--------mac_buff %s  \n",mac_buff);
 		sscanf(mac_buff,"%02x:%02x:%02x:%02x:%02x:%02x",&mac_data[0],&mac_data[1],&mac_data[2],&mac_data[3],&mac_data[4],&mac_data[5]);
 		f = fopen(NAME,"w+");
 		if(!f)
