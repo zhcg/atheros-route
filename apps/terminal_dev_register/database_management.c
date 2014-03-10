@@ -11,6 +11,16 @@ static int sqlite3_insert(unsigned char columns_count, char (*columns_name)[30],
 static int sqlite3_delete_row(unsigned char columns_count, char (*columns_name)[30], char (*columns_value)[100]);
 
 /**
+ * 执行sql命令
+ */
+static int sqlite3_exec_cmd(char *sql, char *db_name);
+
+/**
+ * 执行sql select命令
+ */
+static int sqlite3_exec_select_cmd(char *sql, char *db_name, char *buf, unsigned short buf_len);
+
+/**
  * 数据置空
  */
 static int sqlite3_clear(unsigned char columns_count, char (*columns_name)[30]);
@@ -39,7 +49,9 @@ static int sqlite3_clear_table();
  * 初始化结构体
  */
 struct class_database_management database_management = 
-{
+{   
+    .exec_cmd = sqlite3_exec_cmd,
+    .exec_select_cmd = sqlite3_exec_select_cmd,
     .clear = sqlite3_clear_table, 
     .insert = sqlite3_insert, 
     .delete_row = sqlite3_delete_row, 
@@ -167,6 +179,101 @@ int sqlite3_delete_row(unsigned char columns_count, char (*columns_name)[30], ch
     return 0;
 }
 
+/**
+ * 执行sql命令
+ */
+int sqlite3_exec_cmd(char *sql, char *db_name)
+{
+    PRINT_STEP("entry...\n");
+    int i = 0;
+    sqlite3 *db;
+    char *err_msg;
+    
+    if ((sql == NULL) || (db_name == NULL))
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "para is NULL!", NULL_ERR);
+        return NULL_ERR;
+    }
+    
+    if (sqlite3_open(db_name, &db) != 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, sqlite3_errmsg(db), SQLITE_OPEN_ERR);
+        return SQLITE_OPEN_ERR;
+    }
+    
+    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, sql, 0);
+    if (sqlite3_exec(db, sql, NULL, NULL, &err_msg) != 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, err_msg, SQLITE_EXEC_ERR);
+        sqlite3_close(db);
+        return SQLITE_EXEC_ERR;
+    }
+    sqlite3_close(db);
+    PRINT_STEP("exit...\n");
+    return 0;
+}
+
+/**
+ * 执行sql select命令
+ */
+int sqlite3_exec_select_cmd(char *sql, char *db_name, char *buf, unsigned short buf_len)
+{
+    PRINT_STEP("entry...\n");
+    int i = 0, j = 0;
+    int index = 0;
+    char **result_buf; //是 char ** 类型，两个*号
+    int row_count = 0, column_count = 0;
+    sqlite3 *db;
+    char *err_msg;
+    
+    if ((sql == NULL) || (db_name == NULL) || (buf == NULL))
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "para is NULL!", NULL_ERR);
+        return NULL_ERR;
+    }
+    
+    if (buf_len == 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data error!", DATA_ERR);
+        return DATA_ERR;
+    }
+    
+    if (sqlite3_open(db_name, &db) != 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, sqlite3_errmsg(db), SQLITE_OPEN_ERR);
+        return SQLITE_OPEN_ERR;
+    }
+    
+    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, sql, 0);
+    if(sqlite3_get_table(db, sql, &result_buf, &row_count, &column_count, &err_msg) != 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, err_msg, SQLITE_GET_TABLE_ERR);
+        sqlite3_free_table(result_buf);
+        return SQLITE_GET_TABLE_ERR;
+    }
+    
+    PRINT("row_count = %d, column_count = %d\n", row_count, column_count);
+    index = column_count;
+    for (i = 0; i < row_count; i++)
+    {
+        for (j = 0; j < column_count; j++)
+        {
+            strcat(buf, result_buf[index]);
+            if (j != (column_count - 1))
+            {
+                strcat(buf, ",");
+            }
+            ++index;
+        }
+        strcat(buf, ";");
+    }
+    PRINT("buf = %s\n", buf);
+    
+    sqlite3_free_table(result_buf);
+    sqlite3_close(db);
+    PRINT_STEP("exit...\n");
+    return 0;
+}
 /**
  * 数据置空
  */

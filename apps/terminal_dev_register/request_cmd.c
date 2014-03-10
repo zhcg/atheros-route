@@ -41,7 +41,9 @@ static int request_cmd_0x05(struct s_terminal_dev_register * terminal_dev_regist
 static int request_cmd_0x06(struct s_terminal_dev_register * terminal_dev_register);
 
 /**
- * 请求命令字分析 0x0B 网络设置询问
+ * 请求命令字分析 0x0B 
+ * 5350时 网络设置询问
+ * 9344时 设备名称修改命令，智能设备将 mac、设备名称发送给BASE
  */
 static int request_cmd_0x0B(struct s_terminal_dev_register * terminal_dev_register);
 
@@ -108,6 +110,10 @@ static int request_cmd_0x56(struct s_terminal_dev_register * terminal_dev_regist
  */
 static int request_cmd_0x57(struct s_terminal_dev_register * terminal_dev_register);
 
+/**
+ * 请求命令字分析 0x58 注销命令，智能设备，删除匹配MAC的行
+ */
+static int request_cmd_0x58(struct s_terminal_dev_register * terminal_dev_register);
 #endif // BOARDTYPE == 9344
 
 /**
@@ -1173,12 +1179,15 @@ int request_cmd_0x06(struct s_terminal_dev_register * terminal_dev_register)
 }
 
 /**
- * 请求命令字分析 0x0B 网络设置询问
+ * 请求命令字分析 0x0B 
+ * 5350时 网络设置询问
+ * 9344时 设备名称修改命令，智能设备将 mac、设备名称发送给BASE
  */
 int request_cmd_0x0B(struct s_terminal_dev_register * terminal_dev_register)
 {
     int res = 0;
     int fd = terminal_dev_register->fd;
+    int len = terminal_dev_register->length;
     unsigned char register_state = (unsigned char)terminal_dev_register->data_table.register_state;
     
     char columns_name[1][30] = {0};
@@ -1215,6 +1224,8 @@ int request_cmd_0x0B(struct s_terminal_dev_register * terminal_dev_register)
     }
     memcpy(buf, columns_value[0], strlen(columns_value[0]));
     #elif BOARDTYPE == 9344
+    
+    #if 0
     char mode[32] = {0};
     if ((res = common_tools.get_cmd_out("cfg -s | grep WAN_MODE:=", mode, sizeof(mode))) < 0)
     {
@@ -1222,6 +1233,12 @@ int request_cmd_0x0B(struct s_terminal_dev_register * terminal_dev_register)
         return res;
     }
     memcpy(buf, mode + strlen("WAN_MODE:="), strlen(mode) - strlen("WAN_MODE:=") - 1);
+    #endif // #if 0
+    
+    
+    struct s_dev_register dev_register;
+	memset(&dev_register, 0, sizeof(struct s_dev_register));
+	
     #endif
 
 
@@ -1386,6 +1403,8 @@ int request_cmd_0x0B(struct s_terminal_dev_register * terminal_dev_register)
         }
     }
     #elif BOARDTYPE == 9344
+    
+    #if 0
     if (memcmp(buf, "static", strlen("static")) == 0)
     {
         strcpy(send_buf, "mode:STATIC,");
@@ -1537,7 +1556,36 @@ int request_cmd_0x0B(struct s_terminal_dev_register * terminal_dev_register)
             }
         }
     }
+    #endif // #if 0
+    
+    // 9344时 设备名称修改命令，智能设备将 mac、设备名称发送给BASE
+    memcpy(dev_register.dev_mac, terminal_dev_register->data, 12);
+    
+    if ((len - 12) > (sizeof(dev_register.dev_name) - 1))
+    {
+        res = P_DATA_ERR;
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data error!", res);
+        return res;
+    }
+    memcpy(dev_register.dev_name, terminal_dev_register->data + 12, len - 12);
+    
+    PRINT("dev_register.dev_name = %s\n", dev_register.dev_name);
+    PRINT("dev_register.dev_mac = %s\n", dev_register.dev_mac);
+    
+    if ((res = database_update_dev_info(&dev_register)) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "add_dev_info failed!", res);
+        return res;
+    }
+    
+    if ((res = network_config.send_msg_to_pad(fd, 0x00, NULL, 0)) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
+        return res;
+    }
+    
     #endif // BOARDTYPE == 9344
+    #if 0
     else
     {
         res = DATA_ERR;
@@ -1677,7 +1725,7 @@ int request_cmd_0x0B(struct s_terminal_dev_register * terminal_dev_register)
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
         return res;
     }
-    
+    #endif 
     return res;
 }
 
@@ -2094,6 +2142,7 @@ int request_cmd_0x56(struct s_terminal_dev_register * terminal_dev_register)
     }
     return res;
 }
+
 /**
  * 请求命令字分析 0x57 注销命令，删除匹配序列号的行
  */
@@ -2117,6 +2166,51 @@ int request_cmd_0x57(struct s_terminal_dev_register * terminal_dev_register)
     }
     
     memcpy(dev_register.dev_mac, terminal_dev_register->data + SN_LEN, 12);
+    if ((res = database_delete_dev_info(&dev_register)) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "database_delete_dev_info failed!", res);
+        return res;
+    }
+
+    if ((res = network_config.send_msg_to_pad(fd, 0x00, NULL, 0)) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
+        return res;
+    }
+    return res;
+}
+
+/**
+ * 请求命令字分析 0x58 注销命令，删除匹配MAC的行
+ */
+int request_cmd_0x58(struct s_terminal_dev_register * terminal_dev_register)
+{
+    int res = 0;
+    int fd = terminal_dev_register->fd;
+    int len = terminal_dev_register->length;
+    unsigned char register_state = (unsigned char)terminal_dev_register->data_table.register_state;
+    
+#if BOARDTYPE == 9344
+    struct s_dev_register dev_register;
+    memset(&dev_register, 0, sizeof(struct s_dev_register));
+#endif
+    
+    if (register_state != 0x00) // PAD没有注册成功
+    {
+        res = NO_INIT_ERR;
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no init!", res);
+        return res;
+    }
+    
+    PRINT("len = %d %02X\n", len, len);
+    if (len != 12)
+    {
+        res = P_DATA_ERR;
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data error!", res);
+        return res;
+    }
+    memcpy(dev_register.dev_mac, terminal_dev_register->data, len);
+    
     if ((res = database_delete_dev_info(&dev_register)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "database_delete_dev_info failed!", res);
@@ -2210,6 +2304,7 @@ static int request_cmd_analyse(struct s_terminal_dev_register * terminal_dev_reg
                 #elif BOARDTYPE == 9344
                 case 0x05:   //0x05: 注册命令，PAD将随机生成的4字节串码发给base
                 case 0x06:   //0x06: 注册命令，智能设备将 设备名称、id、mac发送给BASE
+                case 0x0B:   //0x0B: 设备名称修改命令，智能设备将 mac、设备名称发送给BASE
                 #endif // BOARDTYPE == 9344
                 case 0x0C:   //0x0C: 恢复出厂（终端初始化前的状态）
                 case 0x0D:   //0x0D: 查看Base版本
@@ -2226,6 +2321,7 @@ static int request_cmd_analyse(struct s_terminal_dev_register * terminal_dev_reg
                 case 0x55:   //0x55：PAD扫描“发送注册申请”的设备
                 case 0x56:   //0x56：查询已经注册的设备
                 case 0x57:   //0x57：注销命令，删除匹配序列号的行
+                case 0x58:   //0x58：注销命令，智能设备将mac地址发送到base
                 #endif // BOARDTYPE == 9344
                 {
                     cmd = pad_and_6410_msg.cmd;
@@ -2263,9 +2359,9 @@ static int request_cmd_analyse(struct s_terminal_dev_register * terminal_dev_reg
     *network_config.pad_cmd = terminal_dev_register->data_table.register_state;
     PRINT("register_state = %02X, *network_config.pad_cmd = %02X\n", terminal_dev_register->data_table.register_state, (unsigned char)*network_config.pad_cmd);
 
-    // 不是智能设备都要验证 序列号 // 所有都有验证 序列号
+    // 不是智能设备都要验证 序列号 // 所有都要验证 序列号
     #if BOARDTYPE == 9344
-    if ((pad_and_6410_msg.cmd != 0x06) && (pad_and_6410_msg.cmd != 0x54) && (mode == 1)) // 网络通道
+    if ((pad_and_6410_msg.cmd != 0x06) && (pad_and_6410_msg.cmd != 0x0B) && (pad_and_6410_msg.cmd != 0x54) && (pad_and_6410_msg.cmd != 0x58) && (mode == 1)) // 网络通道
     #endif
     {
         switch (pad_and_6410_msg.cmd)
@@ -2278,6 +2374,7 @@ static int request_cmd_analyse(struct s_terminal_dev_register * terminal_dev_reg
             case 0x08:
             case 0x09:
             case 0x0A:
+            #elif BOARDTYPE == 5350
             #endif // BOARDTYPE == 5350
             {
                 index = 1;
@@ -2353,13 +2450,11 @@ static int request_cmd_analyse(struct s_terminal_dev_register * terminal_dev_reg
             res = request_cmd_0x06(terminal_dev_register);
             break;
         }
-        #if BOARDTYPE == 5350
         case 0x0B:
         {
             res = request_cmd_0x0B(terminal_dev_register);
             break;
         }
-        #endif // BOARDTYPE == 5350
         case 0x0C:
         {
             res = request_cmd_0x0C(terminal_dev_register);
@@ -2419,6 +2514,11 @@ static int request_cmd_analyse(struct s_terminal_dev_register * terminal_dev_reg
         case 0x57:
         {
             res = request_cmd_0x57(terminal_dev_register);
+            break;
+        }
+        case 0x58:
+        {
+            res = request_cmd_0x58(terminal_dev_register);
             break;
         }
         #endif // BOARDTYPE == 9344
@@ -3115,6 +3215,94 @@ int database_delete_dev_info(struct s_dev_register *dev_register)
     if ((res = database_management.delete_row(1, columns_name, columns_value)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_delete_row failed!", res);
+        return res;
+    }
+    return 0;
+}
+
+/**
+ * 修改指定行 （数据库）
+ */
+int database_update_dev_info(struct s_dev_register *dev_register)
+{
+    int res = 0;
+    char *tmp = NULL;
+    char *index = NULL;
+    
+    // 查询此行
+    char sql[256] = {0};
+    char buf[sizeof(struct s_dev_register) + 4] = {0};
+    
+    snprintf(sql, sizeof(sql), "select * from %s where device_mac =\'%s\'", 
+        REGISTERTB, dev_register->dev_mac);
+    if ((res = database_management.exec_select_cmd(sql, common_tools.config->db, buf, sizeof(buf))) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_exec_cmd failed!", res);
+        return res;
+    }
+    
+    index = buf;
+    
+    if ((index == NULL) || (strcmp(index, "") == 0))
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "There is no this record!", NON_EXISTENT_ERR);
+        return NON_EXISTENT_ERR;
+    }
+    
+    // device_name
+    if ((tmp = strchr(index, ',')) == NULL)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "To match the string was not found in the buffer!", STRSTR_ERR);
+        return STRSTR_ERR;
+    }
+    
+    *tmp = '\0';
+    index = tmp + 1;
+    
+    // device_id
+    if ((tmp = strchr(index, ',')) == NULL)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "To match the string was not found in the buffer!", STRSTR_ERR);
+        return STRSTR_ERR;
+    }
+    
+    *tmp = '\0';
+    memset(dev_register->dev_id, 0, sizeof(dev_register->dev_id));
+    memcpy(dev_register->dev_id, index, strlen(index));
+    
+    index = tmp + 1;
+    
+    // device_mac
+    if ((tmp = strchr(index, ',')) == NULL)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "To match the string was not found in the buffer!", STRSTR_ERR);
+        return STRSTR_ERR;
+    }
+    
+    *tmp = '\0';
+    index = tmp + 1;
+    
+    // device_code
+    if ((tmp = strchr(index, ';')) == NULL)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "To match the string was not found in the buffer!", STRSTR_ERR);
+        return STRSTR_ERR;
+    }
+    
+    *tmp = '\0';
+    memset(dev_register->dev_code, 0, sizeof(dev_register->dev_code));
+    memcpy(dev_register->dev_code, index, strlen(index));
+    
+    // 更新指定的行
+    memset(sql, 0, sizeof(sql));
+    PRINT("%s %s %s %s\n", dev_register->dev_name, dev_register->dev_id, dev_register->dev_mac, dev_register->dev_code);
+    snprintf(sql, sizeof(sql), "replace into %s(device_mac,device_name,device_id,device_code) values(\'%s\',\'%s\',\'%s\',\'%s\')", 
+        REGISTERTB, dev_register->dev_mac, dev_register->dev_name, dev_register->dev_id, dev_register->dev_code);
+    
+    
+    if ((res = database_management.exec_cmd(sql, common_tools.config->db)) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_exec_cmd failed!", res);
         return res;
     }
     return 0;
