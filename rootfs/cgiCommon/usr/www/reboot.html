@@ -72,7 +72,8 @@ function init()
 	if(a == "reboot")
 	{
 		window.parent.Demo(_("REBOOT"));
-		destnation = "http://"+desIPreboot;
+		destnation = "http://"+location.hostname;
+		desIPreboot = location.hostname;
 		setTimeout(function(){rebootRequest();},10000);
 	}
 	else if(a == "upload")

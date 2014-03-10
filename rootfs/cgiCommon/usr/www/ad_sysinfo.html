@@ -79,7 +79,7 @@ function initTranslation()
 		//setTimeout(function(){rebootRequest();},1000);
 		createxmlreq();
 		xmlreq.onreadystatechange=handleState;
-		desIPreboot = document.getElementById("IPA").value;
+		desIPreboot = location.hostname;
 		xmlreq.open("GET","http://"+desIPreboot+"/ping.xml?now=" + new Date().getTime(),true);
 		xmlreq.send(null);
 	}
