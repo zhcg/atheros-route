@@ -139,8 +139,6 @@ struct class_phone_control
 	int ring_pos_count;
 	int ring_count;
 	int passage_fd;
-	int called_test;
-	int called_test_times;
 	char vloop; //电话线插入检测
 };
 
@@ -201,6 +199,6 @@ void passage_pthread_func(void *argv);
 
 extern struct class_phone_control phone_control;
 extern struct class_phone_audio phone_audio;
-extern dev_status_t devlist[4];
+extern dev_status_t devlist[CLIENT_NUM];
 extern unsigned char output_stream_buffer[AUDIO_STREAM_BUFFER_SIZE];
 #endif

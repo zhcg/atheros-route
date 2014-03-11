@@ -164,8 +164,10 @@ int check_file(char *pVersion, const unsigned char *pPath)
     unsigned long filesize = -1;      
     struct stat statbuff; 
     fd= open(pPath, O_RDONLY);
+    PRINT("path = %s\n",pPath);
     if(fd == -1)
     {
+		PRINT("open fail error\n");
         return -1;
     }
     comingFile.fd = fd;
@@ -302,11 +304,12 @@ int check_file(char *pVersion, const unsigned char *pPath)
 		free(comingFile.fileBuf);
         return -10;
     }
-    //删除源文件，并把数据重新写入(只写二进制文件)
-    fd =open(pPath, O_RDWR|O_TRUNC);
+    //重新生成(只写二进制文件)
+    strcat(pPath,"_new");
+    fd =open(pPath, O_RDWR | O_CREAT);
     if(fd == -1)
     {
-        PRINT("**open error");
+        PRINT("**open error\n");
 		free(comingFile.fileBuf);
         return -11;
     }

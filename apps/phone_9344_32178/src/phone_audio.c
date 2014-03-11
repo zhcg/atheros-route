@@ -987,13 +987,13 @@ RECV_ERROR:
 				}
 TB_RECV_ERROR:
 				PRINT("error,when receive from socket,error code is %d\r\n",recv_ret);
-				phone_audio.audio_talkback_recv_thread_flag = 0;
-				phone_audio.audio_talkback_send_thread_flag = 0;
-				phone_audio.audio_talkbacked_recv_send_thread_flag = 0;
-
-				close(devp->audio_client_fd);
-				devp->audio_client_fd = -1;
-
+				//phone_audio.audio_talkback_recv_thread_flag = 0;
+				//phone_audio.audio_talkback_send_thread_flag = 0;
+				//phone_audio.audio_talkbacked_recv_send_thread_flag = 0;
+//
+				//close(devp->audio_client_fd);
+				//devp->audio_client_fd = -1;
+				stopaudio(devp,PSTN);
 				break;
 
 			}
@@ -1081,6 +1081,9 @@ void* audio_loop_accept(void* argv)
 								{
 									PRINT("audio client has been created\n");
 									//break;
+									if(devlist[i].dev_is_using == 1)
+										stopaudio(&devlist[i],PSTN);
+										
 								}
 								devlist[i].audio_client_fd = clientfd;
 								if(!strcmp(phone_control.who_is_online.client_ip,devlist[i].client_ip) && phone_control.who_is_online.attach == 1)

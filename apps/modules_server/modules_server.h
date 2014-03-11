@@ -10,8 +10,10 @@
 #define SGNAME		"/dev/sg0"
 #define USBNAME		"/dev/as532h"
 #define DATNAME		"/root/ElfDate.dat"
-#define DEFAULT_AS532_IMAGE "/root/Default_ElfDate.dat"
+#define DEFAULT_AS532_IMAGE "/var/default_image/default_ElfDate.dat"
+#define DEFAULT_STM32_IMAGE "/var/default_image/default_stm32_app_packet.bin"
 #define STM32_BIN_NAME "/root/stm32_app_packet.bin"
+#define LOW_COMMUNICATE		"/tmp/LOW_COMMUNICATE"
 #define SERVER_PORT	53232
 #define BUFFER_LEN 512
 #define BUFFER_SIZE_1K	1024
@@ -61,7 +63,7 @@
 
 #define FACTORY_TEST_CMD_1_POS			0X06	
 #define FACTORY_TEST_CMD_2_POS			0X07
-
+#define FACTORY_TEST_CMD_DATA_POS		0X08
 //第一个字节
 //DOWN
 #define FACTORY_TEST_CMD_DOWN_CONTROL_1	0X00
@@ -69,12 +71,14 @@
 #define FACTORY_TEST_CMD_DOWN_AS532_1	0X02
 #define FACTORY_TEST_CMD_DOWN_9344_1	0X03
 #define FACTORY_TEST_CMD_DOWN_ALL_1		0X04
+#define FACTORY_TEST_CMD_DOWN_MAC_1		0X0A
 //UP
 #define FACTORY_TEST_CMD_UP_CONTROL_1	0X80
 #define FACTORY_TEST_CMD_UP_STM32_1		0X81
 #define FACTORY_TEST_CMD_UP_AS532_1		0X82
 #define FACTORY_TEST_CMD_UP_9344_1		0X83
 #define FACTORY_TEST_CMD_UP_ALL_1		0X84
+#define FACTORY_TEST_CMD_UP_MAC_1		0X8A
 
 //start、stop
 #define FACTORY_TEST_CMD_CONTROL_START	0X0A
@@ -90,6 +94,7 @@
 #define FACTORY_TEST_CMD_9344_VER		0X00
 #define FACTORY_TEST_CMD_9344_LED1		0X01
 #define FACTORY_TEST_CMD_9344_LED2		0X02
+#define FACTORY_TEST_CMD_9344_LED3		0X05
 #define FACTORY_TEST_CMD_9344_CALL		0X03
 #define FACTORY_TEST_CMD_9344_CALLED	0X04
 #define FACTORY_TEST_CMD_9344_R54_CALL	0X06
@@ -98,7 +103,24 @@
 //all
 #define FACTORY_TEST_CMD_ALL_TEST		0X03
 
+//mac
+#define FACTORY_TEST_CMD_UPDATE_MAC		0X0C
 
+//ota
+#define OTA_VER 			0x31
+#define OTA_HEAD1 			0x4f
+#define OTA_HEAD2	 		0x54
+#define OTA_HEAD3 			0x41
+#define OTA_CMD_VER_REQ		0x01
+#define OTA_CMD_VER_RET	    0x02
+#define OTA_CMD_SN_REQ		0x21
+#define OTA_CMD_SN_RET		0x22
+#define OTA_CMD_UPDATE_REQ	0x41
+#define OTA_CMD_UPDATE_RET	0x42
+
+#define OTA_STM32_ID		0x11
+#define OTA_AS532H_ID		0x12
+			
 enum cmd_type {
 	DEFAULT = 0,
 	UKEY_1,//1
@@ -122,6 +144,7 @@ typedef struct __passage
 	char passage_name[20];
 }Passage;
 
+char CRC8(char *data, int length);
 int parse_r54_ver(unsigned char *buf,int *bytes);
 void check_r54_test_called_func();
 void check_stm32_ver_req_func();
@@ -143,8 +166,10 @@ int do_cmd_stm32_ver();
 int do_cmd_stm32_ver_des();
 int do_cmd_stm32_boot();
 int do_cmd_532_update();
-int do_cmd_stm32_update();
+int do_cmd_stm32_update(unsigned char *path);
 int do_cmd_rep(int type,char *data,int data_len,int result);
+int as532_update(unsigned char *path);
+int stm32_update(unsigned char* path);
 int parse_msg(char *buf,char *ip,short port);
 int serialConfig(int serial_fd, speed_t baudrate);
 unsigned char sumxor(const  char  *arr, int len);
@@ -155,24 +180,47 @@ int UartPacketDis(unsigned char *ppacket,int bytes);
 unsigned char *PacketSearchHead(void);
 int UartPacketRcv(unsigned char *des_packet_buffer,int *packet_size);
 void passage_thread_func(void *argv);
+
+int start_test();
+int stop_test();
+
+void factory_test_func(void *argv);
 int factory_test(unsigned char *packet,int bytes);
 int factory_test_cmd_9344_r54_call();
 int factory_test_cmd_9344_led1();
 int factory_test_cmd_9344_led2();
+int factory_test_cmd_9344_led3();
 int factory_test_cmd_9344_ver();
 int factory_test_cmd_as532_ver();
 int factory_test_cmd_stm32_ver();
+int factory_test_cmd_update_mac(unsigned char* data,int len);
 int factory_test_down_9344(char cmd);
 int factory_test_down_all(char cmd);
 int factory_test_down_as532(char cmd);
 int factory_test_down_control(char cmd);
 int factory_test_down_stm32(char cmd);
+int factory_test_down_mac(char cmd,unsigned char* data,int len);
 int factory_test_cmd_stm32_r54();
 int factory_test_r54_ver(unsigned char *packet,int bytes);
 int factory_test_r54_called_func(unsigned char *packet,int bytes);
 int generate_test_up_msg(char *sendbuf,char cmd1,char cmd2,char result_type,char err_code,char *result,int result_len);
 int generate_stm32_down_msg(char *databuf,int databuf_len,int passage);
+unsigned char *find_head(void);
+int prase_test_msg();
+int factory_test_cmd_stm32_pic();
+
+unsigned char *FifoSearchHead(void);
+int FifoPacketRcv(unsigned char *des_packet_buffer,int *packet_size);
+int FifoPacketDis(unsigned char *ppacket,int bytes);
+void ota_thread_func(void *argv);
+int ota_as532h_ver();
+int ota_stm32_ver();
+int ota_as532h_sn();
+int ota_stm32_sn();
+int ota_as532h_update(unsigned char* path);
+int ota_stm32_update(unsigned char* path);
+int generate_ota_up_msg(unsigned char cmd,unsigned char id,unsigned char *data,int data_len);
 
 extern int usb_fd;
-
+extern unsigned char stm_format_version[4];
 #endif
