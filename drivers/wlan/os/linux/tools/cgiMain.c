@@ -1367,7 +1367,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                             memset(mac_buf, 0, sizeof(mac_buf));
                             strncpy(buf, STAbuf, 17);
                             
-                            fprintf(errOut,"\n%s  %d 2.4G mac_buf:%s buf:%s\n",__func__,__LINE__,mac_buf,buf);
+                            //fprintf(errOut,"\n%s  %d 2.4G mac_buf:%s buf:%s\n",__func__,__LINE__,mac_buf,buf);
                             
                             //if(strncmp(buf, mac_buf, 17) == 0)
                             {//wireless
