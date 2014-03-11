@@ -1224,7 +1224,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                     //Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
                     //Execute_cmd("wlanconfig ath0 list sta > /var/run/.STAlist", rspBuff);
                     Execute_cmd("cfg -e | grep \"DHCPON_OFF=\" | awk -F \"=\" \'{print $2}\'",valBuff);
-					fprintf(errOut,"\n%s  %d valBuff is %s\n \n",__func__,__LINE__, valBuff);
+					//fprintf(errOut,"\n%s  %d valBuff is %s\n \n",__func__,__LINE__, valBuff);
 					if(strstr(valBuff, "on"))
 					{
 	                    fp = fopen(UDHCPD_FILE, "r");  /*  /var/run/udhcpd.leases   */
@@ -1253,7 +1253,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                             	for(i = 0, j = 0 ; i < 6; i++, j+=3)
                                 	sprintf(&mac_buf[j], "%02x:", lease.mac[i]);
 	                            
-	                            fprintf(errOut,"\n%s  %d 2.4G mac_buf:%s buf:%s\n",__func__,__LINE__,mac_buf,buf);
+	                            //fprintf(errOut,"\n%s  %d 2.4G mac_buf:%s buf:%s\n",__func__,__LINE__,mac_buf,buf);
 	                            
 	                            if(strncmp(buf, mac_buf, 17) == 0)
 	                            {//wireless
@@ -1367,7 +1367,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                             memset(mac_buf, 0, sizeof(mac_buf));
                             strncpy(buf, STAbuf, 17);
                             
-                            //fprintf(errOut,"\n%s  %d 2.4G mac_buf:%s buf:%s\n",__func__,__LINE__,mac_buf,buf);
+                            //fprintf(errOut,"\n%s  %d 5G mac_buf:%s buf:%s\n",__func__,__LINE__,mac_buf,buf);
                             
                             //if(strncmp(buf, mac_buf, 17) == 0)
                             {//wireless
