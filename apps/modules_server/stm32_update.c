@@ -50,7 +50,7 @@ unsigned char update_req_buffer[UPDATE_REQ_BUF_SIZE];
 unsigned char update_rsp_buffer[UPDATE_RSP_BUF_SIZE];
 
 
-int stm32_update()
+int stm32_update(unsigned char* path)
 {
     int fd;
     int baud = 115200;
@@ -74,7 +74,7 @@ int stm32_update()
         //return -1;
     //}
 
-	if (BinFileHeadCheck(STM32_BIN_NAME) == 0){
+	if (BinFileHeadCheck(path) == 0){
 		update = 0;
 		if((ret = CmdGetVersion()) != 0){
 			update = 1;
@@ -95,7 +95,7 @@ int stm32_update()
 			PRINT("Updata begin !!!\n");
 			if((ret = CmdReBoot()) != 0)
 				return -3;
-//			usleep(500 * 1000);
+			usleep(500 * 1000);
 			if((ret = CmdStart()) != 0)
 				return -4;
 			if((ret = Update(STM32_BIN_NAME)) != 0)

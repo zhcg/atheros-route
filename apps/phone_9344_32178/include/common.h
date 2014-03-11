@@ -54,7 +54,7 @@
 
 #define MAX(A,B) ((A)>(B))?(A):(B)
 
-#define CLIENT_NUM 4	//设备数目限制
+#define CLIENT_NUM 5	//实际设备数目限制为4
 
 #define SENDBUF 					128
 #define BUF_LEN_256					256

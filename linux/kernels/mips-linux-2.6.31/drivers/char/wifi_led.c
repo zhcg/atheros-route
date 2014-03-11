@@ -41,6 +41,9 @@ struct wifiled_dev *led_device;
 
 char test_data[]="yaomoon";
 
+void ath_gpio_out_val(int gpio, int val);
+void ath_gpio_config_output(int gpio);
+	
 static void display_reg(void)
 {
 	u32 reg;
@@ -72,9 +75,30 @@ static int led_dri_write(
         printk(KERN_WARNING "yaomoon: echo enable\n"); 
         ath_reg_rmw_clear(ATH_GPIO_OE, 0x1<<13); 
         ath_reg_rmw_clear(ATH_GPIO_OUT_FUNCTION3, 0xff00<<0);
-        ath_reg_rmw_clear(ATH_GPIO_OUT, 0x1<<13); 
-       // ath_reg_rmw_set(ATH_GPIO_OUT_FUNCTION3,0x33<<8); 
+        ath_reg_rmw_clear(ATH_GPIO_OUT, 0x1<<13);
     }
+    else if(strncmp(buf,"test_on",7) == 0)
+    {
+        ath_reg_rmw_clear(ATH_GPIO_OE, 0x1<<13); 
+        ath_reg_rmw_clear(ATH_GPIO_OUT_FUNCTION3, 0xff00<<0);
+        ath_reg_rmw_clear(ATH_GPIO_OUT, 0x1<<13);
+
+   	    ath_reg_rmw_clear(ATH_GPIO_OUT_FUNCTION4, 0xff0000<<0);
+        ath_reg_rmw_clear(ATH_GPIO_OUT, 0x1<<18);
+
+   	    ath_reg_rmw_clear(ATH_GPIO_OUT_FUNCTION5, 0xff00<<0);
+        ath_reg_rmw_clear(ATH_GPIO_OUT, 0x1<<21);
+   	    
+		ath_reg_rmw_clear(ATH_GPIO_OUT_FUNCTION5, 0xff0000<<0);
+        ath_reg_rmw_clear(ATH_GPIO_OUT, 0x1<<22);
+	}
+    else if(strncmp(buf,"test_off",8) == 0)
+    {
+        ath_reg_rmw_set(ATH_GPIO_OE, 0x1<<13); 
+        ath_reg_rmw_set(ATH_GPIO_OUT, 0x1<<18); 
+        ath_reg_rmw_set(ATH_GPIO_OUT, 0x1<<21); 
+        ath_reg_rmw_set(ATH_GPIO_OUT, 0x1<<22); 
+	}
     else
     {
         printk(KERN_WARNING "yaomoon: echo disable\n"); 
