@@ -61,103 +61,110 @@ int main(int argc,char **argv)
 		return -1;
 	}
 	
-		fseek(f, ETH0_OFFSET, SEEK_SET);
-		sprintf(mac_buff,"%c%c%c%c%c%c",mac_data[0],mac_data[1],mac_data[2],mac_data[3],mac_data[4],mac_data[5]);
-		
-		len=fwrite(mac_buff,6,1,f);
-		if (len < 0 )
-			printf("write mac addr error\n");
-
-		fseek(f, BR0_OFFSET, SEEK_SET);
-		if ( mac_data[5] == 0xff ){
-			mac_data[5] = 0x00;
-			if ( mac_data[4] == 0xff ){
-				mac_data[4] = 0x00;
-				if ( mac_data[3] == 0xff ){
-					mac_data[3] = 0x00;
-					if ( mac_data[2] == 0xff ){
-						mac_data[2] = 0x00;
-						mac_data[1] ++;
-					}
-					else
-						mac_data[2] ++;
-				}
-				else
-					mac_data[3] ++;
-			}
-			else
-				mac_data[4] ++;
-		}
-		else
-			mac_data[5] ++;
-		
-		sprintf(mac_buff,"%c%c%c%c%c%c",mac_data[0],mac_data[1],mac_data[2],mac_data[3],mac_data[4],mac_data[5]);
-		
-		len=fwrite(mac_buff,6,1,f);
-		if (len < 0 )
-			printf("write mac addr error\n");
-
-		fseek(f, WIFI0_OFFSET, SEEK_SET);
-		if ( mac_data[5] == 0xff ){
-			mac_data[5] = 0x00;
-			if ( mac_data[4] == 0xff ){
-				mac_data[4] = 0x00;
-				if ( mac_data[3] == 0xff ){
-					mac_data[3] = 0x00;
-					if ( mac_data[2] == 0xff ){
-						mac_data[2] = 0x00;
-						mac_data[1] ++;
-					}
-					else
-						mac_data[2] ++;
-				}
-				else
-					mac_data[3] ++;
-			}
-			else
-				mac_data[4] ++;
-		}
-		else
-			mac_data[5] ++;
-		
-		sprintf(mac_buff,"%c%c%c%c%c%c",mac_data[0],mac_data[1],mac_data[2],mac_data[3],mac_data[4],mac_data[5]);
-		
-		len=fwrite(mac_buff,6,1,f);
-		if (len < 0 )
-			printf("write mac addr error\n");
-
-		fseek(f, WIFI1_OFFSET, SEEK_SET);
-		if (( mac_data[5] == 0xff ) || ( mac_data[5] == 0xfe )){
-			if( mac_data[5] == 0xfe )
-				mac_data[5] = 0x00;
-			else
-				mac_data[5] = 0x01;
-			if ( mac_data[4] == 0xff ){
-				mac_data[4] = 0x00;
-				if ( mac_data[3] == 0xff ){
-					mac_data[3] = 0x00;
-					if ( mac_data[2] == 0xff ){
-						mac_data[2] = 0x00;
-						mac_data[1] ++;
-					}
-					else
-						mac_data[2] ++;
-				}
-				else
-					mac_data[3] ++;
-			}
-			else
-				mac_data[4] ++;
-		}
-		else
-			mac_data[5] = mac_data[5] + 2;
-		
-		sprintf(mac_buff,"%c%c%c%c%c%c",mac_data[0],mac_data[1],mac_data[2],mac_data[3],mac_data[4],mac_data[5]);
-		
-		len=fwrite(mac_buff,6,1,f);
-		if (len < 0 )
-			printf("write mac addr error\n");
+	fseek(f, ETH0_OFFSET, SEEK_SET);
+	sprintf(mac_buff,"%c%c%c%c%c%c",mac_data[0],mac_data[1],mac_data[2],mac_data[3],mac_data[4],mac_data[5]);
 	
+	len=fwrite(mac_buff,6,1,f);
+	if (len < 0 )
+		printf("write mac addr error\n");
+
+	fseek(f, BR0_OFFSET, SEEK_SET);
+	if ( mac_data[5] == 0xff ){
+		mac_data[5] = 0x00;
+		if ( mac_data[4] == 0xff ){
+			mac_data[4] = 0x00;
+			if ( mac_data[3] == 0xff ){
+				mac_data[3] = 0x00;
+				if ( mac_data[2] == 0xff ){
+					mac_data[2] = 0x00;
+					mac_data[1] ++;
+				}
+				else
+					mac_data[2] ++;
+			}
+			else
+				mac_data[3] ++;
+		}
+		else
+			mac_data[4] ++;
+	}
+	else
+		mac_data[5] ++;
+	
+	sprintf(mac_buff,"%c%c%c%c%c%c",mac_data[0],mac_data[1],mac_data[2],mac_data[3],mac_data[4],mac_data[5]);
+	
+	len=fwrite(mac_buff,6,1,f);
+	if (len < 0 )
+		printf("write mac addr error\n");
+
+	fseek(f, WIFI0_OFFSET, SEEK_SET);
+	if ( mac_data[5] == 0xff ){
+		mac_data[5] = 0x00;
+		if ( mac_data[4] == 0xff ){
+			mac_data[4] = 0x00;
+			if ( mac_data[3] == 0xff ){
+				mac_data[3] = 0x00;
+				if ( mac_data[2] == 0xff ){
+					mac_data[2] = 0x00;
+					mac_data[1] ++;
+				}
+				else
+					mac_data[2] ++;
+			}
+			else
+				mac_data[3] ++;
+		}
+		else
+			mac_data[4] ++;
+	}
+	else
+		mac_data[5] ++;
+	
+	sprintf(mac_buff,"%c%c%c%c%c%c",mac_data[0],mac_data[1],mac_data[2],mac_data[3],mac_data[4],mac_data[5]);
+	
+	len=fwrite(mac_buff,6,1,f);
+	if (len < 0 )
+		printf("write mac addr error\n");
+
+	fseek(f, WIFI1_OFFSET, SEEK_SET);
+	if (( mac_data[5] == 0xff ) || ( mac_data[5] == 0xfe )){
+		if( mac_data[5] == 0xfe )
+			mac_data[5] = 0x00;
+		else
+			mac_data[5] = 0x01;
+		if ( mac_data[4] == 0xff ){
+			mac_data[4] = 0x00;
+			if ( mac_data[3] == 0xff ){
+				mac_data[3] = 0x00;
+				if ( mac_data[2] == 0xff ){
+					mac_data[2] = 0x00;
+					mac_data[1] ++;
+				}
+				else
+					mac_data[2] ++;
+			}
+			else
+				mac_data[3] ++;
+		}
+		else
+			mac_data[4] ++;
+	}
+	else
+		mac_data[5] = mac_data[5] + 2;
+	
+	sprintf(mac_buff,"%c%c%c%c%c%c",mac_data[0],mac_data[1],mac_data[2],mac_data[3],mac_data[4],mac_data[5]);
+	
+	len=fwrite(mac_buff,6,1,f);
+	if (len < 0 ){
+		printf("write mac addr error\n");
+		fclose(f);
+		return -1;
+	}
+	system("cfg -a ETH0_MAC=`/usr/sbin/get_mac eth0`");
+	system("cfg -a ETH0_DFMAC=`/usr/sbin/get_mac eth0`");
+	system("cfg -a BR0_MAC=`/usr/sbin/get_mac br0`");
+	system("cfg -c");
+		
 	fclose(f);
 	return 0;
 }
