@@ -2113,7 +2113,7 @@ int parse_msg_inside(char *msg)
 	PRINT("%s\n",__FUNCTION__);
 	char num = msg[6];
 	PRINT("num=%c\n",num);
-	if(num>='0' && num <='3')
+	if(num>='0' && num <='4')
 	{
 		PRINT("dev %d will be destroyed\n",(int)num-48);
 		destroy_client(&devlist[(int)num-48]);
@@ -2367,6 +2367,7 @@ void* handle_down_msg(void* argv)
 
 int generate_up_msg()
 {
+	PRINT("%s\n",__FUNCTION__);
 	char sendbuf[BUF_LEN]={0};
 	char tmpbuf1[BUF_LEN]={0};
 	char tmpbuf2[BUF_LEN]={0};
