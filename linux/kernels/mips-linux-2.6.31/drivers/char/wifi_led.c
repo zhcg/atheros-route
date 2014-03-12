@@ -39,7 +39,7 @@ int led_minor = 0;
 static struct class *my_class;
 struct wifiled_dev *led_device;
 
-char test_data[]="yaomoon";
+char test_data[]="wifiled";
 
 void ath_gpio_out_val(int gpio, int val);
 void ath_gpio_config_output(int gpio);
@@ -72,7 +72,6 @@ static int led_dri_write(
 
     if(strncmp(buf,"enable",6) == 0)
     {
-        printk(KERN_WARNING "yaomoon: echo enable\n"); 
         ath_reg_rmw_clear(ATH_GPIO_OE, 0x1<<13); 
         ath_reg_rmw_clear(ATH_GPIO_OUT_FUNCTION3, 0xff00<<0);
         ath_reg_rmw_clear(ATH_GPIO_OUT, 0x1<<13);
@@ -101,7 +100,6 @@ static int led_dri_write(
 	}
     else
     {
-        printk(KERN_WARNING "yaomoon: echo disable\n"); 
         ath_reg_rmw_set(ATH_GPIO_OE, 0x1<<13); 
     }
         
@@ -137,7 +135,7 @@ static int __init led_dri_init(void)
     int result;
     dev_t dev = 0;
 
-    printk(KERN_WARNING "wifiled: yaomoon debug\n");
+    printk(KERN_WARNING "wifiled: start\n");
 
 
     if (led_major) {

@@ -3805,7 +3805,7 @@ int main(int argc,char **argv)
             char vname[10][10][64] =
             {
                 {"WAN_MODE"  },  
-                {"WAN_MODE","IPGW","WAN_IPADDR","WAN_NETMASK","PRIDNS","SECDNS"  },  
+                {"WAN_MODE","IPGW","WAN_IPADDR","WAN_NETMASK","PRIDNS" },  
                 {"WAN_MODE","PPPOE_USER","PPPOE_PWD"  },  
                 {"AP_SSID_2","AP_SSID_4","PSK_KEY_2","PSK_KEY_4" },  
                 {"ADD_MAC","ADD_IP","ADD_STATUS"  }
@@ -3837,13 +3837,13 @@ int main(int argc,char **argv)
 
             case '1':
                  printf("SIP\n");
-                 if(argc !=9)
+                 if(argc !=8)
                  {
                     err_flag=1;
                     break;
                  }
 
-                 for (i = 0; i < 6; i++) 
+                 for (i = 0; i < 5; i++) 
                  {
                      printf(" %s=%s ", vname[1][i], argv[i+3]);
                      CFG_set_by_name(vname[1][i],argv[i+3]);
