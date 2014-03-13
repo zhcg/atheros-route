@@ -5883,7 +5883,7 @@ int main(int argc,char **argv)
 			Execute_cmd("ifconfig | grep P-t-P | awk -F ' ' '{print$4}'| awk -F ':' '{print$2}'", pppoe_mask);
 	
 			CFG_set_by_name("WAN_IPADDR3",pppoe_ip);
-			CFG_set_by_name("AP_NETMASK3",pppoe_mask);
+			CFG_set_by_name("WAN_NETMASK3",pppoe_mask);
 			CFG_set_by_name("IPGW3",pppoe_gw);
 	
 			//add ppp0 route default gw if losing
