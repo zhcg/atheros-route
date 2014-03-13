@@ -92,7 +92,7 @@
 #define SMART_RECOVERY 0 // 智能恢复路由器 Smart recovery 
 #define CTSI_SECURITY_SCHEME 2 // CTSI安全方案 
 
-#define CHECK_WAN_STATE 0//0：不检测与平台服务器连接状态；1：检测
+#define CHECK_WAN_STATE 1 //0：不检测与平台服务器连接状态；1：检测
 
 #if BOARDTYPE == 6410
 #define AUTHENTICATION_CONFIG   "/terminal_init/config/base_init_config"

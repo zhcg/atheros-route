@@ -2793,7 +2793,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
         }
         case 0x03: // PPPOE
         {
-            snprintf(cmd_buf, sizeof(cmd_buf), "cfg -b 2 pppoe %s %s %s %s", wan_pppoe_user, wan_pppoe_pass); 
+            snprintf(cmd_buf, sizeof(cmd_buf), "cfg -b 2 pppoe %s %s", wan_pppoe_user, wan_pppoe_pass); 
             break;
         }
         default:
@@ -2805,15 +2805,18 @@ int network_settings(int fd, int cmd_count, char cmd_word)
     PRINT("cmd_buf = %s\n", cmd_buf);
     system(cmd_buf); // 
     
-    memset(cmd_buf, 0, sizeof(cmd_buf));
-    snprintf(cmd_buf, sizeof(cmd_buf), "cfg -b 4 %s %s 1", pad_mac, pad_ip);
-    PRINT("cmd_buf = %s\n", cmd_buf);
-    system(cmd_buf); // 静态绑定
-    
-    memset(cmd_buf, 0, sizeof(cmd_buf));
-    snprintf(cmd_buf, sizeof(cmd_buf), "cfg -b 3 %s_2G %s_5G %s %s", ssid1, ssid1, wpapsk1, wpapsk1);
-    PRINT("cmd_buf = %s\n", cmd_buf);
-    system(cmd_buf); // 隐藏WIFI设置
+    if ((unsigned char)pad_cmd == 0xFB) // 局域网络没有设置时
+    {
+        memset(cmd_buf, 0, sizeof(cmd_buf));
+        snprintf(cmd_buf, sizeof(cmd_buf), "cfg -b 4 %s %s 1", pad_mac, pad_ip);
+        PRINT("cmd_buf = %s\n", cmd_buf);
+        system(cmd_buf); // 静态绑定
+        
+        memset(cmd_buf, 0, sizeof(cmd_buf));
+        snprintf(cmd_buf, sizeof(cmd_buf), "cfg -b 3 %s_2G %s_5G %s %s", ssid1, ssid1, wpapsk1, wpapsk1);
+        PRINT("cmd_buf = %s\n", cmd_buf);
+        system(cmd_buf); // 隐藏WIFI设置
+    }
     #endif
     
     #if BOARDTYPE == 6410
@@ -3043,12 +3046,14 @@ int network_settings(int fd, int cmd_count, char cmd_word)
         #if CHECK_WAN_STATE == 1
         
         #if 1
-        if ((res = common_tools.get_network_state(common_tools.config->terminal_server_ip, 3, 3)) < 0)
+        //if ((res = common_tools.get_network_state(common_tools.config->terminal_server_ip, 3, 3)) < 0)
+        if ((res = common_tools.get_network_state(common_tools.config->center_ip, 1, 1)) < 0)
         #else
         if ((res = common_tools.get_network_state(common_tools.config->wan_check_name, 3, 3)) < 0)
         #endif
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_network_state failed!", res);
+            #if 0
             if (cmd_word == 0x03)
             {
                 int ret = 0;
@@ -3085,6 +3090,10 @@ int network_settings(int fd, int cmd_count, char cmd_word)
                 }
             } 
             return (res == DATA_DIFF_ERR) ? WAN_ABNORMAL : res;
+            
+            #else // #if 0
+            return res;
+            #endif // #if 0
         }
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "Wide network normal!", 0);
         

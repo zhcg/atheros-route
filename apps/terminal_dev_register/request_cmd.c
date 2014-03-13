@@ -690,10 +690,17 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
             #if CHECK_WAN_STATE == 1
 
             #if 1
-            if ((res = common_tools.get_network_state(common_tools.config->terminal_server_ip, 1, 1)) < 0)
+            //res = common_tools.get_network_state(common_tools.config->terminal_server_ip, 1, 1);
+            res = common_tools.get_network_state(common_tools.config->center_ip, 1, 1);
             #else
-            if ((res = common_tools.get_network_state(common_tools.config->wan_check_name, 1, 1)) < 0)
+            res = common_tools.get_network_state(common_tools.config->wan_check_name, 1, 1);
             #endif
+            if (res == DATA_DIFF_ERR)
+            {
+                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "network abnormal!", res);
+                res = 0;
+            }
+            else if (res < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_network_state failed!", res);
             }
