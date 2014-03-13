@@ -3619,6 +3619,25 @@ static void  Result_tiaozhuan(char* res,char * gopage)
     printf("</body></html>");
 }
 
+static void  Normal_tiaozhuan(char * gopage)
+{
+    char temp[256]={0};
+	
+   // system("dd if=/dev/caldata of=/etc/cal.bin > /dev/null 2>&1");
+	
+    printf("HTTP/1.0 200 OK\r\n");
+    printf("Content-type: text/html\r\n");
+    printf("Connection: close\r\n");
+    printf("\r\n");
+    printf("\r\n");
+    printf("<HTML><HEAD>\r\n");
+    printf("</head><body>");
+
+    sprintf(temp,"<script language=javascript>window.location.href=\"%s?%s=yes?INDEX=33\";</script>",gopage,gopage);
+    printf(temp);
+    printf("</body></html>");
+}
+
 /**************************************************************************/
 static void  Reboot_tiaozhuan(char* res,char * gopage)
 {
@@ -6079,8 +6098,10 @@ int main(int argc,char **argv)
         else
         {
 			memset(Page,0,64);
-            sprintf(Page,"%s","../ad_local_dhcp.html");
-            gohome =0;
+            //sprintf(Page,"%s","../ad_local_dhcp.html");
+            //gohome =0;
+            Normal_tiaozhuan("ad_local_dhcp");
+            gohome =2;
         }
     }
    /*************************************
@@ -6090,8 +6111,11 @@ int main(int argc,char **argv)
     {		 
         fprintf(errOut,"\n%s  %d DEL_SDHCP \n",__func__,__LINE__);
 		del_addr_bind();
-        sprintf(Page,"%s","../ad_local_dhcp.html");
-        gohome =0;
+        //sprintf(Page,"%s","../ad_local_dhcp.html");
+        //gohome =0;
+        Normal_tiaozhuan("ad_local_dhcp");
+        gohome =2;
+
     }
 	   /*************************************
     内网设置    DHCP服务器    修改
@@ -6100,8 +6124,10 @@ int main(int argc,char **argv)
     {		 
         fprintf(errOut,"\n%s  %d MOD_SDHCP \n",__func__,__LINE__);
 		modify_addr_bind();
-        sprintf(Page,"%s","../ad_local_dhcp.html");
-        gohome =0;
+        //sprintf(Page,"%s","../ad_local_dhcp.html");
+        //gohome =0;
+            Normal_tiaozhuan("ad_local_dhcp");
+            gohome =2;
     }
 
 
@@ -6244,8 +6270,12 @@ int main(int argc,char **argv)
         fprintf(errOut,"\n%s  %d ADD_STATICR \n",__func__,__LINE__);
 		add_route_rule();
         memset(Page,0,64);
-        sprintf(Page,"%s","../ad_local_rulist.html");
-        gohome =0;
+        //sprintf(Page,"%s","../ad_local_rulist.html");
+        //gohome =0;
+
+        Normal_tiaozhuan("ad_local_rulist");
+         gohome =2;
+
     }
     /*************************************
     内网设置    路由表设置       删除
@@ -6255,8 +6285,11 @@ int main(int argc,char **argv)
         fprintf(errOut,"\n%s  %d DEL_RU \n",__func__,__LINE__);
         del_route_rule();
         memset(Page,0,64);
-        sprintf(Page,"%s","../ad_local_rulist.html");
-        gohome =0;
+        //sprintf(Page,"%s","../ad_local_rulist.html");
+       // gohome =0;
+               Normal_tiaozhuan("ad_local_rulist");
+         gohome =2;
+
 
     }
         /*************************************
@@ -6267,8 +6300,11 @@ int main(int argc,char **argv)
         fprintf(errOut,"\n%s  %d MOD_RU \n",__func__,__LINE__);
 		modify_route_rule();
         memset(Page,0,64);
-        sprintf(Page,"%s","../ad_local_rulist.html");
-        gohome =0;
+        //sprintf(Page,"%s","../ad_local_rulist.html");
+        //gohome =0;
+                Normal_tiaozhuan("ad_local_rulist");
+         gohome =2;
+
     }
     /*************************************
     接入管理    无线接入控制
@@ -6373,8 +6409,11 @@ int main(int argc,char **argv)
 		
         fprintf(errOut,"\n%s  %d ADD_CONRULE \n",__func__,__LINE__);
         memset(Page,0,64);
-        sprintf(Page,"%s","../ad_con_manage.html");
-        gohome =0;
+        //sprintf(Page,"%s","../ad_con_manage.html");
+       // gohome =0;
+               Normal_tiaozhuan("ad_con_manage");
+         gohome =2;
+
     }
 
 	/*DEL STA's MAC*/
@@ -6454,9 +6493,12 @@ int main(int argc,char **argv)
 		#endif
 		
         fprintf(errOut,"\n%s  %d DEL_CON \n",__func__,__LINE__);
-		memset(Page,0,64);
-        sprintf(Page,"%s","../ad_con_manage.html");
-        gohome =0;
+        memset(Page,0,64);
+        //sprintf(Page,"%s","../ad_con_manage.html?ad_con_manage=yes");
+        //gohome =0;
+                Normal_tiaozhuan("ad_con_manage");
+         gohome =2;
+
     }
 
 	/*************************************
@@ -6709,8 +6751,11 @@ int main(int argc,char **argv)
         else
         {
 			memset(Page,0,64);
-			sprintf(Page,"%s","../ad_safe_IPMAC.html");
-			gohome =0;
+			//sprintf(Page,"%s","../ad_safe_IPMAC.html");
+			//gohome =0;
+			        Normal_tiaozhuan("ad_safe_IPMAC");
+         gohome =2;
+
         }
     }
   
@@ -6722,8 +6767,11 @@ int main(int argc,char **argv)
         fprintf(errOut,"\n%s  %d DEL_IPMAC \n",__func__,__LINE__);
 		del_arp();
         memset(Page,0,64);
-			sprintf(Page,"%s","../ad_safe_IPMAC.html");
-			gohome =0;
+			//sprintf(Page,"%s","../ad_safe_IPMAC.html?ad_safe_IPMAC=yes");
+			//gohome =0;
+						        Normal_tiaozhuan("ad_safe_IPMAC");
+         gohome =2;
+
     }
     /*************************************
     内网设置    IP/MAC绑定    修改
@@ -6733,8 +6781,12 @@ int main(int argc,char **argv)
         fprintf(errOut,"\n%s  %d MOD_IPMAC \n",__func__,__LINE__);
 		modify_arp();
         memset(Page,0,64);
-		sprintf(Page,"%s","../ad_safe_IPMAC.html");
-		gohome =0;
+		//sprintf(Page,"%s","../ad_safe_IPMAC.html");
+		//gohome =0;
+
+        			        Normal_tiaozhuan("ad_safe_IPMAC");
+         gohome =2;
+
     }
     
     /*************************************
@@ -6847,8 +6899,12 @@ int main(int argc,char **argv)
 			Execute_cmd("sh /etc/ath/iptables/parc" , add_cmd_err);
 
 			memset(Page,0,64);
-			sprintf(Page,"%s","../ad_parentc_accept.html");
-			gohome =0;
+			//sprintf(Page,"%s","../ad_parentc_accept.html");
+			//gohome =0;
+
+            			        Normal_tiaozhuan("ad_parentc_accept");
+         gohome =2;
+
 		}else
 		{
 					char tempu2[128]={0};
@@ -6897,9 +6953,12 @@ int main(int argc,char **argv)
         Execute_cmd("sh /etc/ath/iptables/parc" , del_sed_err);
 
         memset(Page,0,64);
-        sprintf(Page,"%s","../ad_parentc_accept.html");
-        gohome =0;
+        //sprintf(Page,"%s","../ad_parentc_accept.html");
+       // gohome =0;
         //gohome =2;
+        Normal_tiaozhuan("ad_parentc_accept");
+         gohome =2;
+
     }
     /*************************************
     家长控制    访问管理      修改
@@ -6945,8 +7004,11 @@ int main(int argc,char **argv)
         Execute_cmd("sh /etc/ath/iptables/parc" , mod_sed_err);
 
         memset(Page,0,64);
-        sprintf(Page,"%s","../ad_parentc_accept.html");
-        gohome =0;
+        //sprintf(Page,"%s","../ad_parentc_accept.html");
+        //gohome =0;
+
+        Normal_tiaozhuan("ad_parentc_accept");
+         gohome =2;
     }
     
 	/*************************************
