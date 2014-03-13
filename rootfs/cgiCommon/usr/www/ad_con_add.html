@@ -68,8 +68,13 @@ function initTranslation()
 {
 	trans_inner("title","addw title");	
 	trans_inner("t1_title","addw t1_title");
+	
 	trans_inner("t1_MAC","addw t1_MAC");	
 	trans_inner("t1_Des","addw t1_Des");
+	trans_inner("t1_Status","addw t1_Status");
+	
+	trans_inner("Senable","conn work");	
+	trans_inner("Sdisable","conn offwork");
 	
 	trans_value("bCANCEL","conn bCANCEL");
 	trans_value("bSAVE","conn bSAVE");
@@ -109,6 +114,15 @@ function initValue()
 	<td class="head" id="t1_Des">描述</td>
 	<td><input type="text" name="DES" id="DES" size="32" maxlength="32" class="handaer_text_content"></td>
 	
+</tr>
+<tr>
+	<td class="head" id="t1_Status">状态</td>
+	<td>  
+		<select name="CON_STATUS" size="1">
+		<option value="1" id="Senable"></option>
+		<option value="0" id="Sdisable"></option>
+		</select>
+	</td>
 </tr>
 </table>
 

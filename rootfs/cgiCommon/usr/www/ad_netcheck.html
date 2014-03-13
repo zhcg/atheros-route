@@ -83,7 +83,35 @@ function resultshow()
 		document.getElementById("checkresultshow").style.color="red";
 		trans_inner("checkresultshow","netcheck r1");
 	}
+	var ps1 = document.getElementById("s1").value;
+	var ps2 = document.getElementById("s2").value;
+	if(ps1=="static")
+		trans_inner("type1","sysinfo static");
+	else if(ps1=="dhcp")
+		trans_inner("type1","sysinfo dhcp");	
+	else if(ps1=="pppoe")
+		trans_inner("type1","sysinfo pppoe");	
+	else if(ps1=="l2tp")
+		trans_inner("type1","sysinfo l2tp");	
+	else if(ps1=="p2tp")
+		trans_inner("type1","sysinfo pptp");	
+	else
+		trans_inner("type1","sysinfo un");	
 
+	if(ps2=="static")
+		trans_inner("type2","sysinfo static");
+	else if(ps2=="dhcp")
+		trans_inner("type2","sysinfo dhcp");	
+	else if(ps2=="pppoe")
+		trans_inner("type2","sysinfo pppoe");	
+	else if(ps2=="l2tp")
+		trans_inner("type2","sysinfo l2tp");	
+	else if(ps2=="p2tp")
+		trans_inner("type2","sysinfo pptp");	
+	else
+		trans_inner("type2","sysinfo un");	
+	
+		
 	widget_display("checkresultshow");
 }
 
@@ -110,11 +138,17 @@ function resultshow()
 
 <tr>
 	<td class="head" id="t1_wantype">自动检测WAN口类型</td>
-	<td><input size="32" maxlength="64" name="type1" id="type1" value="~~AUTOTYPE~" type="text" readonly></td>
+	<td>
+		<span id="type1" name="type1">
+		<input size="32" style="display:none" maxlength="64" name="s1" id="s1" value="~~AUTOTYPE~" type="text" readonly>
+	</td>
 </tr>
 <tr>
 	<td class="head" id="t1_basetype">BASE路由设置类型</td>
-	<td><input size="32" maxlength="64" name="type2" id="type2" value="~~WAN_MODE~" type="text" readonly></td>
+	<td>
+		<span id="type2" name="type2">
+		<input size="32" style="display:none" maxlength="64" name="s2" id="s2" value="~~WAN_MODE~" type="text" readonly>
+	</td>
 </tr>
 <tr>
   <td class="head" id="t1_pngBD">PING百度结果</td>

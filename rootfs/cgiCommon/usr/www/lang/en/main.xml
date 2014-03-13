@@ -95,6 +95,7 @@
 	<message msgid="sysinfo pppoe" msgstr="PPPOE(ADSL)" />
 	<message msgid="sysinfo l2tp" msgstr="L2TP" />
 	<message msgid="sysinfo pptp" msgstr="PPTP" />
+	<message msgid="sysinfo un" msgstr="Unknown" />
 
 	<message msgid="netcheck title" msgstr="Network check" />
 	<message msgid="netcheck des" msgstr="Detection of the type of network connection and the network PING" />

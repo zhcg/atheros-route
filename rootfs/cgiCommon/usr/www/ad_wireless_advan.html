@@ -46,12 +46,26 @@ function checkValuerange(value,min,max)
 	}
 	return true;
 }
-
+function isNum(str)
+{
+	for (var i=0; i<str.length; i++) {
+		if ((str.charAt(i) >= '0' && str.charAt(i) <= '9'))
+			continue;
+		return false;
+	}
+	return true;
+}
 function CheckValue()
 {
 	if(document.WORKFORM.BEACON_INT.value=="")
 	{
 		alert(_("err ssidtime empty"));
+		document.WORKFORM.BEACON_INT.select();
+		return false;
+	}
+	if (!isNum(document.WORKFORM.BEACON_INT.value))
+	{
+		alert(_("err ssidtime"));
 		document.WORKFORM.BEACON_INT.select();
 		return false;
 	}
@@ -61,9 +75,16 @@ function CheckValue()
 		document.WORKFORM.BEACON_INT.select();
 		return false;
 	}
+//---------------------------------------------------
 	if(document.WORKFORM.WIFI_ADV_RSTCTS.value=="")
 	{
 		alert(_("err rstcts empty"));
+		document.WORKFORM.WIFI_ADV_RSTCTS.select();
+		return false;
+	}
+	if (!isNum(document.WORKFORM.WIFI_ADV_RSTCTS.value))
+	{
+		alert(_("err rstcts"));
 		document.WORKFORM.WIFI_ADV_RSTCTS.select();
 		return false;
 	}
@@ -74,10 +95,16 @@ function CheckValue()
 		return false;
 	}
 
-
+//---------------------------------------------------
 	if(document.WORKFORM.BEACON_INT_3.value=="")
 	{
 		alert(_("err ssidtime empty"));
+		document.WORKFORM.BEACON_INT_3.select();
+		return false;
+	}
+	if (!isNum(document.WORKFORM.BEACON_INT_3.value))
+	{
+		alert(_("err ssidtime"));
 		document.WORKFORM.BEACON_INT_3.select();
 		return false;
 	}
@@ -87,12 +114,19 @@ function CheckValue()
 		document.WORKFORM.BEACON_INT_3.select();
 		return false;
 	}
+//---------------------------------------------------	
 	if(document.WORKFORM.WIFI_ADV_RSTCTS_3.value=="")
 	{
 		alert(_("err rstcts empty"));
 		document.WORKFORM.WIFI_ADV_RSTCTS_3.select();
 		return false;
 	}
+	if (!isNum(document.WORKFORM.WIFI_ADV_RSTCTS_3.value))
+	{
+		alert(_("err rstcts"));
+		document.WORKFORM.WIFI_ADV_RSTCTS_3.select();
+		return false;
+	}	
 	if (checkValuerange(document.WORKFORM.WIFI_ADV_RSTCTS_3.value,256,2346)==false)
 	{
 		alert(_("err rstcts"));

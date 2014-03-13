@@ -620,7 +620,23 @@ function checktimerange(value,min,max)
 	}
 	return true;
 }
-
+function isNum(str)
+{
+	for (var i=0; i<str.length; i++) {
+		if ((str.charAt(i) >= '0' && str.charAt(i) <= '9'))
+			continue;
+		return false;
+	}
+	return true;
+}
+function Checkhanzi(val)
+{
+	var usern = /^[a-zA-Z0-9_@]{1,}$/; 
+	if (!val.match(usern)) 
+		return false;
+	else
+		return true;
+}
 function CheckWanValue()
 {
 	if (document.wizard_form.WAN_MODE[2].checked == true)		//STATIC
@@ -680,9 +696,21 @@ function CheckWanValue()
 			document.wizard_form.PPPOE_USER.select();
 			return false;
 		}
+		if(!Checkhanzi(document.wizard_form.PPPOE_USER.value))
+		{
+			alert(_("err user"));
+			document.wizard_form.PPPOE_USER.select();
+			return false;
+		}
 		if (document.wizard_form.PPPOE_PWD.value.length == 0)
 		{
 			alert(_("err pwd empty"));
+			document.wizard_form.PPPOE_PWD.select();
+			return false;
+		}
+		if (!Checkhanzi(document.wizard_form.PPPOE_PWD.value))
+		{
+			alert(_("err pwd"));
 			document.wizard_form.PPPOE_PWD.select();
 			return false;
 		}
@@ -697,6 +725,12 @@ function CheckWanValue()
 					document.wizard_form.PPPOE_DEMAND.select();
 					return false;
 				}
+				if (!isNum(document.wizard_form.PPPOE_DEMAND.value))
+				{
+					alert(_("err stiming"));
+					document.wizard_form.PPPOE_DEMAND.select();
+					return false;
+				}
 			}
 			else if (document.wizard_form.PPPOE_MODE.selectedIndex == 2)
 			{
@@ -706,6 +740,13 @@ function CheckWanValue()
 					document.wizard_form.PPPOE_MANUAL.select();
 					return false;
 				}
+				if (!isNum(document.wizard_form.PPPOE_MANUAL.value))
+				{
+					alert(_("err stiming"));
+					document.wizard_form.PPPOE_MANUAL.select();
+					return false;
+				}
+
 			}
 			else if (document.wizard_form.PPPOE_MODE.selectedIndex == 3)
 			{
@@ -1326,7 +1367,7 @@ function workoutgw()
 </tr>
 <tr>
   <td class="head" id="uname"></td>
-  <td><input name="PPPOE_USER"  class="handaer_text_content" maxlength=32 size=32 value="~~PPPOE_USER~"></td>
+  <td><input name="PPPOE_USER"  class="handaer_text_content" style="ime-mode:disabled" maxlength=32 size=32 value="~~PPPOE_USER~"></td>
 </tr>
 <tr>
   <td class="head" id="pword"></td>
@@ -1350,8 +1391,8 @@ function workoutgw()
 </tr>
 <tr id="div_pppoe_opmode_setting" style="display:none">
 <td>
-	<span id="hide1"><span id="PPPOE_KAM"></span><input type="text" name="PPPOE_DEMAND" class="handaer_text_small_content" maxlength="5" size="3" value="~~PPPOE_DEMAND~"/><span id="PPPOE_seconds"></span></br></span>
-  	<span id="hide2"><span id="PPPOE_ODM"></span><input type="text" name="PPPOE_MANUAL" class="handaer_text_small_content" maxlength="3" size="2" value="~~PPPOE_MANUAL~"/><span id="PPPOE_minutes"></span></br></span>
+	<span id="hide1"><span id="PPPOE_KAM"></span><input type="text" style="ime-mode:disabled" name="PPPOE_DEMAND" class="handaer_text_small_content" maxlength="5" size="3" value="~~PPPOE_DEMAND~"/><span id="PPPOE_seconds"></span></br></span>
+  	<span id="hide2"><span id="PPPOE_ODM"></span><input type="text" style="ime-mode:disabled" name="PPPOE_MANUAL" class="handaer_text_small_content" maxlength="3" size="2" value="~~PPPOE_MANUAL~"/><span id="PPPOE_minutes"></span></br></span>
 	<span id="hide3"><span id="PPPOE_TIMING"></span>
 	<input type="text" name="PPPOE_TIMING_BH" class="handaer_text_small_content" maxlength="2" size="2" value="~~PPPOE_TIMING_BH~"/>:
 	<input type="text" name="PPPOE_TIMING_BM" class="handaer_text_small_content" maxlength="2" size="2" value="~~PPPOE_TIMING_BM~"/>-

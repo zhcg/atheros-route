@@ -50,7 +50,23 @@ function checkValuerange(value,min,max)
 	}
 	return true;
 }
-
+function isNum(str)
+{
+	for (var i=0; i<str.length; i++) {
+		if ((str.charAt(i) >= '0' && str.charAt(i) <= '9'))
+			continue;
+		return false;
+	}
+	return true;
+}
+function Checkformat(val)
+{
+	var usern = /^[a-zA-Z0-9_]{1,}$/;
+	if (!val.match(usern)) 
+		return false;
+	else
+		return true;
+}
 function CheckValue()
 {
 	if (document.WORKFORM.ADD_MAC.value.length == 0)
@@ -78,10 +94,23 @@ function CheckValue()
 			return false;
 		}
 	}     
+	if 	(!isNum(document.WORKFORM.TIMING_BH.value))
+	{
+		alert(_("err time"));
+		document.WORKFORM.TIMING_BH.select();
+		return false;
+	}
 	if 	(checkValuerange(document.WORKFORM.TIMING_BH.value,0,23)==false)
 	{
 		alert(_("err time"));
 		document.WORKFORM.TIMING_BH.select();
+		return false;
+	}
+	
+	if 	(!isNum(document.WORKFORM.TIMING_BM.value))
+	{
+		alert(_("err time"));
+		document.WORKFORM.TIMING_BM.select();
 		return false;
 	}
 	if 	(checkValuerange(document.WORKFORM.TIMING_BM.value,0,59)==false)
@@ -91,6 +120,12 @@ function CheckValue()
 		return false;
 	}
 
+	if 	(!isNum(document.WORKFORM.TIMING_EH.value))
+	{
+		alert(_("err time"));
+		document.WORKFORM.TIMING_EH.select();
+		return false;
+	}
 	if 	(checkValuerange(document.WORKFORM.TIMING_EH.value,0,23)==false)
 	{
 		alert(_("err time"));
@@ -98,12 +133,19 @@ function CheckValue()
 		return false;
 	}
 
+	if 	(!isNum(document.WORKFORM.TIMING_EM.value))
+	{
+		alert(_("err time"));
+		document.WORKFORM.TIMING_EM.select();
+		return false;
+	}
 	if 	(checkValuerange(document.WORKFORM.TIMING_EM.value,0,59)==false)
 	{
 		alert(_("err time"));
 		document.WORKFORM.TIMING_EM.select();
 		return false;
 	}
+	
 	if ((document.getElementById("x_1").checked == false)
 	&&(document.getElementById("x_2").checked == false)
 	&&(document.getElementById("x_3").checked == false)

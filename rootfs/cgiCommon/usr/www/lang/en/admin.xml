@@ -246,8 +246,12 @@
 	<message msgid="err sub format" msgstr="Subnet address illegal" />	
 	<message msgid="err gw format" msgstr="Gateway address illegal" />
 	<message msgid="err DNS format" msgstr="DNS address illegal" />
+	<message msgid="err SSID" msgstr="SSID illegal" />
 	
 	<message msgid="err Ruleexist" msgstr="This rule is already exist " />	
 	<message msgid="wan not connected" msgstr="Please check WAN line" />
+	
+	<message msgid="err user" msgstr="Username illegal" />
+	<message msgid="err pwd" msgstr="Password illegal" />
 
 </po>

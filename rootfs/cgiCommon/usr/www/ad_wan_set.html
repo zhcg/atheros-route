@@ -453,6 +453,23 @@ function checktimerange(value,min,max)
 	}
 	return true;
 }
+function isNum(str)
+{
+	for (var i=0; i<str.length; i++) {
+		if ((str.charAt(i) >= '0' && str.charAt(i) <= '9'))
+			continue;
+		return false;
+	}
+	return true;
+}
+function Checkhanzi(val)
+{
+	var usern = /^[a-zA-Z0-9_@]{1,}$/; 
+	if (!val.match(usern)) 
+		return false;
+	else
+		return true;
+}
 function CheckValue()
 {
 	if (document.wanCfg.WAN_MODE.selectedIndex == 0) //STATIC
@@ -506,9 +523,22 @@ function CheckValue()
 			document.wanCfg.PPPOE_USER.select();
 			return false;
 		}
+		if(!Checkhanzi(document.wanCfg.PPPOE_USER.value))
+		{
+			alert(_("err user"));
+			document.wizard_form.PPPOE_USER.select();
+			return false;
+		}
+		
 		if (document.wanCfg.PPPOE_PWD.value.length == 0)
 		{
 			alert(_("err pwd empty"));
+			document.wanCfg.PPPOE_PWD.select();
+			return false;
+		}
+		if (!Checkhanzi(document.wanCfg.PPPOE_PWD.value))
+		{
+			alert(_("err pwd"));
 			document.wanCfg.PPPOE_PWD.select();
 			return false;
 		}
@@ -520,6 +550,12 @@ function CheckValue()
 				alert(_("err sRP"));
 				document.wanCfg.PPPOE_DEMAND.select();
 				return false;
+			}				
+			if (!isNum(document.wanCfg.PPPOE_DEMAND.value))
+			{
+				alert(_("err stiming"));
+				document.wanCfg.PPPOE_DEMAND.select();
+				return false;
 			}
 		}
 		else if (document.wanCfg.PPPOE_MODE.selectedIndex == 2)
@@ -527,6 +563,12 @@ function CheckValue()
 			if (document.wanCfg.PPPOE_MANUAL.value == "")
 			{
 				alert(_("err sIT"));
+				document.wanCfg.PPPOE_MANUAL.select();
+				return false;
+			}
+			if (!isNum(document.wanCfg.PPPOE_MANUAL.value))
+			{
+				alert(_("err stiming"));
 				document.wanCfg.PPPOE_MANUAL.select();
 				return false;
 			}
@@ -948,7 +990,7 @@ function help()
 </tr>
 <tr>
   <td class="head" id="wPppoeUser">User Name</td>
-  <td><input id="PPPOE_USER" name="PPPOE_USER"  class="handaer_text_content" maxlength=32 size=32 value="~~PPPOE_USER~"></td>
+  <td><input id="PPPOE_USER" name="PPPOE_USER"  style="ime-mode:disabled" class="handaer_text_content" maxlength=32 size=32 value="~~PPPOE_USER~"></td>
 </tr>
 <tr>
   <td class="head" id="wPppoePassword">Password</td>
@@ -968,8 +1010,8 @@ function help()
 </tr>
 <tr id="hideall">
 <td>
-	<span id="hide1"><span id="PPPOE_KAM"></span><input type="text" id="PPPOE_DEMAND" name="PPPOE_DEMAND" class="handaer_text_small_content" maxlength="5" size="3" value="~~PPPOE_DEMAND~"/><span id="PPPOE_seconds"></span></br></span>
-  	<span id="hide2"><span id="PPPOE_ODM"></span><input type="text" id="PPPOE_MANUAL" name="PPPOE_MANUAL" class="handaer_text_small_content" maxlength="3" size="2" value="~~PPPOE_MANUAL~"/><span id="PPPOE_minutes"></span></br></span>
+	<span id="hide1"><span id="PPPOE_KAM"></span><input type="text" style="ime-mode:disabled" id="PPPOE_DEMAND" name="PPPOE_DEMAND" class="handaer_text_small_content" maxlength="5" size="3" value="~~PPPOE_DEMAND~"/><span id="PPPOE_seconds"></span></br></span>
+  	<span id="hide2"><span id="PPPOE_ODM"></span><input type="text" style="ime-mode:disabled" id="PPPOE_MANUAL" name="PPPOE_MANUAL" class="handaer_text_small_content" maxlength="3" size="2" value="~~PPPOE_MANUAL~"/><span id="PPPOE_minutes"></span></br></span>
 	<span id="hide3"><span id="PPPOE_TIMING"></span>
 	<input type="text" id="PPPOE_TIMING_BH" name="PPPOE_TIMING_BH" class="handaer_text_small_content" maxlength="2" size="2" value="~~PPPOE_TIMING_BH~"/>:
 	<input type="text" id="PPPOE_TIMING_BM" name="PPPOE_TIMING_BM" class="handaer_text_small_content" maxlength="2" size="2" value="~~PPPOE_TIMING_BM~"/>-

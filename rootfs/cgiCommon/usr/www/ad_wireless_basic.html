@@ -98,6 +98,14 @@ function switch_security_mode2()
 	}
 	window.parent.iFrameHeight();
 }
+function Checkformat(val)
+{
+	var usern = /^[a-zA-Z0-9_]{1,}$/;
+	if (!val.match(usern)) 
+		return false;
+	else
+		return true;
+}
 function CheckWirelessValue()
 {
 	if(document.wizard_form.WIFION_OFF[0].checked == true)
@@ -114,7 +122,12 @@ function CheckWirelessValue()
 			document.wizard_form.AP_SSID.select();
 			return false;
 		}
-		
+		if(!Checkformat(document.wizard_form.AP_SSID.value))
+		{
+			alert(_("err SSID"));
+			document.wizard_form.AP_SSID.select();
+			return false;
+		}
 		if (document.wizard_form.AP_SECMODE.selectedIndex == 0)
 		{
 			var keyvalue = document.wizard_form.PSK_KEY.value;
@@ -170,7 +183,12 @@ function CheckWirelessValue()
 			document.wizard_form.AP_SSID_3.select();
 			return false;
 		}
-		
+		if(!Checkformat(document.wizard_form.AP_SSID_3.value))
+		{
+			alert(_("err SSID"));
+			document.wizard_form.AP_SSID_3.select();
+			return false;
+		}		
 		if (document.wizard_form.AP_SECMODE_3.selectedIndex == 0)
 		{
 			var keyvalue2 = document.wizard_form.PSK_KEY_3.value;
@@ -372,14 +390,14 @@ function help()
 </tr>
 <tr>
   <td class="head" id="nname"></td>
-  <td><input type="text" name="AP_SSID" id="AP_SSID" size="32" maxlength="32" class="handaer_text_content"  value="~~AP_SSID~">&nbsp;<input type="checkbox" id="hidewifi" onclick="hidewififun();"/>&nbsp;<label for="hidewifi" id="hidewifides"></label>&nbsp;<span id="ssidrequest"></span></td>
+  <td><input type="text" name="AP_SSID" id="AP_SSID" size="32" maxlength="32" class="handaer_text_content"  value="~~AP_SSID~">&nbsp;<input type="checkbox" id="hidewifi" onClick="hidewififun();"/>&nbsp;<label for="hidewifi" id="hidewifides"></label>&nbsp;<span id="ssidrequest"></span></td>
 </tr>
 
 <tr>
  <td class="head" id="wifiswitch"></td>
 	<td>&nbsp;
-	<input type="radio"  ~cWIFION_OFF:on~ id="rad_1" name="WIFION_OFF" value="on" onclick="switch_wifi();" checked /><label for="rad_1" id="onbutton"></label>&nbsp;
-	<input type="radio"  ~cWIFION_OFF:off~ id="rad_2" name="WIFION_OFF" value="off" onclick="switch_wifi();"/><label for="rad_2" id="offbutton"></label>
+	<input type="radio"  ~cWIFION_OFF:on~ id="rad_1" name="WIFION_OFF" value="on" onClick="switch_wifi();" checked /><label for="rad_1" id="onbutton"></label>&nbsp;
+	<input type="radio"  ~cWIFION_OFF:off~ id="rad_2" name="WIFION_OFF" value="off" onClick="switch_wifi();"/><label for="rad_2" id="offbutton"></label>
 	</td>
 </tr>
 
@@ -423,13 +441,13 @@ function help()
 <tr><td class="title2" colspan="2" id="wsetingst2"></td></tr>
 <tr>
   <td class="head" id="nname2"></td>
-  <td><input type="text" name="AP_SSID_3" id="AP_SSID_3" size="32" maxlength="32" class="handaer_text_content"  value="~~AP_SSID_3~">&nbsp;<input type="checkbox" id="hidewifi2" onclick="hidewififun2();"/>&nbsp;<label for="hidewifi2" id="hidewifides2"></label>&nbsp;<span id="ssidrequest2"></span></td>
+  <td><input type="text" name="AP_SSID_3" id="AP_SSID_3" size="32" maxlength="32" class="handaer_text_content"  value="~~AP_SSID_3~">&nbsp;<input type="checkbox" id="hidewifi2" onClick="hidewififun2();"/>&nbsp;<label for="hidewifi2" id="hidewifides2"></label>&nbsp;<span id="ssidrequest2"></span></td>
 </tr>
 
 <tr>
  <td class="head" id="wifiswitch2"></td>
-	<td>&nbsp;<input type="radio"  ~cWIFION_OFF_3:on~ id="rad_12" name="WIFION_OFF_3" value="on" onclick="switch_wifi2();" checked /><label for="rad_12" id="onbutton2"></label>&nbsp;
-	<input type="radio"  ~cWIFION_OFF_3:off~ id="rad_22" name="WIFION_OFF_3" value="off" onclick="switch_wifi2();"/><label for="rad_22" id="offbutton2"></label>
+	<td>&nbsp;<input type="radio"  ~cWIFION_OFF_3:on~ id="rad_12" name="WIFION_OFF_3" value="on" onClick="switch_wifi2();" checked /><label for="rad_12" id="onbutton2"></label>&nbsp;
+	<input type="radio"  ~cWIFION_OFF_3:off~ id="rad_22" name="WIFION_OFF_3" value="off" onClick="switch_wifi2();"/><label for="rad_22" id="offbutton2"></label>
 	</td>
 </tr>
 
