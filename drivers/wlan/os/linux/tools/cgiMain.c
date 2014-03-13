@@ -4685,6 +4685,8 @@ int main(int argc,char **argv)
 			flag=1;
 		}
 		
+		system("ifconfig eth0 0.0.0.0 up");   //wangyu add for the wan mode change from static to dhcp           
+
 		Execute_cmd("wan_check  > /dev/null 2>&1", rspBuff);
 		Execute_cmd("cfg -e | grep \"LINEIN_OUT=\"",valBuff);
 		if(strstr(valBuff,"out") != 0)
@@ -5791,6 +5793,8 @@ int main(int argc,char **argv)
 			memset(cmdstr,'\0',128);
 			memset(route_gw,'\0',20);
 			int flag=0; 
+
+			system("ifconfig eth0 0.0.0.0 up"); //wangyu add for the wan mode change from static to pppoe			
 			
 			Execute_cmd("cfg -e | grep 'WAN_MODE='",valBuff);			   
 			if(strstr(valBuff,"dhcp") != 0)
