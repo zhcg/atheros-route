@@ -98,4 +98,7 @@
 	<message msgid="wan auto_fail" msgstr="Automatically select fail,please check the internet connection or select manually " />
 	<message msgid="err MAC no" msgstr="Access management terminal MAC failed" />
 	
+	<message msgid="err user" msgstr="Username illegal" />
+	<message msgid="err pwd" msgstr="Password illegal" />
+	
  </po>

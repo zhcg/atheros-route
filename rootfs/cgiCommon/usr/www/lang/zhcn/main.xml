@@ -95,6 +95,7 @@
 	<message msgid="sysinfo pppoe" msgstr="PPPOE(ADSL)" />
 	<message msgid="sysinfo l2tp" msgstr="L2TP" />
 	<message msgid="sysinfo pptp" msgstr="PPTP" />
+	<message msgid="sysinfo un" msgstr="未知" />
 
 
 	<message msgid="netcheck title" msgstr="网络诊断" />

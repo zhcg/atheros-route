@@ -21,6 +21,10 @@ else
 {
         window.location.href="/index.html";
 }
+function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "table-row";}}
+function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
+function widget_display(widgetID){document.getElementById(widgetID).style.visibility = "visible";document.getElementById(widgetID).style.display = style_display_on();}
+
 function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
 function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
 
@@ -34,7 +38,8 @@ function initTranslation()
 	
 	trans_inner("t1_Des","conn des");
 	trans_inner("t1_Mac","conn mac");
-	trans_inner("t1_Set","conn set");
+	trans_inner("t1_Set","conn work");
+	trans_inner("t1_Del","conn del");
 	
 	trans_inner("onbutton","conn onbutton");
 	trans_inner("offbutton","conn offbutton");
@@ -56,6 +61,11 @@ function init()
 {
 	Butterlate.setTextDomain("conn");
 	initTranslation();
+	if((document.getElementById("INDEX").value == "33") || (document.getElementById("INDEX").value == 33))
+	{
+		document.wirelessconnection.WCONON_OFF[0].checked = true;	
+	}
+	switch_con();
 }
 function listdel(value)
 {
@@ -64,6 +74,38 @@ function listdel(value)
 	{
 		button_commit("DEL_CON");
 	}
+}
+
+function lismod(value)
+{
+	if(document.getElementById(value).checked == true)
+	{
+		document.getElementById("ON_OFF").value="ON";	
+	}
+	else
+	{
+		document.getElementById("ON_OFF").value="OFF";	
+	}
+	
+	document.getElementById("MODXXX").value=value;
+	//alert("修改了"+value +"  "+document.getElementById("ON_OFF").value);
+	
+	button_commit("MOD_CON");
+}
+function switch_con()
+{
+	if(document.wirelessconnection.WCONON_OFF[0].checked == true)
+	{
+		widget_display("t2");
+		widget_display("ADDMRULE");
+	}
+	else
+	{
+		widget_hide("t2");
+		widget_hide("ADDMRULE");
+	}
+	window.parent.iFrameHeight();
+
 }
 function help()
 {
@@ -90,14 +132,17 @@ function help()
   <tr> 
     <td id="t1_switch">控制开关</td>    
 	<td>
-	<input type="radio"  ~cWCONON_OFF:on~ name="WCONON_OFF" id="WDSON_OFF1" value="on" /><label for="WDSON_OFF1"  id="onbutton">启用</label>
-	<input type="radio"  ~cWCONON_OFF:off~ name="WCONON_OFF" id="WDSON_OFF2" value="off" /><label for="WDSON_OFF2"  id="offbutton">不启用</label></td>
+	<input type="radio"  ~cWCONON_OFF:on~ name="WCONON_OFF" id="WDSON_OFF1" value="on" onClick="switch_con();" /><label for="WDSON_OFF1"  id="onbutton">启用</label>
+	<input type="radio"  ~cWCONON_OFF:off~ name="WCONON_OFF" id="WDSON_OFF2" value="off" onClick="switch_con();"/><label for="WDSON_OFF2"  id="offbutton">不启用</label></td>
 	<td colspan="2">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; </td>  </tr>
+</table>
+<table id="t2"  width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
   <tr>
     <td>ID</td>
     <td id="t1_Mac">MAC地址</td>
-    <td id="t1_Des">描述</td>
-    <td id="t1_Set">配置</td>
+    <td id="t1_Des">描述</td>    
+	<td id="t1_Set">生效</td>
+	<td id="t1_Del">删除</td>
   </tr>  
  ~Z:conmlist~
 </table>
@@ -117,10 +162,14 @@ function help()
 	<input style="display:none"  type="text" name="DELXXX" id="DELXXX" size="20" maxlength="32">
 	<input style="display:none" type="submit" name="DEL_CON" id="DEL_CON" value="DEL_CON">
 </form>
-
+<form method="POST" name="MODLIST">
+	<input style="display:none"  type="text" name="MODXXX" id="MODXXX" size="20" maxlength="32">
+	<input style="display:none"  type="text" name="ON_OFF" id="ON_OFF" size="20" maxlength="32">
+	<input style="display:none" type="submit" name="MOD_CON" id="MOD_CON" value="MOD_CON">
+</form>
 </td></tr>
 </table>
 </div>
-
+	<input type="text" style="display:none" name="INDEX" id="INDEX" value="~~INDEX~">
 </body>
 </html>
