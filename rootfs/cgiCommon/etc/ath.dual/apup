@@ -198,20 +198,21 @@ if [ "${AP_STARTMODE}" = "repeater" -o "${AP_STARTMODE}" = "repeater-ind" ]; the
         exit
     fi
 	VAP_NUM=$(($VAP_NUM+1))
-    makeVAP ${APMODE} "$AP_SSID_3" $AP_RADIO_ID_3:$AP_RFPARAM_3 $BEACON_INT_2
-    if [ $? != 0 ]; then
-        echo "Unable to create VAP!"
-        exit
-    fi
-	VAP_NUM=$(($VAP_NUM+1))
-	
-	makeVAP ${APMODE} "$AP_SSID_4" $AP_RADIO_ID_4:$AP_RFPARAM_4 $BEACON_INT_2
-    if [ $? != 0 ]; then
-        echo "Unable to create VAP!"
-        exit
-    fi
-	VAP_NUM=$(($VAP_NUM+1))
-	
+	if [ $NUMRADIO = 2 ]; then
+		makeVAP ${APMODE} "$AP_SSID_3" $AP_RADIO_ID_3:$AP_RFPARAM_3 $BEACON_INT_2
+		if [ $? != 0 ]; then
+			echo "Unable to create VAP!"
+			exit
+		fi
+		VAP_NUM=$(($VAP_NUM+1))
+		
+		makeVAP ${APMODE} "$AP_SSID_4" $AP_RADIO_ID_4:$AP_RFPARAM_4 $BEACON_INT_2
+		if [ $? != 0 ]; then
+			echo "Unable to create VAP!"
+			exit
+		fi
+		VAP_NUM=$(($VAP_NUM+1))
+	fi
 	export STA_RFPARAM=RF:$AP_PRIMARY_CH:$AP_CHMODE
 	export STA_RFPARAM_3=RF:$AP_PRIMARY_CH_3:$AP_CHMODE_3
 	
@@ -254,11 +255,13 @@ if [ "${AP_STARTMODE}" = "repeater" -o "${AP_STARTMODE}" = "repeater-ind" ]; the
         activateVAP ath$VAP_NUM:$AP_RADIO_ID br0 $AP_SECMODE $AP_SECFILE $WPS_ENABLE
 	VAP_NUM=$(($VAP_NUM+1))
         activateVAP ath$VAP_NUM:$AP_RADIO_ID_2 br0 $AP_SECMODE_2 $AP_SECFILE_2 $WPS_ENABLE_2
-	VAP_NUM=$(($VAP_NUM+1))	
-        activateVAP ath$VAP_NUM:$AP_RADIO_ID_3 br0 $AP_SECMODE_3 $AP_SECFILE_3 $WPS_ENABLE_3
 	VAP_NUM=$(($VAP_NUM+1))
+	if [ $NUMRADIO = 2 ]; then	
+        activateVAP ath$VAP_NUM:$AP_RADIO_ID_3 br0 $AP_SECMODE_3 $AP_SECFILE_3 $WPS_ENABLE_3
+		VAP_NUM=$(($VAP_NUM+1))
         activateVAP ath$VAP_NUM:$AP_RADIO_ID_4 br0 $AP_SECMODE_4 $AP_SECFILE_4 $WPS_ENABLE_4
-	VAP_NUM=$(($VAP_NUM+1))	
+		VAP_NUM=$(($VAP_NUM+1))	
+	fi
 	
 	if [ "${wds_flag}" = "on" ];then
 	if [ "s$STA_SSID" != "s" ];then

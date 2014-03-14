@@ -1,12 +1,19 @@
 #!/bin/sh
 
 ath_num=`ifconfig  | grep -c ath`
-
-if [ "$ath_num" = "5" ];then
-	/etc/ath/killVAP ath4
-else if [ "$ath_num" = "6" ];then
-	/etc/ath/killVAP ath4	
-	/etc/ath/killVAP ath5
+number_pci=`grep -c 168c /proc/bus/pci/devices`
+if [ $number_pci = 1 ]; then
+	if [ "$ath_num" = "5" ];then
+		/etc/ath/killVAP ath4
+	else if [ "$ath_num" = "6" ];then
+		/etc/ath/killVAP ath4	
+		/etc/ath/killVAP ath5
+	fi
+	fi
+else if [ $number_pci = 0 ]; then
+	if [ "$ath_num" = "3" ];then
+		/etc/ath/killVAP ath2
+	fi
 fi
 fi
 
@@ -28,7 +35,12 @@ fi
 APMODE="ap-wds"
 STAMODE="sta-wds"
 
-VAP_NUM=3
+if [ $number_pci = 1 ]; then
+	VAP_NUM=3
+else
+	VAP_NUM=1
+fi
+
 wds_flag=`cfg -e | grep  WDSON_OFF= | awk -F'=' '{print $2}'`
 
 if [ "${wds_flag}" = "on" ];then
@@ -45,43 +57,48 @@ if [ "${wds_flag}" = "on" ];then
 	fi
 fi
 	
-wds_flag_2=`cfg -e | grep  WDSON_OFF_3= | awk -F'=' '{print $2}'`
-if [ "${wds_flag_2}" = "on" ];then
-	if [ "s$STA_SSID_2" != "s" ];then
-		makeVAP ${STAMODE} "$STA_SSID_2" $STA_RADIO_ID_2:$STA_RFPARAM_3
-		if [ $? != 0 ]; then
-	        	echo "Unable to create VAP!"
-        		exit
+if [ $number_pci = 1 ]; then
+	wds_flag_2=`cfg -e | grep  WDSON_OFF_3= | awk -F'=' '{print $2}'`
+	if [ "${wds_flag_2}" = "on" ];then
+		if [ "s$STA_SSID_2" != "s" ];then
+			makeVAP ${STAMODE} "$STA_SSID_2" $STA_RADIO_ID_2:$STA_RFPARAM_3
+			if [ $? != 0 ]; then
+				echo "Unable to create VAP!"
+				exit
+			fi
+			VAP_NUM=$(($VAP_NUM+1))
+			if [ "${STA_SECMODE_2}" != "WPA" -a "${ROOTAP_MAC_2}" != "" ]; then
+				iwconfig ath$VAP_NUM ap $ROOTAP_MAC_2
+			fi
 		fi
-		VAP_NUM=$(($VAP_NUM+1))
-	    	if [ "${STA_SECMODE_2}" != "WPA" -a "${ROOTAP_MAC_2}" != "" ]; then
-        		iwconfig ath$VAP_NUM ap $ROOTAP_MAC_2
-	    	fi
 	fi
 fi
-	
-VAP_NUM=4
+
+if [ $number_pci = 1 ]; then
+	VAP_NUM=4
+else
+	VAP_NUM=2
+fi
 
 if [ "${wds_flag}" = "on" ];then
 	if [ "s$STA_SSID" != "s" ];then
-	        activateVAP ath$VAP_NUM:$STA_RADIO_ID br0 $STA_SECMODE $STA_SECFILE $WPS_ENABLE
+	    activateVAP ath$VAP_NUM:$STA_RADIO_ID br0 $STA_SECMODE $STA_SECFILE $WPS_ENABLE
 		VAP_NUM=$(($VAP_NUM+1))
 		if [ -f /tmp/sta_conf_filename ]; then
-		        wpa_supplicant `cat /tmp/sta_conf_filename` &
+		    wpa_supplicant `cat /tmp/sta_conf_filename` &
 			sleep 2
-	        fi
-    	fi
-fi
-	
-if [ "${wds_flag_2}" = "on" ];then	
-	if [ "s$STA_SSID_2" != "s" ];then
-		rm -fr /tmp/sta_conf_filename
-	        activateVAP ath$VAP_NUM:$STA_RADIO_ID_2 br0 $STA_SECMODE_2 $STA_SECFILE_2 $WPS_ENABLE_2
-		if [ -f /tmp/sta_conf_filename ]; then
-		        wpa_supplicant `cat /tmp/sta_conf_filename` &
-        	fi
-    	fi
+		fi
+	fi
 fi
 
-
-
+if [ $number_pci = 1 ]; then
+	if [ "${wds_flag_2}" = "on" ];then	
+		if [ "s$STA_SSID_2" != "s" ];then
+			rm -fr /tmp/sta_conf_filename
+			activateVAP ath$VAP_NUM:$STA_RADIO_ID_2 br0 $STA_SECMODE_2 $STA_SECFILE_2 $WPS_ENABLE_2
+			if [ -f /tmp/sta_conf_filename ]; then
+				wpa_supplicant `cat /tmp/sta_conf_filename` &
+			fi
+		fi
+	fi
+fi
