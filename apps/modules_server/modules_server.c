@@ -13,7 +13,8 @@ Passage passage_list[PASSAGE_NUM] = {
 //0--usb,1--uart,2--spi,3--phone
 
 int global_sg_fd;
-int global_fifo_fd;
+int global_read_fifo_fd;
+int global_write_fifo_fd;
 unsigned char fifo_recv_buffer[BUFFER_SIZE_1K] = {0};
 int fifo_wp_pos = 0;
 int fifo_rp_pos = 0;
@@ -353,14 +354,22 @@ void init_env(void)
 		}
 	}
 	
-	mkfifo(LOW_COMMUNICATE,0600);
-	global_fifo_fd = open(LOW_COMMUNICATE,O_RDWR);
-	if(global_fifo_fd < 0)
+	mkfifo(READ_FIFO,0600);
+	global_read_fifo_fd = open(READ_FIFO,O_RDWR);
+	if(global_read_fifo_fd < 0)
 	{
-		PRINT("open %s error\n",LOW_COMMUNICATE);
+		PRINT("open %s error\n",READ_FIFO);
 	}
 	else
-		PRINT("open %s success\n",LOW_COMMUNICATE);
+		PRINT("open %s success\n",READ_FIFO);
+	mkfifo(WRITE_FIFO,0600);
+	global_write_fifo_fd = open(WRITE_FIFO,O_RDWR);
+	if(global_write_fifo_fd < 0)
+	{
+		PRINT("open %s error\n",WRITE_FIFO);
+	}
+	else
+		PRINT("open %s success\n",WRITE_FIFO);
 }
 
 int generate_stm32_down_msg(char *databuf,int databuf_len,int passage)
@@ -509,6 +518,13 @@ void user_close_usb(int *fd)
 	close(*fd);
 }
 
+void as532_update_thread_func(void* argv)
+{
+	int ret = as532_update("/root/ElfDate.dat");
+	PRINT("update over %d\n",ret);	
+	return;
+}
+
 int as532_update(unsigned char *path)
 {
 	int ret = 0;
@@ -517,11 +533,12 @@ int as532_update(unsigned char *path)
     unsigned char VersionBuff_update[20] = {0};
 	//int Versionlen_after_update =0;
     //unsigned char VersionBuff_after_update[20] = {0};
-    
+    unsigned char path_new[128]={0};
+
  	init_key(global_pukey);
 	version(global_pukey,VersionBuff_update,&Versionlen_update_len);
 	
-    ret=check_file(VersionBuff_update, path);
+    ret=check_file(VersionBuff_update, path,path_new);
 	if(ret == 0)
 	{
 		PRINT("check file success\n");
@@ -572,14 +589,16 @@ int as532_update(unsigned char *path)
 		}
 		goto AS532_UPDATE_ERR;
 	}
-	PRINT("open MyModule file fd = 0x%x======\r\n",usb_fd);
+	PRINT("open as532h fd = 0x%x======\r\n",usb_fd);
 	
 	usleep(50000);
 	
-	ret = LoadDatFile(path);
+	PRINT("%s\n",path_new);
+	ret = LoadDatFile(path_new);
 	if(ret != 1)
 	{
 		PRINT("update as532 failed,cause load dat file err!\r\n");
+		boot_close_usb(&usb_fd);
 		ret_err = -2; //读取文件失败
 		goto AS532_UPDATE_ERR;
 	}
@@ -588,6 +607,7 @@ int as532_update(unsigned char *path)
 	if(ret != 1)
 	{
 		PRINT("update as532 failed,cause dat file err!\r\n");
+		boot_close_usb(&usb_fd);
 		ret_err = -3; //文件校验失败
 		goto AS532_UPDATE_ERR;
 	}
@@ -596,6 +616,7 @@ int as532_update(unsigned char *path)
 	if(ret != 1)
 	{
 		PRINT("send isp start command,but not get response!\r\n");	
+		boot_close_usb(&usb_fd);
 		ret_err = -4; //532应答失败
 		goto AS532_UPDATE_ERR;
 	}
@@ -604,6 +625,7 @@ int as532_update(unsigned char *path)
 	if(ret != 1)
 	{
 		PRINT("send config command,but not get response!\r\n");	
+		boot_close_usb(&usb_fd);
 		ret_err = -4; //532应答失败
 		goto AS532_UPDATE_ERR;
 	}
@@ -611,6 +633,7 @@ int as532_update(unsigned char *path)
 	if(ret != 1)
 	{
 		PRINT("update as532 failed,cause transefer data err!\r\n");
+		boot_close_usb(&usb_fd);
 		ret_err = -5; //发送数据失败
 		goto AS532_UPDATE_ERR;
 	}
@@ -618,6 +641,7 @@ int as532_update(unsigned char *path)
 	if(ret != 1)
 	{
 		PRINT("update as532 failed,cause check err!\r\n");
+		boot_close_usb(&usb_fd);
 		ret_err = -6; //数据校验失败
 		goto AS532_UPDATE_ERR;
 	}
@@ -678,9 +702,9 @@ int do_cmd_rep(int type,char *data,int data_len,int result)
 
 int do_cmd_532_update()
 {
-	//as532_updating = 1;
-	//pthread_t as532_update_pthread;
-	//pthread_create(&as532_update_pthread,NULL,(void*)as532_update_thread_func,NULL);
+	as532_updating = 1;
+	pthread_t as532_update_pthread;
+	pthread_create(&as532_update_pthread,NULL,(void*)as532_update_thread_func,NULL);
 	return 0;
 }
 
@@ -765,6 +789,7 @@ int parse_msg(char *buf,char *ip,short port)
 		case AS532H_UPDATE:
 			PRINT("AS532H_UPDATE\n");
 			do_cmd_532_update();
+			break;
 		default:
 			break;
 	}
@@ -784,7 +809,6 @@ void loop_recv(void *argv)
 
 	while(1)
 	{
-		int maxfd = -1;
 		int tmp_ret = 0;
 		FD_ZERO(&socket_fdset);
 		
@@ -965,6 +989,9 @@ int UartStm32Do(unsigned char *ppacket,int bytes)
 			break;
 		case CMD_STM32_BOOT:
 			UartCallBoot(ppacket,bytes);
+			break;
+		case CMD_STM32_TICK:
+			PRINT("CMD_STM32_TICK\n");
 			break;
 		default:
 			break;
@@ -1980,22 +2007,22 @@ int generate_ota_up_msg(unsigned char cmd,unsigned char id,unsigned char *data,i
 	sendbuf[index++] = (unsigned char)OTA_VER;
 	sendbuf[index++] = (unsigned char)cmd;
 	sendbuf[index++] = (unsigned char)id;
-	sendbuf[index++] = (unsigned char)((data_len+2)>>24);
-	sendbuf[index++] = (unsigned char)((data_len+2)>>16);
-	sendbuf[index++] = (unsigned char)((data_len+2)>>8);
-	sendbuf[index++] = (unsigned char)((data_len+2)>>0);
+	sendbuf[index++] = (unsigned char)((data_len)>>24);
+	sendbuf[index++] = (unsigned char)((data_len)>>16);
+	sendbuf[index++] = (unsigned char)((data_len)>>8);
+	sendbuf[index++] = (unsigned char)((data_len)>>0);
+	sendbuf[index++] = (unsigned char)((data_len)>>24);
+	sendbuf[index++] = (unsigned char)((data_len)>>16);
+	sendbuf[index++] = (unsigned char)((data_len)>>8);
+	sendbuf[index++] = (unsigned char)((data_len)>>0);
 	sendbuf[index++] = (unsigned char)0x00;
 	sendbuf[index++] = (unsigned char)0x00;
-	sendbuf[index++] = (unsigned char)((data_len+2)>>24);
-	sendbuf[index++] = (unsigned char)((data_len+2)>>16);
-	sendbuf[index++] = (unsigned char)((data_len+2)>>8);
-	sendbuf[index++] = (unsigned char)((data_len+2)>>0);
 	memcpy(&sendbuf[index],data,data_len);
 	index += data_len;
 	sendbuf[index++] = CRC8(sendbuf+3,index-3);
-	if(global_fifo_fd > 0)
+	if(global_write_fifo_fd > 0)
 	{
-		if(write(global_fifo_fd,sendbuf,index) == index)
+		if(write(global_write_fifo_fd,sendbuf,index) == index)
 		{
 			PRINT("send fifo success:");
 			ComFunPrintfBuffer(sendbuf,index);
@@ -2082,7 +2109,7 @@ int FifoPacketDis(unsigned char *ppacket,int bytes)
 	unsigned char *bufp = ppacket;
 	PRINT("Fifo data:: ");
 	ComFunPrintfBuffer(ppacket,bytes);
-	//4f 54 41 31 xx 00 00 00 03 xx xx xx xx 00 00 01 xx xx
+	//4F 54 41 31 21 11 00 00 00 01 00 00 00 01 00 00 00 92
 	PRINT("bytes = %d\n",bytes);
 	if(ppacket[0]!=(unsigned char)OTA_HEAD1 || ppacket[1]!=(unsigned char)OTA_HEAD2 || ppacket[2]!=(unsigned char)OTA_HEAD3) 
 	{
@@ -2101,7 +2128,7 @@ int FifoPacketDis(unsigned char *ppacket,int bytes)
 	len_tmp += (ppacket[9] << 0);
 	PRINT("len_tmp=%d\n",len_tmp);
 	crc=CRC8(ppacket+3,bytes-4);
-	PRINT("crc=0x%x\n",crc);
+	PRINT("crc=0x%x\n",(unsigned char)crc);
 	if(ppacket[bytes-1]!=(unsigned char)crc)
 	{
 		PRINT("crc error\n");
@@ -2138,13 +2165,13 @@ int FifoPacketDis(unsigned char *ppacket,int bytes)
 			if(ppacket[5] == (unsigned char)OTA_AS532H_ID)
 			{
 				PRINT("OTA_AS532H_UPDATE_REQ\n");
-				ppacket[16+len_tmp-2] = '\0';
+				ppacket[16+len_tmp] = '\0';
 				ota_as532h_update(&ppacket[16]);
 			}
 			else if(ppacket[5] == (unsigned char)OTA_STM32_ID)
 			{
 				PRINT("OTA_STM32_UPDATE_REQ\n");
-				ppacket[16+len_tmp-2] = '\0';
+				ppacket[16+len_tmp] = '\0';
 				ota_stm32_update(&ppacket[16]);
 			}
 			break;
@@ -2152,7 +2179,7 @@ int FifoPacketDis(unsigned char *ppacket,int bytes)
 			rtn = -1;
 			break;
 	}
-	sleep(1);
+	//usleep(50*1000);
 	return rtn;
 }
 
@@ -2206,9 +2233,10 @@ int FifoPacketRcv(unsigned char *des_packet_buffer,int *packet_size)
 	//PRINT("ppacket[7] = %d\n",phead[7]<<16);
 	//PRINT("ppacket[8] = %d\n",phead[8]<<8);
 	//PRINT("ppacket[9] = %d\n",phead[9]);
+	//4F 54 41 31 21 11 00 00 00 01 00 00 00 01 00 00 00 92
 
 	my_packet_bytes = ((phead[6]<<24) + (phead[7]<<16) + (phead[8]<<8) + phead[9]);
-	my_packet_bytes += 15;
+	my_packet_bytes += 17;
 	PRINT("valid_len = %d\n",valid_len);
 	PRINT("my_packet_bytes = %d\n",my_packet_bytes);
 	
@@ -2253,9 +2281,9 @@ void ota_thread_func(void * argv)
 				fifo_wp_pos = t1;
 			}
 		}
-		if(global_fifo_fd >= 0)
+		if(global_read_fifo_fd >= 0)
 		{
-			read_ret = read(global_fifo_fd,(unsigned char*)(&fifo_recv_buffer[fifo_wp_pos]),BUFFER_SIZE_1K);
+			read_ret = read(global_read_fifo_fd,(unsigned char*)(&fifo_recv_buffer[fifo_wp_pos]),BUFFER_SIZE_1K);
 		}
 		if(read_ret > 0)//有数据读取到
 		{

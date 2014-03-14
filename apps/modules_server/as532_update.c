@@ -99,14 +99,14 @@ int UsbWrite(unsigned char *pbuf,int write_bytes)
 	printf_bytes = write_bytes;
 	if(printf_bytes > 16)
 		printf_bytes = 16;
-printf("%s->%d->%s::UsbWrite write_bytes::%08X,first 16 bytes::\r\n",__FILE__,__LINE__,__FUNCTION__,write_bytes);
+PRINT("%s->%d->%s::UsbWrite write_bytes::%08X,first 16 bytes::\r\n",__FILE__,__LINE__,__FUNCTION__,write_bytes);
 for(ret = 0;ret < printf_bytes;ret++)
-	printf("%02X\r\n",pbuf[ret]);
-printf("\r\n");
-printf("%s->%d->%s::UsbWrite last 4 bytes::%02X%02X%02X%02X\r\n",__FILE__,__LINE__,__FUNCTION__,pbuf[write_bytes - 4],pbuf[write_bytes - 3],pbuf[write_bytes - 2],pbuf[write_bytes - 1]);
+	PRINT("%02X\r\n",pbuf[ret]);
+PRINT("\r\n");
+PRINT("%s->%d->%s::UsbWrite last 4 bytes::%02X%02X%02X%02X\r\n",__FILE__,__LINE__,__FUNCTION__,pbuf[write_bytes - 4],pbuf[write_bytes - 3],pbuf[write_bytes - 2],pbuf[write_bytes - 1]);
 
 	ret = write(usb_fd,pbuf,write_bytes);
-	printf("%s->%d->%s::write usb data bytes::%d\r\n",__FILE__,__LINE__,__FUNCTION__,ret);
+	PRINT("%s->%d->%s::write usb data bytes::%d\r\n",__FILE__,__LINE__,__FUNCTION__,ret);
 	if(ret != write_bytes)
 		return -1;
 	return write_bytes;
@@ -125,12 +125,12 @@ unsigned int BootAsGetSegment(unsigned int pfile_offset)
 	unsigned int new_offset;
 	int i;
 	unsigned int t_segment_bytes,t_segment_start_add;
-printf("%s->%d->%s::pfile_offset::%08X\r\n",__FILE__,__LINE__,__FUNCTION__,pfile_offset);
+PRINT("%s->%d->%s::pfile_offset::%08X\r\n",__FILE__,__LINE__,__FUNCTION__,pfile_offset);
 	p = (pdat_file + pfile_offset);
-//printf("%s->%d->%s::first 16 byte::\r\n",__FILE__,__LINE__,__FUNCTION__);
+//PRINT("%s->%d->%s::first 16 byte::\r\n",__FILE__,__LINE__,__FUNCTION__);
 //for(i = 0;i < 16;i++)
-//printf("%02X\r\n",p[i]);
-//printf("\r\n");
+//PRINT("%02X\r\n",p[i]);
+//PRINT("\r\n");
 	
 	((unsigned char *)(&t_segment_bytes))[0] = p[3];
 	((unsigned char *)(&t_segment_bytes))[1] = p[2];
@@ -143,23 +143,23 @@ printf("%s->%d->%s::pfile_offset::%08X\r\n",__FILE__,__LINE__,__FUNCTION__,pfile
 	((unsigned char *)(&t_segment_start_add))[2] = p[1];
 	((unsigned char *)(&t_segment_start_add))[3] = p[0];
 	
-printf("%s->%d->%s::t_segment_bytes::%08X\r\n",__FILE__,__LINE__,__FUNCTION__,t_segment_bytes);
-printf("%s->%d->%s::t_segment_start_add::%08X\r\n",__FILE__,__LINE__,__FUNCTION__,t_segment_start_add);
+PRINT("%s->%d->%s::t_segment_bytes::%08X\r\n",__FILE__,__LINE__,__FUNCTION__,t_segment_bytes);
+PRINT("%s->%d->%s::t_segment_start_add::%08X\r\n",__FILE__,__LINE__,__FUNCTION__,t_segment_start_add);
 	if(t_segment_bytes == 0)
 		return 0;
 		
 	new_offset = pfile_offset + t_segment_bytes + INT_BYTES + INT_BYTES;
-printf("%s->%d->%s::new_offset::%08X\r\n",__FILE__,__LINE__,__FUNCTION__,new_offset);	
+PRINT("%s->%d->%s::new_offset::%08X\r\n",__FILE__,__LINE__,__FUNCTION__,new_offset);	
 	if(new_offset > dat_file_size)
 	{
-printf("%s->%d->%s::new_offset::%08X is more than file size\r\n",__FILE__,__LINE__,__FUNCTION__,new_offset);		
+PRINT("%s->%d->%s::new_offset::%08X is more than file size\r\n",__FILE__,__LINE__,__FUNCTION__,new_offset);		
 		return 0;
 	}
 	segment_bytes = t_segment_bytes;
 	segment_start_add = t_segment_start_add;
 	psegment_data = (p + INT_BYTES);	
-printf("%s->%d->%s::segment_bytes::%08X\r\n",__FILE__,__LINE__,__FUNCTION__,t_segment_bytes);
-printf("%s->%d->%s::segment_start_add::%08X\r\n",__FILE__,__LINE__,__FUNCTION__,t_segment_start_add);
+PRINT("%s->%d->%s::segment_bytes::%08X\r\n",__FILE__,__LINE__,__FUNCTION__,t_segment_bytes);
+PRINT("%s->%d->%s::segment_start_add::%08X\r\n",__FILE__,__LINE__,__FUNCTION__,t_segment_start_add);
 	return new_offset;
 }
 int BootAsDatFileCheck(void)
@@ -215,33 +215,44 @@ int BootAsTransWaitRsp(void)
 	recv_data_bytes = 0;
 	do
 	{
+		PRINT("loops = %d\n",loops);
 		usleep(10000);
 		loops++;
 		if(loops > 50)
 		{
-printf("%s->%d->%s::waiting time out!\r\n",__FILE__,__LINE__,__FUNCTION__);
+			PRINT("%s->%d->%s::waiting time out!\r\n",__FILE__,__LINE__,__FUNCTION__);
 			return -1;
 		}
 		recv_bytes = UsbRead((unsigned char *)(&recv_buf[recv_data_bytes]),sizeof(recv_buf) - recv_data_bytes);
-printf("%s->%d->%s::Usbread return::%08X,data is::\r\n",__FILE__,__LINE__,__FUNCTION__,recv_bytes);	
+		PRINT("%s->%d->%s::Usbread return::%08X,data is::\r\n",__FILE__,__LINE__,__FUNCTION__,recv_bytes);	
 		if(recv_bytes > 0)
 		{
-for(data_bytes = 0; data_bytes < recv_bytes;data_bytes++)
-{
-printf("%02X",recv_buf[recv_data_bytes + data_bytes]);		
-}	
-printf("\r\n");	
+			for(data_bytes = 0; data_bytes < recv_bytes;data_bytes++)
+			{
+				printf("%02X",recv_buf[recv_data_bytes + data_bytes]);		
+			}	
+			PRINT("\r\n");	
 			recv_data_bytes += recv_bytes;
 		}
+		else if(recv_bytes < 0)
+			return -1;
+		else
+			continue;
 		if(MIN_RSP_PACKET_BYTES <= recv_data_bytes)
 		{
 			if((recv_buf[0] != FIX_CMD_CODE) && (recv_buf[0] != ISPSTART_CMD_CODE))
+			{
 				return -2;
+			}
 			if(recv_buf[1] != OK)
+			{
 				return -3;
+			}
 			data_bytes = recv_buf[2] + recv_buf[3] * 256;
 			if(recv_data_bytes >= (data_bytes + MIN_RSP_PACKET_BYTES))
+			{
 				return 1;
+			}
 		}
 	}while(1);
 
@@ -282,7 +293,7 @@ int BootAsSendConfig(void)
 		file_offset = new_offset;
 	}	
 	i_code_length = segment_start_add + segment_bytes;	
-printf("%s->%d->%s::i_code_length::%08X,app_entry_add::%08X\r\n",__FILE__,__LINE__,__FUNCTION__,i_code_length,app_entry_add);	
+PRINT("%s->%d->%s::i_code_length::%08X,app_entry_add::%08X\r\n",__FILE__,__LINE__,__FUNCTION__,i_code_length,app_entry_add);	
 	index = 0;
 	send_buf[index++] = ((unsigned char *)(&app_entry_add))[3];
 	send_buf[index++] = ((unsigned char *)(&app_entry_add))[2];
@@ -368,11 +379,11 @@ int BootAsSendData(void)
 		new_offset = BootAsGetSegment(file_offset);
 		if(new_offset == 0)
 		{
-printf("%s->%d->%s::BootAsSendData not get new segment!so data tranfser is over!\r\n",__FILE__,__LINE__,__FUNCTION__);			
+			PRINT("%s->%d->%s::BootAsSendData not get new segment!so data tranfser is over!\r\n",__FILE__,__LINE__,__FUNCTION__);			
 			
 			break;
 		}
-printf("%s->%d->%s::BootAsSendData get one new segment!,new offset::%08X;old_offset::%08X\r\n",__FILE__,__LINE__,__FUNCTION__,new_offset,file_offset);				
+			PRINT("%s->%d->%s::BootAsSendData get one new segment!,new offset::%08X;old_offset::%08X\r\n",__FILE__,__LINE__,__FUNCTION__,new_offset,file_offset);				
 		ret = BootAsSegmentUpdate();
 		if(ret != 1)
 			return 0;
@@ -383,8 +394,8 @@ printf("%s->%d->%s::BootAsSendData get one new segment!,new offset::%08X;old_off
 	{
 		new_offset = dat_file_size - file_offset;
 		//打包发送
-printf("%s->%d->%s::last packet pure data bytes is::%08X\r\n",__FILE__,__LINE__,__FUNCTION__,new_offset);
-printf("%s->%d->%s::will send last packet\r\n",__FILE__,__LINE__,__FUNCTION__,send_data_bytes);
+PRINT("%s->%d->%s::last packet pure data bytes is::%08X\r\n",__FILE__,__LINE__,__FUNCTION__,new_offset);
+PRINT("%s->%d->%s::will send last packet\r\n",__FILE__,__LINE__,__FUNCTION__,send_data_bytes);
 		ret = BootAsTransPacket((unsigned char *)(&pdat_file[file_offset]),last_segment_start_add,new_offset);
 		if(ret != 1)
 			return ret;
@@ -454,7 +465,7 @@ int LoadDatFile(char *dat)
 	pfile = fopen(dat,"rb");
 	if(pfile == 0)
 	{
-		printf("%s->%d->%s::Load dat file failed!\r\n",__FILE__,__LINE__,__FUNCTION__);
+		PRINT("%s->%d->%s::Load dat file failed!\r\n",__FILE__,__LINE__,__FUNCTION__);
 		return 0;
 	}
 	read_bytes = 0;
@@ -467,7 +478,7 @@ int LoadDatFile(char *dat)
 	}while(1);
 	pdat_file = dat_file_buf;
 	dat_file_size = read_bytes;
-	printf("%s->%d->%s::load dat file ok,file size::%d\r\n",__FILE__,__LINE__,__FUNCTION__,dat_file_size);
+	PRINT("%s->%d->%s::load dat file ok,file size::%d\r\n",__FILE__,__LINE__,__FUNCTION__,dat_file_size);
 	
 	return 1;
 }
@@ -480,17 +491,17 @@ int main(int argc, char* argv[])
 	usb_fd = open("/dev/MyModule", O_RDWR);
 	if(usb_fd <= 0 )
 	{
-		printf("%s->%d->%s::error  111111111\n");
+		PRINT("%s->%d->%s::error  111111111\n");
 		return -1;
 	}
-	printf("%s->%d->%s::======open MyModule file usb_fd = 0x%x======\r\n",__FILE__,__LINE__,__FUNCTION__,usb_fd);
+	PRINT("%s->%d->%s::======open MyModule file usb_fd = 0x%x======\r\n",__FILE__,__LINE__,__FUNCTION__,usb_fd);
 	
 	usleep(50000);
 	
 	ret = LoadDatFile();
 	if(ret != 1)
 	{
-		printf("%s->%d->%s::update as532 failed,cause load dat file err!\r\n",__FILE__,__LINE__,__FUNCTION__);
+		PRINT("%s->%d->%s::update as532 failed,cause load dat file err!\r\n",__FILE__,__LINE__,__FUNCTION__);
 		getchar();
 		return -1;
 	}
@@ -498,7 +509,7 @@ int main(int argc, char* argv[])
 	ret = BootAsDatFileCheck();
 	if(ret != 1)
 	{
-		printf("%s->%d->%s::update as532 failed,cause dat file err!\r\n",__FILE__,__LINE__,__FUNCTION__);
+		PRINT("%s->%d->%s::update as532 failed,cause dat file err!\r\n",__FILE__,__LINE__,__FUNCTION__);
 		getchar();
 		return -1;
 	}
@@ -506,7 +517,7 @@ int main(int argc, char* argv[])
 	ret = BootAsSendIspStart();
 	if(ret != 1)
 	{
-		printf("%s->%d->%s::send isp start command,but not get response!\r\n",__FILE__,__LINE__,__FUNCTION__);	
+		PRINT("%s->%d->%s::send isp start command,but not get response!\r\n",__FILE__,__LINE__,__FUNCTION__);	
 		getchar();
 		return -6;			
 	}
@@ -514,29 +525,29 @@ int main(int argc, char* argv[])
 	ret = BootAsSendConfig();
 	if(ret != 1)
 	{
-		printf("%s->%d->%s::send config command,but not get response!\r\n",__FILE__,__LINE__,__FUNCTION__);	
+		PRINT("%s->%d->%s::send config command,but not get response!\r\n",__FILE__,__LINE__,__FUNCTION__);	
 		getchar();
 		return -6;				
 	}
 	ret = BootAsSendData();
 	if(ret != 1)
 	{
-		printf("%s->%d->%s::update as532 failed,cause transefer data err!\r\n",__FILE__,__LINE__,__FUNCTION__);
+		PRINT("%s->%d->%s::update as532 failed,cause transefer data err!\r\n",__FILE__,__LINE__,__FUNCTION__);
 		getchar();
 		return -2;
 	}
 	ret = BootAsSendCheck();
 	if(ret != 1)
 	{
-		printf("%s->%d->%s::update as532 failed,cause check err!\r\n",__FILE__,__LINE__,__FUNCTION__);
+		PRINT("%s->%d->%s::update as532 failed,cause check err!\r\n",__FILE__,__LINE__,__FUNCTION__);
 		getchar();
 		return -3;
 	}
 	getchar();
 	close(usb_fd);
-	printf("%s->%d->%s::update as532 Over!!!\r\n",__FILE__,__LINE__,__FUNCTION__);
-	printf("%s->%d->%s::update as532 Over!!!\r\n",__FILE__,__LINE__,__FUNCTION__);
-	printf("%s->%d->%s::update as532 Over!!!\r\n",__FILE__,__LINE__,__FUNCTION__);
+	PRINT("%s->%d->%s::update as532 Over!!!\r\n",__FILE__,__LINE__,__FUNCTION__);
+	PRINT("%s->%d->%s::update as532 Over!!!\r\n",__FILE__,__LINE__,__FUNCTION__);
+	PRINT("%s->%d->%s::update as532 Over!!!\r\n",__FILE__,__LINE__,__FUNCTION__);
 	
 	
 	return 0;

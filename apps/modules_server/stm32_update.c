@@ -1101,7 +1101,7 @@ int BinFileHeadCheck(const char *path)
 	fd = open(STM32_BIN_NAME, O_RDONLY, 0);
 	//PRINT("fsfd = %d \n", fd);
 	if (fd < 0) {
-		fprintf(stderr, "open <%s> error %s\n", STM32_BIN_NAME, strerror(errno));
+		fprintf(stderr, "open <%s> error %s\n", path, strerror(errno));
 		return -1;
 	}
 	ret = read_data(fd, bin_file_buffer, BIN_FILE_HEAD_BYTES);

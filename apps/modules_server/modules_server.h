@@ -13,7 +13,8 @@
 #define DEFAULT_AS532_IMAGE "/var/default_image/default_ElfDate.dat"
 #define DEFAULT_STM32_IMAGE "/var/default_image/default_stm32_app_packet.bin"
 #define STM32_BIN_NAME "/root/stm32_app_packet.bin"
-#define LOW_COMMUNICATE		"/tmp/LOW_COMMUNICATE"
+#define READ_FIFO		"/tmp/WRITE_LOW_COMMUNICATE"
+#define WRITE_FIFO		"/tmp/READ_LOW_COMMUNICATE"
 #define SERVER_PORT	53232
 #define BUFFER_LEN 512
 #define BUFFER_SIZE_1K	1024
@@ -50,7 +51,7 @@
 #define CMD_STM32_VER_DES	0X81
 #define CMD_STM32_BOOT		0X82
 #define CMD_STM32_LED		0X83
-
+#define CMD_STM32_TICK		0X84
 //产测
 #define FACTORY_TEST_PROGRAM	"/bin/factory_test"
 #define SUCCESS							0x00
@@ -184,6 +185,7 @@ void passage_thread_func(void *argv);
 int start_test();
 int stop_test();
 
+void as532_update_thread_func(void* argv);
 void factory_test_func(void *argv);
 int factory_test(unsigned char *packet,int bytes);
 int factory_test_cmd_9344_r54_call();

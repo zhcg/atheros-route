@@ -649,9 +649,9 @@ int do_cmd_talkbackonhook(dev_status_t* dev,char *sendbuf)
 	{
 		stopaudio(dev,TALKBACK);
 	}
-	memset(sendbuf,0,SENDBUF);
-	snprintf(sendbuf, 22,"HEADR0010STOPTB_000\r\n");
-	netWrite(dev->client_fd, sendbuf, strlen(sendbuf));
+	//memset(sendbuf,0,SENDBUF);
+	//snprintf(sendbuf, 22,"HEADR0010STOPTB_000\r\n");
+	//netWrite(dev->client_fd, sendbuf, strlen(sendbuf));
 	if(dev->talkbacked || dev->talkbacking)
 	{
 		for(i=0;i<CLIENT_NUM;i++)
@@ -1353,7 +1353,7 @@ void Incomingcall(unsigned char *ppacket,int bytes,int flag)
 		if(devlist[i].talkbacking || devlist[i].talkbacked)
 		{
 			PRINT("stop talkbacking!\n");
-			stopaudio(&devlist[i],TALKBACK);
+			//stopaudio(&devlist[i],TALKBACK);
 			do_cmd_talkbackonhook(&devlist[i],sendbuf);
 			usleep(300*1000);
 			break;

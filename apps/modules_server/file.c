@@ -144,7 +144,7 @@ ret:  1-5 文件错误; 6文件传输正确，但不需要升级; 7文件传输正确，需要升级
 other: 文件错误详细信息: 
       1:文件长度错误;   2:文件头错误; 3: 主版本号错误;  4 : 次版本号错误 ; 5: 二进制文件错误       
 */
-int check_file(char *pVersion, const unsigned char *pPath)
+int check_file(char *pVersion, const unsigned char *pPath,unsigned char *path_new)
 {
     int ret =0;
     int i = 0 ;
@@ -305,8 +305,9 @@ int check_file(char *pVersion, const unsigned char *pPath)
         return -10;
     }
     //重新生成(只写二进制文件)
-    strcat(pPath,"_new");
-    fd =open(pPath, O_RDWR | O_CREAT);
+    strcpy(path_new,pPath);
+    strcat(path_new,"_new");
+    fd =open(path_new, O_RDWR | O_CREAT);
     if(fd == -1)
     {
         PRINT("**open error\n");
@@ -356,17 +357,6 @@ int check_file(char *pVersion, const unsigned char *pPath)
         return 0;
     }    
 }
-//
-//const unsigned char  comingFilePath[100] = DATNAME; //文件的路径
-//
-//int main(int argc, char* argv[])
-//{
-    //unsigned short ret = 0;
-    //char version[4]= {0x01, 0x01, 0x00, 0x13};
-    //PRINT("-------\n");
-    //ret=check_file(version, comingFilePath);
-    //PRINT("ret = %d\n", ret);
-//}
 
 
 
