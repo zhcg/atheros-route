@@ -559,7 +559,7 @@ int as532_update(unsigned char *path)
 	}
 	else if(ret == -13)
 	{
-		PRINT("your 532 is newest\n");
+		PRINT("as532h is newest\n");
 		//do_cmd_rep(AS532H_UPDATE,NULL,0,ret);
 		ret_err = -8;
 		goto AS532_UPDATE_ERR;

@@ -78,6 +78,13 @@ int stm32_update(unsigned char* path)
 			PRINT("%x\n ", stm_format_version[i]);
 		//比较STM32版本和BIN文件版本
 		ret = memcmp((void *)bin_format_version, (void *)stm_format_version, sizeof(bin_format_version));
+		//ret = 1;
+		//PRINT("ret = %d\n",ret);
+		if(ret <= 0)
+		{
+			PRINT("STM32 is newest!!\n");
+			return -1;
+		}
 		if ((ret > 0) | (update == 1)){
 			PRINT("Updata begin !!!\n");
 			if((ret = CmdReBoot()) != 0)
