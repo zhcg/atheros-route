@@ -76,6 +76,7 @@ struct staList
 	int id;
 	char macAddr[20];
 	char staDesc[80];
+	char status[10];  /*on-enable-1; off-disable-0 */
 	struct staList *next;
 };
 
@@ -83,6 +84,7 @@ static struct staList *staHostList;
 static int staId = 0;
 #define OLD_STAFILE  "/etc/.OldStaList"
 #define UDHCPD_FILE  "/var/run/udhcpd.leases"
+#define STA_MAC "/etc/.staMac"
 #define MAX_WLAN_ELEMENT    1024
 
 typedef struct {
@@ -162,7 +164,7 @@ int	isKeyHex(char *key,int flags);
 int  CFG_set_by_name(char *name,char *val);
 struct staList *getSta(struct staList *list, char *maddr);
 struct staList *getSta1(struct staList *list, char *maddr);
-void addSta(char *maddr, char *desc, int id);
+void addSta(char *maddr, char *desc, char *status, int id);
 void delSta(char *maddr);
 struct staList *scan_staList(struct staList *list);
 static void  Reboot_tiaozhuan(char* res,char * gopage);
@@ -727,12 +729,12 @@ char *processSpecial(char *paramStr, char *outBuff)
                 if(strcmp(secArg,"conmlist")==0)
                 {
 					FILE *fp;
-					const char *staFile = "/etc/.staMac";
+					//const char *staFile = "/etc/.staMac";
 					struct staList stalist;
 					char buf[150];
 					char buff[5];
 					
-					if( (fp = fopen(staFile, "r")) != NULL)
+					if( (fp = fopen(STA_MAC, "r")) != NULL)
 					{
 						while(fread(&stalist, sizeof stalist, 1, fp) == 1)
 						{
@@ -740,6 +742,15 @@ char *processSpecial(char *paramStr, char *outBuff)
 							outBuff += sprintf(outBuff, "<td>%d</td>",stalist.id);
 							outBuff += sprintf(outBuff, "<td>%s</td>",stalist.macAddr);
 							outBuff += sprintf(outBuff, "<td>%s</td>",stalist.staDesc);
+
+                            if(strcmp(stalist.status, "1") == 0)
+							{
+	                            outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%d\" id=\"%d\" onclick=\"lismod(this.name)\" checked></td>",stalist.id,stalist.id);
+                            }
+							else
+	                            outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%d\" id=\"%d\" onclick=\"lismod(this.name)\"></td>",stalist.id,stalist.id);
+
+							
 							sprintf(buf, "<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>", stalist.macAddr);
 							outBuff += sprintf(outBuff, buf);
 	                    	outBuff += sprintf(outBuff, "</tr>");
@@ -1080,7 +1091,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 						
 						if(ret == 0)
 						{
-							addSta(buf, oldstalist.staDesc, oldstalist.id);
+							addSta(buf, oldstalist.staDesc, oldstalist.status, oldstalist.id);
 							add = 1;
 						}
 						fclose(fp1);
@@ -1119,7 +1130,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 						
 						if(ret == 0)
 						{
-							addSta(buf, oldstalist.staDesc, oldstalist.id);
+							addSta(buf, oldstalist.staDesc, oldstalist.status, oldstalist.id);
 							add = 1;
 						}
 						fclose(fp1);
@@ -3258,7 +3269,7 @@ struct staList *getSta1(struct staList *list, char *maddr)
 	
 }
 
-void addSta(char *maddr, char *desc, int id)
+void addSta(char *maddr, char *desc, char *status, int id)
 {          
     struct staList *list, *p;
           
@@ -3270,6 +3281,7 @@ void addSta(char *maddr, char *desc, int id)
 
     strcpy(list->macAddr, maddr);
     strcpy(list->staDesc, desc);
+	strcpy(list->status, status);
     list->id = id;
     list->next = NULL;
 
@@ -3306,6 +3318,295 @@ void delSta(char *maddr)
 
 	pre->next = p->next;
 	free(p);
+}
+
+void add_sta_access()
+{
+	FILE *fp, *fp1;
+	struct staList stalist;
+	int same = 0, id = 0;
+	char staMac[20];
+	char staDesc[50];
+	char status[50];
+	char con_buf[10];
+	char buf[50];
+
+	memset(staMac, 0, sizeof staMac);
+	memset(staDesc, 0, sizeof staDesc);
+	if ((fp = fopen(STA_MAC, "r")) == NULL)
+	{
+		if ((fp = fopen(STA_MAC, "w+")) == NULL) 
+		{
+			fprintf(errOut,"\nUnable to open /etc/.staMac for writing\n");
+		}
+		else
+		{
+			CFG_get_by_name("MAC",staMac);
+			CFG_get_by_name("DES",staDesc);
+			CFG_get_by_name("CON_STATUS",status);
+			strcpy(stalist.macAddr, staMac);
+			strcpy(stalist.staDesc, staDesc);
+			strcpy(stalist.status, status);
+			stalist.id = id + 1;
+			fwrite(&stalist, sizeof(struct staList), 1, fp);
+			fclose(fp);
+
+			
+			if ((fp1 = fopen("/etc/.staAcl", "r")) != NULL)
+			{
+				memset(con_buf, 0, 20);
+				fgets(con_buf, 8, fp1);
+				if((!strncmp(con_buf, "enable", 6)) && (!strcmp(status, "1")))
+				{
+					sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
+					Execute_cmd(buf, rspBuff);
+				}
+				fclose(fp1);
+			}
+			
+			sprintf(buf, "iwpriv ath0 addmac %s", staMac);
+			Execute_cmd(buf, rspBuff);
+		}
+	}
+	else
+	{
+		
+		CFG_get_by_name("MAC",staMac);
+		CFG_get_by_name("DES",staDesc);
+		CFG_get_by_name("CON_STATUS",status);
+		while(fread(&stalist, sizeof stalist, 1, fp) == 1)
+		{
+			id = stalist.id;
+			if( strcmp(stalist.macAddr, staMac) == 0)
+			{
+				fprintf(errOut,"\n the %s is exit\n", staMac);
+				fclose(fp);
+				same = 1;
+				break;
+			}
+			else
+				same = 0;
+		}
+		if(same == 0)
+		{
+			fp = fopen(STA_MAC, "at");
+			strcpy(stalist.macAddr, staMac);
+			strcpy(stalist.staDesc, staDesc);
+			strcpy(stalist.status, status);
+			stalist.id = id + 1;
+			fwrite(&stalist, sizeof(struct staList), 1, fp);
+			fclose(fp);
+
+			if ((fp1 = fopen("/etc/.staAcl", "r")) != NULL)
+			{
+				memset(con_buf, 0, 20);
+				fgets(con_buf, 8, fp1);
+				//fprintf(errOut,"\n the con_buf is %s\n", con_buf);
+				if((!strncmp(con_buf, "enable", 6)) && (!strcmp(status, "1")))
+				{
+					memset(buf, 0, sizeof buf);
+					sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
+					Execute_cmd(buf, rspBuff);
+				}
+				fclose(fp1);
+			}
+
+			memset(buf, 0, sizeof buf);
+			sprintf(buf, "iwpriv ath0 addmac %s", staMac);
+			Execute_cmd(buf, rspBuff);
+		}
+		
+	}    	
+}
+
+void del_sta_access()
+{
+	FILE *fp, *fp1;
+	struct staList stalist, *p;
+	char staMac[20];
+	char con_buf[10];
+	char buf[50];
+
+	if(CFG_get_by_name("DELXXX",staMac))
+	{
+		if( (fp = fopen(STA_MAC, "r")) == NULL)
+			fprintf(errOut,"\nopen %s error\n", STA_MAC);
+		else
+		{
+			while(fread(&stalist, sizeof stalist, 1, fp) == 1)
+			{
+				if(!strcmp(stalist.macAddr, staMac))
+				{
+					if ((fp1 = fopen("/etc/.staAcl", "r")) != NULL)
+					{
+						memset(con_buf, 0, 20);
+						fgets(con_buf, 8, fp1);
+						if((!strncmp(con_buf, "enable", 6)) && (!strcmp(stalist.status, "1")))
+						{
+							sprintf(buf, "iptables -D control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
+							Execute_cmd(buf, rspBuff);
+						}
+						fclose(fp1);
+					}
+					sprintf(buf, "iwpriv ath0 delmac %s", staMac);
+					Execute_cmd(buf, rspBuff);
+					continue;
+				}
+				addSta(stalist.macAddr, stalist.staDesc, stalist.status, stalist.id);
+			}
+			fclose(fp);
+		}
+
+		if( (fp = fopen(STA_MAC, "w")) == NULL)
+			fprintf(errOut,"\nopen %s error\n", STA_MAC);
+		else
+		{
+			p = scan_staList(staHostList);
+			while(p)
+			{
+				fwrite(p, sizeof(struct staList), 1, fp);
+				p = p->next;
+			}
+			fclose(fp);
+		}
+	}
+	#if 0
+	if(CFG_get_by_name("DELXXX",staMac))
+	{
+		
+		delSta(staMac);
+		if( (fp = fopen(STA_MAC, "w")) == NULL)
+			fprintf(errOut,"\nopen %s error\n", STA_MAC);
+		else
+		{
+			p = scan_staList(staHostList);
+			while(p)
+			{
+				fwrite(p, sizeof(struct staList), 1, fp);
+				p = p->next;
+			}
+			fclose(fp);
+		}
+
+		sprintf(buf, "iwpriv ath0 delmac %s", staMac);
+		Execute_cmd(buf, rspBuff);
+	}
+	#endif
+}
+
+void control_sta_access()
+{
+	FILE *fp, *fpp;
+	struct staList stalist;
+	char buf[80];
+	char valBuff[128];
+	const char *staAcl = "/etc/.staAcl";
+	if(strcmp(CFG_get_by_name("WCONON_OFF",valBuff),"on") == 0 )
+	{
+		if ((fp = fopen(staAcl, "w")) != NULL)
+		{
+			fwrite("enable", sizeof("enable"), 1, fp);
+			fclose(fp);
+		}
+
+		Execute_cmd("iptables -t filter -F control_sta", rspBuff);
+		if ((fpp = fopen(STA_MAC, "r")) != NULL)
+		{
+			while(fread(&stalist, sizeof stalist, 1, fpp) == 1)
+			{
+				memset(buf, 0, sizeof buf);
+				if(!strcmp(stalist.status, "1"))
+				{
+					sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
+					Execute_cmd(buf, rspBuff);
+					memset(buf, 0, sizeof buf);
+					sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
+					Execute_cmd(buf, rspBuff);
+				}
+			}
+			fclose(fpp);
+		}
+		
+		Execute_cmd("iwpriv ath0 maccmd 2",rspBuff);
+
+		fprintf(errOut,"\n%s  %d --------CONM_WORK on--------- \n",__func__,__LINE__);
+	}
+	else if(strcmp(CFG_get_by_name("WCONON_OFF",valBuff),"off") == 0 )
+	{
+		if ((fp = fopen(staAcl, "w")) != NULL)
+		{
+			fwrite("disable", sizeof("disable"), 1, fp);
+			fclose(fp);
+		}
+		
+		Execute_cmd("iptables -t filter -F control_sta", rspBuff);
+		if ((fpp = fopen(STA_MAC, "r")) != NULL)
+		{
+			while(fread(&stalist, sizeof stalist, 1, fpp) == 1)
+			{
+				memset(buf, 0, sizeof buf);
+				sprintf(buf, "iwpriv ath0 delmac %s", stalist.macAddr);
+				Execute_cmd(buf, rspBuff);
+			}
+			fclose(fpp);
+		}
+		
+		Execute_cmd("iwpriv ath0 maccmd 0",rspBuff);
+		//Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
+		fprintf(errOut,"\n%s  %d --------CONM_WORK off--------- \n",__func__,__LINE__);
+	}
+}
+
+void modify_sta_access()
+{
+	char staId[10];
+	char staStatus[10];
+	char buf[80];
+	struct staList stalist, *p;
+	FILE *fp;
+	int on_off;
+
+	CFG_get_by_name("MODXXX", staId);
+	CFG_get_by_name("ON_OFF", staStatus);
+	
+	fp = fopen(STA_MAC, "r");
+	while(fread(&stalist, sizeof stalist, 1, fp) == 1)
+	{
+		if( stalist.id == atoi(staId))
+		{
+			if(!strcmp(staStatus, "OFF"))
+			{
+				sprintf(buf, "iwpriv ath0 delmac %s", stalist.macAddr);
+				Execute_cmd(buf, rspBuff);
+				
+				sprintf(buf, "iptables -D control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
+				Execute_cmd(buf, rspBuff);
+			
+				strcpy(stalist.status, "0");
+			}
+			else
+			{
+				sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
+				Execute_cmd(buf, rspBuff);
+				
+				sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
+				Execute_cmd(buf, rspBuff);
+
+				strcpy(stalist.status, "1");
+			}
+		}
+		addSta(stalist.macAddr, stalist.staDesc, stalist.status, stalist.id);
+	}
+	fclose(fp);
+	
+	fp = fopen(STA_MAC, "w");
+	p = scan_staList(staHostList);
+	while(p)
+	{
+		fwrite(p, sizeof(struct staList), 1, fp);
+		p = p->next;
+	}
+	fclose(fp);
 }
 
 struct staList *scan_staList(struct staList *list)
@@ -5285,6 +5586,7 @@ int main(int argc,char **argv)
 			//fprintf(errOut,"[luodp] SECMODE here6");
 			sprintf(pChar,"iwconfig ath0 essid %s  > /dev/null 2>&1",valBuff4);
 			Execute_cmd(pChar, rspBuff);
+			flag = 5;
 			#if 0
 			Execute_cmd("cfg -e | grep \"AP_SECMODE=\"",valBuff9);
 			if(strstr(valBuff9,"WPA") != 0)
@@ -5338,6 +5640,7 @@ int main(int argc,char **argv)
 
 			Execute_cmd("ifconfig ath0 down > /dev/null 2>&1", rspBuff);
 			Execute_cmd("ifconfig ath0 up > /dev/null 2>&1", rspBuff);
+			flag = 5;
 		}
 		//hide ssid
 		CFG_get_by_name("AP_HIDESSID",valBuff4);
@@ -5349,11 +5652,13 @@ int main(int argc,char **argv)
 		{
 			//fprintf(errOut,"[luodp] SECMODE here8\n");
 			Execute_cmd("iwpriv ath0 hide_ssid 1  > /dev/null 2>&1", rspBuff);
+			flag = 5;
 		}
 		if((strcmp(valBuff8,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0)&&(strcmp(valBuff4,"0") == 0))
 		{
 			//fprintf(errOut,"[luodp] SECMODE here9\n");
 			Execute_cmd("iwpriv ath0 hide_ssid 0  > /dev/null 2>&1", rspBuff);
+			flag = 5;
 		}
 
 		//fprintf(errOut,"2.4G flag is %d\n", flag);
@@ -5506,7 +5811,7 @@ int main(int argc,char **argv)
 		{
 			sprintf(pChar,"iwconfig ath2 essid %s  > /dev/null 2>&1",valBuff4);
 			Execute_cmd(pChar, rspBuff);
-			//flag = 5;
+			flag = 5;
 			/*Execute_cmd("cfg -e | grep \"AP_SECMODE_3=\"",valBuff9);
 			if(strstr(valBuff9,"WPA") != 0)
 			{
@@ -5587,6 +5892,7 @@ int main(int argc,char **argv)
 
 			Execute_cmd("ifconfig ath2 down > /dev/null 2>&1", rspBuff);
 			Execute_cmd("ifconfig ath2 up > /dev/null 2>&1", rspBuff);
+			flag = 5;
 		}
 		
 		//hide ssid
@@ -5598,10 +5904,12 @@ int main(int argc,char **argv)
 		if((strcmp(valBuff8_3,valBuff5) != 0) && (strcmp(valBuff3,"on") == 0)&&(strcmp(valBuff4,"1") == 0))
 		{
 			Execute_cmd("iwpriv ath2 hide_ssid 1  > /dev/null 2>&1", rspBuff);
+			flag = 5;
 		}
 		if((strcmp(valBuff8_3,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0)&&(strcmp(valBuff4,"0") == 0))
 		{
 			Execute_cmd("iwpriv ath2 hide_ssid 0  > /dev/null 2>&1", rspBuff);
+			flag = 5;
 		}
 
 		//fprintf(errOut,"5G flag is %d\n", flag);
@@ -6311,101 +6619,10 @@ int main(int argc,char **argv)
    
     Access mangement   STA Control
    *************************************/
-
 	/*ADD STA's MAC*/
-	const char *staFile = "/etc/.staMac";
     if(strcmp(CFG_get_by_name("ADD_CONRULE",valBuff),"ADD_CONRULE") == 0 ) 
     {
-    	FILE *fp, *fp1;
-    	struct staList stalist;
-		int same = 0, id = 0;
-    	char staMac[20];
-		char staDesc[50];
-		char con_buf[10];
-		char buf[50];
-
-		memset(staMac, 0, sizeof staMac);
-		memset(staDesc, 0, sizeof staDesc);
-		if ((fp = fopen(staFile, "r")) == NULL)
-		{
-			if ((fp = fopen(staFile, "w+")) == NULL) 
-			{
-				fprintf(errOut,"\nUnable to open /etc/.staMac for writing\n");
-			}
-			else
-			{
-				CFG_get_by_name("MAC",staMac);
-				CFG_get_by_name("DES",staDesc);
-				strcpy(stalist.macAddr, staMac);
-				strcpy(stalist.staDesc, staDesc);
-				stalist.id = id + 1;
-				fwrite(&stalist, sizeof(struct staList), 1, fp);
-				fclose(fp);
-
-				
-				if ((fp1 = fopen("/etc/.staAcl", "r")) != NULL)
-				{
-					memset(con_buf, 0, 20);
-					fgets(con_buf, 8, fp1);
-					if(!strncmp(con_buf, "enable", 6))
-					{
-						sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
-						Execute_cmd(buf, rspBuff);
-					}
-					fclose(fp1);
-				}
-				
-				sprintf(buf, "iwpriv ath0 addmac %s", staMac);
-				Execute_cmd(buf, rspBuff);
-			}
-		}
-		else
-		{
-			
-			CFG_get_by_name("MAC",staMac);
-			CFG_get_by_name("DES",staDesc);
-			while(fread(&stalist, sizeof stalist, 1, fp) == 1)
-			{
-				id = stalist.id;
-				if( strcmp(stalist.macAddr, staMac) == 0)
-				{
-					fprintf(errOut,"\n the %s is exit\n", staMac);
-					fclose(fp);
-					same = 1;
-					break;
-				}
-				else
-					same = 0;
-			}
-			if(same == 0)
-			{
-				fp = fopen(staFile, "at");
-				strcpy(stalist.macAddr, staMac);
-				strcpy(stalist.staDesc, staDesc);
-				stalist.id = id + 1;
-				fwrite(&stalist, sizeof(struct staList), 1, fp);
-				fclose(fp);
-
-				if ((fp1 = fopen("/etc/.staAcl", "r")) != NULL)
-				{
-					memset(con_buf, 0, 20);
-					fgets(con_buf, 8, fp1);
-					//fprintf(errOut,"\n the con_buf is %s\n", con_buf);
-					if(!strncmp(con_buf, "enable", 6))
-					{
-						memset(buf, 0, sizeof buf);
-						sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
-						Execute_cmd(buf, rspBuff);
-					}
-					fclose(fp1);
-				}
-
-				memset(buf, 0, sizeof buf);
-				sprintf(buf, "iwpriv ath0 addmac %s", staMac);
-				Execute_cmd(buf, rspBuff);
-			}
-			
-		}    	
+    	add_sta_access();
 		
         fprintf(errOut,"\n%s  %d ADD_CONRULE \n",__func__,__LINE__);
         memset(Page,0,64);
@@ -6415,82 +6632,11 @@ int main(int argc,char **argv)
          gohome =2;
 
     }
-
 	/*DEL STA's MAC*/
 	if(strcmp(CFG_get_by_name("DEL_CON",valBuff),"DEL_CON") == 0 ) 
     {	
-    	FILE *fp, *fp1;
-    	struct staList stalist, *p;
-    	char staMac[20];
-		char con_buf[10];
-		char buf[50];
-
-		if(CFG_get_by_name("DELXXX",staMac))
-		{
-			if( (fp = fopen(staFile, "r")) == NULL)
-				fprintf(errOut,"\nopen %s error\n", staFile);
-			else
-			{
-				while(fread(&stalist, sizeof stalist, 1, fp) == 1)
-				{
-					if(!strcmp(stalist.macAddr, staMac))
-					{
-						if ((fp1 = fopen("/etc/.staAcl", "r")) != NULL)
-						{
-							memset(con_buf, 0, 20);
-							fgets(con_buf, 8, fp1);
-							if(!strcmp(con_buf, "enable"))
-							{
-								sprintf(buf, "iptables -D control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
-								Execute_cmd(buf, rspBuff);
-							}
-							fclose(fp1);
-						}
-						sprintf(buf, "iwpriv ath0 delmac %s", staMac);
-						Execute_cmd(buf, rspBuff);
-						continue;
-					}
-					addSta(stalist.macAddr, stalist.staDesc, stalist.id);
-				}
-				fclose(fp);
-			}
-
-			if( (fp = fopen(staFile, "w")) == NULL)
-				fprintf(errOut,"\nopen %s error\n", staFile);
-			else
-			{
-				p = scan_staList(staHostList);
-				while(p)
-				{
-					fwrite(p, sizeof(struct staList), 1, fp);
-					p = p->next;
-				}
-				fclose(fp);
-			}
-		}
-
-		#if 0
-		if(CFG_get_by_name("DELXXX",staMac))
-    	{
-			
-			delSta(staMac);
-			if( (fp = fopen(staFile, "w")) == NULL)
-				fprintf(errOut,"\nopen %s error\n", staFile);
-			else
-			{
-				p = scan_staList(staHostList);
-				while(p)
-				{
-					fwrite(p, sizeof(struct staList), 1, fp);
-					p = p->next;
-				}
-				fclose(fp);
-			}
-
-			sprintf(buf, "iwpriv ath0 delmac %s", staMac);
-			Execute_cmd(buf, rspBuff);
-    	}
-		#endif
+    	
+		del_sta_access();
 		
         fprintf(errOut,"\n%s  %d DEL_CON \n",__func__,__LINE__);
         memset(Page,0,64);
@@ -6500,7 +6646,7 @@ int main(int argc,char **argv)
          gohome =2;
 
     }
-
+    /*ON-OFF/MODIFY*/
 	/*************************************
     接入管理    无线接入控制
 
@@ -6508,67 +6654,22 @@ int main(int argc,char **argv)
     *************************************/
     if(strcmp(CFG_get_by_name("CONM_WORK",valBuff),"CONM_WORK") == 0 ) 
     {
-    	FILE *fp, *fpp;
-		struct staList stalist;
-		char buf[80];
-		const char *staAcl = "/etc/.staAcl";
-		if(strcmp(CFG_get_by_name("WCONON_OFF",valBuff),"on") == 0 )
-		{
-			if ((fp = fopen(staAcl, "w")) != NULL)
-			{
-				fwrite("enable", sizeof("enable"), 1, fp);
-				fclose(fp);
-			}
+    	control_sta_access();
 
-			Execute_cmd("iptables -t filter -F control_sta", rspBuff);
-			if ((fpp = fopen(staFile, "r")) != NULL)
-			{
-				while(fread(&stalist, sizeof stalist, 1, fpp) == 1)
-				{
-					memset(buf, 0, sizeof buf);
-					sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
-					Execute_cmd(buf, rspBuff);
-					memset(buf, 0, sizeof buf);
-					sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
-					Execute_cmd(buf, rspBuff);
-				}
-				fclose(fpp);
-			}
-			
-			Execute_cmd("iwpriv ath0 maccmd 2",rspBuff);
-
-			fprintf(errOut,"\n%s  %d --------CONM_WORK on--------- \n",__func__,__LINE__);
-		}
-		else if(strcmp(CFG_get_by_name("WCONON_OFF",valBuff),"off") == 0 )
-		{
-			if ((fp = fopen(staAcl, "w")) != NULL)
-			{
-				fwrite("disable", sizeof("disable"), 1, fp);
-				fclose(fp);
-			}
-			
-			Execute_cmd("iptables -t filter -F control_sta", rspBuff);
-			if ((fpp = fopen(staFile, "r")) != NULL)
-			{
-				while(fread(&stalist, sizeof stalist, 1, fpp) == 1)
-				{
-					memset(buf, 0, sizeof buf);
-					sprintf(buf, "iwpriv ath0 delmac %s", stalist.macAddr);
-					Execute_cmd(buf, rspBuff);
-				}
-				fclose(fpp);
-			}
-			
-			Execute_cmd("iwpriv ath0 maccmd 0",rspBuff);
-			//Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
-			fprintf(errOut,"\n%s  %d --------CONM_WORK off--------- \n",__func__,__LINE__);
-		}
-		
+		fprintf(errOut,"\n%s  %d --------CONM_WORK--------- \n",__func__,__LINE__);
 		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
 		writeParameters("/tmp/.apcfg","w+",0);
         Result_tiaozhuan("yes",argv[0]);   
 		gohome =2;
 	}
+	/*modify the status*/
+	if(strcmp(CFG_get_by_name("MOD_CON",valBuff), "MOD_CON") == 0 ) 
+	{
+		modify_sta_access();
+		
+		fprintf(errOut,"\n%s  %d --------MOD_CON--------- \n",__func__,__LINE__);
+	}
+	
 	
 	/*************************************
     接入管理   远程web管理

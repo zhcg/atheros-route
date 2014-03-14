@@ -59,6 +59,7 @@ void deal_staControl()
 		int id;
 		char macAddr[20];
 		char staDesc[80];
+		char status[10];  /*on-enable-1; off-disable-0 */
 		struct staList *next;
 	};
 	struct staList stalist;
@@ -97,12 +98,15 @@ void deal_staControl()
 				{
 					while(fread(&stalist, sizeof stalist, 1, fp1) == 1)
 					{
-						memset(buf, 0, sizeof buf);
-						sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
-						system(buf);
-						memset(buf, 0, sizeof buf);
-						sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
-						system(buf);
+						if(!strcmp(stalist.status, "1"))
+						{
+							memset(buf, 0, sizeof buf);
+							sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
+							system(buf);
+							memset(buf, 0, sizeof buf);
+							sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
+							system(buf);
+						}
 					}
 					system("iwpriv ath0 maccmd 2");
 					fclose(fp1);

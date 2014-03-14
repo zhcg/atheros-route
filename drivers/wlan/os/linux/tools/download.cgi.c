@@ -17,6 +17,7 @@ static FILE *errOut;
 		int id;
 		char macAddr[20];
 		char staDesc[80];
+		char status[10];  /*on-enable-1; off-disable-0 */
 		struct staList *next;
 	};
 void backup_file(void)
