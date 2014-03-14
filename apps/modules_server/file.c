@@ -217,30 +217,8 @@ int check_file(char *pVersion, const unsigned char *pPath,unsigned char *path_ne
 	}
 	//ret= read(comingFile.fd, comingFile.fileBuf, comingFile.fileLenInByte);
     close(comingFile.fd);
-    //for(i= 0; i<FILE_CONST_PART_LEN; i++)
-    //{
-        //PRINT("buf[%d] = %x\n", i, comingFile.fileBuf[i]);
-    //}
    //比较文件中定义的数据长度和实际上获得的文件长度，验证文件长度是否改变
     memcpy(arrbinaryLen, comingFile.fileBuf + HEAD_LEN + VERSION_INFO_LEN +CRC_LEN, BINARY_DATA_LEN);    
-   /*
-    for(i = 0; i< BINARY_DATA_LEN; i++)
-    {
-        PRINT("arr[%d] = %x\n", i, arrbinaryLen[i]);
-        temp = (int)arrbinaryLen[i] ;
-        PRINT("%d\n", temp);
-        temp = temp <<8;
-        
-        PRINT("len = %d\n", comingBinLen);
-        comingBinLen = (( &&0xff)<< (8 * (BINARY_DATA_LEN -i -1))) + comingBinLen;
-    }*/
-
-//    for(i = 0; i< BINARY_DATA_LEN; i++)
-//		PRINT(arrbina);
-	//printf("%d\n",arrbinaryLen[0]);
-	//printf("%d\n",arrbinaryLen[1]);
-	//printf("%d\n",arrbinaryLen[2]);
-	//printf("%d\n",arrbinaryLen[3]);
     comingBinLen = arrbinaryLen[0]*256*256*256+arrbinaryLen[1]*256*256+arrbinaryLen[2]*256+arrbinaryLen[3];
     PRINT("len = %d\n", comingBinLen);
     fileLen = FILE_CONST_PART_LEN +comingBinLen;
@@ -259,41 +237,27 @@ int check_file(char *pVersion, const unsigned char *pPath,unsigned char *path_ne
 		free(comingFile.fileBuf);
         return -7;
     }
-    //验证主版本号
-    if (strncmp(comingFile.fileBuf + HEAD_LEN, pVersion, VERDION_MAJ_LEN) != 0) 
+    if(pVersion != NULL)
     {
-        PRINT("**coming file's majorVersion have error");
-        free(comingFile.fileBuf);
-        return -8;
-    }
-    //验证次版本号
-    if (strncmp(comingFile.fileBuf + HEAD_LEN + VERDION_MAJ_LEN,  pVersion + VERDION_MAJ_LEN , VERSION_MIN_LEN) != 0) 
-    {
-        PRINT("**coming file's minorVersion have error");
-		free(comingFile.fileBuf);
-        return -9;
-    }
-	//for(i=0; i<10; i++)
-	//{
-		//PRINT("%x\n", comingFile.fileBuf[ FILE_CONST_PART_LEN+i]);
-	//}
-   	//for(i=0; i<50; i++)
-	//{
-//		PRINT("%x\n", comingFile.fileBuf[ comingFile.fileLenInByte-50+i]);
-//	}
-//	 PRINT("%d\n", comingFile.fileLenInByte - FILE_CONST_PART_LEN);
-  
-  // PRINT("%d\n", temp);
+		//验证主版本号
+		if (strncmp(comingFile.fileBuf + HEAD_LEN, pVersion, VERDION_MAJ_LEN) != 0) 
+		{
+			PRINT("**coming file's majorVersion have error");
+			free(comingFile.fileBuf);
+			return -8;
+		}
+		//验证次版本号
+		if (strncmp(comingFile.fileBuf + HEAD_LEN + VERDION_MAJ_LEN,  pVersion + VERDION_MAJ_LEN , VERSION_MIN_LEN) != 0) 
+		{
+			PRINT("**coming file's minorVersion have error\n");
+			free(comingFile.fileBuf);
+			return -9;
+		}
+	}
    //重新校验CRC
     //CRCVal = CRC16(comingFile.fileBuf + FILE_CONST_PART_LEN-4, comingFile.fileLenInByte - FILE_CONST_PART_LEN+4);
     CRCVal = CRC16(comingFile.fileBuf + FILE_CONST_PART_LEN-4,fileLen-14);
     memcpy(arrCRC, comingFile.fileBuf +HEAD_LEN + VERSION_INFO_LEN, CRC_LEN );
-   /* for(i = 0; i<  CRC_LEN; i++)
-    {
-        comingCRCVal= arrCRC[i] << (8 * (CRC_LEN -i -1)) + comingCRCVal;
-    }*/
-	printf("%x\n",arrCRC[0]);
-	printf("%x\n",arrCRC[1]);
     comingCRCVal = arrCRC[0]*256+arrCRC[1];
 	PRINT("--%x\n", comingCRCVal);
 
@@ -306,7 +270,7 @@ int check_file(char *pVersion, const unsigned char *pPath,unsigned char *path_ne
     }
     //重新生成(只写二进制文件)
     strcpy(path_new,pPath);
-    strcat(path_new,"_new");
+    strcat(path_new,"_tmp");
     fd =open(path_new, O_RDWR | O_CREAT);
     if(fd == -1)
     {
@@ -339,23 +303,28 @@ int check_file(char *pVersion, const unsigned char *pPath,unsigned char *path_ne
 	}
     close(fd);
     //验证子版本号 
-      
-    int new_ver = (*(comingFile.fileBuf + HEAD_LEN + VERDION_MAJ_LEN + VERSION_MIN_LEN))*256+ (*(comingFile.fileBuf + HEAD_LEN + VERDION_MAJ_LEN + VERSION_MIN_LEN+1));
-    int old_ver = (*(pVersion + VERDION_MAJ_LEN +VERSION_MIN_LEN))*256 + (*(pVersion + VERDION_MAJ_LEN +VERSION_MIN_LEN+1));
-    PRINT("new_ver = %d\n",new_ver);
-    PRINT("old_ver = %d\n",old_ver);
-    if (new_ver <= old_ver) 
-    {
-        PRINT("**coming file's don't need upgrade\n");        
-		free(comingFile.fileBuf);
-        return -13;
-    }
-    else
-    {
-        PRINT("-local software need upgrade\n");
-		free(comingFile.fileBuf);
-        return 0;
-    }    
+    if(pVersion != NULL)
+    {  
+		int new_ver = (*(comingFile.fileBuf + HEAD_LEN + VERDION_MAJ_LEN + VERSION_MIN_LEN))*256+ (*(comingFile.fileBuf + HEAD_LEN + VERDION_MAJ_LEN + VERSION_MIN_LEN+1));
+		int old_ver = (*(pVersion + VERDION_MAJ_LEN +VERSION_MIN_LEN))*256 + (*(pVersion + VERDION_MAJ_LEN +VERSION_MIN_LEN+1));
+		PRINT("new_ver = %d\n",new_ver);
+		PRINT("old_ver = %d\n",old_ver);
+		if (new_ver <= old_ver) 
+		{
+			PRINT("coming file's don't need upgrade\n");        
+			free(comingFile.fileBuf);
+			return -13;
+		}
+		else
+		{
+			PRINT("local software need upgrade\n");
+			free(comingFile.fileBuf);
+			return 0;
+		}
+	} 
+	PRINT("local software need upgrade\n");
+	free(comingFile.fileBuf);
+	return 0;
 }
 
 

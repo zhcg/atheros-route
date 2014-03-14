@@ -37,6 +37,10 @@ export PHONEPASSAGEDIR=$(TOPDIR)/linux/drivers/passage/phone
 export PHONEPASSAGEMODPATH=$(INSTALL_ROOT)/lib/modules/$(KERNELVER)/passage/phone
 export AS532HDIR=$(TOPDIR)/linux/drivers/as532h
 export AS532HMODPATH=$(INSTALL_ROOT)/lib/modules/$(KERNELVER)/as532h
+export AS532HDEFIMAGEPATH=$(INSTALL_ROOT)/var/default_image/as532h
+export STM32DEFIMAGEPATH=$(INSTALL_ROOT)/var/default_image/stm32
+export AS532HDEFIMAGE=$(TOPDIR)/apps/modules_server/default_image/as532h/as532h_default_image
+export STM32DEFIMAGE=$(TOPDIR)/apps/modules_server/default_image/stm32/stm32_default_image
 #
 # Makefile for WASP Fusion build.  It has dependancies for both
 # the "common" build and the "jffs2" build.  This is unique for
@@ -607,6 +611,10 @@ modules_server:
 	cd ../apps/modules_server; make clean; make; \
 	$(STRIP) modules_server; \
 	cp -f modules_server $(INSTALL_ROOT)/bin;
+	mkdir -p $(AS532HDEFIMAGEPATH)
+	mkdir -p $(STM32DEFIMAGEPATH)
+	cp -r $(AS532HDEFIMAGE) $(AS532HDEFIMAGEPATH)
+	cp -r $(STM32DEFIMAGE) $(STM32DEFIMAGEPATH)
 	
 check_phone_status:
 	@echo making check_phone_status application

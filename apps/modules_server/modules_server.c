@@ -167,10 +167,22 @@ int init_as532()
 	int ret = 0;
 	int ret_err = 0;
 	global_sg_fd = user_open_usb(SGNAME);
+	char path_new[128]={0};
 	//PRINT("open sg file fd = %d\n" ,global_sg_fd);
 	if (global_sg_fd < 0)
 	{
 		PRINT("failed to open 532 usr_mode,try boot_mode\n");
+		ret=check_file(NULL, DEFAULT_AS532_IMAGE,path_new);
+		if(ret == 0)
+		{
+			PRINT("check file success\n");
+		}
+		else
+		{
+			PRINT("check file error\n");
+			return -7;
+		}
+	
 		usb_fd = boot_open_usb(USBNAME);
 		if(usb_fd < 0 )
 		{
@@ -181,7 +193,7 @@ int init_as532()
 	
 		usleep(50000);
 		
-		ret = LoadDatFile(DEFAULT_AS532_IMAGE);
+		ret = LoadDatFile(path_new);
 		if(ret != 1)
 		{
 			PRINT("update as532 failed,cause load dat file err!\r\n");
@@ -521,8 +533,8 @@ void user_close_usb(int *fd)
 
 void update_test_thread_func(void* argv)
 {
-	int ret = as532_update("/root/ElfDate.dat");
-	do_cmd_stm32_update("/root/stm32_app_packet.bin");
+	int ret = as532_update(DEFAULT_AS532_IMAGE);
+	do_cmd_stm32_update(DEFAULT_STM32_IMAGE);
 	PRINT("update over %d\n",ret);	
 	return;
 }
@@ -548,14 +560,14 @@ int as532_update(unsigned char *path)
 	else if(ret == -13)
 	{
 		PRINT("your 532 is newest\n");
-		do_cmd_rep(AS532H_UPDATE,NULL,0,ret);
+		//do_cmd_rep(AS532H_UPDATE,NULL,0,ret);
 		ret_err = -8;
 		goto AS532_UPDATE_ERR;
 	}
 	else
 	{
 		PRINT("check file error\n");
-		do_cmd_rep(AS532H_UPDATE,NULL,0,ret);
+		//do_cmd_rep(AS532H_UPDATE,NULL,0,ret);
 		ret_err = -9;
 		goto AS532_UPDATE_ERR;
 	}
