@@ -483,6 +483,7 @@ int do_cmd_stm32_update(unsigned char *path)
 {
 	int ret = 0;
 	stm32_updating = 1;
+	//PRINT("path = %s\n",path);
 	ret = stm32_update(path);
 	if(ret != 0 )
 	{
@@ -518,9 +519,10 @@ void user_close_usb(int *fd)
 	close(*fd);
 }
 
-void as532_update_thread_func(void* argv)
+void update_test_thread_func(void* argv)
 {
 	int ret = as532_update("/root/ElfDate.dat");
+	do_cmd_stm32_update("/root/stm32_app_packet.bin");
 	PRINT("update over %d\n",ret);	
 	return;
 }
@@ -704,7 +706,7 @@ int do_cmd_532_update()
 {
 	as532_updating = 1;
 	pthread_t as532_update_pthread;
-	pthread_create(&as532_update_pthread,NULL,(void*)as532_update_thread_func,NULL);
+	pthread_create(&as532_update_pthread,NULL,(void*)update_test_thread_func,NULL);
 	return 0;
 }
 

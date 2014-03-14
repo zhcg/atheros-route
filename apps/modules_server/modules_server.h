@@ -9,10 +9,8 @@
 #define SPIPASSAGE	"/dev/spipassage"
 #define SGNAME		"/dev/sg0"
 #define USBNAME		"/dev/as532h"
-#define DATNAME		"/root/ElfDate.dat"
 #define DEFAULT_AS532_IMAGE "/var/default_image/default_ElfDate.dat"
 #define DEFAULT_STM32_IMAGE "/var/default_image/default_stm32_app_packet.bin"
-#define STM32_BIN_NAME "/root/stm32_app_packet.bin"
 #define READ_FIFO		"/tmp/WRITE_LOW_COMMUNICATE"
 #define WRITE_FIFO		"/tmp/READ_LOW_COMMUNICATE"
 #define SERVER_PORT	53232
@@ -185,7 +183,7 @@ void passage_thread_func(void *argv);
 int start_test();
 int stop_test();
 
-void as532_update_thread_func(void* argv);
+void update_test_thread_func(void* argv);
 void factory_test_func(void *argv);
 int factory_test(unsigned char *packet,int bytes);
 int factory_test_cmd_9344_r54_call();

@@ -63,32 +63,19 @@ int stm32_update(unsigned char* path)
     int read_or_write;
 	int update;
 
-//	update_bin_file_size = get_file_size(STM32_BIN_NAME);
-//	PRINT("get_file_size = %d \n", update_bin_file_size);
-
-//	while(1){	
-    //global_uart_fd = open(ttydev, O_RDWR, 0);
-	//PRINT("global_uart_fd = %d \n", global_uart_fd);
-    //if (global_uart_fd < 0) {
-		//fprintf(stderr, "open <%s> error %s\n", ttydev, strerror(errno));
-        //return -1;
-    //}
-
 	if (BinFileHeadCheck(path) == 0){
 		update = 0;
 		if((ret = CmdGetVersion()) != 0){
 			update = 1;
 			//return -2;
 		}
-		PRINT("bin_format_version:");
+		PRINT("bin_format_version:\n");
 		for(i = 0; i < 4; i++)
-			PRINT("%x ", bin_format_version[i]);
-		PRINT("\n");
+			PRINT("%x\n ", bin_format_version[i]);
 
-		PRINT("stm_format_version:");
+		PRINT("stm_format_version:\n");
 		for(i = 0; i < 4; i++)
-			PRINT("%x ", stm_format_version[i]);
-		PRINT("\n");
+			PRINT("%x\n ", stm_format_version[i]);
 		//比较STM32版本和BIN文件版本
 		ret = memcmp((void *)bin_format_version, (void *)stm_format_version, sizeof(bin_format_version));
 		if ((ret > 0) | (update == 1)){
@@ -98,7 +85,7 @@ int stm32_update(unsigned char* path)
 			usleep(500 * 1000);
 			if((ret = CmdStart()) != 0)
 				return -4;
-			if((ret = Update(STM32_BIN_NAME)) != 0)
+			if((ret = Update(path)) != 0)
 				return -5;
 			if((ret = CmdEnd()) != 0)
 				return -6;
@@ -977,10 +964,10 @@ int Update(const char *path)
 	int timeout = 0;
 	unsigned int update_packet_num,last_packet_len;
 	unsigned char bin_file_buffer[UPDATE_DATA_MAX_BYTES];
-	fd = open(STM32_BIN_NAME, O_RDONLY, 0);
+	fd = open(path, O_RDONLY, 0);
 //	PRINT("fsfd = %d \n", fd);
 	if (fd < 0) {
-		fprintf(stderr, "open <%s> error %s\n", STM32_BIN_NAME, strerror(errno));
+		fprintf(stderr, "open <%s> error %s\n", path, strerror(errno));
 		return -1;
 	}
 	update_packet_num = (update_bin_file_size / UPDATE_DATA_MAX_BYTES);
@@ -1098,7 +1085,7 @@ int BinFileHeadCheck(const char *path)
 	int i,ret,fd;
 	unsigned short crc_check,crc_ret;
 	unsigned char bin_file_buffer[BIN_FILE_HEAD_BYTES];
-	fd = open(STM32_BIN_NAME, O_RDONLY, 0);
+	fd = open(path, O_RDONLY, 0);
 	//PRINT("fsfd = %d \n", fd);
 	if (fd < 0) {
 		fprintf(stderr, "open <%s> error %s\n", path, strerror(errno));
