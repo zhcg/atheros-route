@@ -27,6 +27,7 @@ typedef struct {
 				inited;
 } ath_hs_uart_softc_t;
 
+int i = 0;
 ath_hs_uart_softc_t	ath_hs_uart_softc;
 
 void ath_hs_uart_put(uint8_t byte);
@@ -323,12 +324,34 @@ static const struct tty_operations ath_hs_uart_ops = {
 	.wait_until_sent= ath_hs_uart_wait_until_sent,
 };
 
+//static irqreturn_t ath_hs_uart_isr(int irq, void *dev_id)
+//{
+	//ath_hs_uart_softc_t	*sc = dev_id;
+	//uint8_t	ch = ath_hs_uart_get_poll();
+	//u_int32_t data = ath_reg_rd(ATH_HS_UART_INT_STATUS);
+//
+	//if (sc->tty->ttys[0]) {
+		//tty_insert_flip_char(sc->tty->ttys[0], ch, TTY_NORMAL);
+		//ath_reg_wr(ATH_HS_UART_INT_STATUS, 0xffffffff);
+		//tty_flip_buffer_push(sc->tty->ttys[0]);
+	//} else {
+		//ath_reg_wr(ATH_HS_UART_INT_STATUS, 0xffffffff);
+	//}
+	//return IRQ_HANDLED;
+//}
+
 static irqreturn_t ath_hs_uart_isr(int irq, void *dev_id)
 {
-	ath_hs_uart_softc_t	*sc = dev_id;
-	uint8_t	ch = ath_hs_uart_get_poll();
+	ath_hs_uart_softc_t *sc = dev_id;
+	uint8_t ch = ath_hs_uart_get_poll();
+	//printk("%02x",ch);
+	//while(i<200)
+	//{
+		//i++;
+	//}
+	i = 0;
 	u_int32_t data = ath_reg_rd(ATH_HS_UART_INT_STATUS);
-
+	 
 	if (sc->tty->ttys[0]) {
 		tty_insert_flip_char(sc->tty->ttys[0], ch, TTY_NORMAL);
 		ath_reg_wr(ATH_HS_UART_INT_STATUS, 0xffffffff);
@@ -338,7 +361,6 @@ static irqreturn_t ath_hs_uart_isr(int irq, void *dev_id)
 	}
 	return IRQ_HANDLED;
 }
-
 #ifdef CONFIG_SERIAL_8250
 #	define ATH_HS_UART_MINOR	(64 + CONFIG_SERIAL_8250_NR_UARTS)
 #else
@@ -368,6 +390,7 @@ static int __init ath_hs_uart_user_init(void)
 	tty->init_termios.c_oflag = 0;
 	tty->init_termios.c_lflag = ~(ISIG | ECHO | ICANON | NOFLSH);
 	tty->init_termios.c_cflag = B115200 | CS8 | CREAD | HUPCL | CLOCAL & (~PARENB) & (~CSTOPB);
+	//tty->init_termios.c_cflag = B57600 | CS8 | CREAD | HUPCL | CLOCAL & (~PARENB) & (~CSTOPB);
 
     tty->init_termios.c_cc[VMIN] = 1;
     tty->init_termios.c_cc[VTIME] = 0;
