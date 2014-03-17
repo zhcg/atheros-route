@@ -4660,6 +4660,10 @@ int main(int argc,char **argv)
         fprintf(errOut,"\n----------Page:%s parameter :\n",Page);
         while(nextField)
         {
+        	FILE *fp;
+			int ret = 0;
+			char id[10];
+			struct staList stalist;
             //memset(Value,0x0,70);
             //Value[0]='\0';
             nextField = extractParam(nextField,Name,valBuff);
@@ -4970,6 +4974,24 @@ int main(int argc,char **argv)
                 }
             }
              fprintf(errOut,"Name:%s Value:%s\n",Name,Value);
+			 /*don't write something to flash*/
+			 if ((fp = fopen(STA_MAC, "r")) != NULL)
+			 {
+			 	while(fread(&stalist, sizeof stalist, 1, fp) == 1)
+				{
+					sprintf(id,"%d", stalist.id);
+					if(!strcmp(id, Name))
+					{
+						ret = 1;
+						continue;
+					}
+				}
+				fclose(fp);
+			 }
+			 //fprintf(errOut,"ret :%d\n", ret);
+			 if(ret == 1)
+				continue;
+			 
              CFG_set_by_name(Name,Value);
         }
     if(parameterIndex)
