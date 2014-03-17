@@ -15,11 +15,11 @@
 
 	<message msgid="advmenu treeapp_title" msgstr="Advanced Settings" />
 	<message msgid="advmenu treeapp_sysstatus" msgstr="System Info" />
-	<message msgid="advmenu treeapp_wan" msgstr="Network Settings" />
+	<message msgid="advmenu treeapp_wan" msgstr="Internet Settings" />
 	<message msgid="advmenu treeapp_wan_set" msgstr="WAN Settings" />
 	<message msgid="advmenu treeapp_wan_macclone" msgstr="Clone MAC Address" />
 
-	<message msgid="advmenu treeapp_local" msgstr="Network Settings" />
+	<message msgid="advmenu treeapp_local" msgstr="Local Network Settings" />
 	<message msgid="advmenu treeapp_local_dhcp" msgstr="DHCP Server" />
 	<message msgid="advmenu treeapp_local_gwset" msgstr="Gateway Settings" />
 	<message msgid="advmenu treeapp_local_rulist" msgstr="Routing Table Settings" />
@@ -98,19 +98,19 @@
 	<message msgid="sysinfo un" msgstr="Unknown" />
 
 	<message msgid="netcheck title" msgstr="Network check" />
-	<message msgid="netcheck des" msgstr="Detection of the type of network connection and the network PING" />
+	<message msgid="netcheck des" msgstr="Detection of the type of network connection and the network Ping" />
 	<message msgid="netcheck netc" msgstr="Start" />
 	<message msgid="netcheck checkingwaiting" msgstr="Please wait patiently" />
 	<message msgid="netcheck Result" msgstr="Result" />
 	<message msgid="netcheck t1_wantype" msgstr="Automatic detection of WAN type" />
 	<message msgid="netcheck t1_basetype" msgstr="BASE option type" />
-	<message msgid="netcheck t1_pngBD" msgstr="Result of ping www.baidu.com" />
-	<message msgid="netcheck t1_pingQQ" msgstr="Result of ping www.qq.com" />
+	<message msgid="netcheck t1_pngBD" msgstr="Result of Ping www.baidu.com" />
+	<message msgid="netcheck t1_pingQQ" msgstr="Result of Ping www.qq.com" />
 
 	<message msgid="netcheck renetc" msgstr="Re diagnosis" />
 
 	<message msgid="netcheck r1" msgstr="Internet access failed, please check the Internet settings are correct" />
-	<message msgid="netcheck r2" msgstr="Access to the Internet, the network is normal" />
+	<message msgid="netcheck r2" msgstr="Access to the Internet, the network is working properly" />
 	<message msgid="netcheck r3" msgstr="Please check the WAN cable" />
 	<message msgid="err MAC wuxiao" msgstr="MAC address illegal" />
 	<message msgid="err MAC empty" msgstr="MAC is empty " />

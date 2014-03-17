@@ -88,7 +88,7 @@
 	
 	
 	<message msgid="man reboottitle" msgstr="系统重启" />
-	<message msgid="man rebootdes" msgstr="单击此按钮使HBD路由器重启" />
+	<message msgid="man rebootdes" msgstr="重启HBD路由器" />
 	<message msgid="man reboot" msgstr="重启HBD路由器" />
 
 	<message msgid="man basesavedes" msgstr="HBD路由器备份与恢复" />

@@ -117,7 +117,7 @@
 	<message msgid="admw modedes" msgstr="Please select the HBD router WAN connection type." />  
 	<message msgid="admw modedes1" msgstr="The parameters needed in the opening of the network, the network operators to provide" />  
 
-	<message msgid="admw wifides" msgstr="Please set the HBD routing WiFi account and password. Your computer, PAD, intelligent mobile phone will use the following network." />  
+	<message msgid="admw wifides" msgstr="Please set the HBD router WiFi account and password. Your computer, PAD, intelligent mobile phone will use the following network." />  
 	<message msgid="admw wirelessdes" msgstr="Please select to connect to the WiFi. Note: The two band relay functions are effective; after WDS, please use the static IP connected login Web." />  
 	<message msgid="admw parentdes" msgstr="As a parent, you can control child's Internet time and visiting the webpage through the page settings" />  
 
@@ -199,7 +199,7 @@
 	<message msgid="admw nei" msgstr="Wifi settings" />
 
 	<message msgid="password change" msgstr="Password has been changed,the new password works after reset" />
-	<message msgid="admw securitydes" msgstr="Modify the routing Web management page login password" />
+	<message msgid="admw securitydes" msgstr="Modify the router Web management page login password" />
 
 	<message msgid="admw uploadtitle" msgstr="Firmware upgrade" />
 	<message msgid="admw uploaddes" msgstr="Choose to upgrade using image files, do an in place upgrade" />

@@ -87,7 +87,7 @@
 
 	
 	<message msgid="man reboottitle" msgstr="System restart" />
-	<message msgid="man rebootdes" msgstr="Click this button to restart BASE" />
+	<message msgid="man rebootdes" msgstr="Restart BASE" />
 	<message msgid="man reboot" msgstr="Restart" />
 
 	<message msgid="man basesavedes" msgstr="BASE Backup and Restore" />

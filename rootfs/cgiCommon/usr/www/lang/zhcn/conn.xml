@@ -24,7 +24,7 @@
 	<message msgid="settingwaiting" msgstr="正在配置,请您稍等......" />
 
 	<message msgid="clist title" msgstr="已接入设备列表" /> 
-	<message msgid="clist des" msgstr="显示HBD路由当前已经接入的有线和无线设备的信息" /> 
+	<message msgid="clist des" msgstr="显示当前已接入HBD路由器的有线和无线设备的信息" /> 
 	<message msgid="clist t1_title" msgstr="有线设备" />  
 	<message msgid="clist t2_title" msgstr="无线设备（包括无线可疑设备）" />  
 	<message msgid="clist ip" msgstr="IP地址" />  
@@ -39,7 +39,7 @@
 	<message msgid="conm t1_switch" msgstr="无线接入开关" />  
 	
 	<message msgid="conw title" msgstr="远程Web管理" />  
-	<message msgid="conw des" msgstr="管理设备远程Web登录" />  
+	<message msgid="conw des" msgstr="管理设备远程登录Web权限" />  
 	<message msgid="conw t1_title" msgstr="远程Web管理" />  
 	<message msgid="conw t1_switch" msgstr="远程登录" />  
 
