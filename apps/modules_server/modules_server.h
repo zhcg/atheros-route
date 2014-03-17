@@ -9,8 +9,8 @@
 #define SPIPASSAGE	"/dev/spipassage"
 #define SGNAME		"/dev/sg0"
 #define USBNAME		"/dev/as532h"
-#define DEFAULT_AS532_IMAGE "/var/default_image/default_ElfDate.dat"
-#define DEFAULT_STM32_IMAGE "/var/default_image/default_stm32_app_packet.bin"
+#define DEFAULT_AS532_IMAGE "/var/default_image/as532h/as532h_default_image"
+#define DEFAULT_STM32_IMAGE "/var/default_image/stm32/stm32_default_image"
 #define READ_FIFO		"/tmp/WRITE_LOW_COMMUNICATE"
 #define WRITE_FIFO		"/tmp/READ_LOW_COMMUNICATE"
 #define SERVER_PORT	53232

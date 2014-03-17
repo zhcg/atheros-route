@@ -9,7 +9,7 @@
 	<message msgid="help" msgstr="帮助" />
 	<message msgid="toplanguage" msgstr="z" />
 	
-	<message msgid="admw div_wan_title" msgstr="请您选择HBD路由器WAN口的连接方式。所需参数在开通网络时，由网络运营商（中国电信、中国移动、中国联通等）提供" />
+	<message msgid="admw div_wan_title" msgstr="请您选择HBD路由器WAN口的连接方式。所需参数在开通网络时，由网络运营商（中国电信、中国联通、中国移动等）提供" />
 	<message msgid="admw DHCP" msgstr="自动获取(动态IP)" />  
 	<message msgid="admw DHCPdisc" msgstr="网络运营商没有提供任何参数，HBD路由器将自动从网络运营商获取IP地址" />
 	<message msgid="admw SM" msgstr="手动设置(静态IP)" />
@@ -113,8 +113,8 @@
 	<message msgid="admw w5ttitle" msgstr="家长控制" />  
 	<message msgid="admw wwtitle" msgstr="外网/无线中继设置" />  
 
-	<message msgid="admw modedes" msgstr="请您选择HBD路由器WAN口的连接方式。所需参数在开通网络时，由网络运营商（中国电信、中国联通、中国铁通、中国移动等）提供" />  
-	<message msgid="admw modedes1" msgstr="所需参数在开通网络时，由网络运营商（中国电信、中国联通、中国铁通、中国移动等）提供" />  
+	<message msgid="admw modedes" msgstr="请您选择HBD路由器WAN口的连接方式。所需参数在开通网络时，由网络运营商（中国电信、中国联通、中国移动等）提供" />  
+	<message msgid="admw modedes1" msgstr="所需参数在开通网络时，由网络运营商（中国电信、中国联通、中国移动等）提供" />  
 	<message msgid="admw wifides" msgstr="请您设置HBD路由的WiFi名称和密码。您的电脑、PAD、智能手机等将使用以下网络上网" />  
 	<message msgid="admw wirelessdes" msgstr="请您选择要连接的WiFi。注意:两种频段中继功能需分开生效;中继之后,请使用静态IP方式连接登录Web" />  
 	<message msgid="admw parentdes" msgstr="作为家长，您可以通过在本页进行设置，对孩子的上网时间和访问网页进行控制" />  

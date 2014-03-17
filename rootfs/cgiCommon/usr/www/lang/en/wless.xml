@@ -17,7 +17,7 @@
 	<message msgid="toplanguage" msgstr="e" />
 	<message msgid="settingwaiting" msgstr="Setting,Please Wait......" />
 	
-	<message msgid="wless title" msgstr="Wireless advanced settings" />  
+	<message msgid="wless title" msgstr="Advanced Settings" />  
 	
 	<message msgid="wless des" msgstr="Modify the configuration of wireless advanced parameters" />  
 
@@ -35,7 +35,7 @@
 	<message msgid="wless t1_long" msgstr="Long" />  
 	<message msgid="wless t1_shot" msgstr="Short" />  
 
-	<message msgid="wless wifititle" msgstr="Wireless Basic Settings" />
+	<message msgid="wless wifititle" msgstr="Basic Settings" />
 	<message msgid="wless wifititle1" msgstr="Network Band:2.4GHz" />
 	<message msgid="wless wifititle2" msgstr="Network Band:5GHz" />
 
