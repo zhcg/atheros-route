@@ -13,6 +13,7 @@ function BarMenu(id)
     this.box1Hover = true;
     this.box2Hover = true;
     this.highlightActive = true;
+    this.status = 0;
 
     this.init = function() 
 	{
@@ -63,7 +64,8 @@ function BarMenu(id)
                     tree[tree.length] = new Array();
                     eval('nodes[i].onmouseover = function() { self.box2over("'+nodes[i].id+'", "'+nodes[i].className+'"); }');
                     eval('nodes[i].onmouseout = function() { self.box2out("'+nodes[i].id+'", "'+nodes[i].className+'"); }');
-                }
+					eval('nodes[i].onclick = function() { self.box2click("'+nodes[i].id+'"); }');
+              }
             }
             if (this.highlightActive && nodes[i].tagName && nodes[i].tagName == "A") 
 			{
@@ -102,9 +104,6 @@ function BarMenu(id)
         var id_openbox = this.id_openbox;
         if (this.id_openbox) 
 		{
-            //if (!document.getElementById(id + "-section")) {
-             //   return;
-            //}
             this.hide();
             if (id_openbox == id) 
 			{
@@ -114,7 +113,7 @@ function BarMenu(id)
                 } 
 				else 
 				{
-                    document.getElementById(id_openbox).className = "box1";
+                    document.getElementById(id_openbox).className = "box1-open-hover";
                 }
             } 
 			else 
@@ -134,7 +133,26 @@ function BarMenu(id)
 			{
                 document.getElementById(id).className = "box1-open";
             }
+			this.status = 0;
         }
+		else
+		{
+			if((this.status%2)==1)
+			{
+				this.show(id);
+				var className = document.getElementById(id).className;
+				if ("box1-hover" == className) 
+				{
+					document.getElementById(id).className = "box1-open-hover";
+				}
+				if ("box1" == className) 
+				{
+					document.getElementById(id).className = "box1-open";
+				}				
+
+			}
+			this.status ++;
+		}
 		//alert(id);
 		if(id=="bar-menu2-0")
 		{
@@ -142,31 +160,52 @@ function BarMenu(id)
 		}
 		if(id=="bar-menu2-0-0")
 		{
-			window.ifm.location.href="cgi-bin/ad_wan_set?ad_wan_set=yes";
+					this.hide2();
+            this.show2("bar-menu2-0-0-0");
+			this.id_openbox2 = "bar-menu2-0-0-0";
+				window.ifm.location.href="cgi-bin/ad_wan_set?ad_wan_set=yes";
 		}
 
 		if(id=="bar-menu2-0-0-2")
 		{
+			this.hide2();
+            this.show2("bar-menu2-0-0-2-0");
+			this.id_openbox2 = "bar-menu2-0-0-2-0";
 			window.ifm.location.href="cgi-bin/ad_local_dhcp?ad_local_dhcp=yes";
 		}
 		if(id=="bar-menu2-0-0-2-3")
 		{
+			this.hide2();
+            this.show2("bar-menu2-0-0-2-3-0");
+			this.id_openbox2 = "bar-menu2-0-0-2-3-0";
 			window.ifm.location.href="cgi-bin/ad_wireless_basic?ad_wireless_basic=yes";
 		}
 		if(id=="bar-menu2-0-0-2-3-3")
 		{
+			this.hide2();
+            this.show2("bar-menu2-0-0-2-3-3-0");
+			this.id_openbox2 = "bar-menu2-0-0-2-3-3-0";
 			window.ifm.location.href="cgi-bin/ad_con_list?ad_con_list=yes";
 		}
 		if(id=="bar-menu2-0-0-2-3-3-2")
 		{
+			this.hide2();
+            this.show2("bar-menu2-0-0-2-3-3-2-0");
+			this.id_openbox2 = "bar-menu2-0-0-2-3-3-2-0";
 			window.ifm.location.href="cgi-bin/ad_safe_IPMAC?ad_safe_IPMAC=yes";
 		}
 		if(id=="bar-menu2-0-0-2-3-3-2-1")
 		{
+			this.hide2();
+            this.show2("bar-menu2-0-0-2-3-3-2-1-0");
+			this.id_openbox2 = "bar-menu2-0-0-2-3-3-2-1-0";
 			window.ifm.location.href="cgi-bin/ad_parentc_accept?ad_parentc_accept=yes";
 		}
 		if(id=="bar-menu2-0-0-2-3-3-2-1-2")
 		{
+			this.hide2();
+            this.show2("bar-menu2-0-0-2-3-3-2-1-2-0");
+			this.id_openbox2 = "bar-menu2-0-0-2-3-3-2-1-2-0";
 			window.ifm.location.href="cgi-bin/ad_man_timezone?ad_man_timezone=yes";
 		}
 		if(id=="bar-menu2-0-0-2-3-3-2-1-2-5")
@@ -174,22 +213,7 @@ function BarMenu(id)
 			window.ifm.location.href="cgi-bin/ad_netcheck?INDEX=00";
 		}
     }
-
-    this.box2over = function(id, className) 
-	{
-        if (!this.box2Hover) return;
-        if (!document.getElementById(id)) return;
-        document.getElementById(id).className = className + "-hover";
-    }
-
-    this.box2out = function(id, className)
-	{
-        if (!this.box2Hover) return;
-        if (!document.getElementById(id)) return;
-        document.getElementById(id).className = className;
-    }
-
-    this.show = function(id)
+	this.show = function(id)
 	{
         if (document.getElementById(id + "-section")) 
 		{
@@ -201,7 +225,54 @@ function BarMenu(id)
     this.hide = function() 
 	{
         document.getElementById(this.id_openbox + "-section").style.display = "none";
-        this.id_openbox = "";
+    }
+	
+    this.box2over = function(id, className) 
+	{
+        if (!this.box2Hover) return;
+        if (!document.getElementById(id)) return;
+		document.getElementById(id).className = (this.id_openbox2 == id ? "box2-open-hover" : "box2-hover");
+
+    }
+
+    this.box2out = function(id, className)
+	{
+        if (!this.box2Hover) return;
+        if (!document.getElementById(id)) return;
+		document.getElementById(id).className = (this.id_openbox2 == id ? "box2-open" : "box2");
+
+    }
+
+	this.box2click = function(id) 
+	{
+		//alert(id);
+        if (!document.getElementById(id)) 
+		{
+            return;
+        }
+        if (this.id_openbox2!="") 
+		{
+            this.hide2();
+            this.show2(id);
+			this.id_openbox2 = id;
+		}
+		else
+		{
+			this.id_openbox2 = id;
+			this.show2(id);
+		}
+	}
+
+    this.show2 = function(id)
+	{
+        if (!document.getElementById(id)) return;
+		document.getElementById(id).className = "box2-open";
+    }
+
+    this.hide2 = function() 
+	{
+        if (!document.getElementById(this.id_openbox2)) return;
+		document.getElementById(this.id_openbox2).className = "box2";
     }
 
     this.save = function()
@@ -260,6 +331,7 @@ function BarMenu(id)
     this.tree = new Array();
     this.cookie = new Cookie();
     this.id_openbox = "";
+    this.id_openbox2 = "";
 }
 
 if (typeof String.prototype.trim == "undefined")

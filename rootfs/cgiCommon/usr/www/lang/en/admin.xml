@@ -253,5 +253,6 @@
 	
 	<message msgid="err user" msgstr="Username illegal" />
 	<message msgid="err pwd" msgstr="Password illegal" />
+	<message msgid="admw pwdwaiting" msgstr="Password updated successfully, reconnecting......" />
 
 </po>
