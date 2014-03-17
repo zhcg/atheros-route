@@ -415,7 +415,7 @@ int generate_stm32_down_msg(char *databuf,int databuf_len,int passage)
 	index += databuf_len;
 	//sendbuf[index++] = sumxor(&sendbuf[PACKET_STM32_HEAD_POS],6+databuf_len);
 	sendbuf[index++] = sumxor(sendbuf,7+databuf_len);
-	if(global_uart_fd < 0)
+	if(global_uart_fd < 0 || stm32_updating == 1)
 	{
 		free(sendbuf);
 		return -1;
@@ -2095,6 +2095,7 @@ int ota_as532h_update(unsigned char* path)
 	{
 		result = 0;
 	}
+	system("rm -rf /tmp/AS532.zip");
 	generate_ota_up_msg(OTA_CMD_UPDATE_RET,OTA_AS532H_ID,&result,1);
 	return 0;
 }
@@ -2111,6 +2112,7 @@ int ota_stm32_update(unsigned char* path)
 	{
 		result = 0;
 	}
+	system("rm -rf /tmp/STM32.zip");
 	generate_ota_up_msg(OTA_CMD_UPDATE_RET,OTA_STM32_ID,&result,1);
 	return 0;
 }
@@ -2180,13 +2182,15 @@ int FifoPacketDis(unsigned char *ppacket,int bytes)
 			{
 				PRINT("OTA_AS532H_UPDATE_REQ\n");
 				ppacket[16+len_tmp] = '\0';
-				ota_as532h_update(&ppacket[16]);
+				//ota_as532h_update(&ppacket[16]);
+				ota_as532h_update("/tmp/AS532.zip");
 			}
 			else if(ppacket[5] == (unsigned char)OTA_STM32_ID)
 			{
 				PRINT("OTA_STM32_UPDATE_REQ\n");
 				ppacket[16+len_tmp] = '\0';
-				ota_stm32_update(&ppacket[16]);
+				//ota_stm32_update(&ppacket[16]);
+				ota_stm32_update("/tmp/STM32.zip");
 			}
 			break;
 		default:
