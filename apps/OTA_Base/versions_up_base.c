@@ -309,8 +309,8 @@ int Md5_Check(char *recv_buf )
 			break;
 	}
 	rear_md5[32] = '\0';
-	printf("pre_md5 = %s\n",pre_md5);
-	printf("rear_md5 = %s\n",rear_md5);
+//	printf("pre_md5 = %s\n",pre_md5);
+//	printf("rear_md5 = %s\n",rear_md5);
 	ret = strncmp(rear_md5,pre_md5,32);
 	if(ret == 0)
 	{
@@ -573,7 +573,6 @@ void Parse_Pack(char *recv_buf,int valid_data_len, int data_len)
 		case 0x41://Í¨ÖªÉý¼¶
 			close(clientFd);
 			clientFd = -1;
-			printf("%s %d updata system    clientFd  = %d !!!!\n",__func__,__LINE__,clientFd);
 			Notice_System_Updata(recv_buf, data_len);
 			break;
 		default:
@@ -660,14 +659,11 @@ void Dispose_Pthread()
 	int recvLen,total;
 	int valid_data_len;
 	char recv_buf[LENGTH+17];
-	printf("%s   %d  clientFd = %d\n",__func__,__LINE__,clientFd);
 	while(clientFd > 0)
 	{	
-		printf("%s   %d  clientFd = %d\n",__func__,__LINE__,clientFd);
 		total = 0;
 		do
 		{	
-			printf("%s   %d  clientFd = %d\n",__func__,__LINE__,clientFd);
 			recvLen = recv(clientFd, recv_buf + total, LENGTH + 17- total, 0);
 			memcpy(&valid_data_len,recv_buf+6,4);
 			valid_data_len = ntohl(valid_data_len);
@@ -702,8 +698,6 @@ int main(int argc, char **argv)
 	{
 		clientFd = accept(servFd, NULL, NULL );
 			
-		printf("%s   %d  \n",__func__,__LINE__);
-		perror("accept");
 		Dispose_Pthread();		
 //		pthread_create(&pthread, NULL, (void *)Dispose_Pthread, (int *)clientFd);
 	}
