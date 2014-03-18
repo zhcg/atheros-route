@@ -5669,13 +5669,13 @@ int main(int argc,char **argv)
 		sprintf(valBuff5,"%s\n<br>",valBuff4);
 		if((strcmp(valBuff8,valBuff5) != 0) && (strcmp(valBuff4,"1") == 0))
 		{
-			fprintf(errOut,"set hide 1 \n");
+			//fprintf(errOut,"set hide 1 \n");
 			Execute_cmd("iwpriv ath0 hide_ssid 1  > /dev/null 2>&1", rspBuff);
 			flag = 5;
 		}
 		if((strcmp(valBuff8,valBuff5) != 0) && (strcmp(valBuff4,"0") == 0))
 		{
-			fprintf(errOut,"set hide 0 \n");
+			//fprintf(errOut,"set hide 0 \n");
 			Execute_cmd("iwpriv ath0 hide_ssid 0  > /dev/null 2>&1", rspBuff);
 			flag = 5;
 		}
