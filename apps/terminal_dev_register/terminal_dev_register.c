@@ -80,7 +80,7 @@ static int analyse_command_line(int argc, char ** argv)
 
         // 3.
         system("cfg -x");
-        sleep(3);
+        sleep(2);
         system("reboot");
     }
     #endif

@@ -830,7 +830,7 @@ EXIT:
         memset(columns_value[0], 0, sizeof(columns_value[0]));
         memcpy(columns_name[0], "register_state", strlen("register_state"));
 
-        sprintf(columns_value[0], "%d", *network_config.pad_cmd);
+        sprintf(columns_value[0], "%d", (unsigned char)*network_config.pad_cmd);
         insert_len = strlen(columns_value[0]);
         PRINT("columns_value[0] = %s\n", columns_value[0]);
 
@@ -1770,8 +1770,18 @@ int request_cmd_0x0C(struct s_terminal_dev_register * terminal_dev_register)
     //cancel_mac_and_ip_bind();
     // 3.
     system("cfg -x");
-    sleep(3);
+    sleep(2);
+    
+    system("kill -9 `ps | grep monitor_application | sed '/grep/'d | awk '{print $1}'`");
+    system("ps");
+    PRINT("after kill monitor_application\n");
+    
+    PRINT("before exec reboot\n");
     system("reboot");
+    PRINT("after exec reboot\n");
+    
+    // 
+    exit(0);
     #endif
     
     return res;

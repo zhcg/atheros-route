@@ -1692,7 +1692,7 @@ int get_user_prompt(int error_num, char **out_buf)
         case WAN_ABNORMAL:          // 局域网不正常
         {            
             state_num = 6;  //状态码
-            memcpy(prompt, "不正常的广域网络，请检查WAN口！", sizeof(prompt) - 1);  // 提示信息
+            memcpy(prompt, "不正常的广域网络，请检查WAN口及网络参数！", sizeof(prompt) - 1);  // 提示信息
             len = strlen(prompt);
             break;
         }

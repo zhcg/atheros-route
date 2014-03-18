@@ -3088,12 +3088,11 @@ int network_settings(int fd, int cmd_count, char cmd_word)
                         break;
                     }
                 }
-            } 
-            return (res == DATA_DIFF_ERR) ? WAN_ABNORMAL : res;
-            
+            }
             #else // #if 0
-            return res;
+            
             #endif // #if 0
+            return (res == DATA_DIFF_ERR) ? WAN_ABNORMAL : res;
         }
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "Wide network normal!", 0);
         
