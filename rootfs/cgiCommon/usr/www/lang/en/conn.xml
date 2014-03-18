@@ -37,6 +37,7 @@
 	<message msgid="conm des" msgstr="Management of accessed wireless devices " />  
 	<message msgid="conm t1_title" msgstr="Wireless Access" />  
 	<message msgid="conm t1_switch" msgstr="Wireless access switch" />  
+	<message msgid="conm ts1" msgstr="(Add and modify should after Enable and Apply) " />  
 
 	<message msgid="conw title" msgstr="Remote Web management" />  
 	<message msgid="conw des" msgstr="Management of equipment remote Web login" />  
@@ -68,4 +69,6 @@
 	<message msgid="err sub format" msgstr="Subnet address illegal" />	
 	<message msgid="err gw format" msgstr="Gateway address illegal" />
 	<message msgid="err DNS format" msgstr="DNS address illegal" />
+	<message msgid="err MAC exist" msgstr="MAC already exist" />
+
 </po>

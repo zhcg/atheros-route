@@ -25,7 +25,7 @@
 	<message msgid="dhcp t1_TIME" msgstr="租用时间" />
 	<message msgid="dhcp t1_hour" msgstr="小时" />
 	<message msgid="dhcp t1_min" msgstr="分钟" />
-	<message msgid="dhcp t1_defaut" msgstr="（1-2880分钟,缺省值120分钟）" />
+	<message msgid="dhcp t1_defaut" msgstr="（1-2880分钟,缺省值120分钟,只支持整数分钟）" />
 
 	<message msgid="dhcp t2_title" msgstr="静态地址分配" />
 	<message msgid="dhcp t2_Mac" msgstr="MAC地址" />

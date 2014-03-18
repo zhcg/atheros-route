@@ -3320,7 +3320,7 @@ void delSta(char *maddr)
 	free(p);
 }
 
-void add_sta_access()
+int  add_sta_access()
 {
 	FILE *fp, *fp1;
 	struct staList stalist;
@@ -3416,7 +3416,8 @@ void add_sta_access()
 			Execute_cmd(buf, rspBuff);
 		}
 		
-	}    	
+	} 
+    return same;
 }
 
 void del_sta_access()
@@ -6646,15 +6647,37 @@ int main(int argc,char **argv)
 	/*ADD STA's MAC*/
     if(strcmp(CFG_get_by_name("ADD_CONRULE",valBuff),"ADD_CONRULE") == 0 ) 
     {
-    	add_sta_access();
+    	int ret_add_conrule = add_sta_access();
 		
         fprintf(errOut,"\n%s  %d ADD_CONRULE \n",__func__,__LINE__);
         memset(Page,0,64);
         //sprintf(Page,"%s","../ad_con_manage.html");
        // gohome =0;
-               Normal_tiaozhuan("ad_con_manage");
+       if(ret_add_conrule==0)
+        {
+        Normal_tiaozhuan("ad_con_manage");
          gohome =2;
+        }
+        else
+        {
+                fprintf(errOut,"\nret_add_conrule fail\n");
+                char tempu2[128]={0};
+                 printf("HTTP/1.0 200 OK\r\n");
+                 printf("Content-type: text/html\r\n");
+                 printf("Connection: Close\r\n");
+                 printf("\r\n");
+                 printf("\r\n");
+                 
 
+printf("<HTML><HEAD>\r\n");
+printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
+printf("</head><body>");
+sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"conn\");window.parent.DialogHide();alert(_(\"err MAC exist\"));window.location.href=\"ad_con_manage?ad_con_manage=yes\";</script>");
+printf(tempu2);
+printf("</body></html>");
+exit(1);
+        }
     }
 	/*DEL STA's MAC*/
 	if(strcmp(CFG_get_by_name("DEL_CON",valBuff),"DEL_CON") == 0 ) 

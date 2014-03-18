@@ -37,6 +37,7 @@
 	<message msgid="conm des" msgstr="管理当前已经接入的无线设备" />  
 	<message msgid="conm t1_title" msgstr="无线接入管理" />  
 	<message msgid="conm t1_switch" msgstr="无线接入开关" />  
+	<message msgid="conm ts1" msgstr="(启用并应用后，方可进行条目添加和设置) " />  
 	
 	<message msgid="conw title" msgstr="远程Web管理" />  
 	<message msgid="conw des" msgstr="管理设备远程登录Web权限" />  
@@ -68,4 +69,5 @@
 	<message msgid="err sub format" msgstr="掩码地址不合法" />	
 	<message msgid="err gw format" msgstr="网关地址不合法" />
 	<message msgid="err DNS format" msgstr="DNS地址不合法" />
+	<message msgid="err MAC exist" msgstr="MAC地址已存在" />
 </po>

@@ -25,7 +25,7 @@
 	<message msgid="dhcp t1_TIME" msgstr="Time" />
 	<message msgid="dhcp t1_hour" msgstr="Hour" />
 	<message msgid="dhcp t1_min" msgstr="Minutes" />
-	<message msgid="dhcp t1_defaut" msgstr="(1-2880 minutes, the default value of 120 minutes)" />
+	<message msgid="dhcp t1_defaut" msgstr="(1-2880 minutes, the default value of 120 minutes, integer only)" />
 
 	<message msgid="dhcp t2_title" msgstr="Static address allocation" />
 	<message msgid="dhcp t2_Mac" msgstr="MAC Address" />
@@ -56,7 +56,7 @@
 	<message msgid="gw t1_IP" msgstr="IP Address" />
 	<message msgid="gw t1_SUB" msgstr="Subnet Mask" />
 
-	<message msgid="rulit title" msgstr="Routing table settings" />
+	<message msgid="rulit title" msgstr="Routing Table Settings" />
 	<message msgid="rulit des" msgstr="Display and configure static routing table information" />
 
 	<message msgid="rulit t1_title" msgstr="Routing table" />
