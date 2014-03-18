@@ -680,7 +680,7 @@ int main(int argc, char **argv)
 	int valid_data_len;
 	char recv_buf[LENGTH+17];
 	pthread_t	pthread;
-	printInfo();
+//	printInfo();
 
 
 	Low_Communicate_Init();
