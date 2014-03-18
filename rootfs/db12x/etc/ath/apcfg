@@ -45,6 +45,7 @@ cfg -a DHCP_EIP=${DHCP_EIP:="10.10.10.199"}
 cfg -a DHCP_TIME=${DHCP_TIME:="120"}
 cfg -a AP_NETMASK=${AP_NETMASK:="255.255.255.0"}
 cfg -a WAN_MODE=${WAN_MODE:="dhcp"}
+cfg -a PPPOE_MODE=${PPPOE_MODE:="auto"}
 #cfg -a WAN_IPADDR=${WAN_IPADDR:="192.168.2.1"}
 #cfg -a WAN_NETMASK=${WAN_NETMASK:="255.255.255.0"}
 cfg -a TIME_ZONE=${TIME_ZONE:="CST_008"}

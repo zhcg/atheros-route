@@ -4186,6 +4186,7 @@ int main(int argc,char **argv)
                      CFG_set_by_name(vname[2][i],argv[i+3]);
                  }
                  CFG_set_by_name("PPP","PPP");
+                 CFG_set_by_name("PPPOE_MODE","auto");
                  break;
 
             case '3':
