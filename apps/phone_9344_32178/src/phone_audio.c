@@ -97,10 +97,12 @@ int startaudio(dev_status_t* devp)
 		phone_audio.audio_read_write_thread_flag = 0;
 		phone_audio.audio_send_thread_flag = 0;
 		phone_audio.audio_recv_thread_flag = 0;
+		memset(output_stream_buffer,0,AUDIO_STREAM_BUFFER_SIZE);
+		memset(input_stream_buffer,0,AUDIO_STREAM_BUFFER_SIZE);
 		usleep(200*1000);
-		phone_audio.audio_read_write_thread_flag = 1;
 		phone_audio.audio_send_thread_flag = 1;
 		phone_audio.audio_recv_thread_flag = 1;
+		phone_audio.audio_read_write_thread_flag = 1;
 		return 0;
 	}
 	if(devp->talkbacked)
@@ -519,19 +521,22 @@ START_WRITE:
 					PRINT("error,when write data to sound card,error code is %d\n",write_ret);
 					break;
 				}
-				//~ PRINT("write_ret = %d\n",write_ret);
-				//~ PRINT("valid_bytes = %d\n",valid_bytes);
-				//~ PRINT("phone_audio.input_stream_rp = %d\n",phone_audio.input_stream_rp);
-				//~ PRINT("phone_audio.input_stream_wp = %d\n",phone_audio.input_stream_wp);
-
+				//if(phone_audio.input_stream_rp < pcm_ret)
+				//{
+					//PRINT("phone_audio.input_stream_rp = %d\n",phone_audio.input_stream_rp);
+					//PRINT("phone_audio.input_stream_wp = %d\n",phone_audio.input_stream_wp);
+				//}
 				phone_audio.input_stream_rp += write_ret;
 				if(phone_audio.input_stream_rp >= pcm_ret && phone_control.start_dial == 1)
 				{
 					PRINT("dialup over!!!!!\n");
 					phone_control.start_dial = 0;
+					//PRINT("phone_audio.input_stream_rp = %d\n",phone_audio.input_stream_rp);
+					//PRINT("phone_audio.input_stream_wp = %d\n",phone_audio.input_stream_wp);
 					phone_audio.input_stream_rp = 0;
 					phone_audio.input_stream_wp = 0;
 					//total_write_bytes = 0;
+					pcm_ret = 0;
 				}
 				total_write_bytes += write_ret;
 				if(phone_audio.input_stream_rp >= AUDIO_STREAM_BUFFER_SIZE)

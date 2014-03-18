@@ -54,6 +54,7 @@ int onhook()
 {
 	if(!set_onhook())
 	{
+		//此处在摘机时也会调用
 		phone_audio.start_recv = 1;
 		PRINT("onhook success\n");
 	}

@@ -194,13 +194,17 @@ int destroy_client(dev_status_t *dev)
 	if(dev->dev_is_using == 1 && dev->client_fd == phone_control.who_is_online.client_fd)
 	{
 		PRINT("dev is using,but connection error\n");
-		for(i=0;i<200;i++)
+		for(i=0;i<250;i++)
 		{
+			if(phone_control.global_phone_is_using != 1)
+				break;
 			usleep(10*1000);
 			for(j=0;j<CLIENT_NUM;j++)
 			{
 				if(dev == &devlist[j])
+				{
 					continue;
+				}
 				if(!strcmp(phone_control.who_is_online.client_ip,devlist[j].client_ip) /*&& devlist[j].control_reconnect==1*/)
 				{
 					PRINT("found reconnect client\n");
@@ -290,7 +294,13 @@ int do_cmd_offhook(dev_status_t *dev)
 	int i,count=0;
 	int offhook_limit = 0;//挂机尝试次数限制
 	char sendbuf[SENDBUF]={0};
-
+	
+	if(phone_control.vloop < 3 && phone_control.vloop > -3)
+	{
+		memset(sendbuf,0,SENDBUF);
+		snprintf(sendbuf, 23,"HEADR0011INUSING0015\r\n");
+		goto OFFHOOK_ERR;
+	}
 	if(phone_control.global_incoming == 1)
 	{
 		if(dev->incoming == 1)
@@ -300,6 +310,8 @@ int do_cmd_offhook(dev_status_t *dev)
 		}
 		else
 		{
+			memset(sendbuf,0,SENDBUF);
+			snprintf(sendbuf, 23,"HEADR0011INUSING0014\r\n");
 			goto OFFHOOK_ERR;
 		}
 	}
@@ -320,6 +332,8 @@ OFFHOOK:
 		//转子机的过程中禁止其他子机摘机
 		if(count>0)
 		{
+			memset(sendbuf,0,SENDBUF);
+			snprintf(sendbuf, 23,"HEADR0011INUSING0014\r\n");
 			goto OFFHOOK_ERR;
 		}
 
@@ -376,6 +390,7 @@ OFFHOOK_SUCCESS:
 		}
 		dev->attach=1;
 		memcpy(&phone_control.who_is_online,dev,sizeof(dev_status_t));
+		//PRINT("phone_control.who_is_online = %s\n",phone_control.who_is_online.client_ip);
 		phone_control.global_incoming = 0;
 		dev->incoming = 0;
 		phone_control.ringon_flag = 0;
@@ -386,12 +401,12 @@ OFFHOOK_SUCCESS:
 	}
 	else
 	{
+		memset(sendbuf,0,SENDBUF);
+		snprintf(sendbuf, 23,"HEADR0011INUSING0014\r\n");
 		goto OFFHOOK_ERR;
 	}
 	return 0;
 OFFHOOK_ERR:
-	memset(sendbuf,0,SENDBUF);
-	snprintf(sendbuf, 23,"HEADR0011INUSING0014\r\n");
 	netWrite(dev->client_fd, sendbuf, strlen(sendbuf));
 	PRINT("INUSING\n");
 	usleep(200*1000);
@@ -1057,9 +1072,10 @@ RET_ERR:
 //消息处理
 int parse_msg(cli_request_t* cli)
 {
-	dev_status_t* devp =cli->dev;
 	char sendbuf[SENDBUF]={0};
 	int i;
+	if(cli->dev->client_fd < 0)
+		return 0;
 	switch(cli->cmd)
 	{
 		case HEARTBEAT:
@@ -1692,7 +1708,7 @@ void *loop_check_ring(void * argv)
 	unsigned char incoming_num[SENDBUF]={0};
 	int read_ret = 0;
 	int i,loop_count = 0;
-	unsigned char packet_buffer[30]={0xA5,0x5A,0x00,0x00,0x10,0xA5,0x5A,0x04};
+	unsigned char packet_buffer[40]={0xA5,0x5A,0x00,0x00,0x10,0xA5,0x5A,0x04};
 	unsigned char ringon_buffer[12]={0xA5,0x5A,0x00,0x07,0x10,0xA5,0x5A,0x03,0x00,0x03,0xE8};
 	Fsk_Message_T fskmsg;
 	short iloop = 0;;
@@ -2359,8 +2375,8 @@ void* handle_down_msg(void* argv)
 		phone_control.cli_req_buf_rp++;
 		if(phone_control.cli_req_buf_rp>=CLI_REQ_MAX_NUM)
 			phone_control.cli_req_buf_rp = 0;
-		//~ if(phone_control.cli_req_buf_wp>=CLI_REQ_MAX_NUM)
-			//~ phone_control.cli_req_buf_wp = 0;
+		// if(phone_control.cli_req_buf_wp>=CLI_REQ_MAX_NUM)
+			// phone_control.cli_req_buf_wp = 0;
 		usleep(20*1000);
 	}
 }
