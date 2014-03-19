@@ -5673,12 +5673,26 @@ int main(int argc,char **argv)
 		{
 			//fprintf(errOut,"set hide 1 \n");
 			Execute_cmd("iwpriv ath0 hide_ssid 1  > /dev/null 2>&1", rspBuff);
+			
+			Execute_cmd("iwpriv ath0 bintval 1000  > /dev/null 2>&1", rspBuff);
+			CFG_set_by_name("BEACON_INT", "1000");
+			//save new config to flash 
+			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+			writeParameters("/tmp/.apcfg","w+",0);
+			
 			flag = 5;
 		}
 		if((strcmp(valBuff8,valBuff5) != 0) && (strcmp(valBuff4,"0") == 0))
 		{
 			//fprintf(errOut,"set hide 0 \n");
 			Execute_cmd("iwpriv ath0 hide_ssid 0  > /dev/null 2>&1", rspBuff);
+			
+			Execute_cmd("iwpriv ath0 bintval 100  > /dev/null 2>&1", rspBuff);
+			CFG_set_by_name("BEACON_INT", "100");
+			//save new config to flash 
+			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+			writeParameters("/tmp/.apcfg","w+",0);
+			
 			flag = 5;
 		}
 
@@ -5926,11 +5940,25 @@ int main(int argc,char **argv)
 		if((strcmp(valBuff8_3,valBuff5) != 0) &&(strcmp(valBuff4,"1") == 0))
 		{
 			Execute_cmd("iwpriv ath2 hide_ssid 1  > /dev/null 2>&1", rspBuff);
+
+			Execute_cmd("iwpriv ath2 bintval 1000  > /dev/null 2>&1", rspBuff);
+			CFG_set_by_name("BEACON_INT_3", "1000");
+			//save new config to flash 
+			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+			writeParameters("/tmp/.apcfg","w+",0);
+			
 			flag = 5;
 		}
 		if((strcmp(valBuff8_3,valBuff5) != 0)&&(strcmp(valBuff4,"0") == 0))
 		{
 			Execute_cmd("iwpriv ath2 hide_ssid 0  > /dev/null 2>&1", rspBuff);
+			
+			Execute_cmd("iwpriv ath2 bintval 100  > /dev/null 2>&1", rspBuff);
+			CFG_set_by_name("BEACON_INT_3", "100");
+			//save new config to flash 
+			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+			writeParameters("/tmp/.apcfg","w+",0);
+			
 			flag = 5;
 		}
 
