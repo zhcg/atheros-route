@@ -1,4 +1,4 @@
-#include "common_tools.h"
+ #include "common_tools.h"
 
 static struct s_deal_attr g_deal_attr;
 static struct s_config g_config;
@@ -1878,7 +1878,7 @@ int get_user_prompt(int error_num, char **out_buf)
         case SN_PAD_ERR: // PAD序列号错误
         {
             state_num = 23;  //状态码
-            memcpy(prompt, "数据库找不到次PAD序列号！", sizeof(prompt) - 1);  // 提示信息
+            memcpy(prompt, "数据库中找不到此PAD序列号！", sizeof(prompt) - 1);  // 提示信息
             len = strlen(prompt);
             break;
         }

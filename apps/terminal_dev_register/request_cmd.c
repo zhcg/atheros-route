@@ -341,7 +341,7 @@ void * request_cmd_0x01_02_03_07_08_09_0A_pthread(void* para)
     }
     else if ((res == 0) && (ret == 0))
     {
-        #if USER_REGISTER
+        #if USER_REGISTER == 1
         len = strlen("network_config.base_sn:") + strlen("network_config.base_mac:") + strlen("network_config.base_ip:") +
             strlen(network_config.base_sn) + strlen(network_config.base_mac) + strlen(network_config.base_ip) +
             strlen(terminal_register.respond_pack->base_user_name) + strlen(terminal_register.respond_pack->base_password) +
@@ -398,7 +398,7 @@ void * request_cmd_0x01_02_03_07_08_09_0A_pthread(void* para)
 
         memset(buf, 0, len);
         sprintf(buf, "base_sn:%s,base_mac:%s,base_ip:%s,", columns_value[0], columns_value[1], columns_value[2]);
-        #endif
+        #endif // #if USER_REGISTER == 1
 
         PRINT("%s\n", buf);
 
@@ -714,7 +714,7 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
             #else // 不检测WAN口，直接置为0xFE，代表注册没有进行
             *network_config.pad_cmd = 0xFE;
             *network_config.cmd = 0xFE;
-            #endif
+            #endif // #if CHECK_WAN_STATE == 1
 
             if ((unsigned char)*network_config.pad_cmd != 0xFE)
             {
@@ -723,15 +723,14 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
         }
         case 0xFE:
         {
-            #if USER_REGISTER == 0 // 0：不做终端认证流程
+            #if USER_REGISTER == 1 // 1：做终端认证流程
             
-            #else // 1：做终端认证流程
             if ((res = terminal_register.user_register(terminal_dev_register->data_table.pad_sn, terminal_dev_register->data_table.pad_mac)) < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "user_register failed!", res);
                 break;
             }
-            #endif
+            #endif // #if USER_REGISTER == 1
             
             *network_config.pad_cmd = 0x00;
             *network_config.cmd = 0x00;
@@ -2740,13 +2739,13 @@ int get_success_buf(char **buf)
 {
     int res = 0;
     int len = 0;
-    #if USER_REGISTER
-    char columns_name[13][30] = {"base_sn", "base_mac", "base_ip", "base_user_name", "base_password",
+    #if USER_REGISTER == 1
+    char columns_name[11][30] = {"base_sn", "base_mac", "base_ip", "base_user_name", "base_password",
         "pad_user_name", "pad_password", "sip_ip", "sip_port", "heart_beat_cycle",
-        "business_cycle", "ssid_user_name", "ssid_password"};
-    char columns_value[13][100] = {0};
+        "business_cycle"};
+    char columns_value[11][100] = {0};
 
-    if ((res = database_management.select(13, columns_name, columns_value)) < 0)
+    if ((res = database_management.select(11, columns_name, columns_value)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_select failed!", res);
         return res;
@@ -2755,13 +2754,11 @@ int get_success_buf(char **buf)
     len = strlen("base_sn:") + strlen("base_mac:") + strlen("base_ip:") +
         strlen("base_user_name:") + strlen("base_password:") + strlen("pad_user_name:") +
         strlen("pad_password:") + strlen("sip_ip:") + strlen("sip_port:") +
-        strlen("heart_beat_cycle:") + strlen("business_cycle:") + strlen("ssid_user_name:") +
-        strlen("ssid_password:") +
+        strlen("heart_beat_cycle:") + strlen("business_cycle:") +
         strlen(columns_value[0]) + strlen(columns_value[1]) + strlen(columns_value[2]) +
         strlen(columns_value[3]) + strlen(columns_value[4]) + strlen(columns_value[5]) +
         strlen(columns_value[6]) + strlen(columns_value[7]) + strlen(columns_value[8]) +
-        strlen(columns_value[9]) + strlen(columns_value[10]) + strlen(columns_value[11]) +
-        strlen(columns_value[12]) + 14;
+        strlen(columns_value[9]) + strlen(columns_value[10]) + 12;
 
     PRINT("len = %d\n", len);
     if ((*buf = (char *)malloc(len)) == NULL)
@@ -2772,14 +2769,14 @@ int get_success_buf(char **buf)
     }
 
     memset(*buf, 0, len);
-    sprintf(*buf, "base_sn:%s,base_mac:%s,base_ip:%s,base_user_name:%s,base_password:%s,pad_user_name:%s,pad_password:%s,sip_ip:%s,sip_port:%s,heart_beat_cycle:%s,business_cycle:%s,ssid_user_name:%s,ssid_password:%s",
+    sprintf(*buf, "base_sn:%s,base_mac:%s,base_ip:%s,base_user_name:%s,base_password:%s,pad_user_name:%s,pad_password:%s,sip_ip:%s,sip_port:%s,heart_beat_cycle:%s,business_cycle:%s",
         columns_value[0], columns_value[1], columns_value[2], columns_value[3], columns_value[4], columns_value[5],
-        columns_value[6], columns_value[7], columns_value[8], columns_value[9], columns_value[10], columns_value[11],
-        columns_value[12]);
-    #else
+        columns_value[6], columns_value[7], columns_value[8], columns_value[9], columns_value[10]);
+    
+    #else // 没有进行设备认证
 
-    char columns_name[5][30] = {"base_sn", "base_mac", "base_ip", "ssid_user_name", "ssid_password"};
-    char columns_value[5][100] = {0};
+    char columns_name[3][30] = {"base_sn", "base_mac", "base_ip"};
+    char columns_value[3][100] = {0};
 
     if ((res = database_management.select(3, columns_name, columns_value)) < 0)
     {
@@ -2787,8 +2784,8 @@ int get_success_buf(char **buf)
         return res;
     }
 
-    len = strlen("base_sn:") + strlen("base_mac:") + strlen("base_ip:") + strlen("ssid_user_name") + strlen("ssid_password") +
-        strlen(columns_value[0]) + strlen(columns_value[1]) + strlen(columns_value[2]) + strlen(columns_value[3]) + strlen(columns_value[4]) + 6;
+    len = strlen("base_sn:") + strlen("base_mac:") + strlen("base_ip:") +
+        strlen(columns_value[0]) + strlen(columns_value[1]) + strlen(columns_value[2]) + 4;
 
     PRINT("len = %d\n", len);
     if ((*buf = (char *)malloc(len)) == NULL)
@@ -2799,8 +2796,8 @@ int get_success_buf(char **buf)
     }
 
     memset(*buf, 0, len);
-    sprintf(*buf, "base_sn:%s,base_mac:%s,base_ip:%s,ssid_user_name:%s,ssid_password:%s,", columns_value[0], columns_value[1], columns_value[2], columns_value[3], columns_value[4]);
-    #endif
+    sprintf(*buf, "base_sn:%s,base_mac:%s,base_ip:%s", columns_value[0], columns_value[1], columns_value[2]);
+    #endif // #if USER_REGISTER == 1
     PRINT("%s\n", *buf);
     return 0;
 }

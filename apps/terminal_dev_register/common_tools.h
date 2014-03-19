@@ -76,7 +76,7 @@
 #define MSGTYPE_RCV 16
 
 #define TERMINAL_AUTHOR "Yang Jilong"
-#define TERMINAL_VERSION "F1B_v1.1"
+#define TERMINAL_VERSION "F2A_V1.0.0"
 #define TERMINAL_REMARKS "终端初始化demoV0.4"
 
 #define TEL_UP 	 0

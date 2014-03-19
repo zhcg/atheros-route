@@ -3120,7 +3120,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
     if (network_flag == 0)
     {
         g_cmd = 0xFE; // 网络设置成功 
-        #if USER_REGISTER
+        #if USER_REGISTER == 1
         common_tools.del_quotation_marks(pad_sn);
         common_tools.del_quotation_marks(pad_mac);
         common_tools.mac_del_colon(pad_mac);    
@@ -3134,7 +3134,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
             }
             return res;
         }
-        #endif
+        #endif // #if USER_REGISTER == 1
         g_cmd = 0x00;  // 注册成功 
     }
     
