@@ -129,7 +129,7 @@ function checkIpAddr(field, ismask)//1447
 		if ((!checkRange(field.value, 1, 0, 255)) ||
 				(!checkRange(field.value, 2, 0, 255)) ||
 				(!checkRange(field.value, 3, 0, 255)) ||
-				(!checkRange(field.value, 4, 0, 255)))
+				(!checkRange(field.value, 4, 1, 254)))
 		{
 			alert(_("err IP format"));
 			field.value = field.defaultValue;
@@ -142,7 +142,7 @@ function checkIpAddr(field, ismask)//1447
 		if ((!checkRange(field.value, 1, 0, 255)) ||
 				(!checkRange(field.value, 2, 0, 255)) ||
 				(!checkRange(field.value, 3, 0, 255)) ||
-				(!checkRange(field.value, 4, 0, 254)))
+				(!checkRange(field.value, 4, 0, 255)))
 		{
 			alert(_("err sub format"));
 			field.value = field.defaultValue;
@@ -155,7 +155,7 @@ function checkIpAddr(field, ismask)//1447
 		if ((!checkRange(field.value, 1, 0, 255)) ||
 				(!checkRange(field.value, 2, 0, 255)) ||
 				(!checkRange(field.value, 3, 0, 255)) ||
-				(!checkRange(field.value, 4, 1, 255)))
+				(!checkRange(field.value, 4, 1, 254)))
 		{
 			alert(_("err gw format"));
 			field.value = field.defaultValue;
@@ -168,7 +168,7 @@ function checkIpAddr(field, ismask)//1447
 		if ((!checkRange(field.value, 1, 0, 255)) ||
 				(!checkRange(field.value, 2, 0, 255)) ||
 				(!checkRange(field.value, 3, 0, 255)) ||
-				(!checkRange(field.value, 4, 1, 255)))
+				(!checkRange(field.value, 4, 1, 254)))
 		{
 			alert(_("err DNS format"));
 			field.value = field.defaultValue;
@@ -283,13 +283,13 @@ function CheckValue()
 				document.WORKFORM.DHCP_EIP.select();
 				return false;
 			}
-			if((beginip_num<=gwip_num)&&(gwip_num<=endip_num))
-			{
-				alert(_("err iprange"));
-				document.WORKFORM.DHCP_BIP.select();
-				return false;
+			//if((beginip_num<=gwip_num)&&(gwip_num<=endip_num))
+			//{
+			//	alert(_("err iprange"));
+			//	document.WORKFORM.DHCP_BIP.select();
+			//	return false;
 				
-			}
+			//}
 		}
 		
 		

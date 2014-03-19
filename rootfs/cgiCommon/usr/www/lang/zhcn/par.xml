@@ -25,7 +25,7 @@
 	<message msgid="parset macclone_b" msgstr="设为家长PC" />  
 
 	<message msgid="pa title" msgstr="访问管理" />  
-	<message msgid="pa des" msgstr="管理访问互联网权限" />  
+	<message msgid="pa des" msgstr="管理互联网访问权限" />  
 	<message msgid="pa t1_Mac" msgstr="MAC地址" />  
 	<message msgid="pa t1_Ns" msgstr="网站列表" />  
 	<message msgid="pa t1_Week" msgstr="星期" />  

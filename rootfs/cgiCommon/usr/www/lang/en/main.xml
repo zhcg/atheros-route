@@ -92,7 +92,7 @@
 
 	<message msgid="sysinfo dhcp" msgstr="DHCP" />
 	<message msgid="sysinfo static" msgstr="STATIC IP" />
-	<message msgid="sysinfo pppoe" msgstr="PPPOE(ADSL)" />
+	<message msgid="sysinfo pppoe" msgstr="PPPoE(ADSL)" />
 	<message msgid="sysinfo l2tp" msgstr="L2TP" />
 	<message msgid="sysinfo pptp" msgstr="PPTP" />
 	<message msgid="sysinfo un" msgstr="Unknown" />
