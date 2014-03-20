@@ -66,6 +66,7 @@ function init()
 	{
 		document.wirelessconnection.WCONON_OFF[0].checked = true;	
 	}
+	window.parent.DialogHide();
 	switch_con();
 }
 function listdel(value)
@@ -87,7 +88,8 @@ function lismod(value)
 	{
 		document.getElementById("ON_OFF").value="OFF";	
 	}
-	
+	Butterlate.setTextDomain("admin");
+	window.parent.Demo(_("admw settingwaiting"));		
 	document.getElementById("MODXXX").value=value;
 	button_commit("MOD_CON");
 }
