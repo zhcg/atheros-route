@@ -3330,9 +3330,12 @@ int  add_sta_access()
 	char status[50];
 	char con_buf[10];
 	char buf[50];
+	char valBuf[20];
 
 	memset(staMac, 0, sizeof staMac);
 	memset(staDesc, 0, sizeof staDesc);
+	Execute_cmd("cfg -e | grep \"WCONON_OFF=\" | awk -F \"=\" \'{print $2}\'", valBuf);
+	
 	if ((fp = fopen(STA_MAC, "r")) == NULL)
 	{
 		if ((fp = fopen(STA_MAC, "w+")) == NULL) 
@@ -3362,6 +3365,11 @@ int  add_sta_access()
 					Execute_cmd(buf, rspBuff);
 				}
 				fclose(fp1);
+			}
+			else if(strstr(valBuf, "on"))
+			{
+				sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
+				Execute_cmd(buf, rspBuff);
 			}
 			
 			sprintf(buf, "iwpriv ath0 addmac %s", staMac);
@@ -3409,6 +3417,11 @@ int  add_sta_access()
 					Execute_cmd(buf, rspBuff);
 				}
 				fclose(fp1);
+			}
+			else if(strstr(valBuf, "on"))
+			{
+				sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
+				Execute_cmd(buf, rspBuff);
 			}
 
 			memset(buf, 0, sizeof buf);
