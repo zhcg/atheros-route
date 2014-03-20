@@ -119,7 +119,7 @@
 	<message msgid="err user empty" msgstr="用户名不能为空" />
 	<message msgid="err pwd empty" msgstr="密码不能为空" />
 	<message msgid="err time empty" msgstr="时间不能为空" />
-	<message msgid="err MAC format" msgstr="MAC格式错误,请按照XX:XX:XX:XX:XX:XX的格式输入" />
+	<message msgid="err MAC format" msgstr="MAC地址无效,请按照XX:XX:XX:XX:XX:XX的格式输入(X为十六进制数字)" />
 	<message msgid="err format" msgstr="参数不合法" />
 	<message msgid="err range" msgstr="参数范围错误" />
 	<message msgid="err IP empty" msgstr="IP地址不能为空" />

@@ -44,7 +44,7 @@
 	<message msgid="err user empty" msgstr="User name is empty " />
 	<message msgid="err pwd empty" msgstr="Password is empty " />
 	<message msgid="err time empty" msgstr="Time is empty " />
-	<message msgid="err MAC format" msgstr="MAC format error,Please input as XX:XX:XX:XX:XX:XX" />
+	<message msgid="err MAC format" msgstr="MAC address illegal,Please input as XX:XX:XX:XX:XX:XX (X is hexadecimal digit)" />
 	<message msgid="err format" msgstr="Parameter illegal " />
 	<message msgid="err range" msgstr="Parameter range error " />
 	
