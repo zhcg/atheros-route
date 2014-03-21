@@ -108,6 +108,25 @@ function switch_con()
 	window.parent.iFrameHeight();
 
 }
+function switch_con_f()
+{
+	if(document.wirelessconnection.WCONON_OFF[0].checked == true)
+	{
+		widget_display("t2");
+		widget_display("ADDMRULE");
+		Butterlate.setTextDomain("admin");
+		window.parent.Demo(_("admw settingwaiting"));	
+		button_commit("CONM_WORK");
+
+	}
+	else
+	{
+		widget_hide("t2");
+		widget_hide("ADDMRULE");
+	}
+	window.parent.iFrameHeight();
+
+}
 function help()
 {
 	if (_("toplanguage")=="e")
@@ -133,8 +152,8 @@ function help()
   <tr> 
     <td id="t1_switch">控制开关</td>    
 	<td>
-	<input type="radio"  ~cWCONON_OFF:on~ name="WCONON_OFF" id="WDSON_OFF1" value="on" onClick="switch_con();" /><label for="WDSON_OFF1"  id="onbutton">启用</label>
-	<input type="radio"  ~cWCONON_OFF:off~ name="WCONON_OFF" id="WDSON_OFF2" value="off" onClick="switch_con();"/><label for="WDSON_OFF2"  id="offbutton">不启用</label></td>
+	<input type="radio"  ~cWCONON_OFF:on~ name="WCONON_OFF" id="WDSON_OFF1" value="on" onClick="switch_con_f();" /><label for="WDSON_OFF1"  id="onbutton">启用</label>
+	<input type="radio"  ~cWCONON_OFF:off~ name="WCONON_OFF" id="WDSON_OFF2" value="off" onClick="switch_con_f();"/><label for="WDSON_OFF2"  id="offbutton">不启用</label></td>
 	<td colspan="2"><span id="ts1"></span>&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; </td>  </tr>
 </table>
 <table id="t2"  width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
