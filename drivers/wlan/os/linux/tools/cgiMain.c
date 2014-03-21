@@ -7016,7 +7016,6 @@ exit(1);
 
 
         CFG_get_by_name("ADD_MAC",parc_mac);
-        CFG_get_by_name("PARC_RU_NUM",url_num_str);
         CFG_get_by_name("WEEK",weekdays);
         CFG_get_by_name("TIMING_BH",time_start_h);
         CFG_get_by_name("TIMING_BM",time_start_m);
@@ -7029,8 +7028,7 @@ exit(1);
         else
             strcpy(enable_cmd,"##");
 
-        url_num = atoi(url_num_str);
-        for (i = 1; i <= url_num; i++) 
+        for (i = 1; i <= 5; i++) 
         {
             sprintf(url_arg, "ADD_NET%d", i);
             CFG_get_by_name(url_arg,url_tmp);

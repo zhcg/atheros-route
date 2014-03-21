@@ -21,8 +21,7 @@ else
 {
         window.location.href="/index.html";
 }
-var input_num=1;
-var but_num=1;
+
 var day_week="";
 
 function widget_enable(widgetID){document.getElementById(widgetID).disabled = false;}
@@ -37,6 +36,14 @@ function widget_display(widgetID){document.getElementById(widgetID).style.visibi
 
 function button_commit(buttonID){document.getElementById(buttonID).click();}
 
+
+
+function hzcheck(val)
+{
+	if (escape(val).indexOf("%u")!=-1)
+		return false;
+	return true;
+}
 function checkValuerange(value,min,max)
 {
 	var i = parseInt(value);
@@ -93,7 +100,65 @@ function CheckValue()
 			document.WORKFORM.ADD_MAC.select();
 			return false;
 		}
-	}     
+	} 
+	if(document.WORKFORM.ADD_NET1.value!="")
+	{
+		if(!hzcheck(document.WORKFORM.ADD_NET1.value))
+		{
+			alert(_("err web wuxiao"));
+			document.WORKFORM.ADD_NET1.select();
+			return false;
+		}
+	}
+	if(document.WORKFORM.ADD_NET2.value!="")
+	{
+		if(!hzcheck(document.WORKFORM.ADD_NET2.value))
+		{
+			alert(_("err web wuxiao"));
+			document.WORKFORM.ADD_NET2.select();
+			return false;
+		}
+	}
+	if(document.WORKFORM.ADD_NET3.value!="")
+	{
+		if(!hzcheck(document.WORKFORM.ADD_NET3.value))
+		{
+			alert(_("err web wuxiao"));
+			document.WORKFORM.ADD_NET3.select();
+			return false;
+		}
+	}
+	if(document.WORKFORM.ADD_NET4.value!="")
+	{
+		if(!hzcheck(document.WORKFORM.ADD_NET4.value))
+		{
+			alert(_("err web wuxiao"));
+			document.WORKFORM.ADD_NET4.select();
+			return false;
+		}
+	}
+	if(document.WORKFORM.ADD_NET5.value!="")
+	{
+		if(!hzcheck(document.WORKFORM.ADD_NET5.value))
+		{
+			alert(_("err web wuxiao"));
+			document.WORKFORM.ADD_NET5.select();
+			return false;
+		}
+	}
+	if ((document.getElementById("x_1").checked == false)
+	&&(document.getElementById("x_2").checked == false)
+	&&(document.getElementById("x_3").checked == false)
+	&&(document.getElementById("x_4").checked == false)
+	&&(document.getElementById("x_5").checked == false)
+	&&(document.getElementById("x_6").checked == false)
+	&&(document.getElementById("x_7").checked == false)
+	)
+	{
+		alert(_("err week"));
+		return false;
+	}
+    
 	if 	(!isNum(document.WORKFORM.TIMING_BH.value))
 	{
 		alert(_("err time"));
@@ -145,21 +210,30 @@ function CheckValue()
 		document.WORKFORM.TIMING_EM.select();
 		return false;
 	}
-	
-	if ((document.getElementById("x_1").checked == false)
-	&&(document.getElementById("x_2").checked == false)
-	&&(document.getElementById("x_3").checked == false)
-	&&(document.getElementById("x_4").checked == false)
-	&&(document.getElementById("x_5").checked == false)
-	&&(document.getElementById("x_6").checked == false)
-	&&(document.getElementById("x_7").checked == false)
-	)
 	{
-		alert(_("err week"));
-		return false;
+		var h1=parseInt(document.WORKFORM.TIMING_BH.value);
+		var h2=parseInt(document.WORKFORM.TIMING_EH.value);
+		var m1=parseInt(document.WORKFORM.TIMING_BM.value);
+		var m2=parseInt(document.WORKFORM.TIMING_EM.value);
+		if(h1>h2)
+		{
+			alert(_("err time"));
+			document.WORKFORM.TIMING_BH.select();
+			return false;
+		}
+		else if(h1==h2)
+		{
+			if(m1>=m2)
+			{
+				alert(_("err time"));
+				document.WORKFORM.TIMING_BM.select();
+				return false;
+			}
+		}
 	}
 	
-	document.getElementById("PARC_RU_NUM").value = input_num;
+
+
 	widget_disable("x_1");
 	widget_disable("x_2");
 	widget_disable("x_3");
@@ -208,20 +282,7 @@ function initValue()
 	initTranslation();
 	document.getElementById("WEEK").value="0";
 }
-function delnet(name)
-{
-	//alert("delete"+name);
-	widget_hide("NET"+name);
-	widget_disable("ADD_NET"+(parseInt(name)+1).toString());
-}
-function addnet()
-{
-	var orgvalue = document.getElementById("addinput").innerHTML;
-	input_num ++;
-	but_num ++;
-	document.getElementById("addinput").innerHTML = orgvalue+'<span id="NET'+but_num+'"><br><input type="text" name="ADD_NET'+input_num+'" id="ADD_NET'+input_num+'" size="32" maxlength="32" class="handaer_text_content"/>&nbsp;<input type="button" style="color:red;font-size:20px;" value="×" name="'+but_num+'" onClick="delnet(this.name)"/><span>';
-	window.parent.iFrameHeight();
-}
+
 function daycount()
 {
 	day_week="";
@@ -269,21 +330,29 @@ function daycount()
 <tr>
 	<td class="head" id="t1_NetL">网站列表</td>
 	<td>
-	<span id="addinput"><input type="text" name="ADD_NET1" id="ADD_NET1" size="32" maxlength="32" class="handaer_text_content"></span>
-	<br><input type="button" class="handaer_small_button"style="color:red;font-size:20px;" value="+" onClick="addnet()">
+
+	<input type="text" name="ADD_NET1" id="ADD_NET1" size="32" maxlength="32" class="handaer_text_content"/>
+	<br>	
+	<input type="text" name="ADD_NET2" id="ADD_NET2" size="32" maxlength="32" class="handaer_text_content"/>
+	<br>	
+	<input type="text" name="ADD_NET3" id="ADD_NET3" size="32" maxlength="32" class="handaer_text_content"/>
+	<br>	
+	<input type="text" name="ADD_NET4" id="ADD_NET4" size="32" maxlength="32" class="handaer_text_content"/>
+	<br>	
+	<input type="text" name="ADD_NET5" id="ADD_NET5" size="32" maxlength="32" class="handaer_text_content"/>
 	</td>
 </tr>
 
 <tr>
 	<td class="head" id="t1_Week">星期</td>
 	<td>
-		<input type="checkbox" name="x_1" id="x_1" value="1" onclick="daycount()"><label for="x_1" id="day1">星期一</label>&nbsp;
-		<input type="checkbox" name="x_2" id="x_2" value="10" onclick="daycount()"><label for="x_2" id="day2">星期二</label>&nbsp; 
-		<input type="checkbox" name="x_3" id="x_3" value="100" onclick="daycount()"><label for="x_3" id="day3">星期三</label>&nbsp; 
-		<input type="checkbox" name="x_4" id="x_4" value="1000" onclick="daycount()"><label for="x_4" id="day4">星期四</label>&nbsp;
-		<input type="checkbox" name="x_5" id="x_5" value="10000" onclick="daycount()"><label for="x_5" id="day5">星期五</label>&nbsp;
-		<input type="checkbox" name="x_6" id="x_6" value="100000" onclick="daycount()"><label for="x_6" id="day6">星期六</label>&nbsp;
-		<input type="checkbox" name="x_7" id="x_7" value="1000000" onclick="daycount()"><label for="x_7" id="day7">星期日</label>
+		<input type="checkbox" name="x_1" id="x_1" value="1" onclick="daycount()"/><label for="x_1" id="day1">星期一</label>&nbsp;
+		<input type="checkbox" name="x_2" id="x_2" value="10" onclick="daycount()"/><label for="x_2" id="day2">星期二</label>&nbsp; 
+		<input type="checkbox" name="x_3" id="x_3" value="100" onclick="daycount()"/><label for="x_3" id="day3">星期三</label>&nbsp; 
+		<input type="checkbox" name="x_4" id="x_4" value="1000" onclick="daycount()"/><label for="x_4" id="day4">星期四</label>&nbsp;
+		<input type="checkbox" name="x_5" id="x_5" value="10000" onclick="daycount()"/><label for="x_5" id="day5">星期五</label>&nbsp;
+		<input type="checkbox" name="x_6" id="x_6" value="100000" onclick="daycount()"/><label for="x_6" id="day6">星期六</label>&nbsp;
+		<input type="checkbox" name="x_7" id="x_7" value="1000000" onclick="daycount()"/><label for="x_7" id="day7">星期日</label>
 		<input type="text" style="display:none" name="WEEK" id="WEEK" size="20" maxlength="32">	
 	</td>
 </tr>
@@ -291,10 +360,10 @@ function daycount()
 <tr>
 	<td class="head" id="t1_Time">时间</td>
 	<td>
-		<input type="text" name="TIMING_BH" class="handaer_text_small_content" maxlength="3" size="2" value=""/>:
-		<input type="text" name="TIMING_BM" class="handaer_text_small_content" maxlength="3" size="2" value=""/>-
-		<input type="text" name="TIMING_EH" class="handaer_text_small_content" maxlength="3" size="2" value=""/>:
-		<input type="text" name="TIMING_EM" class="handaer_text_small_content" maxlength="3" size="2" value=""/>
+		<input type="text" name="TIMING_BH" class="handaer_text_small_content" maxlength="2" size="2" value=""/>:
+		<input type="text" name="TIMING_BM" class="handaer_text_small_content" maxlength="2" size="2" value=""/>-
+		<input type="text" name="TIMING_EH" class="handaer_text_small_content" maxlength="2" size="2" value=""/>:
+		<input type="text" name="TIMING_EM" class="handaer_text_small_content" maxlength="2" size="2" value=""/>
 	</td>
 </tr>
 
@@ -315,7 +384,7 @@ function daycount()
     <input type="button" name="cancel_motion" id="bCANCEL" class="handaer_input" value="Cancel" onClick="window.location.href='ad_parentc_accept?ad_parentc_accept=yes'">
     <input type="button" name="bSAVE" id="bSAVE" class="handaer_input" value="Apply" onClick="CheckValue()">
 	<input type="submit" name="ADD_PARC" id="ADD_PARC" style="display:none" value="ADD_PARC">
-	<input type="text" style="display:none" name="PARC_RU_NUM" id="PARC_RU_NUM" size="20" maxlength="32">
+
   </td>
 </tr>
 </table>

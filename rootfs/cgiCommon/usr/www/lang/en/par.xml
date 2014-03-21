@@ -27,7 +27,7 @@
 	<message msgid="pa title" msgstr="Access management" />  
 	<message msgid="pa des" msgstr="The management of PC Internet access permissions" />  
 	<message msgid="pa t1_Mac" msgstr="MAC Address" />  
-	<message msgid="pa t1_Ns" msgstr="Website list" />  
+	<message msgid="pa t1_Ns" msgstr="Website or keyword" />  
 	<message msgid="pa t1_Week" msgstr="Week" />  
 	<message msgid="pa t1_Time" msgstr="Time" />  
 	<message msgid="pa t1_St" msgstr="Enable" />  
@@ -38,7 +38,7 @@
 	<message msgid="paradd des" msgstr="Add access management items, did not join the list of PC network can't access" />  
 	<message msgid="paradd t1_title" msgstr="Add access control entries" />  
 	<message msgid="paradd t1_MAC" msgstr="MAC Address" />  
-	<message msgid="paradd t1_NetL" msgstr="Website list" />  
+	<message msgid="paradd t1_NetL" msgstr="Website or keyword" />  
 	<message msgid="paradd t1_Week" msgstr="Week" />  
 
 	<message msgid="paradd day1" msgstr="Monday" />
@@ -68,5 +68,7 @@
 	<message msgid="err sub format" msgstr="Subnet address illegal" />	
 	<message msgid="err gw format" msgstr="Gateway address illegal" />
 	<message msgid="err DNS format" msgstr="DNS address illegal" />
-	<message msgid="err week" msgstr="Please choose work day" />	
+	<message msgid="err week" msgstr="Please choose work day" />
+	<message msgid="err web wuxiao" msgstr="Website or keyword illegal" />
+	
  </po>
