@@ -76,8 +76,8 @@ int main(int argc,char **argv)
 	char buf[MAX_SIZE];
 	int i=0;
 	int ret = 0;
-	//static FILE *errOut;
-	//errOut = fopen("/dev/ttyS0","w");
+	static FILE *errOut;
+	errOut = fopen("/dev/ttyS0","w");
 	memset (buf , 0, sizeof(buf));
 	
 	if(  argc !=  2){
@@ -91,7 +91,7 @@ int main(int argc,char **argv)
 		exit(-1);
 	}
 
-	
+	#if 0
 	fseek(f, FIRST_OFFSET, SEEK_SET);
 	len = fread (buf ,1,4,f );
 	if( !len)
@@ -104,8 +104,10 @@ int main(int argc,char **argv)
 	
 	fseek(f, FLAG_OFFSET, SEEK_SET);
 	len = fread (buf ,1,16,f );
+	#endif
 	while(fgets(buf, 17, f))
 	{
+		//fprintf(errOut,"%s  %d the read is [%s]\n",__func__,__LINE__, buf);
 		if (strncmp(buf,flagbuf,16) == 0)
 		{
 			//fprintf(errOut,"%s  %d write %s ok\n",__func__,__LINE__);
@@ -116,7 +118,7 @@ int main(int argc,char **argv)
 		else
 			ret = 1;
 	}
-	//fprintf(errOut,"%s  %d write %d ok\n",__func__,__LINE__, ret);
+	//fprintf(errOut,"%s  %d the ret is %d\n",__func__,__LINE__, ret);
 	if(ret == 1)
 		return 1;
 	/*

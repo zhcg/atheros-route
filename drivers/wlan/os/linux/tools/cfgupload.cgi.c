@@ -191,9 +191,14 @@ main()
 
 	fileName=getFileName(tmpBuf);
 
-	if(fileName)
+	if(fileName && (!strcmp(fileName, "cal.bin")))
 	{
             fprintf(errOut,"%s  %d  fileName=%s\n",__func__,__LINE__,fileName);
+	}
+	else
+	{
+		error=1;
+		goto error;
 	}
 	strcat(filePath,fileName);	
 
@@ -308,7 +313,7 @@ error:
          printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
          printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
          printf("</head><body>");
- 	     printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"man\");window.parent.DialogHide();alert(_(\"err cfg upload\"));window.location.href=\"ad_man_cfgsave\";</script>");
+ 	     printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"man\");window.parent.DialogHide();alert(_(\"err cfg upload\"));window.location.href=\"ad_man_cfgsave?ad_man_cfgsave=yes\";</script>");
          printf("</body></html>");
     }
 
@@ -373,7 +378,7 @@ error:
 				 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
 				 printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
 				 printf("</head><body>");
-				 printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"man\");window.parent.DialogHide();alert(_(\"err cfg format\"));window.location.href=\"ad_man_cfgsave\";</script>");
+				 printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"man\");window.parent.DialogHide();alert(_(\"err cfg format\"));window.location.href=\"ad_man_cfgsave?ad_man_cfgsave=yes\";</script>");
 				 printf("</body></html>");
 			}
 	}
