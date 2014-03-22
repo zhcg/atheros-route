@@ -25,6 +25,7 @@ int main(int argc,char **argv)
 
 	init_control();
 
+	//base -> pad
 	pthread_create(&handle_up_msg_pthread,NULL,(void*)handle_up_msg,NULL);
 
 	//ring
@@ -42,7 +43,7 @@ int main(int argc,char **argv)
 	//audio accept
 	pthread_create(&phone_audio_pthread,NULL,(void*)audio_loop_accept,NULL);
 	
-	//handle msg
+	//pad -> base
 	pthread_create(&handle_down_msg_pthread,NULL,(void*)handle_down_msg,NULL);
 
 	//control recv

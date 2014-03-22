@@ -157,6 +157,8 @@ int destroy_client(dev_status_t *dev);
 int match_cmd(char *buf,int len);
 int getoutcmd(char *buf,int ret,dev_status_t* dev);
 void clean_who_is_online();
+int strtobig(unsigned char *data,unsigned int len);
+int strtosmall(unsigned char *data,unsigned int len);
 #ifdef REGISTER
 int do_cmd_heartbeat(dev_status_t *dev,char *buf);
 #else

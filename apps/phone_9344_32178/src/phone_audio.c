@@ -53,7 +53,7 @@ void stop_read_incoming()
 }
 
 //开启音频流
-int startaudio(dev_status_t* devp)
+int startaudio(dev_status_t* devp,int flag)
 {
 	PRINT("%s\n",__FUNCTION__);
 	if(devp->audio_client_fd < 0)
@@ -69,27 +69,29 @@ int startaudio(dev_status_t* devp)
 	if(count==1)
 	{
 		PRINT("PSTN....\n");
-
-		//ioctl(phone_audio.phone_audio_pcmfd,SLIC_INIT,0);
-		if(phone_audio.phone_audio_pcmfd != -1)
+		if(flag == 0)
 		{
-			close(phone_audio.phone_audio_pcmfd);
-			phone_audio.phone_audio_pcmfd = -1;
-		}
-		usleep(100*1000);
-		if(phone_audio.phone_audio_pcmfd == -1)
-		{
-			int pcm_fd=open(PCMNAME,O_RDWR);
-			if(pcm_fd<0)
+			//ioctl(phone_audio.phone_audio_pcmfd,SLIC_INIT,0);
+			if(phone_audio.phone_audio_pcmfd != -1)
 			{
-				perror("open pcm fail,again!\n");
-				pcm_fd=open(PCMNAME,O_RDWR);
-				if(pcm_fd<0)
-					return -1;
+				close(phone_audio.phone_audio_pcmfd);
+				phone_audio.phone_audio_pcmfd = -1;
 			}
-			PRINT("audio open_success\n");
+			usleep(100*1000);
+			if(phone_audio.phone_audio_pcmfd == -1)
+			{
+				int pcm_fd=open(PCMNAME,O_RDWR);
+				if(pcm_fd<0)
+				{
+					perror("open pcm fail,again!\n");
+					pcm_fd=open(PCMNAME,O_RDWR);
+					if(pcm_fd<0)
+						return -1;
+				}
+				PRINT("audio open_success\n");
 
-			phone_audio.phone_audio_pcmfd = pcm_fd;
+				phone_audio.phone_audio_pcmfd = pcm_fd;
+			}
 		}
 		phone_audio.audio_talkback_recv_thread_flag = 0;
 		phone_audio.audio_talkbacked_recv_send_thread_flag = 0;
@@ -99,7 +101,7 @@ int startaudio(dev_status_t* devp)
 		phone_audio.audio_recv_thread_flag = 0;
 		memset(output_stream_buffer,0,AUDIO_STREAM_BUFFER_SIZE);
 		memset(input_stream_buffer,0,AUDIO_STREAM_BUFFER_SIZE);
-		usleep(200*1000);
+		usleep(180*1000);
 		phone_audio.audio_send_thread_flag = 1;
 		phone_audio.audio_recv_thread_flag = 1;
 		phone_audio.audio_read_write_thread_flag = 1;
@@ -325,7 +327,7 @@ int UlawDecode(unsigned char *pout,int offset1,unsigned char *pin,int offset2,in
 
 void* AudioIncomingThreadCallBack(void* argv)
 {
-	unsigned char audioincoming_buf[AUDIO_SEND_PACKET_SIZE] = {0};
+	unsigned char audioincoming_buf[BUFFER_SIZE_2K] = {0};
 	int read_ret;
 
 	phone_audio.audio_read_write_thread_flag = 0;
@@ -463,7 +465,6 @@ void *AudioReadWriteThreadCallBack(void *argv)
 			}
 			else
 			{
-
 				if(read_times > 5) //丢前5包，屏蔽拨号开始的杂音
 				{
 					if(phone_audio.dtmf_over == 10) //双音多频后延迟一会打开侧音处理
@@ -1094,7 +1095,7 @@ void* audio_loop_accept(void* argv)
 								if(!strcmp(phone_control.who_is_online.client_ip,devlist[i].client_ip) && phone_control.who_is_online.attach == 1)
 								{
 									PRINT("audio reconnect\n");
-									startaudio(&devlist[i]);
+									startaudio(&devlist[i],1);
 									phone_audio.audio_reconnect_flag=0;
 
 								}

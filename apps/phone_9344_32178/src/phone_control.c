@@ -153,8 +153,8 @@ int sqlite3_interface(char *tb_name,char *data_name, char *data_value,char *wher
     strncat(sql, where_name, strlen(where_name));
     strcat(sql, "=\"");
     strncat(sql, data_value, strlen(data_value));
-    strcat(sql, "\"");
-    
+    strcat(sql, "\" ");
+    strcat(sql,"collate NOCASE;");
     PRINT("sql:%s\n",sql);
     if(sqlite3_get_table(db, sql, &result_buf, &row_count, &column_count, &err_msg) != 0)
     {
@@ -194,14 +194,18 @@ int destroy_client(dev_status_t *dev)
 	if(dev->dev_is_using == 1 && dev->client_fd == phone_control.who_is_online.client_fd)
 	{
 		PRINT("dev is using,but connection error\n");
-		for(i=0;i<250;i++)
+		//PRINT("phone_control.who_is_online.client_fd = %d\n",phone_control.who_is_online.client_fd);
+		//PRINT("dev->client_fd = %d\n",dev->client_fd);
+		//PRINT("dev = %p\n",dev);
+		
+		for(i=0;i<200;i++)
 		{
 			if(phone_control.global_phone_is_using != 1)
 				break;
 			usleep(10*1000);
 			for(j=0;j<CLIENT_NUM;j++)
 			{
-				if(dev == &devlist[j])
+				if(dev == &devlist[j] || strlen(devlist[j].client_ip) == 0)
 				{
 					continue;
 				}
@@ -210,6 +214,7 @@ int destroy_client(dev_status_t *dev)
 					PRINT("found reconnect client\n");
 					dev->client_fd=devlist[j].client_fd;
 					dev->dev_is_using = 1;
+					dev->tick_time = 1;
 					phone_control.who_is_online.client_fd=devlist[j].client_fd;
 					phone_control.who_is_online.dev_is_using = 1;
 
@@ -262,11 +267,11 @@ int destroy_client(dev_status_t *dev)
 	if(dev->isswtiching)
 	{
 		dev->isswtiching = 0;
-			onhook();
-			if(!set_onhook_monitor())
-				PRINT("set_onhook_monitor success\n");
-			//开始检测incoming
-			start_read_incoming();
+		onhook();
+		if(!set_onhook_monitor())
+			PRINT("set_onhook_monitor success\n");
+		//开始检测incoming
+		start_read_incoming();
 	}
 	close(dev->audio_client_fd);
 	memset(dev, 0, sizeof(dev_status_t));
@@ -364,7 +369,7 @@ OFFHOOK:
 		dev->dev_is_using = 1;
 		phone_control.start_dial = 1;
 
-		startaudio(dev);
+		startaudio(dev,0);
 
 		if(dev->isswtiching == 0)
 		{
@@ -632,7 +637,7 @@ int do_cmd_talkbackoffhook(dev_status_t* dev,char *sendbuf)
 			netWrite(devlist[i].client_fd, sendbuf, strlen(sendbuf));
 		}
 	}
-	startaudio(dev);
+	startaudio(dev,0);
 	dev->talkback_answer = 1;
 	return 0;
 TALKBACKOFFHOOK_ERR:
@@ -650,6 +655,7 @@ TALKBACKOFFHOOK_ERR:
 
 int do_cmd_talkbackonhook(dev_status_t* dev,char *sendbuf)
 {
+	PRINT("%s\n",__FUNCTION__);
 	int flag = 0;
 	int i;
 
@@ -694,6 +700,36 @@ int do_cmd_talkbackonhook(dev_status_t* dev,char *sendbuf)
 	return 0;
 }
 
+int strtobig(unsigned char *data,unsigned int len)
+{
+	int i = 0;
+	unsigned char *datap = data;
+	for(i=0;i<len;i++)
+	{
+		if((*datap >= 'a') && (*datap <= 'z'))
+		{
+			*datap -= 32;
+		}
+		datap++;
+	}
+	return 0;
+}
+
+int strtosmall(unsigned char *data,unsigned int len)
+{
+	int i = 0;
+	unsigned char *datap = data;
+	for(i=0;i<len;i++)
+	{
+		if((*datap >= 'A') && (*datap <= 'Z'))
+		{
+			(*datap) += 32;
+		}
+		datap++;
+	}
+	return 0;
+}
+
 #ifdef REGISTER
 int do_cmd_heartbeat(dev_status_t *dev,char *buf)
 {
@@ -713,9 +749,16 @@ int do_cmd_heartbeat(dev_status_t *dev,char *buf)
 				buf[i] = '\0';
 		}
 		PRINT("first heartbeat!\n");
+		
+		if(strlen(buf) != 12)
+			goto UNREGISTERED;
+		
+		//转换mac为大写
+		strtobig(buf,strlen(buf));
 		sqlite3_interface("terminal_register_tb","device_mac",buf,"device_mac",dev_mac);
 		PRINT("dev_mac=%s\n",dev_mac);
 		PRINT("buf=%s\n",buf);
+		strtobig(dev_mac,strlen(dev_mac));
 		if(!strncmp(dev_mac,buf,strlen(buf)))
 		{
 			PRINT("dev is registered!\n");
@@ -732,11 +775,13 @@ int do_cmd_heartbeat(dev_status_t *dev,char *buf)
 			netWrite(dev->client_fd,"HEADR0010REG_SUC000\r\n",21);
 			goto REGISTERED;
 		}
+		
 		sqlite3_interface("terminal_base_tb","register_state","0","register_state",register_state);
 		//PRINT("register_state = %s\n",register_state);
 		sqlite3_interface("terminal_base_tb","pad_mac",buf,"pad_mac",pad_mac);
-		//PRINT("buf=%s\n",buf);
-		//PRINT("pad_mac = %s\n",pad_mac);
+		strtobig(pad_mac,strlen(pad_mac));
+		PRINT("buf=%s\n",buf);
+		PRINT("pad_mac = %s\n",pad_mac);
 		//PRINT("%d\n",strcmp(pad_mac,buf));
 		//PRINT("%d\n",strcmp(register_state,"0"));
 		if(!strncmp(pad_mac,buf,strlen(buf)) && !strcmp(register_state,"0"))
@@ -754,6 +799,7 @@ int do_cmd_heartbeat(dev_status_t *dev,char *buf)
 			netWrite(dev->client_fd,"HEADR0010REG_SUC000\r\n",21);
 			goto REGISTERED;
 		}
+UNREGISTERED:		
 		PRINT("dev is unregistered\n");
 		for(i=0;i<CLIENT_NUM;i++)
 		{
@@ -782,6 +828,8 @@ int do_cmd_heartbeat(dev_status_t *dev)
 	int i,j,count =0;
 
 	dev->tick_time++;
+	if(dev->tick_time == 1)
+		generate_up_msg();
 	//memset(dev->dev_name,' ',16);
 	//for(i=0;i<CLIENT_NUM;i++)
 	//{
@@ -2002,7 +2050,6 @@ void *phone_control_loop_accept(void* arg)
 	char sendbuf[SENDBUF]={0};
 	char *new_ip = NULL;
 	struct in_addr ia;
-	int control_reconnect=0;
 	int online_dev_num = 0;
 
 	while (1)
@@ -2031,7 +2078,6 @@ void *phone_control_loop_accept(void* arg)
 					PRINT("control accept success\n");
 					PRINT("clientfd=%d\n",clientfd);
 					ia = client.sin_addr;
-					control_reconnect=0;
 					new_ip = inet_ntoa(ia);
 					PRINT("client_ip=%s\n",new_ip);
 					online_dev_num = 0;
@@ -2076,7 +2122,6 @@ void *phone_control_loop_accept(void* arg)
 							if(devlist[i].client_fd == -1)
 							{
 								devlist[i].client_fd = clientfd;
-								//devlist[i].control_reconnect=control_reconnect;
 								devlist[i].id = i;
 								memset(devlist[i].client_ip, 0, sizeof(devlist[i].client_ip));
 								memcpy(devlist[i].client_ip, new_ip, strlen(new_ip)+1);
@@ -2088,17 +2133,15 @@ void *phone_control_loop_accept(void* arg)
 									{
 										if(devlist[j].dev_is_using == 1 && devlist[j].dying == 1)
 										{
-											PRINT("control client reconnect\n");
-											control_reconnect=1;
-										}
-										else
-										{
+											//PRINT("i = %d\nj = %d\n",i,j);
+											devlist[i].control_reconnect=1;
 											PRINT("reconnect\n");
-											memset(sendbuf,0,SENDBUF);
-											sprintf(sendbuf,"%s%d","INSIDE",j);
-											netWrite(phone_control_fd[0],sendbuf, strlen(sendbuf));
-											usleep(50*1000);
+											break;
 										}
+										memset(sendbuf,0,SENDBUF);
+										sprintf(sendbuf,"%s%d","INSIDE",j);
+										netWrite(phone_control_fd[0],sendbuf, strlen(sendbuf));
+										usleep(50*1000);									
 										break;
 									}
 								}
@@ -2192,6 +2235,7 @@ void send_sw_ringon()
 				phone_control.sw_dev = i;
 				netWrite(devlist[i].client_fd, "HEADR0010RINGON_000\r\n",22);
 				phone_control.send_sw_ringon_limit++;
+				//PRINT("send_sw_ringon_limit = %d\n",phone_control.send_sw_ringon_limit);
 				if(phone_control.send_sw_ringon_limit == 40 && devlist[i].dev_is_using == 0)
 				{
 					if(devlist[i].isswtiching == 1)
@@ -2203,7 +2247,7 @@ void send_sw_ringon()
 						start_read_incoming();
 
 					}
-					//响铃超时或者接听
+					//响铃超时
 					devlist[i].isswtiching = 0;
 					phone_control.send_sw_ringon_limit = 0;
 				}
@@ -2218,11 +2262,10 @@ void send_sw_ringon()
 			{
 				phone_control.send_sw_ringon_limit = 0;
 				phone_control.sw_dev = -1;
-				onhook();
-				if(!set_onhook_monitor())
-					PRINT("set_onhook_monitor success\n");
-				//开始检测incoming
-				start_read_incoming();
+				//onhook();
+				//if(!set_onhook_monitor())
+					//PRINT("set_onhook_monitor success\n");
+				//start_read_incoming();
 			}
 		}
 		phone_control.send_sw_ringon_count = 0;
@@ -2258,10 +2301,12 @@ void send_tb_ringon()
 				PRINT("send talkback ringon running\n");
 				phone_control.tb_dev = i;
 				netWrite(devlist[i].client_fd, "HEADR0010TBRING_000\r\n",22);
+				//PRINT("send_tb_ringon_limit = %d\n",phone_control.send_tb_ringon_limit);
+				
 				phone_control.send_tb_ringon_limit++;
 				if(phone_control.send_tb_ringon_limit == 60 && devlist[i].talkback_answer == 0)
 				{
-					stopaudio(&devlist[i],TALKBACK);
+					//stopaudio(&devlist[i],TALKBACK);
 					//响铃超时
 					do_cmd_talkbackonhook(&devlist[i],tb_sendbuf);
 					//devlist[i].talkbacked = 0;
@@ -2275,8 +2320,8 @@ void send_tb_ringon()
 			}
 			if(phone_control.send_tb_ringon_limit > 0 && phone_control.tb_dev != -1 && devlist[phone_control.tb_dev].talkbacked == 0)
 			{
-				stopaudio(&devlist[phone_control.tb_dev],TALKBACK);
-				do_cmd_talkbackonhook(&devlist[phone_control.tb_dev],tb_sendbuf);
+				//stopaudio(&devlist[phone_control.tb_dev],TALKBACK);
+				//do_cmd_talkbackonhook(&devlist[phone_control.tb_dev],tb_sendbuf);
 				phone_control.send_tb_ringon_limit = 0;
 				phone_control.tb_dev = -1;
 			}
@@ -2314,7 +2359,7 @@ void check_audio_reconnect()
 	if(phone_audio.audio_reconnect_flag)
 	{
 		phone_audio.audio_reconnect_loops++;
-		if(phone_audio.audio_reconnect_loops >= 11)//超过2秒没有重连，则需要挂机
+		if(phone_audio.audio_reconnect_loops >= 16)//超过3秒没有重连，则需要挂机
 		{
 			if(phone_control.who_is_online.attach == 1)
 			{

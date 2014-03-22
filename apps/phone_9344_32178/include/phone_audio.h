@@ -43,7 +43,7 @@ struct class_phone_audio
 int init_audio(void);
 void start_read_incoming();
 void stop_read_incoming();
-int startaudio(dev_status_t *devp);
+int startaudio(dev_status_t* devp,int flag);
 void stopaudio(dev_status_t *devp,int flag);
 void* audio_loop_accept(void *argv);
 int UlawEncode(unsigned char *pout,int offset1,unsigned char *pin,int offset2,int mSampleCount);
