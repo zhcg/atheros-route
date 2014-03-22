@@ -6608,9 +6608,34 @@ int main(int argc,char **argv)
 
 		//reboot hostapd
 		Execute_cmd("killall hostapd > /dev/null 2>&1",rspBuff);
+		
+		Execute_cmd("cfg -e | grep \"AP_SECMODE=\" | awk -F \"=\" \'{print $2}\'",valBuff3);
+		if(strstr(valBuff3,"None")) /*wifi doesn't use WPA*/
+			Execute_cmd("cfg -t0 /etc/ath/PSK.ap_bss_none ath0 > /tmp/secath0",rspBuff);
+		else
+			Execute_cmd("cfg -t0 /etc/ath/PSK.ap_bss ath0 > /tmp/secath0",rspBuff);
 		Execute_cmd("hostapd -B /tmp/secath0 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+		
+		
+		Execute_cmd("cfg -e | grep \"AP_SECMODE_2=\" | awk -F \"=\" \'{print $2}\'",valBuff3);
+		if(strstr(valBuff3,"None")) /*wifi doesn't use WPA*/
+			Execute_cmd("cfg -t2 /etc/ath/PSK.ap_bss_none ath1 > /tmp/secath1",rspBuff);
+		else
+			Execute_cmd("cfg -t2 /etc/ath/PSK.ap_bss ath1 > /tmp/secath1",rspBuff);
 		Execute_cmd("hostapd -B /tmp/secath1 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+		
+		Execute_cmd("cfg -e | grep \"AP_SECMODE_3=\" | awk -F \"=\" \'{print $2}\'",valBuff3);
+		if(strstr(valBuff3,"None")) /*wifi doesn't use WPA*/
+			Execute_cmd("cfg -t3 /etc/ath/PSK.ap_bss_none ath2 > /tmp/secath2",rspBuff);
+		else
+			Execute_cmd("cfg -t3 /etc/ath/PSK.ap_bss ath2 > /tmp/secath2",rspBuff);
 		Execute_cmd("hostapd -B /tmp/secath2 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+		
+		Execute_cmd("cfg -e | grep \"AP_SECMODE_4=\" | awk -F \"=\" \'{print $2}\'",valBuff3);
+		if(strstr(valBuff3,"None")) /*wifi doesn't use WPA*/
+			Execute_cmd("cfg -t4 /etc/ath/PSK.ap_bss_none ath3 > /tmp/secath3",rspBuff);
+		else
+			Execute_cmd("cfg -t4 /etc/ath/PSK.ap_bss ath3 > /tmp/secath3",rspBuff);
 		Execute_cmd("hostapd -B /tmp/secath3 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
 	   }//end eth0_ip != br0_ip
 	   else
@@ -6765,13 +6790,18 @@ exit(1);
    *************************************/
     if(strcmp(CFG_get_by_name("WEBCONM_WORK",valBuff),"WEBCONM_WORK") == 0 ) 
     {
-        if(strcmp(CFG_get_by_name("WEBCONON_OFF",valBuff),"on") == 0 )
+    	char valBuf[20];
+    	Execute_cmd("cfg -e | grep \"WEBCONON_OFF=\" | awk -F \"=\" \'{print $2}\'",valBuf);
+		CFG_get_by_name("WEBCONON_OFF",valBuff);
+		fprintf(errOut,"\n%s  %d valBuf is [%s] [%s] \n",__func__,__LINE__, valBuf, valBuff);
+		
+        if(!strstr(valBuf, valBuff) && !strcmp(valBuff, "on"))
         {
             
             Execute_cmd("iptables  -D INPUT -i eth0 -p tcp --dport 80 -j DROP",rspBuff);
             fprintf(errOut,"\n%s  %d --------WEBCONM_WORK on--------- \n",__func__,__LINE__);
         }
-        else if(strcmp(CFG_get_by_name("WEBCONON_OFF",valBuff),"off") == 0 )
+        else if(!strstr(valBuf, valBuff) && !strcmp(valBuff, "off"))
         {
             
             Execute_cmd("iptables  -A INPUT -i eth0 -p tcp --dport 80 -j DROP",rspBuff);
