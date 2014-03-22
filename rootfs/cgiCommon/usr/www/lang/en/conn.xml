@@ -25,8 +25,8 @@
 	
 	<message msgid="clist title" msgstr="Connected Equipments" />  
 	<message msgid="clist des" msgstr="Displays HBD routing currently has access to the wired and wireless devices information" /> 
-	<message msgid="clist t1_title" msgstr="Cable equipment" />  
-	<message msgid="clist t2_title" msgstr="Wireless devices（Including the suspicious device）" />  
+	<message msgid="clist t1_title" msgstr="Wired devices" />  
+	<message msgid="clist t2_title" msgstr="Wireless devices" />  
 	<message msgid="clist ip" msgstr="IP Address" />  
 	<message msgid="clist mac" msgstr="MAC Address" />  
 	<message msgid="clist name" msgstr="Device name" />  
