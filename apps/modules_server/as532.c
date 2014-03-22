@@ -52,6 +52,7 @@ void init_fd(struct  UKey * pUKey,int *fd)
 }
 
 void init_UKey(struct  UKey * pUKey) {
+	//不能清除最后一个成员
 	//memset(pUKey, 0, sizeof(struct UKey));
 	memset(pUKey, 0, sizeof(int)+sizeof(struct TPCCmd)+sizeof(struct TRespond)+sizeof(struct TDataPack));
 }

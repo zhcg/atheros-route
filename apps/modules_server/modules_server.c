@@ -28,10 +28,14 @@ int stm32_updating = 0;
 int as532_updating = 0;
 int start_factory_test = 0;
 struct UKey *global_pukey;
+char last_led_status[2]={0};
 
 unsigned char factory_test_buffer[BUFFER_SIZE_1K] = {0};
 int factory_test_wp = 0;
 int factory_test_rp = 0;
+
+int udp_get_stm32_ver = 0;
+int udp_get_stm32_ver_des = 0;
 
 const char hex_to_asc_table[16] = {0x30,0x31,0x32,0x33,0x34,0x35,0x36,0x37,
 	0x38,0x39,0x41,0x42,0x43,0x44,0x45,0x46};
@@ -172,16 +176,6 @@ int init_as532()
 	if (global_sg_fd < 0)
 	{
 		PRINT("failed to open 532 usr_mode,try boot_mode\n");
-		ret=check_file(NULL, DEFAULT_AS532_IMAGE,path_new);
-		if(ret == 0)
-		{
-			PRINT("check file success\n");
-		}
-		else
-		{
-			PRINT("check file error\n");
-			return -7;
-		}
 	
 		usb_fd = boot_open_usb(USBNAME);
 		if(usb_fd < 0 )
@@ -190,6 +184,18 @@ int init_as532()
 			return -1;
 		}
 		PRINT("init as532 default\n");
+
+		ret=check_file(NULL, DEFAULT_AS532_IMAGE,path_new);
+		if(ret == 0)
+		{
+			PRINT("check file success\n");
+		}
+		else
+		{
+			PRINT("check file error\n");
+			ret_err = -7; //文件校验错误
+			goto INIT_532_ERR;
+		}
 	
 		usleep(50000);
 		
@@ -471,6 +477,7 @@ int do_cmd_stm32_ver()
 {
 	char data = (char)CMD_STM32_VER;
 	int ret = 0;
+	udp_get_stm32_ver = 1;
 	ret = generate_stm32_down_msg(&data,1,TYPE_STM32);
 	return ret;
 }
@@ -479,6 +486,7 @@ int do_cmd_stm32_ver_des()
 {
 	char data = (char)CMD_STM32_VER_DES;
 	int ret = 0;
+	udp_get_stm32_ver_des = 1;
 	ret = generate_stm32_down_msg(&data,1,TYPE_STM32);
 	return ret;
 }
@@ -927,7 +935,7 @@ int UartGetVer(unsigned char *pppacket,int bytes)
 				//ComFunPrintfBuffer(pppacket+PACKET_STM32_DATA_POS,data_len);
 				generate_stm32_down_msg(databuf,ret,TYPE_USB_PASSAGE);
 			}
-			else
+			if(udp_get_stm32_ver == 1)
 				do_cmd_rep(STM32_VER,&pppacket[PACKET_STM32_DATA_POS],data_len,0x00);
 			break;
 		case 0x01: //命令错误
@@ -937,7 +945,7 @@ int UartGetVer(unsigned char *pppacket,int bytes)
 				ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_STM32_1,FACTORY_TEST_CMD_STM32_VER,FAIL,0x01,NULL,0);
 				generate_stm32_down_msg(databuf,ret,TYPE_USB_PASSAGE);
 			}
-			else
+			if(udp_get_stm32_ver == 1)
 				do_cmd_rep(STM32_VER,&pppacket[PACKET_STM32_DATA_POS],data_len,0x01);
 			break;
 		case 0x02: //校验错误
@@ -947,12 +955,13 @@ int UartGetVer(unsigned char *pppacket,int bytes)
 				ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_STM32_1,FACTORY_TEST_CMD_STM32_VER,FAIL,0x02,NULL,0);
 				generate_stm32_down_msg(databuf,ret,TYPE_USB_PASSAGE);
 			}
-			else
+			if(udp_get_stm32_ver == 1)
 				do_cmd_rep(STM32_VER,&pppacket[PACKET_STM32_DATA_POS],data_len,0x02);
 			break;
 		default:
 			break;
 	}
+	udp_get_stm32_ver = 0;
 	return 0;
 }
 int UartGetVerDes(unsigned char *pppacket,int bytes)
@@ -966,20 +975,30 @@ int UartGetVerDes(unsigned char *pppacket,int bytes)
 		//EA FF 5A A5 00 07 10 00 00 00 00 00 02 FF
 
 		case 0x00: //成功 FE EF A5 5A 00 05 01 00 01 01 01 XX
-			data_len = pppacket[PACKET_STM32_DATA_LEN_POS_HEIGHT]*256 + pppacket[PACKET_STM32_DATA_LEN_POS_LOW] - 3;
-			do_cmd_rep(STM32_VER_DES,&pppacket[PACKET_STM32_DATA_POS],data_len,0x00);
+			if(udp_get_stm32_ver_des == 1)
+			{
+				data_len = pppacket[PACKET_STM32_DATA_LEN_POS_HEIGHT]*256 + pppacket[PACKET_STM32_DATA_LEN_POS_LOW] - 3;
+				do_cmd_rep(STM32_VER_DES,&pppacket[PACKET_STM32_DATA_POS],data_len,0x00);
+			}
 			break;
 		case 0x01: //命令错误
-			data_len = pppacket[PACKET_STM32_DATA_LEN_POS_HEIGHT]*256 + pppacket[PACKET_STM32_DATA_LEN_POS_LOW] - 3;
-			do_cmd_rep(STM32_VER_DES,&pppacket[PACKET_STM32_DATA_POS],data_len,0x01);
+			if(udp_get_stm32_ver_des == 1)
+			{
+				data_len = pppacket[PACKET_STM32_DATA_LEN_POS_HEIGHT]*256 + pppacket[PACKET_STM32_DATA_LEN_POS_LOW] - 3;
+				do_cmd_rep(STM32_VER_DES,&pppacket[PACKET_STM32_DATA_POS],data_len,0x01);
+			}
 			break;
 		case 0x02: //校验错误
-			data_len = pppacket[PACKET_STM32_DATA_LEN_POS_HEIGHT]*256 + pppacket[PACKET_STM32_DATA_LEN_POS_LOW] - 3;
-			do_cmd_rep(STM32_VER_DES,&pppacket[PACKET_STM32_DATA_POS],data_len,0x02);
+			if(udp_get_stm32_ver_des == 1)
+			{
+				data_len = pppacket[PACKET_STM32_DATA_LEN_POS_HEIGHT]*256 + pppacket[PACKET_STM32_DATA_LEN_POS_LOW] - 3;
+				do_cmd_rep(STM32_VER_DES,&pppacket[PACKET_STM32_DATA_POS],data_len,0x02);
+			}
 			break;
 		default:
 			break;
 	}
+	udp_get_stm32_ver_des = 0;
 	return 0;
 }
 int UartCallBoot(unsigned char *pppacket,int bytes)
@@ -1286,7 +1305,7 @@ int factory_test_cmd_update_mac(unsigned char* data,int len)
 	ComFunPrintfBuffer(data,len);
 	if(len != 12)
 	{
-		ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_MAC_1,FACTORY_TEST_CMD_UPDATE_MAC,FAIL,1,NULL,0);
+		ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_MAC_SN_1,FACTORY_TEST_CMD_UPDATE_MAC,FAIL,1,NULL,0);
 	}
 	else
 	{
@@ -1310,7 +1329,7 @@ int factory_test_cmd_update_mac(unsigned char* data,int len)
 		if(status == -1)
 		{
 			PRINT("system fail!\n");
-			ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_MAC_1,FACTORY_TEST_CMD_UPDATE_MAC,FAIL,1,NULL,0);
+			ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_MAC_SN_1,FACTORY_TEST_CMD_UPDATE_MAC,FAIL,1,NULL,0);
 		}
 		else
 		{
@@ -1319,12 +1338,55 @@ int factory_test_cmd_update_mac(unsigned char* data,int len)
 			if(ret == 0)
 			{
 				PRINT("Update Mac Success!\n");
-				ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_MAC_1,FACTORY_TEST_CMD_UPDATE_MAC,SUCCESS,0,NULL,0);
+				ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_MAC_SN_1,FACTORY_TEST_CMD_UPDATE_MAC,SUCCESS,0,NULL,0);
 			}
 			else
 			{
 				PRINT("Update Mac Fail!\n");
-				ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_MAC_1,FACTORY_TEST_CMD_UPDATE_MAC,FAIL,1,NULL,0);
+				ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_MAC_SN_1,FACTORY_TEST_CMD_UPDATE_MAC,FAIL,1,NULL,0);
+			}
+		}
+	}
+	generate_stm32_down_msg(databuf,ret,TYPE_USB_PASSAGE);
+	return 0;
+}
+
+int factory_test_cmd_update_sn(unsigned char* data,int len)
+{
+	int ret = 0;
+	int i = 0;
+    unsigned char databuf[BUFFER_LEN] = {0};
+    unsigned char cmdbuf[50] = {0};
+	pid_t status;
+	ComFunPrintfBuffer(data,len);
+	if(len != 18)
+	{
+		ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_MAC_SN_1,FACTORY_TEST_CMD_UPDATE_SN,FAIL,1,NULL,0);
+	}
+	else
+	{
+		snprintf(cmdbuf,13+len,"%s%s","fw_setenv SN ",data);
+		PRINT("cmdbuf = %s\n",cmdbuf);
+		status = system(cmdbuf);
+		PRINT("status = %d\n",status);
+		if(status == -1)
+		{
+			PRINT("system fail!\n");
+			ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_MAC_SN_1,FACTORY_TEST_CMD_UPDATE_SN,FAIL,1,NULL,0);
+		}
+		else
+		{
+			ret = WEXITSTATUS(status);
+			PRINT("ret = %d\n",ret);
+			if(ret == 0)
+			{
+				PRINT("Update Sn Success!\n");
+				ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_MAC_SN_1,FACTORY_TEST_CMD_UPDATE_SN,SUCCESS,0,NULL,0);
+			}
+			else
+			{
+				PRINT("Update Sn Fail!\n");
+				ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_MAC_SN_1,FACTORY_TEST_CMD_UPDATE_SN,FAIL,1,NULL,0);
 			}
 		}
 	}
@@ -1452,13 +1514,17 @@ int factory_test_down_9344(char cmd)
 	return 0;
 }
 
-int factory_test_down_mac(char cmd,unsigned char* data,int len)
+int factory_test_down_mac_sn(char cmd,unsigned char* data,int len)
 {
 	switch(cmd)
 	{
 		case FACTORY_TEST_CMD_UPDATE_MAC:
 			PRINT("FACTORY_TEST_CMD_UPDATE_MAC\n");
 			factory_test_cmd_update_mac(data,len);
+			break;
+		case FACTORY_TEST_CMD_UPDATE_SN:
+			PRINT("FACTORY_TEST_CMD_UPDATE_SN\n");
+			factory_test_cmd_update_sn(data,len);
 			break;
 		default:
 			break;
@@ -1508,8 +1574,8 @@ int factory_test(unsigned char *packet,int bytes)
 				return -1;
 			factory_test_down_all(packet[FACTORY_TEST_CMD_2_POS]);
 			break;
-		case FACTORY_TEST_CMD_DOWN_MAC_1:
-			factory_test_down_mac(packet[FACTORY_TEST_CMD_2_POS],&packet[FACTORY_TEST_CMD_DATA_POS],data_len-2);
+		case FACTORY_TEST_CMD_DOWN_MAC_SN_1:
+			factory_test_down_mac_sn(packet[FACTORY_TEST_CMD_2_POS],&packet[FACTORY_TEST_CMD_DATA_POS],data_len-2);
 			break;
 		default:
 			PRINT("cmd undef\n");
@@ -1614,14 +1680,6 @@ int UartPacketDis(unsigned char *ppacket,int bytes)
 			break;
 		case TYPE_SPI_PASSAGE:
 			PRINT("SpiPassage\r\n");
-			//if(factory_test_r54 == 1)
-			//{
-				//rtn = factory_test_r54_ver(ppacket+7,len_tmp-1);
-			//}
-			//if(factory_test_r54_called == 1)
-			//{
-				//rtn = factory_test_r54_called_func(ppacket+7,len_tmp-1);
-			//}			
 			if(start_factory_test == 1)
 			{
 				if(BUFFER_SIZE_1K - factory_test_wp < 128)//即将到缓冲尾部，则前移
@@ -1810,6 +1868,8 @@ void passage_thread_func(void *argv)
 										recvbuf[j] = (char)CMD_STM32_LED;
 										recvbuf[j+1] = recvbuf[j+2];
 										generate_stm32_down_msg(&recvbuf[j],2,TYPE_STM32);
+										last_led_status[0] = recvbuf[j];
+										last_led_status[1] = recvbuf[j+1];
 									}
 									//test -- usb 5A A5 02 A5 5A 83 04 00 00 04 38 31 36 31
 									if(recvbuf[j] == (char)0xA5 && recvbuf[j+1] == (char)0X5A)
@@ -2107,6 +2167,7 @@ int ota_stm32_update(unsigned char* path)
 	if(ret == 0)
 	{
 		result = 1;
+		generate_stm32_down_msg(last_led_status,2,TYPE_STM32);
 	}
 	else
 	{

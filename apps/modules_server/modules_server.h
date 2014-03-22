@@ -70,14 +70,14 @@
 #define FACTORY_TEST_CMD_DOWN_AS532_1	0X02
 #define FACTORY_TEST_CMD_DOWN_9344_1	0X03
 #define FACTORY_TEST_CMD_DOWN_ALL_1		0X04
-#define FACTORY_TEST_CMD_DOWN_MAC_1		0X0A
+#define FACTORY_TEST_CMD_DOWN_MAC_SN_1	0X0A
 //UP
 #define FACTORY_TEST_CMD_UP_CONTROL_1	0X80
 #define FACTORY_TEST_CMD_UP_STM32_1		0X81
 #define FACTORY_TEST_CMD_UP_AS532_1		0X82
 #define FACTORY_TEST_CMD_UP_9344_1		0X83
 #define FACTORY_TEST_CMD_UP_ALL_1		0X84
-#define FACTORY_TEST_CMD_UP_MAC_1		0X8A
+#define FACTORY_TEST_CMD_UP_MAC_SN_1	0X8A
 
 //start、stop
 #define FACTORY_TEST_CMD_CONTROL_START	0X0A
@@ -104,6 +104,8 @@
 
 //mac
 #define FACTORY_TEST_CMD_UPDATE_MAC		0X0C
+//sn
+#define FACTORY_TEST_CMD_UPDATE_SN		0X0D
 
 //ota
 #define OTA_VER 			0x31
@@ -194,12 +196,13 @@ int factory_test_cmd_9344_ver();
 int factory_test_cmd_as532_ver();
 int factory_test_cmd_stm32_ver();
 int factory_test_cmd_update_mac(unsigned char* data,int len);
+int factory_test_cmd_update_sn(unsigned char* data,int len);
 int factory_test_down_9344(char cmd);
 int factory_test_down_all(char cmd);
 int factory_test_down_as532(char cmd);
 int factory_test_down_control(char cmd);
 int factory_test_down_stm32(char cmd);
-int factory_test_down_mac(char cmd,unsigned char* data,int len);
+int factory_test_down_mac_sn(char cmd,unsigned char* data,int len);
 int factory_test_cmd_stm32_r54();
 int factory_test_r54_ver(unsigned char *packet,int bytes);
 int factory_test_r54_called_func(unsigned char *packet,int bytes);
