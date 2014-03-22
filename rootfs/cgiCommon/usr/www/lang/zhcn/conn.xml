@@ -26,7 +26,7 @@
 	<message msgid="clist title" msgstr="已接入设备列表" /> 
 	<message msgid="clist des" msgstr="显示当前已接入HBD路由器的有线和无线设备的信息" /> 
 	<message msgid="clist t1_title" msgstr="有线设备" />  
-	<message msgid="clist t2_title" msgstr="无线设备（包括无线可疑设备）" />  
+	<message msgid="clist t2_title" msgstr="无线设备" />  
 	<message msgid="clist ip" msgstr="IP地址" />  
 	<message msgid="clist mac" msgstr="MAC地址" />  
 	<message msgid="clist name" msgstr="设备名" />  

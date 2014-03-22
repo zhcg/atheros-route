@@ -13,6 +13,8 @@
 ##
 
 cfg -e > /tmp/vars.$$
+cfg -s | grep PSK_KEY_2 | awk -F':' '{print "export " $1$2}' >> /tmp/vars.$$
+cfg -s | grep PSK_KEY_4 | awk -F':' '{print "export " $1$2}' >> /tmp/vars.$$
 . /tmp/vars.$$
 rm /tmp/vars.$$
 
@@ -51,7 +53,8 @@ cfg -a PPPOE_MODE=${PPPOE_MODE:="auto"}
 cfg -a TIME_ZONE=${TIME_ZONE:="CST_008"}
 cfg -a NTPON_OFF=${NTPON_OFF:="on"}
 cfg -a WEBCONON_OFF=${WEBCONON_OFF:="off"}
-cfg -a NTPServerIP1=${NTPServerIP1:="202.120.2.101"}
+#cfg -a NTPServerIP1=${NTPServerIP1:="202.120.2.101"}
+cfg -a NTPServerIP1=${NTPServerIP1:="time.windows.com"}
 cfg -a NTPServerIP2=${NTPServerIP2:="210.72.145.44"}
 #
 # Indicate if you want the WLAN to be activated on boot up.
@@ -222,8 +225,8 @@ cfg -a AP_SECMODE_6=${AP_SECMODE_6:="None"}
 cfg -a AP_SECMODE_7=${AP_SECMODE_7:="None"}
 cfg -a AP_SECMODE_8=${AP_SECMODE_8:="None"}
 
-#cfg -a PSK_KEY_2=${PSK_KEY_2:="12345678"}
-#cfg -a PSK_KEY_4=${PSK_KEY_4:="12345678"}
+cfg -a PSK_KEY_2=${PSK_KEY_2:="12345678"}
+cfg -a PSK_KEY_4=${PSK_KEY_4:="12345678"}
 
 cfg -a AP_WPA_2=3
 cfg -a AP_WPA_4=3
