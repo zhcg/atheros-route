@@ -5,6 +5,7 @@
 	<message msgid="main cancel" msgstr="取消" />
 	<message msgid="toplanguage" msgstr="z" />
 	<message msgid="help" msgstr="帮助" />
+	<message msgid="HBDt" msgstr="红板凳路由设置" />
 	<message msgid="settingwaiting" msgstr="正在配置,请您稍等......" />
 
 	<message msgid="top_fast" msgstr="快速设置" />

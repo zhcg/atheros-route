@@ -6,6 +6,7 @@
 	<message msgid="toplanguage" msgstr="e" />
 	<message msgid="main bSAVE" msgstr="Save" />   
 	<message msgid="help" msgstr="Help" />
+	<message msgid="HBDt" msgstr="HBD router settings" />
 	<message msgid="settingwaiting" msgstr="Setting,Please Wait......" />
 
 	<message msgid="top_fast" msgstr="Quick Settings" />
@@ -91,7 +92,7 @@
 	<message msgid="sysinfo unset" msgstr="Unset" /> 
 
 	<message msgid="sysinfo dhcp" msgstr="DHCP" />
-	<message msgid="sysinfo static" msgstr="STATIC IP" />
+	<message msgid="sysinfo static" msgstr="Static IP" />
 	<message msgid="sysinfo pppoe" msgstr="PPPoE(ADSL)" />
 	<message msgid="sysinfo l2tp" msgstr="L2TP" />
 	<message msgid="sysinfo pptp" msgstr="PPTP" />

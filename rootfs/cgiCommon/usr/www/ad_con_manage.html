@@ -21,7 +21,7 @@ else
 {
         window.location.href="/index.html";
 }
-function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "table-row";}}
+function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "";}}
 function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
 function widget_display(widgetID){document.getElementById(widgetID).style.visibility = "visible";document.getElementById(widgetID).style.display = style_display_on();}
 
@@ -35,7 +35,7 @@ function initTranslation()
 	trans_inner("des","conm des");
 	trans_inner("t1_title","conm t1_title");
 	trans_inner("t1_switch","conm t1_switch");
-	trans_inner("ts1","conm ts1");
+	//trans_inner("ts1","conm ts1");
 	
 	trans_inner("t1_Des","conn des");
 	trans_inner("t1_Mac","conn mac");
@@ -154,7 +154,7 @@ function help()
 	<td>
 	<input type="radio"  ~cWCONON_OFF:on~ name="WCONON_OFF" id="WDSON_OFF1" value="on" onClick="switch_con_f();" /><label for="WDSON_OFF1"  id="onbutton">启用</label>
 	<input type="radio"  ~cWCONON_OFF:off~ name="WCONON_OFF" id="WDSON_OFF2" value="off" onClick="switch_con_f();"/><label for="WDSON_OFF2"  id="offbutton">不启用</label></td>
-	<td colspan="2"><span id="ts1"></span>&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; </td>  </tr>
+	<td colspan="2"><!--span id="ts1"></span-->&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; </td>  </tr>
 </table>
 <table id="t2"  width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
   <tr>
