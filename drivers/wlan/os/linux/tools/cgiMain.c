@@ -6403,6 +6403,7 @@ int main(int argc,char **argv)
 		char tmp2[128];
 		char ipaddr[128],*ipaddr2;		
 		char linenum[128];
+		char valBuff_eth0[128];
 		
 //		Execute_cmd("cat /etc/mac.bin",mymac);
 //		mymac2=strtok(mymac,"\n");
@@ -6414,10 +6415,14 @@ int main(int argc,char **argv)
 		//0 -factory mac ,1-pc mac,2 -user input
 		
 		//wangyu add for route list backup
+		Execute_cmd("ifconfig eth0", valBuff_eth0);
+		if(strstr(valBuff_eth0,"inet addr:"))
+		{
 		Execute_cmd("route | grep default | awk -F' ' '{print $2}'",ipaddr);
 		ipaddr2=strtok(ipaddr,"\n");
  //       fprintf(errOut,"\n.........%s.............\n",ipaddr);
-
+		}
+		
 		if(atoi(tmp)==0)
 		{
 			//fprintf(errOut,"[luodp] %s",mymac2);
@@ -6436,13 +6441,14 @@ int main(int argc,char **argv)
 		}
 
 		//wangyu add for route list backup
-		
+		if(strstr(valBuff_eth0,"inet addr:"))
+		{
 		if(strncmp(Execute_cmd("route | grep default | awk -F' ' '{print $8}'",linenum),"eth0",4))
 			sprintf(str,"route add default gw %s",ipaddr2);
 		
    //     fprintf(errOut,"\n.........%s .............\n",str);
 		system(str);
-		
+		}
 		
 		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
         writeParameters("/tmp/.apcfg","w+",0);
