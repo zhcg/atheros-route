@@ -287,7 +287,7 @@ function jump2request()
 	xmlHttp.open("GET","http://"+desIP+"/simpleResponse.xml?now=" + new Date().getTime(),true);
 	xmlHttp.send(null);
 }
-
+var tttimerid;
 function ttzhuan(dIP)
 {
 	if(dIP=="")
@@ -295,7 +295,11 @@ function ttzhuan(dIP)
 	else
 		desIP=dIP;
 		
-	setTimeout(function(){startRequest();},100000);
+	tttimerid = setTimeout(function(){startRequest();},100000);
+}
+function clearttzhuan()
+{
+	clearTimeout(tttimerid);
 }
 function startRequest()
 {

@@ -278,7 +278,7 @@ error:
          printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
          printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
          printf("</head><body>");
- 	     printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err file upload\"));window.location.href=\"ad_man_upgrade?ad_man_upgrade=yes\";</script>");
+ 	     printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();window.parent.clearttzhuan();alert(_(\"err file upload\"));window.location.href=\"ad_man_upgrade?ad_man_upgrade=yes\";</script>");
          printf("</body></html>");
     }
 	//打印信息到网页的隐藏的iframe中
@@ -334,7 +334,7 @@ error:
 				 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
 				 printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
 				 printf("</head><body>");
-				 printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err file format\"));window.location.href=\"ad_man_upgrade?ad_man_upgrade=yes\";</script>");
+				 printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();window.parent.clearttzhuan();alert(_(\"err file format\"));window.location.href=\"ad_man_upgrade?ad_man_upgrade=yes\";</script>");
 				 printf("</body></html>");
 			}
 	}
