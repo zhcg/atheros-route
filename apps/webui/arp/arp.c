@@ -993,7 +993,8 @@ static int arp_show(char *name)
 	    else
 		arp_disp(hostname, ip, type, flags, hwa, mask, dev);
 		//luodp for webui
-		if (flags & ATF_COM)
+		//if (flags & ATF_COM)
+		if (ATF_COM)
 		{
 			if (flags & ATF_PERM)
 			{
