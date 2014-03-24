@@ -26,7 +26,8 @@ if [ -z $SR_STATUS ];then
 	exit 4
 fi
 
-str=$(grep -i -E "\<$SR_DESIP\> | \<$SR_SUB\> | \<$SR_GW\> " $ROUTE_FILE)
+#str=$(grep -i -E "\<$SR_DESIP\> | \<$SR_SUB\> | \<$SR_GW\> " $ROUTE_FILE)
+str=$(grep -i -E "\<$SR_DESIP\>" $ROUTE_FILE)
 #echo $str
 if [ "$str" = "" ];then
         echo "the route rule is not exist"
