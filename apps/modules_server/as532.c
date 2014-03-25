@@ -343,6 +343,109 @@ int version(struct UKey *pUKey, unsigned char *pUsbData, int *pUsbDataLen)
 	return ret;
 }
 
+int sn(struct UKey *pUKey, unsigned char *pUsbData, int *pUsbDataLen)
+{   
+    unsigned char readbuf[16]= {0};
+    
+    int ret =0;    
+    int len =0;
+    int i =0;
+  //  unsigned char buff[100] = {0};
+    int head_addr =0;
+    int head_flag = 0;
+    int tail_addr =0;
+    int tail_flag =0;
+  
+    PRINT("-------------- pUKey->localTPCCmd.CMD = 0xef01--------------\n");
+    //发送命令1，
+    pUKey->localTPCCmd.CMD = 0xef01;//write
+  	pUKey->localTPCCmd.CLA = 0x17;
+  	pUKey->localTPCCmd.INS = 0x08;
+  	pUKey->localTPCCmd.P1 = 0x00;
+  	pUKey->localTPCCmd.P2 = 0x00;
+  	pUKey->localTPCCmd.LC = 0x00;
+  	pUKey->localTPCCmd.LE = 0x20;	 
+
+	pUKey->p_hdr->dxfer_direction = SG_DXFER_NONE;
+
+	pUKey->p_hdr->cmdp = (unsigned char *)&(pUKey->localTPCCmd);
+	pUKey->p_hdr->cmd_len = 10; //指向 SCSI 命令的 cmdp 的字节长度。
+	pUKey->localTPCCmd.LC = L2B16(pUKey->localTPCCmd.LC);
+	pUKey->localTPCCmd.LE = L2B16(pUKey->localTPCCmd.LE);
+
+	ret = ioctl(pUKey->fd, SG_IO, pUKey->p_hdr);
+    
+	pUKey->localTPCCmd.LC = L2B16(pUKey->localTPCCmd.LC);
+	pUKey->localTPCCmd.LE = L2B16(pUKey->localTPCCmd.LE);
+	if (ret<0) {
+		PRINT("Sending SCSI Write Command failed.\n");
+		return -1;
+	}	 
+
+  //读取USB 上的的数据，
+    pUKey->localTDataPack.DATA = readbuf;
+	unsigned char rd_temp[100] ={0} ;
+	pUKey->localTRespond.CMD = 0xef03;//read	
+	pUKey->localTRespond.SW = 0x00;
+	pUKey->p_hdr->dxfer_direction = SG_DXFER_FROM_DEV;
+    pUKey->p_hdr->dxfer_len = 100; //要读取数据的长度，最长能读取100个字节的数据
+	pUKey->p_hdr->dxferp = rd_temp;
+	pUKey->p_hdr->cmdp = (unsigned char *)&(pUKey->localTRespond);
+	pUKey->p_hdr->cmd_len = 10;
+
+	ret = ioctl(pUKey->fd, SG_IO, pUKey->p_hdr);
+	if (ret<0) {
+		PRINT("Sending SCSI Read Command failed.\n");
+		return -1;
+	}
+	DELAY;
+    
+	if (pUKey->p_hdr->dxfer_len)
+    {
+        //对于读取的数据，按照数据包的形式开始进行去除冗余数据，数据的开头和结尾都必须以0xA5 0x5A
+        for(i =0; i<100; )
+        {
+            if((rd_temp[i]== 0xA5)&&(rd_temp[i+1]==0x5A)&&(head_flag == 0 ))
+            {
+                head_addr = i+2;
+                head_flag = 1;
+                PRINT("find head !\n head = %d\n", head_addr);                
+            }  
+            i++;
+            if( (rd_temp[i]== 0xA5)&&(rd_temp[i+1]==0x5A)&&(head_flag == 1 )&&(tail_flag == 0 ))
+            {
+                tail_addr = i-1;               
+                PRINT("find tail!\ntail = %d\n", tail_addr );
+                tail_flag =1;
+            }  
+            if((head_flag == 1)&&(tail_flag == 1))
+            {
+                PRINT("find head and tail\n");
+                break;
+            }            
+        }
+
+        len = tail_addr - head_addr+1;        
+        //PRINT("len = %d\n", len);      
+       *pUsbDataLen = len;
+        //PRINT("pUsbDataLen = %d\n", *pUsbDataLen);
+        memcpy(pUsbData, rd_temp+head_addr, len);
+        
+        //for(i =0; i<len; i++)
+        //{
+            //printf("pUsbData = %x\n ",*(pUsbData+i)); 
+        //}
+        //PRINT("-------------\n");        
+	}
+    else
+    {
+		PRINT("Receive data error\n");
+		return -1;
+	}
+	return ret;
+}
+
+
 int version_detail(struct UKey *pUKey, unsigned char *pUsbData, int *pUsbDataLen)
 {   
     unsigned char readbuf[1000]= {0};

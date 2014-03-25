@@ -15,6 +15,8 @@ int main(int argc,char **argv)
 	pthread_create(&handle_pthread,NULL,(void*)loop_recv,NULL);
 	pthread_create(&passage_pthread,NULL,(void*)passage_thread_func,NULL);
 	pthread_create(&ota_pthread,NULL,(void*)ota_thread_func,NULL);
+	
+	led_control();
 
 	pthread_join(uart_pthread,NULL);
 	pthread_join(handle_pthread,NULL);

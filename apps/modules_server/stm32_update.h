@@ -15,6 +15,7 @@
 //发送到应用层的进入boot命令
 #define UPDATE_GETVER_CMD		(0X80)
 #define UPDATE_REBOOT_CMD		(0X82)
+#define UPDATE_GETSN_CMD		(0X85)
 
 #define RSP_CMD_MIN_BYTES 9
 
@@ -32,6 +33,8 @@ int PacketRspGet(unsigned char *pbuf,int offset,int valid_bytes);
 int UpdateRspRcv(unsigned char *prcv_buffer,int buf_size);
 int OrgReBootPacket(unsigned char *psend_buf);
 int CmdReBoot(void);
+int OrgGetSnPacket(unsigned char *psend_buf);
+int CmdGetSn(void);
 int OrgGetVerPacket(unsigned char *psend_buf);
 int CmdGetVersion(void);
 int OrgStartPacket(unsigned char *psend_buf,unsigned int app_start_add,unsigned int app_file_size);

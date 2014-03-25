@@ -672,7 +672,8 @@ void* AudioSendThreadCallBack(void* argv)
 	unsigned int total_send_bytes = 0;
 	int i = 0;
 	dev_status_t* devp;
-
+	int count = 0;
+	
 	phone_audio.audio_send_thread_flag = 0;
 	phone_audio.audio_talkback_send_thread_flag = 0;
 	while(1)
@@ -731,6 +732,9 @@ SEND_ERR:
 				else
 				{
 					//PRINT("send_ret = %d\n",send_ret);
+					//if(send_ret != 400)
+						//count++;
+					//PRINT("count = %d\n",count);
 					phone_audio.output_stream_rp += send_ret*2;
 					total_send_bytes += send_ret*2;
 					if(phone_audio.output_stream_rp >= AUDIO_STREAM_BUFFER_SIZE)

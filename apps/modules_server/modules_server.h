@@ -146,6 +146,7 @@ typedef struct __passage
 }Passage;
 
 char CRC8(char *data, int length);
+int led_control();
 int parse_r54_ver(unsigned char *buf,int *bytes);
 void check_r54_test_called_func();
 void check_stm32_ver_req_func();
@@ -218,6 +219,7 @@ int FifoPacketDis(unsigned char *ppacket,int bytes);
 void ota_thread_func(void *argv);
 int ota_as532h_ver();
 int ota_stm32_ver();
+int ota_stm32_sn();
 int ota_as532h_sn();
 int ota_stm32_sn();
 int ota_as532h_update(unsigned char* path);
@@ -226,4 +228,5 @@ int generate_ota_up_msg(unsigned char cmd,unsigned char id,unsigned char *data,i
 
 extern int usb_fd;
 extern unsigned char stm_format_version[4];
+extern unsigned char stm_format_sn[12];
 #endif

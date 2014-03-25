@@ -39,6 +39,7 @@ typedef enum __REQ_RSP_CODE
 
 int fsfd;
 unsigned int update_bin_file_size;
+unsigned char stm_format_sn[12] = {0};
 unsigned char stm_format_version[4] = {0x00,0x00,0x00,0x00};
 unsigned char bin_format_version[4] = {0x00,0x00,0x00,0x00};
 unsigned char bin_file_head[8] = {0x41,0x70,0x70,0x42,0x69,0x6E,0x20,0x20};
@@ -513,7 +514,8 @@ static int PacketHeadSearch(unsigned char *pbuf,int offset,int valid_bytes)
 			return i;	
 		}
 		if((ppcom[i] == packet_rsp_head_2[0]) && (ppcom[i + 1] == packet_rsp_head_2[1]) && 
-			(ppcom[i + 2] == packet_rsp_head_2[2]) && (ppcom[i + 3] == packet_rsp_head_2[3]))
+			(ppcom[i + 2] == packet_rsp_head_2[2]) && (ppcom[i + 3] == packet_rsp_head_2[3])
+			&& ((ppcom[i + 6]) != (unsigned char)0x84))
 		{
 			return i;	
 		}
@@ -528,14 +530,14 @@ int PacketRspGet(unsigned char *pbuf,int offset,int valid_bytes)
 	unsigned char check_byte;
 
 
-	packet_len = (pbuf[4] * 256) + pbuf[5];
+	packet_len = (pbuf[offset+4] * 256) + pbuf[offset+5];
 	packet_len += (4 + 2);
 	if(valid_bytes <= packet_len){
 		PRINT("Error: respond valid_bytes < packet_len\n");
 		return -1;
 	}
-	check_byte = PacketXorGenerate(pbuf,packet_len);
-	if(check_byte == pbuf[packet_len])
+	check_byte = PacketXorGenerate(pbuf+offset,packet_len);
+	if(check_byte == pbuf[packet_len+offset])
 	{
 		packet_len++;
 		return packet_len;
@@ -569,7 +571,7 @@ int UpdateRspRcv(unsigned char *prcv_buffer,int buf_size)
 //			   PRINT("read_data ret = %x \n", prcv_buffer[i]);
 		if(ret > 0)
 		{
-			//ComFunPrintfBuffer(prcv_buffer + rcv_index,ret);
+			ComFunPrintfBuffer(prcv_buffer + rcv_index,ret);
 			rcv_index += ret;
 		}
 
@@ -680,6 +682,80 @@ int CmdReBoot(void)
 				case REQ_RSP_OK:
 					PRINT("%s command execute OK! \n", __FUNCTION__);
 					PRINT("jump to boot mode ...... \n");
+					break;	
+				default:
+					PRINT("%s command execute error! \n", __FUNCTION__);
+					return -1;
+			}
+			return 0;
+		}		
+	}
+	return -1;	
+}
+
+int OrgGetSnPacket(unsigned char *psend_buf)
+{
+	int index = 0;
+	unsigned char check_byte;
+
+//第一级包头
+	psend_buf[index++] = 0xEF;
+	psend_buf[index++] = 0xFE;
+	psend_buf[index++] = 0xA5;
+	psend_buf[index++] = 0x5A;
+//第一级数据长度，高位在前		
+	psend_buf[index++] = 0x00;
+	psend_buf[index++] = 0x02;
+//数据通道为STM32自身
+	psend_buf[index++] = 0x10;
+
+	psend_buf[index++] = UPDATE_GETSN_CMD;
+
+//第一级校验字节
+	check_byte = PacketXorGenerate(psend_buf,index);	
+	psend_buf[index++] = check_byte;
+	return index;	
+}
+
+int CmdGetSn(void)
+{
+	int ret;
+	int packet_bytes;
+	int i;
+	PRINT("Enter %s ......\n", __FUNCTION__);
+	packet_bytes = OrgGetSnPacket(update_req_buffer);
+//	PRINT("update_req_buffer:  \n");
+//	for(i = 0; i < packet_bytes; i++)
+//		PRINT("%x ", update_req_buffer[i]);
+//	PRINT("\n");
+	//发送命令请求
+	ret = write_data(global_uart_fd, update_req_buffer, packet_bytes);
+	if (ret != packet_bytes){
+		fprintf(stderr, "%s request error %s\n", __FUNCTION__, strerror(errno));
+	}
+	//获取STM32的响应
+	ret = UpdateRspRcv(update_rsp_buffer,sizeof(update_rsp_buffer));
+//	PRINT("update_rsp_buffer:  \n");
+//	for(i = 0; i < ret; i++)
+//		PRINT("%x ", update_rsp_buffer[i]);
+//	PRINT("\n");
+
+	//解析响应
+	if(ret >= RSP_CMD_MIN_BYTES)
+	{
+		//判断响应
+		if((update_rsp_buffer[6] != (char)0X10) || (update_rsp_buffer[7] != UPDATE_GETSN_CMD))
+		{
+			PRINT("%s command respond error \n", __FUNCTION__);
+			return -1;				
+		}	
+		{
+			switch(update_rsp_buffer[8])
+			{
+				case REQ_RSP_OK:
+					PRINT("%s command execute OK! \n", __FUNCTION__);					
+					memcpy((void *)(stm_format_sn),(void *)(update_rsp_buffer + 9),sizeof(stm_format_sn));
+					ComFunPrintfBuffer(stm_format_sn,sizeof(stm_format_sn));
 					break;	
 				default:
 					PRINT("%s command execute error! \n", __FUNCTION__);

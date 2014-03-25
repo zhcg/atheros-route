@@ -87,7 +87,7 @@ int slic_dma_open=0;
 #define DO_AUDIO_FILTER		//侧音处理
 
 #ifdef DO_AUDIO_FILTER
-static int compare_times = 20;//15;//默认比较数字半双工倍乘值
+static int compare_times = 35;//15;//默认比较数字半双工倍乘值
 static int compare_times_min = 40;//低音抑制参数
 //static int compare_times_max = 25;
 static int last_do_flag = 0;

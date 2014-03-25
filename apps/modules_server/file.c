@@ -242,7 +242,7 @@ int check_file(char *pVersion, const unsigned char *pPath,unsigned char *path_ne
 		//验证主版本号
 		if (strncmp(comingFile.fileBuf + HEAD_LEN, pVersion, VERDION_MAJ_LEN) != 0) 
 		{
-			PRINT("**coming file's majorVersion have error");
+			PRINT("**coming file's majorVersion have error\n");
 			free(comingFile.fileBuf);
 			return -8;
 		}

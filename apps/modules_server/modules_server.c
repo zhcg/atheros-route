@@ -19,6 +19,7 @@ unsigned char fifo_recv_buffer[BUFFER_SIZE_1K] = {0};
 int fifo_wp_pos = 0;
 int fifo_rp_pos = 0;
 int ota_stm32_ver_flag = 0;
+int ota_stm32_sn_flag = 0;
 unsigned char uart_recv_buffer[BUFFER_SIZE_1K*4] = {0};
 int uart_wp_pos = 0;
 int uart_rd_pos = 0;
@@ -28,7 +29,6 @@ int stm32_updating = 0;
 int as532_updating = 0;
 int start_factory_test = 0;
 struct UKey *global_pukey;
-char last_led_status[2]={0};
 
 unsigned char factory_test_buffer[BUFFER_SIZE_1K] = {0};
 int factory_test_wp = 0;
@@ -122,6 +122,32 @@ void ComFunPrintfBuffer(unsigned char *pbuffer,int len)
 	printf("%s\r\n",pstr);
 
 	free((void *)pstr);
+}
+
+int write_passage(char type,unsigned char *packet,int bytes)
+{
+	PRINT("%s\n",__FUNCTION__);
+	//PRINT("type = 0x%x\n",type);
+	int i = 0;
+	for(i=0;i<PASSAGE_NUM;i++)
+	{
+		//PRINT("passage_list[%d].type = 0x%x\n",i,passage_list[i].type);
+		if(passage_list[i].type == type)
+		{
+			PRINT("%s\n",passage_list[i].passage_name);
+			if((passage_list[i].fd < 0) || write(passage_list[i].fd,packet,bytes) != bytes)
+			{
+				PRINT("%s error\n",__FUNCTION__);
+			}
+		}
+	}
+	return 0;
+}
+
+int led_control()
+{
+	unsigned char led_status[4] = {0xa5,0x5a,0x03,0x04};
+	write_passage(TYPE_PHONE_PASSAGE,led_status,sizeof(led_status));
 }
 
 int parse_r54_ver(unsigned char *buf,int *bytes)
@@ -279,6 +305,7 @@ int init_stm32()
 				return -4;
 			if((ret = CmdEnd()) != 0)
 				return -5;
+			
 			PRINT("default Stm32 success !!!\n");
 		}
 	}
@@ -514,6 +541,7 @@ int do_cmd_stm32_update(unsigned char *path)
 		PRINT("stm32 update success!\n");
 	}
 	stm32_updating = 0;
+	led_control();
 	return ret;
 }
 
@@ -542,8 +570,13 @@ void user_close_usb(int *fd)
 void update_test_thread_func(void* argv)
 {
 	int ret = as532_update(DEFAULT_AS532_IMAGE);
-	do_cmd_stm32_update(DEFAULT_STM32_IMAGE);
-	PRINT("update over %d\n",ret);	
+	while(1)
+	{
+		do_cmd_stm32_update(DEFAULT_STM32_IMAGE);
+		PRINT("update over %d\n",ret);	
+		sleep(30);
+	}
+	PRINT("!!!!!!!!!!!!!!!!!!!!!\n");
 	return;
 }
 
@@ -689,9 +722,11 @@ int as532_update(unsigned char *path)
 		//ret_err = -8;
 		//goto AS532_UPDATE_ERR;
 	//}
+	system("rm -rf /var/default_image/as532h/as532h_default_image_tmp");
 	as532_updating = 0;
 	return as532_updating;
 AS532_UPDATE_ERR:
+	system("rm -rf /var/default_image/as532h/as532h_default_image_tmp");
 	as532_updating = ret_err;
 	return as532_updating;
 }
@@ -1033,25 +1068,6 @@ int UartStm32Do(unsigned char *ppacket,int bytes)
 }
 int UartTestDo(unsigned char *ppacket,int bytes)
 {
-	return 0;
-}
-int write_passage(char type,unsigned char *packet,int bytes)
-{
-	PRINT("%s\n",__FUNCTION__);
-	//PRINT("type = 0x%x\n",type);
-	int i = 0;
-	for(i=0;i<PASSAGE_NUM;i++)
-	{
-		//PRINT("passage_list[%d].type = 0x%x\n",i,passage_list[i].type);
-		if(passage_list[i].type == type)
-		{
-			PRINT("%s\n",passage_list[i].passage_name);
-			if((passage_list[i].fd < 0) || write(passage_list[i].fd,packet,bytes) != bytes)
-			{
-				PRINT("%s error\n",__FUNCTION__);
-			}
-		}
-	}
 	return 0;
 }
 
@@ -1778,7 +1794,7 @@ void uart_loop_recv(void * argv)
 			}
 		}
 		//stm32ÕýÔÚÉý¼¶
-		if(stm32_updating == 0 && ota_stm32_ver_flag == 0)
+		if(stm32_updating == 0 && ota_stm32_ver_flag == 0 && ota_stm32_sn_flag == 0)
 		{
 			if(global_uart_fd >= 0)
 			{
@@ -1868,8 +1884,6 @@ void passage_thread_func(void *argv)
 										recvbuf[j] = (char)CMD_STM32_LED;
 										recvbuf[j+1] = recvbuf[j+2];
 										generate_stm32_down_msg(&recvbuf[j],2,TYPE_STM32);
-										last_led_status[0] = recvbuf[j];
-										last_led_status[1] = recvbuf[j+1];
 									}
 									//test -- usb 5A A5 02 A5 5A 83 04 00 00 04 38 31 36 31
 									if(recvbuf[j] == (char)0xA5 && recvbuf[j+1] == (char)0X5A)
@@ -2131,16 +2145,31 @@ int ota_stm32_ver()
 	return 0;
 }
 
-int ota_as532h_sn()
+int ota_stm32_sn()
 {
-	generate_ota_up_msg(OTA_CMD_SN_RET,OTA_AS532H_ID,"12345",5);
+	ota_stm32_sn_flag = 1;
+	if(CmdGetSn() == 0)
+	{
+		generate_ota_up_msg(OTA_CMD_SN_RET,OTA_STM32_ID,stm_format_sn,12);
+	}
+	ota_stm32_sn_flag = 0;
 	return 0;
 }
 
-int ota_stm32_sn()
+int ota_as532h_sn()
 {
-	generate_ota_up_msg(OTA_CMD_SN_RET,OTA_STM32_ID,"12345",5);
-	return 0;
+	int ret = 0;
+	int len = 0;
+	unsigned char outbuf[128]={0};
+
+	init_key(global_pukey);
+	ret = sn(global_pukey,outbuf,&len);
+	if(ret == 0)
+	{
+		//ComFunPrintfBuffer(outbuf,len);
+		generate_ota_up_msg(OTA_CMD_SN_RET,OTA_AS532H_ID,outbuf,len);
+	}
+	return ret;
 }
 
 int ota_as532h_update(unsigned char* path)
@@ -2167,7 +2196,6 @@ int ota_stm32_update(unsigned char* path)
 	if(ret == 0)
 	{
 		result = 1;
-		generate_stm32_down_msg(last_led_status,2,TYPE_STM32);
 	}
 	else
 	{
@@ -2234,8 +2262,10 @@ int FifoPacketDis(unsigned char *ppacket,int bytes)
 			}
 			else if(ppacket[5] == (unsigned char)OTA_STM32_ID)
 			{
-				PRINT("OTA_STM32_SN_REQ\n");
-				ota_stm32_sn();
+				//PRINT("OTA_STM32_SN_REQ\n");
+				//ota_stm32_sn();
+				PRINT("OTA_AS532H_SN_REQ\n");
+				ota_as532h_sn();
 			}
 			break;
 		case OTA_CMD_UPDATE_REQ:

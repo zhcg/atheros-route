@@ -59,6 +59,7 @@ void init_fd(struct  UKey * pUKey,int *fd);
 int key(struct UKey *pUKey, unsigned char *pUsbData, int *pUsbDataLen);
 int lcd(struct UKey *pUKey,  unsigned char *pUsbData);
 int version(struct UKey *pUKey, unsigned char *pUsbData, int *pUsbDataLen);
+int sn(struct UKey *pUKey, unsigned char *pUsbData, int *pUsbDataLen);
 int version_detail(struct UKey *pUKey, unsigned char *pUsbData, int *pUsbDataLen);
 int reboot_enter_boot(struct UKey *pUKey);
 int reboot(struct UKey *pUKey);

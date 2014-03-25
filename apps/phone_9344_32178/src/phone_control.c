@@ -189,7 +189,7 @@ int destroy_client(dev_status_t *dev)
 	PRINT("ip = %s\n",dev->client_ip);
 	char sendbuf[SENDBUF]={0};
 	int i,j,k,count=0;
-	dev->dying = 1;
+	//dev->dying = 1;
 	close(dev->client_fd);
 	if(dev->dev_is_using == 1 && dev->client_fd == phone_control.who_is_online.client_fd)
 	{
@@ -941,7 +941,7 @@ int do_cmd_switch(dev_status_t* dev,char *sendbuf)
 		//主叫转子机得到号码
 		snprintf(sendbuf, 22+phone_control.telephone_num_len, "HEADR0%03dINCOMIN%03d%s\r\n",10+phone_control.telephone_num_len, phone_control.telephone_num_len, phone_control.telephone_num);
 		PRINT("%s\n",sendbuf);
-	              netWrite(devlist[id].client_fd, sendbuf, strlen(sendbuf));
+	    netWrite(devlist[id].client_fd, sendbuf, strlen(sendbuf));
 		devlist[id].isswtiching = 1;
 		phone_control.global_phone_is_using = 0;
 		dev->dev_is_using = 0;
@@ -1376,9 +1376,9 @@ void Ringon(unsigned char *ppacket)
 		PRINT("RINGON!\n");
 		for(i=0; i<CLIENT_NUM; i++){
 #ifdef REGISTER
-			if(devlist[i].client_fd != -1 && devlist[i].incoming == 1 && devlist[i].registered == 1)
+			if(devlist[i].client_fd != -1 && devlist[i].incoming == 1 && devlist[i].registered == 1 && devlist[i].dying == 0)
 #else
-			if(devlist[i].client_fd != -1 && devlist[i].incoming == 1 )
+			if(devlist[i].client_fd != -1 && devlist[i].incoming == 1  && devlist[i].dying == 0)
 #endif
 			{
 				netWrite(devlist[i].client_fd, "HEADR0010RINGON_000\r\n",22);
@@ -1463,9 +1463,9 @@ void Incomingcall(unsigned char *ppacket,int bytes,int flag)
 	for(i=0; i<CLIENT_NUM; i++)
 	{
 #ifdef REGISTER
-		if(devlist[i].client_fd != -1 && devlist[i].registered)
+		if(devlist[i].client_fd != -1 && devlist[i].registered == 1  && devlist[i].dying == 0)
 #else
-		if(devlist[i].client_fd != -1 )
+		if(devlist[i].client_fd != -1  && devlist[i].dying == 0)
 #endif		
 		{
 			netWrite(devlist[i].client_fd, sendbuf,strlen(sendbuf)+1);
@@ -1989,6 +1989,7 @@ void* tcp_loop_recv(void* argv)
 						if(ret<0)
 						{
 							PRINT("read failed\n");
+							devlist[i].dying = 1;
 							memset(sendbuf,0,SENDBUF);
 							sprintf(sendbuf,"%s%d","INSIDE",i);
 							netWrite(phone_control_fd[0],sendbuf, strlen(sendbuf));
@@ -1996,7 +1997,10 @@ void* tcp_loop_recv(void* argv)
 						}
 						if(ret==0)
 						{
+							//PRINT("dying = %d\n",devlist[i].dying);
+							//PRINT("%s\n",devlist[i].client_ip);
 							PRINT("socket return 0\n");
+							devlist[i].dying = 1;
 							memset(sendbuf,0,SENDBUF);
 							sprintf(sendbuf,"%s%d","INSIDE",i);
 							netWrite(phone_control_fd[0],sendbuf, strlen(sendbuf));
@@ -2138,6 +2142,7 @@ void *phone_control_loop_accept(void* arg)
 											PRINT("reconnect\n");
 											break;
 										}
+										devlist[j].dying = 1;
 										memset(sendbuf,0,SENDBUF);
 										sprintf(sendbuf,"%s%d","INSIDE",j);
 										netWrite(phone_control_fd[0],sendbuf, strlen(sendbuf));
@@ -2202,7 +2207,10 @@ void check_ringon_func()
 						devlist[i].incoming = 0;
 					}
 				}
-				led_control(LED_LINE_IN);
+				if(phone_control.vloop > 3 || phone_control.vloop < -3)
+					led_control(LED_LINE_IN);
+				else
+					led_control(LED_LINE_OUT);
 				phone_control.check_ringon_count = 0;
 			}
 		}
@@ -2468,7 +2476,11 @@ int generate_up_msg()
 	memset(tmpbuf2,0,BUF_LEN);
 	for(i=0;i<CLIENT_NUM;i++)
 	{
-		if(devlist[i].client_fd == -1)
+#ifdef REGISTER
+		if(devlist[i].client_fd == -1 || devlist[i].dying == 1 || devlist[i].registered == 0 )
+#else
+		if(devlist[i].client_fd == -1 || devlist[i].dying == 1 )
+#endif
 			continue;
 		PRINT("%s:%d\n",devlist[i].client_ip,netWrite(devlist[i].client_fd, sendbuf, count+19));
 	}
@@ -2515,7 +2527,7 @@ void* phone_check_tick(void* argv)
 			if(devlist[i].destroy_count >= 25)
 			{
 				PRINT("no tick!!!\n");
-				//destroy_client(&devlist[i]);
+				devlist[i].dying = 1;
 				memset(insidebuf,0,SENDBUF);
 				sprintf(insidebuf,"%s%d","INSIDE",i);
 				netWrite(phone_control_fd[0],insidebuf, strlen(insidebuf));
@@ -2698,6 +2710,22 @@ void passage_pthread_func(void *argv)
 						write(phone_control.passage_fd,successbuf,6);
 					else
 						write(phone_control.passage_fd,failbuf,6);
+				}
+				//获取灯状态
+				if(recvbuf[2] == (char)0x03 && recvbuf[3] == (char)0x04)
+				{
+					PRINT("GET LED STATUS\n");
+					if(phone_control.vloop > 3 || phone_control.vloop < -3)
+					{
+						if(phone_control.global_phone_is_using == 1)
+							led_control(LED_OFFHOOK_IN);
+						else if(phone_control.global_incoming == 1)
+							led_control(LED_INCOMING);
+						else
+							led_control(LED_LINE_IN);
+					}
+					else
+						led_control(LED_LINE_OUT);
 				}
 			}
 		}
