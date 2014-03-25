@@ -570,13 +570,13 @@ void user_close_usb(int *fd)
 void update_test_thread_func(void* argv)
 {
 	int ret = as532_update(DEFAULT_AS532_IMAGE);
-	while(1)
-	{
+	//while(1)
+	//{
 		do_cmd_stm32_update(DEFAULT_STM32_IMAGE);
 		PRINT("update over %d\n",ret);	
-		sleep(30);
-	}
-	PRINT("!!!!!!!!!!!!!!!!!!!!!\n");
+		//sleep(30);
+	//}
+	//PRINT("!!!!!!!!!!!!!!!!!!!!!\n");
 	return;
 }
 
