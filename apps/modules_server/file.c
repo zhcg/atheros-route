@@ -271,7 +271,7 @@ int check_file(char *pVersion, const unsigned char *pPath,unsigned char *path_ne
     //重新生成(只写二进制文件)
     strcpy(path_new,pPath);
     strcat(path_new,"_tmp");
-    fd =open(path_new, O_RDWR | O_CREAT);
+    fd =open(path_new, O_RDWR | O_CREAT | O_TRUNC);
     if(fd == -1)
     {
         PRINT("**open error\n");
