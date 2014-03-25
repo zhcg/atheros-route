@@ -1,3 +1,11 @@
+apps/webui/mac_addr/get_mac
+apps/webui/mac_addr/set_mac
+apps/OTA_Base/OTA_Base
+apps/OTA_Base/our_md5.o
+apps/OTA_Base/versions_up_base.o
+apps/terminal_dev_register/interface_test
+apps/terminal_dev_register/interface_test.o
+apps/webui/mac_addr/set_macaddr
 apps/modules_server/modules_server
 apps/ppy/ppy
 apps/phone_9344_32178/src/dtmf_all_raw_data_100ms.o
