@@ -2262,10 +2262,10 @@ int FifoPacketDis(unsigned char *ppacket,int bytes)
 			}
 			else if(ppacket[5] == (unsigned char)OTA_STM32_ID)
 			{
-				//PRINT("OTA_STM32_SN_REQ\n");
-				//ota_stm32_sn();
-				PRINT("OTA_AS532H_SN_REQ\n");
-				ota_as532h_sn();
+				PRINT("OTA_STM32_SN_REQ\n");
+				ota_stm32_sn();
+				//PRINT("OTA_AS532H_SN_REQ\n");
+				//ota_as532h_sn();
 			}
 			break;
 		case OTA_CMD_UPDATE_REQ:
