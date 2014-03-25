@@ -1019,7 +1019,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 						if(strlen(tmpc)>0)
 							outBuff += sprintf(outBuff,"%s",tmpc);
 						fclose(fp);
-						//system("rm /tmp/arplist");
+						system("rm /tmp/arplist");
 					}
                 }
 
