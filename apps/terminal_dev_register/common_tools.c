@@ -1829,7 +1829,7 @@ int get_user_prompt(int error_num, char **out_buf)
         case WAN_STATE_ERR:        // wan口没有插入有效网线
         {
             state_num = 16;  //状态码
-            memcpy(prompt, "wan口没有插入有效网线！", sizeof(prompt) - 1);  // 提示信息
+            memcpy(prompt, "请检查WAN口线是否已经插入！", sizeof(prompt) - 1);  // 提示信息
             len = strlen(prompt);
             break;
         }

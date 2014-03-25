@@ -42,6 +42,7 @@ struct s_terminal_dev_register
 {
     int fd;
     int network_config_fd; // 备份设置时的fd
+    int non_network_fd; // 备份非网络fd
     int cmd_count; // 接收命令的个数
     unsigned short length; // 数据包长度
     char data[256];

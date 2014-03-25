@@ -1414,7 +1414,34 @@ int route_config2(int index)
  */
 int get_wan_state()
 {
-    return 0;
+    int res = 0;
+    char *cmd = "cfg -s | grep \"LINEIN_OUT:=\"";
+    char buf[128] = {0};
+    
+    // 1.检测WAN口
+    system("wan_check");
+    
+    // 2.判断状态
+    if ((res = common_tools.get_cmd_out(cmd, buf, sizeof(buf))) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_cmd_out failed!", res);
+        return res;
+    }
+    
+    if (memcmp(buf + strlen("LINEIN_OUT:="), "out", strlen("out")) == 0) // 拔出状态 
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "The WAN port line pulled out!", WAN_STATE_ERR);
+        return WAN_STATE_ERR;
+    }
+    else if (memcmp(buf + strlen("LINEIN_OUT:="), "in", strlen("in")) == 0) // 插入状态 
+    { 
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "The WAN port line has been inserted!", 0);
+        return 0;
+    }
+    else 
+    {
+        return DATA_ERR;
+    }
 }
 
 /**
@@ -1818,12 +1845,12 @@ int network_settings(int fd, int cmd_count, char cmd_word)
                 free(_6410_and_5350_msg.data);
                 _6410_and_5350_msg.data = NULL;
                 #elif BOARDTYPE == 5350 ||  BOARDTYPE == 9344
-                /*
+                
                 if ((res = get_wan_state()) < 0)
                 {
                     return res;
                 }
-                */
+                
                 #endif
                 PRINT("wan normal!\n");
                 break;
@@ -2793,7 +2820,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
         }
         case 0x03: // PPPOE
         {
-            snprintf(cmd_buf, sizeof(cmd_buf), "cfg -b 2 pppoe %s %s", wan_pppoe_user, wan_pppoe_pass); 
+            snprintf(cmd_buf, sizeof(cmd_buf), "cfg -b 2 pppoe %s %s &", wan_pppoe_user, wan_pppoe_pass); 
             break;
         }
         default:
@@ -3045,6 +3072,13 @@ int network_settings(int fd, int cmd_count, char cmd_word)
     {
         #if CHECK_WAN_STATE == 1
         
+        // 判断wan口状态
+        if ((res = get_wan_state()) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_wan_state failed!", res);
+            return res;
+        }
+    
         #if 1
         //if ((res = common_tools.get_network_state(common_tools.config->terminal_server_ip, 3, 3)) < 0)
         if ((res = common_tools.get_network_state(common_tools.config->center_ip, 1, 1)) < 0)

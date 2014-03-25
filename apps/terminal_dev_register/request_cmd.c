@@ -628,6 +628,13 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
     unsigned short insert_len = 0;
     unsigned char insert_flag = 0;
     
+    // 判断wan口状态
+    if ((res = network_config.get_wan_state()) < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_wan_state failed!", res);
+        return res;
+    }
+            
     // 说明此时正在设置
     if (terminal_dev_register->config_now_flag == 1)
     {
@@ -658,7 +665,8 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
 
                 if (strlen(pad_mac) > 0)
                 {
-                    memcpy(buf_tmp, pad_mac + 1, 17);
+                    pad_mac[strlen(pad_mac) - 2] = '\0';
+                    memcpy(buf_tmp, pad_mac + 1, strlen(pad_mac) - 1);
                     memset(pad_mac, 0, sizeof(pad_mac));
                     memcpy(pad_mac, buf_tmp, strlen(buf_tmp));
                     memset(buf_tmp, 0, sizeof(buf_tmp));
@@ -688,7 +696,7 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
         case 0xFD:
         {
             #if CHECK_WAN_STATE == 1
-
+            
             #if 1
             //res = common_tools.get_network_state(common_tools.config->terminal_server_ip, 1, 1);
             res = common_tools.get_network_state(common_tools.config->center_ip, 1, 1);
@@ -1982,7 +1990,9 @@ int request_cmd_0x53(struct s_terminal_dev_register * terminal_dev_register)
             PRINT("lock now!\n");
             pthread_mutex_unlock(&network_config.recv_mutex);
         }
-        if (fd != 0)
+        
+        // 如果是通过网络接口注册，则需要关闭
+        if (fd != terminal_dev_register->non_network_fd)
         {
             close(fd);
         }
@@ -1995,6 +2005,8 @@ int request_cmd_0x53(struct s_terminal_dev_register * terminal_dev_register)
     }
     */
     terminal_dev_register->network_config_fd = 0;
+    terminal_dev_register->config_now_flag = 0;
+    request_cmd.init_data_table(&terminal_dev_register->data_table);
     return res;
 }
 
@@ -2740,12 +2752,14 @@ int get_success_buf(char **buf)
     int res = 0;
     int len = 0;
     #if USER_REGISTER == 1
-    char columns_name[11][30] = {"base_sn", "base_mac", "base_ip", "base_user_name", "base_password",
-        "pad_user_name", "pad_password", "sip_ip", "sip_port", "heart_beat_cycle",
-        "business_cycle"};
-    char columns_value[11][100] = {0};
+    // 需要发送ssid 和 密码
+    char columns_name[13][30] = {"base_sn", "base_mac", "base_ip", "base_user_name", "base_password",
+        "pad_user_name", "pad_password", "sip_ip", "sip_port", "heart_beat_cycle", "business_cycle",
+        "ssid_user_name", "ssid_password"};
+        
+    char columns_value[13][100] = {0};
 
-    if ((res = database_management.select(11, columns_name, columns_value)) < 0)
+    if ((res = database_management.select(13, columns_name, columns_value)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_select failed!", res);
         return res;
@@ -2754,11 +2768,12 @@ int get_success_buf(char **buf)
     len = strlen("base_sn:") + strlen("base_mac:") + strlen("base_ip:") +
         strlen("base_user_name:") + strlen("base_password:") + strlen("pad_user_name:") +
         strlen("pad_password:") + strlen("sip_ip:") + strlen("sip_port:") +
-        strlen("heart_beat_cycle:") + strlen("business_cycle:") +
+        strlen("heart_beat_cycle:") + strlen("business_cycle:") + strlen("ssid_user_name:") + strlen("ssid_password:") + 
         strlen(columns_value[0]) + strlen(columns_value[1]) + strlen(columns_value[2]) +
         strlen(columns_value[3]) + strlen(columns_value[4]) + strlen(columns_value[5]) +
         strlen(columns_value[6]) + strlen(columns_value[7]) + strlen(columns_value[8]) +
-        strlen(columns_value[9]) + strlen(columns_value[10]) + 12;
+        strlen(columns_value[9]) + strlen(columns_value[10]) + strlen(columns_value[11]) + 
+        strlen(columns_value[12]) + 14;
 
     PRINT("len = %d\n", len);
     if ((*buf = (char *)malloc(len)) == NULL)
@@ -2769,23 +2784,23 @@ int get_success_buf(char **buf)
     }
 
     memset(*buf, 0, len);
-    sprintf(*buf, "base_sn:%s,base_mac:%s,base_ip:%s,base_user_name:%s,base_password:%s,pad_user_name:%s,pad_password:%s,sip_ip:%s,sip_port:%s,heart_beat_cycle:%s,business_cycle:%s",
+    sprintf(*buf, "base_sn:%s,base_mac:%s,base_ip:%s,base_user_name:%s,base_password:%s,pad_user_name:%s,pad_password:%s,sip_ip:%s,sip_port:%s,heart_beat_cycle:%s,business_cycle:%s,ssid_user_name:%s,ssid_password:%s",
         columns_value[0], columns_value[1], columns_value[2], columns_value[3], columns_value[4], columns_value[5],
-        columns_value[6], columns_value[7], columns_value[8], columns_value[9], columns_value[10]);
+        columns_value[6], columns_value[7], columns_value[8], columns_value[9], columns_value[10], columns_value[11], columns_value[12]);
     
     #else // 没有进行设备认证
 
-    char columns_name[3][30] = {"base_sn", "base_mac", "base_ip"};
-    char columns_value[3][100] = {0};
+    char columns_name[5][30] = {"base_sn", "base_mac", "base_ip", "ssid_user_name", "ssid_password"};
+    char columns_value[5][100] = {0};
 
-    if ((res = database_management.select(3, columns_name, columns_value)) < 0)
+    if ((res = database_management.select(5, columns_name, columns_value)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_select failed!", res);
         return res;
     }
 
-    len = strlen("base_sn:") + strlen("base_mac:") + strlen("base_ip:") +
-        strlen(columns_value[0]) + strlen(columns_value[1]) + strlen(columns_value[2]) + 4;
+    len = strlen("base_sn:") + strlen("base_mac:") + strlen("base_ip:") + strlen("ssid_user_name:") + strlen("ssid_password:") +
+        strlen(columns_value[0]) + strlen(columns_value[1]) + strlen(columns_value[2]) + strlen(columns_value[3]) + strlen(columns_value[4]) + 6;
 
     PRINT("len = %d\n", len);
     if ((*buf = (char *)malloc(len)) == NULL)
@@ -2796,7 +2811,7 @@ int get_success_buf(char **buf)
     }
 
     memset(*buf, 0, len);
-    sprintf(*buf, "base_sn:%s,base_mac:%s,base_ip:%s", columns_value[0], columns_value[1], columns_value[2]);
+    sprintf(*buf, "base_sn:%s,base_mac:%s,base_ip:%s,ssid_user_name:%s,ssid_password:%s", columns_value[0], columns_value[1], columns_value[2], columns_value[3], columns_value[4]);
     #endif // #if USER_REGISTER == 1
     PRINT("%s\n", *buf);
     return 0;

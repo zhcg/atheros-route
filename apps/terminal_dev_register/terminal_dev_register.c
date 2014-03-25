@@ -330,7 +330,7 @@ int monitor_request(struct s_terminal_dev_register * terminal_dev_register)
     #elif BOARDTYPE == 9344
     fd_way2 = network_config.usb_pad_fd;
     #endif
-
+    terminal_dev_register->non_network_fd = fd_way2;
     /*************************************************************************************/
     /************************   以上全局变量的定义 以下为主要功能实现   ******************/
     /*************************************************************************************/
@@ -375,7 +375,8 @@ int monitor_request(struct s_terminal_dev_register * terminal_dev_register)
                     #if USB_INTERFACE == 1 // 
                     if (1)
                     #elif USB_INTERFACE == 2 // 从usb节点读取
-                    if (terminal_dev_register->config_now_flag == 0) // 说明此时不在设置
+                    // if (terminal_dev_register->config_now_flag == 0) // 说明此时不在设置
+                    if (network_config.pthread_recv_flag == 0) // 说明此时没有接收数据
                     #endif // USB_INTERFACE == 2
                     {
                         fd_tmp = fd_way2;
@@ -384,7 +385,7 @@ int monitor_request(struct s_terminal_dev_register * terminal_dev_register)
                     }
                     else
                     {
-                        PRINT("terminal_dev_register->config_now_flag = %d\n", terminal_dev_register->config_now_flag);
+                        PRINT("network_config.pthread_recv_flag = %d\n", network_config.pthread_recv_flag);
                         continue;
                     }
                 }
