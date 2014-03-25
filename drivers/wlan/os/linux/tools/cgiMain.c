@@ -1019,7 +1019,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 						if(strlen(tmpc)>0)
 							outBuff += sprintf(outBuff,"%s",tmpc);
 						fclose(fp);
-						system("rm /tmp/arplist");
+						//system("rm /tmp/arplist");
 					}
                 }
 
@@ -3374,6 +3374,8 @@ int  add_sta_access()
 			
 			sprintf(buf, "iwpriv ath0 addmac %s", staMac);
 			Execute_cmd(buf, rspBuff);
+			sprintf(buf, "iwpriv ath2 addmac %s", staMac);
+			Execute_cmd(buf, rspBuff);
 		}
 	}
 	else
@@ -3427,6 +3429,8 @@ int  add_sta_access()
 			memset(buf, 0, sizeof buf);
 			sprintf(buf, "iwpriv ath0 addmac %s", staMac);
 			Execute_cmd(buf, rspBuff);
+			sprintf(buf, "iwpriv ath2 addmac %s", staMac);
+			Execute_cmd(buf, rspBuff);
 		}
 		
 	} 
@@ -3463,6 +3467,8 @@ void del_sta_access()
 						fclose(fp1);
 					}
 					sprintf(buf, "iwpriv ath0 delmac %s", staMac);
+					Execute_cmd(buf, rspBuff);
+					sprintf(buf, "iwpriv ath2 delmac %s", staMac);
 					Execute_cmd(buf, rspBuff);
 					continue;
 				}
@@ -3533,6 +3539,8 @@ void control_sta_access()
 				{
 					sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
 					Execute_cmd(buf, rspBuff);
+					sprintf(buf, "iwpriv ath2 addmac %s", stalist.macAddr);
+					Execute_cmd(buf, rspBuff);
 					memset(buf, 0, sizeof buf);
 					sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
 					Execute_cmd(buf, rspBuff);
@@ -3542,6 +3550,7 @@ void control_sta_access()
 		}
 		
 		Execute_cmd("iwpriv ath0 maccmd 2",rspBuff);
+		Execute_cmd("iwpriv ath2 maccmd 2",rspBuff);
 
 		fprintf(errOut,"\n%s  %d --------CONM_WORK on--------- \n",__func__,__LINE__);
 	}
@@ -3561,11 +3570,14 @@ void control_sta_access()
 				memset(buf, 0, sizeof buf);
 				sprintf(buf, "iwpriv ath0 delmac %s", stalist.macAddr);
 				Execute_cmd(buf, rspBuff);
+				sprintf(buf, "iwpriv ath2 delmac %s", stalist.macAddr);
+				Execute_cmd(buf, rspBuff);
 			}
 			fclose(fpp);
 		}
 		
 		Execute_cmd("iwpriv ath0 maccmd 0",rspBuff);
+		Execute_cmd("iwpriv ath2 maccmd 0",rspBuff);
 		//Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
 		fprintf(errOut,"\n%s  %d --------CONM_WORK off--------- \n",__func__,__LINE__);
 	}
@@ -3592,6 +3604,8 @@ void modify_sta_access()
 			{
 				sprintf(buf, "iwpriv ath0 delmac %s", stalist.macAddr);
 				Execute_cmd(buf, rspBuff);
+				sprintf(buf, "iwpriv ath2 delmac %s", stalist.macAddr);
+				Execute_cmd(buf, rspBuff);
 				
 				sprintf(buf, "iptables -D control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
 				Execute_cmd(buf, rspBuff);
@@ -3601,6 +3615,8 @@ void modify_sta_access()
 			else
 			{
 				sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
+				Execute_cmd(buf, rspBuff);
+				sprintf(buf, "iwpriv ath2 addmac %s", stalist.macAddr);
 				Execute_cmd(buf, rspBuff);
 				
 				sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);

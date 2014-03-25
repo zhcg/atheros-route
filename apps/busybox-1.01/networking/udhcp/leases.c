@@ -241,6 +241,8 @@ struct dhcpOfferedAddr *deal_control_staMac()
 			{
 				while(fread(&stalist, sizeof stalist, 1, fp) == 1)
 				{
+					if(strcmp(stalist.status, "1"))
+						continue;
 					for (i = 0; i < server_config.max_leases; i++)
 					{
 						if(strlen(leases[i].hostname) > 0)
