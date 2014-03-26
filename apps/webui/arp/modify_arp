@@ -1,37 +1,34 @@
 #!/bin/sh
 
-ARP_IP_MAC_ON_FILE=/etc/arp_ip_mac_on.conf
-ARP_IP_MAC_OFF_FILE=/etc/arp_ip_mac_off.conf
+ARP_IP_MAC_FILE=/etc/arp_ip_mac.conf
 
 IP_ADDR=`cfg -e | grep "MODXXX" |awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`
 if [ -z $IP_ADDR ];then
-	exit 2
+        exit 2
 fi
 
 if [ x$1 = x ]; then
-	exit 1
+        exit 1
 fi
 
 MOD_STATUS=$1
 
-str=$(grep -i -E "\<$IP_ADDR\>" $ARP_IP_MAC_ON_FILE $ARP_IP_MAC_OFF_FILE)
+str=$(grep -i -E "\<$IP_ADDR\>" $ARP_IP_MAC_FILE $ARP_IP_MAC_FILE)
 if [ -z "$str" ];then
         echo "the arp bind is not exist"
         exit 1
 else
-		echo "the arp bind is exist"
-		if [ "$MOD_STATUS" = "ON" ];then
-			SR_MAC=`cat $ARP_IP_MAC_OFF_FILE | grep $IP_ADDR | awk '{print $2}'`
-			echo "$IP_ADDR $SR_MAC" >>  $ARP_IP_MAC_ON_FILE
-			sed -i '/'$IP_ADDR'/d' $ARP_IP_MAC_OFF_FILE
-			arp -s $IP_ADDR $SR_MAC
-		elif [ "$MOD_STATUS" = "OFF" ];then
-			SR_MAC=`cat $ARP_IP_MAC_ON_FILE | grep $IP_ADDR | awk '{print $2}'`
-			echo "$IP_ADDR $SR_MAC" >>  $ARP_IP_MAC_OFF_FILE
-			sed -i '/'$IP_ADDR'/d' $ARP_IP_MAC_ON_FILE
-			arp -d $IP_ADDR	
-		else
-			exit 4
-		fi
+                echo "the arp bind is exist"
+                if [ "$MOD_STATUS" = "ON" ];then
+                        SR_MAC=`cat $ARP_IP_MAC_FILE | grep $IP_ADDR | awk '{print $2}'`
+                        sed -i '/'$IP_ADDR'/s/disable/enable/' $ARP_IP_MAC_FILE
+                        arp -s $IP_ADDR $SR_MAC
+                elif [ "$MOD_STATUS" = "OFF" ];then
+                        SR_MAC=`cat $ARP_IP_MAC_FILE | grep $IP_ADDR | awk '{print $2}'`
+                        sed -i '/'$IP_ADDR'/s/enable/disable/' $ARP_IP_MAC_FILE
+                        arp -d $IP_ADDR
+                else
+                        exit 4
+                fi
 fi
 echo "modify arp rule done"

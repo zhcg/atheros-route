@@ -1,26 +1,22 @@
 #!/bin/sh
 
-ARP_IP_MAC_ON_FILE=/etc/arp_ip_mac_on.conf
-ARP_IP_MAC_OFF_FILE=/etc/arp_ip_mac_off.conf
+ARP_IP_MAC_FILE=/etc/arp_ip_mac.conf
 
-if [ ! -f /etc/arp_ip_mac_on.conf ]; then
-	touch /etc/arp_ip_mac_on.conf
-fi
-if [ ! -f /etc/arp_ip_mac_off.conf ]; then
-	touch /etc/arp_ip_mac_off.conf
+if [ ! -f /etc/arp_ip_mac.conf ]; then
+        touch /etc/arp_ip_mac.conf
 fi
 
 MAC_ADDR=`cfg -e | grep "ADD_MAC" |awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`
 if [ -z $MAC_ADDR ];then
-	exit 1
+        exit 1
 fi
 
 IP_ADDR=`cfg -e | grep "ADD_IP" |awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`
 if [ -z $IP_ADDR ];then
-	exit 2
+        exit 2
 fi
 
-str=$(grep -i -E "\<$MAC_ADDR\> | \<$IP_ADDR\> " $ARP_IP_MAC_ON_FILE $ARP_IP_MAC_OFF_FILE)
+str=$(grep -i -E "\<$MAC_ADDR\>|\<$IP_ADDR\> " $ARP_IP_MAC_FILE $ARP_IP_MAC_FILE)
 #echo $str
 if [ "$str" = "" ];then
         echo "the address is not exist"
@@ -31,16 +27,18 @@ fi
 
 BIND_STATUS=`cfg -e | grep "ADD_BIND" |awk -F'=' '{print $2}'`
 if [ -z $BIND_STATUS ];then
-	exit 3
+        exit 3
 fi
 
 if [ "$BIND_STATUS" -eq "1" ];then
-	echo "$IP_ADDR $MAC_ADDR" >>  $ARP_IP_MAC_ON_FILE
-	arp -s $IP_ADDR $MAC_ADDR
+        arp -s $IP_ADDR $MAC_ADDR
+        BIND_STATUS=enable
 elif [ "$BIND_STATUS" -eq "0" ];then
-	echo "$IP_ADDR $MAC_ADDR" >>  $ARP_IP_MAC_OFF_FILE
+        BIND_STATUS=disable
 else
-	exit 4
+        exit 4
 fi
+
+echo "$IP_ADDR $MAC_ADDR $BIND_STATUS" >>  $ARP_IP_MAC_FILE
 
 echo "add IP/MAC bind done"

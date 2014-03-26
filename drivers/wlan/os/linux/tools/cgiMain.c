@@ -85,6 +85,8 @@ static int staId = 0;
 #define OLD_STAFILE  "/etc/.OldStaList"
 #define UDHCPD_FILE  "/var/run/udhcpd.leases"
 #define STA_MAC "/etc/.staMac"
+#define ARP_IP_MAC_ON_FILE "/etc/arp_ip_mac_on.conf"
+#define ARP_IP_MAC_OFF_FILE "/etc/arp_ip_mac_off.conf"
 #define MAX_WLAN_ELEMENT    1024
 
 typedef struct {
@@ -945,9 +947,9 @@ char *processSpecial(char *paramStr, char *outBuff)
 					/*luodp add for ipmac list*/
 					unsigned int id=1;	
 					char buf[1024];
-					char arp_ip[15],arp_mac[17];		
+					char arp_ip[15],arp_mac[17],arp_status[10];		
 					
-					FILE *f = fopen("/etc/arp_ip_mac_on.conf","r");
+					FILE *f = fopen("/etc/arp_ip_mac.conf","r");
 					if ( !f )
 					{
 						 fprintf(errOut,"\n%s  %d open /etc/arp_ip_mac_on.conf error\n \n",__func__,__LINE__);
@@ -957,20 +959,23 @@ char *processSpecial(char *paramStr, char *outBuff)
 					
 					while ( fgets(buf,1024,f) != NULL )
 					{
-						sscanf(buf,"%s %s",arp_ip,arp_mac);
+						sscanf(buf,"%s %s %s",arp_ip,arp_mac,arp_status);
 						outBuff += sprintf(outBuff,"<tr>");
 	                    outBuff += sprintf(outBuff,"<td>%d</td>",id);
 	                    outBuff += sprintf(outBuff,"<td>%s</td>",arp_mac);   
 	                    outBuff += sprintf(outBuff,"<td>%s</td>",arp_ip);
 		                //outBuff += sprintf(outBuff,"<td>%s</td>","YES");
-		                outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%s\" id=\"%s\" onclick=\"lismod(this.name)\" checked></td>",arp_ip,arp_ip);
+		                if (strstr(arp_status , "enable"))
+		                	outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%s\" id=\"%s\" onclick=\"lismod(this.name)\" checked></td>",arp_ip,arp_ip);
+						if (strstr(arp_status , "disable"))
+							outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%s\" id=\"%s\" onclick=\"lismod(this.name)\"></td>",arp_ip,arp_ip);
 						outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:30px;cursor:hand;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>",arp_ip);
 	                    outBuff += sprintf(outBuff,"</tr>");
 						id ++;						
 						memset(buf,0,1024);
 					}
 					fclose(f);
-					
+					#if 0
 					f = fopen("/etc/arp_ip_mac_off.conf","r");
 					if ( !f )
 					{
@@ -995,6 +1000,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 					}
 					fclose(f);
 					/*luodp add end*/
+					#endif
 
                 }
                 //系统ARP映射表(不带配置)
@@ -3080,10 +3086,60 @@ void modify_route_rule(void)
 
 int add_arp(void)
 {
-	char valBuff4[128];	
+	char valBuff4[128];
+	char buf[128];	
+	char arp_mac[20];
+	char arp_ip[20];
 	int result = 0;
+	FILE *fp;
 	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
 	writeParameters("/tmp/.apcfg","w+",0);
+
+	CFG_get_by_name("ADD_MAC",arp_mac);
+	CFG_get_by_name("ADD_IP",arp_ip);
+	system("arp -a > /tmp/arplist");
+	fp = fopen("/tmp/arplist", "r");
+	while(fgets(buf, 128, fp))
+	{
+		if(strstr(buf, arp_mac))
+		{
+			result = 0;
+			if(strstr(buf, arp_ip))
+			{
+				break;
+			}
+			result = 1;
+			break;
+		}
+		else
+		{
+			if(strstr(buf, arp_ip) && !strstr(buf, "incomplete"))
+			{
+				result = 1;
+				break;
+			}
+			result = 0;
+		}
+	}
+	fclose(fp);
+	if(result == 1)
+	{
+		/*bound error*/
+		printf("HTTP/1.0 200 OK\r\n");
+        printf("Content-type: text/html\r\n");
+        printf("Connection: close\r\n");
+        printf("\r\n");
+        printf("\r\n");
+
+        printf("<HTML><HEAD>\r\n");
+        printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+        printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
+        printf("</head><body>");
+        printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"lan\");window.parent.DialogHide();alert(_(\"err IPMAC exist\"));window.location.href=\"ad_safe_IPMAC?ad_safe_IPMAC=yes\";</script>");
+        printf("</body></html>");
+		return result;
+	}
+	
 	Execute_cmd("/usr/sbin/set_arp > /tmp/set_arp.log 2>&1",rspBuff);
 	
 	FILE *fileBuf2=NULL;
@@ -3097,11 +3153,11 @@ int add_arp(void)
 		{
 				fprintf(errOut,"%s	%d	the address is exist...\n",__func__,__LINE__);///sjin
 
-        printf("HTTP/1.0 200 OK\r\n");
-        printf("Content-type: text/html\r\n");
-        printf("Connection: close\r\n");
-        printf("\r\n");
-        printf("\r\n");
+		        printf("HTTP/1.0 200 OK\r\n");
+		        printf("Content-type: text/html\r\n");
+		        printf("Connection: close\r\n");
+		        printf("\r\n");
+		        printf("\r\n");
         
                 printf("<HTML><HEAD>\r\n");
                 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
