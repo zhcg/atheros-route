@@ -65,10 +65,6 @@ function checkInjection(str)
     return true;
 }
 
-function reloadd()
-{
-	window.location.reload();
-}
 function disableWirelessSettings()
 {
 	document.wizard_form.AP_SSID.disabled = false;
@@ -481,7 +477,7 @@ function help()
 <table width="540" cellpadding="2" cellspacing="1" id="buttontable">
 <tr align="center">
   <td>
-    <input type="button" name="cancel_motion" id="bCANCEL" class="handaer_input" value="Cancel" onClick="window.location.reload();">
+    <input type="button" name="cancel_motion" id="bCANCEL" class="handaer_input" value="Cancel" onClick="window.location.href='ad_wireless_basic?ad_wireless_basic=yes'">
     <input type="button" name="apply_motion" id="bAPPLY" class="handaer_input" value="Apply" onClick="CheckWirelessValue();">
 	<input type="submit" name="WIRELESS" id="WIRELESS" style="display:none" value="WIRELESS">
 	<input type="text" style="display:none" name="AP_HIDESSID" id="AP_HIDESSID" size="20" maxlength="32" value="~~AP_HIDESSID~">
