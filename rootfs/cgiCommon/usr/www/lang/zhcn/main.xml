@@ -44,7 +44,7 @@
 	<message msgid="advmenu treeapp_man_tz" msgstr="时间设置" />
 	<message msgid="advmenu treeapp_man_cfgm" msgstr="配置管理" />
 	<message msgid="advmenu treeapp_man_upgrade" msgstr="固件升级" />
-	<message msgid="advmenu treeapp_man_factory" msgstr="恢复出厂" />
+	<message msgid="advmenu treeapp_man_factory" msgstr="恢复出厂设置" />
 	<message msgid="advmenu treeapp_man_reboot" msgstr="系统重启" />
 	<message msgid="advmenu treeapp_netcheck" msgstr="网络诊断" />
 
