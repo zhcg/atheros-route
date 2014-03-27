@@ -4276,6 +4276,9 @@ int main(int argc,char **argv)
 
             case '3':
                  printf("WIRELESS\n");
+				 int flag1, flag2;
+				 char pr_buf[50], pChar[128];;
+				 char valBuff2[128], valBuff3[128], valBuff4[128], valBuff5[128], valBuff6[128], valBuff7[128], valBuff8[128], valBuff9[128];	
                  if(argc !=7)
                  {
                     err_flag=1;
@@ -4288,6 +4291,161 @@ int main(int argc,char **argv)
                      CFG_set_by_name(vname[3][i],argv[i+3]);
                  }
                  CFG_set_by_name("WIRELESS","WIRELESS");
+
+				 /*set hide ap "ath1 ath3"   by zzw*/
+				flag1 = 0;
+				Execute_cmd("cfg -e | grep \"AP_SSID_2=\" | awk -F \"AP_SSID_2=\" '{print $2}'",valBuff2);
+				Execute_cmd("cfg -e | grep \"AP_SSID_4=\" | awk -F \"AP_SSID_4=\" '{print $2}'",valBuff3);
+				Execute_cmd("cfg -s | grep \"PSK_KEY_2:\" | awk -F \"=\" \'{print $2}\'",valBuff4);
+				Execute_cmd("cfg -s | grep \"PSK_KEY_4:\" | awk -F \"=\" \'{print $2}\'",valBuff5);
+				
+				//2G
+				CFG_get_by_name("AP_SSID_2",valBuff6);
+				CFG_get_by_name("PSK_KEY_2",valBuff7);
+				sprintf(valBuff8, "\"%s\"\n<br>", valBuff6);
+				sprintf(valBuff9, "%s\n<br>", valBuff6);
+				fprintf(errOut,"the ath1 AP_SSID_2--------- [%s][%s]\n", valBuff2, valBuff8);
+				if(strcmp(valBuff2, valBuff8) && strcmp(valBuff2, valBuff9))
+				{
+					sprintf(pChar,"iwconfig ath1 essid %s  > /dev/null 2>&1",valBuff6);
+					Execute_cmd(pChar, rspBuff);
+					flag1 = 5;
+				}
+
+				sprintf(valBuff8, "%s\n<br>", valBuff7);
+				fprintf(errOut,"the ath1 PSK_KEY_2--------- [%s][%s]\n", valBuff4, valBuff8);
+				if(strcmp(valBuff4, valBuff8))
+				{
+					CFG_set_by_name("PSK_KEY_2",valBuff7);
+					Execute_cmd(pChar, rspBuff);
+					flag1 = 5;
+				}
+
+				//5G
+				flag2 = 0;
+				CFG_get_by_name("AP_SSID_4",valBuff6);
+				CFG_get_by_name("PSK_KEY_4",valBuff7);
+				sprintf(valBuff8, "\"%s\"\n<br>", valBuff6);
+				sprintf(valBuff9, "%s\n<br>", valBuff6);
+				fprintf(errOut,"the ath3 AP_SSID_4--------- [%s][%s]\n", valBuff3, valBuff8);
+				if(strcmp(valBuff3, valBuff8) && strcmp(valBuff3, valBuff9))
+				{
+					sprintf(pChar,"iwconfig ath3 essid %s  > /dev/null 2>&1",valBuff6);
+					Execute_cmd(pChar, rspBuff);
+					flag2 = 5;
+				}
+
+				sprintf(valBuff8, "%s\n<br>", valBuff7);
+				fprintf(errOut,"the ath3 PSK_KEY_4--------- [%s][%s]\n", valBuff5, valBuff8);
+				if(strcmp(valBuff5, valBuff8))
+				{
+					CFG_set_by_name("PSK_KEY_4",valBuff7);
+					Execute_cmd(pChar, rspBuff);
+					flag2 = 5;
+				}
+				
+				writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            	writeParameters("/tmp/.apcfg","w+",0);
+		
+				if(flag1 == 5)
+				{
+					int i,j,k;
+					Execute_cmd("cfg -t2 /etc/ath/PSK.ap_bss ath1 > /tmp/secath1",rspBuff);
+					/*get the hostapd for ath0's pid, to kill it, then restart it*/
+					Execute_cmd("ps | grep 'hostapd -B /tmp/secath1 -e /etc/wpa2/entropy' | awk -F ' ' '{print $1}'", valBuff);
+					fprintf(errOut,"the kill process is [%s] %d\n",valBuff, strlen(valBuff));
+					if(strstr(valBuff, "<br>"))
+					{
+						while(valBuff[i])
+						{
+							if(valBuff[i] == '\n')
+							{
+								k = 1;
+								break;
+							}
+							i++;
+						}
+						if(k == 1)
+						{
+							memcpy(pr_buf, valBuff, i);
+							sprintf(pChar, "kill %s > /dev/null 2>&1", pr_buf);
+							Execute_cmd(pChar, rspBuff);
+
+							j = i+5;
+							while(valBuff[i+5])
+							{
+								if(valBuff[i+5] == '\n')
+								{
+									k = 2;
+									break;
+								}
+								i++;
+							}
+							if(k == 2)
+							{
+								memcpy(pr_buf, &valBuff[j], i+5-j);
+								sprintf(pChar, "kill %s > /dev/null 2>&1", pr_buf);
+								Execute_cmd(pChar, rspBuff);
+							}
+						}
+					}
+					Execute_cmd("hostapd -B /tmp/secath1 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+
+					Execute_cmd("ifconfig ath1 down > /dev/null 2>&1", rspBuff);
+					Execute_cmd("ifconfig ath1 up > /dev/null 2>&1", rspBuff);
+				}
+
+				if(flag2 == 5)
+				{
+		            int i,j,k;
+					i=0;j=0;k=0;
+		            memset(pr_buf,0,50);
+					Execute_cmd("cfg -t4 /etc/ath/PSK.ap_bss ath3 > /tmp/secath3",rspBuff);
+					/*get the hostapd for ath0's pid, to kill it, then restart it*/
+					Execute_cmd("ps | grep 'hostapd -B /tmp/secath3 -e /etc/wpa2/entropy' | awk -F ' ' '{print $1}'", valBuff);
+					fprintf(errOut,"the kill process is [%s] %d\n",valBuff, strlen(valBuff));
+					if(strstr(valBuff, "<br>"))
+					{
+						while(valBuff[i])
+						{
+							if(valBuff[i] == '\n')
+							{
+								k = 1;
+								break;
+							}
+							i++;
+						}
+						if(k == 1)
+						{
+							memcpy(pr_buf, valBuff, i);
+							sprintf(pChar, "kill %s > /dev/null 2>&1", pr_buf);
+							Execute_cmd(pChar, rspBuff);
+
+							j = i+5;
+							while(valBuff[i+5])
+							{
+								if(valBuff[i+5] == '\n')
+								{
+									k = 2;
+									break;
+								}
+								i++;
+							}
+							if(k == 2)
+							{
+								memcpy(pr_buf, &valBuff[j], i+5-j);
+								sprintf(pChar, "kill %s > /dev/null 2>&1", pr_buf);
+								Execute_cmd(pChar, rspBuff);
+							}
+						}
+					}
+					Execute_cmd("hostapd -B /tmp/secath3 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+
+					Execute_cmd("ifconfig ath3 down > /dev/null 2>&1", rspBuff);
+					Execute_cmd("ifconfig ath3 up > /dev/null 2>&1", rspBuff);
+				}
+
+				 /*end zzw*/
                  break;
 
             case '4':
@@ -5631,7 +5789,7 @@ int main(int argc,char **argv)
 		//fprintf(errOut,"valBuff6 is [%s]\n", valBuff6);
 		//fprintf(errOut,"valBuff9 is [%s]\n", valBuff9);
 		if((strcmp(valBuff6,valBuff9))&&(strcmp(valBuff6,"\n") != 0))
-		{
+		{fprintf(errOut,"2.4G 11111111  \n");
 			//fprintf(errOut,"[luodp] KEY here");
 			CFG_set_by_name("PSK_KEY",valBuff3);
 			//flag=2;
@@ -5642,7 +5800,7 @@ int main(int argc,char **argv)
 		CFG_get_by_name("AP_SECMODE",valBuff3);
 		//fprintf(errOut,"[luodp] %s here2\n",valBuff3);
 		if((strstr(valBuff5,valBuff3) == 0)&&(strcmp(valBuff3,"None") != 0))
-		{
+		{fprintf(errOut,"2.4G 222222222  \n");
 			//AP_SECMODE=WPA
 			//AP_WPA=3 WPA/WPA2
 			//AP_CYPHER="TKIP CCMP"
@@ -5656,7 +5814,7 @@ int main(int argc,char **argv)
 			//fprintf(errOut,"22222 2.4G flag is %d\n", flag);
 		}
 		if((strstr(valBuff5,valBuff3) == 0)&&(strcmp(valBuff3,"WPA") != 0))
-		{
+		{fprintf(errOut,"2.4G 3333333333  \n");
 			CFG_set_by_name("AP_SECMODE","None");
 			Execute_cmd("cfg -r PSK_KEY > /dev/null 2>&1", rspBuff);
 			flag=5;
@@ -5686,12 +5844,11 @@ int main(int argc,char **argv)
 		}
 		//ssid [TODO]
 		CFG_get_by_name("AP_SSID",valBuff4);
-		//fprintf(errOut,"[luodp] %s here5\n",valBuff4);
-		sprintf(valBuff5,"\"%s\"\n<br>",valBuff4);
-		//fprintf(errOut,"%d\n%d\n%d\n",strcmp(valBuff2,valBuff5),flag,strcmp(valBuff3,"on"));
+		sprintf(valBuff5,"%s\n<br>",valBuff4);
+		//fprintf(errOut,"[%s][%s]\n", valBuff2, valBuff5);
 		//if((strcmp(valBuff2,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0))
-		if((strcmp(valBuff2,valBuff5) != 0) && (strcmp(valBuff3,"on") == 0))
-		{
+		if(strcmp(valBuff2, valBuff5) && (strcmp(valBuff3,"on") == 0))
+		{fprintf(errOut,"2.4G 4444444444444  \n");
 			//fprintf(errOut,"[luodp] SECMODE here6");
 			sprintf(pChar,"iwconfig ath0 essid %s  > /dev/null 2>&1",valBuff4);
 			Execute_cmd(pChar, rspBuff);
@@ -5714,7 +5871,7 @@ int main(int argc,char **argv)
 		//fprintf(errOut,"%d\n%d\n%d\n",strcmp(valBuff2,valBuff5),flag,strcmp(valBuff3,"on"));
 		//if((strcmp(valBuff7,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0))
 		if((strcmp(valBuff7,valBuff5) != 0) && (strcmp(valBuff3,"on") == 0))
-		{
+		{fprintf(errOut,"2.4G 555555555  \n");
 			//fprintf(errOut,"[luodp] %d",atoi(valBuff4));
 			//11NGHT40PLUS/11NGHT40MINUS
 			Execute_cmd("ifconfig ath0 down > /dev/null 2>&1", rspBuff);
@@ -5755,7 +5912,7 @@ int main(int argc,char **argv)
 		CFG_get_by_name("AP_HIDESSID",valBuff4);
 		sprintf(valBuff5,"%s\n<br>",valBuff4);
 		if((strcmp(valBuff8,valBuff5) != 0) && (strcmp(valBuff4,"1") == 0))
-		{
+		{fprintf(errOut,"2.4G 6666666666  \n");
 			//fprintf(errOut,"set hide 1 \n");
 			Execute_cmd("iwpriv ath0 hide_ssid 1  > /dev/null 2>&1", rspBuff);
 			
@@ -5768,7 +5925,7 @@ int main(int argc,char **argv)
 			flag = 5;
 		}
 		if((strcmp(valBuff8,valBuff5) != 0) && (strcmp(valBuff4,"0") == 0))
-		{
+		{fprintf(errOut,"2.4G 7777777777777  \n");
 			//fprintf(errOut,"set hide 0 \n");
 			Execute_cmd("iwpriv ath0 hide_ssid 0  > /dev/null 2>&1", rspBuff);
 			
@@ -5805,7 +5962,7 @@ int main(int argc,char **argv)
 			Execute_cmd("apup > /dev/null 2>&1", rspBuff);
 		}*/
 		else if(flag == 5)  /*deal password is changed, restart hostapd   by zzw*/
-		{
+		{fprintf(errOut,"2.4G zhaozhanwei1111111  \n");
 			int i, j, k;
 			char pr_buf[50];
 			CFG_get_by_name("AP_SECMODE",valBuff3);
@@ -5877,7 +6034,7 @@ int main(int argc,char **argv)
 		//fprintf(errOut,"valBuff6 is [%s]\n", valBuff6);
 		//fprintf(errOut,"valBuff4_3 is [%s]\n", valBuff4_3);
 		if((strcmp(valBuff6,valBuff4_3) != 0)&&(strcmp(valBuff6,"\n<br>") != 0))
-		{
+		{fprintf(errOut,"5G 11111111  \n");
 			CFG_set_by_name("PSK_KEY_3",valBuff3);
 			flag = 5;
 			//fprintf(errOut,"1111 5G flag is %d\n", flag);
@@ -5886,7 +6043,7 @@ int main(int argc,char **argv)
 		//TODO SECMODE
 		CFG_get_by_name("AP_SECMODE_3",valBuff3);;
 		if((strstr(valBuff5_3,valBuff3) == 0)&&(strcmp(valBuff3,"None") != 0))
-		{
+		{fprintf(errOut,"5G 22222222222  \n");
 			CFG_set_by_name("AP_SECMODE_3","WPA");
 			CFG_set_by_name("AP_WPA_3","3");
 			CFG_set_by_name("AP_CYPHER_3","TKIP CCMP");
@@ -5895,7 +6052,7 @@ int main(int argc,char **argv)
 			//fprintf(errOut,"22222 5G flag is %d\n", flag);
 		}
 		if((strstr(valBuff5_3,valBuff3) == 0)&&(strcmp(valBuff3,"WPA") != 0))
-		{
+		{fprintf(errOut,"5G 33333333333  \n");
 			CFG_set_by_name("AP_SECMODE_3","None");
 			flag=5;
 			//Execute_cmd("iwpriv ath2 authmode 1 > /dev/null 2>&1", rspBuff);
@@ -5929,10 +6086,10 @@ int main(int argc,char **argv)
 		CFG_get_by_name("AP_SSID_3",valBuff4);
 		//fprintf(errOut,"web AP_SSID_3 is [%s] \n",valBuff4);
 		//fprintf(errOut,"flash AP_SSID_3 is [%s] \n",valBuff2_3);
-		sprintf(valBuff5,"\"%s\"\n<br>",valBuff4);
+		sprintf(valBuff5,"%s\n<br>",valBuff4);
 		//if((strcmp(valBuff2_3,valBuff5) != 0)&&(flag==0)&&(strcmp(valBuff3,"on") == 0))
-		if((strcmp(valBuff2_3,valBuff5) != 0) &&(strcmp(valBuff3,"on") == 0))
-		{
+		if(strcmp(valBuff2_3,valBuff5) &&(strcmp(valBuff3,"on") == 0))
+		{fprintf(errOut,"5G 4444444444  \n");
 			sprintf(pChar,"iwconfig ath2 essid %s  > /dev/null 2>&1",valBuff4);
 			Execute_cmd(pChar, rspBuff);
 			flag = 5;
@@ -5954,8 +6111,8 @@ int main(int argc,char **argv)
 		sprintf(valBuff5,"%s\n<br>",valBuff4);
 		//if((strcmp(valBuff7_3,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0))
 		if((strcmp(valBuff7_3,valBuff5) != 0) && (strcmp(valBuff3,"on") == 0))
-		{
-			fprintf(errOut,"[luodp] 11NA %d",atoi(valBuff4));
+		{fprintf(errOut,"5G 5555555555  \n");
+			//fprintf(errOut,"[luodp] 11NA %d",atoi(valBuff4));
 			#if 0
 			memcpy(valBuff4, "40", 2);
 			Execute_cmd("iwpriv ath2 mode 11NAHT40MINUS", rspBuff);
@@ -6023,7 +6180,7 @@ int main(int argc,char **argv)
 		sprintf(valBuff5,"%s\n<br>",valBuff4);
 		//if((strcmp(valBuff8_3,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0)&&(strcmp(valBuff4,"1") == 0))
 		if((strcmp(valBuff8_3,valBuff5) != 0) &&(strcmp(valBuff4,"1") == 0))
-		{
+		{fprintf(errOut,"5G 666666666  \n");
 			Execute_cmd("iwpriv ath2 hide_ssid 1  > /dev/null 2>&1", rspBuff);
 
 			Execute_cmd("iwpriv ath2 bintval 1000  > /dev/null 2>&1", rspBuff);
@@ -6035,7 +6192,7 @@ int main(int argc,char **argv)
 			flag = 5;
 		}
 		if((strcmp(valBuff8_3,valBuff5) != 0)&&(strcmp(valBuff4,"0") == 0))
-		{
+		{fprintf(errOut,"5G 777777777  \n");
 			Execute_cmd("iwpriv ath2 hide_ssid 0  > /dev/null 2>&1", rspBuff);
 			
 			Execute_cmd("iwpriv ath2 bintval 100  > /dev/null 2>&1", rspBuff);
@@ -6054,7 +6211,7 @@ int main(int argc,char **argv)
 			Execute_cmd("apup > /dev/null 2>&1", rspBuff);
 		}
 		else if(flag == 5)  /*deal password is changed, restart hostapd   by zzw*/
-		{
+		{fprintf(errOut,"5G zhaozhanwei2222222  \n");
 			int i, j, k;
 			char pr_buf[50];
 			CFG_get_by_name("AP_SECMODE_3",valBuff3);
@@ -6085,7 +6242,7 @@ int main(int argc,char **argv)
 					//fprintf(errOut," is [%s] \n", pr_buf);
 					sprintf(pChar, "kill %s > /dev/null 2>&1", pr_buf);
 					Execute_cmd(pChar, rspBuff);
-					//fprintf(errOut,"kill 1 %s\n", pr_buf);
+					fprintf(errOut,"kill 1 %s\n", pr_buf);
 
 					j = i+5;
 					while(valBuff[i+5])
@@ -6104,7 +6261,7 @@ int main(int argc,char **argv)
 						//fprintf(errOut," is [%s] \n", pr_buf);
 						sprintf(pChar, "kill %s > /dev/null 2>&1", pr_buf);
 						Execute_cmd(pChar, rspBuff);
-						//fprintf(errOut,"kill 2 %s\n", pr_buf);
+						fprintf(errOut,"kill 2 %s\n", pr_buf);
 					}
 				}
 			}
@@ -6118,127 +6275,7 @@ int main(int argc,char **argv)
 			}
 		}
 #endif
-
-
-//viqjeee
-/************** 2G and 5G hide ap **********/
-
-
-	memset(valBuff4, 0, 128);
-	memset(pChar, 0, 128);
-	CFG_get_by_name("AP_SSID_2",valBuff4);
-	sprintf(pChar,"iwconfig ath1 essid %s  > /dev/null 2>&1",valBuff4);
-	Execute_cmd(pChar, rspBuff);
-
-	memset(valBuff4, 0, 128);
-	memset(pChar, 0, 128);
-	CFG_get_by_name("AP_SSID_4",valBuff4);
-	sprintf(pChar,"iwconfig ath3 essid %s  > /dev/null 2>&1",valBuff4);
-	Execute_cmd(pChar, rspBuff);
-
-
-	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-	writeParameters("/tmp/.apcfg","w+",0);
-	//CFG_get_by_name("PSK_KEY_2",valBuff3);
-
-            //2G
-			int i,j,k;
-            char pr_buf[50];
-			Execute_cmd("cfg -t2 /etc/ath/PSK.ap_bss ath1 > /tmp/secath1",rspBuff);
-			/*get the hostapd for ath0's pid, to kill it, then restart it*/
-			Execute_cmd("ps | grep 'hostapd -B /tmp/secath1 -e /etc/wpa2/entropy' | awk -F ' ' '{print $1}'", valBuff);
-			fprintf(errOut,"the kill process is [%s] %d\n",valBuff, strlen(valBuff));
-			if(strstr(valBuff, "<br>"))
-			{
-				while(valBuff[i])
-				{
-					if(valBuff[i] == '\n')
-					{
-						k = 1;
-						break;
-					}
-					i++;
-				}
-				if(k == 1)
-				{
-					memcpy(pr_buf, valBuff, i);
-					sprintf(pChar, "kill %s > /dev/null 2>&1", pr_buf);
-					Execute_cmd(pChar, rspBuff);
-
-					j = i+5;
-					while(valBuff[i+5])
-					{
-						if(valBuff[i+5] == '\n')
-						{
-							k = 2;
-							break;
-						}
-						i++;
-					}
-					if(k == 2)
-					{
-						memcpy(pr_buf, &valBuff[j], i+5-j);
-						sprintf(pChar, "kill %s > /dev/null 2>&1", pr_buf);
-						Execute_cmd(pChar, rspBuff);
-					}
-				}
-			}
-			Execute_cmd("hostapd -B /tmp/secath1 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
-
-			Execute_cmd("ifconfig ath1 down > /dev/null 2>&1", rspBuff);
-			Execute_cmd("ifconfig ath1 up > /dev/null 2>&1", rspBuff);
-
-
-            //5G
-			i=0;j=0;k=0;
-            memset(pr_buf,0,50);
-			Execute_cmd("cfg -t4 /etc/ath/PSK.ap_bss ath3 > /tmp/secath3",rspBuff);
-			/*get the hostapd for ath0's pid, to kill it, then restart it*/
-			Execute_cmd("ps | grep 'hostapd -B /tmp/secath3 -e /etc/wpa2/entropy' | awk -F ' ' '{print $1}'", valBuff);
-			fprintf(errOut,"the kill process is [%s] %d\n",valBuff, strlen(valBuff));
-			if(strstr(valBuff, "<br>"))
-			{
-				while(valBuff[i])
-				{
-					if(valBuff[i] == '\n')
-					{
-						k = 1;
-						break;
-					}
-					i++;
-				}
-				if(k == 1)
-				{
-					memcpy(pr_buf, valBuff, i);
-					sprintf(pChar, "kill %s > /dev/null 2>&1", pr_buf);
-					Execute_cmd(pChar, rspBuff);
-
-					j = i+5;
-					while(valBuff[i+5])
-					{
-						if(valBuff[i+5] == '\n')
-						{
-							k = 2;
-							break;
-						}
-						i++;
-					}
-					if(k == 2)
-					{
-						memcpy(pr_buf, &valBuff[j], i+5-j);
-						sprintf(pChar, "kill %s > /dev/null 2>&1", pr_buf);
-						Execute_cmd(pChar, rspBuff);
-					}
-				}
-			}
-			Execute_cmd("hostapd -B /tmp/secath3 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
-
-			Execute_cmd("ifconfig ath3 down > /dev/null 2>&1", rspBuff);
-			Execute_cmd("ifconfig ath3 up > /dev/null 2>&1", rspBuff);
-
-
-/******************************************/
-		
+	
 		gohome =1;
     }
 
