@@ -6645,113 +6645,116 @@ int main(int argc,char **argv)
 		
 		Execute_cmd("ifconfig eth0", valBuff3);
 		if(strstr(valBuff3,"inet addr:"))
-			{
-              Execute_cmd("ifconfig eth0|grep 'inet addr:'|awk -F ' ' '{print$2}'|awk -F ':' '{print$2}'", eth0_ip);
-			  peth0_ip=strtok(eth0_ip,"\n");
-		    }
-		
-		if((!strstr(valBuff3,"inet addr:"))||(strstr(valBuff3,"inet addr:")&&(strcmp(peth0_ip, br0_ip) && (!strstr(valBuff, br0_ip) || !strstr(valBuff2, br0_sub)))))
 		{
-		   sprintf(pChar,"ifconfig br0 %s netmask %s up > /dev/null 2>&1",br0_ip,br0_sub);
-		   system(pChar);
-		   
-           //update nat_vlan.sh
-		   Execute_cmd("cat /etc/nat_vlan.sh | grep 'ppp0'|grep 'DNAT --to'|awk -F ' ' '{print$15}'", tmp);
-		   ptmp=strtok(tmp,"\n");
-		   sprintf(pChar,"sed -i 's/%s/%s/g' /etc/nat_vlan.sh",ptmp,br0_ip);
-		   system(pChar);
-
-		   memset(net_seg2,'\0',20);
-		   memset(net_seg,'\0',20);
-
-		   get_net_seg_and(br0_ip,br0_sub,net_seg);	
-		   
-		   strcpy(net_seg2,net_seg);//backup net_seg
-		   fprintf(errOut,"net seg:%s\n",net_seg);
-
-		   memset(tmp,'\0',20);
-		   memset(tmp2,'\0',20);	
-		   
-		   strcpy(tmp,"0.0.0.255");
-		   get_net_seg_and(net_seg,tmp,tmp2);	   
-		   fprintf(errOut,"\nAnd 0.0.0.255 is:%s to check\n",tmp2);
-		  
-		  if(!strcmp(tmp2,"0.0.0.0"))
-		   {  
-		      memset(tmp,'\0',20);
-			  memset(tmp2,'\0',20);
-			  strcpy(tmp,"255.255.255.0");
-			  
-		      get_net_seg_and(net_seg,tmp,tmp2);
-			  fprintf(errOut,"\nAnd 255.255.255.0---%s\n",tmp2);
-			  memset(tmp,'\0',20);
-			  strcpy(tmp,"0.0.0.101");
-			  
-			  memset(dhcp_b,'\0',20);
-			  get_net_seg_or(tmp2,tmp,dhcp_b);
-
-			  strcpy(tmp,"255.255.255.0");
-			  memset(tmp2,'\0',20);
-			  memset(dhcp_e,'\0',20);
-		      get_net_seg_and(net_seg,tmp,tmp2);
-			  strcpy(tmp,"0.0.0.199");
-			  get_net_seg_or(tmp2,tmp,dhcp_e);
-		   }
-		   else
-		   	{	
-		       get_max_dhcp_end_ip(net_seg2,dhcp_e);
-			   strcpy(tmp,"0.0.0.1");
-			   get_net_seg_or(net_seg2,tmp,dhcp_b);
-		    }
-		 fprintf(errOut,"\ndhcp_b:%s\ndhcp_e:%s\n",dhcp_b,dhcp_e);
-
-		CFG_set_by_name("DHCP_BIP",dhcp_b);
-		CFG_set_by_name("DHCP_EIP",dhcp_e);
-		//write to flash
-		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-		writeParameters("/tmp/.apcfg","w+",0);
-
-		CFG_get_by_name("DHCPON_OFF",tmp);
-		if(strcmp(tmp,"on")==0)
-		{
-			system("killall udhcpd > /dev/null 2>&1");			 
-			system("/etc/rc.d/rc.udhcpd > /dev/null 2>&1");
-			system("/usr/sbin/set_addr > /dev/null 2>&1");		 
-			system("/usr/sbin/udhcpd /etc/udhcpd.conf > /dev/null 2>&1");
-
+			Execute_cmd("ifconfig eth0|grep 'inet addr:'|awk -F ' ' '{print$2}'|awk -F ':' '{print$2}'", eth0_ip);
+			peth0_ip=strtok(eth0_ip,"\n");
 		}
+		
+		if((!strstr(valBuff3,"inet addr:"))||(strstr(valBuff3,"inet addr:")&&(strcmp(peth0_ip, br0_ip) )))
+		{
+			if(!strstr(valBuff, br0_ip) || !strstr(valBuff2, br0_sub))
+			{
+				sprintf(pChar,"ifconfig br0 %s netmask %s up > /dev/null 2>&1",br0_ip,br0_sub);
+				system(pChar);
 
-		//reboot hostapd
-		Execute_cmd("killall hostapd > /dev/null 2>&1",rspBuff);
-		
-		Execute_cmd("cfg -e | grep \"AP_SECMODE=\" | awk -F \"=\" \'{print $2}\'",valBuff3);
-		if(strstr(valBuff3,"None")) /*wifi doesn't use WPA*/
-			Execute_cmd("cfg -t0 /etc/ath/PSK.ap_bss_none ath0 > /tmp/secath0",rspBuff);
-		else
-			Execute_cmd("cfg -t0 /etc/ath/PSK.ap_bss ath0 > /tmp/secath0",rspBuff);
-		Execute_cmd("hostapd -B /tmp/secath0 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
-		
-		
-		Execute_cmd("cfg -e | grep \"AP_SECMODE_2=\" | awk -F \"=\" \'{print $2}\'",valBuff3);
-		if(strstr(valBuff3,"None")) /*wifi doesn't use WPA*/
-			Execute_cmd("cfg -t2 /etc/ath/PSK.ap_bss_none ath1 > /tmp/secath1",rspBuff);
-		else
-			Execute_cmd("cfg -t2 /etc/ath/PSK.ap_bss ath1 > /tmp/secath1",rspBuff);
-		Execute_cmd("hostapd -B /tmp/secath1 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
-		
-		Execute_cmd("cfg -e | grep \"AP_SECMODE_3=\" | awk -F \"=\" \'{print $2}\'",valBuff3);
-		if(strstr(valBuff3,"None")) /*wifi doesn't use WPA*/
-			Execute_cmd("cfg -t3 /etc/ath/PSK.ap_bss_none ath2 > /tmp/secath2",rspBuff);
-		else
-			Execute_cmd("cfg -t3 /etc/ath/PSK.ap_bss ath2 > /tmp/secath2",rspBuff);
-		Execute_cmd("hostapd -B /tmp/secath2 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
-		
-		Execute_cmd("cfg -e | grep \"AP_SECMODE_4=\" | awk -F \"=\" \'{print $2}\'",valBuff3);
-		if(strstr(valBuff3,"None")) /*wifi doesn't use WPA*/
-			Execute_cmd("cfg -t4 /etc/ath/PSK.ap_bss_none ath3 > /tmp/secath3",rspBuff);
-		else
-			Execute_cmd("cfg -t4 /etc/ath/PSK.ap_bss ath3 > /tmp/secath3",rspBuff);
-		Execute_cmd("hostapd -B /tmp/secath3 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+				//update nat_vlan.sh
+				Execute_cmd("cat /etc/nat_vlan.sh | grep 'ppp0'|grep 'DNAT --to'|awk -F ' ' '{print$15}'", tmp);
+				ptmp=strtok(tmp,"\n");
+				sprintf(pChar,"sed -i 's/%s/%s/g' /etc/nat_vlan.sh",ptmp,br0_ip);
+				system(pChar);
+
+				memset(net_seg2,'\0',20);
+				memset(net_seg,'\0',20);
+
+				get_net_seg_and(br0_ip,br0_sub,net_seg);	
+
+				strcpy(net_seg2,net_seg);//backup net_seg
+				fprintf(errOut,"net seg:%s\n",net_seg);
+
+				memset(tmp,'\0',20);
+				memset(tmp2,'\0',20);	
+
+				strcpy(tmp,"0.0.0.255");
+				get_net_seg_and(net_seg,tmp,tmp2);	   
+				fprintf(errOut,"\nAnd 0.0.0.255 is:%s to check\n",tmp2);
+
+				if(!strcmp(tmp2,"0.0.0.0"))
+				{  
+				  memset(tmp,'\0',20);
+				  memset(tmp2,'\0',20);
+				  strcpy(tmp,"255.255.255.0");
+				  
+				  get_net_seg_and(net_seg,tmp,tmp2);
+				  fprintf(errOut,"\nAnd 255.255.255.0---%s\n",tmp2);
+				  memset(tmp,'\0',20);
+				  strcpy(tmp,"0.0.0.101");
+				  
+				  memset(dhcp_b,'\0',20);
+				  get_net_seg_or(tmp2,tmp,dhcp_b);
+
+				  strcpy(tmp,"255.255.255.0");
+				  memset(tmp2,'\0',20);
+				  memset(dhcp_e,'\0',20);
+				  get_net_seg_and(net_seg,tmp,tmp2);
+				  strcpy(tmp,"0.0.0.199");
+				  get_net_seg_or(tmp2,tmp,dhcp_e);
+				}
+				else
+					{	
+				   get_max_dhcp_end_ip(net_seg2,dhcp_e);
+				   strcpy(tmp,"0.0.0.1");
+				   get_net_seg_or(net_seg2,tmp,dhcp_b);
+				}
+				fprintf(errOut,"\ndhcp_b:%s\ndhcp_e:%s\n",dhcp_b,dhcp_e);
+
+				CFG_set_by_name("DHCP_BIP",dhcp_b);
+				CFG_set_by_name("DHCP_EIP",dhcp_e);
+				//write to flash
+				writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+				writeParameters("/tmp/.apcfg","w+",0);
+
+				CFG_get_by_name("DHCPON_OFF",tmp);
+				if(strcmp(tmp,"on")==0)
+				{
+				system("killall udhcpd > /dev/null 2>&1");			 
+				system("/etc/rc.d/rc.udhcpd > /dev/null 2>&1");
+				system("/usr/sbin/set_addr > /dev/null 2>&1");		 
+				system("/usr/sbin/udhcpd /etc/udhcpd.conf > /dev/null 2>&1");
+
+				}
+
+				//reboot hostapd
+				Execute_cmd("killall hostapd > /dev/null 2>&1",rspBuff);
+
+				Execute_cmd("cfg -e | grep \"AP_SECMODE=\" | awk -F \"=\" \'{print $2}\'",valBuff3);
+				if(strstr(valBuff3,"None")) /*wifi doesn't use WPA*/
+				Execute_cmd("cfg -t0 /etc/ath/PSK.ap_bss_none ath0 > /tmp/secath0",rspBuff);
+				else
+				Execute_cmd("cfg -t0 /etc/ath/PSK.ap_bss ath0 > /tmp/secath0",rspBuff);
+				Execute_cmd("hostapd -B /tmp/secath0 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+
+
+				Execute_cmd("cfg -e | grep \"AP_SECMODE_2=\" | awk -F \"=\" \'{print $2}\'",valBuff3);
+				if(strstr(valBuff3,"None")) /*wifi doesn't use WPA*/
+				Execute_cmd("cfg -t2 /etc/ath/PSK.ap_bss_none ath1 > /tmp/secath1",rspBuff);
+				else
+				Execute_cmd("cfg -t2 /etc/ath/PSK.ap_bss ath1 > /tmp/secath1",rspBuff);
+				Execute_cmd("hostapd -B /tmp/secath1 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+
+				Execute_cmd("cfg -e | grep \"AP_SECMODE_3=\" | awk -F \"=\" \'{print $2}\'",valBuff3);
+				if(strstr(valBuff3,"None")) /*wifi doesn't use WPA*/
+				Execute_cmd("cfg -t3 /etc/ath/PSK.ap_bss_none ath2 > /tmp/secath2",rspBuff);
+				else
+				Execute_cmd("cfg -t3 /etc/ath/PSK.ap_bss ath2 > /tmp/secath2",rspBuff);
+				Execute_cmd("hostapd -B /tmp/secath2 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+
+				Execute_cmd("cfg -e | grep \"AP_SECMODE_4=\" | awk -F \"=\" \'{print $2}\'",valBuff3);
+				if(strstr(valBuff3,"None")) /*wifi doesn't use WPA*/
+				Execute_cmd("cfg -t4 /etc/ath/PSK.ap_bss_none ath3 > /tmp/secath3",rspBuff);
+				else
+				Execute_cmd("cfg -t4 /etc/ath/PSK.ap_bss ath3 > /tmp/secath3",rspBuff);
+				Execute_cmd("hostapd -B /tmp/secath3 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+			}
 	   }//end eth0_ip != br0_ip
 	   else
 	   {
