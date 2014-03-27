@@ -10,7 +10,7 @@
 #endif
 
 #define READONLY_ROOTFS 1
-#define USER_REGISTER 0 // 1：做终端认证流程
+#define USER_REGISTER 1 // 1：做终端认证流程
 
 #define USB_NODE "/dev/usbpassage" // usb 节点
 

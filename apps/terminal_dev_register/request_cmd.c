@@ -2911,8 +2911,9 @@ int add_dev_info(unsigned short *dev_count, void **dev_info, struct s_dev_regist
             }
             case 1: // 已存在
             {
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "This record already exists!", res);
-                return REPEAT_ERR;
+                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "This record already exists!", 0);
+                // return REPEAT_ERR;
+				return 0;
             }
             default:
             {
