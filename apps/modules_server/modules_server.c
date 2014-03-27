@@ -1569,13 +1569,17 @@ int factory_test_down_9344(char cmd)
 			factory_test_cmd_9344_led3();
 			break;
 		case FACTORY_TEST_CMD_9344_CALL:
-		case FACTORY_TEST_CMD_9344_CALLED:		
+			PRINT("FACTORY_TEST_CMD_9344_CALL\n");
 			generate_stm32_down_msg(switch_32178,6,TYPE_SPI_PASSAGE);	
 			sendbuf[index++]=0xA5;
 			sendbuf[index++]=0X5A;
 			sendbuf[index++]=FACTORY_TEST_CMD_DOWN_9344_1;
 			sendbuf[index++]=cmd;
 			write_passage((char)TYPE_PHONE_PASSAGE,sendbuf,index);
+			break;
+		case FACTORY_TEST_CMD_9344_CALLED:
+			PRINT("FACTORY_TEST_CMD_9344_CALLED\n");
+			generate_stm32_down_msg(switch_32178,6,TYPE_SPI_PASSAGE);	
 			break;
 		case FACTORY_TEST_CMD_9344_R54_CALL:
 			PRINT("FACTORY_TEST_CMD_9344_R54_CALL\n");
