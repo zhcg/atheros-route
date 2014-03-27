@@ -168,10 +168,10 @@ int do_cmd_stm32_ver();
 int do_cmd_stm32_ver_des();
 int do_cmd_stm32_boot();
 int do_cmd_532_update();
-int do_cmd_stm32_update(unsigned char *path);
+int do_cmd_stm32_update(unsigned char *path,int test_flag);
 int do_cmd_rep(int type,char *data,int data_len,int result);
-int as532_update(unsigned char *path);
-int stm32_update(unsigned char* path);
+int as532_update(unsigned char *path,int test_flag);
+int stm32_update(unsigned char* path,int test_flag);
 int parse_msg(char *buf,char *ip,short port);
 int serialConfig(int serial_fd, speed_t baudrate);
 unsigned char sumxor(const  char  *arr, int len);
@@ -228,5 +228,6 @@ int generate_ota_up_msg(unsigned char cmd,unsigned char id,unsigned char *data,i
 
 extern int usb_fd;
 extern unsigned char stm_format_version[4];
+extern unsigned char stm32_version_des[128];
 extern unsigned char stm_format_sn[12];
 #endif

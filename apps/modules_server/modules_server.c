@@ -40,10 +40,6 @@ int udp_get_stm32_ver_des = 0;
 const char hex_to_asc_table[16] = {0x30,0x31,0x32,0x33,0x34,0x35,0x36,0x37,
 	0x38,0x39,0x41,0x42,0x43,0x44,0x45,0x46};
 	
-const char soft_version[4]={
-	//phone_control
-	0x00,0x00,0x00,0x01,
-};
 char offhook[] = {0xa5,0x5a,0x41,0x00,0x41};
 char onhook[] = {0xa5,0x5a,0x5e,0x00,0x5e};
 char dialup[] = {0xa5,0x5a,0x78,0x0C,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x00,0x0b,0x74};
@@ -515,6 +511,11 @@ int do_cmd_stm32_ver_des()
 	int ret = 0;
 	udp_get_stm32_ver_des = 1;
 	ret = generate_stm32_down_msg(&data,1,TYPE_STM32);
+	//ota_stm32_ver_flag = 1;
+	//
+	//CmdGetVersionDes();
+	//ota_stm32_ver_flag = 0;
+	//return 0;
 	return ret;
 }
 
@@ -526,12 +527,12 @@ int do_cmd_stm32_boot()
 	return ret;
 }
 
-int do_cmd_stm32_update(unsigned char *path)
+int do_cmd_stm32_update(unsigned char *path,int test_flag)
 {
 	int ret = 0;
 	stm32_updating = 1;
 	//PRINT("path = %s\n",path);
-	ret = stm32_update(path);
+	ret = stm32_update(path,test_flag);
 	if(ret != 0 )
 	{
 		PRINT("stm32 update error! %d \n",ret);
@@ -569,10 +570,10 @@ void user_close_usb(int *fd)
 
 void update_test_thread_func(void* argv)
 {
-	int ret = as532_update(DEFAULT_AS532_IMAGE);
+	int ret = as532_update(DEFAULT_AS532_IMAGE,1);
 	//while(1)
 	//{
-		do_cmd_stm32_update(DEFAULT_STM32_IMAGE);
+		do_cmd_stm32_update(DEFAULT_STM32_IMAGE,1);
 		PRINT("update over %d\n",ret);	
 		//sleep(30);
 	//}
@@ -580,7 +581,7 @@ void update_test_thread_func(void* argv)
 	return;
 }
 
-int as532_update(unsigned char *path)
+int as532_update(unsigned char *path,int test_flag)
 {
 	int ret = 0;
 	int ret_err = 1;
@@ -602,8 +603,11 @@ int as532_update(unsigned char *path)
 	{
 		PRINT("as532h is newest\n");
 		//do_cmd_rep(AS532H_UPDATE,NULL,0,ret);
-		ret_err = -8;
-		goto AS532_UPDATE_ERR;
+		if(test_flag == 0)
+		{
+			ret_err = -8;
+			goto AS532_UPDATE_ERR;
+		}
 	}
 	else
 	{
@@ -826,10 +830,10 @@ int parse_msg(char *buf,char *ip,short port)
 			{
 				do_cmd_rep(STM32_VER,NULL,0,0x01);
 			}
-			else
-			{
-				do_cmd_rep(STM32_VER,NULL,0,0x00);
-			}
+			//else
+			//{
+				//do_cmd_rep(STM32_VER,NULL,0,0x00);
+			//}
 			break;
 		case STM32_VER_DES:
 			PRINT("STM32_VER_DES\n");
@@ -838,10 +842,10 @@ int parse_msg(char *buf,char *ip,short port)
 			{
 				do_cmd_rep(STM32_VER_DES,NULL,0,0x01);
 			}
-			else
-			{
-				do_cmd_rep(STM32_VER_DES,NULL,0,0x00);
-			}
+			//else
+			//{
+				//do_cmd_rep(STM32_VER_DES,NULL,0,0x00);
+			//}
 			break;
 		case AS532H_UPDATE:
 			PRINT("AS532H_UPDATE\n");
@@ -1002,31 +1006,51 @@ int UartGetVer(unsigned char *pppacket,int bytes)
 int UartGetVerDes(unsigned char *pppacket,int bytes)
 {
 	PRINT("UartGetVerDes is called\r\n");
+	unsigned char databuf[BUFFER_LEN] = {0};
 	int index = 0;
 	int data_len = 0;
-
+	int ret = 0;
+	PRINT("%s\n",&pppacket[PACKET_STM32_DATA_POS]);
 	switch(pppacket[PACKET_STM32_REP_POS])
 	{
 		//EA FF 5A A5 00 07 10 00 00 00 00 00 02 FF
 
 		case 0x00: //成功 FE EF A5 5A 00 05 01 00 01 01 01 XX
+			data_len = pppacket[PACKET_STM32_DATA_LEN_POS_HEIGHT]*256 + pppacket[PACKET_STM32_DATA_LEN_POS_LOW] - 3;
+			if(start_factory_test == 1)
+			{
+				ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_STM32_1,FACTORY_TEST_CMD_STM32_VER,SUCCESS,0x00,pppacket+PACKET_STM32_DATA_POS,data_len);
+				//ComFunPrintfBuffer(pppacket+PACKET_STM32_DATA_POS,data_len);
+				generate_stm32_down_msg(databuf,ret,TYPE_USB_PASSAGE);
+			}
 			if(udp_get_stm32_ver_des == 1)
 			{
-				data_len = pppacket[PACKET_STM32_DATA_LEN_POS_HEIGHT]*256 + pppacket[PACKET_STM32_DATA_LEN_POS_LOW] - 3;
 				do_cmd_rep(STM32_VER_DES,&pppacket[PACKET_STM32_DATA_POS],data_len,0x00);
 			}
 			break;
 		case 0x01: //命令错误
+			data_len = pppacket[PACKET_STM32_DATA_LEN_POS_HEIGHT]*256 + pppacket[PACKET_STM32_DATA_LEN_POS_LOW] - 3;
+			if(start_factory_test == 1)
+			{
+				ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_STM32_1,FACTORY_TEST_CMD_STM32_VER,FAIL,0x01,NULL,0);
+				//ComFunPrintfBuffer(pppacket+PACKET_STM32_DATA_POS,data_len);
+				generate_stm32_down_msg(databuf,ret,TYPE_USB_PASSAGE);
+			}
 			if(udp_get_stm32_ver_des == 1)
 			{
-				data_len = pppacket[PACKET_STM32_DATA_LEN_POS_HEIGHT]*256 + pppacket[PACKET_STM32_DATA_LEN_POS_LOW] - 3;
 				do_cmd_rep(STM32_VER_DES,&pppacket[PACKET_STM32_DATA_POS],data_len,0x01);
 			}
 			break;
 		case 0x02: //校验错误
+			data_len = pppacket[PACKET_STM32_DATA_LEN_POS_HEIGHT]*256 + pppacket[PACKET_STM32_DATA_LEN_POS_LOW] - 3;
+			if(start_factory_test == 1)
+			{
+				ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_STM32_1,FACTORY_TEST_CMD_STM32_VER,FAIL,0x02,NULL,0);
+				//ComFunPrintfBuffer(pppacket+PACKET_STM32_DATA_POS,data_len);
+				generate_stm32_down_msg(databuf,ret,TYPE_USB_PASSAGE);
+			}
 			if(udp_get_stm32_ver_des == 1)
 			{
-				data_len = pppacket[PACKET_STM32_DATA_LEN_POS_HEIGHT]*256 + pppacket[PACKET_STM32_DATA_LEN_POS_LOW] - 3;
 				do_cmd_rep(STM32_VER_DES,&pppacket[PACKET_STM32_DATA_POS],data_len,0x02);
 			}
 			break;
@@ -1141,24 +1165,24 @@ int stop_test()
 
 int factory_test_cmd_as532_ver()
 {
-	int Versionlen =0;
+	int VersionDeslen =0;
 	int ret = 0;
-    unsigned char VersionBuff[20] = {0};
+    unsigned char VersionDesBuff[128] = {0};
     unsigned char databuf[BUFFER_LEN] = {0};
     //unsigned char sendbuf[BUFFER_SIZE_4K] = {0};
 	init_key(global_pukey);
-	ret = version(global_pukey,VersionBuff,&Versionlen);
-	ComFunPrintfBuffer(VersionBuff,Versionlen);
+	ret = version_detail(global_pukey,VersionDesBuff,&VersionDeslen);
+	ComFunPrintfBuffer(VersionDesBuff,VersionDeslen);
 	if (ret != 0) 
 	{
 		PRINT(" send version data error\n");
-		ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_AS532_1,FACTORY_TEST_CMD_AS532_VER,FAIL,/*(char)ret*/1,VersionBuff,0);
+		ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_AS532_1,FACTORY_TEST_CMD_AS532_VER,FAIL,/*(char)ret*/1,VersionDesBuff,0);
 		generate_stm32_down_msg(databuf,ret,TYPE_USB_PASSAGE);
 	}
 	else
 	{ 
 		PRINT("send version success\n");  
-		ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_AS532_1,FACTORY_TEST_CMD_AS532_VER,SUCCESS,0,VersionBuff,Versionlen);
+		ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_AS532_1,FACTORY_TEST_CMD_AS532_VER,SUCCESS,0,VersionDesBuff,VersionDeslen);
 		generate_stm32_down_msg(databuf,ret,TYPE_USB_PASSAGE);
 	}
 	return 0;
@@ -1189,7 +1213,7 @@ int factory_test_cmd_as532_test()
 int factory_test_cmd_stm32_ver()
 {
 	//char sendbuf[BUFFER_SIZE_4K]={0};
-	char data = (char)CMD_STM32_VER;
+	char data = (char)CMD_STM32_VER_DES;
 	generate_stm32_down_msg(&data,1,TYPE_STM32);
 	return 0;
 }
@@ -1204,10 +1228,47 @@ int factory_test_cmd_stm32_pic()
 
 int factory_test_cmd_9344_ver()
 {
-	int ret = 0;
+	int read_ret,ret = 0;
+	int start = 0;
     unsigned char databuf[BUFFER_LEN] = {0};
-    //unsigned char sendbuf[BUFFER_SIZE_4K] = {0};
-	ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_9344_1,FACTORY_TEST_CMD_9344_VER,SUCCESS,0,soft_version,4);
+    unsigned char readbuf[128]={0};
+    unsigned char verbuf[128]={0};
+    unsigned char* p;
+    unsigned char* p1;
+    unsigned char* p2;
+	unsigned char* verp = verbuf;
+    system("cfg -e | grep 'SOFT_VERSION' > /tmp/factory_test_soft_version");
+    int fd = open("/tmp/factory_test_soft_version",O_RDONLY);
+    if(fd < 0 )
+    {
+		PRINT("open error\n");
+		ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_9344_1,FACTORY_TEST_CMD_9344_VER,FAIL,1,NULL,0);
+	}
+	else
+	{
+		read_ret = read(fd,readbuf,sizeof(readbuf));
+		PRINT("read_ret = %d\n",read_ret);
+		p = strstr(readbuf,"SOFT_VERSION");
+		if(p == NULL)
+			ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_9344_1,FACTORY_TEST_CMD_9344_VER,FAIL,1,NULL,0);
+		else
+		{
+			p1 = strstr(p,"\"");
+			if(p1 != NULL)
+				p2 = strstr(p1+1,"\"");
+			if(p1 != NULL && p2 != NULL)
+			{
+				memcpy(verbuf,p1+1,p2-p1-1);
+				ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_9344_1,FACTORY_TEST_CMD_9344_VER,SUCCESS,0,verbuf,strlen(verbuf));
+			}
+			else
+			{
+				ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_9344_1,FACTORY_TEST_CMD_9344_VER,FAIL,1,NULL,0);
+			}
+		}
+		PRINT("verbuf = %s\n",verbuf);
+	}
+	system("rm -rf /tmp/factory_test_soft_version");	
 	generate_stm32_down_msg(databuf,ret,TYPE_USB_PASSAGE);
 	return 0;
 }
@@ -2126,7 +2187,7 @@ int ota_as532h_ver()
 	unsigned char outbuf[128]={0};
 
 	init_key(global_pukey);
-	ret = version(global_pukey,outbuf,&len);
+	ret = version_detail(global_pukey,outbuf,&len);
 	if(ret == 0)
 	{
 		generate_ota_up_msg(OTA_CMD_VER_RET,OTA_AS532H_ID,outbuf,len);
@@ -2137,9 +2198,9 @@ int ota_as532h_ver()
 int ota_stm32_ver()
 {
 	ota_stm32_ver_flag = 1;
-	if(CmdGetVersion() == 0)
+	if(CmdGetVersionDes() == 0)
 	{
-		generate_ota_up_msg(OTA_CMD_VER_RET,OTA_STM32_ID,stm_format_version,4);
+		generate_ota_up_msg(OTA_CMD_VER_RET,OTA_STM32_ID,stm32_version_des,strlen(stm32_version_des));
 	}
 	ota_stm32_ver_flag = 0;
 	return 0;
@@ -2175,7 +2236,7 @@ int ota_as532h_sn()
 int ota_as532h_update(unsigned char* path)
 {
 	char result = 0;
-	int ret = as532_update(path);
+	int ret = as532_update(path,0);
 	if(ret == 0)
 	{
 		result = 1;
@@ -2192,7 +2253,7 @@ int ota_as532h_update(unsigned char* path)
 int ota_stm32_update(unsigned char* path)
 {
 	char result = 0;
-	int ret = do_cmd_stm32_update(path);
+	int ret = do_cmd_stm32_update(path,0);
 	if(ret == 0)
 	{
 		result = 1;

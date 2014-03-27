@@ -42,6 +42,7 @@ unsigned int update_bin_file_size;
 unsigned char stm_format_sn[12] = {0};
 unsigned char stm_format_version[4] = {0x00,0x00,0x00,0x00};
 unsigned char bin_format_version[4] = {0x00,0x00,0x00,0x00};
+unsigned char stm32_version_des[128] = {0};
 unsigned char bin_file_head[8] = {0x41,0x70,0x70,0x42,0x69,0x6E,0x20,0x20};
 unsigned char packet_req_head[4] = {0xFE,0xEF,0xA5,0x5A};
 unsigned char packet_rsp_head_1[4] = {0xEA,0xFF,0x5A,0xA5};
@@ -51,7 +52,7 @@ unsigned char update_req_buffer[UPDATE_REQ_BUF_SIZE];
 unsigned char update_rsp_buffer[UPDATE_RSP_BUF_SIZE];
 
 
-int stm32_update(unsigned char* path)
+int stm32_update(unsigned char* path,int test_flag)
 {
     int fd;
     int baud = 115200;
@@ -79,7 +80,10 @@ int stm32_update(unsigned char* path)
 			PRINT("%x\n ", stm_format_version[i]);
 		//比较STM32版本和BIN文件版本
 		ret = memcmp((void *)bin_format_version, (void *)stm_format_version, sizeof(bin_format_version));
-		//ret = 1;
+		if(test_flag == 1)
+		{
+			ret = 1;
+		}
 		//PRINT("ret = %d\n",ret);
 		if(ret <= 0)
 		{
@@ -766,6 +770,82 @@ int CmdGetSn(void)
 	}
 	return -1;	
 }
+
+int OrgGetVerDesPacket(unsigned char *psend_buf)
+{
+	int index = 0;
+	unsigned char check_byte;
+
+//第一级包头
+	psend_buf[index++] = 0xEF;
+	psend_buf[index++] = 0xFE;
+	psend_buf[index++] = 0xA5;
+	psend_buf[index++] = 0x5A;
+//第一级数据长度，高位在前		
+	psend_buf[index++] = 0x00;
+	psend_buf[index++] = 0x02;
+//数据通道为STM32自身
+	psend_buf[index++] = 0x10;
+
+	psend_buf[index++] = 0x81;
+
+//第一级校验字节
+	check_byte = PacketXorGenerate(psend_buf,index);	
+	psend_buf[index++] = check_byte;
+	return index;	
+}
+
+int CmdGetVersionDes(void)
+{
+	int ret;
+	int packet_bytes;
+	int i;
+	PRINT("Enter %s ......\n", __FUNCTION__);
+	packet_bytes = OrgGetVerDesPacket(update_req_buffer);
+//	PRINT("update_req_buffer:  \n");
+//	for(i = 0; i < packet_bytes; i++)
+//		PRINT("%x ", update_req_buffer[i]);
+//	PRINT("\n");
+	//发送命令请求
+	ret = write_data(global_uart_fd, update_req_buffer, packet_bytes);
+	if (ret != packet_bytes){
+		fprintf(stderr, "%s request error %s\n", __FUNCTION__, strerror(errno));
+	}
+	//获取STM32的响应
+	ret = UpdateRspRcv(update_rsp_buffer,sizeof(update_rsp_buffer));
+//	PRINT("update_rsp_buffer:  \n");
+//	for(i = 0; i < ret; i++)
+//		PRINT("%x ", update_rsp_buffer[i]);
+//	PRINT("\n");
+
+	//解析响应
+	if(ret >= RSP_CMD_MIN_BYTES)
+	{
+		//判断响应
+		if((update_rsp_buffer[6] != (char)0X10) || (update_rsp_buffer[7] != UPDATE_GETVERDES_CMD))
+		{
+			PRINT("%s command respond error \n", __FUNCTION__);
+			return -1;				
+		}	
+		{
+			switch(update_rsp_buffer[8])
+			{
+				case REQ_RSP_OK:
+					PRINT("%s command execute OK! \n", __FUNCTION__);					
+					memset(stm32_version_des,0,sizeof(stm32_version_des));
+					memcpy((void *)(stm32_version_des),(void *)(update_rsp_buffer + 9),((update_rsp_buffer[4]<<8)+update_rsp_buffer[5]-3));
+					PRINT("%s\n",stm32_version_des);
+					break;	
+				default:
+					PRINT("%s command execute error! \n", __FUNCTION__);
+					return -1;
+			}
+			return 0;
+		}		
+	}
+	return -1;	
+}
+
 
 /******************************************************************************
 * NAME:

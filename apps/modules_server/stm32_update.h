@@ -14,6 +14,7 @@
 #define UPDATE_DATA_CMD		(0X01)
 //发送到应用层的进入boot命令
 #define UPDATE_GETVER_CMD		(0X80)
+#define UPDATE_GETVERDES_CMD	(0X81)
 #define UPDATE_REBOOT_CMD		(0X82)
 #define UPDATE_GETSN_CMD		(0X85)
 
@@ -31,6 +32,8 @@ unsigned long get_file_size(const char *path);
 static unsigned char PacketXorGenerate(const unsigned char *ppatas,int bytes);
 int PacketRspGet(unsigned char *pbuf,int offset,int valid_bytes);
 int UpdateRspRcv(unsigned char *prcv_buffer,int buf_size);
+int OrgGetVerDesPacket(unsigned char *psend_buf);
+int CmdGetVersionDes(void);
 int OrgReBootPacket(unsigned char *psend_buf);
 int CmdReBoot(void);
 int OrgGetSnPacket(unsigned char *psend_buf);
