@@ -240,7 +240,31 @@ function initValue()
 	Butterlate.setTextDomain("lan");
 	initTranslation();
 }
-
+function workoutgw()
+{
+	var myString=document.getElementById("SR_DESIP").value;	
+	//ip地址
+	var exp=/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
+	var reg = myString.match(exp);
+	if(reg==null)
+	{
+		
+	}
+	else
+	{
+		if(document.getElementById("SR_GW").value=="")
+		{
+			var a = myString.lastIndexOf(".");
+			var s;
+			s = myString.substr(0, a); // 获取子字符串。
+			document.getElementById("SR_GW").value = s+".1";
+		}
+		if(document.getElementById("SR_SUB").value=="")
+		{
+			document.getElementById("SR_SUB").value = "255.255.255.0";
+		}
+	}
+}
 </script>
 </head>
  
@@ -260,7 +284,7 @@ function initValue()
 </tr>
 <tr>
 	<td class="head" id="t1_Des">目的网络地址</td>
-	<td><input type="text" name="SR_DESIP" id="SR_DESIP" size="32" maxlength="32" class="handaer_text_content"></td>
+	<td><input type="text" name="SR_DESIP" id="SR_DESIP" size="32" maxlength="32" class="handaer_text_content" onblur="workoutgw()"></td>
 	
 </tr>
 <tr>
