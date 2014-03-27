@@ -27,7 +27,7 @@
 
 	<message msgid="advmenu treeapp_conm" msgstr="Access management " />
 	<message msgid="advmenu treeapp_conm_list" msgstr="Connected Equipments" />
-	<message msgid="advmenu treeapp_conm_ctrl" msgstr="Wireless Access" />
+	<message msgid="advmenu treeapp_conm_ctrl" msgstr="Connection Access" />
 	<message msgid="advmenu treeapp_conm_web" msgstr="Remote Web Management" />
 
 	<message msgid="advmenu treeapp_wifi" msgstr="Wireless Settings" />
