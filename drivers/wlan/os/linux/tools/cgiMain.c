@@ -5789,7 +5789,7 @@ int main(int argc,char **argv)
 		//fprintf(errOut,"valBuff6 is [%s]\n", valBuff6);
 		//fprintf(errOut,"valBuff9 is [%s]\n", valBuff9);
 		if((strcmp(valBuff6,valBuff9))&&(strcmp(valBuff6,"\n") != 0))
-		{fprintf(errOut,"2.4G 11111111  \n");
+		{
 			//fprintf(errOut,"[luodp] KEY here");
 			CFG_set_by_name("PSK_KEY",valBuff3);
 			//flag=2;
@@ -5800,7 +5800,7 @@ int main(int argc,char **argv)
 		CFG_get_by_name("AP_SECMODE",valBuff3);
 		//fprintf(errOut,"[luodp] %s here2\n",valBuff3);
 		if((strstr(valBuff5,valBuff3) == 0)&&(strcmp(valBuff3,"None") != 0))
-		{fprintf(errOut,"2.4G 222222222  \n");
+		{
 			//AP_SECMODE=WPA
 			//AP_WPA=3 WPA/WPA2
 			//AP_CYPHER="TKIP CCMP"
@@ -5814,7 +5814,7 @@ int main(int argc,char **argv)
 			//fprintf(errOut,"22222 2.4G flag is %d\n", flag);
 		}
 		if((strstr(valBuff5,valBuff3) == 0)&&(strcmp(valBuff3,"WPA") != 0))
-		{fprintf(errOut,"2.4G 3333333333  \n");
+		{
 			CFG_set_by_name("AP_SECMODE","None");
 			Execute_cmd("cfg -r PSK_KEY > /dev/null 2>&1", rspBuff);
 			flag=5;
@@ -5848,7 +5848,7 @@ int main(int argc,char **argv)
 		//fprintf(errOut,"[%s][%s]\n", valBuff2, valBuff5);
 		//if((strcmp(valBuff2,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0))
 		if(strcmp(valBuff2, valBuff5) && (strcmp(valBuff3,"on") == 0))
-		{fprintf(errOut,"2.4G 4444444444444  \n");
+		{
 			//fprintf(errOut,"[luodp] SECMODE here6");
 			sprintf(pChar,"iwconfig ath0 essid %s  > /dev/null 2>&1",valBuff4);
 			Execute_cmd(pChar, rspBuff);
@@ -5871,7 +5871,7 @@ int main(int argc,char **argv)
 		//fprintf(errOut,"%d\n%d\n%d\n",strcmp(valBuff2,valBuff5),flag,strcmp(valBuff3,"on"));
 		//if((strcmp(valBuff7,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0))
 		if((strcmp(valBuff7,valBuff5) != 0) && (strcmp(valBuff3,"on") == 0))
-		{fprintf(errOut,"2.4G 555555555  \n");
+		{
 			//fprintf(errOut,"[luodp] %d",atoi(valBuff4));
 			//11NGHT40PLUS/11NGHT40MINUS
 			Execute_cmd("ifconfig ath0 down > /dev/null 2>&1", rspBuff);
@@ -5912,7 +5912,7 @@ int main(int argc,char **argv)
 		CFG_get_by_name("AP_HIDESSID",valBuff4);
 		sprintf(valBuff5,"%s\n<br>",valBuff4);
 		if((strcmp(valBuff8,valBuff5) != 0) && (strcmp(valBuff4,"1") == 0))
-		{fprintf(errOut,"2.4G 6666666666  \n");
+		{
 			//fprintf(errOut,"set hide 1 \n");
 			Execute_cmd("iwpriv ath0 hide_ssid 1  > /dev/null 2>&1", rspBuff);
 			
@@ -5925,7 +5925,7 @@ int main(int argc,char **argv)
 			flag = 5;
 		}
 		if((strcmp(valBuff8,valBuff5) != 0) && (strcmp(valBuff4,"0") == 0))
-		{fprintf(errOut,"2.4G 7777777777777  \n");
+		{
 			//fprintf(errOut,"set hide 0 \n");
 			Execute_cmd("iwpriv ath0 hide_ssid 0  > /dev/null 2>&1", rspBuff);
 			
@@ -5962,7 +5962,7 @@ int main(int argc,char **argv)
 			Execute_cmd("apup > /dev/null 2>&1", rspBuff);
 		}*/
 		else if(flag == 5)  /*deal password is changed, restart hostapd   by zzw*/
-		{fprintf(errOut,"2.4G zhaozhanwei1111111  \n");
+		{
 			int i, j, k;
 			char pr_buf[50];
 			CFG_get_by_name("AP_SECMODE",valBuff3);
@@ -6034,7 +6034,7 @@ int main(int argc,char **argv)
 		//fprintf(errOut,"valBuff6 is [%s]\n", valBuff6);
 		//fprintf(errOut,"valBuff4_3 is [%s]\n", valBuff4_3);
 		if((strcmp(valBuff6,valBuff4_3) != 0)&&(strcmp(valBuff6,"\n<br>") != 0))
-		{fprintf(errOut,"5G 11111111  \n");
+		{
 			CFG_set_by_name("PSK_KEY_3",valBuff3);
 			flag = 5;
 			//fprintf(errOut,"1111 5G flag is %d\n", flag);
@@ -6043,7 +6043,7 @@ int main(int argc,char **argv)
 		//TODO SECMODE
 		CFG_get_by_name("AP_SECMODE_3",valBuff3);;
 		if((strstr(valBuff5_3,valBuff3) == 0)&&(strcmp(valBuff3,"None") != 0))
-		{fprintf(errOut,"5G 22222222222  \n");
+		{
 			CFG_set_by_name("AP_SECMODE_3","WPA");
 			CFG_set_by_name("AP_WPA_3","3");
 			CFG_set_by_name("AP_CYPHER_3","TKIP CCMP");
@@ -6052,7 +6052,7 @@ int main(int argc,char **argv)
 			//fprintf(errOut,"22222 5G flag is %d\n", flag);
 		}
 		if((strstr(valBuff5_3,valBuff3) == 0)&&(strcmp(valBuff3,"WPA") != 0))
-		{fprintf(errOut,"5G 33333333333  \n");
+		{
 			CFG_set_by_name("AP_SECMODE_3","None");
 			flag=5;
 			//Execute_cmd("iwpriv ath2 authmode 1 > /dev/null 2>&1", rspBuff);
@@ -6089,7 +6089,7 @@ int main(int argc,char **argv)
 		sprintf(valBuff5,"%s\n<br>",valBuff4);
 		//if((strcmp(valBuff2_3,valBuff5) != 0)&&(flag==0)&&(strcmp(valBuff3,"on") == 0))
 		if(strcmp(valBuff2_3,valBuff5) &&(strcmp(valBuff3,"on") == 0))
-		{fprintf(errOut,"5G 4444444444  \n");
+		{
 			sprintf(pChar,"iwconfig ath2 essid %s  > /dev/null 2>&1",valBuff4);
 			Execute_cmd(pChar, rspBuff);
 			flag = 5;
@@ -6111,7 +6111,7 @@ int main(int argc,char **argv)
 		sprintf(valBuff5,"%s\n<br>",valBuff4);
 		//if((strcmp(valBuff7_3,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0))
 		if((strcmp(valBuff7_3,valBuff5) != 0) && (strcmp(valBuff3,"on") == 0))
-		{fprintf(errOut,"5G 5555555555  \n");
+		{
 			//fprintf(errOut,"[luodp] 11NA %d",atoi(valBuff4));
 			#if 0
 			memcpy(valBuff4, "40", 2);
@@ -6180,7 +6180,7 @@ int main(int argc,char **argv)
 		sprintf(valBuff5,"%s\n<br>",valBuff4);
 		//if((strcmp(valBuff8_3,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0)&&(strcmp(valBuff4,"1") == 0))
 		if((strcmp(valBuff8_3,valBuff5) != 0) &&(strcmp(valBuff4,"1") == 0))
-		{fprintf(errOut,"5G 666666666  \n");
+		{
 			Execute_cmd("iwpriv ath2 hide_ssid 1  > /dev/null 2>&1", rspBuff);
 
 			Execute_cmd("iwpriv ath2 bintval 1000  > /dev/null 2>&1", rspBuff);
@@ -6192,7 +6192,7 @@ int main(int argc,char **argv)
 			flag = 5;
 		}
 		if((strcmp(valBuff8_3,valBuff5) != 0)&&(strcmp(valBuff4,"0") == 0))
-		{fprintf(errOut,"5G 777777777  \n");
+		{
 			Execute_cmd("iwpriv ath2 hide_ssid 0  > /dev/null 2>&1", rspBuff);
 			
 			Execute_cmd("iwpriv ath2 bintval 100  > /dev/null 2>&1", rspBuff);
