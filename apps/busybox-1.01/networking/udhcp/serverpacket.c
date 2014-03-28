@@ -127,15 +127,24 @@ int sendOffer(struct dhcpMessage *oldpacket)
 
 	uint32_t static_lease_ip;
 
+	char gateway_ip[50];
+	FILE *fp;
+	system("cfg -e | grep AP_IPADDR= | awk -F '=' '{print $2}' > /tmp/GateWay");
+	fp = fopen("/tmp/GateWay", "r");
+	fgets(gateway_ip, 30, fp);
+
 	init_packet(&packet, oldpacket, DHCPOFFER);
 
 	static_lease_ip = getIpByMac(server_config.static_leases, oldpacket->chaddr);
-
+	LOG(LOG_INFO, " -----  111 \n");
 	/* ADDME: if static, short circuit */
 	if(!static_lease_ip)
-	{
+	{LOG(LOG_INFO, " -----  222 \n");
 	/* the client is in our lease/offered table */
-	if ((lease = find_lease_by_chaddr(oldpacket->chaddr))) {
+	if ((lease = find_lease_by_chaddr(oldpacket->chaddr)) && 
+		(addr.s_addr=htonl(lease->yiaddr)) &&
+		!strstr(gateway_ip, inet_ntoa(addr))) {
+		LOG(LOG_INFO, " -----  333  %s\n", inet_ntoa(addr));
 		if (!lease_expired(lease))
 			lease_time_align = lease->expires - time(0);
 		packet.yiaddr = lease->yiaddr;
@@ -149,6 +158,10 @@ int sendOffer(struct dhcpMessage *oldpacket)
 		   /* and the ip is in the lease range */
 		   ntohl(req_align) >= ntohl(server_config.start) &&
 		   ntohl(req_align) <= ntohl(server_config.end) &&
+
+		   /*the ip can not equal to gateway ip  by zzw*/
+		   (addr.s_addr=htonl(req_align)) &&
+		   !strstr(gateway_ip, inet_ntoa(addr)) &&
 		
 			!static_lease_ip &&  /* Check that its not a static lease */
 			/* and is not already taken/offered */
@@ -156,10 +169,12 @@ int sendOffer(struct dhcpMessage *oldpacket)
 		
 		   /* or its taken, but expired */ /* ADDME: or maybe in here */
 		   lease_expired(lease)))) {
+		   LOG(LOG_INFO, " -----  444 \n");
 				packet.yiaddr = req_align; /* FIXME: oh my, is there a host using this IP? */
 
 			/* otherwise, find a free IP */
 	} else {
+	LOG(LOG_INFO, " -----  555 \n");
 			/* Is it a static lease? (No, because find_address skips static lease) */
 		packet.yiaddr = find_address(0);
 
@@ -191,11 +206,11 @@ int sendOffer(struct dhcpMessage *oldpacket)
 	}
 	/* ADDME: end of short circuit */
 	else
-	{
+	{LOG(LOG_INFO, " -----  666 \n");
 		/* It is a static lease... use it */
 		packet.yiaddr = static_lease_ip;
 	}
-
+LOG(LOG_INFO, " -----  777 \n");
 	add_simple_option(packet.options, DHCP_LEASE_TIME, htonl(lease_time_align));
 
 	curr = server_config.options;
