@@ -29,7 +29,7 @@ rm /tmp/vars.$$
 ###################################################################################
 cfg -a ATH_countrycode=${ATH_countrycode:="156"}
 cfg -a HAL_VERSION=${HAL_VERSION:="HBD-Router-B6-V3"}
-cfg -a SOFT_VERSION=${SOFT_VERSION:="HBD_F2A_B6_V1.6.1_20140325_A"}
+cfg -a SOFT_VERSION=${SOFT_VERSION:="HBD_F2A_B6_V9.8.6_20140328_A"}
 cfg -a ADMPASS=${ADMPASS:="admin"}
 cfg -a WDSON_OFF=${WDSON_OFF:="off"}
 cfg -a WDSON_OFF_3=${WDSON_OFF_3:="off"}
