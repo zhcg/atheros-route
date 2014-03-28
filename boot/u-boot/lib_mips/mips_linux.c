@@ -88,7 +88,7 @@ void do_bootm_linux (cmd_tbl_t * cmdtp, int flag, int argc, char *argv[],
 //	char *commandline = getenv ("bootargs");
 
 	char *command = getenv ("bootargs");
-	char *sn = getenv ("sn");
+	char *sn = getenv ("SN");
 	sprintf(commandline, "%s SN=%s", command, sn);
 // add cyj end
 	char env_buf[12];
