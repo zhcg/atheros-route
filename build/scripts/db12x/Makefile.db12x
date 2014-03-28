@@ -121,7 +121,7 @@ ifeq ($(strip ${ATH_SUPPORT_SPECTRAL}),1)
 db12x_build: common_mainline driver_build usb_build pci_build spectral_app_build $(BUILD_TYPE)_build art_mod
 else
 ifeq ($(BUILD_FOR_32178), yes)
-db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si32178_build spi32178_build phone_9344_32178 check_phone_status modules_server OTA_Base usbpassage_build uartpassage_build spipassage_build phonepassage_build as532h_build ntpclient_arm  ppy pppoe_build channel webui terminal_dev_register cacm tester $(fs_build) makeotaimage makeoneimage 
+db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si32178_build spi32178_build phone_9344_32178 check_phone_status modules_server OTA_Base env  usbpassage_build uartpassage_build spipassage_build phonepassage_build as532h_build ntpclient_arm  ppy pppoe_build channel webui terminal_dev_register cacm tester $(fs_build) makeotaimage makeoneimage 
 else
 db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si3000_build si3000_app stm32_build stm32_app phone_9344  ntpclient_arm  ppy pppoe_build channel webui terminal_dev_register cacm tester $(fs_build) makeotaimage makeoneimage 
 endif
@@ -613,6 +613,14 @@ OTA_Base:
 	$(STRIP) OTA_Base; \
 	cp -f OTA_Base $(INSTALL_ROOT)/bin;
 
+env:
+	@echo making env application
+	cd ../apps/env; cp -f fw_env.config $(INSTALL_ROOT)/etc; \
+	cd ../apps/env; make clean; make; \
+	$(STRIP) fw_printenv; \
+	cp fw_printenv fw_setenv; \
+	cp -f fw_printenv $(INSTALL_ROOT)/bin; \
+	cp -f fw_setenv $(INSTALL_ROOT)/bin;
 
 modules_server:
 	@echo making modules_server application
