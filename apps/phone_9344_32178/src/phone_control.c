@@ -2693,8 +2693,8 @@ void passage_pthread_func(void *argv)
 		if(phone_control.passage_fd > 0)
 		{
 			memset(recvbuf,0,BUF_LEN_256);
-			//a5 5a 03 03
-			//a5 5a 03 04 
+			//a5 5a 03 03  主叫
+			//a5 5a 03 04  led状态
 			ret = read(phone_control.passage_fd,recvbuf,4);
 			if(ret > 0)
 			{

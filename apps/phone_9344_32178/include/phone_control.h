@@ -3,7 +3,7 @@
 #include "common.h"
 #include "si32178.h"
 
-//#define REGISTER
+#define REGISTER
 
 #define MIN_PACKET_BYTES	        7
 
