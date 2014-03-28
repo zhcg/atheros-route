@@ -8,13 +8,21 @@
 #define __MTD_ABI_H__
 
 struct erase_info_user {
-	uint32_t start;
-	uint32_t length;
+	__u32 start;
+	__u32 length;
+//	unsigned int start;
+//	unsigned int length;
+//	uint32_t start;
+//	uint32_t length;
 };
 
 struct mtd_oob_buf {
-	uint32_t start;
-	uint32_t length;
+	__u32 start;
+	__u32 length;
+//	unsigned int start;
+//	unsigned int length;
+//	uint32_t start;
+//	uint32_t length;
 	unsigned char *ptr;
 };
 
@@ -58,22 +66,51 @@ struct mtd_oob_buf {
 #define MTD_NANDECC_AUTOPL_USR 	4	/* Use the given autoplacement scheme rather than using the default */
 
 struct mtd_info_user {
-	uint8_t type;
-	uint32_t flags;
-	uint32_t size;	 /* Total size of the MTD */
-	uint32_t erasesize;
-	uint32_t oobblock;  /* Size of OOB blocks (e.g. 512) */
-	uint32_t oobsize;   /* Amount of OOB data per block (e.g. 16) */
-	uint32_t ecctype;
-	uint32_t eccsize;
+	
+	__u8 type;
+	__u32 flags;
+	__u32  size;	 /* Total size of the MTD */
+	__u32  erasesize;
+	__u32 oobblock;  /* Size of OOB blocks (e.g. 512) */
+	__u32 oobsize;   /* Amount of OOB data per block (e.g. 16) */
+	__u32  ecctype;
+	__u32  eccsize;
+
+//	unsigned char type;
+//	unsigned int flags;
+//	unsigned int  size;	 /* Total size of the MTD */
+//	unsigned int  erasesize;
+//	unsigned int oobblock;  /* Size of OOB blocks (e.g. 512) */
+//	unsigned int oobsize;   /* Amount of OOB data per block (e.g. 16) */
+//	unsigned int  ecctype;
+//	unsigned int  eccsize;
+//	uint8_t type;
+//	uint32_t flags;
+//	uint32_t size;	 /* Total size of the MTD */
+//	uint32_t erasesize;
+//	uint32_t oobblock;  /* Size of OOB blocks (e.g. 512) */
+//	uint32_t oobsize;   /* Amount of OOB data per block (e.g. 16) */
+//	uint32_t ecctype;
+//	uint32_t eccsize;
 };
 
 struct region_info_user {
-	uint32_t offset;		/* At which this region starts,
+	__u32 offset;		/* At which this region starts,
 					 * from the beginning of the MTD */
-	uint32_t erasesize;		/* For this region */
-	uint32_t numblocks;		/* Number of blocks in this region */
-	uint32_t regionindex;
+	__u32 erasesize;		/* For this region */
+	__u32 numblocks;		/* Number of blocks in this region */
+	__u32 regionindex;
+//	unsigned int offset;		/* At which this region starts,
+//					 * from the beginning of the MTD */
+//	unsigned int erasesize;		/* For this region */
+//	unsigned int numblocks;		/* Number of blocks in this region */
+//	unsigned int regionindex;
+
+//	uint32_t offset;		/* At which this region starts,
+//					 * from the beginning of the MTD */
+//	uint32_t erasesize;		/* For this region */
+//	uint32_t numblocks;		/* Number of blocks in this region */
+//	uint32_t regionindex;
 };
 
 #define MEMGETINFO              _IOR('M', 1, struct mtd_info_user)
@@ -90,10 +127,20 @@ struct region_info_user {
 #define MEMSETBADBLOCK		_IOW('M', 12, loff_t)
 
 struct nand_oobinfo {
-	uint32_t useecc;
-	uint32_t eccbytes;
-	uint32_t oobfree[8][2];
-	uint32_t eccpos[32];
+	__u32 useecc;
+	__u32 eccbytes;
+	__u32 oobfree[8][2];
+	__u32 eccpos[32];
+	
+//	unsigned int useecc;
+//	unsigned int eccbytes;
+//	unsigned int oobfree[8][2];
+//	unsigned int eccpos[32];
+	
+//	uint32_t useecc;
+//	uint32_t eccbytes;
+//	uint32_t oobfree[8][2];
+//	uint32_t eccpos[32];
 };
 
 #endif /* __MTD_ABI_H__ */

@@ -123,14 +123,30 @@ struct dhcpOfferedAddr *find_lease_by_yiaddr(uint32_t yiaddr)
 static int check_ip(uint32_t addr)
 {
 	struct in_addr temp;
-
+	char gateway_ip[50];
+	FILE *fp;
+	system("cfg -e | grep AP_IPADDR= | awk -F '=' '{print $2}' > /tmp/GateWay");
+	temp.s_addr = addr;
+	fp = fopen("/tmp/GateWay", "r");
+	fgets(gateway_ip, 30, fp);
+	LOG(LOG_INFO, " the gateway is [%s];the send ip is %[s] \n", gateway_ip, inet_ntoa(temp));
+	if(strstr(gateway_ip, inet_ntoa(temp)))
+	{LOG(LOG_INFO, "22222 the gateway is [%s];the send ip is %[s] \n", gateway_ip, inet_ntoa(temp));
+		LOG(LOG_INFO, "%s belongs to someone, reserving it for %ld seconds",
+			inet_ntoa(temp), server_config.conflict_time);
+		add_lease(blank_chaddr, blank_chaddr, addr, server_config.conflict_time);
+				return 1;
+	}
+	system("rm -rf /tmp/GateWay");
+	LOG(LOG_INFO, "3333333 the gateway is [%s];the send ip is %[s] \n", gateway_ip, inet_ntoa(temp));
+	
 	if (arpping(addr, server_config.server, server_config.arp, server_config.interface) == 0) {
 		temp.s_addr = addr;
 		LOG(LOG_INFO, "%s belongs to someone, reserving it for %ld seconds",
 			inet_ntoa(temp), server_config.conflict_time);
 		add_lease(blank_chaddr, blank_chaddr, addr, server_config.conflict_time);
 		return 1;
-	} else return 0;
+	}else return 0;
 }
 
 

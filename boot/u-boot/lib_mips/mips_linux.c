@@ -75,6 +75,7 @@ void do_bootm_linux (cmd_tbl_t * cmdtp, int flag, int argc, char *argv[],
 {
 	ulong len = 0, checksum;
 	ulong initrd_start, initrd_end;
+	char commandline[512];
 	ulong data;
 #if defined(CONFIG_AR7100) || defined(CONFIG_AR7240)
     int flash_size_mbytes;
@@ -83,7 +84,13 @@ void do_bootm_linux (cmd_tbl_t * cmdtp, int flag, int argc, char *argv[],
 	void (*theKernel) (int, char **, char **, int *);
 #endif
 	image_header_t *hdr = &header;
-	char *commandline = getenv ("bootargs");
+//add cyj start
+//	char *commandline = getenv ("bootargs");
+
+	char *command = getenv ("bootargs");
+	char *sn = getenv ("SN");
+	sprintf(commandline, "%s SN=%s", command, sn);
+// add cyj end
 	char env_buf[12];
 
 

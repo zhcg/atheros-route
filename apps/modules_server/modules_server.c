@@ -1258,7 +1258,14 @@ int factory_test_cmd_9344_ver()
 				p2 = strstr(p1+1,"\"");
 			if(p1 != NULL && p2 != NULL)
 			{
-				memcpy(verbuf,p1+1,p2-p1-1);
+				if((p2-p1-1) > sizeof(verbuf))
+				{
+					memcpy(verbuf,p1+1,sizeof(verbuf));
+				}
+				else
+				{
+					memcpy(verbuf,p1+1,p2-p1-1);
+				}
 				ret = generate_test_up_msg(databuf,FACTORY_TEST_CMD_UP_9344_1,FACTORY_TEST_CMD_9344_VER,SUCCESS,0,verbuf,strlen(verbuf));
 			}
 			else
@@ -1267,6 +1274,7 @@ int factory_test_cmd_9344_ver()
 			}
 		}
 		PRINT("verbuf = %s\n",verbuf);
+		close(fd);
 	}
 	system("rm -rf /tmp/factory_test_soft_version");	
 	generate_stm32_down_msg(databuf,ret,TYPE_USB_PASSAGE);
@@ -1569,13 +1577,17 @@ int factory_test_down_9344(char cmd)
 			factory_test_cmd_9344_led3();
 			break;
 		case FACTORY_TEST_CMD_9344_CALL:
-		case FACTORY_TEST_CMD_9344_CALLED:		
+			PRINT("FACTORY_TEST_CMD_9344_CALL\n");
 			generate_stm32_down_msg(switch_32178,6,TYPE_SPI_PASSAGE);	
 			sendbuf[index++]=0xA5;
 			sendbuf[index++]=0X5A;
 			sendbuf[index++]=FACTORY_TEST_CMD_DOWN_9344_1;
 			sendbuf[index++]=cmd;
 			write_passage((char)TYPE_PHONE_PASSAGE,sendbuf,index);
+			break;
+		case FACTORY_TEST_CMD_9344_CALLED:
+			PRINT("FACTORY_TEST_CMD_9344_CALLED\n");
+			generate_stm32_down_msg(switch_32178,6,TYPE_SPI_PASSAGE);	
 			break;
 		case FACTORY_TEST_CMD_9344_R54_CALL:
 			PRINT("FACTORY_TEST_CMD_9344_R54_CALL\n");

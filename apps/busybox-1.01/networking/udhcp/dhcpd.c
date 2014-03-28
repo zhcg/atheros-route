@@ -273,19 +273,40 @@ int main(int argc, char *argv[])
  		case DHCPREQUEST:
 			DEBUG(LOG_INFO, "received REQUEST");
 
+			char gateway_ip[50];
+			FILE *fp;
+			struct in_addr addr;
+		
+			system("cfg -e | grep AP_IPADDR= | awk -F '=' '{print $2}' > /tmp/GateWay");
+			fp = fopen("/tmp/GateWay", "r");
+			fgets(gateway_ip, 30, fp);
+
 			requested = get_option(&packet, DHCP_REQUESTED_IP);
 			server_id = get_option(&packet, DHCP_SERVER_ID);
 
 			if (requested) memcpy(&requested_align, requested, 4);
 			if (server_id) memcpy(&server_id_align, server_id, 4);
 
+			addr.s_addr=htonl(requested_align);
+			DEBUG(LOG_INFO, "the addr is %s, the gateway is %s", inet_ntoa(addr), gateway_ip);
 			//addr.s_addr = requested_align;
 			//LOG(LOG_ERR, "the host ip is %s", inet_ntoa(addr));
 			//deal_addIp(&packet);
 
 			if (lease) {
 				DEBUG(LOG_INFO, "case DHCPREQUEST: the lease is exit");
+				/*the ip can not equal to gateway ip  by zzw*/
+				if(strstr(gateway_ip, inet_ntoa(addr)))
+				{
+					sendNAK(&packet);
+				}
+				
 				if (server_id) {
+					/*the ip can not equal to gateway ip  by zzw*/
+					if(strstr(gateway_ip, inet_ntoa(addr)))
+					{
+						sendNAK(&packet);
+					}
 					/* SELECTING State */
 					DEBUG(LOG_INFO, "server_id = %08x", ntohl(server_id_align));
 					if (server_id_align == server_config.server && requested &&
@@ -293,7 +314,12 @@ int main(int argc, char *argv[])
 						sendACK(&packet, lease->yiaddr);
 					}
 				} else {
-					if (requested) {
+					/*the ip can not equal to gateway ip  by zzw*/
+					if(strstr(gateway_ip, inet_ntoa(addr)))
+					{
+						sendNAK(&packet);
+					}
+					else if (requested) {
 						/* INIT-REBOOT State */
 						if (lease->yiaddr == requested_align)
 							sendACK(&packet, lease->yiaddr);

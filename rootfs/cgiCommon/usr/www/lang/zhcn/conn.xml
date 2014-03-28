@@ -33,10 +33,10 @@
 	<message msgid="clist rate" msgstr="速率" />  
 	<message msgid="clist sig" msgstr="信号强度" />  
 
-	<message msgid="conm title" msgstr="无线接入管理" />  
+	<message msgid="conm title" msgstr="接入管理" />  
 	<message msgid="conm des" msgstr="管理当前已经接入的无线设备" />  
-	<message msgid="conm t1_title" msgstr="无线接入管理" />  
-	<message msgid="conm t1_switch" msgstr="无线接入开关" />  
+	<message msgid="conm t1_title" msgstr="接入管理" />  
+	<message msgid="conm t1_switch" msgstr="接入开关" />  
 	<message msgid="conm ts1" msgstr="(启用并应用后，方可进行条目添加和设置) " />  
 	
 	<message msgid="conw title" msgstr="远程Web管理" />  
@@ -46,8 +46,8 @@
 
 	<message msgid="conm ADDMRULE" msgstr="添加" />  
 
-	<message msgid="addw title" msgstr="添加无线接入管理的设备信息" />  
-	<message msgid="addw t1_title" msgstr="添加无线接入管理条目" />  
+	<message msgid="addw title" msgstr="添加接入管理的设备信息" />  
+	<message msgid="addw t1_title" msgstr="添加接入管理条目" />  
 	<message msgid="addw t1_MAC" msgstr="MAC地址" />  
 	<message msgid="addw t1_Des" msgstr="描述" />  
 	<message msgid="addw t1_Status" msgstr="状态" />  

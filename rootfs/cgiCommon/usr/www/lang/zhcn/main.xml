@@ -26,7 +26,7 @@
 
 	<message msgid="advmenu treeapp_conm" msgstr="接入管理" />
 	<message msgid="advmenu treeapp_conm_list" msgstr="已接入设备列表" />
-	<message msgid="advmenu treeapp_conm_ctrl" msgstr="无线接入管理" />
+	<message msgid="advmenu treeapp_conm_ctrl" msgstr="接入管理" />
 	<message msgid="advmenu treeapp_conm_web" msgstr="远程Web管理" />
 	
 	<message msgid="advmenu treeapp_wifi" msgstr="无线设置" />

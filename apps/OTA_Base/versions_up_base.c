@@ -16,8 +16,7 @@
 #include <unistd.h>  
 #include <pthread.h>
 #include <signal.h>
-#include<sys/time.h>
-
+#include <sys/time.h>
 
 /************************************************************************
  * define our constant variables
@@ -25,7 +24,8 @@
 #define VERSIONS	"1.0V"
 #define PORT		63000
 //#define LENGTH		1024*1024
-#define LENGTH		1024+50
+#define LENGTH		1050
+//#define LENGTH		1024+50
 #define WRITE_LOW_COMMUNICATE		"/tmp/WRITE_LOW_COMMUNICATE"
 #define READ_LOW_COMMUNICATE		"/tmp/READ_LOW_COMMUNICATE"
 
@@ -38,11 +38,11 @@ static int Fd_READ;
 typedef unsigned char  uchar;              //鏃犵鍙峰瓧绗
 static int fileFd;
 static int clientFd;
-static char ack_buf[38];
+static char ack_buf[256];
 static char head[3] = {0x4f,0x54,0x41};
 static char version = 0x31;
-static char version_num[10]; 
-static char Serial_Number[30];
+static char version_num[256]; 
+static char Serial_Number[256];
 static int local_Fd,servFd;
 static int runcond = 1; //循环条件
 int send_len;
@@ -176,11 +176,12 @@ int Get_Version_Num()
 	FILE *fp;
 	int len;
 	fp = fopen("/tmp/.apcfg", "r");
-	char buf[50];
+//	fp = fopen("/etc/version", "r");
+	char buf[100];
 	if(fp != NULL)
 	{
 		
-		while(fgets(buf, 50, fp) != NULL)
+		while(fgets(buf, 100, fp) != NULL)
 		{
 			if(strstr(buf, "SOFT_VERSION") != 0)
 			{
@@ -200,20 +201,21 @@ int Get_Serial_Number()
 {
 
 	FILE *fp;
-	fp = fopen("/etc/num", "r");
-//	fp = fopen("/proc/cmdline", "r");
+//	fp = fopen("/etc/num", "r");
+	fp = fopen("/proc/cmdline", "r");
 	char buf[50];
+	char buf1[100];
+	char buf2[100];
 	int len = 0;
-	printf("cyj  %s  %d \n",__func__,__LINE__);
 	if(fp != NULL)
 	{
 
 			while(fgets(buf, 50, fp) != NULL)
 			{
-					if(strstr(buf, "num") != 0)
+					if(strstr(buf, "SN") != 0)
 					{
-							sscanf(buf, "num=%s", Serial_Number);
-							printf("cyj  %s  %d  num = %s\n",__func__,__LINE__,Serial_Number);
+							sscanf(buf, "%s SN=%s %s", buf1, Serial_Number, buf2);
+							printf("cyj  %s  %d  SN = %s\n",__func__,__LINE__,Serial_Number);
 							len = strlen(Serial_Number);
 							fclose(fp);
 							return len;
@@ -221,7 +223,6 @@ int Get_Serial_Number()
 			}
 			fclose(fp);
 	}
-	printf("cyj  %s  %d \n",__func__,__LINE__);
 	return -1;
 	
 }
@@ -320,7 +321,7 @@ int Md5_Check(char *recv_buf )
 	else 
 	{	
 		printf(" md5  error correcting code\n");
-		switch(recv_buf[5])
+/*		switch(recv_buf[5])
 		{
 			case 0x11:
 				ret = unlink(STM32_FILE);
@@ -338,6 +339,7 @@ int Md5_Check(char *recv_buf )
 		{
 			printf("unlink ERRO!!!!!\n");
 		}	
+*/
 		return 0;
 	}
 	
@@ -347,11 +349,11 @@ int Local_Communicate(char *recv_buf, int data_len)
 {
 	int timing_return;
 	int num;
-	printf("send STM32=");
+/*	printf("send STM32=");
 	for(num = 0; num < data_len; num++)
 		printf("%x  ",recv_buf[num]);
 		printf("%\n\n");
-	write(Fd_WRITE, recv_buf, data_len);
+*/	write(Fd_WRITE, recv_buf, data_len);
 
 	timing_return = timing(Fd_READ);
 	if(timing_return == 0)
@@ -366,7 +368,8 @@ int Local_Communicate(char *recv_buf, int data_len)
 	}
 	else
 	{
-		send_len = read(Fd_READ, ack_buf, 38);
+		memset(ack_buf, 0, 256);
+		send_len = read(Fd_READ, ack_buf, 256);
 	}
 	return 0;
 
@@ -382,11 +385,11 @@ void Detection_Version(char *recv_buf, int data_len)
 			if(Local_Communicate(recv_buf, data_len) == 0)
 			{
 				send(clientFd, ack_buf, send_len, 0);
-				printf("send PAD= ");
+		/*		printf("send PAD= ");
 				for(len = 0; len < send_len; len++)
 					printf("%x  ", ack_buf[len]);
 				printf("\n\n\n");
-			}
+		*/	}
 			else
 			{
 			
@@ -416,11 +419,11 @@ void Detection_Serial_Number(char *recv_buf, int data_len)
 			if(Local_Communicate(recv_buf, data_len) == 0)
 			{
 				send(clientFd,ack_buf,send_len,0);
-				printf("send PAD= ");
+		/*		printf("send PAD= ");
 				for(len = 0; len < send_len; len++)
 					printf("%x  ", ack_buf[len]);
 				printf("\n\n\n");
-			}
+		*/	}
 			else
 			{
 			
@@ -510,8 +513,9 @@ int Notice_System_Updata(char *recv_buf,int data_len)
 			break;
 		case 0x13:	//9344
 			printf("9344 System Updata!!!\n");
-			system(updata_order);
-	//		system("sysupgrade  /tmp/AR9344.zip");
+			printf("updata_order = %s\n", updata_order);
+	//		system(updata_order);
+			system("sysupgrade  /tmp/AR9344.zip");
 			break;
 		default:
 			break;
@@ -530,9 +534,13 @@ void Parse_Pack(char *recv_buf,int valid_data_len, int data_len)
 	{	
 		case 0x01://请求检查版本号
 			Detection_Version(recv_buf, data_len);
+			close(clientFd);
+			clientFd = -1;
 			break;
 		case 0x21://请求设备序列号
 			Detection_Serial_Number(recv_buf, data_len);
+			close(clientFd);
+			clientFd = -1;
 			break;
 		case 0x31://准备接收数据包
 			ack_data = Create_Upgrade_File(recv_buf);
@@ -587,7 +595,18 @@ int Check_Pack(char *recv_buf,int valid_data_len, int data_len)
 {
 	int check = 0x0;
 	char ack_data;
-	int get_len;	
+	int get_len;
+	if(data_len > (valid_data_len+17))
+	{
+
+		printf("long	error!!!\n");	
+		ack_data = 0x00;
+		Compose_Pack(0x34,0x00,&ack_data,1, recv_buf[5]);
+		send(clientFd,ack_buf,18,0);
+		return 0;
+	}
+
+	
 	check = Array_Update(recv_buf+3,valid_data_len + 13);
 
 //	printf("check = %x  recv_buf[valid_data_len + 16] = %x\n", check, recv_buf[valid_data_len + 16]);
@@ -650,7 +669,8 @@ void Low_Communicate_Init()
 	}
 	else
 	{
-		 read(Fd_READ, ack_buf, 38);
+		memset(ack_buf, 0, 256);
+		 read(Fd_READ, ack_buf, 256);
 	}
 }
 
@@ -658,16 +678,34 @@ void Dispose_Pthread()
 {
 	int recvLen,total;
 	int valid_data_len;
-	char recv_buf[LENGTH+17];
+
 	while(clientFd > 0)
-	{	
+	{
 		total = 0;
+		char recv_buf[LENGTH+17];
+		memset(recv_buf, 0, LENGTH+17);
 		do
-		{	
+		{
 			recvLen = recv(clientFd, recv_buf + total, LENGTH + 17- total, 0);
 			memcpy(&valid_data_len,recv_buf+6,4);
-			valid_data_len = ntohl(valid_data_len);
 			total += recvLen;
+			if(valid_data_len > LENGTH)
+			{
+			//	close(clientFd);
+			//	clientFd = -1;
+				printf("valid_data_len = %x\n", valid_data_len);
+				total =  valid_data_len+20;
+			
+			}
+			if(valid_data_len < 1)
+			{
+				
+				printf("valid_data_len = %x\n", valid_data_len);
+				total =  valid_data_len+20;
+				close(clientFd);
+				clientFd = -1;
+
+			}
 		}while(total < valid_data_len+17);
 		Check_Pack(recv_buf, valid_data_len, total);
 	}
@@ -693,14 +731,12 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
-	//while(runcond)
 	while(1)
 	{
 		clientFd = accept(servFd, NULL, NULL );
-			
-		Dispose_Pthread();		
-//		pthread_create(&pthread, NULL, (void *)Dispose_Pthread, (int *)clientFd);
+//		Dispose_Pthread();		
+		pthread_create(&pthread, NULL, (void *)Dispose_Pthread, NULL);
 	}
-//	pthread_join(pthread, NULL);
+	pthread_join(pthread, NULL);
 	return 0;
 }

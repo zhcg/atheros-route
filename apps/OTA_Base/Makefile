@@ -11,9 +11,5 @@ all:$(BIN)
 
 $(BIN):$(OBJ)
 		$(CC) -o $(BIN) $^ -lpthread
-
-.c.o:
-		$(CC) -c $^
-
 clean:
-		rm -rf $(BIN) $(OBJ)
+	rm -rf ${BIN} ${OBJ}

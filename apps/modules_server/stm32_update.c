@@ -67,6 +67,7 @@ int stm32_update(unsigned char* path,int test_flag)
 
 	if (BinFileHeadCheck(path) == 0){
 		update = 0;
+		memset(stm_format_version,0,sizeof(stm_format_version));
 		if((ret = CmdGetVersion()) != 0){
 			update = 1;
 			//return -2;
@@ -78,7 +79,20 @@ int stm32_update(unsigned char* path,int test_flag)
 		PRINT("stm_format_version:\n");
 		for(i = 0; i < 4; i++)
 			PRINT("%x\n ", stm_format_version[i]);
+		if(update == 1)
+			goto START_UPDATE;
 		//比较STM32版本和BIN文件版本
+		ret = memcmp((void *)bin_format_version, (void *)stm_format_version, sizeof(bin_format_version)/2);
+		if(test_flag == 1)
+		{
+			ret = 0;
+		}
+		//PRINT("ret = %d\n",ret);
+		if(ret != 0)
+		{
+			PRINT("MAJOR error!!\n");
+			return -1;
+		}
 		ret = memcmp((void *)bin_format_version, (void *)stm_format_version, sizeof(bin_format_version));
 		if(test_flag == 1)
 		{
@@ -90,10 +104,13 @@ int stm32_update(unsigned char* path,int test_flag)
 			PRINT("STM32 is newest!!\n");
 			return -1;
 		}
+		
 		if ((ret > 0) | (update == 1)){
+START_UPDATE:
 			PRINT("Updata begin !!!\n");
-			if((ret = CmdReBoot()) != 0)
-				return -3;
+			//if((ret = CmdReBoot()) != 0)
+				//return -3;
+			CmdReBoot();
 			usleep(500 * 1000);
 			if((ret = CmdStart()) != 0)
 				return -4;
