@@ -5436,13 +5436,22 @@ int main(int argc,char **argv)
 			writeParameters("/tmp/.apcfg","w+",0);
 		}
 		//3.do new config pid
+		system("ifconfig eth0 down > /dev/null 2>&1");
+		system("ifconfig eth0 up > /dev/null 2>&1");
+		
 		CFG_get_by_name("WAN_IPADDR",valBuff);
 		CFG_get_by_name("WAN_NETMASK",valBuff2);
 		sprintf(pChar,"ifconfig eth0 %s netmask %s up > /dev/null 2>&1",valBuff,valBuff2);
 		Execute_cmd(pChar, rspBuff);
+		
 		//[TODO] DNS ,use system default dns 8.8.8.8
 		//[TODO] may be this is a bug
+		
 		CFG_get_by_name("IPGW",valBuff);
+		sprintf(pChar,"route add default gw %s dev eth0 > /dev/null 2>&1",valBuff);
+		Execute_cmd(pChar, rspBuff);
+		
+		/*
 		Execute_cmd("route -n", rspBuff);
 		if(strstr(rspBuff,valBuff) == 0)
 		{
@@ -5450,6 +5459,7 @@ int main(int argc,char **argv)
 			sprintf(pChar,"route add default gw %s dev eth0 > /dev/null 2>&1",valBuff);
 			Execute_cmd(pChar, rspBuff);
 		}
+		*/
 		gohome =1;
     }
 
