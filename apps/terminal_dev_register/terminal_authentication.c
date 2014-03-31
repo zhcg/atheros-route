@@ -1093,7 +1093,7 @@ int start_up_CACM()
         system("kill -9 `ps | grep cacm | sed \'/grep/\'d | awk \'{print $1}\'`");
 	}
     
-    if ((res = common_tools.start_up_application("/bin/cacm", app_argv, 1)) < 0)
+    if ((res = common_tools.start_up_application("/bin/cacm", app_argv, 0)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "start_up_application failed!", res);
         return res;

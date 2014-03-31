@@ -408,14 +408,21 @@ void * request_cmd_0x01_02_03_07_08_09_0A_pthread(void* para)
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
             goto EXIT;
         }
-
-        #if 0 // 启动CACM
-        if ((res = terminal_authentication.start_up_CACM()) < 0)
+        
+        #if USER_REGISTER == 1
+        
+        #if 1 // 启动CACM
+        if (terminal_authentication.start_up_CACM() < 0)
         {
-            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "start_up_CACM failed!", res);
-            goto EXIT;
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "start_up_CACM failed!", -1);
+        }
+        else
+        {
+            PRINT("start_up_CACM success!\n");
         }
         #endif
+        
+        #endif // #if USER_REGISTER == 1
     }
 
 EXIT:
@@ -865,6 +872,24 @@ EXIT:
             PRINT("insert failed!\n");
         }
         terminal_dev_register->data_table.register_state = *network_config.pad_cmd;
+        
+        #if USER_REGISTER == 1
+        
+        if (*network_config.pad_cmd == 0)
+        {
+            #if 1 // 启动CACM
+            if (terminal_authentication.start_up_CACM() < 0)
+            {
+                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "start_up_CACM failed!", -1);
+            }
+            else
+            {
+                PRINT("start_up_CACM success!\n");
+            }
+            #endif
+        }
+        
+        #endif // #if USER_REGISTER == 1
     }
     return res;
 }

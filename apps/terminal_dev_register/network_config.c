@@ -3061,7 +3061,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
     if ((res = common_tools.get_network_state(common_tools.config->pad_ip, 4, 6)) < 0)
     #elif BOARDTYPE == 9344
     //if ((res = common_tools.get_network_state(common_tools.config->pad_ip, 1, 3)) < 0)
-    if ((res = common_tools.get_network_state(common_tools.config->pad_ip, 1, 10)) < 0)
+    if ((res = common_tools.get_network_state(common_tools.config->pad_ip, 1, 7)) < 0)
     #endif
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_network_state failed!", res);

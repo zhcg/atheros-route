@@ -42,7 +42,7 @@ struct s_respond_pack
     char pad_user_name[60];           // Pad 用户名 字符串
     char pad_password[30];            // Pad 密码 字符串
     char sip_ip_address[30];          // SIP服务器地址
-    char sip_port[10];                // SIP端口
+    char sip_port[12];                // SIP端口
     char heart_beat_cycle[25];        // 心跳周期（整形字符串 单位秒）
     char business_cycle[25];          // 业务监控周期 字符串
 };

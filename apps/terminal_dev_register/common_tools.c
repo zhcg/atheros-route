@@ -4129,10 +4129,12 @@ int start_up_application(const char *path, char *const argv[], unsigned char fla
 	{
 	    if (flag == 1)
 	    {
+	        PRINT("flag = %d\n", flag);
 	        waitpid(child_pid, &res, 0);
 	    }
 		else 
         {
+            PRINT("flag = %d\n", flag);
             waitpid(child_pid, &res, WNOHANG);
         }
 		return res;
