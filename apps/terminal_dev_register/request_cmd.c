@@ -699,7 +699,8 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
             
             #if 1
             //res = common_tools.get_network_state(common_tools.config->terminal_server_ip, 1, 1);
-            res = common_tools.get_network_state(common_tools.config->center_ip, 1, 1);
+            //res = common_tools.get_network_state(common_tools.config->center_ip, 1, 1);
+            res = common_tools.get_network_state(common_tools.config->center_ip, 1, 2);
             #else
             res = common_tools.get_network_state(common_tools.config->wan_check_name, 1, 1);
             #endif

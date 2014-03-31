@@ -1618,11 +1618,12 @@ int get_network_state(char *ip, unsigned char ping_count, unsigned char repeat)
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data is different!", res);
             if (i != (repeat - 1))
             {
-                sleep(5);
-                continue;    
+                //sleep(5);
+                sleep(3);
+                continue;
             } 
         }
-        break;        
+        break;      
     }
     // free
     free(cmd_buf);
@@ -1655,7 +1656,7 @@ int get_user_prompt(int error_num, char **out_buf)
         case REGEXEC_ERR:           // 匹配字符串
         {            
             state_num = 1;  //状态码
-            memcpy(prompt, "终端PAD端数据异常！", sizeof(prompt) - 1);  // 提示信息
+            memcpy(prompt, "请求方数据异常！", sizeof(prompt) - 1);  // 提示信息
             len = strlen(prompt);    
             break;
         }
@@ -1663,7 +1664,7 @@ int get_user_prompt(int error_num, char **out_buf)
         case LOGIN_FAILED:          // 登陆失败
         {            
             state_num = 2;  //状态码
-            memcpy(prompt, "终端是PAD和底座不匹配！", sizeof(prompt) - 1);  // 提示信息
+            memcpy(prompt, "终端PAD和底座不匹配！", sizeof(prompt) - 1);  // 提示信息
             len = strlen(prompt);    
             break;
         }
@@ -1805,7 +1806,6 @@ int get_user_prompt(int error_num, char **out_buf)
 	    case SEMCTL_ERR:            // 信号量设置失败  
 	    case SEMOP_ERR:             // 信号量操作失败 
 	    case STRSTR_ERR:            // strstr错误
-	    case SN_BASE_ERR:           // base序列号错误     
         {            
             state_num = 13;  //状态码
             memcpy(prompt, "终端底座内部错误！", sizeof(prompt) - 1);  // 提示信息
@@ -1924,6 +1924,13 @@ int get_user_prompt(int error_num, char **out_buf)
             len = strlen(prompt);
             break;
         }
+        case SN_BASE_ERR:           // base序列号错误
+        {
+            state_num = 30;  //状态码
+            memcpy(prompt, "BASE序列号错误！", sizeof(prompt) - 1);  // 提示信息
+            len = strlen(prompt);
+            break;
+        } 
         default:
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "option does not mismatch!", MISMATCH_ERR);

@@ -3060,7 +3060,8 @@ int network_settings(int fd, int cmd_count, char cmd_word)
     #if BOARDTYPE == 5350
     if ((res = common_tools.get_network_state(common_tools.config->pad_ip, 4, 6)) < 0)
     #elif BOARDTYPE == 9344
-    if ((res = common_tools.get_network_state(common_tools.config->pad_ip, 1, 3)) < 0)
+    //if ((res = common_tools.get_network_state(common_tools.config->pad_ip, 1, 3)) < 0)
+    if ((res = common_tools.get_network_state(common_tools.config->pad_ip, 1, 10)) < 0)
     #endif
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_network_state failed!", res);
@@ -3081,7 +3082,8 @@ int network_settings(int fd, int cmd_count, char cmd_word)
     
         #if 1
         //if ((res = common_tools.get_network_state(common_tools.config->terminal_server_ip, 3, 3)) < 0)
-        if ((res = common_tools.get_network_state(common_tools.config->center_ip, 1, 1)) < 0)
+        //if ((res = common_tools.get_network_state(common_tools.config->center_ip, 1, 1)) < 0)
+        if ((res = common_tools.get_network_state(common_tools.config->center_ip, 1, 3)) < 0)
         #else
         if ((res = common_tools.get_network_state(common_tools.config->wan_check_name, 3, 3)) < 0)
         #endif
