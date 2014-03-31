@@ -2304,6 +2304,8 @@ athr_gmac_get_default_macaddr(athr_gmac_t *mac, u8 *mac_addr)
         ** Check for a valid manufacturer prefix.  If not, then use the defaults
         */
         
+		/*begin:wangyu modify the macaddr of eth0 and eth1 */
+		#if 0
         if(eep_mac_addr[0] == 0x00 && 
            eep_mac_addr[1] == 0x03 && 
            eep_mac_addr[2] == 0x7f)
@@ -2311,6 +2313,14 @@ athr_gmac_get_default_macaddr(athr_gmac_t *mac, u8 *mac_addr)
             memcpy(mac_addr, eep_mac_addr, 6);
             return ;
         }
+		#else
+		if( !(eep_mac_addr[0] & 0x01))
+		{
+			memcpy(mac_addr, eep_mac_addr, 6);
+			return ;
+		}
+		#endif
+		/*end:wangyu modify the macaddr of eth0 and eth1 */
     }
     /* Use Default address at top of range */
     mac_addr[0] = 0x00;
