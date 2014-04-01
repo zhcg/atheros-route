@@ -494,8 +494,10 @@ START_WRITE:
 			if(phone_audio.input_stream_wp >= phone_audio.input_stream_rp)
 				valid_bytes	= phone_audio.input_stream_wp - phone_audio.input_stream_rp;
 			else
+			{
 				valid_bytes	= AUDIO_STREAM_BUFFER_SIZE - phone_audio.input_stream_rp;
-
+				PRINT("%d,end,back!!\n",valid_bytes);
+			}
 			if(phone_control.start_dial == 1 && valid_bytes < AUDIO_WRITE_BYTE_SIZE && valid_bytes != 0)
 			{
 				valid_bytes = AUDIO_WRITE_BYTE_SIZE;
@@ -507,14 +509,13 @@ START_WRITE:
 					if(valid_bytes > (5 * AUDIO_WRITE_BYTE_SIZE))
 					{
 						//打印信息
-						PRINT("received data is more,so discard some one\r\n");
+						PRINT("%d;received data is more,so discard some one\r\n",valid_bytes);
 						phone_audio.input_stream_rp += (valid_bytes / AUDIO_WRITE_BYTE_SIZE - 1) * AUDIO_WRITE_BYTE_SIZE;
 						total_write_bytes += (valid_bytes / AUDIO_WRITE_BYTE_SIZE - 1) * AUDIO_WRITE_BYTE_SIZE;;
 					}
 				}
 				if(valid_bytes > AUDIO_WRITE_BYTE_SIZE)
 					valid_bytes = AUDIO_WRITE_BYTE_SIZE;
-
 				write_ret = write(phone_audio.phone_audio_pcmfd,&input_stream_buffer[phone_audio.input_stream_rp],valid_bytes);
 				if(write_ret < 0)
 				{
@@ -522,6 +523,8 @@ START_WRITE:
 					PRINT("error,when write data to sound card,error code is %d\n",write_ret);
 					break;
 				}
+				//if(phone_audio.input_stream_wp < phone_audio.input_stream_rp)
+					//PRINT("write_ret = %d\n",write_ret);
 				//if(phone_audio.input_stream_rp < pcm_ret)
 				//{
 					//PRINT("phone_audio.input_stream_rp = %d\n",phone_audio.input_stream_rp);
@@ -544,7 +547,7 @@ START_WRITE:
 					phone_audio.input_stream_rp = 0;
 			}
 			print_loop++;
-			if(print_loop > 300)//5秒打印一次
+			if(print_loop > 600)//5秒打印一次
 			{
 				//打印信息。。。。
 				PRINT("total_write_bytes is %d\r\n",total_write_bytes);
@@ -639,7 +642,7 @@ TBED_SEND_ERROR:
 				}
 			}
 			print_loop++;
-			if(print_loop > 300)//5秒打印一次
+			if(print_loop > 600)//5秒打印一次
 			{
 				//打印信息。。。。
 				PRINT("total_recv_talkbacked_bytes is %d\r\n",total_recv_bytes);
@@ -742,7 +745,7 @@ SEND_ERR:
 				}
 			}
 			print_loop++;
-			if(print_loop > 300)//5秒打印一次
+			if(print_loop > 600)//5秒打印一次
 			{
 				//打印信息。。。。
 				PRINT("total_send_bytes is %d\r\n",total_send_bytes);
@@ -793,7 +796,7 @@ TB_SEND_ERR:
 				}
 			}
 			print_loop++;
-			if(print_loop > 300)//5秒打印一次
+			if(print_loop > 600)//5秒打印一次
 			{
 				//打印信息。。。。
 				PRINT("total_send_talkbacking_bytes is %d\r\n",total_send_bytes);
@@ -967,7 +970,7 @@ RECV_ERROR:
 					phone_audio.input_stream_wp = 0;
 			}
 			print_loop++;
-			if(print_loop > 300)//5秒打印一次
+			if(print_loop > 600)//5秒打印一次
 			{
 				//打印信息。。。。
 				PRINT("total_recv_bytes is %d\r\n",total_recv_bytes);
@@ -1019,7 +1022,7 @@ TB_RECV_ERROR:
 				first_recv_tb = 1;
 			}
 			print_loop++;
-			if(print_loop > 300)//5秒打印一次
+			if(print_loop > 600)//5秒打印一次
 			{
 				//打印信息。。。。
 				PRINT("total_recv_talkbacking_bytes is %d\r\n",total_recv_bytes);

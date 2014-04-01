@@ -1976,11 +1976,11 @@ void* tcp_loop_recv(void* argv)
 					{
 						memset(msg,0,BUFFER_SIZE_2K);
 						getsockopt(devlist[i].client_fd,SOL_SOCKET,SO_ERROR,&optval, &optlen);
-						PRINT("optval = %d\n",optval);
+						//PRINT("optval = %d\n",optval);
 						if(optval == 0)
 						{
 							ret=recv(devlist[i].client_fd,msg+tmp_ret,BUFFER_SIZE_2K,0);
-							PRINT("ret = %d\n",ret);						
+							//PRINT("ret = %d\n",ret);						
 						}
 						else
 						{
@@ -2436,7 +2436,7 @@ void* handle_down_msg(void* argv)
 
 int generate_up_msg()
 {
-	PRINT("%s\n",__FUNCTION__);
+	//PRINT("%s\n",__FUNCTION__);
 	char sendbuf[BUF_LEN]={0};
 	char tmpbuf1[BUF_LEN]={0};
 	char tmpbuf2[BUF_LEN]={0};
@@ -2482,7 +2482,8 @@ int generate_up_msg()
 		if(devlist[i].client_fd == -1 || devlist[i].dying == 1 )
 #endif
 			continue;
-		PRINT("%s:%d\n",devlist[i].client_ip,netWrite(devlist[i].client_fd, sendbuf, count+19));
+//		PRINT("%s:%d\n",devlist[i].client_ip,netWrite(devlist[i].client_fd, sendbuf, count+19));
+		netWrite(devlist[i].client_fd, sendbuf, count+19);
 	}
 	return 0;
 }
@@ -2515,7 +2516,7 @@ void* phone_check_tick(void* argv)
 			{
 				if(devlist[i].destroy_count >= 20)
 				{
-					PRINT("devlist[%d].destroy_count = %d\n",i,devlist[i].destroy_count);
+					PRINT("dev%d.destroy_count = %d\n",i,devlist[i].destroy_count);
 				}
 				devlist[i].destroy_count ++;
 			}
