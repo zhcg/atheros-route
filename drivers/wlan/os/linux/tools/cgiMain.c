@@ -6457,7 +6457,9 @@ int main(int argc,char **argv)
          printf("<HTML><HEAD>\r\n");
          printf("<meta http-equiv=\"Content-Type\" content=\"text/html;charset=UTF-8\">");
          printf("</head><body>");
-         printf("<script  language=javascript>setTimeout(function(){window.opener=null;window.open('/home.html','_top');},1000);</script>");
+         srand(time(NULL));
+         //printf("<script  language=javascript>setTimeout(function(){window.opener=null;window.open('/home.html','_top');},1000);</script>");
+         printf("<script  language=javascript>setTimeout(function(){window.opener=null;window.open('/index.html?hhh=%d','_top');},1000);</script>",rand());
          //printf("<script  language=javascript>setTimeout(function(){window.opener=null;window.open('http://10.10.10.254','_top');},1000);</script>");
          printf("</body></html>");
          gohome =2;

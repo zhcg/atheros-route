@@ -33,10 +33,10 @@
 	<message msgid="clist rate" msgstr="Rate" />  
 	<message msgid="clist sig" msgstr="Signal strength" />  
 
-	<message msgid="conm title" msgstr="Connection Access" />  
-	<message msgid="conm des" msgstr="Management of accessed Connection devices " />  
-	<message msgid="conm t1_title" msgstr="Connection Access" />  
-	<message msgid="conm t1_switch" msgstr="Connection access switch" />  
+	<message msgid="conm title" msgstr="Wireless Access" />  
+	<message msgid="conm des" msgstr="Management of accessed wireless devices " />  
+	<message msgid="conm t1_title" msgstr="Wireless Access" />  
+	<message msgid="conm t1_switch" msgstr="wireless access switch" />  
 	<message msgid="conm ts1" msgstr="(Add and modify should after Enable and Apply) " />  
 
 	<message msgid="conw title" msgstr="Remote Web management" />  
@@ -46,8 +46,8 @@
 	
 	<message msgid="conm ADDMRULE" msgstr="Add" />  
 	
-	<message msgid="addw title" msgstr="Add Connection access management of equipment information" />  
-	<message msgid="addw t1_title" msgstr="Add Connection access management entry" />  
+	<message msgid="addw title" msgstr="Add wireless access management of equipment information" />  
+	<message msgid="addw t1_title" msgstr="Add wireless access management entry" />  
 	<message msgid="addw t1_MAC" msgstr="MAC Address" />  
 	<message msgid="addw t1_Des" msgstr="Description" />  
 	<message msgid="addw t1_Status" msgstr="Status" />  
