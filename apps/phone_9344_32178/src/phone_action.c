@@ -26,11 +26,6 @@ unsigned char sumxor(const  char  *arr, int len)
 int senddtmf(char dtmf)
 {
 	int tmp;
-	if(total_dtmf_ret <= 0)
-	{
-		//ioctl(phone_audio.phone_audio_pcmfd,SET_WRITE_TYPE,0);
-	}
-
 	dtmf_ret = GenerateCodePcmData(&dtmf,1,dtmf_buf,Big_Endian);
 	total_dtmf_ret += dtmf_ret;
 	
@@ -71,8 +66,6 @@ int offhook()
 //拨号
 int dialup(char *num,int num_len)
 {
-	//ioctl(phone_audio.phone_audio_pcmfd,SET_WRITE_TYPE,1);
-
 	if(num_len>40)
 		num_len = 40;
 	phone_audio.input_stream_rp = 0;

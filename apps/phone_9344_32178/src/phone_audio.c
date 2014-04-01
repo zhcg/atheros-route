@@ -155,7 +155,7 @@ void stopaudio(dev_status_t* devp,int flag)
 		phone_audio.audio_send_thread_exit_flag = 0;
 		phone_audio.audio_recv_thread_exit_flag = 0;
 		phone_audio.audio_read_write_thread_exit_flag = 0;
-		if(flag == 1)
+		if(flag == PSTN)
 		{
 			if(phone_audio.audio_send_thread_flag || phone_audio.audio_recv_thread_flag || phone_audio.audio_read_write_thread_flag )
 			{
@@ -164,7 +164,7 @@ void stopaudio(dev_status_t* devp,int flag)
 				phone_audio.audio_read_write_thread_flag = 0;
 			}
 		}
-		if(flag == 0)
+		if(flag == TALKBACK)
 		{
 			if(phone_audio.audio_talkback_recv_thread_flag || phone_audio.audio_talkback_send_thread_flag || phone_audio.audio_talkbacked_recv_send_thread_flag )
 			{
@@ -1006,7 +1006,7 @@ TB_RECV_ERROR:
 //
 				//close(devp->audio_client_fd);
 				//devp->audio_client_fd = -1;
-				stopaudio(devp,PSTN);
+				stopaudio(devp,TALKBACK);
 				break;
 
 			}
