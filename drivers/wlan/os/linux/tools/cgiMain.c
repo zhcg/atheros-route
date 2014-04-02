@@ -6767,13 +6767,16 @@ int main(int argc,char **argv)
 				CFG_get_by_name("DHCPON_OFF",tmp);
 				if(strcmp(tmp,"on")==0)
 				{
-				system("killall udhcpd > /dev/null 2>&1");			 
-				system("/etc/rc.d/rc.udhcpd > /dev/null 2>&1");
-				system("/usr/sbin/set_addr > /dev/null 2>&1");		 
-				system("/usr/sbin/udhcpd /etc/udhcpd.conf > /dev/null 2>&1");
-
+					system("killall udhcpd > /dev/null 2>&1");			 
+					system("/etc/rc.d/rc.udhcpd > /dev/null 2>&1");
+					system("/usr/sbin/set_addr > /dev/null 2>&1");		 
+					system("/usr/sbin/udhcpd /etc/udhcpd.conf > /dev/null 2>&1");
 				}
 
+				/*make the eth1(br0/lan)'s pc retake ip address*/
+				system("ifconfig eth1 down > /dev/null 2>&1");
+				system("ifconfig eth1 up > /dev/null 2>&1");
+				
 				//reboot hostapd
 				Execute_cmd("killall hostapd > /dev/null 2>&1",rspBuff);
 
@@ -6805,7 +6808,7 @@ int main(int argc,char **argv)
 				else
 				Execute_cmd("cfg -t4 /etc/ath/PSK.ap_bss ath3 > /tmp/secath3",rspBuff);
 				Execute_cmd("hostapd -B /tmp/secath3 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
-			}
+							}
 	   }//end eth0_ip != br0_ip
 	   else
 	   {
