@@ -838,12 +838,14 @@ char *processSpecial(char *paramStr, char *outBuff)
                                 outBuff += sprintf(outBuff,"<td>%s-%s</td>", time_start, time_stop);
 
                                 if(strncmp(enable_flag,"##",2)==0)
-		                            outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%d\" id=\"%d\" onclick=\"lismod(this.name)\"></td>",id,id);
+		                            outBuff += sprintf(outBuff,"<td>off</td>");
                                 else
-		                            outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%d\" id=\"%d\" onclick=\"lismod(this.name)\" checked></td>",id,id);
+		                            outBuff += sprintf(outBuff,"<td>on</td>");
                         //        outBuff += sprintf(outBuff,"<td>%s</td>","ON");
-                        
-                                outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"%d\"  style=\"color:red;font-size:20px;\" value=\"×\" onClick=\"listdel(this.name)\"></td>", id);
+                                outBuff += sprintf(outBuff,"<td><img border=\"0\" name=\"%d\" src=\"../images/mod.gif\" width=\"20\" height=\"20\" onclick=\"modify(this.name)\" /></td>",id);
+	          
+                                outBuff += sprintf(outBuff,"<td><img border=\"0\" name=\"%d\" src=\"../images/del.gif\" width=\"20\" height=\"20\" onclick=\"listdel(this.name)\" /></td>",id);
+                              //outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"%d\"  style=\"color:red;font-size:20px;\" value=\"×\" onClick=\"listdel(this.name)\"></td>", id);
                                 outBuff += sprintf(outBuff,"</tr>");
 
                                 //ret = fscanf(f_parc,"iptables -A FORWARD_ACCESSCTRL -i br0 -m mac --mac-source %s -j DROP\n",mac);
@@ -7193,6 +7195,7 @@ exit(1);
         char cmd_sed_buff[512];
         char *cmd_buffer_p;
 
+        char parc_mode[4] = {0};
         char parc_mac[64] = {0};
         char parc_url[128] ={0};
         int url_num = 0;
@@ -7211,12 +7214,14 @@ exit(1);
 
 
         int i=0;
+        int mode_id=0;
         int parc_line=0;
         char *parc_ret;
         int parc_flag = 0;
         int parc_mode_flag = 0;
 
 
+        CFG_get_by_name("IFMOD",parc_mode);
         CFG_get_by_name("ADD_MAC",parc_mac);
         CFG_get_by_name("WEEK",weekdays);
         CFG_get_by_name("TIMING_BH",time_start_h);
@@ -7224,6 +7229,8 @@ exit(1);
         CFG_get_by_name("TIMING_EH",time_stop_h);
         CFG_get_by_name("TIMING_EM",time_stop_m);
         CFG_get_by_name("PARC_STATUS",enable_status);
+
+        mode_id = atoi(parc_mode);
 
         if(strncmp(enable_status,"1",1)==0)
             strcpy(enable_cmd,"iptables");
@@ -7264,13 +7271,16 @@ exit(1);
             }
             if(!parc_flag)
             {
-                sprintf(cmd_sed_buff ,"sed -i '%da\\%s %s' %s",parc_line/2, enable_cmd, cmd_buffer_w, PARC_PATH);
-                if(!parc_line)
-                    fprintf(f_parc,"%s %s",enable_cmd, cmd_buffer_w);
-                    
-                memset(cmd_buffer_w,0,512);
-                sprintf(cmd_buffer_w ,"%s -A FORWARD_ACCESSCTRL -i br0 -m mac --mac-source %s -j DROP\n", enable_cmd, parc_mac);
-                fprintf(f_parc,"%s",cmd_buffer_w);
+                if(!mode_id)
+                {
+                    sprintf(cmd_sed_buff ,"sed -i '%da\\%s %s' %s",parc_line/2, enable_cmd, cmd_buffer_w, PARC_PATH);
+                    if(!parc_line)
+                        fprintf(f_parc,"%s %s",enable_cmd, cmd_buffer_w);
+                        
+                    memset(cmd_buffer_w,0,512);
+                    sprintf(cmd_buffer_w ,"%s -A FORWARD_ACCESSCTRL -i br0 -m mac --mac-source %s -j DROP\n", enable_cmd, parc_mac);
+                    fprintf(f_parc,"%s",cmd_buffer_w);
+                }
             }
         }
         else
@@ -7284,7 +7294,20 @@ exit(1);
 		if(!parc_flag)
 		{
 			if(parc_line)
-				system(cmd_sed_buff);
+            {
+                if(!mode_id)
+				    system(cmd_sed_buff);
+                else
+                {
+                    memset(cmd_sed_buff,0,512);
+                    sprintf(cmd_sed_buff ,"sed -i '%dc\\%s %s' %s",mode_id, enable_cmd, cmd_buffer_w, PARC_PATH);
+				    system(cmd_sed_buff);
+
+                    memset(cmd_sed_buff,0,512);
+                    sprintf(cmd_sed_buff ,"sed -i '%dc\\%s -A FORWARD_ACCESSCTRL -i br0 -m mac --mac-source %s -j DROP' %s",mode_id+parc_line/2, enable_cmd, parc_mac, PARC_PATH);
+				    system(cmd_sed_buff);
+                }
+            }
 			Execute_cmd("iptables -F FORWARD_ACCESSCTRL" , add_cmd_err);
 			Execute_cmd("sh /etc/ath/iptables/parc" , add_cmd_err);
 
