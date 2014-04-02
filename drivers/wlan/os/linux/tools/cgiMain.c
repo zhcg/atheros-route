@@ -1179,11 +1179,16 @@ char *processSpecial(char *paramStr, char *outBuff)
                             if (strlen(lease.hostname) > 0)
                                 outBuff += sprintf(outBuff,"<td>%s</td>",lease.hostname);
                             else
-                                outBuff += sprintf(outBuff,"<td><br /></td>");
+                                outBuff += sprintf(outBuff,"<td>NULL</td>");
                             
-                            addr.s_addr = lease.ip;
-                            expires = ntohl(lease.expires);
-                            outBuff += sprintf(outBuff,"<td>%s</td>", inet_ntoa(addr));
+                            if (lease.ip > 0)
+							{
+								addr.s_addr = lease.ip;
+                            	expires = ntohl(lease.expires);
+                            	outBuff += sprintf(outBuff,"<td>%s</td>", inet_ntoa(addr));
+							}
+							else
+								outBuff += sprintf(outBuff,"<td>NULL</td>", inet_ntoa(addr));
 
 							strncpy(buf, mac_buf, 17);
 							outBuff += sprintf(outBuff,"<td>%s</td>", buf);
@@ -1262,11 +1267,17 @@ char *processSpecial(char *paramStr, char *outBuff)
 	                            	if (strlen(lease.hostname) > 0)
 	                                    outBuff += sprintf(outBuff,"<td>%s</td>",lease.hostname);
 	                                else
-	                                    outBuff += sprintf(outBuff,"<td><br /></td>");
+	                                    outBuff += sprintf(outBuff,"<td>NULL</td>");
 
-									addr.s_addr = lease.ip;
-	                                expires = ntohl(lease.expires);
-	                                outBuff += sprintf(outBuff,"<td>%s</td>", inet_ntoa(addr));
+									
+									if (lease.ip > 0)
+									{
+										addr.s_addr = lease.ip;
+	                                	expires = ntohl(lease.expires);
+	                                	outBuff += sprintf(outBuff,"<td>%s</td>", inet_ntoa(addr));
+									}
+									else
+										outBuff += sprintf(outBuff,"<td>NULL</td>", inet_ntoa(addr));
 	                                
 	                                //outBuff += sprintf(outBuff,"<td>%02x", lease.mac[0]);
 	                                //for (i = 1; i < 6; i++)
@@ -1316,11 +1327,16 @@ char *processSpecial(char *paramStr, char *outBuff)
 									if (strlen(lease.hostname) > 0)
 										outBuff += sprintf(outBuff,"<td>%s</td>",lease.hostname);
 									else
-										outBuff += sprintf(outBuff,"<td><br /></td>");
+										outBuff += sprintf(outBuff,"<td>NULL</td>");
 
-									addr.s_addr = lease.ip;
-									expires = ntohl(lease.expires);
-									outBuff += sprintf(outBuff,"<td>%s</td>", inet_ntoa(addr));
+									if (lease.ip > 0)
+									{
+										addr.s_addr = lease.ip;
+	                                	expires = ntohl(lease.expires);
+	                                	outBuff += sprintf(outBuff,"<td>%s</td>", inet_ntoa(addr));
+									}
+									else
+										outBuff += sprintf(outBuff,"<td>NULL</td>", inet_ntoa(addr));
 									
 									//outBuff += sprintf(outBuff,"<td>%02x", lease.mac[0]);
 									//for (i = 1; i < 6; i++)
@@ -1373,8 +1389,8 @@ char *processSpecial(char *paramStr, char *outBuff)
                                 outBuff += sprintf(outBuff,"<td>%d</td>",num);
                                 num++; 
 								
-								outBuff += sprintf(outBuff,"<td>wds</td>");
-								outBuff += sprintf(outBuff,"<td>wds</td>", inet_ntoa(addr));
+								outBuff += sprintf(outBuff,"<td>NULL</td>");
+								outBuff += sprintf(outBuff,"<td>NULL</td>", inet_ntoa(addr));
 								outBuff += sprintf(outBuff,"<td>%s</td>", buf);
                                 
                                 outBuff += sprintf(outBuff,"</td>");
@@ -1411,8 +1427,8 @@ char *processSpecial(char *paramStr, char *outBuff)
 								outBuff += sprintf(outBuff,"<td>%d</td>",num);
 								num++; 
 								
-								outBuff += sprintf(outBuff,"<td>wds</td>");
-								outBuff += sprintf(outBuff,"<td>wds</td>", inet_ntoa(addr));
+								outBuff += sprintf(outBuff,"<td>NULL</td>");
+								outBuff += sprintf(outBuff,"<td>NULL</td>", inet_ntoa(addr));
 								
 								outBuff += sprintf(outBuff,"<td>%s</td>", buf);
 
