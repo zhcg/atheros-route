@@ -281,6 +281,98 @@ function initValue()
 	Butterlate.setTextDomain("par");
 	initTranslation();
 	document.getElementById("WEEK").value="0";
+	var res=GetQueryString("pgg1");
+	if(res)
+	{
+		var p1="~~pgg1~";
+		var p2="~~pgg2~";
+		var p3="~~pgg3~";
+		var p4="~~pgg4~";
+		var p5="~~pgg5~";
+		var p6="~~pgg6~";
+		p3="xx"+p3;
+
+		document.WORKFORM.ADD_MAC.value = p1;
+		{
+			var n, nn, nnn, nnnn, nnnnn;// 声明变量。
+			var p22="";
+			var p222="";
+			var p2222="";
+			var p22222="";
+			alert(p1);
+			alert(p2);
+			alert(p3);
+			alert(p4);
+			alert(p5);
+			alert(p6);
+
+			if(p2!="")
+			{
+				document.WORKFORM.ADD_NET1.value = p2.substr(0, p2.indexOf("&lt;br&gt;"));
+				
+				p22 = p2.substr(p2.indexOf("&lt;br&gt;")+10, p2.length-p2.indexOf("&lt;br&gt;")-10)
+
+			}
+			if(p22!="")
+			{
+				document.WORKFORM.ADD_NET2.value = p22.substr(0, p22.indexOf("&lt;br&gt;"));
+				p222 = p22.substr(p22.indexOf("&lt;br&gt;")+10, p22.length-p22.indexOf("&lt;br&gt;")-10)
+			}
+			if(p222!="")
+			{
+				document.WORKFORM.ADD_NET3.value = p222.substr(0, p222.indexOf("&lt;br&gt;"));
+				p2222 = p222.substr(p222.indexOf("&lt;br&gt;")+10, p222.length-p222.indexOf("&lt;br&gt;")-10)
+			}
+			if(p2222!="")
+			{
+				document.WORKFORM.ADD_NET4.value = p2222.substr(0, p2222.indexOf("&lt;br&gt;"));
+				p22222 = p2222.substr(p2222.indexOf("&lt;br&gt;")+10, p2222.length-p2222.indexOf("&lt;br&gt;")-10)
+			}
+			if(p22222!="")
+			{
+				document.WORKFORM.ADD_NET5.value = p22222.substr(0, p22222.indexOf("&lt;br&gt;"));
+			}
+		}
+		
+		if(p3.indexOf("1") > 0 )
+			document.getElementById("x_1").checked = true;
+		if(p3.indexOf("2") > 0 )
+			document.getElementById("x_2").checked = true;
+		if(p3.indexOf("3") > 0 )
+			document.getElementById("x_3").checked = true;
+		if(p3.indexOf("4") > 0 )
+			document.getElementById("x_4").checked = true;
+		if(p3.indexOf("5") > 0 )
+			document.getElementById("x_5").checked = true;
+		if(p3.indexOf("6") > 0 )
+			document.getElementById("x_6").checked = true;
+		if(p3.indexOf("7") > 0 )
+			document.getElementById("x_7").checked = true;
+
+		{
+			var a = p4.indexOf(":");
+			var b = p4.indexOf("-");
+			var c = p4.lastIndexOf(":");
+			var s, ss, sss, ssss;// 声明变量。
+			
+			s = p4.substr(0, a); // 获取子字符串。
+			ss = p4.substr(a+1, b-a-1); // 获取子字符串。
+			sss = p4.substr(b+1, c-b-1);
+			ssss = p4.substr(c+1, p4.length-c-1);
+			
+			document.WORKFORM.TIMING_BH.value = s;
+			document.WORKFORM.TIMING_BM.value = ss;
+			document.WORKFORM.TIMING_EH.value = sss;
+			document.WORKFORM.TIMING_EM.value = ssss;
+		}
+		if(p5=="on")
+			document.WORKFORM.PARC_STATUS.selectedIndex=0;
+		else
+			document.WORKFORM.PARC_STATUS.selectedIndex=1;
+			
+		document.WORKFORM.IFMOD.value=p6;	
+		daycount();	
+	}
 }
 
 function daycount()
@@ -383,6 +475,7 @@ function daycount()
   <td>
     <input type="button" name="cancel_motion" id="bCANCEL" class="handaer_input" value="Cancel" onClick="window.location.href='ad_parentc_accept?ad_parentc_accept=yes'">
     <input type="button" name="bSAVE" id="bSAVE" class="handaer_input" value="Apply" onClick="CheckValue()">
+	<input type="text" name="IFMOD" style="display:none" id="IFMOD" value="0"/>
 	<input type="submit" name="ADD_PARC" id="ADD_PARC" style="display:none" value="ADD_PARC">
 
   </td>

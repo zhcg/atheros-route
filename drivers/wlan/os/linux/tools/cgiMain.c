@@ -753,41 +753,15 @@ char *processSpecial(char *paramStr, char *outBuff)
 	                            outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%d\" id=\"%d\" onclick=\"lismod(this.name)\"></td>",stalist.id,stalist.id);
 
 							
-							sprintf(buf, "<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>", stalist.macAddr);
-							outBuff += sprintf(outBuff, buf);
+							//sprintf(buf, "<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>", stalist.macAddr);
+                                    outBuff += sprintf(outBuff,"<td><img border=\"0\" name=\"%s\" src=\"../images/del.gif\" width=\"20\" height=\"20\" onclick=\"listdel(this.name)\" /></td>",stalist.macAddr);
+
+							//outBuff += sprintf(outBuff, buf);
 	                    	outBuff += sprintf(outBuff, "</tr>");
 						}
 						fclose(fp);
 					}
-					#if 0
-                    outBuff += sprintf(outBuff,"<tr>");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","1");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","456468wqeasd");
-                    outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"1\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
-                    outBuff += sprintf(outBuff,"</tr>");
-                    
-                    outBuff += sprintf(outBuff,"<tr>");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","2");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","456468wqeasd");
-                    outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"2\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
-                    outBuff += sprintf(outBuff,"</tr>");
 
-                    outBuff += sprintf(outBuff,"<tr>");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","3");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","456468wqeasd");
-                    outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"3\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
-                    outBuff += sprintf(outBuff,"</tr>");
-
-                    outBuff += sprintf(outBuff,"<tr>");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","4");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","22:22:22:22:22:22");
-                    outBuff += sprintf(outBuff,"<td>%s</td>","456468wqeasd");
-                    outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"4\"  style=\"color:red;font-size:20px;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>");
-                    outBuff += sprintf(outBuff,"</tr>");
-					#endif
                 }
                 //家长控制(带配置)
                 else if(strcmp(secArg,"parclist")==0)
@@ -895,7 +869,9 @@ char *processSpecial(char *paramStr, char *outBuff)
                             outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%s\" id=\"%s\" onclick=\"lismod(this.name)\" checked></td>",addr_mac,addr_mac);
                           if ( memcmp ( addr_status , "disable" ,7) == 0)
                             outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%s\" id=\"%s\" onclick=\"lismod(this.name)\"></td>",addr_mac,addr_mac);
-						outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:30px;cursor:hand;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>",addr_mac);
+						//outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:30px;cursor:hand;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>",addr_mac);
+                            outBuff += sprintf(outBuff,"<td><img border=\"0\" name=\"%s\" src=\"../images/del.gif\" width=\"20\" height=\"20\" onclick=\"listdel(this.name)\" /></td>",addr_mac);
+
 	                    outBuff += sprintf(outBuff,"</tr>");
 						id ++;						
 						memset(addr_buf,0,1024);
@@ -935,7 +911,9 @@ char *processSpecial(char *paramStr, char *outBuff)
 		                   outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%s\" id=\"%s\" onclick=\"lismod(this.name)\" checked></td>",des_ip,des_ip);
 						if ( memcmp ( rule_status , "disable" ,7) == 0)
 		                    outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%s\" id=\"%s\" onclick=\"lismod(this.name)\"></td>",des_ip,des_ip);
-						outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:30px;cursor:hand;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>",des_ip);
+						//outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:30px;cursor:hand;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>",des_ip);
+                        outBuff += sprintf(outBuff,"<td><img border=\"0\" name=\"%s\" src=\"../images/del.gif\" width=\"20\" height=\"20\" onclick=\"listdel(this.name)\" /></td>",des_ip);
+		
 	                    outBuff += sprintf(outBuff,"</tr>");
 						id ++;						
 						memset(buf,0,1024);
@@ -971,7 +949,8 @@ char *processSpecial(char *paramStr, char *outBuff)
 		                	outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%s\" id=\"%s\" onclick=\"lismod(this.name)\" checked></td>",arp_ip,arp_ip);
 						if (strstr(arp_status , "disable"))
 							outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%s\" id=\"%s\" onclick=\"lismod(this.name)\"></td>",arp_ip,arp_ip);
-						outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:30px;cursor:hand;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>",arp_ip);
+						//outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:30px;cursor:hand;\" value=\"脳\" onClick=\"listdel(this.name)\"></td>",arp_ip);
+                        outBuff += sprintf(outBuff,"<td><img border=\"0\" name=\"%s\" src=\"../images/del.gif\" width=\"20\" height=\"20\" onclick=\"listdel(this.name)\" /></td>",arp_ip);
 	                    outBuff += sprintf(outBuff,"</tr>");
 						id ++;						
 						memset(buf,0,1024);
@@ -6810,7 +6789,7 @@ int main(int argc,char **argv)
 				else
 				Execute_cmd("cfg -t4 /etc/ath/PSK.ap_bss ath3 > /tmp/secath3",rspBuff);
 				Execute_cmd("hostapd -B /tmp/secath3 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
-							}
+			}
 	   }//end eth0_ip != br0_ip
 	   else
 	   {

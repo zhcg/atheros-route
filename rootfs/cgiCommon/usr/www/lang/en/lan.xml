@@ -96,7 +96,7 @@
 	<message msgid="err eip" msgstr="The end address is not in the legal network " />
 	<message msgid="err iprange" msgstr="The DHCP address range can't contain gateway IP" />
 	<message msgid="err ip notin" msgstr="IP address must be in the DHCP address range" />
-	<message msgid="err IPMAC exist" msgstr="IP or MAC address has been bound" />
+	<message msgid="err IPMAC exist" msgstr="IP and MAC address band fail" />
 	<message msgid="err ipsame" msgstr="IP address can not be the same with the gateway IP" />
 	<message msgid="err ip illegal" msgstr="The IP address is not in the valid range" />
 	<message msgid="err sub allone" msgstr="Subnet mask should not be 255.255.255.255" />

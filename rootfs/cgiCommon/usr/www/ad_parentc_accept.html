@@ -36,6 +36,7 @@ function initTranslation()
 	trans_inner("t1_Time","pa t1_Time");
 	trans_inner("t1_St","pa t1_St");
 	trans_inner("t1_Mod","pa t1_Mod");
+	trans_inner("t1_Del","pa t1_Del");
 	trans_inner("help_r","help");
 	
 	trans_value("ADDPCR","par ADD");
@@ -54,28 +55,29 @@ function listdel(value)
 	}
 	
 }
-function lismod(value)
-{
-	if(document.getElementById(value).checked == true)
-	{
-		document.getElementById("ON_OFF").value="ON";	
-	}
-	else
-	{
-		document.getElementById("ON_OFF").value="OFF";	
-	}
-	
-	document.getElementById("MODXXX").value=value;
-	//alert("修改了"+value +"  "+document.getElementById("ON_OFF").value);
-	
-	button_commit("MOD_PRC");
-}
+
 function help()
 {
 	if (_("toplanguage")=="e")
 		window.location.href='../help/ad_parentc_accept_help_e.html';
 	else
 		window.location.href='../help/ad_parentc_accept_help_z.html';
+}
+function modify(val)
+{
+	var par="";
+	var tab = document.getElementById("t1");  //找到这个表格
+	var rows = tab.rows;               //取得这个table下的所有行
+	var i = parseInt(val);
+	
+	for(var j=1;j<rows[i+1].cells.length-2;j++)
+	{
+	  var cell = rows[i+1].cells[j];
+	  //alert("第"+(i+2)+"行第"+(j+1)+"格的数字是"+cell.innerHTML);
+	  par=par +"pgg"+j.toString()+"="+cell.innerHTML+"&";
+	}
+	//alert(par);
+	window.location.href='ad_parentc_add?ad_parentc_add=yes&'+par+"pgg6="+i+"&pgg7=end";
 }
 </script>
 
@@ -90,15 +92,16 @@ function help()
 
 <table id="t1"  width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
 <tr>
-	<td class="title" colspan="7" id="t1_title"></td></tr>
+	<td class="title" colspan="8" id="t1_title"></td></tr>
   <tr>
     <td>ID</td>
     <td id="t1_Mac">MAC地址</td>
     <td id="t1_Ns">网站列表</td>
     <td id="t1_Week">星期</td>
     <td id="t1_Time">时间</td>
-    <td id="t1_St">状态</td>
-    <td id="t1_Mod">配置</td>
+    <td id="t1_St">生效</td>
+    <td id="t1_Mod">修改</td>
+    <td id="t1_Del">删除</td>
   </tr>
    ~Z:parclist~  
 
@@ -109,11 +112,6 @@ function help()
 	<input style="display:none" type="submit" name="DEL_PRC" id="DEL_PRC" value="DEL_PRC">
 </form>
 
-<form method="POST" name="MODLIST">
-	<input style="display:none"  type="text" name="MODXXX" id="MODXXX" size="20" maxlength="32">
-	<input style="display:none"  type="text" name="ON_OFF" id="ON_OFF" size="20" maxlength="32">
-	<input style="display:none" type="submit" name="MOD_PRC" id="MOD_PRC" value="MOD_PRC">
-</form>
 </td></tr>
 </table>
 </div>

@@ -31,7 +31,8 @@
 	<message msgid="pa t1_Week" msgstr="星期" />  
 	<message msgid="pa t1_Time" msgstr="时间" />  
 	<message msgid="pa t1_St" msgstr="生效" />  
-	<message msgid="pa t1_Mod" msgstr="删除" />  
+	<message msgid="pa t1_Mod" msgstr="修改" />  
+	<message msgid="pa t1_Del" msgstr="删除" />  
 	
 	<message msgid="pa delit1" msgstr="确定要删除" />  	
 	<message msgid="pa delit2" msgstr="的管理条目?" />  	
