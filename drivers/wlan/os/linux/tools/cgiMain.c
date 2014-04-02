@@ -3086,17 +3086,54 @@ void modify_route_rule(void)
 
 int add_arp(void)
 {
+	char valBuff[128];
+	char valBuff2[128];
 	char valBuff4[128];
 	char buf[128];	
 	char arp_mac[20];
 	char arp_ip[20];
 	int result = 0;
 	FILE *fp;
+	char *gateIp, *gateMask;
+	int ret, ret2;
+	struct in_addr addr_ip, addr_mask;
+	struct in_addr addr_ip2, addr_mask2;
+	
 	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
 	writeParameters("/tmp/.apcfg","w+",0);
 
+
+	Execute_cmd("cfg -e | grep AP_IPADDR= | awk -F '=' '{print $2}'",valBuff);
+	Execute_cmd("cfg -e | grep \"AP_NETMASK=\" | awk -F \"=\" \'{print $2}\'",valBuff2);
 	CFG_get_by_name("ADD_MAC",arp_mac);
 	CFG_get_by_name("ADD_IP",arp_ip);
+	
+	gateIp = strtok(valBuff, "\"");
+	gateMask = strtok(valBuff2, "\"");
+	//fprintf(errOut,"the gateIp is [%s] \n", gateIp);
+	//fprintf(errOut,"the gateMask is [%s] \n", gateMask);
+	if(inet_aton(gateIp, &addr_ip) && inet_aton(gateMask, &addr_mask))
+	{
+		ret = addr_ip.s_addr&addr_mask.s_addr;
+		//fprintf(errOut,"the ret is [%x] \n", ret);
+	}
+	if(inet_aton(arp_ip, &addr_ip2) && inet_aton(gateMask, &addr_mask2))
+	{
+		ret2 = addr_ip2.s_addr&addr_mask2.s_addr;
+		//fprintf(errOut,"the ret2 is [%x] \n", ret2);
+	}
+
+	if(ret == ret2)
+	{
+		result = 0;
+	}
+	else
+	{
+		result = 1;
+		goto error;
+	}
+	
+	
 	system("arp -a > /tmp/arplist");
 	fp = fopen("/tmp/arplist", "r");
 	while(fgets(buf, 128, fp))
@@ -3122,6 +3159,8 @@ int add_arp(void)
 		}
 	}
 	fclose(fp);
+
+error:
 	if(result == 1)
 	{
 		/*bound error*/
