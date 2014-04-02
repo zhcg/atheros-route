@@ -77,6 +77,7 @@ function modify(val)
 	  par=par +"pgg"+j.toString()+"="+cell.innerHTML+"&";
 	}
 	//alert(par);
+	par=par.replace(/<BR>/g, "<br>");
 	window.location.href='ad_parentc_add?ad_parentc_add=yes&'+par+"pgg6="+i+"&pgg7=end";
 }
 </script>
