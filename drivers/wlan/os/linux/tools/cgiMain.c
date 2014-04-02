@@ -6568,14 +6568,14 @@ int main(int argc,char **argv)
 		{
 			//fprintf(errOut,"[luodp] %s",mymac2);
 			CFG_set_by_name("ETH0_MAC",mymac2);
-			sprintf(str,"ifconfig eth0 hw ether %s",mymac2);
+			sprintf(str,"ifconfig eth0 hw ether %s > /dev/null 2>&1",mymac2);
 			system("ifconfig eth0 down");
 			system(str);
 			system("ifconfig eth0 up");
 		}else if((atoi(tmp)==1)||(atoi(tmp)==2))
 		{
 			CFG_get_by_name("ETH0_MAC",tmp2);
-			sprintf(str,"ifconfig eth0 hw ether %s",tmp2);
+			sprintf(str,"ifconfig eth0 hw ether %s > /dev/null 2>&1",tmp2);
 			system("ifconfig eth0 down");
 			system(str);
 			system("ifconfig eth0 up");
