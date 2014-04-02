@@ -322,8 +322,8 @@ error:
                 #endif
                             //Reboot_tiaozhuan("upload","index.html");
 				//[TODO]factory default
-				system("cfg -x");
-				sleep(1);
+//				system("cfg -x");
+//				sleep(1);
 		
 				sprintf(cmdd,"sleep 1 && sysupgrade %s &",filePath);
 				system(cmdd);
