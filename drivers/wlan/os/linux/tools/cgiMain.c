@@ -754,7 +754,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 
 							
 							//sprintf(buf, "<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:20px;\" value=\"×\" onClick=\"listdel(this.name)\"></td>", stalist.macAddr);
-                                    outBuff += sprintf(outBuff,"<td><img border=\"0\" name=\"%s\" src=\"../images/del.gif\" width=\"20\" height=\"20\" onclick=\"listdel(this.name)\" /></td>",stalist.macAddr);
+                                    outBuff += sprintf(outBuff,"<td><img border=\"0\" name=\"%s\"  style=\"cursor:hand;\" src=\"../images/del.gif\" width=\"20\" height=\"20\" onclick=\"listdel(this.name)\" /></td>",stalist.macAddr);
 
 							//outBuff += sprintf(outBuff, buf);
 	                    	outBuff += sprintf(outBuff, "</tr>");
@@ -818,7 +818,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                         //        outBuff += sprintf(outBuff,"<td>%s</td>","ON");
                                 outBuff += sprintf(outBuff,"<td><img border=\"0\" name=\"%d\" src=\"../images/mod.gif\" width=\"20\" height=\"20\" onclick=\"modify(this.name)\" /></td>",id);
 	          
-                                outBuff += sprintf(outBuff,"<td><img border=\"0\" name=\"%d\" src=\"../images/del.gif\" width=\"20\" height=\"20\" onclick=\"listdel(this.name)\" /></td>",id);
+                                outBuff += sprintf(outBuff,"<td><img border=\"0\"  style=\"cursor:hand;\" name=\"%d\" src=\"../images/del.gif\" width=\"20\" height=\"20\" onclick=\"listdel(this.name)\" /></td>",id);
                               //outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"%d\"  style=\"color:red;font-size:20px;\" value=\"×\" onClick=\"listdel(this.name)\"></td>", id);
                                 outBuff += sprintf(outBuff,"</tr>");
 
@@ -870,7 +870,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                           if ( memcmp ( addr_status , "disable" ,7) == 0)
                             outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%s\" id=\"%s\" onclick=\"lismod(this.name)\"></td>",addr_mac,addr_mac);
 						//outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:30px;cursor:hand;\" value=\"×\" onClick=\"listdel(this.name)\"></td>",addr_mac);
-                            outBuff += sprintf(outBuff,"<td><img border=\"0\" name=\"%s\" src=\"../images/del.gif\" width=\"20\" height=\"20\" onclick=\"listdel(this.name)\" /></td>",addr_mac);
+                            outBuff += sprintf(outBuff,"<td><img border=\"0\" name=\"%s\" style=\"cursor:hand;\" src=\"../images/del.gif\" width=\"20\" height=\"20\" onclick=\"listdel(this.name)\" /></td>",addr_mac);
 
 	                    outBuff += sprintf(outBuff,"</tr>");
 						id ++;						
@@ -912,7 +912,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 						if ( memcmp ( rule_status , "disable" ,7) == 0)
 		                    outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%s\" id=\"%s\" onclick=\"lismod(this.name)\"></td>",des_ip,des_ip);
 						//outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:30px;cursor:hand;\" value=\"×\" onClick=\"listdel(this.name)\"></td>",des_ip);
-                        outBuff += sprintf(outBuff,"<td><img border=\"0\" name=\"%s\" src=\"../images/del.gif\" width=\"20\" height=\"20\" onclick=\"listdel(this.name)\" /></td>",des_ip);
+                        outBuff += sprintf(outBuff,"<td><img border=\"0\" name=\"%s\"  style=\"cursor:hand;\" src=\"../images/del.gif\" width=\"20\" height=\"20\" onclick=\"listdel(this.name)\" /></td>",des_ip);
 		
 	                    outBuff += sprintf(outBuff,"</tr>");
 						id ++;						
@@ -950,7 +950,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 						if (strstr(arp_status , "disable"))
 							outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%s\" id=\"%s\" onclick=\"lismod(this.name)\"></td>",arp_ip,arp_ip);
 						//outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:30px;cursor:hand;\" value=\"×\" onClick=\"listdel(this.name)\"></td>",arp_ip);
-                        outBuff += sprintf(outBuff,"<td><img border=\"0\" name=\"%s\" src=\"../images/del.gif\" width=\"20\" height=\"20\" onclick=\"listdel(this.name)\" /></td>",arp_ip);
+                        outBuff += sprintf(outBuff,"<td><img border=\"0\" name=\"%s\"  style=\"cursor:hand;\" src=\"../images/del.gif\" width=\"20\" height=\"20\" onclick=\"listdel(this.name)\" /></td>",arp_ip);
 	                    outBuff += sprintf(outBuff,"</tr>");
 						id ++;						
 						memset(buf,0,1024);
@@ -7211,6 +7211,7 @@ exit(1);
         int i=0;
         int mode_id=0;
         int parc_line=0;
+        int repeat_line=0;
         char *parc_ret;
         int parc_flag = 0;
         int parc_mode_flag = 0;
@@ -7261,6 +7262,7 @@ exit(1);
                     fprintf(errOut,"\n%s  %d there is a same rule exist\n",__func__,__LINE__);
                    // printf("there is a same rule exist\n");				   
                     parc_flag=1;
+                    repeat_line=parc_line+1;
                 }
                 parc_line++;
             }
@@ -7289,20 +7291,20 @@ exit(1);
 		if(!parc_flag)
 		{
 			if(parc_line)
-            {
-                if(!mode_id)
-				    system(cmd_sed_buff);
-                else
-                {
-                    memset(cmd_sed_buff,0,512);
-                    sprintf(cmd_sed_buff ,"sed -i '%dc\\%s %s' %s",mode_id, enable_cmd, cmd_buffer_w, PARC_PATH);
-				    system(cmd_sed_buff);
+                    {
+                        if(!mode_id)
+        				    system(cmd_sed_buff);
+                            else
+                            {
+                                memset(cmd_sed_buff,0,512);
+                                sprintf(cmd_sed_buff ,"sed -i '%dc\\%s %s' %s",mode_id, enable_cmd, cmd_buffer_w, PARC_PATH);
+            				    system(cmd_sed_buff);
 
-                    memset(cmd_sed_buff,0,512);
-                    sprintf(cmd_sed_buff ,"sed -i '%dc\\%s -A FORWARD_ACCESSCTRL -i br0 -m mac --mac-source %s -j DROP' %s",mode_id+parc_line/2, enable_cmd, parc_mac, PARC_PATH);
-				    system(cmd_sed_buff);
-                }
-            }
+                                memset(cmd_sed_buff,0,512);
+                                sprintf(cmd_sed_buff ,"sed -i '%dc\\%s -A FORWARD_ACCESSCTRL -i br0 -m mac --mac-source %s -j DROP' %s",mode_id+parc_line/2, enable_cmd, parc_mac, PARC_PATH);
+            				    system(cmd_sed_buff);
+                            }
+                    }
 			Execute_cmd("iptables -F FORWARD_ACCESSCTRL" , add_cmd_err);
 			Execute_cmd("sh /etc/ath/iptables/parc" , add_cmd_err);
 
@@ -7310,26 +7312,35 @@ exit(1);
 			//sprintf(Page,"%s","../ad_parentc_accept.html");
 			//gohome =0;
 
-            			        Normal_tiaozhuan("ad_parentc_accept");
-         gohome =2;
+                     Normal_tiaozhuan("ad_parentc_accept");
+                    gohome =2;
 
-		}else
+		}
+                else
 		{
-					char tempu2[128]={0};
-					printf("HTTP/1.0 200 OK\r\n");
-					printf("Content-type: text/html\r\n");
-					printf("Connection: Close\r\n");
-					printf("\r\n");
-					printf("\r\n");
+                    if(mode_id!=repeat_line)
+                    {
+                    char tempu2[128]={0};
+                    printf("HTTP/1.0 200 OK\r\n");
+                    printf("Content-type: text/html\r\n");
+                    printf("Connection: Close\r\n");
+                    printf("\r\n");
+                    printf("\r\n");
 
-					printf("<HTML><HEAD>\r\n");
-					printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
-					printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
-					printf("</head><body>");
-					sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err Ruleexist\"));window.location.href=\"%s?%s=yes\";</script>",argv[0],argv[0]);
-					printf(tempu2);
-					printf("</body></html>");
-					exit(1);
+                    printf("<HTML><HEAD>\r\n");
+                    printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+                    printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
+                    printf("</head><body>");
+                    sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err Ruleexist\"));window.location.href=\"ad_parentc_accept?ad_parentc_accept=yes\";</script>");
+                    printf(tempu2);
+                    printf("</body></html>");
+                    exit(1);
+                    }
+                    else
+                    {
+                         Normal_tiaozhuan("ad_parentc_accept");
+                        gohome =2;
+                    }
 		}
     }
     /*************************************
