@@ -4729,6 +4729,10 @@ int main(int argc,char **argv)
 			char ap_primarych_5g[128];
 			char ap_mode_5g[128];
 			char ap_wpa_5g[128];
+
+			int ii;
+			char buf[128];
+			char bakeup[128][128];
 			
 			CFG_get_by_name("SOFT_VERSION",valBuff);
 
@@ -4751,6 +4755,14 @@ int main(int argc,char **argv)
 			CFG_get_by_name("AP_PRIMARY_CH_3",ap_primarych_5g);
 			CFG_get_by_name("AP_MODE_4",ap_mode_5g);
 			CFG_get_by_name("AP_WPA_4",ap_wpa_5g);
+
+			for(i = 0; i < 128; i++)
+			{
+				sprintf(buf, "BACKUP%d", i+1);
+				CFG_get_by_name(buf, bakeup[i]);
+				if(strlen(bakeup[i]) == 0)
+					break;
+			}
 			
             memset(&config,0,sizeof(config));
             FactoryDefault = 1;
@@ -4790,6 +4802,15 @@ int main(int argc,char **argv)
 			CFG_set_by_name("AP_PRIMARY_CH_3",ap_primarych_5g);
 			CFG_set_by_name("AP_MODE_4",ap_mode_5g);
 			CFG_set_by_name("AP_WPA_4",ap_wpa_5g);
+			
+			for(i = 0; i < 128; i++)
+			{
+				if(strlen(bakeup[i]) == 0)
+					break;
+				
+				sprintf(buf, "BACKUP%d", i+1);
+				CFG_set_by_name(buf, bakeup[i]);
+			}
 
 			
 			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
