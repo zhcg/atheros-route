@@ -141,19 +141,15 @@ function CheckWirelessValue()
 			{
 				var xxx=keyvalue;  //用户名（在此赋值）
 
-				var reg  = /^[a-z || A-Z || 0-9]\w+$/;
-				var m = reg.test(xxx);
-				if(m)   
-				{   
-				}   
-				else   
+				var usern = /^[a-zA-Z0-9_]{1,}$/;
+				if(!xxx.match(usern))   
 				{   
 					alert(_("err keychar"));
 					document.wizard_form.PSK_KEY.select();
 					return false;
-				} 
-
+				}   
 			}
+			
 		}	
 	}
 	else
@@ -203,18 +199,13 @@ function CheckWirelessValue()
 			{
 				var xxx=keyvalue2;  //用户名（在此赋值）
 
-				var reg  = /^[a-z || A-Z || 0-9]\w+$/;
-				var m = reg.test(xxx);
-				if(m)   
-				{   
-				}   
-				else   
+				var usern = /^[a-zA-Z0-9_]{1,}$/;
+				if(!xxx.match(usern))   
 				{   
 					alert(_("err keychar"));
 					document.wizard_form.PSK_KEY_3.select();
 					return false;
-				} 
-
+				}   
 			}
 		}	
 	}

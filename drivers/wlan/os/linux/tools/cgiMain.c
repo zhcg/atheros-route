@@ -3418,7 +3418,7 @@ int  add_sta_access()
 	struct staList stalist;
 	int same = 0, id = 0;
 	char staMac[20];
-	char staDesc[50];
+	char staDesc[80];
 	char status[50];
 	char con_buf[10];
 	char buf[50];
