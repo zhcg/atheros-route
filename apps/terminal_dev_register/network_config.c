@@ -2804,6 +2804,20 @@ int network_settings(int fd, int cmd_count, char cmd_word)
     #elif BOARDTYPE == 9344
     PRINT("pad_cmd = %02X\n", (unsigned char)pad_cmd);
     
+    // 由于base cfg接口存在已知bug未解决，只能调整执行顺序
+    if (((unsigned char)pad_cmd == 0xFB) /*&& ((cmd_word == 0x01) || (cmd_word == 0x02) || (cmd_word == 0x03))*/) // 局域网络没有设置时
+    {
+        memset(cmd_buf, 0, sizeof(cmd_buf));
+        snprintf(cmd_buf, sizeof(cmd_buf), "cfg -b 4 %s %s 1", pad_mac, pad_ip);
+        PRINT("cmd_buf = %s\n", cmd_buf);
+        system(cmd_buf); // 静态绑定
+        
+        memset(cmd_buf, 0, sizeof(cmd_buf));
+        snprintf(cmd_buf, sizeof(cmd_buf), "cfg -b 3 %s_2G %s_5G %s %s", ssid1, ssid1, wpapsk1, wpapsk1);
+        PRINT("cmd_buf = %s\n", cmd_buf);
+        system(cmd_buf); // 隐藏WIFI设置
+    }
+    
     memset(cmd_buf, 0, sizeof(cmd_buf));
     // 网络设置项
     switch (cmd_word)
@@ -2831,19 +2845,6 @@ int network_settings(int fd, int cmd_count, char cmd_word)
     }
     PRINT("cmd_buf = %s\n", cmd_buf);
     system(cmd_buf); // 
-    
-    if ((unsigned char)pad_cmd == 0xFB) // 局域网络没有设置时
-    {
-        memset(cmd_buf, 0, sizeof(cmd_buf));
-        snprintf(cmd_buf, sizeof(cmd_buf), "cfg -b 4 %s %s 1", pad_mac, pad_ip);
-        PRINT("cmd_buf = %s\n", cmd_buf);
-        system(cmd_buf); // 静态绑定
-        
-        memset(cmd_buf, 0, sizeof(cmd_buf));
-        snprintf(cmd_buf, sizeof(cmd_buf), "cfg -b 3 %s_2G %s_5G %s %s", ssid1, ssid1, wpapsk1, wpapsk1);
-        PRINT("cmd_buf = %s\n", cmd_buf);
-        system(cmd_buf); // 隐藏WIFI设置
-    }
     #endif
     
     #if BOARDTYPE == 6410
