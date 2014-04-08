@@ -7284,6 +7284,11 @@ exit(1);
                    // printf("there is a same rule exist\n");				   
                     parc_flag=1;
                     repeat_line=parc_line+1;
+                    if(mode_id==repeat_line)
+                    {
+                        if(strncmp(enable_cmd, cmd_buffer_r,2) != 0)
+                            parc_flag=0;
+                    }
                 }
                 parc_line++;
             }
