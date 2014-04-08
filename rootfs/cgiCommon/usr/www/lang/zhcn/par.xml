@@ -27,7 +27,7 @@
 	<message msgid="pa title" msgstr="访问管理" />  
 	<message msgid="pa des" msgstr="管理互联网访问权限" />  
 	<message msgid="pa t1_Mac" msgstr="MAC地址" />  
-	<message msgid="pa t1_Ns" msgstr="网站名称或者关键字" />  
+	<message msgid="pa t1_Ns" msgstr="网站域名或者关键字" />  
 	<message msgid="pa t1_Week" msgstr="星期" />  
 	<message msgid="pa t1_Time" msgstr="时间" />  
 	<message msgid="pa t1_St" msgstr="生效" />  
@@ -41,7 +41,7 @@
 	<message msgid="paradd des" msgstr="添加访问管理条目,未加入列表的PC将不能访问网络" />  
 	<message msgid="paradd t1_title" msgstr="添加访问管理条目" />  
 	<message msgid="paradd t1_MAC" msgstr="MAC地址" />  
-	<message msgid="paradd t1_NetL" msgstr="网站名称或者关键字" />  
+	<message msgid="paradd t1_NetL" msgstr="网站域名或者关键字" />  
 	<message msgid="paradd t1_Week" msgstr="星期" />  
 
 	<message msgid="paradd day1" msgstr="星期一" />
@@ -73,6 +73,6 @@
 	<message msgid="err gw format" msgstr="网关地址不合法" />
 	<message msgid="err DNS format" msgstr="DNS地址不合法" />
 	<message msgid="err week" msgstr="请选择生效星期" />
-	<message msgid="err web wuxiao" msgstr="网站名称或者关键字无效" />
+	<message msgid="err web wuxiao" msgstr="网站域名或者关键字无效" />
 	
  </po>

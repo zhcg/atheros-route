@@ -40,9 +40,11 @@ function button_commit(buttonID){document.getElementById(buttonID).click();}
 
 function hzcheck(val)
 {
-	if (escape(val).indexOf("%u")!=-1)
+	var usern = /^[a-zA-Z0-9.]{1,}$/;
+	if (!val.match(usern)) 
 		return false;
-	return true;
+	else
+		return true;
 }
 function checkValuerange(value,min,max)
 {
