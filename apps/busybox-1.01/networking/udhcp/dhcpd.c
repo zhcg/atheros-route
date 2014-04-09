@@ -67,58 +67,41 @@ void deal_staControl()
 	char con_buf[10];
 	char buf[50];
 	
-	pid_t pid = fork();
-    if (pid < 0)
-    {
-        DEBUG(LOG_ERR, "fork error");
-    }
-    else if( 0 == pid )
-    {
-    	//system("iptables -N control_sta");
-		//system("iptables -A INPUT -j control_sta");
-        if ((fp = fopen("/etc/.staAcl", "r")) == NULL)
-			exit(0);
-		else
+
+	//system("iptables -N control_sta");
+	//system("iptables -A INPUT -j control_sta");
+    if ((fp = fopen("/etc/.staAcl", "r")) != NULL)
+	{
+		memset(con_buf, 0, sizeof con_buf);
+		fgets(con_buf, 10, fp);
+		if(!strncmp(con_buf, "disable", 7))
 		{
-			memset(con_buf, 0, 20);
-			fgets(con_buf, 8, fp);
-			if(!strncmp(con_buf, "disable", 6))
-			{
-				fclose(fp);
-				exit(0);
-			}
-			else if(!strncmp(con_buf, "enable", 7))
-			{
-				fclose(fp);
-				if ((fp1 = fopen("/etc/.staMac", "r")) == NULL) 
-				{
-					DEBUG(LOG_ERR,"\nUnable to open /etc/.staMac for writing\n");
-				}
-				else
-				{
-					while(fread(&stalist, sizeof stalist, 1, fp1) == 1)
-					{
-						if(!strcmp(stalist.status, "1"))
-						{
-							memset(buf, 0, sizeof buf);
-							sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
-							system(buf);
-							memset(buf, 0, sizeof buf);
-							sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
-							system(buf);
-						}
-					}
-					system("iwpriv ath0 maccmd 2");
-					fclose(fp1);
-				}
-			}
-			
+			fclose(fp);
 		}
-    }
-    else
-    {
-        return;
-    }
+		else if(!strncmp(con_buf, "enable", 6))
+		{
+			if ((fp1 = fopen("/etc/.staMac", "r")) != NULL) 
+			{
+				while(fread(&stalist, sizeof stalist, 1, fp1) == 1)
+				{
+					if(!strcmp(stalist.status, "1"))
+					{
+						sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
+						system(buf);
+						sprintf(buf, "iwpriv ath2 addmac %s", stalist.macAddr);
+						system(buf);
+						//memset(buf, 0, sizeof buf);
+						//sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
+						//system(buf);
+					}
+				}
+				system("iwpriv ath0 maccmd 2");
+				system("iwpriv ath2 maccmd 2");
+				fclose(fp1);
+			}
+		}
+		fclose(fp);
+	}
 }
 
 #ifdef COMBINED_BINARY

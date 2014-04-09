@@ -3412,6 +3412,123 @@ void delSta(char *maddr)
 	free(p);
 }
 
+void restart_sta_access()
+{
+	int i, j, k;
+	char pr_buf[50];
+	char pChar[40];
+	char valBuff[128];
+	char valBuff2[128];
+
+	Execute_cmd("cfg -e | grep 'AP_SECMODE=' |  awk -F '=' '{print $2}'", valBuff2);
+	//fprintf(errOut," the ath0 AP_SECMODE is [%s] \n", valBuff2);
+	if(strstr(valBuff2, "None")) /*wifi doesn't use WPA*/
+		Execute_cmd("cfg -t0 /etc/ath/PSK.ap_bss_none ath0 > /tmp/secath0",rspBuff);
+	else
+		Execute_cmd("cfg -t0 /etc/ath/PSK.ap_bss ath0 > /tmp/secath0",rspBuff);
+
+	Execute_cmd("cfg -e | grep 'AP_SECMODE_3=' |  awk -F '=' '{print $2}'", valBuff2);
+	//fprintf(errOut," the ath0 AP_SECMODE_3 is [%s] \n", valBuff2);
+	if(strstr(valBuff2, "None")) /*wifi doesn't use WPA*/
+		Execute_cmd("cfg -t3 /etc/ath/PSK.ap_bss_none ath2 > /tmp/secath2",rspBuff);
+	else
+		Execute_cmd("cfg -t3 /etc/ath/PSK.ap_bss ath2 > /tmp/secath2",rspBuff);
+	
+	//Execute_cmd("killall hostapd > /dev/null 2>&1",rspBuff);
+	/*get the hostapd for ath0's pid, to kill it, then restart it*/
+	Execute_cmd("ps | grep 'hostapd -B /tmp/secath0 -e /etc/wpa2/entropy' | awk -F ' ' '{print $1}'", valBuff);
+	//fprintf(errOut," the ath0 hostapd is [%s] \n", valBuff);
+	i = j = k = 0;
+	if((strlen(valBuff) > 0) && strstr(valBuff, "<br>"))
+	{
+		while(valBuff[i])
+		{
+			if(valBuff[i] == '\n')
+			{
+				k = 1;
+				break;
+			}
+			//fprintf(errOut," is [%c] \n", valBuff[i]);
+			i++;
+		}
+		if(k == 1)
+		{
+			memcpy(pr_buf, valBuff, i);
+			//fprintf(errOut," is [%s] \n", pr_buf);
+			sprintf(pChar, "kill %s > /dev/null 2>&1", pr_buf);
+			Execute_cmd(pChar, rspBuff);
+
+			j = i+5;
+			while(valBuff[i+5])
+			{
+				if(valBuff[i+5] == '\n')
+				{
+					k = 2;
+					break;
+				}
+				//fprintf(errOut," is [%c] \n", valBuff[i+5]);
+				i++;
+			}
+			if(k == 2)
+			{
+				memcpy(pr_buf, &valBuff[j], i+5-j);
+				//fprintf(errOut," is [%s] \n", pr_buf);
+				sprintf(pChar, "kill %s > /dev/null 2>&1", pr_buf);
+				Execute_cmd(pChar, rspBuff);
+			}
+		}
+	}
+	
+	Execute_cmd("ps | grep 'hostapd -B /tmp/secath2 -e /etc/wpa2/entropy' | awk -F ' ' '{print $1}'", valBuff);
+	//fprintf(errOut," the ath2 hostapd is [%s] \n", valBuff);
+	i = j = k = 0;
+	if((strlen(valBuff) > 0) && strstr(valBuff, "<br>"))
+	{
+		while(valBuff[i])
+		{
+			if(valBuff[i] == '\n')
+			{
+				k = 1;
+				break;
+			}
+			//fprintf(errOut," is [%c] \n", valBuff[i]);
+			i++;
+		}
+		if(k == 1)
+		{
+			memcpy(pr_buf, valBuff, i);
+			//fprintf(errOut," is [%s] \n", pr_buf);
+			sprintf(pChar, "kill %s > /dev/null 2>&1", pr_buf);
+			Execute_cmd(pChar, rspBuff);
+
+			j = i+5;
+			while(valBuff[i+5])
+			{
+				if(valBuff[i+5] == '\n')
+				{
+					k = 2;
+					break;
+				}
+				//fprintf(errOut," is [%c] \n", valBuff[i+5]);
+				i++;
+			}
+			if(k == 2)
+			{
+				memcpy(pr_buf, &valBuff[j], i+5-j);
+				//fprintf(errOut," is [%s] \n", pr_buf);
+				sprintf(pChar, "kill %s > /dev/null 2>&1", pr_buf);
+				Execute_cmd(pChar, rspBuff);
+			}
+		}
+	}
+	//fprintf(errOut,"the end \n");
+
+	Execute_cmd("hostapd -B /tmp/secath0 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+	Execute_cmd("hostapd -B /tmp/secath2 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+	Execute_cmd("ifconfig ath0 down;ifconfig ath0 up > /dev/null 2>&1",rspBuff);
+	Execute_cmd("ifconfig ath2 down;ifconfig ath2 up > /dev/null 2>&1",rspBuff);
+}
+
 int  add_sta_access()
 {
 	FILE *fp, *fp1;
@@ -3453,21 +3570,24 @@ int  add_sta_access()
 				fgets(con_buf, 8, fp1);
 				if((!strncmp(con_buf, "enable", 6)) && (!strcmp(status, "1")))
 				{
-					sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
-					Execute_cmd(buf, rspBuff);
+					restart_sta_access();
+					//sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
+					//Execute_cmd(buf, rspBuff);
 				}
 				fclose(fp1);
 			}
 			else if(strstr(valBuf, "on"))
 			{
-				sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
-				Execute_cmd(buf, rspBuff);
+				restart_sta_access();
+				//sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
+				//Execute_cmd(buf, rspBuff);
 			}
 			
-			sprintf(buf, "iwpriv ath0 addmac %s", staMac);
+			sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
 			Execute_cmd(buf, rspBuff);
-			sprintf(buf, "iwpriv ath2 addmac %s", staMac);
+			sprintf(buf, "iwpriv ath2 addmac %s", stalist.macAddr);
 			Execute_cmd(buf, rspBuff);
+			//fprintf(errOut,"add_sta_access 1111 the add mac is %s\n", stalist.macAddr);
 		}
 	}
 	else
@@ -3506,23 +3626,26 @@ int  add_sta_access()
 				//fprintf(errOut,"\n the con_buf is %s\n", con_buf);
 				if((!strncmp(con_buf, "enable", 6)) && (!strcmp(status, "1")))
 				{
-					memset(buf, 0, sizeof buf);
-					sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
-					Execute_cmd(buf, rspBuff);
+					restart_sta_access();
+					//memset(buf, 0, sizeof buf);
+					//sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
+					//Execute_cmd(buf, rspBuff);
 				}
 				fclose(fp1);
 			}
 			else if(strstr(valBuf, "on"))
 			{
-				sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
-				Execute_cmd(buf, rspBuff);
+				restart_sta_access();
+				//sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
+				//Execute_cmd(buf, rspBuff);
 			}
 
 			memset(buf, 0, sizeof buf);
-			sprintf(buf, "iwpriv ath0 addmac %s", staMac);
+			sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
 			Execute_cmd(buf, rspBuff);
-			sprintf(buf, "iwpriv ath2 addmac %s", staMac);
+			sprintf(buf, "iwpriv ath2 addmac %s", stalist.macAddr);
 			Execute_cmd(buf, rspBuff);
+			//fprintf(errOut,"add_sta_access 222 the add mac is %s\n", stalist.macAddr);
 		}
 		
 	} 
@@ -3547,6 +3670,7 @@ void del_sta_access()
 			{
 				if(!strcmp(stalist.macAddr, staMac))
 				{
+					#if 0
 					if ((fp1 = fopen("/etc/.staAcl", "r")) != NULL)
 					{
 						memset(con_buf, 0, 20);
@@ -3558,6 +3682,9 @@ void del_sta_access()
 						}
 						fclose(fp1);
 					}
+					#endif
+					//fprintf(errOut,"the read mac is [%s] \n", stalist.macAddr);
+					//fprintf(errOut,"the del mac is [%s] \n", staMac);
 					sprintf(buf, "iwpriv ath0 delmac %s", staMac);
 					Execute_cmd(buf, rspBuff);
 					sprintf(buf, "iwpriv ath2 delmac %s", staMac);
@@ -3582,28 +3709,6 @@ void del_sta_access()
 			fclose(fp);
 		}
 	}
-	#if 0
-	if(CFG_get_by_name("DELXXX",staMac))
-	{
-		
-		delSta(staMac);
-		if( (fp = fopen(STA_MAC, "w")) == NULL)
-			fprintf(errOut,"\nopen %s error\n", STA_MAC);
-		else
-		{
-			p = scan_staList(staHostList);
-			while(p)
-			{
-				fwrite(p, sizeof(struct staList), 1, fp);
-				p = p->next;
-			}
-			fclose(fp);
-		}
-
-		sprintf(buf, "iwpriv ath0 delmac %s", staMac);
-		Execute_cmd(buf, rspBuff);
-	}
-	#endif
 }
 
 void control_sta_access()
@@ -3621,7 +3726,7 @@ void control_sta_access()
 			fclose(fp);
 		}
 
-		Execute_cmd("iptables -t filter -F control_sta", rspBuff);
+		//Execute_cmd("iptables -t filter -F control_sta", rspBuff);
 		if ((fpp = fopen(STA_MAC, "r")) != NULL)
 		{
 			while(fread(&stalist, sizeof stalist, 1, fpp) == 1)
@@ -3633,12 +3738,14 @@ void control_sta_access()
 					Execute_cmd(buf, rspBuff);
 					sprintf(buf, "iwpriv ath2 addmac %s", stalist.macAddr);
 					Execute_cmd(buf, rspBuff);
-					memset(buf, 0, sizeof buf);
-					sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
-					Execute_cmd(buf, rspBuff);
+					//fprintf(errOut,"\n%s  %d the add mac is %s \n",__func__,__LINE__, stalist.macAddr);
+					//memset(buf, 0, sizeof buf);
+					//sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
+					//Execute_cmd(buf, rspBuff);
 				}
 			}
 			fclose(fpp);
+			restart_sta_access();
 		}
 		
 		Execute_cmd("iwpriv ath0 maccmd 2",rspBuff);
@@ -3698,9 +3805,10 @@ void modify_sta_access()
 				Execute_cmd(buf, rspBuff);
 				sprintf(buf, "iwpriv ath2 delmac %s", stalist.macAddr);
 				Execute_cmd(buf, rspBuff);
-				
-				sprintf(buf, "iptables -D control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
-				Execute_cmd(buf, rspBuff);
+
+				//restart_sta_access();
+				//sprintf(buf, "iptables -D control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
+				//Execute_cmd(buf, rspBuff);
 			
 				strcpy(stalist.status, "0");
 			}
@@ -3710,9 +3818,10 @@ void modify_sta_access()
 				Execute_cmd(buf, rspBuff);
 				sprintf(buf, "iwpriv ath2 addmac %s", stalist.macAddr);
 				Execute_cmd(buf, rspBuff);
-				
-				sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
-				Execute_cmd(buf, rspBuff);
+
+				restart_sta_access();
+				//sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
+				//Execute_cmd(buf, rspBuff);
 
 				strcpy(stalist.status, "1");
 			}
