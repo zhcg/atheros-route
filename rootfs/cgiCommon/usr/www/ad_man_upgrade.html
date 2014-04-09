@@ -71,7 +71,29 @@ function init()
 	Butterlate.setTextDomain("admin");
 	initTranslation();
 }
-
+  var isIE;
+  function fileChange(target) 
+  {     
+      
+	var fileSize = 0; 
+	isIE = /msie/i.test(navigator.userAgent) && !window.opera;	
+	if (isIE && !target.files) 
+	{      
+		var filePath = target.value;      
+		var fileSystem = new ActiveXObject("Scripting.FileSystemObject"); 
+		var file = fileSystem.GetFile (filePath);      
+		fileSize = file.Size;     
+	} 
+	else 
+	{     
+		fileSize = target.files[0].size;      
+	}    
+	var size = fileSize / 1024;     
+	if(size>10000)
+	{   
+		alert(_("err bin big"));
+	}
+} 
 </script>
 </head>
 
@@ -98,7 +120,7 @@ function init()
 <tr>
   <td class="head" id="up_selsectfile"></td>
   <td>
-	<input type="file" id="uploadedfile" style="border-width:1px;font-family:'微软雅黑';font-size:12px;  height:25px;color: #000000;  cursor:hand; " name="uploadedfile">
+	<input type="file" id="uploadedfile" style="border-width:1px;font-family:'微软雅黑';font-size:12px;  height:25px;color: #000000;  cursor:hand; " name="uploadedfile" onchange="fileChange(this);">
   </td>
 </tr>
 <tr>

@@ -79,7 +79,11 @@
 	<message msgid="man cfg backto2" msgstr="?" />
 	<message msgid="man cfg backupdel1" msgstr="Are you sure to delete" />	
 	<message msgid="man cfg backupdel2" msgstr=" backup will be delete" />
-	<message msgid="err cfg full" msgstr="Backup space is full, please delete some backup and backup" />	
+	<message msgid="err cfg full" msgstr="Backup space is full, please delete some backup and backup" />
+
+	<message msgid="err cfg big" msgstr="Configuration file should smaller than 1M" />	
+	
+	
 
 	<message msgid="cfg care1" msgstr="Note:" />	
 	<message msgid="cfg care2" msgstr="1.Import configuration files, equipment in the user configuration will be lost. If you load the configuration file is wrong, may cause the equipment cannot be managed." />	
