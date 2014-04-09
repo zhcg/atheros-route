@@ -3,17 +3,28 @@ BAIDU=www.baidu.com
 
 while true
 do
+#VAL="`ethreg -p 4 0x11 | awk -F' ' '/Read Reg/{print $5}'`"
+VAL="`ethreg -p 4 0x11 | grep "Read Reg" | sed 's/.* //g' `"
+VAL2=0x0400
+#echo $VAL
+VAL=$(($VAL&0x0400))
+#echo $VAL
 
-ping $BAIDU test
+if [ $VAL -eq 1024 ];then
+	ping $BAIDU test
 
-if [ $? -eq 1 ]; then
-        echo "0">/usr/www/ping.xml
+	if [ $? -eq 1 ]; then
+	        echo "0">/usr/www/ping.xml
+	else
+	        echo "1">/usr/www/ping.xml
+	fi
 else
-        echo "1">/usr/www/ping.xml
+if [ $VAL -eq 0 ];then
+	echo "0">/usr/www/ping.xml
 fi
-
+fi
 #cfg -c
 
-sleep 5
+sleep 3
 
 done
