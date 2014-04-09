@@ -191,7 +191,7 @@ main()
 
 	fileName=getFileName(tmpBuf);
 
-	if(fileName && (!strcmp(fileName, "cal.bin")))
+	if(fileName)
 	{
             fprintf(errOut,"%s  %d  fileName=%s\n",__func__,__LINE__,fileName);
 	}
