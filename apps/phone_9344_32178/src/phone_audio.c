@@ -325,6 +325,107 @@ int UlawDecode(unsigned char *pout,int offset1,unsigned char *pin,int offset2,in
 	return inbytes;
 }
 
+int Encrypt(unsigned char *data,int len)
+{
+	int i;
+	unsigned char *pdata = data;
+	unsigned char tmp_low = 0;
+	unsigned char tmp_high = 0;
+	for(i=0;i<len;i++)
+	{
+		pdata[i] = ~pdata[i];
+		tmp_low = pdata[i] & 0x0f;
+		tmp_high = pdata[i] & 0xf0;
+		pdata[i] = (tmp_low << 4) + (tmp_high >> 4);
+	}
+}
+
+int Decrypt(unsigned char *data,int len)
+{
+	int i;
+	unsigned char *pdata = data;
+	unsigned char tmp_low = 0;
+	unsigned char tmp_high = 0;
+	for(i=0;i<len;i++)
+	{
+		tmp_low = pdata[i] & 0x0f;
+		tmp_high = pdata[i] & 0xf0;
+		pdata[i] = (tmp_low << 4) + (tmp_high >> 4);
+		pdata[i] = ~pdata[i];
+	}
+}
+
+int UlawEncodeEncrypt(unsigned char *pout,int offset1,unsigned char *pin,int offset2,int mSampleCount)
+{
+	signed short *pcm;
+	unsigned char *ppout;
+	unsigned char *ppin;
+	int i;
+	int exponent = 7;
+	int expMask;
+	int mantissa;
+	int sign;	
+	
+	ppout = pout + offset1;
+	ppin = pin + offset2;
+	pcm = (signed short *)(ppin);
+	for(i = 0;i < mSampleCount;i++)
+	{
+		sign = (pcm[i] & 0x8000) >> 8;
+		if (sign != 0)
+			pcm[i] = -pcm[i];
+		if (pcm[i] > CODE_MAX)
+			pcm[i] = CODE_MAX;
+		exponent = 7;
+		for (expMask = 0x4000; (pcm[i] & expMask) == 0   && exponent > 0; exponent--, expMask >>= 1)
+		{
+			;
+		}
+		mantissa = (pcm[i] >> ((exponent == 0) ? 4 : (exponent + 3))) & 0x0f;
+		ppout[i] = (unsigned char)(sign | exponent << 4 | mantissa);
+		ppout[i] ^= 0xD5;
+	}
+	
+	Encrypt(pout,mSampleCount*2);
+	
+	return mSampleCount;
+}
+
+int UlawDecodeEncrypt(unsigned char *pout,int offset1,unsigned char *pin,int offset2,int inbytes)
+{
+	signed short *pcm;
+	unsigned char *ppout;
+	unsigned char *ppin;
+	int sign;
+	int exponent;
+	int data;
+	int i;
+	
+	Decrypt(pin,inbytes*2);
+	
+	ppout = pout +offset1;
+	pcm = (signed short *)(ppout);
+	ppin = pin + offset2;
+	for(i = 0;i < inbytes;i++)
+	{
+		pin[i] ^= 0xD5;
+		sign = pin[i] & 0x80;
+		exponent = (pin[i] & 0x70) >> 4;
+		data = pin[i] & 0x0f;
+		data <<= 4;
+		data += 8;
+		if (exponent != 0)
+			data += 0x100;
+		if (exponent > 1)
+			data <<= (exponent - 1);
+		if(sign == 0)
+			pcm[i] = data;
+		else
+			pcm[i] = -data;
+	}
+	return inbytes;
+}
+
 void* AudioIncomingThreadCallBack(void* argv)
 {
 	unsigned char audioincoming_buf[BUFFER_SIZE_2K] = {0};
@@ -706,14 +807,24 @@ void* AudioSendThreadCallBack(void* argv)
 				valid_bytes = phone_audio.output_stream_wp - phone_audio.output_stream_rp;
 			else
 				valid_bytes = AUDIO_STREAM_BUFFER_SIZE - phone_audio.output_stream_rp;
+			if(valid_bytes > 4*AUDIO_SEND_PACKET_SIZE)
+			{
+				PRINT("send data is more,so discard some one\r\n");
+				phone_audio.output_stream_wp = phone_audio.output_stream_rp;
+				valid_bytes = 0;
+			}
 			//每次只允许发送最多AUDIO_SEND_PACKET_SIZE个字节
 			if(valid_bytes > AUDIO_SEND_PACKET_SIZE)
 				valid_bytes = AUDIO_SEND_PACKET_SIZE;
 			if((valid_bytes >= AUDIO_SEND_PACKET_SIZE) || (phone_audio.output_stream_wp < phone_audio.output_stream_rp))
 			{
+#ifdef ENCRYPT
+				//编码
+				UlawEncodeEncrypt(audio_sendbuf,0,&output_stream_buffer[phone_audio.output_stream_rp],0,valid_bytes/2);
+#else
 				//编码
 				UlawEncode(audio_sendbuf,0,&output_stream_buffer[phone_audio.output_stream_rp],0,valid_bytes/2);
-
+#endif
 				if(devp->audio_client_fd < 0)
 				{
 					goto SEND_ERR;
@@ -905,13 +1016,26 @@ void* AudioRecvThreadCallBack(void* argv)
 				usleep(10*1000);
 				if(!phone_control.start_dial)
 				{
-					for(i=0;i<(32);i++)
+					for(i=0;i<(50);i++)
 					{
-						usleep(10*1000);
 						if(phone_audio.audio_recv_thread_flag ==0)
 							break;
+						recv_ret = recv(devp->audio_client_fd,tmp_buf,1600,MSG_DONTWAIT);
+						if(recv_ret < 1)//或者小于0。则表示socket异常，此处需要同时处理其他线程的错误
+						{
+							getsockopt(devp->audio_client_fd,SOL_SOCKET,SO_ERROR,&optval, &optlen);
+							if(errno == EAGAIN && optval == 0)
+							{
+								usleep(10*1000);
+								continue;
+							}
+							goto RECV_ERROR;
+						}
+						usleep(10*1000);
 					}
 					PRINT("start recv.....\n");
+					phone_control.dial_over = 1;
+					recv_ret = 0;
 					break;
 				}
 			}
@@ -929,14 +1053,9 @@ void* AudioRecvThreadCallBack(void* argv)
 			{
 				goto RECV_ERROR;
 			}
-			if(free_bytes < (BUFFER_SIZE_2K*4))
-			{
-				recv_ret = recv(devp->audio_client_fd,audio_recvbuf,free_bytes/2,MSG_DONTWAIT);
-			}
-			else
-			{
-				recv_ret = recv(devp->audio_client_fd,audio_recvbuf,BUFFER_SIZE_2K*2,MSG_DONTWAIT);
-			}
+			if(free_bytes > BUFFER_SIZE_2K)
+				free_bytes = BUFFER_SIZE_2K;
+			recv_ret = recv(devp->audio_client_fd,audio_recvbuf,free_bytes/2,MSG_DONTWAIT);
 			if(recv_ret < 1)//或者小于0。则表示socket异常，此处需要同时处理其他线程的错误
 			{
 				getsockopt(devp->audio_client_fd,SOL_SOCKET,SO_ERROR,&optval, &optlen);
@@ -961,9 +1080,13 @@ RECV_ERROR:
 			}
 			else
 			{
+#ifdef ENCRYPT			
+				//解码
+				UlawDecodeEncrypt(&input_stream_buffer[phone_audio.input_stream_wp],0,audio_recvbuf,0,recv_ret);
+#else
 				//解码
 				UlawDecode(&input_stream_buffer[phone_audio.input_stream_wp],0,audio_recvbuf,0,recv_ret);
-
+#endif
 				phone_audio.input_stream_wp += recv_ret*2;
 				total_recv_bytes += recv_ret*2;
 				if(phone_audio.input_stream_wp >= AUDIO_STREAM_BUFFER_SIZE)
@@ -1104,14 +1227,19 @@ void* audio_loop_accept(void* argv)
 									PRINT("audio reconnect\n");
 									startaudio(&devlist[i],1);
 									phone_audio.audio_reconnect_flag=0;
-
+									if(phone_control.start_dial == 1)
+									{
+										//音频重连时，拨号没有结束，重新拨号
+										onhook();
+										usleep(150*1000);
+										offhook();
+										usleep(150*1000);
+										dialup(phone_control.telephone_num, phone_control.telephone_num_len);
+									}
 								}
 							}
 						}
-						for(i=0;i<CLIENT_NUM;i++)
-						{
-							printf("%d  client_fd = %d  , audio_client_fd = %d\n",i,devlist[i].client_fd,devlist[i].audio_client_fd);
-						}
+						print_devlist();
 					}
 				}
 		}

@@ -15,9 +15,9 @@
 /dev/tty0	c	666	0	0	4	0	1	10
 /dev/tty1	c	666	0	0	4	1	1	10
 /dev/tty2	c	666	0	0	4	2	1	10
-/dev/ttyS0	c	666	0	0	4	64	1	2
-/dev/ttyS1	c	666	0	0	4	65	1	2
-/dev/ttyS2	c	666	0	0	4	66	1	2
+/dev/ttyS0	c	666	0	0	4	63	1	2
+/dev/ttyS1	c	666	0	0	4	64	1	2
+/dev/ttyS2	c	666	0	0	4	65	1	2
 /dev/ttyp0	c	666	0	0	3	0	1	10
 /dev/ttyp1	c	666	0	0	3	1	1	10
 /dev/ttyp2	c	666	0	0	3	2	1	10

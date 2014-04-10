@@ -97,6 +97,24 @@ void ComFunPrintfBuffer(unsigned char *pbuffer,unsigned char len)
 	free((void *)pstr);
 }
 
+void print_devlist()
+{
+	int i,offline = 0;
+	PRINT("*****************************************\n");
+	PRINT("*                 devlist               *\n");
+	for(i=0;i<CLIENT_NUM;i++)
+	{
+		if(devlist[i].client_fd == -1)
+		{
+			offline ++;
+			continue;
+		}
+		PRINT("* %02d, cfd:%02d , afd:%02d , ip:%s *\n",i,devlist[i].client_fd,devlist[i].audio_client_fd,devlist[i].client_ip);
+	}
+	PRINT("*        max:%02d,online:%02d,last:%02d       *\n",CLIENT_NUM-1,CLIENT_NUM-offline,offline-1);
+	PRINT("*****************************************\n");
+}
+
 //socket发送函数
 int netWrite(int fd,const void *buffer,int length)
 {
@@ -155,7 +173,7 @@ int sqlite3_interface(char *tb_name,char *data_name, char *data_value,char *wher
     strncat(sql, data_value, strlen(data_value));
     strcat(sql, "\" ");
     strcat(sql,"collate NOCASE;");
-    PRINT("sql:%s\n",sql);
+    //PRINT("sql:%s\n",sql);
     if(sqlite3_get_table(db, sql, &result_buf, &row_count, &column_count, &err_msg) != 0)
     {
         PRINT("%s\n", err_msg);
@@ -224,9 +242,9 @@ int destroy_client(dev_status_t *dev)
 					devlist[j].id = -1;
 					devlist[j].registered = 0;
 					memset(devlist[j].client_ip,0,sizeof(devlist[j].client_ip));
-					for(k=0; k<CLIENT_NUM; k++)
-						printf("%d:cli_fd=%d  , cli_ip=%s\n", k ,devlist[k].client_fd,devlist[k].client_ip);
+					print_devlist();
 					dev->dying = 0;
+					netWrite(dev->client_fd,"HEADR0010REG_SUC000\r\n",21);
 					return 0;
 				}
 			}
@@ -553,9 +571,11 @@ int do_cmd_talkback(dev_status_t* dev,char *sendbuf)
 	int id;
 	char client_ip[16]={0};
 	char flag;
+	char id_buf[3]={0};
+	memcpy(id_buf,&cli_req_buf[phone_control.cli_req_buf_rp].arg[0],3);
 	//解析转子机命令得到id和ip
-	id = (int)cli_req_buf[phone_control.cli_req_buf_rp].arg[0]-48;
-	memcpy(client_ip,&cli_req_buf[phone_control.cli_req_buf_rp].arg[1],cli_req_buf[phone_control.cli_req_buf_rp].arglen-1);//10.10.10.103 //172.16.0.1
+	id = atoi(id_buf);
+	memcpy(client_ip,&cli_req_buf[phone_control.cli_req_buf_rp].arg[3],cli_req_buf[phone_control.cli_req_buf_rp].arglen-3);//10.10.10.103 //172.16.0.1
 	client_ip[cli_req_buf[phone_control.cli_req_buf_rp].arglen]='\0';
 	PRINT("talkback id = %d\n",id);
 	PRINT("talkback ip = %s\n",client_ip);
@@ -755,9 +775,10 @@ int do_cmd_heartbeat(dev_status_t *dev,char *buf)
 		
 		//转换mac为大写
 		strtobig(buf,strlen(buf));
+		strcpy(dev->dev_mac,buf);
 		sqlite3_interface("terminal_register_tb","device_mac",buf,"device_mac",dev_mac);
+		PRINT("comming_mac=%s\n",buf);
 		PRINT("dev_mac=%s\n",dev_mac);
-		PRINT("buf=%s\n",buf);
 		strtobig(dev_mac,strlen(dev_mac));
 		if(!strncmp(dev_mac,buf,strlen(buf)))
 		{
@@ -772,6 +793,7 @@ int do_cmd_heartbeat(dev_status_t *dev,char *buf)
 					dev->dev_name[i]=' ';
 				}
 			}
+			PRINT("name = %s\n",dev->dev_name);
 			netWrite(dev->client_fd,"HEADR0010REG_SUC000\r\n",21);
 			goto REGISTERED;
 		}
@@ -780,7 +802,7 @@ int do_cmd_heartbeat(dev_status_t *dev,char *buf)
 		//PRINT("register_state = %s\n",register_state);
 		sqlite3_interface("terminal_base_tb","pad_mac",buf,"pad_mac",pad_mac);
 		strtobig(pad_mac,strlen(pad_mac));
-		PRINT("buf=%s\n",buf);
+//		PRINT("buf=%s\n",buf);
 		PRINT("pad_mac = %s\n",pad_mac);
 		//PRINT("%d\n",strcmp(pad_mac,buf));
 		//PRINT("%d\n",strcmp(register_state,"0"));
@@ -796,6 +818,7 @@ int do_cmd_heartbeat(dev_status_t *dev,char *buf)
 					dev->dev_name[i]=' ';
 				}
 			}
+			PRINT("name = %s\n",dev->dev_name);
 			netWrite(dev->client_fd,"HEADR0010REG_SUC000\r\n",21);
 			goto REGISTERED;
 		}
@@ -810,8 +833,9 @@ UNREGISTERED:
 		}
 		netWrite(dev->client_fd,"HEADR0010REGFAIL000\r\n",21);
 		memset(insidebuf,0,10);
-		sprintf(insidebuf,"%s%d","INSIDE",i);
-		netWrite(phone_control_fd[0],insidebuf, strlen(insidebuf));
+		sprintf(insidebuf,"%s","INSIDE");
+		insidebuf[6]=i+1;
+		netWrite(phone_control_fd[0],insidebuf, 7);
 		return -1;
 	}
 REGISTERED:
@@ -829,7 +853,10 @@ int do_cmd_heartbeat(dev_status_t *dev)
 
 	dev->tick_time++;
 	if(dev->tick_time == 1)
+	{
+		netWrite(dev->client_fd,"HEADR0010REG_SUC000\r\n",21);
 		generate_up_msg();
+	}
 	//memset(dev->dev_name,' ',16);
 	//for(i=0;i<CLIENT_NUM;i++)
 	//{
@@ -909,9 +936,11 @@ int do_cmd_switch(dev_status_t* dev,char *sendbuf)
 		int id;
 		char client_ip[16]={0};
 		char flag;
+		char id_buf[3]={0};
+		memcpy(id_buf,&cli_req_buf[phone_control.cli_req_buf_rp].arg[0],3);
 		//解析转子机命令得到id和ip
-		id = (int)cli_req_buf[phone_control.cli_req_buf_rp].arg[0]-48;
-		memcpy(client_ip,&cli_req_buf[phone_control.cli_req_buf_rp].arg[1],cli_req_buf[phone_control.cli_req_buf_rp].arglen-1);//10.10.10.103 //172.16.0.1
+		id = atoi(id_buf);
+		memcpy(client_ip,&cli_req_buf[phone_control.cli_req_buf_rp].arg[3],cli_req_buf[phone_control.cli_req_buf_rp].arglen-3);//10.10.10.103 //172.16.0.1
 		client_ip[cli_req_buf[phone_control.cli_req_buf_rp].arglen]='\0';
 		PRINT("switch id = %d\n",id);
 		PRINT("switch ip = %s\n",client_ip);
@@ -968,51 +997,53 @@ int do_cmd_req_switch(dev_status_t * dev, char * sendbuf)
         if(dev->dev_is_using )
 #endif
         {
-                int i,id;
-                char client_ip[16]={0};
-                char flag;
-                id = (int)cli_req_buf[phone_control.cli_req_buf_rp].arg[0]-48;
-                memcpy(client_ip,&cli_req_buf[phone_control.cli_req_buf_rp].arg[1],cli_req_buf[phone_control.cli_req_buf_rp].arglen-1);//10.10.10.103 //172.16.0.1
-                client_ip[cli_req_buf[phone_control.cli_req_buf_rp].arglen]='\0';
-                PRINT("req switch id = %d\n",id);
-                PRINT("req switch ip = %s\n",client_ip);
+			int i,id;
+			char client_ip[16]={0};
+			char flag;
+			char id_buf[3]={0};
+			memcpy(id_buf,&cli_req_buf[phone_control.cli_req_buf_rp].arg[0],3);
+			id = atoi(id_buf);
+			memcpy(client_ip,&cli_req_buf[phone_control.cli_req_buf_rp].arg[3],cli_req_buf[phone_control.cli_req_buf_rp].arglen-3);//10.10.10.103 //172.16.0.1
+			client_ip[cli_req_buf[phone_control.cli_req_buf_rp].arglen]='\0';
+			PRINT("req switch id = %d\n",id);
+			PRINT("req switch ip = %s\n",client_ip);
 
-                if(id<0 || id>=CLIENT_NUM)
-                {
-                	PRINT("ID error\n");
-                	memset(sendbuf,0,SENDBUF);
-                	snprintf(sendbuf, 23,"HEADR0011RET_BTP0012\r\n");
-                	goto REQ_SWITCH_ERR;
-                }
-                if(devlist[id].client_fd <0)
-                {
-                	PRINT("dev is not online\n");
-                	memset(sendbuf,0,SENDBUF);
-                	snprintf(sendbuf, 23,"HEADR0011RET_BTP0012\r\n");
-                	goto REQ_SWITCH_ERR;
-                }
-                if(strcmp(devlist[id].client_ip,client_ip))
-                {
-                	PRINT("ip error\n");
-                	memset(sendbuf,0,SENDBUF);
-                	snprintf(sendbuf, 23,"HEADR0011RET_BTP0012\r\n");
-                	goto REQ_SWITCH_ERR;
-                }
-                for(i=0;i<CLIENT_NUM;i++)
-                {
-                        if(devlist[i].client_fd == -1)
-                                continue;
-                        if(&devlist[i] == dev)
-                        {
-                               // id = i ;
-                                break;
-                        }
-                }
-                memset(sendbuf,0,SENDBUF);
-                snprintf(sendbuf,strlen(dev->client_ip)+23
-                ,"HEADR0%03dREQ_BTP%03d%d%s\r\n",strlen(dev->client_ip)+11,strlen(dev->client_ip)+1,i,dev->client_ip);
-                PRINT("%s\n",sendbuf);
-                netWrite(devlist[id].client_fd, sendbuf, strlen(sendbuf));
+			if(id<0 || id>=CLIENT_NUM)
+			{
+				PRINT("ID error\n");
+				memset(sendbuf,0,SENDBUF);
+				snprintf(sendbuf, 23,"HEADR0011RET_BTP0012\r\n");
+				goto REQ_SWITCH_ERR;
+			}
+			if(devlist[id].client_fd <0)
+			{
+				PRINT("dev is not online\n");
+				memset(sendbuf,0,SENDBUF);
+				snprintf(sendbuf, 23,"HEADR0011RET_BTP0012\r\n");
+				goto REQ_SWITCH_ERR;
+			}
+			if(strcmp(devlist[id].client_ip,client_ip))
+			{
+				PRINT("ip error\n");
+				memset(sendbuf,0,SENDBUF);
+				snprintf(sendbuf, 23,"HEADR0011RET_BTP0012\r\n");
+				goto REQ_SWITCH_ERR;
+			}
+			for(i=0;i<CLIENT_NUM;i++)
+			{
+					if(devlist[i].client_fd == -1)
+							continue;
+					if(&devlist[i] == dev)
+					{
+						   // id = i ;
+							break;
+					}
+			}
+			memset(sendbuf,0,SENDBUF);
+			snprintf(sendbuf,strlen(dev->client_ip)+23
+			,"HEADR0%03dREQ_BTP%03d%03d%s\r\n",strlen(dev->client_ip)+13,strlen(dev->client_ip)+3,i,dev->client_ip);
+			PRINT("%s\n",sendbuf);
+			netWrite(devlist[id].client_fd, sendbuf, strlen(sendbuf));
         }
         return 0;
 REQ_SWITCH_ERR:
@@ -1035,8 +1066,10 @@ int do_cmd_req_talk(dev_status_t * dev, char * sendbuf)
         int i,id;
         char client_ip[16]={0};
         char flag;
-        id = (int)cli_req_buf[phone_control.cli_req_buf_rp].arg[0]-48;
-        memcpy(client_ip,&cli_req_buf[phone_control.cli_req_buf_rp].arg[1],cli_req_buf[phone_control.cli_req_buf_rp].arglen-1);//10.10.10.103 //172.16.0.1
+		char id_buf[3]={0};
+		memcpy(id_buf,&cli_req_buf[phone_control.cli_req_buf_rp].arg[0],3);
+		id = atoi(id_buf);
+        memcpy(client_ip,&cli_req_buf[phone_control.cli_req_buf_rp].arg[3],cli_req_buf[phone_control.cli_req_buf_rp].arglen-3);//10.10.10.103 //172.16.0.1
         client_ip[cli_req_buf[phone_control.cli_req_buf_rp].arglen]='\0';
         PRINT("req talk id = %d\n",id);
         PRINT("req talk ip = %s\n",client_ip);
@@ -1074,7 +1107,7 @@ int do_cmd_req_talk(dev_status_t * dev, char * sendbuf)
         }
         memset(sendbuf,0,SENDBUF);
         snprintf(sendbuf,strlen(dev->client_ip)+23
-        ,"HEADR0%03dREQ_BTP%03d%d%s\r\n",strlen(dev->client_ip)+11,strlen(dev->client_ip)+1,i,dev->client_ip);
+        ,"HEADR0%03dREQ_BTP%03d%03d%s\r\n",strlen(dev->client_ip)+13,strlen(dev->client_ip)+3,i,dev->client_ip);
         PRINT("%s\n",sendbuf);
         netWrite(devlist[id].client_fd, sendbuf, strlen(sendbuf));
         return 0;
@@ -1088,8 +1121,10 @@ int do_cmd_ret_ptb(dev_status_t * dev, char * sendbuf)
         int i,id;
         char client_ip[16]={0};
         char flag;
-        id = (int)cli_req_buf[phone_control.cli_req_buf_rp].arg[0]-48;
-        memcpy(client_ip,&cli_req_buf[phone_control.cli_req_buf_rp].arg[1],cli_req_buf[phone_control.cli_req_buf_rp].arglen-1);//10.10.10.103 //172.16.0.1
+		char id_buf[3]={0};
+		memcpy(id_buf,&cli_req_buf[phone_control.cli_req_buf_rp].arg[0],3);
+		id = atoi(id_buf);
+        memcpy(client_ip,&cli_req_buf[phone_control.cli_req_buf_rp].arg[3],cli_req_buf[phone_control.cli_req_buf_rp].arglen-3);//10.10.10.103 //172.16.0.1
         client_ip[cli_req_buf[phone_control.cli_req_buf_rp].arglen]='\0';
         PRINT("ret id = %d\n",id);
         PRINT("ret ip = %s\n",client_ip);
@@ -1991,8 +2026,9 @@ void* tcp_loop_recv(void* argv)
 							PRINT("read failed\n");
 							devlist[i].dying = 1;
 							memset(sendbuf,0,SENDBUF);
-							sprintf(sendbuf,"%s%d","INSIDE",i);
-							netWrite(phone_control_fd[0],sendbuf, strlen(sendbuf));
+							sprintf(sendbuf,"%s","INSIDE");
+							sendbuf[6]=i+1;
+							netWrite(phone_control_fd[0],sendbuf, 7);
 							break;
 						}
 						if(ret==0)
@@ -2002,8 +2038,9 @@ void* tcp_loop_recv(void* argv)
 							PRINT("socket return 0\n");
 							devlist[i].dying = 1;
 							memset(sendbuf,0,SENDBUF);
-							sprintf(sendbuf,"%s%d","INSIDE",i);
-							netWrite(phone_control_fd[0],sendbuf, strlen(sendbuf));
+							sprintf(sendbuf,"%s","INSIDE");
+							sendbuf[6]=i+1;
+							netWrite(phone_control_fd[0],sendbuf, 7);
 							break;
 						}
 						//PRINT("%s\n",msg);
@@ -2095,6 +2132,8 @@ void *phone_control_loop_accept(void* arg)
 					if(online_dev_num == CLIENT_NUM-1)
 					{
 						PRINT("client limit\n");
+						netWrite(clientfd, "HEADR0010LIMITED000\r\n",22);
+						usleep(10*1000);
 						close(clientfd);
 						break;
 					}
@@ -2144,8 +2183,9 @@ void *phone_control_loop_accept(void* arg)
 										}
 										devlist[j].dying = 1;
 										memset(sendbuf,0,SENDBUF);
-										sprintf(sendbuf,"%s%d","INSIDE",j);
-										netWrite(phone_control_fd[0],sendbuf, strlen(sendbuf));
+										sprintf(sendbuf,"%s","INSIDE");
+										sendbuf[6]=j+1;
+										netWrite(phone_control_fd[0],sendbuf, 7);
 										usleep(50*1000);									
 										break;
 									}
@@ -2164,8 +2204,7 @@ void *phone_control_loop_accept(void* arg)
 							}
 						}
 					}
-					for(i=0; i<CLIENT_NUM; i++)
-						printf("%d:cli_fd=%d  , cli_ip=%s\n", i ,devlist[i].client_fd,devlist[i].client_ip);
+					print_devlist();
 				}
 		}
 		//	usleep(100*1000);
@@ -2176,11 +2215,17 @@ int parse_msg_inside(char *msg)
 {
 	PRINT("%s\n",__FUNCTION__);
 	char num = msg[6];
-	PRINT("num=%c\n",num);
-	if(num>='0' && num <='4')
+	//PRINT("num=%c\n",num);
+	//if(num>='0' && num <='4')
+	//{
+		//PRINT("dev %d will be destroyed\n",(int)num-48);
+		//destroy_client(&devlist[(int)num-48]);
+	//}
+	PRINT("num=%d\n",num);
+	if(num>= 1 && num <=CLIENT_NUM)
 	{
-		PRINT("dev %d will be destroyed\n",(int)num-48);
-		destroy_client(&devlist[(int)num-48]);
+		PRINT("dev %d will be destroyed\n",num-1);
+		destroy_client(&devlist[num-1]);
 	}
 	return 0;
 }
@@ -2437,14 +2482,15 @@ void* handle_down_msg(void* argv)
 int generate_up_msg()
 {
 	//PRINT("%s\n",__FUNCTION__);
-	char sendbuf[BUF_LEN]={0};
-	char tmpbuf1[BUF_LEN]={0};
-	char tmpbuf2[BUF_LEN]={0};
+	char sendbuf[BUFFER_SIZE_2K]={0};
+	char tmpbuf1[BUFFER_SIZE_2K]={0};
+	char tmpbuf2[BUFFER_SIZE_2K]={0};
+	char lenbuf[3]={0};
 	int count=0;
 	int ip_len = 0;
 	int i,j = 0;
 	//组合消息
-	memset(sendbuf,0,BUF_LEN);
+	memset(sendbuf,0,BUFFER_SIZE_2K);
 	for(i=0;i<CLIENT_NUM;i++)
 	{
 #ifdef REGISTER
@@ -2454,26 +2500,29 @@ int generate_up_msg()
 #endif
 				continue;
 		ip_len = strlen(devlist[i].client_ip);
-		memset(tmpbuf1,0,BUF_LEN);
+		memset(tmpbuf1,0,BUFFER_SIZE_2K);
 		memcpy(tmpbuf1,"#DEV#IP",7);
-		tmpbuf1[7]= (char)(i+48);
-		memcpy(tmpbuf1+8,devlist[i].client_ip,ip_len);
-		memcpy(tmpbuf1+8+ip_len,"#NAME",5);
-		memcpy(tmpbuf1+ip_len+13,devlist[i].dev_name,16);
-		memcpy(tmpbuf2+count+1,tmpbuf1,29+ip_len);
-		count+=29+ip_len; //7+5+16+1+ip_len
+		sprintf(&tmpbuf1[7],"%03d",i);
+		memcpy(tmpbuf1+10,devlist[i].client_ip,ip_len);
+		memcpy(tmpbuf1+10+ip_len,"#NAME",5);
+		memcpy(tmpbuf1+ip_len+15,devlist[i].dev_name,16);
+		memcpy(tmpbuf2+count+3,tmpbuf1,31+ip_len);
+		//PRINT("tmpbuf1 = %s\n",tmpbuf1);
+		//PRINT("tmpbuf2 = %s\n",tmpbuf2+3);
+		count+=31+ip_len; //7+5+16+3+ip_len
 		j++;
 	}
-	tmpbuf2[0] = (char)(j+48);
+	sprintf(lenbuf,"%03d",j);
+	memcpy(tmpbuf2,lenbuf,3);
 	j = 0;
-	memcpy(tmpbuf2+count+1,"\r\n\0",3);
+	memcpy(tmpbuf2+count+3,"\r\n\0",3);
 	if(count!=0)
 	{
-		sprintf(sendbuf,"%s%03d%s","HEADR0",count+8,"OPTI_BS");
+		sprintf(sendbuf,"%s%03d%s","HEADR0",count+10,"OPTI_BS");
 		memcpy(sendbuf+16,tmpbuf2,count+3);
-		//PRINT("%s\n",sendbuf);
+		//PRINT("sendbuf = %s\n",sendbuf);
 	}
-	memset(tmpbuf2,0,BUF_LEN);
+	memset(tmpbuf2,0,BUFFER_SIZE_2K);
 	for(i=0;i<CLIENT_NUM;i++)
 	{
 #ifdef REGISTER
@@ -2483,7 +2532,7 @@ int generate_up_msg()
 #endif
 			continue;
 //		PRINT("%s:%d\n",devlist[i].client_ip,netWrite(devlist[i].client_fd, sendbuf, count+19));
-		netWrite(devlist[i].client_fd, sendbuf, count+19);
+		netWrite(devlist[i].client_fd, sendbuf, count+22);
 	}
 	return 0;
 }
@@ -2530,8 +2579,9 @@ void* phone_check_tick(void* argv)
 				PRINT("no tick!!!\n");
 				devlist[i].dying = 1;
 				memset(insidebuf,0,SENDBUF);
-				sprintf(insidebuf,"%s%d","INSIDE",i);
-				netWrite(phone_control_fd[0],insidebuf, strlen(insidebuf));
+				sprintf(sendbuf,"%s","INSIDE");
+				sendbuf[6]=i+1;
+				netWrite(phone_control_fd[0],sendbuf, 7);
 				devlist[i].destroy_count = 0;
 			}
 		}

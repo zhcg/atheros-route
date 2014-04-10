@@ -4,6 +4,7 @@
 #include "si32178.h"
 
 #define REGISTER
+//#define ENCRYPT			
 
 #define MIN_PACKET_BYTES	        7
 
@@ -88,8 +89,8 @@ typedef struct dev_status
 	int destroy_count;
 	int dying;
 
-	char dev_name[16];//设备名字
-
+	char dev_name[17];//设备名字
+	char dev_mac[12];
 	int dev_is_using;//设备是否正在使用
 }dev_status_t ;
 
@@ -140,8 +141,10 @@ struct class_phone_control
 	int ring_count;
 	int passage_fd;
 	char vloop; //电话线插入检测
+	int dial_over;
 };
 
+void print_devlist();
 void Ringon(unsigned char *ppacket);
 void Incomingcall(unsigned char *ppacket,int bytes,int flag);
 void OnhookRes(unsigned char *ppacket,int bytes);

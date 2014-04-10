@@ -1128,6 +1128,8 @@ static void pty_line_name(struct tty_driver *driver, int index, char *p)
  */
 static void tty_line_name(struct tty_driver *driver, int index, char *p)
 {
+	if(driver->minor_start != 63)
+		index++;
 	sprintf(p, "%s%d", driver->name, index + driver->name_base);
 }
 
@@ -2893,7 +2895,6 @@ int tty_register_driver(struct tty_driver *driver)
 	int i;
 	dev_t dev;
 	void **p = NULL;
-
 	if (!(driver->flags & TTY_DRIVER_DEVPTS_MEM) && driver->num) {
 		p = kzalloc(driver->num * 2 * sizeof(void *), GFP_KERNEL);
 		if (!p)
@@ -2915,7 +2916,6 @@ int tty_register_driver(struct tty_driver *driver)
 		kfree(p);
 		return error;
 	}
-
 	if (p) {
 		driver->ttys = (struct tty_struct **)p;
 		driver->termios = (struct ktermios **)(p + driver->num);

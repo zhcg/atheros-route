@@ -49,7 +49,7 @@ int onhook()
 {
 	if(!set_onhook())
 	{
-		//此处在摘机时也会调用
+		//此处在摘机时也会调用,主叫时，置开始状态
 		phone_audio.start_recv = 1;
 		PRINT("onhook success\n");
 	}
@@ -70,6 +70,7 @@ int dialup(char *num,int num_len)
 		num_len = 40;
 	phone_audio.input_stream_rp = 0;
 	phone_audio.input_stream_wp = 0;
+	phone_control.dial_over = 0;
 
 	pcm_ret = GenerateCodePcmData(num,num_len,&input_stream_buffer[phone_audio.input_stream_wp],Big_Endian);
 	PRINT("ret = %d\n",pcm_ret);
