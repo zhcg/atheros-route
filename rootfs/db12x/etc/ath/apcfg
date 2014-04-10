@@ -181,12 +181,24 @@ mac2=`dd if=/dev/caldata of=/tmp/mac2 count=1 bs=1 skip=4117 > /dev/null 2>&1 &&
 mac3=`dd if=/dev/caldata of=/tmp/mac3 count=1 bs=1 skip=4119 > /dev/null 2>&1 && cat /tmp/mac3`
 mac4=`dd if=/dev/caldata of=/tmp/mac4 count=1 bs=1 skip=4120 > /dev/null 2>&1 && cat /tmp/mac4`
 
-cfg -a AP_SSID="${AP_SSID:=HBD_WIFI_2G_${mac1}${mac2}${mac3}${mac4}}"
-cfg -a AP_SSID_2="${AP_SSID_2:=HBD_WIFI_2G_${mac1}${mac2}${mac3}${mac4}_Hide}"
+if [ "${mac1}" = ~^[0-9A-Za-z]+$ -a "${mac2}" = ~^[0-9A-Za-z]+$ -a "${mac3}" = ~^[0-9A-Za-z]+$ -a "${mac4}" = ~^[0-9A-Za-z]+$ ];then
+#	echo "the mac address is exist"
+	cfg -a AP_SSID="${AP_SSID:=HBD_WIFI_2G_${mac1}${mac2}${mac3}${mac4}}"
+	cfg -a AP_SSID_2="${AP_SSID_2:=HBD_WIFI_2G_${mac1}${mac2}${mac3}${mac4}_Hide}"
 
-if [ "${AP_STARTMODE}" = "dual" ]; then
-cfg -a AP_SSID_3="${AP_SSID_3:=HBD_WIFI_5G_${mac1}${mac2}${mac3}${mac4}}"
-cfg -a AP_SSID_4="${AP_SSID_4:=HBD_WIFI_5G_${mac1}${mac2}${mac3}${mac4}_Hide}"
+	if [ "${AP_STARTMODE}" = "dual" ]; then
+		cfg -a AP_SSID_3="${AP_SSID_3:=HBD_WIFI_5G_${mac1}${mac2}${mac3}${mac4}}"
+		cfg -a AP_SSID_4="${AP_SSID_4:=HBD_WIFI_5G_${mac1}${mac2}${mac3}${mac4}_Hide}"
+	fi
+else
+#	echo "the mac address is not exist"
+	cfg -a AP_SSID="${AP_SSID:=HBD_WIFI_2G}"
+	cfg -a AP_SSID_2="${AP_SSID_2:=HBD_WIFI_2G_Hide}"
+
+	if [ "${AP_STARTMODE}" = "dual" ]; then
+		cfg -a AP_SSID_3="${AP_SSID_3:=HBD_WIFI_5G}"
+		cfg -a AP_SSID_4="${AP_SSID_4:=HBD_WIFI_5G_Hide}"
+	fi
 fi
 
 cfg -a MACTYPE=${MACTYPE:=0}
