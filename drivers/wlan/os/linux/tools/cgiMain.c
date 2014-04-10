@@ -3017,6 +3017,10 @@ int set_addr_bind(void)
 			}
 			fclose(fileBuf2);
 		}
+				
+		CFG_remove_by_name("ADD_MAC");
+		writeParameters("/tmp/.apcfg","w+",0);
+		
 		Execute_cmd("/usr/sbin/udhcpd /etc/udhcpd.conf",rspBuff);
 		return result;
 }
