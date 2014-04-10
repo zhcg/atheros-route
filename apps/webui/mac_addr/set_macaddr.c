@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+#define WIFIFLAG_OFFSET 4104
 #define WIFI0_OFFSET 4098
 #define WIFI1_OFFSET 20482
 #define ETH0_OFFSET 0
@@ -60,6 +61,13 @@ int main(int argc,char **argv)
 		printf("mac address don't fit\n");
 		return -1;
 	}
+
+	fseek(f, WIFIFLAG_OFFSET, SEEK_SET);
+	
+	len=fwrite(mac_buff,17,1,f);
+	if (len < 0 )
+		printf("write mac addr error\n");
+
 	
 	fseek(f, ETH0_OFFSET, SEEK_SET);
 	sprintf(mac_buff,"%c%c%c%c%c%c",mac_data[0],mac_data[1],mac_data[2],mac_data[3],mac_data[4],mac_data[5]);
