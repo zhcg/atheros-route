@@ -181,7 +181,7 @@ mac2=`dd if=/dev/caldata of=/tmp/mac2 count=1 bs=1 skip=4117 > /dev/null 2>&1 &&
 mac3=`dd if=/dev/caldata of=/tmp/mac3 count=1 bs=1 skip=4119 > /dev/null 2>&1 && cat /tmp/mac3 | sed -n "/^[0-9A-Fa-f]\+$/p"`
 mac4=`dd if=/dev/caldata of=/tmp/mac4 count=1 bs=1 skip=4120 > /dev/null 2>&1 && cat /tmp/mac4 | sed -n "/^[0-9A-Fa-f]\+$/p"`
 
-if [ ! -z "$mac1" -a  ! -z "X$mac2" -a  ! -z "X$mac3" -a  ! -z "X$mac4" ];then
+if [ ! -z "$mac1" -a  ! -z "$mac2" -a  ! -z "$mac3" -a  ! -z "$mac4" ];then
 #	echo "the mac address is exist"
 	cfg -a AP_SSID="${AP_SSID:=HBD_WIFI_2G_${mac1}${mac2}${mac3}${mac4}}"
 	cfg -a AP_SSID_2="${AP_SSID_2:=HBD_WIFI_2G_${mac1}${mac2}${mac3}${mac4}_Hide}"
