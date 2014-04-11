@@ -270,6 +270,7 @@ enum ERROR_NUM
 	SYSTEM_ERR,            // 执行shell命令失败
 	STRSTR_ERR,            // strstr错误 
 	SN_BASE_ERR,           // base序列号错误 -160
+	BASE_NO_SN_ERR,        // base没有序列号
 	SN_PAD_ERR,            // PAD序列号错误 
 	TIMEOUT_ERR,           // 时间超时错误 
 	WRITE_ERR,             // 文件写入错误 
@@ -279,8 +280,8 @@ enum ERROR_NUM
 	P_WRITE_ERR,           // 文件写入错误
 	S_WRITE_ERR,           // 文件写入错误
 	
-	NO_REQUEST_ERR,        // 无请求错误
-	IDENTIFYING_CODE_ERR,  // 验证码错误  -150
+	NO_REQUEST_ERR,        // 无请求错误 -150
+	IDENTIFYING_CODE_ERR,  // 验证码错误  
 	OVERDUE_ERR,           // 请求数据过期
 	NON_EXISTENT_ERR,      // 请求数据不存在
 	REPEAT_ERR,            // 重复操作

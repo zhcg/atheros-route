@@ -339,8 +339,8 @@ static int get_base_sn_and_mac(char *base_sn, char *base_mac)
     tmp = strstr(cmd_buf, "sn=");   
     if (tmp == NULL)
 	{
-	    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "base sn not find!", DATA_ERR);
-        return DATA_ERR;
+	    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "base sn not find!", BASE_NO_SN_ERR);
+        return BASE_NO_SN_ERR;
 	}
 	
     
@@ -367,11 +367,16 @@ static int get_base_sn_and_mac(char *base_sn, char *base_mac)
     tmp = strstr(cmd_buf, "SN=");   
     if (tmp == NULL)
 	{
-	    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "base sn not find!", DATA_ERR);
-        return DATA_ERR;
+	    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "base sn not find!", BASE_NO_SN_ERR);
+        return BASE_NO_SN_ERR;
 	}
     memcpy(base_sn, tmp + 3, SN_LEN);
-    
+    if (strlen(base_sn) != SN_LEN)
+	{
+	    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "base sn error!", SN_BASE_ERR);
+        return SN_BASE_ERR;
+	}
+
     if ((res = common_tools.get_wan_mac(mac_tmp)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_wan_mac failed!", res);

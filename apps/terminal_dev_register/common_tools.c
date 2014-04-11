@@ -1930,6 +1930,13 @@ int get_user_prompt(int error_num, char **out_buf)
             memcpy(prompt, "BASE序列号错误！", sizeof(prompt) - 1);  // 提示信息
             len = strlen(prompt);
             break;
+        }
+        case BASE_NO_SN_ERR:        // base没有序列号
+        {
+            state_num = 31;  //状态码
+            memcpy(prompt, "此BASE没有序列号！", sizeof(prompt) - 1);  // 提示信息
+            len = strlen(prompt);
+            break;
         } 
         default:
         {
