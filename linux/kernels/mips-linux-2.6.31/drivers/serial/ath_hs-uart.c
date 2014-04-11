@@ -66,27 +66,28 @@ void ath_hs_uart_init(void)
 
 	// GPIO Settings for HS_UART
 #if 1
-	// Enabling UART1_TD as output on GPIO10
-	data = ath_reg_rd(ATH_GPIO_OUT_FUNCTION2);
-	data = (data & ~GPIO_OUT_FUNCTION2_ENABLE_GPIO_10_MASK) |
-		GPIO_OUT_FUNCTION2_ENABLE_GPIO_10_SET(0x4f);
-	ath_reg_wr(ATH_GPIO_OUT_FUNCTION2, data);
+        // Enabling UART1_TD as output on GPIO10
+        data = ath_reg_rd(ATH_GPIO_OUT_FUNCTION2);
+        data = (data & ~GPIO_OUT_FUNCTION2_ENABLE_GPIO_10_MASK) |
+                GPIO_OUT_FUNCTION2_ENABLE_GPIO_10_SET(0x4f);
+        ath_reg_wr(ATH_GPIO_OUT_FUNCTION2, data);
 
-	data = ath_reg_rd(ATH_GPIO_OUT_FUNCTION3);
-	data = (data & ~GPIO_OUT_FUNCTION3_ENABLE_GPIO_12_MASK) |
-		GPIO_OUT_FUNCTION3_ENABLE_GPIO_12_SET(0x50);
-	ath_reg_wr(ATH_GPIO_OUT_FUNCTION3, data);
+//      data = ath_reg_rd(ATH_GPIO_OUT_FUNCTION3);
+//      data = (data & ~GPIO_OUT_FUNCTION3_ENABLE_GPIO_12_MASK) |
+//              GPIO_OUT_FUNCTION3_ENABLE_GPIO_12_SET(0x50);
+//      ath_reg_wr(ATH_GPIO_OUT_FUNCTION3, data);
 
-	// Enabling UART1_TD, UART1_RTS as outputs on GPIO10,12
-	data = ath_reg_rd(ATH_GPIO_OE);
-	data = (data & 0xffffebff) | 0xa00;
-	ath_reg_wr(ATH_GPIO_OE, data);
+        // Enabling UART1_TD as outputs on GPIO10
+        data = ath_reg_rd(ATH_GPIO_OE);
+        data = (data & 0xfffffbff) | 0x200;
+        ath_reg_wr(ATH_GPIO_OE, data);
 
 
-	// Enabling UART1_RD,UART1_CTS as inputs on GPIO 9, 11
-	ath_reg_wr(ATH_GPIO_IN_ENABLE9, 0xb090000);
-	// GPIO_IN_ENABLE9
-
+        // Enabling UART1_RD as inputs on GPIO 9
+        data = ath_reg_rd(ATH_GPIO_IN_ENABLE9);
+        data = (data & 0xff00ffff) | 0x90000;
+        ath_reg_wr(ATH_GPIO_IN_ENABLE9, data);
+        // GPIO_IN_ENABLE9
 //#else
 
         ath_reg_rmw_set(ATH_GPIO_FUNCTIONS,
