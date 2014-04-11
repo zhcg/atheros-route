@@ -89,7 +89,18 @@ void do_bootm_linux (cmd_tbl_t * cmdtp, int flag, int argc, char *argv[],
 
 	char *command = getenv ("bootargs");
 	char *sn = getenv ("SN");
-	sprintf(commandline, "%s SN=%s", command, sn);
+	if(sn == NULL)
+	{
+		char *num = "000000";
+		setenv ("SN", num);	
+		saveenv();	
+		sprintf(commandline, "%s SN=%s", command, num);
+
+	}
+	else
+	{
+		sprintf(commandline, "%s SN=%s", command, sn);
+	}
 // add cyj end
 	char env_buf[12];
 
