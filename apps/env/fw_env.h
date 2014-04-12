@@ -41,12 +41,25 @@
 
 #define CONFIG_BAUDRATE		115200
 #define CONFIG_BOOTDELAY	5	/* autoboot after 5 seconds	*/
+/*wangyu modify for bootargs*/
+#define CONFIG_IPADDR	\
+	"192.168.1.1"
+#define CONFIG_SERVERIP	\
+		"192.168.1.2"
+#define CONFIG_ETHADDR   "0x00:0xaa:0xbb:0xcc:0xdd:0xee"
+#define CONFIG_BOOTCOMMAND_LU	\
+	"tftp 0x80060000 ${dir}u-boot.bin&&erase 0x9f000000 +$filesize&&cp.b $fileaddr 0x9f000000 $filesize"
+#define CONFIG_BOOTCOMMAND_LK	\
+		"tftp 0x80060000 ${dir}vmlinux${bc}.lzma.uImage&&erase 0x9fe80000 +$filesize&&cp.b $fileaddr 0x9fe80000 $filesize"
+#define CONFIG_BOOTCOMMAND_LF	\
+		"tftp 0x80060000 ${dir}db12x${bc}-jffs2&&erase 0x9f050000 +0xe30000&&cp.b $fileaddr 0x9f050000 $filesize"
 #define CONFIG_BOOTCOMMAND							\
-	"bootp; " 								\
-	"setenv bootargs root=/dev/nfs nfsroot=${serverip}:${rootpath} " 	\
-	"ip=${ipaddr}:${serverip}:${gatewayip}:${netmask}:${hostname}::off; " 	\
-	"bootm"
-
+	"bootm 0x9fe80000"
+#define CONFIG_BOOTARGS 				\
+	"bootargs=console=ttyS0,115200 root=31:02 "				\
+	"rootfstype=jffs2 init=/sbin/init " 					\
+	"mtdparts=ath-nor0:256k(u-boot),64k(u-boot-env),14528k(rootfs),1408k(uImage),64k(mib0),64k(ART)"
+/*wangyu modify for bootargs*/
 extern		void  fw_printenv(int argc, char *argv[]);
 extern unsigned char *fw_getenv  (unsigned char *name);
 extern		int   fw_setenv  (int argc, char *argv[]);
