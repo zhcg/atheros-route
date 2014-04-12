@@ -1284,7 +1284,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 	                                outBuff += sprintf(outBuff,"</td>");
 									
 	                                memset(rate_buf, 0, sizeof(rate_buf));
-	                                strncpy(rate_buf, &STAbuf[28], 5);
+	                                strncpy(rate_buf, &STAbuf[27], 5);
 	                                outBuff += sprintf(outBuff,"<td>%sbit/s</td>",rate_buf);
 	                                
 	                                /*get the Signal strength */
@@ -1316,7 +1316,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                                 outBuff += sprintf(outBuff,"</td>");
 
                                 memset(rate_buf, 0, sizeof(rate_buf));
-                                strncpy(rate_buf, &STAbuf[28], 5);
+                                strncpy(rate_buf, &STAbuf[27], 5);
                                 outBuff += sprintf(outBuff,"<td>%sbit/s</td>",rate_buf);
                                 //printf("the sta's rate is %s\n", rate_buf);
 
@@ -1379,7 +1379,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 	                                outBuff += sprintf(outBuff,"</td>");
 
 	                                memset(rate_buf, 0, sizeof(rate_buf));
-	                                strncpy(rate_buf, &STAbuf[28], 5);
+	                                strncpy(rate_buf, &STAbuf[27], 5);
 	                                outBuff += sprintf(outBuff,"<td>%sbit/s</td>",rate_buf);
 	                                //printf("the sta's rate is %s\n", rate_buf);
 
@@ -1411,7 +1411,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                                 outBuff += sprintf(outBuff,"</td>");
 
                                 memset(rate_buf, 0, sizeof(rate_buf));
-                                strncpy(rate_buf, &STAbuf[28], 5);
+                                strncpy(rate_buf, &STAbuf[27], 5);
                                 outBuff += sprintf(outBuff,"<td>%sbit/s</td>",rate_buf);
                                 //printf("the sta's rate is %s\n", rate_buf);
 
@@ -1461,7 +1461,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                                 outBuff += sprintf(outBuff,"</td>");
 
                                 memset(rate_buf, 0, sizeof(rate_buf));
-                                strncpy(rate_buf, &STAbuf[29], 5);
+                                strncpy(rate_buf, &STAbuf[27], 5);
                                 outBuff += sprintf(outBuff,"<td>%sbit/s</td>",rate_buf);
                                 //printf("the sta's rate is %s\n", rate_buf);
 
@@ -1502,7 +1502,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 								outBuff += sprintf(outBuff,"</td>");
 
 								memset(rate_buf, 0, sizeof(rate_buf));
-								strncpy(rate_buf, &STAbuf[29], 5);
+								strncpy(rate_buf, &STAbuf[27], 5);
 								outBuff += sprintf(outBuff,"<td>%sbit/s</td>",rate_buf);
 								//printf("the sta's rate is %s\n", rate_buf);
 
