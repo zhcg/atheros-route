@@ -1450,7 +1450,7 @@ int factory_test_cmd_update_sn(unsigned char* data,int len)
 	}
 	else
 	{
-		snprintf(cmdbuf,13+len,"%s%s","fw_setenv SN ",data);
+		snprintf(cmdbuf,14+len,"%s%s","fw_setenv SN ",data);
 		PRINT("cmdbuf = %s\n",cmdbuf);
 		status = system(cmdbuf);
 		PRINT("status = %d\n",status);
