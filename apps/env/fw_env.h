@@ -46,11 +46,11 @@
 #define CONFIG_SERVERIP	192.168.1.2
 #define CONFIG_ETHADDR   0x00:0xaa:0xbb:0xcc:0xdd:0xee
 #define CONFIG_BOOTCOMMAND_LU	\
-		"tftp 0x80060000 ${dir}u-boot.bin&&erase 0x9f000000 +$filesize&&cp.b $fileaddr 0x9f000000 $filesize"
+		tftp 0x80060000 ${dir}u-boot.bin&&erase 0x9f000000 +$filesize&&cp.b $fileaddr 0x9f000000 $filesize
 #define CONFIG_BOOTCOMMAND_LK	\
-		"tftp 0x80060000 ${dir}vmlinux${bc}.lzma.uImage&&erase 0x9fe80000 +$filesize&&cp.b $fileaddr 0x9fe80000 $filesize"
+		tftp 0x80060000 ${dir}vmlinux${bc}.lzma.uImage&&erase 0x9fe80000 +$filesize&&cp.b $fileaddr 0x9fe80000 $filesize
 #define CONFIG_BOOTCOMMAND_LF	\
-		"tftp 0x80060000 ${dir}db12x${bc}-jffs2&&erase 0x9f050000 +0xe30000&&cp.b $fileaddr 0x9f050000 $filesize"
+		tftp 0x80060000 ${dir}db12x${bc}-jffs2&&erase 0x9f050000 +0xe30000&&cp.b $fileaddr 0x9f050000 $filesize
 #define CONFIG_BOOTCOMMAND							\
 	"bootm 0x9fe80000"
 #define CONFIG_BOOTARGS 				\
