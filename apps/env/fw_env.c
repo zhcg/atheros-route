@@ -139,7 +139,6 @@ static uchar default_environment[] = {
 #ifdef	CONFIG_BOOTFILE
 	"bootfile=" MK_STR (CONFIG_BOOTFILE) "\0"
 #endif
-/*wangyu modify for bootargs*/
 #ifdef	CONFIG_BOOTCOMMAND_LU
 	"lu=" MK_STR (CONFIG_BOOTCOMMAND_LU) "\0"
 #endif
@@ -149,7 +148,6 @@ static uchar default_environment[] = {
 #ifdef	CONFIG_BOOTCOMMAND_LF
 	"lf=" MK_STR (CONFIG_BOOTCOMMAND_LF) "\0"
 #endif
-/*wangyu modify for bootargs*/
 #ifdef	CONFIG_LOADADDR
 	"loadaddr=" MK_STR (CONFIG_LOADADDR) "\0"
 #endif

@@ -43,7 +43,7 @@
 #define CONFIG_BOOTDELAY	5	/* autoboot after 5 seconds	*/
 /*wangyu modify for bootargs*/
 #define CONFIG_IPADDR	\
-	"192.168.1.1"
+		"192.168.1.1"
 #define CONFIG_SERVERIP	\
 		"192.168.1.2"
 #define CONFIG_ETHADDR   "0x00:0xaa:0xbb:0xcc:0xdd:0xee"
@@ -56,7 +56,7 @@
 #define CONFIG_BOOTCOMMAND							\
 	"bootm 0x9fe80000"
 #define CONFIG_BOOTARGS 				\
-	"bootargs=console=ttyS0,115200 root=31:02 "				\
+	"console=ttyS0,115200 root=31:02 "				\
 	"rootfstype=jffs2 init=/sbin/init " 					\
 	"mtdparts=ath-nor0:256k(u-boot),64k(u-boot-env),14528k(rootfs),1408k(uImage),64k(mib0),64k(ART)"
 /*wangyu modify for bootargs*/
