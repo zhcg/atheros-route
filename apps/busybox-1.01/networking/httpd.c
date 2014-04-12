@@ -289,6 +289,7 @@ static const char* const suffixTable [] = {
   ".pac", "application/x-ns-proxy-autoconfig",
   ".vrml.wrl", "model/vrml",
 #endif
+  ".ico", "image/x-icon",
   0, "application/octet-stream" /* default */
   };
 
