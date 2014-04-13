@@ -142,6 +142,7 @@ struct class_phone_control
 	int passage_fd;
 	char vloop; //电话线插入检测
 	int dial_over;
+	int offhook_kill_talkback;
 };
 
 void print_devlist();

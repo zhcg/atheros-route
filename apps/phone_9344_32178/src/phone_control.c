@@ -39,6 +39,7 @@ struct class_phone_control phone_control =
 	.ring_pos_count = 0,
 	.passage_fd = -1,
 	.vloop = 0,
+	.offhook_kill_talkback = 0,
 };
 
 dev_status_t devlist[CLIENT_NUM];//设备列表
@@ -369,9 +370,10 @@ OFFHOOK:
 			if(devlist[i].talkbacking || devlist[i].talkbacked)
 			{
 				PRINT("stop talkbacking!\n");
-				stopaudio(&devlist[i],TALKBACK);
+				//stopaudio(&devlist[i],TALKBACK);
 				do_cmd_talkbackonhook(&devlist[i],sendbuf);
-				usleep(300*1000);
+				phone_control.offhook_kill_talkback = 1;
+				usleep(100*1000);
 				break;
 			}
 		}
@@ -880,6 +882,12 @@ int do_cmd_heartbeat(dev_status_t *dev)
 int do_cmd_dialup(dev_status_t* dev)
 {
 	int i,j,count=0;
+	if(phone_control.offhook_kill_talkback == 1)
+	{
+		PRINT("delay dialup\n");
+		usleep(500*1000);
+		phone_control.offhook_kill_talkback = 0;
+	}
 #ifdef REGISTER
 	if(dev->dev_is_using && dev->registered)
 #else
