@@ -36,6 +36,8 @@
 #include <unistd.h>
 #include <sys/reboot.h>
 
+#include <sys/file.h>
+
 #ifdef CONFIG_NVRAM
 #define NVRAM  "/dev/nvram"
 #define NVRAM_OFFSET 0
@@ -127,6 +129,7 @@ extern char **environ;
 #endif
 
 static  EnvParam_t      config;
+static  EnvParam_t      config_sync;
 static  char            rspBuff[65536];
 PRIVATE_C  char         opBuff[65536];
 unsigned int            parameterIndex = 0;
@@ -163,6 +166,7 @@ char *expandOutput(char *inBuff, char *outBuff);
 void htmlEncode(char *src, char *dest);
 int	isKeyHex(char *key,int flags);
 
+int CFG_set_by_name_sync(char *name,char *val);
 int  CFG_set_by_name(char *name,char *val);
 struct staList *getSta(struct staList *list, char *maddr);
 struct staList *getSta1(struct staList *list, char *maddr);
@@ -171,6 +175,7 @@ void delSta(char *maddr);
 struct staList *scan_staList(struct staList *list);
 static void  Reboot_tiaozhuan(char* res,char * gopage);
 
+void writeParametersWithSync(void);
 /******************************************************************************/
 /*!
 **  \brief Print output to HTML or standard text
@@ -335,7 +340,7 @@ void fillParamStruct(FILE *f)
             ** Insert into the local structure
             */
 
-            CFG_set_by_name(buff,vPtr);
+            CFG_set_by_name_sync(buff,vPtr);
         }
     }
 }
@@ -2487,6 +2492,99 @@ void writeParameters(char *name,char *mode,unsigned long offset)
     }
 }
 
+
+int CFG_set_by_name_sync(char *name,char *val)
+{
+    int     i;
+	int		check = 1;
+
+	char	*Dont_Check[] = {"WPS_ENABLE","AP_SSID",0};
+
+    if( CheckValue(name, val) )
+        return (-1);
+
+
+	i = 0;
+	while(Dont_Check[i])
+	{
+		if(!strncmp(name, Dont_Check[i], strlen(Dont_Check[i++])) )
+		{
+			check = 0;
+			break;
+		}
+	}
+
+
+    for( i=0; i < config.numParams; i++ )
+    {
+        if( !strcmp(config.Param[i].Name,name) )
+        {
+
+            setParamValue(config.Param[i].Val, val, check);
+            return (0);     // Done
+        }
+    }
+
+    if(config.numParams < MAX_WLAN_ELEMENT)
+    {
+        strcpy(config.Param[config.numParams].Name,name);
+        setParamValue(config.Param[config.numParams++].Val,val,0);
+    }
+
+    return (0);
+}
+
+
+void writeParametersWithSync(void)
+{
+    FILE *f;
+    int i;
+    int fd;
+
+    fd = open("/tmp/br0", O_RDWR);
+    flock(fd, LOCK_EX);
+
+    memset(&config,0,sizeof(config));
+    
+    //fprintf(errOut,"%s  %d\n",__func__,__LINE__);
+    f = fopen("/tmp/.apcfg","r");
+
+    if ( !f )
+    {
+
+        f = fopen( NVRAM, "r" );
+
+        if (!f)
+        {
+            printf("ERROR:  %s not defined on this device\n", NVRAM);
+            printf("ERROR:  Cannot store data in flash!!!!\n");
+            exit(-1);
+        }
+
+        fseek(f, NVRAM_OFFSET, SEEK_SET);
+    }
+    if ( f )
+    {
+        fillParamStruct(f);
+        fclose(f);
+    }
+
+    for(i=0;i<config_sync.numParams;i++)
+    {
+          CFG_set_by_name_sync(config_sync.Param[i].Name,config_sync.Param[i].Val);
+  //        printf("config_sync %s:=%s\n",config_sync.Param[i].Name,config_sync.Param[i].Val);
+    }
+
+
+            writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            writeParameters("/tmp/.apcfg","w+",0);			
+
+
+     flock(fd, LOCK_UN);
+     close(fd);
+
+}
+
 /*****************************************************************************
 **
 ** CFG_set_by_name
@@ -2537,6 +2635,15 @@ int CFG_set_by_name(char *name,char *val)
 			break;
 		}
 	}
+
+    /*
+     * set new parameter to struct config_sync
+     */
+    if(config_sync.numParams < MAX_WLAN_ELEMENT)
+    {
+        strcpy(config_sync.Param[config_sync.numParams].Name,name);
+        setParamValue(config_sync.Param[config_sync.numParams++].Val,val,0);
+    }
 
 	/*
 	** Now, search the list and get the proper slot for this
@@ -2983,8 +3090,9 @@ int set_dhcp(void)
 				
 		CFG_get_by_name("DHCPON_OFF",valBuff1);
 		//save new config to flash 
-		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-		writeParameters("/tmp/.apcfg","w+",0);
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 		//off
 		if(strcmp(valBuff1,"off") == 0 )
 		{
@@ -3029,9 +3137,12 @@ int set_addr_bind(void)
 		fprintf(errOut,"%s  %d  valBuff1 %s valBuff2 %s valBuff3 %s\n",__func__,__LINE__,
 				valBuff1,valBuff2,valBuff3);
 		#endif
+
+        //viqjeee
+        writeParametersWithSync();
 		//save new config to flash 
-		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-		writeParameters("/tmp/.apcfg","w+",0);
+        //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+        //writeParameters("/tmp/.apcfg","w+",0);
 		//TODO if close do commit no ath1
 		
 		Execute_cmd("killall udhcpd > /dev/null 2>&1",rspBuff);
@@ -3078,8 +3189,9 @@ int modify_addr_bind(void)
 		char tmp[128];
 		char valBuff[128];
 		CFG_get_by_name("ON_OFF",valBuff);
-		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-		writeParameters("/tmp/.apcfg","w+",0);
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 		
 		Execute_cmd("killall udhcpd > /dev/null 2>&1",rspBuff);
 		sprintf(tmp,"/usr/sbin/modify_addr %s > /dev/null 2>&1",valBuff);
@@ -3097,8 +3209,9 @@ int del_addr_bind(void)
 	char valBuff3[128]; 
 
 	//CFG_get_by_name("DELXXX",valBuff1);
-	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-	writeParameters("/tmp/.apcfg","w+",0);
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 	Execute_cmd("killall udhcpd > /dev/null 2>&1",rspBuff);
 
 	Execute_cmd("/usr/sbin/del_addr > /dev/null 2>&1",rspBuff);
@@ -3111,14 +3224,16 @@ int del_addr_bind(void)
 //luodp route rule
 void add_route_rule(void)
 {
-	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-	writeParameters("/tmp/.apcfg","w+",0);
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 	Execute_cmd("/usr/sbin/set_route > /dev/null 2>&1",rspBuff);
 } 
 void del_route_rule(void)
 {
-	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-	writeParameters("/tmp/.apcfg","w+",0);
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 	Execute_cmd("/usr/sbin/del_route > /dev/null 2>&1",rspBuff);
 }
 
@@ -3127,8 +3242,9 @@ void modify_route_rule(void)
 	char tmp[128];
 	char valBuff[128];
 	CFG_get_by_name("ON_OFF",valBuff);
-	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-	writeParameters("/tmp/.apcfg","w+",0);
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 	sprintf(tmp,"/usr/sbin/modify_route %s > /dev/null 2>&1",valBuff);
 	Execute_cmd(tmp,rspBuff);
 }
@@ -3148,8 +3264,9 @@ int add_arp(void)
 	struct in_addr addr_ip, addr_mask;
 	struct in_addr addr_ip2, addr_mask2;
 	
-	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-	writeParameters("/tmp/.apcfg","w+",0);
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 
 
 	Execute_cmd("cfg -e | grep AP_IPADDR= | awk -F '=' '{print $2}'",valBuff);
@@ -3261,8 +3378,9 @@ error:
 }
 void del_arp(void)
 {
-	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-	writeParameters("/tmp/.apcfg","w+",0);
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 	Execute_cmd("/usr/sbin/del_arp > /dev/null 2>&1",rspBuff);
 }
 
@@ -3271,8 +3389,9 @@ void modify_arp(void)
 	char tmp[128];
 	char valBuff[128];
 	CFG_get_by_name("ON_OFF",valBuff);
-	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-	writeParameters("/tmp/.apcfg","w+",0);
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 	sprintf(tmp,"/usr/sbin/modify_arp %s > /dev/null 2>&1",valBuff);
 	Execute_cmd(tmp,rspBuff);
 }
@@ -3282,8 +3401,9 @@ void add_backup(void)
 	char pChar[128];
 	char valBuff1[128];
 	errOut = fopen("/dev/ttyS0","w");
-	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-	writeParameters("/tmp/.apcfg","w+",0);
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 	CFG_get_by_name("SAV",valBuff1);
 	fprintf(errOut,"\n%s  %d valBuff1 is %s \n",__func__,__LINE__, valBuff1);
 	sprintf(pChar,"/usr/sbin/set_backup %s > /dev/null 2>&1",valBuff1);
@@ -3294,13 +3414,15 @@ void del_backup(void)
 	char pChar[128];
 	char valBuff1[128];
 	CFG_get_by_name("ACT",valBuff1);
-	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-	writeParameters("/tmp/.apcfg","w+",0);
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 	sprintf(pChar,"/usr/sbin/del_backup %s > /dev/null 2>&1",valBuff1);
 	Execute_cmd(pChar,rspBuff);
 	CFG_set_by_name(valBuff1,"");
-	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-	writeParameters("/tmp/.apcfg","w+",0);
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 }
 void use_backup(void)
 {
@@ -3311,8 +3433,9 @@ void use_backup(void)
 	int i;
 	FILE *fp;
 	errOut = fopen("/dev/ttyS0","w");
-	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-	writeParameters("/tmp/.apcfg","w+",0);
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 	CFG_get_by_name("ACT",valBuff1);
 	
     #if 0
@@ -4120,8 +4243,9 @@ int set_ntp_server( void)
 			valBuff1,valBuff2,valBuff3);
 #endif
 	//save new config to flash 
-	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-	writeParameters("/tmp/.apcfg","w+",0);
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 	Execute_cmd("killall ntpclient > /dev/null 2>&1",rspBuff);
 	Execute_cmd("/usr/sbin/set_ntpserver > /tmp/ntpserver.log 2>&1",rspBuff);
 #if 1
@@ -4175,8 +4299,9 @@ int set_pctime(void)
 #endif
 
 	//save new config to flash 
-	writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-	writeParameters("/tmp/.apcfg","w+",0);
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 
 	Execute_cmd("/usr/sbin/set_pctime > /dev/null 2>&1",rspBuff);
 
@@ -4313,6 +4438,7 @@ int main(int argc,char **argv)
     errOut = fopen("/dev/ttyS0","w");
 
     memset(&config,0,sizeof(config));
+    memset(&config_sync,0,sizeof(config_sync));
     
     //fprintf(errOut,"%s  %d\n",__func__,__LINE__);
     f = fopen("/tmp/.apcfg","r");
@@ -4541,8 +4667,10 @@ int main(int argc,char **argv)
 					flag2 = 5;
 				}
 				
-				writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-            	writeParameters("/tmp/.apcfg","w+",0);
+            
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 		
 				if(flag1 == 5)
 				{
@@ -5539,8 +5667,9 @@ int main(int argc,char **argv)
 		if(flag!=1)
 		{
 			//2.save new config to flash 
-			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-			writeParameters("/tmp/.apcfg","w+",0);
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 		}
 		//3.do new config pid
 		//if(flag!=1)
@@ -5557,8 +5686,9 @@ int main(int argc,char **argv)
 				 CFG_set_by_name("WAN_MODE",tmp2);
 				 if(flag!=1)
 				 {
-					writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-					writeParameters("/tmp/.apcfg","w+",0);
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 		         }
                  printf("HTTP/1.0 200 OK\r\n");
                  printf("Content-type: text/html\r\n");
@@ -5591,8 +5721,9 @@ int main(int argc,char **argv)
 				 CFG_set_by_name("WAN_MODE",tmp2);
 				 if(flag!=1)
 				 {
-					writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-					writeParameters("/tmp/.apcfg","w+",0);
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 		         }
 				 
                  printf("HTTP/1.0 200 OK\r\n");
@@ -5650,8 +5781,10 @@ int main(int argc,char **argv)
 		if(flag!=1)
 		{
 			//2.save new config to flash 
-			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-			writeParameters("/tmp/.apcfg","w+",0);
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
+            
+            writeParametersWithSync();
 		}
 		//3.do new config pid
 		system("ifconfig eth0 down > /dev/null 2>&1");
@@ -5745,8 +5878,9 @@ int main(int argc,char **argv)
 		}
 
 		//2.save new config to flash 
-		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-        writeParameters("/tmp/.apcfg","w+",0);
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 		//3.do new settings
 		if((flag==3)||(flag==1))
 		{
@@ -5815,8 +5949,9 @@ int main(int argc,char **argv)
 			CFG_set_by_name("AP_PRIMARY_CH_3",channel_5g);
 			}
 			//4.save new config to flash 
-			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-			writeParameters("/tmp/.apcfg","w+",0);
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 		}
 		//5.do settings
 		
@@ -5834,8 +5969,9 @@ int main(int argc,char **argv)
 //			fprintf(errOut,"[luodp] -----------  wds channel_buf_5g %s\n",channel_buf_5g);
 			CFG_set_by_name("AP_PRIMARY_CH_3",channel_buf_5g);
 		}
-		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-		writeParameters("/tmp/.apcfg","w+",0);
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 
 		//TODO if close do commit no ath1
 		if(flag==2) //on->off
@@ -5989,8 +6125,10 @@ int main(int argc,char **argv)
 		
 		//fprintf(errOut,"[luodp] WIFI: %s\n%s%s\n%s\n",valBuff,valBuff2,valBuff5,valBuff4);
 		//2.save new config to flash
-		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-		writeParameters("/tmp/.apcfg","w+",0);			
+           
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);			
 		//fprintf(errOut,"[luodp]here\n");
 		//3.do new config pid
 		//TODO key check
@@ -6050,8 +6188,10 @@ int main(int argc,char **argv)
 			//fprintf(errOut,"333333 2.4G flag is %d\n", flag);
 		}
 		//4.save new add  to flash 
-		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-		writeParameters("/tmp/.apcfg","w+",0);					
+            
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);					
 		CFG_get_by_name("WIFION_OFF",valBuff3);
 		//fprintf(errOut,"[luodp] %s here4\n",valBuff3);
 		if((strstr(valBuff,valBuff3) == 0) && (strcmp(valBuff3,"on") == 0) )
@@ -6122,8 +6262,10 @@ int main(int argc,char **argv)
 					CFG_set_by_name("AP_CHMODE","11NGHT40PLUS");
 				}
 			}
-			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-			writeParameters("/tmp/.apcfg","w+",0);	
+            
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);	
 			//fprintf(errOut,"[luodp] SECMODE here7\n");
 			sprintf(pChar,"iwconfig ath0 channel %s  > /dev/null 2>&1",valBuff4);
 			Execute_cmd(pChar, rspBuff);
@@ -6147,8 +6289,10 @@ int main(int argc,char **argv)
 			Execute_cmd("iwpriv ath0 bintval 1000  > /dev/null 2>&1", rspBuff);
 			CFG_set_by_name("BEACON_INT", "1000");
 			//save new config to flash 
-			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-			writeParameters("/tmp/.apcfg","w+",0);
+           
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 			
 			flag = 5;
 		}
@@ -6160,8 +6304,10 @@ int main(int argc,char **argv)
 			Execute_cmd("iwpriv ath0 bintval 100  > /dev/null 2>&1", rspBuff);
 			CFG_set_by_name("BEACON_INT", "100");
 			//save new config to flash 
-			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-			writeParameters("/tmp/.apcfg","w+",0);
+            
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 			
 			flag = 5;
 		}
@@ -6288,8 +6434,10 @@ int main(int argc,char **argv)
 		}
 		
 		//save new add  to flash 
-		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-		writeParameters("/tmp/.apcfg","w+",0);
+           
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 		
 		CFG_get_by_name("WIFION_OFF_3",valBuff3);
 		//fprintf(errOut,"web WIFION_OFF_3 is [%s] \n",valBuff3);
@@ -6390,8 +6538,9 @@ int main(int argc,char **argv)
 				}
 			}
 			#endif
-			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-			writeParameters("/tmp/.apcfg","w+",0);
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 			sprintf(pChar,"iwconfig ath2 channel %s  > /dev/null 2>&1",valBuff4);
 			Execute_cmd(pChar, rspBuff);
 			sprintf(pChar,"iwconfig ath3 channel %s  > /dev/null 2>&1",valBuff4);
@@ -6414,8 +6563,10 @@ int main(int argc,char **argv)
 			Execute_cmd("iwpriv ath2 bintval 1000  > /dev/null 2>&1", rspBuff);
 			CFG_set_by_name("BEACON_INT_3", "1000");
 			//save new config to flash 
-			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-			writeParameters("/tmp/.apcfg","w+",0);
+          
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 			
 			flag = 5;
 		}
@@ -6426,8 +6577,10 @@ int main(int argc,char **argv)
 			Execute_cmd("iwpriv ath2 bintval 100  > /dev/null 2>&1", rspBuff);
 			CFG_set_by_name("BEACON_INT_3", "100");
 			//save new config to flash 
-			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-			writeParameters("/tmp/.apcfg","w+",0);
+            
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 			
 			flag = 5;
 		}
@@ -6540,8 +6693,10 @@ int main(int argc,char **argv)
 			fprintf(errOut,"user select pppoe_mode:%s\n",pppoe_mode);
 			if(flag!=1)
 			{
-				writeParameters(NVRAM,"w+", NVRAM_OFFSET);//save new config to flash 
-				writeParameters("/tmp/.apcfg","w+",0);
+           
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);//save new config to flash 
+            //writeParameters("/tmp/.apcfg","w+",0);
 			}
 			if(!strncmp(pppoe_mode,"auto",4))
 			{  
@@ -6626,8 +6781,10 @@ int main(int argc,char **argv)
 			//save new config to flash 
 			if(flag!=1)
 			{
-				writeParameters(NVRAM,"w+", NVRAM_OFFSET);//save new config to flash 
-				writeParameters("/tmp/.apcfg","w+",0);
+         
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);//save new config to flash 
+            //writeParameters("/tmp/.apcfg","w+",0);
 			}
 			gohome =1;
 			//kill old,run new ppy
@@ -6663,8 +6820,9 @@ int main(int argc,char **argv)
 	 fwrite(cmdd,strlen(cmdd),1,fp);
 
          fclose(fp);
-         writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-         writeParameters("/tmp/.apcfg","w+",0);
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
      
 		 printf("HTTP/1.0 200 OK\r\n");
          printf("Content-type: text/html\r\n");
@@ -6789,8 +6947,9 @@ int main(int argc,char **argv)
 		system(str);
 		}
 		
-		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-        writeParameters("/tmp/.apcfg","w+",0);
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
         Result_tiaozhuan("yes",argv[0]);   
         gohome =2;
     }
@@ -6940,8 +7099,9 @@ int main(int argc,char **argv)
 				CFG_set_by_name("DHCP_BIP",dhcp_b);
 				CFG_set_by_name("DHCP_EIP",dhcp_e);
 				//write to flash
-				writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-				writeParameters("/tmp/.apcfg","w+",0);
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
 
 				CFG_get_by_name("DHCPON_OFF",tmp);
 				if(strcmp(tmp,"on")==0)
@@ -7122,8 +7282,9 @@ exit(1);
     	control_sta_access();
 
 		fprintf(errOut,"\n%s  %d --------CONM_WORK--------- \n",__func__,__LINE__);
-		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-		writeParameters("/tmp/.apcfg","w+",0);
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
         Result_tiaozhuan("yes",argv[0]);   
 		gohome =2;
 	}
@@ -7159,8 +7320,9 @@ exit(1);
             fprintf(errOut,"\n%s  %d --------WEBCONM_WORK off--------- \n",__func__,__LINE__);
         }
 
-        writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-        writeParameters("/tmp/.apcfg","w+",0);
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);
         Result_tiaozhuan("yes",argv[0]);   
         gohome =2;
     }
@@ -7301,8 +7463,9 @@ exit(1);
 		}
 		
 		//save new config to flash
-		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-		writeParameters("/tmp/.apcfg","w+",0);			
+            writeParametersWithSync();
+            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            //writeParameters("/tmp/.apcfg","w+",0);			
         Result_tiaozhuan("yes",argv[0]);   
         gohome =2;
     }
