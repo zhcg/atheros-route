@@ -280,6 +280,7 @@ enum ERROR_NUM
 	P_WRITE_ERR,           // 文件写入错误
 	S_WRITE_ERR,           // 文件写入错误
 	
+	CONFIG_NOW,            // 
 	NO_REQUEST_ERR,        // 无请求错误 -150
 	IDENTIFYING_CODE_ERR,  // 验证码错误  
 	OVERDUE_ERR,           // 请求数据过期

@@ -342,7 +342,7 @@ void * request_cmd_0x01_02_03_07_08_09_0A_pthread(void* para)
     else if ((res == 0) && (ret == 0))
     {
         #if USER_REGISTER == 1
-        len = strlen("network_config.base_sn:") + strlen("network_config.base_mac:") + strlen("network_config.base_ip:") +
+        len = strlen("base_sn:") + strlen("base_mac:") + strlen("base_ip:") +
             strlen(network_config.base_sn) + strlen(network_config.base_mac) + strlen(network_config.base_ip) +
             strlen(terminal_register.respond_pack->base_user_name) + strlen(terminal_register.respond_pack->base_password) +
             strlen(terminal_register.respond_pack->pad_user_name) + strlen(terminal_register.respond_pack->pad_password) +
@@ -358,7 +358,7 @@ void * request_cmd_0x01_02_03_07_08_09_0A_pthread(void* para)
         }
 
         memset(buf, 0, len);
-        sprintf(buf, "network_config.base_sn:%s,network_config.base_mac:%s,network_config.base_ip:%s,%s,%s,%s,%s,%s,%s,%s,%s,", network_config.base_sn, network_config.base_mac, network_config.base_ip,
+        sprintf(buf, "base_sn:%s,base_mac:%s,base_ip:%s,%s,%s,%s,%s,%s,%s,%s,%s", network_config.base_sn, network_config.base_mac, network_config.base_ip,
             terminal_register.respond_pack->base_user_name, terminal_register.respond_pack->base_password,
             terminal_register.respond_pack->pad_user_name, terminal_register.respond_pack->pad_password,
             terminal_register.respond_pack->sip_ip_address, terminal_register.respond_pack->sip_port,
@@ -397,7 +397,7 @@ void * request_cmd_0x01_02_03_07_08_09_0A_pthread(void* para)
         }
 
         memset(buf, 0, len);
-        sprintf(buf, "base_sn:%s,base_mac:%s,base_ip:%s,", columns_value[0], columns_value[1], columns_value[2]);
+        sprintf(buf, "base_sn:%s,base_mac:%s,base_ip:%s", columns_value[0], columns_value[1], columns_value[2]);
         #endif // #if USER_REGISTER == 1
 
         PRINT("%s\n", buf);
@@ -539,6 +539,7 @@ EXIT:
     request_cmd.init_data_table(&terminal_dev_register->data_table);
     terminal_dev_register->network_config_fd = 0;
     terminal_dev_register->config_now_flag = 0;
+    PRINT("pthread exit;\n");
     return (void *)res;
 }
 
@@ -548,6 +549,7 @@ EXIT:
 int request_cmd_0x01_02_03_07_08_09_0A(struct s_terminal_dev_register * terminal_dev_register)
 {
     int res = 0;
+	int i = 0;
     int fd = terminal_dev_register->fd;
     unsigned char cmd = (unsigned char)terminal_dev_register->cmd_word;
     unsigned char register_state = (unsigned char)terminal_dev_register->data_table.register_state;
@@ -564,7 +566,22 @@ int request_cmd_0x01_02_03_07_08_09_0A(struct s_terminal_dev_register * terminal
         *network_config.network_flag = 1;
         PRINT("*network_config.network_flag = %d\n", *network_config.network_flag);
     }
-    
+    for (i = 0; i < 3; i++)
+    {
+        PRINT("config_now_flag = %d\n", terminal_dev_register->config_now_flag);
+        if (terminal_dev_register->config_now_flag == 1)
+        {
+            sleep(1);
+            continue;
+        }
+        break;
+    }
+    if (i == 3)
+    {
+        PRINT("config now!");
+        return CONFIG_NOW;
+    }
+
     if ((res = network_config.send_msg_to_pad(fd, 0x00, NULL, 0)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
@@ -572,6 +589,7 @@ int request_cmd_0x01_02_03_07_08_09_0A(struct s_terminal_dev_register * terminal
     }
     
     // terminal_dev_register->config_now_flag == 0:说明此时没有在设置
+	PRINT("config_now_flag = %d\n", terminal_dev_register->config_now_flag);
     if (terminal_dev_register->config_now_flag == 0)
     {
         if (pthread_create(&terminal_dev_register->request_cmd_0x01_02_03_07_08_09_0A_id, NULL, (void*)request_cmd_0x01_02_03_07_08_09_0A_pthread, (void *)terminal_dev_register) < 0)
@@ -2023,13 +2041,13 @@ int request_cmd_0x53(struct s_terminal_dev_register * terminal_dev_register)
             close(fd);
         }
     }
-    /*
+    
     if ((res = network_config.send_msg_to_pad(fd, 0x00, NULL, 0)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
         return res;;
     }
-    */
+    
     terminal_dev_register->network_config_fd = 0;
     terminal_dev_register->config_now_flag = 0;
     request_cmd.init_data_table(&terminal_dev_register->data_table);
@@ -2790,16 +2808,17 @@ int get_success_buf(char **buf)
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_select failed!", res);
         return res;
     }
-
+    common_tools.mac_add_colon(columns_value[1]);
+    
     len = strlen("base_sn:") + strlen("base_mac:") + strlen("base_ip:") +
-        strlen("base_user_name:") + strlen("base_password:") + strlen("pad_user_name:") +
-        strlen("pad_password:") + strlen("sip_ip:") + strlen("sip_port:") +
-        strlen("heart_beat_cycle:") + strlen("business_cycle:") + strlen("ssid_user_name:") + strlen("ssid_password:") + 
+        strlen("baseUserName:") + strlen("basePassword:") + strlen("padUserName:") +
+        strlen("padPassword:") + strlen("sipIpAddress:") + strlen("port:") +
+        strlen("heartbeatCycle:") + strlen("businessCycle:") + strlen("ssid_user_name:") + strlen("ssid_password:") + 
         strlen(columns_value[0]) + strlen(columns_value[1]) + strlen(columns_value[2]) +
         strlen(columns_value[3]) + strlen(columns_value[4]) + strlen(columns_value[5]) +
         strlen(columns_value[6]) + strlen(columns_value[7]) + strlen(columns_value[8]) +
         strlen(columns_value[9]) + strlen(columns_value[10]) + strlen(columns_value[11]) + 
-        strlen(columns_value[12]) + 14;
+        strlen(columns_value[12]) + 14 + 5;
 
     PRINT("len = %d\n", len);
     if ((*buf = (char *)malloc(len)) == NULL)
@@ -2810,7 +2829,7 @@ int get_success_buf(char **buf)
     }
 
     memset(*buf, 0, len);
-    sprintf(*buf, "base_sn:%s,base_mac:%s,base_ip:%s,base_user_name:%s,base_password:%s,pad_user_name:%s,pad_password:%s,sip_ip:%s,sip_port:%s,heart_beat_cycle:%s,business_cycle:%s,ssid_user_name:%s,ssid_password:%s",
+    sprintf(*buf, "base_sn:%s,base_mac:%s,base_ip:%s,baseUserName:%s,basePassword:%s,padUserName:%s,padPassword:%s,sipIpAddress:%s,port:%s,heartbeatCycle:%s,businessCycle:%s,ssid_user_name:%s,ssid_password:%s",
         columns_value[0], columns_value[1], columns_value[2], columns_value[3], columns_value[4], columns_value[5],
         columns_value[6], columns_value[7], columns_value[8], columns_value[9], columns_value[10], columns_value[11], columns_value[12]);
     
@@ -2824,7 +2843,8 @@ int get_success_buf(char **buf)
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_select failed!", res);
         return res;
     }
-
+    common_tools.mac_add_colon(columns_value[1]);
+    
     len = strlen("base_sn:") + strlen("base_mac:") + strlen("base_ip:") + strlen("ssid_user_name:") + strlen("ssid_password:") +
         strlen(columns_value[0]) + strlen(columns_value[1]) + strlen(columns_value[2]) + strlen(columns_value[3]) + strlen(columns_value[4]) + 6;
 

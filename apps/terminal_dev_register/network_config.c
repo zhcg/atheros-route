@@ -3000,7 +3000,12 @@ int network_settings(int fd, int cmd_count, char cmd_word)
                 } 
             }
             PRINT("recv_msg_from_pad success!\n");
-            if (pad_and_6410_msg.cmd == 0xFF) // 发送信息有误
+            if (pad_and_6410_msg.cmd == 0x00) 
+            {
+				PRINT("ok\n");
+                break;
+            }
+			else if (pad_and_6410_msg.cmd == 0xFF) // 发送信息有误
             {
                 continue;
             }
@@ -3044,9 +3049,18 @@ int network_settings(int fd, int cmd_count, char cmd_word)
                     OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "write error!", res);
                     return res;
                 }
-                i = 0; // 此时认为PAD没有收到SSID，重新发送SSID
-            }  
-            break;
+                i = 0; // 此时认为PAD没有收到SSID ，重新发送SSID
+            }
+            else if (pad_and_6410_msg.cmd == 0x53) // 终止命令
+            {
+                PRINT("stop config!\n");
+                return STOP_CMD;
+            }
+            else
+            {
+                PRINT("data error!\n");
+                return P_DATA_ERR;
+            }
         }
         network_config.pthread_recv_flag = 0;
         pthread_mutex_unlock(&network_config.recv_mutex);

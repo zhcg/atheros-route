@@ -1938,6 +1938,13 @@ int get_user_prompt(int error_num, char **out_buf)
             len = strlen(prompt);
             break;
         } 
+        case CONFIG_NOW:        // 正在进行设置或者线程没有完全退出
+        {
+            state_num = 32;  //状态码
+            memcpy(prompt, "正在进行初始化，请稍候重试！", sizeof(prompt) - 1);  // 提示信息
+            len = strlen(prompt);
+            break;
+        } 
         default:
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "option does not mismatch!", MISMATCH_ERR);
