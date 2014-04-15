@@ -3715,10 +3715,13 @@ int  add_sta_access()
 	char con_buf[10];
 	char buf[50];
 	char valBuf[20];
+	char valBuf1[50];
 
 	memset(staMac, 0, sizeof staMac);
 	memset(staDesc, 0, sizeof staDesc);
 	Execute_cmd("cfg -e | grep \"WCONON_OFF=\" | awk -F \"=\" \'{print $2}\'", valBuf);
+	Execute_cmd("grep -c 168c /proc/bus/pci/devices", valBuf1);
+	//fprintf(errOut,"valBuf1 is [%s] \n", valBuf1);
 	
 	if ((fp = fopen(STA_MAC, "r")) == NULL)
 	{
@@ -3760,8 +3763,12 @@ int  add_sta_access()
 			
 			sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
 			Execute_cmd(buf, rspBuff);
-			sprintf(buf, "iwpriv ath2 addmac %s", stalist.macAddr);
-			Execute_cmd(buf, rspBuff);
+			
+			if(strstr(valBuf1, "1"))
+			{
+				sprintf(buf, "iwpriv ath2 addmac %s", stalist.macAddr);
+				Execute_cmd(buf, rspBuff);
+			}
 			//fprintf(errOut,"add_sta_access 1111 the add mac is %s\n", stalist.macAddr);
 		}
 	}
@@ -3818,8 +3825,12 @@ int  add_sta_access()
 			memset(buf, 0, sizeof buf);
 			sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
 			Execute_cmd(buf, rspBuff);
-			sprintf(buf, "iwpriv ath2 addmac %s", stalist.macAddr);
-			Execute_cmd(buf, rspBuff);
+			
+			if(strstr(valBuf1, "1"))
+			{
+				sprintf(buf, "iwpriv ath2 addmac %s", stalist.macAddr);
+				Execute_cmd(buf, rspBuff);
+			}
 			//fprintf(errOut,"add_sta_access 222 the add mac is %s\n", stalist.macAddr);
 		}
 		
@@ -3834,6 +3845,7 @@ void del_sta_access()
 	char staMac[20];
 	char con_buf[10];
 	char buf[50];
+	char valBuf[50];
 
 	if(CFG_get_by_name("DELXXX",staMac))
 	{
@@ -3862,8 +3874,12 @@ void del_sta_access()
 					//fprintf(errOut,"the del mac is [%s] \n", staMac);
 					sprintf(buf, "iwpriv ath0 delmac %s", staMac);
 					Execute_cmd(buf, rspBuff);
-					sprintf(buf, "iwpriv ath2 delmac %s", staMac);
-					Execute_cmd(buf, rspBuff);
+					Execute_cmd("grep -c 168c /proc/bus/pci/devices", valBuf);
+					if(strstr(valBuf, "1"))
+					{
+						sprintf(buf, "iwpriv ath2 delmac %s", staMac);
+						Execute_cmd(buf, rspBuff);
+					}
 					continue;
 				}
 				addSta(stalist.macAddr, stalist.staDesc, stalist.status, stalist.id);
@@ -3892,7 +3908,10 @@ void control_sta_access()
 	struct staList stalist;
 	char buf[80];
 	char valBuff[128];
+	char valBuf[50];
 	const char *staAcl = "/etc/.staAcl";
+	
+	Execute_cmd("grep -c 168c /proc/bus/pci/devices", valBuf);
 	if(strcmp(CFG_get_by_name("WCONON_OFF",valBuff),"on") == 0 )
 	{
 		if ((fp = fopen(staAcl, "w")) != NULL)
@@ -3911,8 +3930,11 @@ void control_sta_access()
 				{
 					sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
 					Execute_cmd(buf, rspBuff);
-					sprintf(buf, "iwpriv ath2 addmac %s", stalist.macAddr);
-					Execute_cmd(buf, rspBuff);
+					if(strstr(valBuf, "1"))
+					{
+						sprintf(buf, "iwpriv ath2 addmac %s", stalist.macAddr);
+						Execute_cmd(buf, rspBuff);
+					}
 					//fprintf(errOut,"\n%s  %d the add mac is %s \n",__func__,__LINE__, stalist.macAddr);
 					//memset(buf, 0, sizeof buf);
 					//sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
@@ -3924,7 +3946,10 @@ void control_sta_access()
 		}
 		
 		Execute_cmd("iwpriv ath0 maccmd 2",rspBuff);
-		Execute_cmd("iwpriv ath2 maccmd 2",rspBuff);
+		if(strstr(valBuf, "1"))
+		{
+			Execute_cmd("iwpriv ath2 maccmd 2",rspBuff);
+		}
 
 		fprintf(errOut,"\n%s  %d --------CONM_WORK on--------- \n",__func__,__LINE__);
 	}
@@ -3944,14 +3969,21 @@ void control_sta_access()
 				memset(buf, 0, sizeof buf);
 				sprintf(buf, "iwpriv ath0 delmac %s", stalist.macAddr);
 				Execute_cmd(buf, rspBuff);
-				sprintf(buf, "iwpriv ath2 delmac %s", stalist.macAddr);
-				Execute_cmd(buf, rspBuff);
+				
+				if(strstr(valBuf, "1"))
+				{
+					sprintf(buf, "iwpriv ath2 delmac %s", stalist.macAddr);
+					Execute_cmd(buf, rspBuff);
+				}
 			}
 			fclose(fpp);
 		}
 		
 		Execute_cmd("iwpriv ath0 maccmd 0",rspBuff);
-		Execute_cmd("iwpriv ath2 maccmd 0",rspBuff);
+		if(strstr(valBuf, "1"))
+		{
+			Execute_cmd("iwpriv ath2 maccmd 0",rspBuff);
+		}
 		//Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
 		fprintf(errOut,"\n%s  %d --------CONM_WORK off--------- \n",__func__,__LINE__);
 	}
@@ -3962,12 +3994,14 @@ void modify_sta_access()
 	char staId[10];
 	char staStatus[10];
 	char buf[80];
+	char valBuf[50];
 	struct staList stalist, *p;
 	FILE *fp;
 	int on_off;
 
 	CFG_get_by_name("MODXXX", staId);
 	CFG_get_by_name("ON_OFF", staStatus);
+	Execute_cmd("grep -c 168c /proc/bus/pci/devices", valBuf);
 	
 	fp = fopen(STA_MAC, "r");
 	while(fread(&stalist, sizeof stalist, 1, fp) == 1)
@@ -3978,8 +4012,11 @@ void modify_sta_access()
 			{
 				sprintf(buf, "iwpriv ath0 delmac %s", stalist.macAddr);
 				Execute_cmd(buf, rspBuff);
-				sprintf(buf, "iwpriv ath2 delmac %s", stalist.macAddr);
-				Execute_cmd(buf, rspBuff);
+				if(strstr(valBuf, "1"))
+				{
+					sprintf(buf, "iwpriv ath2 delmac %s", stalist.macAddr);
+					Execute_cmd(buf, rspBuff);
+				}
 
 				//restart_sta_access();
 				//sprintf(buf, "iptables -D control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
@@ -3991,8 +4028,11 @@ void modify_sta_access()
 			{
 				sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
 				Execute_cmd(buf, rspBuff);
-				sprintf(buf, "iwpriv ath2 addmac %s", stalist.macAddr);
-				Execute_cmd(buf, rspBuff);
+				if(strstr(valBuf, "1"))
+				{
+					sprintf(buf, "iwpriv ath2 addmac %s", stalist.macAddr);
+					Execute_cmd(buf, rspBuff);
+				}
 
 				restart_sta_access();
 				//sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
