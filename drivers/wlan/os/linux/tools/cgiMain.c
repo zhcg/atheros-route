@@ -3107,7 +3107,7 @@ int set_dhcp(void)
 			//Execute_cmd("/etc/ath/apcfg",rspBuff);
 			//system("/etc/rc.d/rc.udhcpd");
 			Execute_cmd("/etc/rc.d/rc.udhcpd",rspBuff);
-			Execute_cmd("touch /etc/ip_mac.conf && cat /etc/ip_mac.conf | grep \"enable\" | awk 'BEGIN{OFS=FS=\" \"}{print $1,$2,$3}' >> /etc/udhcpd.conf",rspBuff);
+			Execute_cmd("/usr/sbin/set_addr_conf > /dev/null 2>&1",rspBuff);
 			Execute_cmd("/usr/sbin/udhcpd /etc/udhcpd.conf",rspBuff);
 		}
 		return 0;
@@ -7148,7 +7148,7 @@ int main(int argc,char **argv)
 				{
 					system("killall udhcpd > /dev/null 2>&1");			 
 					system("/etc/rc.d/rc.udhcpd > /dev/null 2>&1");
-					system("touch /etc/ip_mac.conf && cat /etc/ip_mac.conf | grep \"enable\" | awk 'BEGIN{OFS=FS=\" \"}{print $1,$2,$3}' >> /etc/udhcpd.conf");					
+					system("/usr/sbin/set_addr_conf > /dev/null 2>&1");	
 					system("/usr/sbin/udhcpd /etc/udhcpd.conf > /dev/null 2>&1");
 				}
 
