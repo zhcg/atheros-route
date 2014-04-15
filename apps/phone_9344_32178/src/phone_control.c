@@ -415,7 +415,8 @@ OFFHOOK_SUCCESS:
 		}
 		dev->attach=1;
 		memcpy(&phone_control.who_is_online,dev,sizeof(dev_status_t));
-		//PRINT("phone_control.who_is_online = %s\n",phone_control.who_is_online.client_ip);
+		//PRINT("phone_control.who_is_online.attach = %d\n",phone_control.who_is_online.attach);
+		//PRINT("phone_control.who_is_online.client_fd = %d\n",phone_control.who_is_online.client_fd);
 		phone_control.global_incoming = 0;
 		dev->incoming = 0;
 		phone_control.ringon_flag = 0;
@@ -902,6 +903,8 @@ int do_cmd_dialup(dev_status_t* dev)
 		if(count==1)
 		{
 			memset(phone_control.telephone_num,0,64);
+			if(cli_req_buf[phone_control.cli_req_buf_rp].arglen > 64)
+				cli_req_buf[phone_control.cli_req_buf_rp].arglen = 64;
 			memcpy(phone_control.telephone_num, cli_req_buf[phone_control.cli_req_buf_rp].arg,cli_req_buf[phone_control.cli_req_buf_rp].arglen);
 			phone_control.telephone_num[cli_req_buf[phone_control.cli_req_buf_rp].arglen]='\0';
 			PRINT("phone_num:%s\n",phone_control.telephone_num);
@@ -2417,8 +2420,10 @@ void get_code_timeout_func()
 //检测音频重连
 void check_audio_reconnect()
 {
+	//PRINT("attach = %d\n",phone_control.who_is_online.attach);
 	if(phone_audio.audio_reconnect_flag)
 	{
+		//PRINT("audio_reconnect_loops = %d\n",phone_audio.audio_reconnect_loops);
 		phone_audio.audio_reconnect_loops++;
 		if(phone_audio.audio_reconnect_loops >= 16)//超过3秒没有重连，则需要挂机
 		{
