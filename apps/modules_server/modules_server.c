@@ -2258,7 +2258,7 @@ int ota_as532h_update(unsigned char* path)
 		result = 0;
 	}
 	system("rm -rf /tmp/AS532.zip");
-	generate_ota_up_msg(OTA_CMD_UPDATE_RET,OTA_AS532H_ID,&result,1);
+	//generate_ota_up_msg(OTA_CMD_UPDATE_RET,OTA_AS532H_ID,&result,1);
 	return 0;
 }
 
@@ -2275,7 +2275,7 @@ int ota_stm32_update(unsigned char* path)
 		result = 0;
 	}
 	system("rm -rf /tmp/STM32.zip");
-	generate_ota_up_msg(OTA_CMD_UPDATE_RET,OTA_STM32_ID,&result,1);
+//	generate_ota_up_msg(OTA_CMD_UPDATE_RET,OTA_STM32_ID,&result,1);
 	return 0;
 }
 
