@@ -3891,9 +3891,11 @@ void del_sta_access()
 			fprintf(errOut,"\nopen %s error\n", STA_MAC);
 		else
 		{
+			int num = 1;
 			p = scan_staList(staHostList);
 			while(p)
 			{
+				p->id = num++;
 				fwrite(p, sizeof(struct staList), 1, fp);
 				p = p->next;
 			}
