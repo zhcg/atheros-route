@@ -90,33 +90,73 @@ void *recv_sock()
 					}
 				continue;
 					
-			}
+				}
 				else if(buff[3] == 0x02000000)
 				{	
-					if(val >= 10)
-					{	
-						printf("MINUS MODE!!!!!\n");
-						system("iwpriv ath0 mode 11NGHT40MINUS");
-						system("cfg -a AP_CHMODE=11NGHT40MINUS");
-						system("cfg -c");
-					}
-					else if(val <= 4)
-					{	
-						printf("PLUS MODE!!!!!");
-						system("iwpriv ath0 mode 11NGHT40PLUS");
-						system("cfg -a AP_CHMODE=11NGHT40PLUS");
-						system("cfg -c");
-					}
-					
-					sprintf(cmd, "iwconfig ath0 freq %d", val);
-					printf("OK,change chanel now !!!!!!!\n");
-					
-					if (system(cmd) < 0)
+					if(val < 15)
+					   {
+							if(val <14 && val >= 10)
+							{	
+								printf("MINUS MODE!!!!!\n");
+								system("iwpriv ath0 mode 11NGHT40MINUS");
+								system("cfg -a AP_CHMODE=11NGHT40MINUS");
+								system("cfg -c");
+							}
+							else if(val > 0 &&val <= 4)
+							{	
+								printf("PLUS MODE!!!!!\n");
+								system("iwpriv ath0 mode 11NGHT40PLUS");
+								system("cfg -a AP_CHMODE=11NGHT40PLUS");
+								system("cfg -c");
+							}
+							
+							system("ifconfig ath0 down");
+							system("ifconfig ath1 down");
+							sprintf(cmd, "iwconfig ath0 freq %d", val);
+							printf("OK,change chanel now !!!!!!!\n");
+							
+							if (system(cmd) < 0)
+							{
+								printf("try it angin\n");
+								sleep(1);
+								system(cmd);
+							}
+							system("ifconfig ath0 up");
+							system("ifconfig ath1 up");
+						}
+					else 
 					{
-						printf("try it angin\n");
-						sleep(2);
-						system(cmd);
+						if(val >148 && val <162)
+						{
+							sprintf(cmd, "iwconfig ath2 channel %d", val);
+							printf("5G MODE!!!!!\n");
+							system("ifconfig ath2 down");
+							system("ifconfig ath3 down");
+							system("iwpriv ath2 mode 11NAHT40");
+							if(system(cmd)<0)
+							{
+								printf("try it angin\n");
+								sleep(1);
+								system(cmd);
+							}
+							system("ifconfig ath2 up");
+							system("ifconfig ath3 up");
+							
+						}
+						else if(val == 165)
+						{
+							printf("5G MODE!!!!!\n");
+							system("ifconfig ath2 down");
+							system("ifconfig ath3 down");
+							system("iwpriv ath2 mode 11A");
+							system("iwconfig ath2 channel 165");
+							system("ifconfig ath2 up");
+							system("ifconfig ath3 up");
+						}
+						
+					
 					}
+					
 					val = 0;
 					memset(cmd, 0, sizeof(cmd));
 				}
