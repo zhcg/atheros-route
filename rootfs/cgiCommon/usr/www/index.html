@@ -42,10 +42,18 @@ function initLanguage()
 	if((cook != "zhcn")&&(cook != "en"))
 	{
 		document.cookie="language=zhcn; path=/";
-		if(IEorNot=navigator.userAgent.indexOf("Firefox")>0)
+		var agent=navigator.userAgent;
+		//alert(agent);
+		if(IEorNot=agent.indexOf("Firefox")>0)
 		{  
+
 			setTimeout(function(){window.location.href="/";},200);
 		}  
+		else if(!!agent.match(/AppleWebKit.*Mobile.*/)||!!agent.match(/AppleWebKit/))
+		{
+
+			setTimeout(function(){window.location.href="/";},200);
+		}
 		else
 		{
 			window.location.reload();
@@ -83,7 +91,7 @@ function onInit()
 		e.src = "images/logo.gif";
 		
 	tr();
-	//iFrameHeight();
+	iFrameHeight();
 	window.onresize=iFrameHeight; 
 }
 function zhcn()
