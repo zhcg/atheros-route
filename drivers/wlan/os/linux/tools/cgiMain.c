@@ -1051,166 +1051,186 @@ char *processSpecial(char *paramStr, char *outBuff)
 						fprintf(errOut,"\n%s  %d  creat the file %s\n",__func__,__LINE__, OLD_STAFILE);
 						fp1 = fopen(OLD_STAFILE, "at");
 						flist = fopen("/etc/.STAlist", "r");    /*  /etc/.STAlist   */
-                        fgets(STAbuf, 128, flist);
-                        while(fgets(STAbuf, 128, flist))
-                        {
-                        	memset(&oldstalist, 0, sizeof(oldstalist));
-                        	strncpy(oldstalist.macAddr, STAbuf, 17);
-							fwrite(&oldstalist, sizeof(oldstalist), 1, fp1);
-                        }
+						memset(STAbuf, 0, sizeof STAbuf);
+						fgets(STAbuf, 128, flist);
+						if(strlen(STAbuf) > 0)
+						{
+	                        while(fgets(STAbuf, 128, flist))
+	                        {
+	                        	memset(&oldstalist, 0, sizeof(oldstalist));
+	                        	strncpy(oldstalist.macAddr, STAbuf, 17);
+								fwrite(&oldstalist, sizeof(oldstalist), 1, fp1);
+	                        }
+						}
 						fclose(flist);
 						fclose(fp1);
 					}
-					flist = fopen("/etc/.STAlist", "r");    /*  /etc/.STAlist   */
-					fgets(STAbuf, 128, flist);
-                    while(fgets(STAbuf, 128, flist))
-                    {
-                    	int ret = 0;
-                    	memset(buf, 0, sizeof buf);
-						strncpy(buf, STAbuf, 17);
-						if(open == 1)
-							fp1 = fopen(OLD_STAFILE, "r");			/*  /etc/.OldStaList  */
-						//fprintf(errOut,"\n%s  %d  buf is %s\n",__func__,__LINE__, buf);
-						while(fread(&oldstalist, sizeof oldstalist, 1, fp1) == 1)
+					
+					if((flist = fopen("/etc/.STAlist", "r")) != NULL)    /*  /etc/.STAlist   */
+					{
+						add = 0;
+						memset(STAbuf, 0, sizeof STAbuf);
+						fgets(STAbuf, 128, flist);
+						//fprintf(errOut,"\n%s  %d  -------------the STAbuf is %s \n",__func__,__LINE__, STAbuf);
+						if(strlen(STAbuf) > 0)
 						{
-							//fprintf(errOut,"buf is [%s],oldstalist.macAddr is [%s]\n\n", buf, oldstalist.macAddr);
-							if(strcmp(buf, oldstalist.macAddr) == 0)
+		                    while(fgets(STAbuf, 128, flist))
+		                    {
+		                    	int ret = 0;
+		                    	memset(buf, 0, sizeof buf);
+								strncpy(buf, STAbuf, 17);
+								if(open == 1)
+									fp1 = fopen(OLD_STAFILE, "r");			/*  /etc/.OldStaList  */
+								//fprintf(errOut,"\n%s  %d  buf is %s\n",__func__,__LINE__, buf);
+								while(fread(&oldstalist, sizeof oldstalist, 1, fp1) == 1)
+								{
+									//fprintf(errOut,"buf is [%s],oldstalist.macAddr is [%s]\n\n", buf, oldstalist.macAddr);
+									if(strcmp(buf, oldstalist.macAddr) == 0)
+									{
+										ret = 1;
+										break;
+									}
+								}
+								
+								if(ret == 0)
+								{
+									addSta(buf, oldstalist.staDesc, oldstalist.status, oldstalist.id);
+									add = 1;
+								}
+								fclose(fp1);
+								open =  1;
+		                    }
+							fclose(flist);
+							
+							if((add == 1) && (fp1 = fopen(OLD_STAFILE, "at")))			/*  /etc/.OldStaList  */
 							{
-								ret = 1;
-								break;
+								p = scan_staList(staHostList);
+								while(p)
+								{
+									fwrite(p, sizeof(struct staList), 1, fp1);
+									p = p->next;
+								}
+								fclose(fp1);
 							}
 						}
-						
-						if(ret == 0)
-						{
-							addSta(buf, oldstalist.staDesc, oldstalist.status, oldstalist.id);
-							add = 1;
-						}
-						fclose(fp1);
-						open =  1;
-                    }
-					fclose(flist);
-					if((add == 1) && (fp1 = fopen(OLD_STAFILE, "at")))			/*  /etc/.OldStaList  */
+                	}
+					
+					if((flist = fopen("/etc/.STAlist2", "r")) != NULL)    /*  /etc/.STAlist2   */
 					{
-						p = scan_staList(staHostList);
-						while(p)
+						add = 0;
+						memset(STAbuf, 0, sizeof STAbuf);
+						fgets(STAbuf, 128, flist);
+						//fprintf(errOut,"\n%s  %d  -------------the STAbuf22 is %s \n",__func__,__LINE__, STAbuf);
+						if(strlen(STAbuf) > 0)
 						{
-							fwrite(p, sizeof(struct staList), 1, fp1);
-							p = p->next;
-						}
-						fclose(fp1);
-					}
-					flist = fopen("/etc/.STAlist2", "r");    /*  /etc/.STAlist2   */
-					fgets(STAbuf, 128, flist);
-                    while(fgets(STAbuf, 128, flist))
-                    {
-                    	int ret = 0;
-                    	memset(buf, 0, sizeof buf);
-						strncpy(buf, STAbuf, 17);
-						if(open == 1)
-							fp1 = fopen(OLD_STAFILE, "r");			/*  /etc/.OldStaList  */
-						//fprintf(errOut,"\n%s  %d  buf is %s\n",__func__,__LINE__, buf);
-						while(fread(&oldstalist, sizeof oldstalist, 1, fp1) == 1)
-						{
-							//fprintf(errOut,"buf is [%s],oldstalist.macAddr is [%s]\n\n", buf, oldstalist.macAddr);
-							if(strcmp(buf, oldstalist.macAddr) == 0)
+		                    while(fgets(STAbuf, 128, flist))
+		                    {
+		                    	int ret = 0;
+		                    	memset(buf, 0, sizeof buf);
+								strncpy(buf, STAbuf, 17);
+								if(open == 1)
+									fp1 = fopen(OLD_STAFILE, "r");			/*  /etc/.OldStaList  */
+								//fprintf(errOut,"\n%s  %d  buf is %s\n",__func__,__LINE__, buf);
+								while(fread(&oldstalist, sizeof oldstalist, 1, fp1) == 1)
+								{
+									//fprintf(errOut,"buf is [%s],oldstalist.macAddr is [%s]\n\n", buf, oldstalist.macAddr);
+									if(strcmp(buf, oldstalist.macAddr) == 0)
+									{
+										ret = 1;
+										break;
+									}
+								}
+								
+								if(ret == 0)
+								{
+									addSta(buf, oldstalist.staDesc, oldstalist.status, oldstalist.id);
+									add = 1;
+								}
+								fclose(fp1);
+								open =  1;
+		                    }
+							fclose(flist);
+							
+							if((add == 1) && (fp1 = fopen(OLD_STAFILE, "at")))			/*  /etc/.OldStaList  */
 							{
-								ret = 1;
-								break;
+								p = scan_staList(staHostList);
+								while(p)
+								{
+									fwrite(p, sizeof(struct staList), 1, fp1);
+									p = p->next;
+								}
+								fclose(fp1);
 							}
 						}
-						
-						if(ret == 0)
-						{
-							addSta(buf, oldstalist.staDesc, oldstalist.status, oldstalist.id);
-							add = 1;
-						}
-						fclose(fp1);
-						open =  1;
-                    }
-					fclose(flist);
-					if((add == 1) && (fp1 = fopen(OLD_STAFILE, "at")))			/*  /etc/.OldStaList  */
-					{
-						p = scan_staList(staHostList);
-						while(p)
-						{
-							fwrite(p, sizeof(struct staList), 1, fp1);
-							p = p->next;
-						}
-						fclose(fp1);
 					}
-
 					
 					//fprintf(errOut,"\n%s  %d  zhaozhanwei22222\n",__func__,__LINE__);
-                    fp = fopen(UDHCPD_FILE, "r");  /*  /var/run/udhcpd.leases   */
-                    if (NULL == fp)
+                    if((fp = fopen(UDHCPD_FILE, "r")) != NULL)  /*  /var/run/udhcpd.leases   */
                     {
-                        fprintf(errOut,"\n%s  %d open udhcpd error\n \n",__func__,__LINE__);
-                        break;
-                    }
-                    while (fread(&lease, sizeof(lease), 1, fp) == 1)
-                    {
-                        shi=0;
-						memset(mac_buf, 0, sizeof(mac_buf));
-						for(i = 0, j = 0 ; i < 6; i++, j+=3)
-                        {
-                            sprintf(&mac_buf[j], "%02x:", lease.mac[i]);
-                        }
-						
-                        /*compare MAC*/
-						if((fp1 = fopen(OLD_STAFILE, "r")) != NULL)		/*  /etc/.OldStaList  */
-						{
-							while(fread(&oldstalist, sizeof(struct staList), 1, fp1) == 1)
-							{
-								//fprintf(errOut,"\n%s  %d oldstalist.macAddr:%s mac_buf:%s\n",__func__,__LINE__,oldstalist.macAddr,mac_buf);
-								if(!strncmp(oldstalist.macAddr, mac_buf, 17))
-	                            {
-	                                shi=1;  //wireless
-	                                break;
-	                            }
-							}
-							fclose(fp1);
+                    	while (fread(&lease, sizeof(lease), 1, fp) == 1)
+	                    {
+	                        shi=0;
+							memset(mac_buf, 0, sizeof(mac_buf));
+							for(i = 0, j = 0 ; i < 6; i++, j+=3)
+	                        {
+	                            sprintf(&mac_buf[j], "%02x:", lease.mac[i]);
+	                        }
 							
-							if(shi == 1)	continue;
-						}
-                        //fprintf(errOut,"\n%s  %d mac_buf:%s buf:%s\n",__func__,__LINE__,mac_buf,buf);
-						
-                        if(shi == 0)
-                        {
-                            outBuff += sprintf(outBuff,"<tr>");
-                            outBuff += sprintf(outBuff,"<td>%d</td>",num);
-                            num++; 
-                            
-                            if (strlen(lease.hostname) > 0)
-                                outBuff += sprintf(outBuff,"<td>%s</td>",lease.hostname);
-                            else
-                                outBuff += sprintf(outBuff,"<td>NULL</td>");
-                            
-                            if (lease.ip > 0)
+	                        /*compare MAC*/
+							if((fp1 = fopen(OLD_STAFILE, "r")) != NULL)		/*  /etc/.OldStaList  */
 							{
-								addr.s_addr = lease.ip;
-                            	expires = ntohl(lease.expires);
-                            	outBuff += sprintf(outBuff,"<td>%s</td>", inet_ntoa(addr));
+								while(fread(&oldstalist, sizeof(struct staList), 1, fp1) == 1)
+								{
+									//fprintf(errOut,"\n%s  %d oldstalist.macAddr:%s mac_buf:%s\n",__func__,__LINE__,oldstalist.macAddr,mac_buf);
+									if(!strncmp(oldstalist.macAddr, mac_buf, 17))
+		                            {
+		                                shi=1;  //wireless
+		                                break;
+		                            }
+								}
+								fclose(fp1);
+								
+								if(shi == 1)	continue;
 							}
-							else
-								outBuff += sprintf(outBuff,"<td>NULL</td>", inet_ntoa(addr));
+	                        //fprintf(errOut,"\n%s  %d mac_buf:%s buf:%s\n",__func__,__LINE__,mac_buf,buf);
+							
+	                        if(shi == 0)
+	                        {
+	                            outBuff += sprintf(outBuff,"<tr>");
+	                            outBuff += sprintf(outBuff,"<td>%d</td>",num);
+	                            num++; 
+	                            
+	                            if (strlen(lease.hostname) > 0)
+	                                outBuff += sprintf(outBuff,"<td>%s</td>",lease.hostname);
+	                            else
+	                                outBuff += sprintf(outBuff,"<td>NULL</td>");
+	                            
+	                            if (lease.ip > 0)
+								{
+									addr.s_addr = lease.ip;
+	                            	expires = ntohl(lease.expires);
+	                            	outBuff += sprintf(outBuff,"<td>%s</td>", inet_ntoa(addr));
+								}
+								else
+									outBuff += sprintf(outBuff,"<td>NULL</td>", inet_ntoa(addr));
 
-							if(strlen(mac_buf) > 0)
-							{
-								strncpy(buf, mac_buf, 17);
-								outBuff += sprintf(outBuff,"<td>%s</td>", buf);
-							}
-							else
-								outBuff += sprintf(outBuff,"<td>NULL</td>");
-                            //outBuff += sprintf(outBuff,"<td>%02x", lease.mac[0]);
-                            //for (i = 1; i < 6; i++)
-                            //     outBuff += sprintf(outBuff,":%02x", lease.mac[i]);
-                            
-                             outBuff += sprintf(outBuff,"</td>");
-                             outBuff += sprintf(outBuff,"</tr>");
-                        }
-                    }
-                    fclose(fp);
+								if(strlen(mac_buf) > 0)
+								{
+									strncpy(buf, mac_buf, 17);
+									outBuff += sprintf(outBuff,"<td>%s</td>", buf);
+								}
+								else
+									outBuff += sprintf(outBuff,"<td>NULL</td>");
+	                            //outBuff += sprintf(outBuff,"<td>%02x", lease.mac[0]);
+	                            //for (i = 1; i < 6; i++)
+	                            //     outBuff += sprintf(outBuff,":%02x", lease.mac[i]);
+	                            
+	                             outBuff += sprintf(outBuff,"</td>");
+	                             outBuff += sprintf(outBuff,"</tr>");
+	                        }
+	                    }
+                    	fclose(fp);
+                	}
                 }
                 //接入管理无线设备(不带配置)
                 else if(strcmp(secArg,"wirelessdevlist")==0)
@@ -3891,9 +3911,11 @@ void del_sta_access()
 			fprintf(errOut,"\nopen %s error\n", STA_MAC);
 		else
 		{
+			int num = 1;
 			p = scan_staList(staHostList);
 			while(p)
 			{
+				p->id = num++;
 				fwrite(p, sizeof(struct staList), 1, fp);
 				p = p->next;
 			}

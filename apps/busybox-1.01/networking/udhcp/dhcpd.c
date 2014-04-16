@@ -66,19 +66,23 @@ void deal_staControl()
 	FILE *fp, *fp1;
 	char con_buf[10];
 	char buf[50];
-	
 
 	//system("iptables -N control_sta");
 	//system("iptables -A INPUT -j control_sta");
     if ((fp = fopen("/etc/.staAcl", "r")) != NULL)
 	{
-		memset(con_buf, 0, sizeof con_buf);
-		fgets(con_buf, 10, fp);
-		if(!strncmp(con_buf, "disable", 7))
+		if(fread(con_buf, 7, 1, fp) == 0)
 		{
 			fclose(fp);
+			return;
 		}
-		else if(!strncmp(con_buf, "enable", 6))
+		//LOG(LOG_ERR, "------- OK the con_buf is %s------", con_buf);
+		if(strstr(con_buf, "disable"))
+		{
+			fclose(fp);
+			return;
+		}
+		else if(strstr(con_buf, "enable"))
 		{
 			if ((fp1 = fopen("/etc/.staMac", "r")) != NULL) 
 			{
@@ -88,6 +92,7 @@ void deal_staControl()
 					{
 						sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
 						system(buf);
+						//LOG(LOG_ERR, "------- OK ------ the buf is %s", buf);
 						sprintf(buf, "iwpriv ath2 addmac %s", stalist.macAddr);
 						system(buf);
 						//memset(buf, 0, sizeof buf);
@@ -100,8 +105,8 @@ void deal_staControl()
 				fclose(fp1);
 			}
 		}
-		fclose(fp);
 	}
+	fclose(fp);
 }
 
 #ifdef COMBINED_BINARY
@@ -127,11 +132,16 @@ int main(int argc, char *argv[])
 
 	uint32_t static_lease_ip;
 
+	if(fork() == 0)
+	{
+		/*deal staControl*/
+		deal_staControl();
+		LOG(LOG_ERR, "------- OK ------");
+		exit(0);
+	}
+	LOG(LOG_ERR, "------- dhcp OK------");
 	memset(&server_config, 0, sizeof(struct server_config_t));
 	read_config(argc < 2 ? DHCPD_CONF_FILE : argv[1]);
-
-	/*deal staControl*/
-	deal_staControl();
 
 	/* Start the log, sanitize fd's, and write a pid file */
 	start_log_and_pid("udhcpd", server_config.pidfile);

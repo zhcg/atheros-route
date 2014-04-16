@@ -1,10 +1,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+<link rel="Shortcut Icon" href="./images/favicon.jpg" type="image/jpeg" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" >
-<link rel="apple-touch-icon-precomposed" href="favicon.ico" type="image/x-icon" >
+<!--link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+<link rel="Bookmark" href="favicon.ico" type="image/x-icon" /> 
+<meta content="favicon.png" itemprop="image"/>
+<link rel="apple-touch-icon-precomposed" href="favicon.ico" type="image/x-icon" /-->
+
 <title></title>
-<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all"/>
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript" src="/style/load.js"></script>
@@ -38,10 +42,18 @@ function initLanguage()
 	if((cook != "zhcn")&&(cook != "en"))
 	{
 		document.cookie="language=zhcn; path=/";
-		if(IEorNot=navigator.userAgent.indexOf("Firefox")>0)
+		var agent=navigator.userAgent;
+		//alert(agent);
+		if(IEorNot=agent.indexOf("Firefox")>0)
 		{  
+
 			setTimeout(function(){window.location.href="/";},200);
 		}  
+		else if(!!agent.match(/AppleWebKit.*Mobile.*/)||!!agent.match(/AppleWebKit/))
+		{
+
+			setTimeout(function(){window.location.href="/";},200);
+		}
 		else
 		{
 			window.location.reload();
@@ -79,7 +91,7 @@ function onInit()
 		e.src = "images/logo.gif";
 		
 	tr();
-	//iFrameHeight();
+	iFrameHeight();
 	window.onresize=iFrameHeight; 
 }
 function zhcn()
@@ -229,6 +241,7 @@ function pppoe_tiaozhuan()
 }
 
 </script>
+
 </head>
 
 <body onload="onInit();" ondragstart="window.event.returnValue=false" oncontextmenu="window.event.returnValue=false" onselectstart="event.returnValue=false">
@@ -241,8 +254,8 @@ function pppoe_tiaozhuan()
 <a href="javascript:void(0)" id="top_en" onClick="en()">English</a> 
 </div>
 <div class="handaer_top_r_bottom">   
-<a href="cgi-bin/adminset?adminset=yes" target="ifm" id="top_admin"></a> 
-<a href="javascript:void(0)" id="top_adv" onClick="switchsa()"></a>
+<a href="cgi-bin/adminset?adminset=yes" target="ifm" id="top_admin">密码管理</a> 
+<a href="javascript:void(0)" id="top_adv" onClick="switchsa(); return false;">高级设置</a>
 </div>
 </div>
 

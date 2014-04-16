@@ -1,5 +1,6 @@
 <html>
 <head>
+<link rel="Shortcut Icon" href="./images/favicon.jpg" type="image/jpeg" />
 <title></title>
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
@@ -183,7 +184,7 @@ function initValue()
 	function rebootRequest()
 	{
 		clearTimeout(timeID);
-		timeID = setTimeout(function(){rebootRequest();},1000);
+		timeID = setTimeout(function(){rebootRequest();},3000);
 		createxmlreq();
 		xmlreq.onreadystatechange=handleState;
 		desIPreboot = location.hostname;//document.getElementById("IPA").value;
