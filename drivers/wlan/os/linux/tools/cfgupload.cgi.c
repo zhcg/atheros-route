@@ -200,7 +200,12 @@ main()
 		error=1;
 		goto error;
 	}
-	strcat(filePath,fileName);	
+	
+	/*modify the file name to cal.bin*/
+	if(strcmp(fileName, "cal.bin"))
+		fileName = "cal.bin";
+	fprintf(errOut,"%s  %d  the modified fileName=%s\n",__func__,__LINE__,fileName);
+	strcat(filePath,fileName);
 
     fprintf(errOut,"%s  %d  filepath===%s\n",__func__,__LINE__,filePath);
 
