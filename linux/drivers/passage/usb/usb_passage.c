@@ -225,7 +225,10 @@ int cdev_write(struct file *filp, const char __user *buf,
 		if(data_buf_tmp_write == NULL)
 			return -EINVAL;
 		if (copy_from_user(data_buf_tmp_write, buf, count))
-			return -EFAULT;
+		{
+			kfree(data_buf_tmp_write);			
+			return -EFAULT;			
+		}
 		len = DATA_BUF_LEN - *data_buf_wp;
 		memcpy(&data_buf[*data_buf_wp],data_buf_tmp_write,len);
 		*data_buf_wp = 0;
