@@ -7862,6 +7862,19 @@ exit(1);
         Result_tiaozhuan("yes",argv[0]); 
         gohome =2;
     }
+
+	/*set the system time > 1970*/
+	if(strcmp(CFG_get_by_name("ad_man_timezone", valBuff),"yes") == 0 ) 
+    {
+    	Execute_cmd("date |awk -F ' ' '{print $6}'", valBuff);
+		//fprintf(errOut,"\n%s  %d the year is %s \n",__func__,__LINE__, valBuff);
+		if(atoi(valBuff) < 2014)
+		{
+			Execute_cmd("date 040100002014", valBuff);
+		
+        	fprintf(errOut,"\n%s  %d set the system time 2014/04/01 \n",__func__,__LINE__);
+		}
+    }
     
     /*************************************
    系统设置    配置管理     备份
