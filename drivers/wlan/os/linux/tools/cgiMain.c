@@ -4867,6 +4867,7 @@ int main(int argc,char **argv)
                  CFG_remove_by_name(argv[2]);
                 CFG_remove_by_name("AP_RADIO_ID_2");
                 CFG_remove_by_name("AP_SSID_2");
+                CFG_remove_by_name("PSK_KEY_2");
                 CFG_remove_by_name("AP_SECMODE_2");
                 CFG_remove_by_name("AP_CYPHER_2");
                 CFG_remove_by_name("AP_SECFILE_2");
@@ -4877,6 +4878,7 @@ int main(int argc,char **argv)
 
                 CFG_remove_by_name("AP_RADIO_ID_4");
                 CFG_remove_by_name("AP_SSID_4");
+                CFG_remove_by_name("PSK_KEY_4");
                 CFG_remove_by_name("AP_SECMODE_4");
                 CFG_remove_by_name("AP_CYPHER_4");
                 CFG_remove_by_name("AP_SECFILE_4");
@@ -5105,6 +5107,7 @@ int main(int argc,char **argv)
 //wangyu add for ath1 and ath3 envionment param save
 			char ap_radioid_2g[128];			
 			char ap_ssid_2g[128];
+            char ap_psk_2g[128];
 			char ap_secmode_2g[128];
 			char ap_cypher_2g[128];
 			char ap_secfile_2g[128];
@@ -5115,6 +5118,7 @@ int main(int argc,char **argv)
 
 			char ap_radioid_5g[128];			
 			char ap_ssid_5g[128];
+            char ap_psk_5g[128];
 			char ap_secmode_5g[128];
 			char ap_cypher_5g[128];
 			char ap_secfile_5g[128];
@@ -5131,6 +5135,7 @@ int main(int argc,char **argv)
 
 			CFG_get_by_name("AP_RADIO_ID_2",ap_radioid_2g);
 			CFG_get_by_name("AP_SSID_2",ap_ssid_2g);
+            CFG_get_by_name("PSK_KEY_2",ap_psk_2g);
 			CFG_get_by_name("AP_SECMODE_2",ap_secmode_2g);
 			CFG_get_by_name("AP_CYPHER_2",ap_cypher_2g);
 			CFG_get_by_name("AP_SECFILE_2",ap_secfile_2g);
@@ -5141,6 +5146,7 @@ int main(int argc,char **argv)
 
 			CFG_get_by_name("AP_RADIO_ID_4",ap_radioid_5g);
 			CFG_get_by_name("AP_SSID_4",ap_ssid_5g);
+            CFG_get_by_name("PSK_KEY_4",ap_psk_5g);
 			CFG_get_by_name("AP_SECMODE_4",ap_secmode_5g);
 			CFG_get_by_name("AP_CYPHER_4",ap_cypher_5g);
 			CFG_get_by_name("AP_SECFILE_4",ap_secfile_5g);
@@ -5178,6 +5184,7 @@ int main(int argc,char **argv)
 
 			CFG_set_by_name("AP_RADIO_ID_2",ap_radioid_2g);
 			CFG_set_by_name("AP_SSID_2",ap_ssid_2g);
+            CFG_set_by_name("PSK_KEY_2",ap_psk_2g);
 			CFG_set_by_name("AP_SECMODE_2",ap_secmode_2g);
 			CFG_set_by_name("AP_CYPHER_2",ap_cypher_2g);
 			CFG_set_by_name("AP_SECFILE_2",ap_secfile_2g);
@@ -5188,6 +5195,7 @@ int main(int argc,char **argv)
 
 			CFG_set_by_name("AP_RADIO_ID_4",ap_radioid_5g);
 			CFG_set_by_name("AP_SSID_4",ap_ssid_5g);
+            CFG_set_by_name("PSK_KEY_4",ap_psk_5g);
 			CFG_set_by_name("AP_SECMODE_4",ap_secmode_5g);
 			CFG_set_by_name("AP_CYPHER_4",ap_cypher_5g);
 			CFG_set_by_name("AP_SECFILE_4",ap_secfile_5g);
