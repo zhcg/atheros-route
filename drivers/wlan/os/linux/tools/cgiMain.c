@@ -4851,6 +4851,48 @@ int main(int argc,char **argv)
                  CFG_set_by_name("ADD_STATICDHCP","ADD_STATICDHCP");
                  break;
 
+            case '5':
+            //viqjeee
+                 printf("terminal_dev_register factory reset\n");
+                 if(argc !=3)
+                 {
+                    err_flag=1;
+                    break;
+                 }
+
+                //factory reset
+                 system("cfg -x");
+                 //sync
+                 writeParametersWithSync();
+                 CFG_remove_by_name(argv[2]);
+                CFG_remove_by_name("AP_RADIO_ID_2");
+                CFG_remove_by_name("AP_SSID_2");
+                CFG_remove_by_name("AP_SECMODE_2");
+                CFG_remove_by_name("AP_CYPHER_2");
+                CFG_remove_by_name("AP_SECFILE_2");
+                CFG_remove_by_name("AP_CHMODE");
+                CFG_remove_by_name("AP_PRIMARY_CH");
+                CFG_remove_by_name("AP_MODE_2");
+                CFG_remove_by_name("AP_WPA_2");
+
+                CFG_remove_by_name("AP_RADIO_ID_4");
+                CFG_remove_by_name("AP_SSID_4");
+                CFG_remove_by_name("AP_SECMODE_4");
+                CFG_remove_by_name("AP_CYPHER_4");
+                CFG_remove_by_name("AP_SECFILE_4");
+                CFG_remove_by_name("AP_CHMODE_3");
+                CFG_remove_by_name("AP_PRIMARY_CH_3");
+                CFG_remove_by_name("AP_MODE_4");
+                CFG_remove_by_name("AP_WPA_4");
+
+                writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+                writeParameters("/tmp/.apcfg","w+",0);
+                //remove ip_mac  bing
+                 system("rm /etc/ip_mac.conf > /dev/null 2>&1");
+
+                exit(0);
+                 break;
+
             default:
                  break;
             }
