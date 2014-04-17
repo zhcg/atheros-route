@@ -72,7 +72,7 @@ function Butterlation() {
     var one, two, end;
     if((one=document.cookie.indexOf("language"))==-1) {
       //return ((navigator.language) ? navigator.language : navigator.browserLanguage).substring(0,2);   
-      return "en";
+      return "zhcn";
     }
     end = (document.cookie.indexOf(';',one)!=-1) ? document.cookie.indexOf(';',one) : document.cookie.length;
     return unescape(document.cookie.substring(one+9,end));

@@ -42,22 +42,22 @@ function initLanguage()
 	if((cook != "zhcn")&&(cook != "en"))
 	{
 		document.cookie="language=zhcn; path=/";
-		var agent=navigator.userAgent;
+		//var agent=navigator.userAgent;
 		//alert(agent);
-		if(IEorNot=agent.indexOf("Firefox")>0)
-		{  
+		//if(IEorNot=agent.indexOf("Firefox")>0)
+		//{  
 
-			setTimeout(function(){window.location.href="/";},200);
-		}  
-		else if(!!agent.match(/AppleWebKit.*Mobile.*/)||!!agent.match(/AppleWebKit/))
-		{
+		//	setTimeout(function(){window.location.href="/";},200);
+		//}  
+		//else if(!!agent.match(/AppleWebKit.*Mobile.*/)||!!agent.match(/AppleWebKit/))
+		//{
 
-			setTimeout(function(){window.location.href="/";},200);
-		}
-		else
-		{
-			window.location.reload();
-		}
+		//	setTimeout(function(){window.location.href="/";},200);
+		//}
+		//else
+		//{
+		//	window.location.reload();
+		//}
 	}
 	else
 	{
