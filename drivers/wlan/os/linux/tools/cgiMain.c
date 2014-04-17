@@ -5061,25 +5061,25 @@ int main(int argc,char **argv)
 			char valBuff[128];	
 
 //wangyu add for ath1 and ath3 envionment param save
-//			char ap_radioid_2g[128];			
-//			char ap_ssid_2g[128];
-//			char ap_secmode_2g[128];
-//			char ap_cypher_2g[128];
-//			char ap_secfile_2g[128];
-//			char ap_chmode_2g[128];
-//			char ap_primarych_2g[128];
-//			char ap_mode_2g[128];
-//			char ap_wpa_2g[128];
+			char ap_radioid_2g[128];			
+			char ap_ssid_2g[128];
+			char ap_secmode_2g[128];
+			char ap_cypher_2g[128];
+			char ap_secfile_2g[128];
+			char ap_chmode_2g[128];
+			char ap_primarych_2g[128];
+			char ap_mode_2g[128];
+			char ap_wpa_2g[128];
 
-	//		char ap_radioid_5g[128];			
-	//		char ap_ssid_5g[128];
-	//		char ap_secmode_5g[128];
-	//		char ap_cypher_5g[128];
-	//		char ap_secfile_5g[128];
-	//		char ap_chmode_5g[128];
-	//		char ap_primarych_5g[128];
-	//		char ap_mode_5g[128];
-	//		char ap_wpa_5g[128];
+			char ap_radioid_5g[128];			
+			char ap_ssid_5g[128];
+			char ap_secmode_5g[128];
+			char ap_cypher_5g[128];
+			char ap_secfile_5g[128];
+			char ap_chmode_5g[128];
+			char ap_primarych_5g[128];
+			char ap_mode_5g[128];
+			char ap_wpa_5g[128];
 
 			int ii;
 			char buf[128];
@@ -5087,25 +5087,25 @@ int main(int argc,char **argv)
 			
 			CFG_get_by_name("SOFT_VERSION",valBuff);
 
-//			CFG_get_by_name("AP_RADIO_ID_2",ap_radioid_2g);
-//			CFG_get_by_name("AP_SSID_2",ap_ssid_2g);
-//			CFG_get_by_name("AP_SECMODE_2",ap_secmode_2g);
-//			CFG_get_by_name("AP_CYPHER_2",ap_cypher_2g);
-//			CFG_get_by_name("AP_SECFILE_2",ap_secfile_2g);
-//			CFG_get_by_name("AP_CHMODE",ap_chmode_2g);
-//			CFG_get_by_name("AP_PRIMARY_CH",ap_primarych_2g);
-//			CFG_get_by_name("AP_MODE_2",ap_mode_2g);
-//			CFG_get_by_name("AP_WPA_2",ap_wpa_2g);
+			CFG_get_by_name("AP_RADIO_ID_2",ap_radioid_2g);
+			CFG_get_by_name("AP_SSID_2",ap_ssid_2g);
+			CFG_get_by_name("AP_SECMODE_2",ap_secmode_2g);
+			CFG_get_by_name("AP_CYPHER_2",ap_cypher_2g);
+			CFG_get_by_name("AP_SECFILE_2",ap_secfile_2g);
+			CFG_get_by_name("AP_CHMODE",ap_chmode_2g);
+			CFG_get_by_name("AP_PRIMARY_CH",ap_primarych_2g);
+			CFG_get_by_name("AP_MODE_2",ap_mode_2g);
+			CFG_get_by_name("AP_WPA_2",ap_wpa_2g);
 
-//			CFG_get_by_name("AP_RADIO_ID_4",ap_radioid_5g);
-//			CFG_get_by_name("AP_SSID_4",ap_ssid_5g);
-//			CFG_get_by_name("AP_SECMODE_4",ap_secmode_5g);
-//			CFG_get_by_name("AP_CYPHER_4",ap_cypher_5g);
-//			CFG_get_by_name("AP_SECFILE_4",ap_secfile_5g);
-//			CFG_get_by_name("AP_CHMODE_3",ap_chmode_5g);
-//			CFG_get_by_name("AP_PRIMARY_CH_3",ap_primarych_5g);
-//			CFG_get_by_name("AP_MODE_4",ap_mode_5g);
-//			CFG_get_by_name("AP_WPA_4",ap_wpa_5g);
+			CFG_get_by_name("AP_RADIO_ID_4",ap_radioid_5g);
+			CFG_get_by_name("AP_SSID_4",ap_ssid_5g);
+			CFG_get_by_name("AP_SECMODE_4",ap_secmode_5g);
+			CFG_get_by_name("AP_CYPHER_4",ap_cypher_5g);
+			CFG_get_by_name("AP_SECFILE_4",ap_secfile_5g);
+			CFG_get_by_name("AP_CHMODE_3",ap_chmode_5g);
+			CFG_get_by_name("AP_PRIMARY_CH_3",ap_primarych_5g);
+			CFG_get_by_name("AP_MODE_4",ap_mode_5g);
+			CFG_get_by_name("AP_WPA_4",ap_wpa_5g);
 
 			for(i = 0; i < 128; i++)
 			{
@@ -5134,25 +5134,25 @@ int main(int argc,char **argv)
 			CFG_set_by_name("SOFT_VERSION",valBuff);
 
 
-//			CFG_set_by_name("AP_RADIO_ID_2",ap_radioid_2g);
-//			CFG_set_by_name("AP_SSID_2",ap_ssid_2g);
-//			CFG_set_by_name("AP_SECMODE_2",ap_secmode_2g);
-//			CFG_set_by_name("AP_CYPHER_2",ap_cypher_2g);
-//			CFG_set_by_name("AP_SECFILE_2",ap_secfile_2g);
-//			CFG_set_by_name("AP_CHMODE",ap_chmode_2g);
-//			CFG_set_by_name("AP_PRIMARY_CH",ap_primarych_2g);
-//			CFG_set_by_name("AP_MODE_2",ap_mode_2g);
-//			CFG_set_by_name("AP_WPA_2",ap_wpa_2g);
+			CFG_set_by_name("AP_RADIO_ID_2",ap_radioid_2g);
+			CFG_set_by_name("AP_SSID_2",ap_ssid_2g);
+			CFG_set_by_name("AP_SECMODE_2",ap_secmode_2g);
+			CFG_set_by_name("AP_CYPHER_2",ap_cypher_2g);
+			CFG_set_by_name("AP_SECFILE_2",ap_secfile_2g);
+			CFG_set_by_name("AP_CHMODE",ap_chmode_2g);
+			CFG_set_by_name("AP_PRIMARY_CH",ap_primarych_2g);
+			CFG_set_by_name("AP_MODE_2",ap_mode_2g);
+			CFG_set_by_name("AP_WPA_2",ap_wpa_2g);
 
-//			CFG_set_by_name("AP_RADIO_ID_4",ap_radioid_5g);
-//			CFG_set_by_name("AP_SSID_4",ap_ssid_5g);
-//			CFG_set_by_name("AP_SECMODE_4",ap_secmode_5g);
-//			CFG_set_by_name("AP_CYPHER_4",ap_cypher_5g);
-//			CFG_set_by_name("AP_SECFILE_4",ap_secfile_5g);
-//			CFG_set_by_name("AP_CHMODE_3",ap_chmode_5g);
-//			CFG_set_by_name("AP_PRIMARY_CH_3",ap_primarych_5g);
-//			CFG_set_by_name("AP_MODE_4",ap_mode_5g);
-//			CFG_set_by_name("AP_WPA_4",ap_wpa_5g);
+			CFG_set_by_name("AP_RADIO_ID_4",ap_radioid_5g);
+			CFG_set_by_name("AP_SSID_4",ap_ssid_5g);
+			CFG_set_by_name("AP_SECMODE_4",ap_secmode_5g);
+			CFG_set_by_name("AP_CYPHER_4",ap_cypher_5g);
+			CFG_set_by_name("AP_SECFILE_4",ap_secfile_5g);
+			CFG_set_by_name("AP_CHMODE_3",ap_chmode_5g);
+			CFG_set_by_name("AP_PRIMARY_CH_3",ap_primarych_5g);
+			CFG_set_by_name("AP_MODE_4",ap_mode_5g);
+			CFG_set_by_name("AP_WPA_4",ap_wpa_5g);
 			
 			for(i = 0; i < 128; i++)
 			{
