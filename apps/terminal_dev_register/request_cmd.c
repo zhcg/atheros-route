@@ -539,7 +539,6 @@ EXIT:
     request_cmd.init_data_table(&terminal_dev_register->data_table);
     terminal_dev_register->network_config_fd = 0;
     terminal_dev_register->config_now_flag = 0;
-    PRINT("pthread exit;\n");
     return (void *)res;
 }
 
@@ -566,21 +565,22 @@ int request_cmd_0x01_02_03_07_08_09_0A(struct s_terminal_dev_register * terminal
         *network_config.network_flag = 1;
         PRINT("*network_config.network_flag = %d\n", *network_config.network_flag);
     }
-    for (i = 0; i < 3; i++)
-    {
-        PRINT("config_now_flag = %d\n", terminal_dev_register->config_now_flag);
-        if (terminal_dev_register->config_now_flag == 1)
-        {
-            sleep(1);
-            continue;
-        }
-        break;
-    }
-    if (i == 3)
-    {
-        PRINT("config now!");
-        return CONFIG_NOW;
-    }
+    
+	for (i = 0; i < 3; i++)
+	{
+		PRINT("config_now_flag = %d\n", terminal_dev_register->config_now_flag);
+		if (terminal_dev_register->config_now_flag == 1)
+		{
+			sleep(1);
+			continue;
+		}
+		break;
+	}
+	if (i == 3)
+	{
+		PRINT("config now!");
+		return CONFIG_NOW;
+	}
 
     if ((res = network_config.send_msg_to_pad(fd, 0x00, NULL, 0)) < 0)
     {
@@ -1820,8 +1820,9 @@ int request_cmd_0x0C(struct s_terminal_dev_register * terminal_dev_register)
     // 2.取消绑定
     //cancel_mac_and_ip_bind();
     // 3.
-    system("cfg -x");
-    sleep(2);
+    //system("cfg -x");
+    system("cfg -b 5");
+    //sleep(2);
     
     system("kill -9 `ps | grep monitor_application | sed '/grep/'d | awk '{print $1}'`");
     system("ps");

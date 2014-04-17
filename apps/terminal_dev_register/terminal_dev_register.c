@@ -79,8 +79,9 @@ static int analyse_command_line(int argc, char ** argv)
         //request_cmd.cancel_mac_and_ip_bind();
 
         // 3.
-        system("cfg -x");
-        sleep(2);
+        //system("cfg -x");
+		system("cfg -b 5"); // default config
+        //sleep(2);
         system("reboot");
     }
     #endif

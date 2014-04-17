@@ -437,13 +437,8 @@ terminal_dev_register:
 	$(STRIP) libterminal_register.so; \
 	$(STRIP) libcommunication.so; \
 	$(STRIP) libcommon_tools.so; \
-	$(STRIP) spi_rt_main; \
-        $(STRIP) spi_rt_uart1; \
-        $(STRIP) usb_stub; \
 	$(STRIP) terminal_dev_register; \
-	$(STRIP) terminal_init_test; \
 	$(STRIP) interface_test; \
-	$(STRIP) swipe_card; \
 	$(STRIP) monitor_application; \
 	cp -af sqlite-mips-linux/lib/libsqlite3.so.0.8.6 $(INSTALL_ROOT)/lib; \
 	cp -af sqlite-mips-linux/bin/sqlite3 $(INSTALL_ROOT)/bin; \
@@ -453,13 +448,8 @@ terminal_dev_register:
 	cp -af libterminal_register.so $(INSTALL_ROOT)/lib; \
 	cp -af libcommunication.so $(INSTALL_ROOT)/lib; \
 	cp -af libcommon_tools.so $(INSTALL_ROOT)/lib; \
-	cp -af spi_rt_main $(INSTALL_ROOT)/bin; \
-	cp -af spi_rt_uart1 $(INSTALL_ROOT)/bin; \
-	cp -af usb_stub $(INSTALL_ROOT)/bin; \
 	cp -af terminal_dev_register $(INSTALL_ROOT)/bin; \
-	cp -af terminal_init_test $(INSTALL_ROOT)/bin; \
 	cp -af interface_test $(INSTALL_ROOT)/bin; \
-	cp -af swipe_card $(INSTALL_ROOT)/bin; \
 	cp -af monitor_application $(INSTALL_ROOT)/bin; \
         mkdir -p $(INSTALL_ROOT)/var/terminal_dev_register/db/; \
         mkdir -p $(INSTALL_ROOT)/var/terminal_dev_register/log/; \
