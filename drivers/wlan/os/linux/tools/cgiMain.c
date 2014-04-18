@@ -6358,7 +6358,8 @@ int main(int argc,char **argv)
 			//11NGHT40PLUS/11NGHT40MINUS
 			Execute_cmd("ifconfig ath0 down > /dev/null 2>&1", rspBuff);
 			Execute_cmd("ifconfig ath1 down > /dev/null 2>&1", rspBuff);
-			
+
+			#if 0
 			if(strstr(valBuff10,"11NGHT40PLUS")!=0)
 			{
 				if(atoi(valBuff4)>=10)
@@ -6370,6 +6371,26 @@ int main(int argc,char **argv)
 			}else if(strstr(valBuff10,"11NGHT40MINUS")!=0)
 			{
 				if(atoi(valBuff4)<=4)
+				{
+					Execute_cmd("iwpriv ath0 mode 11NGHT40PLUS", rspBuff);
+					Execute_cmd("iwpriv ath1 mode 11NGHT40PLUS", rspBuff);
+					CFG_set_by_name("AP_CHMODE","11NGHT40PLUS");
+				}
+			}
+			#endif
+			
+			if(atoi(valBuff4)>=10)
+			{
+				if(strstr(valBuff10, "11NGHT40PLUS"))
+				{
+					Execute_cmd("iwpriv ath0 mode 11NGHT40MINUS", rspBuff);
+					Execute_cmd("iwpriv ath1 mode 11NGHT40MINUS", rspBuff);
+					CFG_set_by_name("AP_CHMODE","11NGHT40MINUS");
+				}
+			}
+			else
+			{
+				if(strstr(valBuff10, "11NGHT40MINUS"))
 				{
 					Execute_cmd("iwpriv ath0 mode 11NGHT40PLUS", rspBuff);
 					Execute_cmd("iwpriv ath1 mode 11NGHT40PLUS", rspBuff);
