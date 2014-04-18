@@ -858,7 +858,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 
 					memset(addr_buf,0,1024);
 					
-					while ( fgets(addr_buf,1024,f) != NULL )
+					while (( fgets(addr_buf,1024,f) != NULL )&&(strstr(addr_buf,"static_lease")))
 					{
 						sscanf(addr_buf,"static_lease %s %s %s",addr_mac,addr_ip,addr_status);
 					#ifdef MESSAGE
