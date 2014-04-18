@@ -1938,10 +1938,10 @@ int get_user_prompt(int error_num, char **out_buf)
             len = strlen(prompt);
             break;
         } 
-        case CONFIG_NOW:        // 正在进行设置或者线程没有完全退出
+        case CONFIG_NOW:        // base没有序列号
         {
             state_num = 32;  //状态码
-            memcpy(prompt, "正在进行初始化，请稍候重试！", sizeof(prompt) - 1);  // 提示信息
+            memcpy(prompt, "此BASE没有序列号！", sizeof(prompt) - 1);  // 提示信息
             len = strlen(prompt);
             break;
         } 
@@ -3245,6 +3245,7 @@ int send_data(unsigned int fd, unsigned char *data, struct s_data_list *a_data_l
         memcpy(&time, tv, sizeof(struct timeval));
     }
     PRINT_BUF_BY_HEX(data, a_data_list, data_len, __FILE__, __FUNCTION__, __LINE__);
+    PRINT("data_len = %d\n", data_len);
     
     if ((data != NULL) && (data_len != 0))
     {
@@ -3258,11 +3259,13 @@ int send_data(unsigned int fd, unsigned char *data, struct s_data_list *a_data_l
             }
         }
         #else
+        PRINT("data_len = %d\n", data_len);
         if (write(fd, data, data_len) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "write failed!", WRITE_ERR);
             return WRITE_ERR;
         }
+        PRINT("after write\n");
         #endif
     }
     else if (a_data_list != NULL)
@@ -3282,6 +3285,7 @@ int send_data(unsigned int fd, unsigned char *data, struct s_data_list *a_data_l
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data err!", DATA_ERR);
         return DATA_ERR;
     }
+    PRINT("exit send_data\n");
     return 0;
 }
 
@@ -4052,6 +4056,8 @@ int print_buf_by_hex(const void *buf, struct s_data_list *data_list, const unsig
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "malloc failed!", MALLOC_ERR);
             return MALLOC_ERR;
         }
+        PRINT("log_buf = %08X log_buf = %p\n", *log_buf, log_buf);
+        
         memset(log_buf, 0, len * 2 + 1 + 25);
         
         sprintf(log_buf, "[len = %5ld][data = ", len);
@@ -4098,14 +4104,19 @@ int print_buf_by_hex(const void *buf, struct s_data_list *data_list, const unsig
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "buf is NULL!", NULL_ERR);
         return NULL_ERR;
     }
+    PRINT("before printf\n");
     printf("[%s]%s[%s][%s][%05d]%s\n", common_tools.argv0, common_tools.get_datetime_buf(), file_name, function_name, line_num, log_buf);    
     //OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, log_buf, 0); 
-    
+    PRINT("after printf\n");
     if (log_buf != NULL)
     {
+        PRINT("before free\n");
+        PRINT("log_buf = %08X log_buf = %p\n", *log_buf, log_buf);
         free(log_buf);
+        PRINT("after free\n");
         log_buf = NULL;  
     }
+    PRINT("exit print_buf_by_hex\n");
     return 0;
 }
 

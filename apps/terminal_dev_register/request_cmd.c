@@ -1232,6 +1232,7 @@ int request_cmd_0x06(struct s_terminal_dev_register * terminal_dev_register)
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
         return res;
     }
+    PRINT("exit 0x06\n");
 #endif // BOARDTYPE == 9344
     return res;
 }
@@ -2466,6 +2467,14 @@ static int request_cmd_analyse(struct s_terminal_dev_register * terminal_dev_reg
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "There is no (pad_sn) record!", res);
             goto EXIT;
         }
+        
+        if (strlen(pad_and_6410_msg.data + index) != SN_LEN)
+        {
+            res = P_DATA_ERR;
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data error!", res);
+            goto EXIT;
+        }
+        
         PRINT("pad_and_6410_msg.data = %s, terminal_dev_register->data_table.pad_sn = %s\n", pad_and_6410_msg.data + index, terminal_dev_register->data_table.pad_sn);
 
         if (memcmp(terminal_dev_register->data_table.pad_sn, pad_and_6410_msg.data + index, strlen(terminal_dev_register->data_table.pad_sn)) != 0)
@@ -2521,6 +2530,7 @@ static int request_cmd_analyse(struct s_terminal_dev_register * terminal_dev_reg
         case 0x06:
         {
             res = request_cmd_0x06(terminal_dev_register);
+            PRINT("after 0x06\n");
             break;
         }
         case 0x0B:
@@ -2949,7 +2959,7 @@ int add_dev_info(unsigned short *dev_count, void **dev_info, struct s_dev_regist
         {
             case 0: // 不存在
             {
-                if ((*dev_info = realloc(*dev_info, malloc_len)) == NULL)
+                if ((*dev_info = realloc(*dev_info, malloc_len * (*dev_count + 1))) == NULL)
                 {
                     OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "realloc failed", MALLOC_ERR);
                     return MALLOC_ERR;

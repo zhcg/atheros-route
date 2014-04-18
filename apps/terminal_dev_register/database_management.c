@@ -417,16 +417,18 @@ int sqlite3_select(unsigned char columns_count, char (*columns_name)[30], char (
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, sqlite3_errmsg(db), SQLITE_OPEN_ERR);
         return SQLITE_OPEN_ERR;
     }
-    
+    PRINT("after sqlite3_open\n");
     strcpy(sql, "select ");
     for (i = 0; i < columns_count; i++)
     {
+        PRINT("sql = %s, columns_name[i] = %s\n", sql, columns_name[i]);
         strncat(sql, columns_name[i], strlen(columns_name[i]));
         if (i != (columns_count - 1))
         {
             strncat(sql, ",", 1);
         }  
     }
+    PRINT("sql = %s\n", sql);
     strcat(sql, " from ");
     strcat(sql, TB);
     PRINT("sql = %s\n", sql);
