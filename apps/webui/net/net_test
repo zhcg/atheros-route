@@ -1,5 +1,6 @@
 #!/bin/sh
 BAIDU=www.baidu.com
+GOOGLE=8.8.8.8
 
 while true
 do
@@ -11,20 +12,22 @@ VAL=$(($VAL&0x0400))
 #echo $VAL
 
 if [ $VAL -eq 1024 ];then
-	ping $BAIDU test
+#	ping -c 3 $BAIDU  > /tmp/ping.log
+	ping -c 3 $GOOGLE  > /tmp/ping.log &
+	sleep 3
+	mes=`grep icmp_seq /tmp/ping.log`
 
-	if [ $? -eq 1 ]; then
+	if [ -z "${mes}" ];then
 	        echo "0">/usr/www/ping.xml
 	else
 	        echo "1">/usr/www/ping.xml
 	fi
+	rm -fr /tmp/ping.log
 else
 if [ $VAL -eq 0 ];then
 	echo "0">/usr/www/ping.xml
 fi
 fi
 #cfg -c
-
-sleep 3
-
+#sleep 3
 done
