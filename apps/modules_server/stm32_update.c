@@ -610,8 +610,9 @@ int UpdateRspRcv(unsigned char *prcv_buffer,int buf_size)
 					}
 					return j;
 				}
-				else if(j = -1)
-					return j;
+				else if(j == -1)
+					//return j;
+					continue;
 			}
 		}
 	}while(1);
