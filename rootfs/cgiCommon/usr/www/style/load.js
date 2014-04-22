@@ -103,3 +103,45 @@ function Demo2(string){ //主调
   var ShowDiv="<div style=\"text-align: center;padding:10px;width:200px;height:120;border:#909090 1px solid;background:#fff;color:#333;filter:progid:DXImageTransform.Microsoft.Shadow(color=#909090,direction=120,strength=4);-moz-box-shadow: 8px 8px 18px #909090;-webkit-box-shadow: 8px 8px 18px #909090;box-shadow:8px 8px 18px #909090;\"><span style=\"color:#333;font-size:18px;line-height:120px;\">"+string+"<span></div>";
   DialogShow(ShowDiv,100,50,200,120);
 }
+
+function Demo3(string)
+{ //主调
+  ScreenConvert();
+  var ShowDiv="<div style=\"border:#909090 1px solid;height:120;\"><br><div style=\"border:1px #CCC solid; height:20px; width:198px; margin:0 auto;\"><div id=\"demshow\" style=\" background:#909090;height:20px; width:0\"></div><strong id=\"devval\" style=\" position:absolute; width:198px; top:20px; text-align:center;color:#333; overflow:hidden\">0%</strong></div><br><div style=\"color:#333\" align=\"center\">"+string+"</div><br></div>";
+  DialogShow(ShowDiv,100,50,200,120);
+}
+var pxi = 0;var timer1;var timer2;
+
+function showpxb()
+{
+	document.getElementById("demshow").style.width=pxi.toString()+"%";
+	document.getElementById("devval").innerHTML=pxi.toString()+"%";
+	pxi++;
+	if(pxi==91)
+	{
+		clearInterval(timer1);
+	}
+	
+}
+function beginshow(tim)
+{
+	timer1=setInterval('showpxb()',tim);
+}
+
+function showpxe()
+{
+	document.getElementById("demshow").style.width=pxi.toString()+"%";
+	document.getElementById("devval").innerHTML=pxi.toString()+"%";
+	pxi++;
+	if(pxi==101)
+	{
+		clearInterval(timer2);
+	}
+	
+}
+function endshow()
+{
+	pxi=90;
+	timer2=setInterval('showpxb()',1000);
+}
+

@@ -53,7 +53,8 @@ function  reboothandleStateChange()
 		if(xmlHttpreboot.status==200)
 		{
 			clearTimeout(timeID);
-			setTimeout(function(){window.top.location.href=destnation;},35000);
+			window.parent.endshow();
+			setTimeout(function(){window.top.location.href=destnation;},10000);
 		}
 	}
 }
@@ -71,26 +72,30 @@ function init()
 
 	if(a == "reboot")
 	{
-		window.parent.Demo(_("REBOOT"));
+		window.parent.Demo3(_("REBOOT"));
+		window.parent.beginshow(800);
 		destnation = "http://"+location.hostname;
 		desIPreboot = location.hostname;
-		setTimeout(function(){rebootRequest();},10000);
+		setTimeout(function(){rebootRequest();},35000);
 	}
 	else if(a == "upload")
 	{
-		window.parent.Demo(_("UPLOAD"));
+		window.parent.Demo3(_("UPLOAD"));
+		window.parent.beginshow(2000);
 		destnation = "http://"+desIPreboot+"/cgi-bin/"+"crupload";
 		setTimeout(function(){rebootRequest();},35000);
 	}
 	else if(a == "cfgback")
 	{
-		window.parent.Demo(_("CFGBACK"));
+		window.parent.Demo3(_("CFGBACK"));
+		window.parent.beginshow(800);
 		destnation = "http://"+desIPreboot;
 		setTimeout(function(){rebootRequest();},40000);
 	}
 	else if(a == "factory")
 	{
-		window.parent.Demo(_("FACTORY"));
+		window.parent.Demo3(_("FACTORY"));
+		window.parent.beginshow(800);
 		desIPreboot="10.10.10.254";
 		destnation = "http://"+desIPreboot+"/cgi-bin/"+"crfact";
 		setTimeout(function(){rebootRequest();},35000);
@@ -103,7 +108,7 @@ function init()
 }
 </script>
 </head>
-<body onload="init()">
+<body onload="init()"  ondragstart="window.event.returnValue=false" oncontextmenu="window.event.returnValue=false" onselectstart="event.returnValue=false">
 <input type="text" style="display:none" name="RESULT" id="RESULT" size="20" maxlength="32" value="~~RESULT~">
 <input type="text" style="display:none" name="PAGE" id="PAGE" size="20" maxlength="32" value="~~PAGE~">
 <input type="text" style="display:none" name="IPA" id="IPA" size="20" maxlength="32" value="~~AP_IPADDR~">
