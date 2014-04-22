@@ -807,12 +807,12 @@ void* AudioSendThreadCallBack(void* argv)
 				valid_bytes = phone_audio.output_stream_wp - phone_audio.output_stream_rp;
 			else
 				valid_bytes = AUDIO_STREAM_BUFFER_SIZE - phone_audio.output_stream_rp;
-			if(valid_bytes > 4*AUDIO_SEND_PACKET_SIZE)
-			{
-				PRINT("send data is more,so discard some one\r\n");
-				phone_audio.output_stream_wp = phone_audio.output_stream_rp;
-				valid_bytes = 0;
-			}
+			//if(valid_bytes > 4*AUDIO_SEND_PACKET_SIZE)
+			//{
+				//PRINT("send data is more,so discard some one\r\n");
+				//phone_audio.output_stream_wp = phone_audio.output_stream_rp;
+				//valid_bytes = 0;
+			//}
 			//每次只允许发送最多AUDIO_SEND_PACKET_SIZE个字节
 			if(valid_bytes > AUDIO_SEND_PACKET_SIZE)
 				valid_bytes = AUDIO_SEND_PACKET_SIZE;
@@ -835,6 +835,9 @@ void* AudioSendThreadCallBack(void* argv)
 					getsockopt(devp->audio_client_fd,SOL_SOCKET,SO_ERROR,&optval, &optlen);
 					if(errno == EAGAIN && optval == 0)
 					{
+						phone_audio.output_stream_rp += valid_bytes;
+						if(phone_audio.output_stream_rp >= AUDIO_STREAM_BUFFER_SIZE)
+							phone_audio.output_stream_rp = 0;
 						usleep(15*1000);
 						continue;
 					}

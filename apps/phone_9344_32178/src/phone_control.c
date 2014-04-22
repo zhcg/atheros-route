@@ -234,6 +234,7 @@ int destroy_client(dev_status_t *dev)
 					dev->client_fd=devlist[j].client_fd;
 					dev->dev_is_using = 1;
 					dev->tick_time = 1;
+					dev->destroy_count = 0;
 					phone_control.who_is_online.client_fd=devlist[j].client_fd;
 					phone_control.who_is_online.dev_is_using = 1;
 
@@ -2550,6 +2551,72 @@ int generate_up_msg()
 	return 0;
 }
 
+int check_register_status()
+{
+	int j,i = 0;
+	char dev_mac[20]={0};
+	char register_state[4]={0};
+	char pad_mac[20]={0};
+	char insidebuf[10]={0};
+	char device_name[30]={0};
+	for(i=0;i<CLIENT_NUM;i++)
+	{		
+		if(devlist[i].client_fd == -1 || devlist[i].registered == 0)
+			continue;		
+		memset(dev_mac,0,20);
+		memset(register_state,0,4);
+		memset(pad_mac,0,20);
+		memset(insidebuf,0,10);
+		memset(device_name,0,30);
+		//转换mac为大写
+		strtobig(devlist[i].dev_mac,strlen(devlist[i].dev_mac));
+		sqlite3_interface("terminal_register_tb","device_mac",devlist[i].dev_mac,"device_mac",dev_mac);
+		//PRINT("dev_mac=%s\n",dev_mac);
+		strtobig(dev_mac,strlen(dev_mac));
+		if(!strncmp(dev_mac,devlist[i].dev_mac,strlen(devlist[i].dev_mac)))
+		{
+			//PRINT("dev is registered!\n");
+			sqlite3_interface("terminal_register_tb","device_name",devlist[i].dev_mac,"device_mac",device_name);
+			if(strcmp(device_name,devlist[i].dev_name))
+			{
+				memset(devlist[i].dev_name,' ',16);
+				memcpy(devlist[i].dev_name,device_name,16);
+				for(j=0;j<16;j++)
+				{
+					if(devlist[i].dev_name[j] == '\0')
+					{
+						devlist[i].dev_name[j]=' ';
+					}
+				}
+				//PRINT("dev_name = %s\n",devlist[i].dev_name);
+				//PRINT("device_name = %s\n",device_name);
+				//netWrite(dev->client_fd,"HEADR0010REG_SUC000\r\n",21);
+			}
+			continue;
+		}
+		
+		sqlite3_interface("terminal_base_tb","register_state","0","register_state",register_state);
+		//PRINT("register_state = %s\n",register_state);
+		sqlite3_interface("terminal_base_tb","pad_mac",devlist[i].dev_mac,"pad_mac",pad_mac);
+		strtobig(pad_mac,strlen(pad_mac));
+	//		PRINT("buf=%s\n",buf);
+	//	PRINT("pad_mac = %s\n",pad_mac);
+		//PRINT("%d\n",strcmp(pad_mac,buf));
+		//PRINT("%d\n",strcmp(register_state,"0"));
+		if(!strncmp(pad_mac,devlist[i].dev_mac,strlen(devlist[i].dev_mac)) && !strcmp(register_state,"0"))
+		{
+			//PRINT("pad is registered!\n");
+			continue;
+		}
+		PRINT("dev is unregistered\n");
+		netWrite(devlist[i].client_fd,"HEADR0010REGFAIL000\r\n",21);
+		memset(insidebuf,0,10);
+		sprintf(insidebuf,"%s","INSIDE");
+		insidebuf[6]=i+1;
+		netWrite(phone_control_fd[0],insidebuf, 7);
+	}
+	return 0;
+}
 
 //心跳
 void* phone_check_tick(void* argv)
@@ -2568,6 +2635,10 @@ void* phone_check_tick(void* argv)
 		{
 			tick_count = 0;
             generate_up_msg();
+		}
+		if(tick_count%2 == 0)
+		{
+			check_register_status();
 		}
 		tick_count ++;
 		for(i=0;i<CLIENT_NUM;i++)
@@ -2615,8 +2686,7 @@ void* phone_check_tick(void* argv)
 				printf("no devs online\n");
 			online_count = 0;
 		}
-		sleep(1);
-
+		usleep(1000*1000);
 	}
 }
 
