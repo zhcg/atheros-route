@@ -102,7 +102,7 @@ void *recv_sock()
 								system("cfg -a AP_CHMODE=11NGHT40MINUS");
 								system("cfg -c");
 							}
-							else if(val > 0 &&val <= 4)
+							else if(val > 0 &&val <= 9)
 							{	
 								printf("PLUS MODE!!!!!\n");
 								system("iwpriv ath0 mode 11NGHT40PLUS");
