@@ -5230,6 +5230,7 @@ int main(int argc,char **argv)
 			system("/usr/sbin/var_backup > /dev/null 2>&1");
 			system("cat /dev/null > /etc/ath/iptables/parc");
 //			system("rm -f /etc/ip_mac.conf");//wangyu add for ip and mac address bond operation
+			system("touch /etc/ip_mac.conf");//wangyu add for ip and mac address bond operation
 			system("echo `grep 10.10.10.100 /etc/ip_mac.conf` > /etc/ip_mac.conf");//wangyu add for ip and mac address bond operation
 
 			system("rm -f /etc/.staAcl /etc/.staMac");//wangyu add for wireless client manage
