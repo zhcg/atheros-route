@@ -107,7 +107,7 @@ function Demo2(string){ //主调
 function Demo3(string)
 { //主调
   ScreenConvert();
-  var ShowDiv="<div style=\"border:#909090 1px solid;height:120;\"><br><div style=\"border:1px #CCC solid; height:20px; width:198px; margin:0 auto;\"><div id=\"demshow\" style=\" background:#909090;height:20px; width:0\"></div><strong id=\"devval\" style=\" position:absolute; width:198px; top:20px; text-align:center;color:#333; overflow:hidden\">0%</strong></div><br><div style=\"color:#333\" align=\"center\">"+string+"</div><br></div>";
+  var ShowDiv="<div style=\"border:#909090 1px solid;height:120;\"><br><div style=\"border:1px #CCC solid; height:20px; width:150px; margin-left:25px;\"><div id=\"demshow\" style=\" background:#909090;height:20px; width:0\"></div><strong id=\"devval\" style=\" position:absolute; width:150px; top:20px; text-align:center;color:#333; overflow:hidden\">0%</strong></div><br><div style=\"color:#333\" align=\"center\">"+string+"</div><br></div>";
   DialogShow(ShowDiv,100,50,200,120);
 }
 var pxi = 0;var timer1;var timer2;
