@@ -1170,11 +1170,17 @@ char *processSpecial(char *paramStr, char *outBuff)
                     	while (fread(&lease, sizeof(lease), 1, fp) == 1)
 	                    {
 	                        shi=0;
+							
+							if(strlen(lease.mac) == 0)
+								continue;
+							//fprintf(errOut,"\n%s  %d lease.mac is [%x] len is %d\n",__func__,__LINE__, lease.mac, strlen(lease.mac));
+							
 							memset(mac_buf, 0, sizeof(mac_buf));
 							for(i = 0, j = 0 ; i < 6; i++, j+=3)
 	                        {
 	                            sprintf(&mac_buf[j], "%02x:", lease.mac[i]);
 	                        }
+							//fprintf(errOut,"\n%s  %d mac_buf is [%s] len is %d\n",__func__,__LINE__, mac_buf);
 							
 	                        /*compare MAC*/
 							if((fp1 = fopen(OLD_STAFILE, "r")) != NULL)		/*  /etc/.OldStaList  */
@@ -1199,7 +1205,8 @@ char *processSpecial(char *paramStr, char *outBuff)
 	                            outBuff += sprintf(outBuff,"<tr>");
 	                            outBuff += sprintf(outBuff,"<td>%d</td>",num);
 	                            num++; 
-	                            
+								
+	                            //fprintf(errOut,"\n%s  %d  zhaozhanwei the hostname is %s \n",__func__,__LINE__, lease.hostname);
 	                            if (strlen(lease.hostname) > 0)
 	                                outBuff += sprintf(outBuff,"<td>%s</td>",lease.hostname);
 	                            else
