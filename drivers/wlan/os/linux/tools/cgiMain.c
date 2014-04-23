@@ -858,7 +858,9 @@ char *processSpecial(char *paramStr, char *outBuff)
 
 					memset(addr_buf,0,1024);
 					
-					while (( fgets(addr_buf,1024,f) != NULL )&&(strstr(addr_buf,"static_lease")))
+					while ( fgets(addr_buf,1024,f) != NULL )
+					{
+						if(strstr(addr_buf,"static_lease"))
 					{
 						sscanf(addr_buf,"static_lease %s %s %s",addr_mac,addr_ip,addr_status);
 					#ifdef MESSAGE
@@ -880,6 +882,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 	                    outBuff += sprintf(outBuff,"</tr>");
 						id ++;						
 						memset(addr_buf,0,1024);
+							}
 					}
 					fclose(f);
 					/*wangyu add end*/
@@ -5230,7 +5233,6 @@ int main(int argc,char **argv)
 			system("/usr/sbin/var_backup > /dev/null 2>&1");
 			system("cat /dev/null > /etc/ath/iptables/parc");
 //			system("rm -f /etc/ip_mac.conf");//wangyu add for ip and mac address bond operation
-			system("touch /etc/ip_mac.conf");//wangyu add for ip and mac address bond operation
 			system("echo `grep 10.10.10.100 /etc/ip_mac.conf` > /etc/ip_mac.conf");//wangyu add for ip and mac address bond operation
 
 			system("rm -f /etc/.staAcl /etc/.staMac");//wangyu add for wireless client manage
