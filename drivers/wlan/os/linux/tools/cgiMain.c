@@ -3619,6 +3619,7 @@ void delSta(char *maddr)
 
 void restart_sta_access()
 {
+	#if 0
 	int i, j, k;
 	char pr_buf[50];
 	char pChar[40];
@@ -3730,8 +3731,10 @@ void restart_sta_access()
 
 	Execute_cmd("hostapd -B /tmp/secath0 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
 	Execute_cmd("hostapd -B /tmp/secath2 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+	#endif
 	Execute_cmd("ifconfig ath0 down;ifconfig ath0 up > /dev/null 2>&1",rspBuff);
 	Execute_cmd("ifconfig ath2 down;ifconfig ath2 up > /dev/null 2>&1",rspBuff);
+	
 }
 
 int  add_sta_access()

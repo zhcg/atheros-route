@@ -76,7 +76,7 @@ void deal_staControl()
 			fclose(fp);
 			return;
 		}
-		//LOG(LOG_ERR, "------- OK the con_buf is %s------", con_buf);
+		LOG(LOG_ERR, "------- OK the con_buf is %s------", con_buf);
 		if(strstr(con_buf, "disable"))
 		{
 			fclose(fp);
@@ -92,7 +92,7 @@ void deal_staControl()
 					{
 						sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
 						system(buf);
-						//LOG(LOG_ERR, "------- OK ------ the buf is %s", buf);
+						LOG(LOG_ERR, "------- OK ------ the buf is %s", buf);
 						sprintf(buf, "iwpriv ath2 addmac %s", stalist.macAddr);
 						system(buf);
 						//memset(buf, 0, sizeof buf);
@@ -102,6 +102,8 @@ void deal_staControl()
 				}
 				system("iwpriv ath0 maccmd 2");
 				system("iwpriv ath2 maccmd 2");
+				system("ifconfig ath0 down;ifconfig ath0 up > /dev/null 2>&1");
+				system("ifconfig ath2 down;ifconfig ath2 up > /dev/null 2>&1");
 				fclose(fp1);
 			}
 		}

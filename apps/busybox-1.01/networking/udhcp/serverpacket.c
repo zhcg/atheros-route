@@ -256,86 +256,98 @@ void add_staMac()
 		open = 1;
 		fp = fopen(OLD_STAFILE, "at");
 		flist = fopen("/etc/.STAlist", "r");    /*  /etc/.STAlist   */
+		memset(STAbuf, 0, sizeof STAbuf);
         fgets(STAbuf, 128, flist);
-        while(fgets(STAbuf, 128, flist))
-        {
-        	memset(&oldstalist, 0, sizeof(oldstalist));
-        	strncpy(oldstalist.macAddr, STAbuf, 17);
-			fwrite(&oldstalist, sizeof(oldstalist), 1, fp);
-			LOG(LOG_INFO, "write old open is %d", open);
-        }
+		if(strlen(STAbuf) > 0)
+		{
+	        while(fgets(STAbuf, 128, flist))
+	        {
+	        	memset(&oldstalist, 0, sizeof(oldstalist));
+	        	strncpy(oldstalist.macAddr, STAbuf, 17);
+				fwrite(&oldstalist, sizeof(oldstalist), 1, fp);
+				LOG(LOG_INFO, "write old open is %d", open);
+	        }
+		}
 		fclose(flist);
 		fclose(fp);
 	}
 
 	flist = fopen("/etc/.STAlist", "r");    /*  /etc/.STAlist   */
+	memset(STAbuf, 0, sizeof STAbuf);
 	fgets(STAbuf, 128, flist);
-    while(fgets(STAbuf, 128, flist))
-    {
-    	int ret = 0;
-    	memset(buf, 0, sizeof buf);
-		strncpy(buf, STAbuf, 17);
-		LOG(LOG_INFO, "open is %d", open);
+	if(strlen(STAbuf) > 0)
+	{
+	    while(fgets(STAbuf, 128, flist))
+	    {
+	    	int ret = 0;
+	    	memset(buf, 0, sizeof buf);
+			strncpy(buf, STAbuf, 17);
+			LOG(LOG_INFO, "open is %d", open);
 
-		if(open == 1)
-		{
-			fp = fopen(OLD_STAFILE, "r");			/*  /etc/.OldStaList  */
-		}
-		while(fread(&oldstalist, sizeof oldstalist, 1, fp) == 1)
-		{
-			LOG(LOG_INFO, "buf is %s, oldmac is %s", buf, oldstalist.macAddr);
-			if(strcmp(buf, oldstalist.macAddr) == 0)
+			if(open == 1)
 			{
-				ret = 1;
-				break;
+				fp = fopen(OLD_STAFILE, "r");			/*  /etc/.OldStaList  */
 			}
-		}
-		LOG(LOG_INFO, "ret is %d", ret);
-		if(ret == 0)
-		{
+			while(fread(&oldstalist, sizeof oldstalist, 1, fp) == 1)
+			{
+				LOG(LOG_INFO, "buf is %s, oldmac is %s", buf, oldstalist.macAddr);
+				if(strcmp(buf, oldstalist.macAddr) == 0)
+				{
+					ret = 1;
+					break;
+				}
+			}
+			LOG(LOG_INFO, "ret is %d", ret);
+			if(ret == 0)
+			{
+				fclose(fp);
+				fp = fopen(OLD_STAFILE, "at");
+				memset(&oldstalist, 0, sizeof(oldstalist));
+	        	strncpy(oldstalist.macAddr, buf, 17);
+				fwrite(&oldstalist, sizeof(oldstalist), 1, fp);
+			}
 			fclose(fp);
-			fp = fopen(OLD_STAFILE, "at");
-			memset(&oldstalist, 0, sizeof(oldstalist));
-        	strncpy(oldstalist.macAddr, buf, 17);
-			fwrite(&oldstalist, sizeof(oldstalist), 1, fp);
-		}
-		fclose(fp);
-		open =  1;
-    }
+			open =  1;
+	    }
+	}
 	fclose(flist);
 
 	/*for 5G*/
 	flist = fopen("/etc/.STAlist2", "r");    /*  /etc/.STAlist2   */
+	memset(STAbuf, 0, sizeof STAbuf);
 	fgets(STAbuf, 128, flist);
-    while(fgets(STAbuf, 128, flist))
-    {
-    	int ret = 0;
-    	memset(buf, 0, sizeof buf);
-		strncpy(buf, STAbuf, 17);
-		LOG(LOG_INFO, "open is %d", open);
+	if(strlen(STAbuf) > 0)
+	{
+	    while(fgets(STAbuf, 128, flist))
+	    {
+	    	int ret = 0;
+	    	memset(buf, 0, sizeof buf);
+			strncpy(buf, STAbuf, 17);
+			LOG(LOG_INFO, "open is %d", open);
 
-		fp = fopen(OLD_STAFILE, "r");			/*  /etc/.OldStaList  */
-		while(fread(&oldstalist, sizeof oldstalist, 1, fp) == 1)
-		{
-			LOG(LOG_INFO, "buf is %s, oldmac is %s", buf, oldstalist.macAddr);
-			if(strcmp(buf, oldstalist.macAddr) == 0)
+			fp = fopen(OLD_STAFILE, "r");			/*  /etc/.OldStaList  */
+			while(fread(&oldstalist, sizeof oldstalist, 1, fp) == 1)
 			{
-				ret = 1;
-				break;
+				LOG(LOG_INFO, "buf is %s, oldmac is %s", buf, oldstalist.macAddr);
+				if(strcmp(buf, oldstalist.macAddr) == 0)
+				{
+					ret = 1;
+					break;
+				}
 			}
-		}
-		LOG(LOG_INFO, "ret is %d", ret);
-		if(ret == 0)
-		{
+			LOG(LOG_INFO, "ret is %d", ret);
+			if(ret == 0)
+			{
+				fclose(fp);
+				fp = fopen(OLD_STAFILE, "at");
+				memset(&oldstalist, 0, sizeof(oldstalist));
+	        	strncpy(oldstalist.macAddr, buf, 17);
+				fwrite(&oldstalist, sizeof(oldstalist), 1, fp);
+			}
 			fclose(fp);
-			fp = fopen(OLD_STAFILE, "at");
-			memset(&oldstalist, 0, sizeof(oldstalist));
-        	strncpy(oldstalist.macAddr, buf, 17);
-			fwrite(&oldstalist, sizeof(oldstalist), 1, fp);
-		}
-		fclose(fp);
-		open =  1;
-    }
+			open =  1;
+	    }
+	}
 	fclose(flist);
 }
 
