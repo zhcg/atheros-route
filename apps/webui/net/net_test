@@ -13,7 +13,7 @@ VAL=$(($VAL&0x0400))
 
 if [ $VAL -eq 1024 ];then
 #	ping -c 3 $BAIDU  > /tmp/ping.log
-	ping -c 3 $GOOGLE  > /tmp/ping.log &
+	ping -c 3 $BAIDU  > /tmp/ping.log &
 	sleep 3
 	mes=`grep icmp_seq /tmp/ping.log`
 

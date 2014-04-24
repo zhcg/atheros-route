@@ -144,8 +144,9 @@ fi
 /etc/rc.d/rc.udhcpd
 if [ -f /etc/ip_mac.conf ]; then
 	cat /etc/ip_mac.conf | grep "enable" | awk 'BEGIN{OFS=FS=" "}{print $1,$2,$3}' >> /etc/udhcpd.conf
+else
+	touch /etc/ip_mac.conf
 fi
-touch /etc/ip_mac.conf
 if [ "${WDSON_OFF}" != "on" -a "${DHCPON_OFF}" != "off" ]; then
 	/usr/sbin/udhcpd /etc/udhcpd.conf
 fi
