@@ -39,6 +39,8 @@
 	<message msgid="wless wifititle1" msgstr="Network Band:2.4GHz" />
 	<message msgid="wless wifititle2" msgstr="Network Band:5GHz" />
 
+	<message msgid="wless offdes" msgstr="The band WiFi is disabled, the advanced options cannot be configured" />
+
 	<message msgid="err MAC wuxiao" msgstr="MAC address illegal" />
 	<message msgid="err MAC empty" msgstr="MAC is empty " />
 	<message msgid="err user empty" msgstr="User name is empty " />

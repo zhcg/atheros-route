@@ -203,11 +203,14 @@ function initValue()
 				if ((xmlreq.responseText=="1")||(xmlreq.responseText==1))
 				{
 					w.src = "/images/11111111_r6_c2.png";//wai
-					
+					clearTimeout(timeID);
+					timeID = setTimeout(function(){rebootRequest();},3000);
 				}
 				else
 				{
 					w.src = "/images/11111111_r8_c2111.png";
+					clearTimeout(timeID);
+					timeID = setTimeout(function(){rebootRequest();},3000);
 				}
 			}
 			else

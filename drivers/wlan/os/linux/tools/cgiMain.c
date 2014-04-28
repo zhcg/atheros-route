@@ -7343,6 +7343,7 @@ int main(int argc,char **argv)
 		
        } 
 		gohome =2;
+        sleep(10);
     }
     
     /*************************************

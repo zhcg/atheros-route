@@ -57,82 +57,106 @@ function isNum(str)
 }
 function CheckValue()
 {
-	if(document.WORKFORM.BEACON_INT.value=="")
+	if(document.getElementById("WIFION_OFF").value=="on")
 	{
-		alert(_("err ssidtime empty"));
-		document.WORKFORM.BEACON_INT.select();
-		return false;
-	}
-	if (!isNum(document.WORKFORM.BEACON_INT.value))
-	{
-		alert(_("err ssidtime"));
-		document.WORKFORM.BEACON_INT.select();
-		return false;
-	}
-	if (checkValuerange(document.WORKFORM.BEACON_INT.value,40,1000)==false)
-	{
-		alert(_("err ssidtime"));
-		document.WORKFORM.BEACON_INT.select();
-		return false;
-	}
-//---------------------------------------------------
-	if(document.WORKFORM.WIFI_ADV_RSTCTS.value=="")
-	{
-		alert(_("err rstcts empty"));
-		document.WORKFORM.WIFI_ADV_RSTCTS.select();
-		return false;
-	}
-	if (!isNum(document.WORKFORM.WIFI_ADV_RSTCTS.value))
-	{
-		alert(_("err rstcts"));
-		document.WORKFORM.WIFI_ADV_RSTCTS.select();
-		return false;
-	}
-	if (checkValuerange(document.WORKFORM.WIFI_ADV_RSTCTS.value,256,2346)==false)
-	{
-		alert(_("err rstcts"));
-		document.WORKFORM.WIFI_ADV_RSTCTS.select();
-		return false;
-	}
+		if(document.WORKFORM.BEACON_INT.value=="")
+		{
+			alert(_("err ssidtime empty"));
+			document.WORKFORM.BEACON_INT.select();
+			return false;
+		}
+		if (!isNum(document.WORKFORM.BEACON_INT.value))
+		{
+			alert(_("err ssidtime"));
+			document.WORKFORM.BEACON_INT.select();
+			return false;
+		}
+		if (checkValuerange(document.WORKFORM.BEACON_INT.value,40,1000)==false)
+		{
+			alert(_("err ssidtime"));
+			document.WORKFORM.BEACON_INT.select();
+			return false;
+		}
+	//---------------------------------------------------
+		if(document.WORKFORM.WIFI_ADV_RSTCTS.value=="")
+		{
+			alert(_("err rstcts empty"));
+			document.WORKFORM.WIFI_ADV_RSTCTS.select();
+			return false;
+		}
+		if (!isNum(document.WORKFORM.WIFI_ADV_RSTCTS.value))
+		{
+			alert(_("err rstcts"));
+			document.WORKFORM.WIFI_ADV_RSTCTS.select();
+			return false;
+		}
+		if (checkValuerange(document.WORKFORM.WIFI_ADV_RSTCTS.value,256,2346)==false)
+		{
+			alert(_("err rstcts"));
+			document.WORKFORM.WIFI_ADV_RSTCTS.select();
+			return false;
+		}
 
+	}
+	else
+	{
+		document.WORKFORM.BEACON_INT.disabled = true;	
+		document.WORKFORM.WIFI_ADV_RSTCTS.disabled = true;	
+		document.WORKFORM.TXRATE.disabled = true;	
+		document.WORKFORM.SHORTGI.disabled = true;	
+	}
+	if(document.getElementById("WIFION_OFF_3").value=="on")
+	{
+		if(document.WORKFORM.BEACON_INT_3.value=="")
+		{
+			alert(_("err ssidtime empty"));
+			document.WORKFORM.BEACON_INT_3.select();
+			return false;
+		}
+		if (!isNum(document.WORKFORM.BEACON_INT_3.value))
+		{
+			alert(_("err ssidtime"));
+			document.WORKFORM.BEACON_INT_3.select();
+			return false;
+		}
+		if (checkValuerange(document.WORKFORM.BEACON_INT_3.value,40,1000)==false)
+		{
+			alert(_("err ssidtime"));
+			document.WORKFORM.BEACON_INT_3.select();
+			return false;
+		}
+	//---------------------------------------------------	
+		if(document.WORKFORM.WIFI_ADV_RSTCTS_3.value=="")
+		{
+			alert(_("err rstcts empty"));
+			document.WORKFORM.WIFI_ADV_RSTCTS_3.select();
+			return false;
+		}
+		if (!isNum(document.WORKFORM.WIFI_ADV_RSTCTS_3.value))
+		{
+			alert(_("err rstcts"));
+			document.WORKFORM.WIFI_ADV_RSTCTS_3.select();
+			return false;
+		}	
+		if (checkValuerange(document.WORKFORM.WIFI_ADV_RSTCTS_3.value,256,2346)==false)
+		{
+			alert(_("err rstcts"));
+			document.WORKFORM.WIFI_ADV_RSTCTS_3.select();
+			return false;
+		}
+	}
+	else
+	{
+		document.WORKFORM.BEACON_INT_3.disabled = true;	
+		document.WORKFORM.WIFI_ADV_RSTCTS_3.disabled = true;	
+		document.WORKFORM.TXRATE_3.disabled = true;	
+		document.WORKFORM.SHORTGI_3.disabled = true;	
+
+	}
+	
 //---------------------------------------------------
-	if(document.WORKFORM.BEACON_INT_3.value=="")
-	{
-		alert(_("err ssidtime empty"));
-		document.WORKFORM.BEACON_INT_3.select();
-		return false;
-	}
-	if (!isNum(document.WORKFORM.BEACON_INT_3.value))
-	{
-		alert(_("err ssidtime"));
-		document.WORKFORM.BEACON_INT_3.select();
-		return false;
-	}
-	if (checkValuerange(document.WORKFORM.BEACON_INT_3.value,40,1000)==false)
-	{
-		alert(_("err ssidtime"));
-		document.WORKFORM.BEACON_INT_3.select();
-		return false;
-	}
-//---------------------------------------------------	
-	if(document.WORKFORM.WIFI_ADV_RSTCTS_3.value=="")
-	{
-		alert(_("err rstcts empty"));
-		document.WORKFORM.WIFI_ADV_RSTCTS_3.select();
-		return false;
-	}
-	if (!isNum(document.WORKFORM.WIFI_ADV_RSTCTS_3.value))
-	{
-		alert(_("err rstcts"));
-		document.WORKFORM.WIFI_ADV_RSTCTS_3.select();
-		return false;
-	}	
-	if (checkValuerange(document.WORKFORM.WIFI_ADV_RSTCTS_3.value,256,2346)==false)
-	{
-		alert(_("err rstcts"));
-		document.WORKFORM.WIFI_ADV_RSTCTS_3.select();
-		return false;
-	}	
+	document.getElementById("WIFION_OFF").disabled = true;	 
+	document.getElementById("WIFION_OFF_3").disabled = true;	 
 	
 	Butterlate.setTextDomain("admin");
 	window.parent.Demo(_("admw settingwaiting"));	
@@ -167,7 +191,10 @@ function initTranslation()
 	trans_inner("BYTE_D1","wless byte");
 	trans_inner("BYTE_D2","wless byte");
 
-	trans_inner("help_r","help");	
+	trans_inner("help_r","help");
+	
+	trans_inner("offdes1","wless offdes");	
+	trans_inner("offdes2","wless offdes");	
 	
 	trans_value("bCANCEL","wless bCANCEL");
 	trans_value("bAPPLY","wless bAPPLY");
@@ -178,6 +205,26 @@ function initValue()
 {
 	Butterlate.setTextDomain("wless");
 	initTranslation();
+	if(document.getElementById("WIFION_OFF").value=="off")
+	{
+		widget_hide("hh1");
+		widget_hide("hh2");
+		widget_hide("hh3");
+		widget_hide("hh4");
+		widget_display("tishi1");
+	}
+	if(document.getElementById("WIFION_OFF_3").value=="off")
+	{
+		widget_hide("hhh1");
+		widget_hide("hhh2");
+		widget_hide("hhh3");
+		widget_hide("hhh4");
+		widget_display("tishi2");
+	}
+	if((document.getElementById("WIFION_OFF_3").value=="off")&&(document.getElementById("WIFION_OFF").value=="off"))
+	{
+		widget_hide("buttontable");
+	}
 }
 function help()
 {
@@ -207,16 +254,16 @@ function help()
 <td class="title2" colspan="2" id="t1_title">无线高级设置</td>
 </tr>
 
-<tr>
+<tr id="hh1">
   <td class="head" id="t1_SSIDTime">广播SSID时间</td>
   <td><input type="text" name="BEACON_INT" id="BEACON_INT" size="32" maxlength="32" class="handaer_text_content"  value="~~BEACON_INT~"><span>&nbsp;(40-1000)</span><span id="MS_D1"></span></td>
 </tr>
-<tr>
+<tr id="hh2">
   <td class="head" id="t1_RC">RTS/CTS限值</td>
   <td><input type="text" name="WIFI_ADV_RSTCTS" id="WIFI_ADV_RSTCTS" size="32" maxlength="32" class="handaer_text_content"  value="~~WIFI_ADV_RSTCTS~"><span>&nbsp;(256-2346)</span><span id="BYTE_D1"></span></td>
 </tr>
 
-<tr>
+<tr id="hh3">
   <td class="head">MCS</td>
   <td>
      <select name="TXRATE" size="1">
@@ -241,7 +288,7 @@ function help()
   </td>
 </tr>
 
-<tr id="channel">
+<tr id="hh4">
   <td class="head" id="t1_head">报头模式</td>
   <td>
     <select name="SHORTGI" size="1">
@@ -250,20 +297,25 @@ function help()
     </select>
   </td>
 </tr>
+
+<tr style="display:none" id="tishi1">
+  <td class="title2" colspan="2" id="offdes1"></td>
+</tr>
+
 </table>
 <!--5G--------------------------------------------------------------------------------------->
 <table id="t1"  width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
 <tr><td class="title2" colspan="2" id="t1_title2">无线高级设置</td></tr>
-<tr>
+<tr id="hhh1">
   <td class="head" id="t1_SSIDTime2">广播SSID时间</td>
   <td><input type="text" name="BEACON_INT_3" id="BEACON_INT_3" size="32" maxlength="32" class="handaer_text_content"  value="~~BEACON_INT_3~"><span>&nbsp;(40-1000)</span><span id="MS_D2"></span></td>
 </tr>
-<tr>
+<tr id="hhh2">
   <td class="head" id="t1_RC2">RTS/CTS限值</td>
   <td><input type="text" name="WIFI_ADV_RSTCTS_3" id="WIFI_ADV_RSTCTS_3" size="32" maxlength="32" class="handaer_text_content"  value="~~WIFI_ADV_RSTCTS_3~"><span>&nbsp;(256-2346)</span><span id="BYTE_D2"></span></td>
 </tr>
 
-<tr>
+<tr id="hhh3">
   <td class="head">MCS</td>
   <td>
      <select name="TXRATE_3" size="1">
@@ -288,7 +340,7 @@ function help()
   </td>
 </tr>
 
-<tr id="channel">
+<tr id="hhh4">
   <td class="head" id="t1_head2">报头模式</td>
   <td>
     <select name="SHORTGI_3" size="1">
@@ -297,6 +349,11 @@ function help()
     </select>
   </td>
 </tr>
+
+<tr style="display:none" id="tishi2">
+  <td class="title2" colspan="2" id="offdes2"></td>
+</tr>
+
 </table>
 
 <table width="540" cellpadding="2" cellspacing="1" id="buttontable">
@@ -309,6 +366,10 @@ function help()
 </tr>
 </table>
 <!--/form-->
+<div style="display:none">    
+	<input type="text" style="display:none" name="WIFION_OFF" id="WIFION_OFF" size="20" maxlength="32" value="~~WIFION_OFF~">	
+	<input type="text" style="display:none" name="WIFION_OFF_3" id="WIFION_OFF_3" size="20" maxlength="32" value="~~WIFION_OFF_3~">	
+</div>
 </td></tr></table> </div>
 </body>
 </html>

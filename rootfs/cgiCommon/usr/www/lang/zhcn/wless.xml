@@ -38,7 +38,9 @@
 	<message msgid="wless wifititle" msgstr="无线基本设置" />
 	<message msgid="wless wifititle1" msgstr="网络频段:2.4GHz" />
 	<message msgid="wless wifititle2" msgstr="网络频段:5GHz" />
-
+	
+	<message msgid="wless offdes" msgstr="本频段WiFi已经禁用,高级选项无法配置" />
+	
 	<message msgid="err MAC wuxiao" msgstr="MAC地址不合法" />
 	<message msgid="err MAC empty" msgstr="MAC地址不能为空" />
 	<message msgid="err user empty" msgstr="用户名不能为空" />
