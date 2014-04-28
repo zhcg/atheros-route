@@ -168,9 +168,12 @@ int main(int argc,char **argv)
 		fclose(f);
 		return -1;
 	}
-	system("cfg -a ETH0_MAC=`/usr/sbin/get_mac eth0`");
-	system("cfg -a ETH0_DFMAC=`/usr/sbin/get_mac eth0`");
-	system("cfg -a BR0_MAC=`/usr/sbin/get_mac br0`");
+//	system("cfg -a ETH0_MAC=`/usr/sbin/get_mac eth0`");
+//	system("cfg -a ETH0_DFMAC=`/usr/sbin/get_mac eth0`");
+//	system("cfg -a BR0_MAC=`/usr/sbin/get_mac br0`");	
+	system("cfg -x");
+	system("cfg -r AP_SSID_2");	
+	system("cfg -r AP_SSID_4");	
 	system("cfg -c");
 		
 	fclose(f);

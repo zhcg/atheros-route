@@ -26,6 +26,7 @@ if [ $VAL -eq 1024 ];then
 else
 if [ $VAL -eq 0 ];then
 	echo "0">/usr/www/ping.xml
+	sleep 3
 fi
 fi
 #cfg -c

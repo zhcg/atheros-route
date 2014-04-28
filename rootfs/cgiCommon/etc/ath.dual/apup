@@ -126,6 +126,11 @@ if [ "${AP_STARTMODE}" = "dual" ]; then
     fi
 fi
 
+if [ $NUMRADIO = 1 ]; then
+	cfg -a WDSON_OFF_3=off
+	cfg -a WIFION_OFF_3=off
+	cfg -c
+fi
 ##
 ## Now, process the modes
 ##
