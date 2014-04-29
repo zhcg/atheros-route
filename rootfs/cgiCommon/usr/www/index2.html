@@ -159,13 +159,7 @@ function iFrameHeight()
 { 
 	var xxx= document.getElementById("ifm"); 
 	xxx.height=500;
-	var subWeb = document.frames ? document.frames["ifm"].document : xxx.contentDocument; 
-
-	if(xxx != null && subWeb != null) 
-	{ 
-		xxx.height = subWeb.body.scrollHeight; 
-		document.getElementById("leftmenu").style.height=subWeb.body.scrollHeight; 
-	} 
+	
 	var winWidth = 0; 
 	var winHeight = 0;    
 	if(navigator.userAgent.indexOf("MSIE")>0) 
@@ -196,6 +190,14 @@ function iFrameHeight()
   
 //结果输出至两个文本框 
 	document.getElementById("ifm").width= winWidth-220;
+	var subWeb = document.frames ? document.frames["ifm"].document : xxx.contentDocument; 
+
+	if(xxx != null && subWeb != null) 
+	{ 
+		xxx.height = subWeb.body.scrollHeight; 
+		document.getElementById("leftmenu").style.height=subWeb.body.scrollHeight; 
+	} 
+	
 	var aa = winHeight-72;	
 	var bb = subWeb.body.scrollHeight;
 	var cc = document.body.scrollHeight-72;
@@ -266,7 +268,10 @@ function  handleStateChange2()
 	{
 		if(xmlHttp.status==200)
 		{
-			window.location.href=destination;
+			//window.location.href=destination;
+			clearTimeout(timeID);
+			window.parent.endshow();
+			setTimeout(function(){window.top.location.href=destination;},10000);
 		}
 	}
 }
@@ -434,7 +439,7 @@ function pppoe_tiaozhuan2()
     </script>
 </div>
 <!--  左侧结束 -->
-<div class="hbd_menu_r right">
+<div class="hbd_menu_r left">
 <iframe src="cgi-bin/ad_sysinfo?ad_sysinfo=yes" id="ifm" name="ifm" frameBorder=0 scrolling=no  onLoad="iFrameHeight()"></iframe>
 </div> 
 

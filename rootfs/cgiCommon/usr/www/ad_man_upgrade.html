@@ -45,7 +45,8 @@ function initTranslation()
 function waitgifshow()
 {
 	Butterlate.setTextDomain("other");
-	window.parent.Demo(_("FUPLOAD"));
+	window.parent.Demo3(_("FUPLOAD"));
+	window.parent.beginshow(1800);
 }
 
 function upgradef()
@@ -59,7 +60,6 @@ function upgradef()
 
 	if(confirm(_("admw sysupgrade")))
 	{
-		
 		waitgifshow();
 		window.parent.ttzhuan(document.getElementById("IPA").value);
 		button_commit('UPGRADE');

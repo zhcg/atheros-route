@@ -156,13 +156,6 @@ function iFrameHeight()
 { 
 	var xxx= document.getElementById("ifm"); 
 	xxx.height=500;
-	var subWeb = document.frames ? document.frames["ifm"].document : xxx.contentDocument; 
-
-	if(xxx != null && subWeb != null) 
-	{ 
-		xxx.height = subWeb.body.scrollHeight; 
-		document.getElementById("leftmenu").style.height=subWeb.body.scrollHeight; 
-	} 
 	var winWidth = 0; 
 	var winHeight = 0;    
 	if(navigator.userAgent.indexOf("MSIE")>0) 
@@ -189,9 +182,19 @@ function iFrameHeight()
    {  
 		winWidth = document.body.clientWidth ;
 		winHeight = document.body.clientHeight ;    //return "Gecko";  
-   }  
+   } 
+   document.getElementById("ifm").width= winWidth-220;   
+   
+	var subWeb = document.frames ? document.frames["ifm"].document : xxx.contentDocument; 
+
+	if(xxx != null && subWeb != null) 
+	{ 
+		xxx.height = subWeb.body.scrollHeight; 
+		document.getElementById("leftmenu").style.height=subWeb.body.scrollHeight; 
+	} 
+ 
   
-document.getElementById("ifm").width= winWidth-220;
+
 	var aa = winHeight-72;	
 	var bb = subWeb.body.scrollHeight;
 	var cc = document.body.scrollHeight-72;
@@ -283,7 +286,7 @@ function pppoe_tiaozhuan()
     </div>     
 </div>
 <!--  左侧结束 -->
-<div class="hbd_menu_r right"><!-- TemplateBeginEditable name="EditRegion3" -->
+<div class="hbd_menu_r left"><!-- TemplateBeginEditable name="EditRegion3" -->
 <iframe src="cgi-bin/map?map=yes" id="ifm" name="ifm" frameBorder=0 scrolling=no  onLoad="iFrameHeight()"></iframe>
 <div class="clear"></div>
 </div>
