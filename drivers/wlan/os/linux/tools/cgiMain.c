@@ -6363,7 +6363,10 @@ int main(int argc,char **argv)
 		}
 		//ssid [TODO]
 		CFG_get_by_name("AP_SSID",valBuff4);
-		sprintf(valBuff5,"%s\n<br>",valBuff4);
+        if(valBuff2[0]=='"')
+            sprintf(valBuff5,"\"%s\"\n<br>",valBuff4);
+        else
+            sprintf(valBuff5,"%s\n<br>",valBuff4);
 		//fprintf(errOut,"[%s][%s]\n", valBuff2, valBuff5);
 		//if((strcmp(valBuff2,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0))
 		if(strcmp(valBuff2, valBuff5) && (strcmp(valBuff3,"on") == 0))
@@ -6634,7 +6637,10 @@ int main(int argc,char **argv)
 		CFG_get_by_name("AP_SSID_3",valBuff4);
 		//fprintf(errOut,"web AP_SSID_3 is [%s] \n",valBuff4);
 		//fprintf(errOut,"flash AP_SSID_3 is [%s] \n",valBuff2_3);
-		sprintf(valBuff5,"%s\n<br>",valBuff4);
+        if(valBuff2_3[0]=='"')
+            sprintf(valBuff5,"\"%s\"\n<br>",valBuff4);
+        else
+            sprintf(valBuff5,"%s\n<br>",valBuff4);
 		//if((strcmp(valBuff2_3,valBuff5) != 0)&&(flag==0)&&(strcmp(valBuff3,"on") == 0))
 		if(strcmp(valBuff2_3,valBuff5) &&(strcmp(valBuff3,"on") == 0))
 		{

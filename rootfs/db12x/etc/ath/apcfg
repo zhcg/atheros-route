@@ -118,8 +118,8 @@ cfg -a AP_HIDESSID_4=${AP_HIDESSID_4:="1"}
 
 cfg -a AP_PRIMARY_CH_3=${AP_PRIMARY_CH_3:=157}
 cfg -a AP_PRIMARY_CH_4=${AP_PRIMARY_CH_4:=157}
-cfg -a AP_CHMODE_3=${AP_CHMODE_3:="11NAHT40MINUS"}
-cfg -a AP_CHMODE_4=${AP_CHMODE_4:="11NAHT40MINUS"}
+cfg -a AP_CHMODE_3=${AP_CHMODE_3:="11NAHT40PLUS"}
+cfg -a AP_CHMODE_4=${AP_CHMODE_4:="11NAHT40PLUS"}
 ##
 ## This is for pure G or pure N operations.  Hmmmm...
 ##
