@@ -125,7 +125,7 @@ function change_step(offset)
 				return false;
 		}
 	}
-	hideAllTables();
+	//hideAllTables();
 	if (offset == 0)
 		step_num = offset;
 	else
@@ -133,6 +133,7 @@ function change_step(offset)
 
 	if (step_num == 0)
 	{
+		hideAllTables();
 		document.getElementById("div_wan_title").style.visibility = "visible";
 		document.getElementById("div_wan_title").style.display = style_display_on();
 		document.getElementById("div_wan_opmode").style.visibility = "visible";
@@ -158,12 +159,14 @@ function change_step(offset)
 		}
 		else
 		{
+			hideAllTables();
 			connectionTypeSwitch();
 			butwork("false","false","true","true");
 		}
 	}
 	else if (step_num == 2)
 	{
+		hideAllTables();
 		document.getElementById("div_wireless_title").style.visibility = "visible";
 		document.getElementById("div_wireless_title").style.display = style_display_on();
 		document.getElementById("div_wireless").style.visibility = "visible";

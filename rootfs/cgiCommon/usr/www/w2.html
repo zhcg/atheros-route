@@ -114,7 +114,7 @@ function change_step(offset)
 				return false;
 		}
 	}
-	hideAllTables();
+	//hideAllTables();
 	if (offset == 0)
 		step_num = offset;
 	else
@@ -139,6 +139,7 @@ function change_step(offset)
 		{
 			//document.getElementById("modedes").style.visibility = "visible";
 			//document.getElementById("modedes").style.display = style_display_on();
+			hideAllTables();
 			connectionTypeSwitch();
 			butwork("false","true","true","false");
 		}
