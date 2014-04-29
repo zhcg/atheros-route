@@ -99,9 +99,7 @@ export NUMRADIO_AHB=1
 #                11ng (which means auto-scan in 11ng mode)
 
 cfg -a AP_PRIMARY_CH=${AP_PRIMARY_CH:=6}
-cfg -a AP_PRIMARY_CH_2=${AP_PRIMARY_CH_2:=6}
 cfg -a AP_CHMODE=${AP_CHMODE:="11NGHT40PLUS"}
-cfg -a AP_CHMODE_2=${AP_CHMODE_2:="11NGHT40PLUS"}
 
 ##
 ##this is for setting default HIDESSID disable 
@@ -117,9 +115,7 @@ cfg -a AP_HIDESSID_4=${AP_HIDESSID_4:="1"}
 ##
 
 cfg -a AP_PRIMARY_CH_3=${AP_PRIMARY_CH_3:=157}
-cfg -a AP_PRIMARY_CH_4=${AP_PRIMARY_CH_4:=157}
 cfg -a AP_CHMODE_3=${AP_CHMODE_3:="11NAHT40PLUS"}
-cfg -a AP_CHMODE_4=${AP_CHMODE_4:="11NAHT40PLUS"}
 ##
 ## This is for pure G or pure N operations.  Hmmmm...
 ##
@@ -346,15 +342,12 @@ do
 fi
     ITER_RADIO_ID="AP_RADIO_ID$i"
     ITER_RFPARAM="AP_RFPARAM$i"
-	ITER_PRIMARY_CH="AP_PRIMARY_CH$i"
-	ITER_CHMODE="AP_CHMODE$i"
     eval ITER_RADIO_ID=\$$ITER_RADIO_ID
-#    if [ "${ITER_RADIO_ID}" = "1" ]; then
-#        export $ITER_RFPARAM=RF:$AP_PRIMARY_CH_3:$AP_CHMODE_3
-#	else
-#        export $ITER_RFPARAM=RF:$AP_PRIMARY_CH:$AP_CHMODE
-#	fi
-export $ITER_RFPARAM=RF:$ITER_PRIMARY_CH:$ITER_CHMODE
+    if [ "${ITER_RADIO_ID}" = "1" ]; then
+        export $ITER_RFPARAM=RF:$AP_PRIMARY_CH_3:$AP_CHMODE_3
+	else
+        export $ITER_RFPARAM=RF:$AP_PRIMARY_CH:$AP_CHMODE
+	fi
 done
 
 #####################################################################################

@@ -440,6 +440,12 @@ char *processSpecial(char *paramStr, char *outBuff)
     unsigned int    extraParamIndex;
     unsigned int    negate = 0;
     unsigned int    cmpVal;
+    char            wifi0_flag[5];
+    char            wifi1_flag[5];
+
+
+	CFG_get_by_name("WIFION_OFF",wifi0_flag);
+	CFG_get_by_name("WIFION_OFF_3",wifi1_flag);
 
     /*
     ** Get the pointers to the unique components of the parameter string
@@ -1042,8 +1048,10 @@ char *processSpecial(char *paramStr, char *outBuff)
 					int open = 0;
 
                     Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
-                    Execute_cmd("wlanconfig ath0 list sta > /etc/.STAlist 2>&1", rspBuff);
-					Execute_cmd("wlanconfig ath2 list sta > /etc/.STAlist2 2>&1", rspBuff);  /*for 5G*/
+					if(strcmp(wifi0_flag,"on") == 0 ) //on
+                    	Execute_cmd("wlanconfig ath0 list sta > /etc/.STAlist 2>&1", rspBuff);					
+					if(strcmp(wifi1_flag,"on") == 0 ) //on
+						Execute_cmd("wlanconfig ath2 list sta > /etc/.STAlist2 2>&1", rspBuff);  /*for 5G*/
 
 					fprintf(errOut,"\n%s  %d  to open [dhcpclinetlist]\n",__func__,__LINE__);
 
@@ -1601,8 +1609,9 @@ char *processSpecial(char *paramStr, char *outBuff)
                     int shi=0;
 					int ret = 0;
 
-                    Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
-                    Execute_cmd("wlanconfig ath0 list sta > /etc/.STAlist 2>&1", rspBuff);
+                    Execute_cmd("killall -q -USR1 udhcpd", rspBuff);					
+					if(strcmp(wifi0_flag,"on") == 0 ) //on
+						Execute_cmd("wlanconfig ath0 list sta > /etc/.STAlist 2>&1", rspBuff);
 
 					fprintf(errOut,"\n%s  %d  to open [dhcpclinetlist] ret is %d\n",__func__,__LINE__, ret);
 
@@ -1692,7 +1701,8 @@ char *processSpecial(char *paramStr, char *outBuff)
 					int flag=0;
 fprintf(errOut,"[luodp] get mac from arp89");
                     Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
-                    Execute_cmd("wlanconfig ath0 list sta > /var/run/.STAlist 2>&1", rspBuff);
+					if(strcmp(wifi0_flag,"on") == 0 ) //on
+	                    Execute_cmd("wlanconfig ath0 list sta > /var/run/.STAlist 2>&1", rspBuff);
 
                     fp = fopen(UDHCPD_FILE, "r");  /*  /var/run/udhcpd.leases   */
                     if (NULL == fp)
@@ -3749,6 +3759,12 @@ int  add_sta_access()
 	char buf[50];
 	char valBuf[20];
 	char valBuf1[50];
+    char wifi0_flag[5];
+    char wifi1_flag[5];
+
+
+	CFG_get_by_name("WIFION_OFF",wifi0_flag);
+	CFG_get_by_name("WIFION_OFF_3",wifi1_flag);
 
 	memset(staMac, 0, sizeof staMac);
 	memset(staDesc, 0, sizeof staDesc);
@@ -3793,10 +3809,11 @@ int  add_sta_access()
 				//sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
 				//Execute_cmd(buf, rspBuff);
 			}
-			
-			sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
-			Execute_cmd(buf, rspBuff);
-			
+			if(strcmp(wifi0_flag,"on") == 0 ) //on			
+			{
+				sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
+				Execute_cmd(buf, rspBuff);
+			}
 			if(strstr(valBuf1, "1"))
 			{
 				sprintf(buf, "iwpriv ath2 addmac %s", stalist.macAddr);
@@ -3856,9 +3873,13 @@ int  add_sta_access()
 			}
 
 			memset(buf, 0, sizeof buf);
-			sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
-			Execute_cmd(buf, rspBuff);
 			
+			if(strcmp(wifi0_flag,"on") == 0 ) //on
+			{
+				sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
+				Execute_cmd(buf, rspBuff);
+			}
+
 			if(strstr(valBuf1, "1"))
 			{
 				sprintf(buf, "iwpriv ath2 addmac %s", stalist.macAddr);
@@ -3879,6 +3900,13 @@ void del_sta_access()
 	char con_buf[10];
 	char buf[50];
 	char valBuf[50];
+
+    char wifi0_flag[5];
+    char wifi1_flag[5];
+
+
+	CFG_get_by_name("WIFION_OFF",wifi0_flag);
+	CFG_get_by_name("WIFION_OFF_3",wifi1_flag);
 
 	if(CFG_get_by_name("DELXXX",staMac))
 	{
@@ -3905,8 +3933,12 @@ void del_sta_access()
 					#endif
 					//fprintf(errOut,"the read mac is [%s] \n", stalist.macAddr);
 					//fprintf(errOut,"the del mac is [%s] \n", staMac);
-					sprintf(buf, "iwpriv ath0 delmac %s", staMac);
-					Execute_cmd(buf, rspBuff);
+			
+					if(strcmp(wifi0_flag,"on") == 0 ) //on
+					{
+						sprintf(buf, "iwpriv ath0 delmac %s", staMac);
+						Execute_cmd(buf, rspBuff);
+					}
 					Execute_cmd("grep -c 168c /proc/bus/pci/devices", valBuf);
 					if(strstr(valBuf, "1"))
 					{
@@ -3945,6 +3977,14 @@ void control_sta_access()
 	char valBuff[128];
 	char valBuf[50];
 	const char *staAcl = "/etc/.staAcl";
+
+    char wifi0_flag[5];
+    char wifi1_flag[5];
+
+
+	CFG_get_by_name("WIFION_OFF",wifi0_flag);
+	CFG_get_by_name("WIFION_OFF_3",wifi1_flag);
+
 	
 	Execute_cmd("grep -c 168c /proc/bus/pci/devices", valBuf);
 	if(strcmp(CFG_get_by_name("WCONON_OFF",valBuff),"on") == 0 )
@@ -3963,8 +4003,11 @@ void control_sta_access()
 				memset(buf, 0, sizeof buf);
 				if(!strcmp(stalist.status, "1"))
 				{
-					sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
-					Execute_cmd(buf, rspBuff);
+					if(strcmp(wifi0_flag,"on") == 0 ) //on
+					{
+						sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
+						Execute_cmd(buf, rspBuff);
+					}
 					if(strstr(valBuf, "1"))
 					{
 						sprintf(buf, "iwpriv ath2 addmac %s", stalist.macAddr);
@@ -3979,8 +4022,10 @@ void control_sta_access()
 			fclose(fpp);
 			restart_sta_access();
 		}
-		
-		Execute_cmd("iwpriv ath0 maccmd 2",rspBuff);
+		if(strcmp(wifi0_flag,"on") == 0 ) //on
+		{
+			Execute_cmd("iwpriv ath0 maccmd 2",rspBuff);
+		}
 		if(strstr(valBuf, "1"))
 		{
 			Execute_cmd("iwpriv ath2 maccmd 2",rspBuff);
@@ -4002,9 +4047,11 @@ void control_sta_access()
 			while(fread(&stalist, sizeof stalist, 1, fpp) == 1)
 			{
 				memset(buf, 0, sizeof buf);
-				sprintf(buf, "iwpriv ath0 delmac %s", stalist.macAddr);
-				Execute_cmd(buf, rspBuff);
-				
+				if(strcmp(wifi0_flag,"on") == 0 ) //on
+				{
+					sprintf(buf, "iwpriv ath0 delmac %s", stalist.macAddr);
+					Execute_cmd(buf, rspBuff);
+				}
 				if(strstr(valBuf, "1"))
 				{
 					sprintf(buf, "iwpriv ath2 delmac %s", stalist.macAddr);
@@ -4013,8 +4060,10 @@ void control_sta_access()
 			}
 			fclose(fpp);
 		}
-		
-		Execute_cmd("iwpriv ath0 maccmd 0",rspBuff);
+		if(strcmp(wifi0_flag,"on") == 0 ) //on
+		{
+			Execute_cmd("iwpriv ath0 maccmd 0",rspBuff);
+		}
 		if(strstr(valBuf, "1"))
 		{
 			Execute_cmd("iwpriv ath2 maccmd 0",rspBuff);
@@ -4034,6 +4083,14 @@ void modify_sta_access()
 	FILE *fp;
 	int on_off;
 
+    char wifi0_flag[5];
+    char wifi1_flag[5];
+
+
+	CFG_get_by_name("WIFION_OFF",wifi0_flag);
+	CFG_get_by_name("WIFION_OFF_3",wifi1_flag);
+
+
 	CFG_get_by_name("MODXXX", staId);
 	CFG_get_by_name("ON_OFF", staStatus);
 	Execute_cmd("grep -c 168c /proc/bus/pci/devices", valBuf);
@@ -4045,8 +4102,12 @@ void modify_sta_access()
 		{
 			if(!strcmp(staStatus, "OFF"))
 			{
-				sprintf(buf, "iwpriv ath0 delmac %s", stalist.macAddr);
-				Execute_cmd(buf, rspBuff);
+			
+				if(strcmp(wifi0_flag,"on") == 0 ) //on
+				{
+					sprintf(buf, "iwpriv ath0 delmac %s", stalist.macAddr);
+					Execute_cmd(buf, rspBuff);
+				}
 				if(strstr(valBuf, "1"))
 				{
 					sprintf(buf, "iwpriv ath2 delmac %s", stalist.macAddr);
@@ -4061,8 +4122,12 @@ void modify_sta_access()
 			}
 			else
 			{
-				sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
-				Execute_cmd(buf, rspBuff);
+			
+				if(strcmp(wifi0_flag,"on") == 0 ) //on
+				{
+					sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
+					Execute_cmd(buf, rspBuff);
+				}
 				if(strstr(valBuf, "1"))
 				{
 					sprintf(buf, "iwpriv ath2 addmac %s", stalist.macAddr);
@@ -4505,6 +4570,15 @@ int main(int argc,char **argv)
 	int             lock13=0;
     int             lock112=0;
     int             gohome = 3;
+
+	
+    char wifi0_flag[5];
+    char wifi1_flag[5];
+
+
+	CFG_get_by_name("WIFION_OFF",wifi0_flag);
+	CFG_get_by_name("WIFION_OFF_3",wifi1_flag);
+
     /*
     ** Code Begins.
     ** Zero out the config structure, and read the parameter cache
@@ -4887,8 +4961,8 @@ int main(int argc,char **argv)
     //            CFG_remove_by_name("AP_CHMODE");
     //            CFG_remove_by_name("AP_PRIMARY_CH");                
 
-				CFG_remove_by_name("AP_CHMODE_2");
-                CFG_remove_by_name("AP_PRIMARY_CH_2");
+//				CFG_remove_by_name("AP_CHMODE_2");
+ //               CFG_remove_by_name("AP_PRIMARY_CH_2");
 				
                 CFG_remove_by_name("AP_MODE_2");
                 CFG_remove_by_name("AP_WPA_2");
@@ -4902,8 +4976,8 @@ int main(int argc,char **argv)
      //           CFG_remove_by_name("AP_CHMODE_3");
     //            CFG_remove_by_name("AP_PRIMARY_CH_3");
 				
-                CFG_remove_by_name("AP_CHMODE_4");
-                CFG_remove_by_name("AP_PRIMARY_CH_4");                
+   //             CFG_remove_by_name("AP_CHMODE_4");
+   //             CFG_remove_by_name("AP_PRIMARY_CH_4");                
 
 				CFG_remove_by_name("AP_MODE_4");
                 CFG_remove_by_name("AP_WPA_4");
@@ -5163,8 +5237,8 @@ int main(int argc,char **argv)
 //			CFG_get_by_name("AP_CHMODE",ap_chmode_2g);
 //			CFG_get_by_name("AP_PRIMARY_CH",ap_primarych_2g);
 
-			CFG_get_by_name("AP_CHMODE_2",ap_chmode_2g);
-			CFG_get_by_name("AP_PRIMARY_CH_2",ap_primarych_2g);
+//			CFG_get_by_name("AP_CHMODE_2",ap_chmode_2g);
+//			CFG_get_by_name("AP_PRIMARY_CH_2",ap_primarych_2g);
 
 			CFG_get_by_name("AP_MODE_2",ap_mode_2g);
 			CFG_get_by_name("AP_WPA_2",ap_wpa_2g);
@@ -5178,8 +5252,8 @@ int main(int argc,char **argv)
 //			CFG_get_by_name("AP_CHMODE_3",ap_chmode_5g);
 //			CFG_get_by_name("AP_PRIMARY_CH_3",ap_primarych_5g);
 
-			CFG_get_by_name("AP_CHMODE_4",ap_chmode_5g);
-			CFG_get_by_name("AP_PRIMARY_CH_4",ap_primarych_5g);
+//			CFG_get_by_name("AP_CHMODE_4",ap_chmode_5g);
+//			CFG_get_by_name("AP_PRIMARY_CH_4",ap_primarych_5g);
 
 			CFG_get_by_name("AP_MODE_4",ap_mode_5g);
 			CFG_get_by_name("AP_WPA_4",ap_wpa_5g);
@@ -5220,8 +5294,8 @@ int main(int argc,char **argv)
 //			CFG_set_by_name("AP_CHMODE",ap_chmode_2g);
 //			CFG_set_by_name("AP_PRIMARY_CH",ap_primarych_2g);
 
-			CFG_set_by_name("AP_CHMODE_2",ap_chmode_2g);
-			CFG_set_by_name("AP_PRIMARY_CH_2",ap_primarych_2g);
+//			CFG_set_by_name("AP_CHMODE_2",ap_chmode_2g);
+//			CFG_set_by_name("AP_PRIMARY_CH_2",ap_primarych_2g);
 
 			CFG_set_by_name("AP_MODE_2",ap_mode_2g);
 			CFG_set_by_name("AP_WPA_2",ap_wpa_2g);
@@ -5235,8 +5309,8 @@ int main(int argc,char **argv)
 //			CFG_set_by_name("AP_CHMODE_3",ap_chmode_5g);
 //			CFG_set_by_name("AP_PRIMARY_CH_3",ap_primarych_5g);
 
-			CFG_set_by_name("AP_CHMODE_4",ap_chmode_5g);
-			CFG_set_by_name("AP_PRIMARY_CH_4",ap_primarych_5g);
+//			CFG_set_by_name("AP_CHMODE_4",ap_chmode_5g);
+//			CFG_set_by_name("AP_PRIMARY_CH_4",ap_primarych_5g);
 
 			CFG_set_by_name("AP_MODE_4",ap_mode_5g);
 			CFG_set_by_name("AP_WPA_4",ap_wpa_5g);
@@ -5426,7 +5500,10 @@ int main(int argc,char **argv)
 					num=0;
 					//do check ath0
 					//Execute_cmd("iwlist ath0 scanning > /tmp/scanlist", rspBuff);
-					system("iwlist ath0 scanning > /tmp/scanlist 2>&1");
+					if(strcmp(wifi0_flag,"on") == 0 ) //on
+					{
+						system("iwlist ath0 scanning > /tmp/scanlist 2>&1");
+					}
 					//mac
 					Execute_cmd("cat /tmp/scanlist | grep Cell | awk '{print $5}'", rspBuff1);
 					//fprintf(errOut,"\n-[luodp] %s\n",rspBuff1);
@@ -5543,7 +5620,11 @@ int main(int argc,char **argv)
 					num=0;
 					//do check ath2
 					//Execute_cmd("iwlist ath2 scanning > /tmp/scanlist", rspBuff);
-					system("iwlist ath2 scanning > /tmp/scanlist_2 2>&1");
+					
+					if(strcmp(wifi1_flag,"on") == 0 ) //on
+					{
+						system("iwlist ath2 scanning > /tmp/scanlist_2 2>&1");
+					}
 					//mac
 					Execute_cmd("cat /tmp/scanlist_2 | grep Cell | awk '{print $5}'", rspBuff1);
 					//fprintf(errOut,"\n-[luodp] %s\n",rspBuff1);
