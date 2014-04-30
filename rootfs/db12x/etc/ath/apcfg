@@ -243,8 +243,10 @@ cfg -a PSK_KEY_4=${PSK_KEY_4:="12345678"}
 cfg -a AP_WPA_2=3
 cfg -a AP_WPA_4=3
 
-cfg -a AP_CYPHER_2="TKIP CCMP"
-cfg -a AP_CYPHER_4="TKIP CCMP"
+#cfg -a AP_CYPHER_2="TKIP CCMP"
+cfg -a AP_CYPHER_2="CCMP"
+#cfg -a AP_CYPHER_4="TKIP CCMP"
+cfg -a AP_CYPHER_4="CCMP"
 
 ##
 ## Set default secfile to PSK, only valid in WPA mode

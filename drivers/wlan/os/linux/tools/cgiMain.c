@@ -6130,7 +6130,8 @@ int main(int argc,char **argv)
 //				CFG_set_by_name("AP_SECFILE_2","PSK"); 
 				CFG_set_by_name("STA_SECMODE","WPA");
 				CFG_set_by_name("STA_WPA","3");
-				CFG_set_by_name("STA_CYPHER","TKIP CCMP");
+//				CFG_set_by_name("STA_CYPHER","TKIP CCMP");
+				CFG_set_by_name("STA_CYPHER","CCMP");
 				CFG_set_by_name("STA_SECFILE","PSK"); 
 			}
 			if(strcmp(valBuff3,"WPA") != 0)
@@ -6162,7 +6163,8 @@ int main(int argc,char **argv)
 
 				CFG_set_by_name("STA_SECMODE_2","WPA");
 				CFG_set_by_name("STA_WPA_2","3");
-				CFG_set_by_name("STA_CYPHER_2","TKIP CCMP");
+//				CFG_set_by_name("STA_CYPHER_2","TKIP CCMP");
+				CFG_set_by_name("STA_CYPHER_2","CCMP");
 				CFG_set_by_name("STA_SECFILE_2","PSK"); 
 			}
 			if(strcmp(valBuff4_5g,"WPA") != 0)
@@ -6405,7 +6407,8 @@ int main(int argc,char **argv)
 			//fprintf(errOut,"[luodp] SECMODE here");
 			CFG_set_by_name("AP_SECMODE","WPA");
 			CFG_set_by_name("AP_WPA","3");
-			CFG_set_by_name("AP_CYPHER","TKIP CCMP");
+//			CFG_set_by_name("AP_CYPHER","TKIP CCMP");
+			CFG_set_by_name("AP_CYPHER","CCMP");
 			CFG_set_by_name("AP_SECFILE","PSK"); 
 			//flag=2;
 			flag = 5;
@@ -6676,7 +6679,8 @@ int main(int argc,char **argv)
 		{
 			CFG_set_by_name("AP_SECMODE_3","WPA");
 			CFG_set_by_name("AP_WPA_3","3");
-			CFG_set_by_name("AP_CYPHER_3","TKIP CCMP");
+//			CFG_set_by_name("AP_CYPHER_3","TKIP CCMP");
+			CFG_set_by_name("AP_CYPHER_3","CCMP");
 			CFG_set_by_name("AP_SECFILE_3","PSK"); 
 			flag = 5;
 			//fprintf(errOut,"22222 5G flag is %d\n", flag);
