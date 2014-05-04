@@ -46,6 +46,9 @@
 	<message msgid="port t1_rule" msgstr="协议" /> 
 	<message msgid="port t1_status" msgstr="状态" /> 
 	
+	<message msgid="port delit1" msgstr="你确定要删除 " />  
+	<message msgid="port delit2" msgstr="端口映射条目?" />  
+	
 	<message msgid="addport Senable" msgstr="生效" /> 	
 	<message msgid="addport Sdisable" msgstr="失效" /> 
 	

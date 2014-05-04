@@ -45,6 +45,8 @@
 	<message msgid="port t1_pin" msgstr="Internal Port" /> 
 	<message msgid="port t1_rule" msgstr="Protocol" /> 
 	<message msgid="port t1_status" msgstr="Status" /> 
+	<message msgid="port delit1" msgstr="Are you sure to delete " />  
+	<message msgid="port delit2" msgstr="port mapping rule?" />  
 	
 	<message msgid="addport Senable" msgstr="Enable" /> 	
 	<message msgid="addport Sdisable" msgstr="Disable" /> 
