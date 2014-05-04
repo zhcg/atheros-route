@@ -85,7 +85,7 @@
 	<message msgid="err cfg big" msgstr="配置文件大小不能超过1M" />	
 	
 	<message msgid="cfg care1" msgstr="注意：" />	
-	<message msgid="cfg care2" msgstr="1.导入配置文件后，设备中原有用户配置将丢失。如果您载入的配置文件有误，可能会导致设备无法被管理。" />	
+	<message msgid="cfg care2" msgstr="1.配置文件大小不能超过1M。导入配置文件后，设备中原有用户配置将丢失。如果您载入的配置文件有误，可能会导致设备无法被管理。" />	
 	<message msgid="cfg care3" msgstr="2.载入配置文件的过程不能关闭HBD路由器的电源，否则将导致路由器损坏而无法使用。载入过程约20秒，HBD路由将会自动重启。" />	
 	
 	

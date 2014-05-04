@@ -86,7 +86,7 @@
 	
 
 	<message msgid="cfg care1" msgstr="Note:" />	
-	<message msgid="cfg care2" msgstr="1.Import configuration files, equipment in the user configuration will be lost. If you load the configuration file is wrong, may cause the equipment cannot be managed." />	
+	<message msgid="cfg care2" msgstr="1.The configuration file should less than 1M.Import configuration files, equipment in the user configuration will be lost. If you load the configuration file is wrong, may cause the equipment cannot be managed." />	
 	<message msgid="cfg care3" msgstr="2.Load the configuration file does not turn off the power of the HBD router, otherwise it will cause damage to the router and can not be used. In the process of about 20 seconds, the HBD will automatically restart the routing." />	
 
 	
