@@ -1,0 +1,124 @@
+﻿<html>
+<head>
+<title></title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+<script type="text/javascript" src="/lang/b28n.js"></script>
+<script>
+var hbd;
+function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)","i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r!=null) return (r[2]); return null;
+}
+hbd=GetQueryString("ad_safe_port");
+if(hbd)
+{
+
+}
+else
+{
+        window.location.href="/index.html";
+}
+function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
+function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
+
+function button_commit(buttonID){document.getElementById(buttonID).click();}
+function initTranslation()
+{
+	trans_inner("title","port title");
+	trans_inner("des","port des");
+	
+	trans_inner("t1_title","port t1_title");
+	trans_inner("t1_pout","port t1_pout");
+	trans_inner("t1_pin","port t1_pin");
+	trans_inner("t1_IP","safe IP");
+	trans_inner("t1_rule","port t1_rule");
+	trans_inner("t1_status","port t1_status");
+	trans_inner("t1_del","safe DEL");
+	
+	trans_value("ADDRULE","safe ADD");	
+	trans_inner("help_r","help");	
+}
+
+function init()
+{
+	Butterlate.setTextDomain("safe");
+	initTranslation();
+}
+function listdel(value)
+{
+	document.getElementById("DELXXX").value=value;
+	if(confirm(_("safe delit1")+"IP="+value+_("safe delit2")))
+	{
+		button_commit("DEL_IPMAC");
+	}
+}
+
+function lismod(value)
+{
+	if(document.getElementById(value).checked == true)
+	{
+		document.getElementById("ON_OFF").value="ON";	
+	}
+	else
+	{
+		document.getElementById("ON_OFF").value="OFF";	
+	}
+	
+	document.getElementById("MODXXX").value=value;
+	//alert("修改了"+value +"  "+document.getElementById("ON_OFF").value);
+	
+	button_commit("MOD_IPMAC");
+}
+function help()
+{
+	if (_("toplanguage")=="e")
+		window.location.href='../help/ad_safe_port_help_e.html';
+	else
+		window.location.href='../help/ad_safe_port_help_z.html';
+}
+</script>
+</head>
+
+<body onload="init()"  ondragstart="window.event.returnValue=false" oncontextmenu="window.event.returnValue=false" onselectstart="event.returnValue=false">
+<div class="handaer_main">
+<table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
+<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="title">端口映射</h1>
+
+<h2 id="des">虚拟服务器定义了广域网外部端口和局域网网络服务器之间的影神关系，所有对该广域网服务器端口的访问都将会被重新定位给通过IP地址指定的局域网网络服务器</h2>
+
+<table id="t1"  width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
+<tr>
+<td class="title" colspan="7" id="t1_title">端口映射</td>
+</tr>
+  <tr>
+    <td>ID</td>
+    <td id="t1_pout">外部端口号</td>
+    <td id="t1_pin">内部端口号</td>
+    <td id="t1_IP">IP地址</td>
+    <td id="t1_rule">协议</td>    
+	<td id="t1_status">状态</td>	
+	<td id="t1_del">删除</td>
+  </tr>  
+~Z:portmaplist~
+</table>
+<input type="button"  class="handaer_small_button" name="ADDRULE" id="ADDRULE" value="添加" onClick="window.location.href='ad_safe_addport?ad_safe_addport=yes'">
+
+<form method="POST" name="DELLIST">
+	<input style="display:none"  type="text" name="DELXXX" id="DELXXX" size="20" maxlength="32">
+	<input style="display:none" type="submit" name="DEL_IPMAC" id="DEL_IPMAC" value="DEL_PORT">
+</form>
+<form method="POST" name="MODLIST">
+	<input style="display:none"  type="text" name="MODXXX" id="MODXXX" size="20" maxlength="32">
+	<input style="display:none"  type="text" name="ON_OFF" id="ON_OFF" size="20" maxlength="32">
+	<input style="display:none" type="submit" name="MOD_IPMAC" id="MOD_IPMAC" value="MOD_PORT">
+</form>
+
+</td></tr>
+</table>
+</div>
+
+</body>
+</html>

@@ -37,6 +37,8 @@
 
 	<message msgid="advmenu treeapp_safe" msgstr="Safety Management" />
 	<message msgid="advmenu treeapp_safe_ipmac" msgstr="ARP Binding" />
+	<message msgid="advmenu treeapp_safe_port" msgstr="Port Mapping" />
+	
 	<message msgid="advmenu treeapp_par" msgstr="Access Control" />
 	<message msgid="advmenu treeapp_par_set" msgstr="Parents Settings" />
 	<message msgid="advmenu treeapp_par_access" msgstr="Access Management" />

@@ -1,0 +1,425 @@
+<html>
+<head>
+<title>DHCP</title>
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
+<script language="JavaScript" type="text/javascript">
+var hbd;
+function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)","i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r!=null) return (r[2]); return null;
+}
+hbd=GetQueryString("ad_safe_addport");
+if(hbd)
+{
+
+}
+else
+{
+        window.location.href="/index.html";
+}
+function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
+function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
+function button_commit(buttonID){document.getElementById(buttonID).click();}
+function atoi(str, num)
+{
+	i = 1;
+	if (num != 1) {
+		while (i != num && str.length != 0) {
+			if (str.charAt(0) == '.') {
+				i++;
+			}
+			str = str.substring(1);
+		}
+		if (i != num)
+			return -1;
+	}
+
+	for (i=0; i<str.length; i++) {
+		if (str.charAt(i) == '.') {
+			str = str.substring(0, i);
+			break;
+		}
+	}
+	if (str.length == 0)
+		return -1;
+	return parseInt(str, 10);
+}
+
+function checkRange(str, num, min, max)
+{
+	d = atoi(str, num);
+	if (d > max || d < min)
+		return false;
+	return true;
+}
+
+function isAllNum(str)
+{
+	for (var i=0; i<str.length; i++) {
+		if ((str.charAt(i) >= '0' && str.charAt(i) <= '9') || (str.charAt(i) == '.' ))
+			continue;
+		return 0;
+	}
+	return 1;
+}
+
+function checkIpAddr(field, ismask)//1447
+{
+	if (field.value == "") 
+	{
+		if(ismask == 1)
+		{
+			alert(_("err IP empty"));
+		}
+		else if(ismask == 2)
+		{
+			alert(_("err sub empty"));
+		}
+		else if(ismask == 3)
+		{	
+			alert(_("err gw empty"));
+		}
+		else if(ismask == 4)
+		{	
+			alert(_("err DNS empty"));
+		}
+
+		field.value = field.defaultValue;
+		field.focus();
+		return false;
+	}
+
+	if (isAllNum(field.value) == 0) 
+	{
+		if(ismask == 1)
+		{
+			alert(_("err IP format"));
+		}
+		else if(ismask == 2)
+		{	
+			alert(_("err sub format"));
+		}
+		else if(ismask == 3)
+		{	
+			alert(_("err gw format"));
+		}
+		else if(ismask == 4)
+		{
+			alert(_("err DNS format"));
+		}
+		field.value = field.defaultValue;
+		field.focus();
+		return false;
+	}
+
+	if (ismask == 1)
+	{
+		if ((!checkRange(field.value, 1, 0, 255)) ||
+				(!checkRange(field.value, 2, 0, 255)) ||
+				(!checkRange(field.value, 3, 0, 255)) ||
+				(!checkRange(field.value, 4, 1, 254)))
+		{
+			alert(_("err IP format"));
+			field.value = field.defaultValue;
+			field.focus();
+			return false;
+		}
+	}
+	else if (ismask == 2)
+	{
+		if ((!checkRange(field.value, 1, 0, 255)) ||
+				(!checkRange(field.value, 2, 0, 255)) ||
+				(!checkRange(field.value, 3, 0, 255)) ||
+				(!checkRange(field.value, 4, 0, 255)))
+		{
+			alert(_("err sub format"));
+			field.value = field.defaultValue;
+			field.focus();
+			return false;
+		}
+	}
+	else if(ismask == 3)
+	{
+		if ((!checkRange(field.value, 1, 0, 255)) ||
+				(!checkRange(field.value, 2, 0, 255)) ||
+				(!checkRange(field.value, 3, 0, 255)) ||
+				(!checkRange(field.value, 4, 1, 254)))
+		{
+			alert(_("err gw format"));
+			field.value = field.defaultValue;
+			field.focus();
+			return false;
+		}
+	}
+	else if(ismask == 4)
+	{
+		if ((!checkRange(field.value, 1, 0, 255)) ||
+				(!checkRange(field.value, 2, 0, 255)) ||
+				(!checkRange(field.value, 3, 0, 255)) ||
+				(!checkRange(field.value, 4, 1, 254)))
+		{
+			alert(_("err DNS format"));
+			field.value = field.defaultValue;
+			field.focus();
+			return false;
+		}
+	}
+	{
+		var exp=/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
+		var reg = field.value.match(exp);
+		if(reg==null)
+		{
+			if(ismask == 1)
+			{
+				alert(_("err IP format"));
+			}
+			else if(ismask == 2)
+			{	
+				alert(_("err sub format"));
+			}
+			else if(ismask == 3)
+			{	
+				alert(_("err gw format"));
+			}
+			else if(ismask == 4)
+			{
+				alert(_("err DNS format"));
+			}
+			field.value = field.defaultValue;
+			field.focus();
+			return false;
+		}
+	}
+
+	return true;
+}
+function checkValuerange(value,min,max)
+{
+	var i = parseInt(value);
+	if (isNaN(i))
+	{
+		return false;
+	}
+	else if (i > max || i < min)
+	{
+		return false;
+	}
+	return true;
+}
+
+function CheckValue()
+{
+	if 	(checkValuerange(document.WORKFORM.ADD_PORTOUT.value,1,65534)==false)
+	{
+		alert(_("err oport"));
+		document.WORKFORM.ADD_PORTOUT.select();
+		return false;
+	}
+	
+	if 	(checkValuerange(document.WORKFORM.ADD_PORTIN.value,1,65534)==false)
+	{
+		alert(_("err iport"));
+		document.WORKFORM.ADD_PORTIN.select();
+		return false;
+	}
+	
+	if (!checkIpAddr(document.WORKFORM.ADD_IP, 1))
+	{
+		document.WORKFORM.ADD_IP.select();
+		return false;
+	}
+	document.WORKFORM.OTHER_PORT.disabled=true;
+	button_commit("ADD_PORT");
+	return true;
+}
+
+function initTranslation()
+{
+	trans_inner("Senable","addport Senable");	
+	trans_inner("Sdisable","addport Sdisable");
+	
+	trans_value("bCANCEL","safe bCANCEL");
+	trans_value("bSAVE","safe bSAVE");
+	
+	trans_inner("title","addport title");	
+	trans_inner("des","addport des");	
+	trans_inner("t1_title","addport t1_title");	
+	
+	trans_inner("t1_POUT","addport t1_POUT");	
+	trans_inner("t1_PIN","addport t1_PIN");	
+	trans_inner("t1_IP","addport t1_IP");
+	trans_inner("t1_Rule","addport t1_Rule");
+	trans_inner("t1_Status","addport t1_Status");
+	
+	trans_inner("t1_port","addport t1_port");
+}
+
+function initValue()
+{
+	Butterlate.setTextDomain("safe");
+	initTranslation();
+}
+function portchange()
+{
+	if(document.WORKFORM.OTHER_PORT.selectedIndex==0)
+	{
+		document.WORKFORM.ADD_PORTOUT.value="";
+		document.WORKFORM.ADD_PORTIN.value="";
+		document.WORKFORM.ADD_RULE.selectedIndex=0;
+	}
+	if(document.WORKFORM.OTHER_PORT.selectedIndex==1)
+	{
+		document.WORKFORM.ADD_PORTOUT.value="53";
+		document.WORKFORM.ADD_PORTIN.value="53";
+		document.WORKFORM.ADD_RULE.selectedIndex=0;
+	}
+	if(document.WORKFORM.OTHER_PORT.selectedIndex==2)
+	{
+		document.WORKFORM.ADD_PORTOUT.value="21";
+		document.WORKFORM.ADD_PORTIN.value="21";
+		document.WORKFORM.ADD_RULE.selectedIndex=1;
+	}
+	if(document.WORKFORM.OTHER_PORT.selectedIndex==3)
+	{
+		document.WORKFORM.ADD_PORTOUT.value="70";
+		document.WORKFORM.ADD_PORTIN.value="70";
+		document.WORKFORM.ADD_RULE.selectedIndex=1;
+	}
+	if(document.WORKFORM.OTHER_PORT.selectedIndex==4)
+	{
+		document.WORKFORM.ADD_PORTOUT.value="80";
+		document.WORKFORM.ADD_PORTIN.value="80"
+		document.WORKFORM.ADD_RULE.selectedIndex=1;
+	}
+	if(document.WORKFORM.OTHER_PORT.selectedIndex==5)
+	{
+		document.WORKFORM.ADD_PORTOUT.value="119";
+		document.WORKFORM.ADD_PORTIN.value="119";
+		document.WORKFORM.ADD_RULE.selectedIndex=1;
+	}
+	if(document.WORKFORM.OTHER_PORT.selectedIndex==6)
+	{
+		document.WORKFORM.ADD_PORTOUT.value="110";
+		document.WORKFORM.ADD_PORTIN.value="110";
+		document.WORKFORM.ADD_RULE.selectedIndex=1;
+	}
+	if(document.WORKFORM.OTHER_PORT.selectedIndex==7)
+	{
+		document.WORKFORM.ADD_PORTOUT.value="1723";
+		document.WORKFORM.ADD_PORTIN.value="1723";
+		document.WORKFORM.ADD_RULE.selectedIndex=0;
+	}
+	if(document.WORKFORM.OTHER_PORT.selectedIndex==8)
+	{
+		document.WORKFORM.ADD_PORTOUT.value="25"
+		document.WORKFORM.ADD_PORTIN.value="25"
+		document.WORKFORM.ADD_RULE.selectedIndex=1;
+	}
+	if(document.WORKFORM.OTHER_PORT.selectedIndex==9)
+	{
+		document.WORKFORM.ADD_PORTOUT.value="1080";
+		document.WORKFORM.ADD_PORTIN.value="1080";
+		document.WORKFORM.ADD_RULE.selectedIndex=0;
+	}
+	if(document.WORKFORM.OTHER_PORT.selectedIndex==10)
+	{
+		document.WORKFORM.ADD_PORTOUT.value="23";
+		document.WORKFORM.ADD_PORTIN.value="23"
+		document.WORKFORM.ADD_RULE.selectedIndex=1;
+	}
+}
+</script>
+</head>
+
+<body onLoad="initValue()"  ondragstart="window.event.returnValue=false" oncontextmenu="window.event.returnValue=false" onselectstart="event.returnValue=false">
+<div class="handaer_main">
+<table  width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td>
+<h1 id="title">添加端口映射</h1>
+<p></p>
+
+<FORM method="POST" name="WORKFORM">
+<!-- =========== Wireless Settings =========== -->
+<h2 id="des">添加端口映射条目</h2>
+
+<table id="t1"  width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
+<tr>
+<td class="title" colspan="4" id="t1_title">添加端口映射</td>
+</tr>
+
+<tr>
+  <td class="head" id="t1_POUT">外部端口号</td>
+  <td><input type="text" name="ADD_PORTOUT" id="ADD_PORTOUT" size="32" maxlength="5" class="handaer_text_content">&nbsp; &nbsp;<span>(1-65534)</span></td>
+</tr>
+<tr>
+  <td class="head" id="t1_PIN">内部端口号</td>
+  <td><input type="text" name="ADD_PORTIN" id="ADD_PORTIN" size="32" maxlength="5" class="handaer_text_content">&nbsp; &nbsp;<span>(1-65534)</span></td>
+</tr>
+
+<tr>
+	<td class="head" id="t1_IP">IP地址</td>
+	<td><input type="text" name="ADD_IP" id="ADD_IP" size="32" maxlength="32" class="handaer_text_content"></td>
+	
+</tr>
+
+<tr>
+	<td class="head" id="t1_Rule">协议</td>
+	<td>  
+		<select name="ADD_RULE" size="1">
+		<option value="0">ALL</option>
+		<option value="1">TCP</option>
+		<option value="2">UDP</option>
+		</select>
+	</td>
+</tr>
+<tr>
+	<td class="head" id="t1_Status">状态</td>
+	<td>  
+		<select name="ADD_STATUS" size="1">
+		<option value="1" id="Senable">生效</option>
+		<option value="0" id="Sdisable">失效</option>
+		</select>
+	</td>
+</tr>
+
+<tr>
+	<td class="head" id="t1_port">常用外部端口号</td>
+	<td>  
+		<select name="OTHER_PORT" onChange="portchange()">
+		<option>&nbsp; &nbsp;</option>
+		<option>DNS</option>
+		<option>FTP</option>
+		<option>GOPHER</option>
+		<option>HTTP</option>
+		<option>NNTP</option>
+		<option>POP3</option>
+		<option>PPTP</option>
+		<option>SMTP</option>
+		<option>SOCK</option>
+		<option>TELNET</option>
+		</select>
+	</td>
+</tr>
+
+</table>
+
+<table id="buttontable">
+<tr align="center">
+  <td>
+    <input type="button" name="cancel_motion" id="bCANCEL" class="handaer_input" value="Cancel" onClick="window.location.href='ad_safe_port?ad_safe_port=yes'">
+    <input type="button" name="bSAVE" id="bSAVE" class="handaer_input" value="Apply" onClick="CheckValue()">
+	<input type="submit" name="ADD_PORT" id="ADD_PORT" style="display:none" value="ADD_PORT">
+  </td>
+</tr>
+</table>
+
+</form>
+</td></tr></table> 
+</div>
+</body>
+</html>
+

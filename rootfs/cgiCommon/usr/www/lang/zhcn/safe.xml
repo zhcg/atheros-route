@@ -34,8 +34,32 @@
 	<message msgid="addIPMAC t1_title" msgstr="添加IP/MAC绑定" />    
 	<message msgid="addIPMAC t1_MAC" msgstr="MAC地址" />    
 	<message msgid="addIPMAC t1_IP" msgstr="IP地址" />    
-	<message msgid="addIPMAC t1_Tye" msgstr="绑定" />    
+	<message msgid="addIPMAC t1_Tye" msgstr="绑定" /> 
 
+	<message msgid="port title" msgstr="端口映射" /> 
+	<message msgid="port des" msgstr="虚拟服务器定义了广域网外部端口和局域网网络服务器之间的映射关系，所有对该广域网服务器端口的访问都将会被重新定位给通过IP地址指定的局域网网络服务器" /> 
+
+	<message msgid="port t1_title" msgstr="端口映射" />
+	
+	<message msgid="port t1_pout" msgstr="外部端口号" /> 
+	<message msgid="port t1_pin" msgstr="内部端口号" /> 
+	<message msgid="port t1_rule" msgstr="协议" /> 
+	<message msgid="port t1_status" msgstr="状态" /> 
+	
+	<message msgid="addport Senable" msgstr="生效" /> 	
+	<message msgid="addport Sdisable" msgstr="失效" /> 
+	
+	<message msgid="addport title" msgstr="添加端口映射" /> 	
+	<message msgid="addport des" msgstr="添加端口映射条目" /> 	
+	<message msgid="addport t1_title" msgstr="添加端口映射" /> 	
+	
+	<message msgid="addport t1_POUT" msgstr="外部端口号" /> 	
+	<message msgid="addport t1_PIN" msgstr="内部端口号" /> 	
+	<message msgid="addport t1_IP" msgstr="IP地址" /> 
+	<message msgid="addport t1_Rule" msgstr="协议" /> 
+	<message msgid="addport t1_Status" msgstr="状态" /> 
+	<message msgid="addport t1_port" msgstr="常用外部端口" /> 
+	
 	<message msgid="err MAC wuxiao" msgstr="MAC地址不合法" />
 	<message msgid="err MAC empty" msgstr="MAC地址不能为空" />
 	<message msgid="err user empty" msgstr="用户名不能为空" />
@@ -52,4 +76,7 @@
 	<message msgid="err sub format" msgstr="掩码地址不合法" />	
 	<message msgid="err gw format" msgstr="网关地址不合法" />
 	<message msgid="err DNS format" msgstr="DNS地址不合法" />
+	<message msgid="err iport" msgstr="内部端口号不合法" />
+	<message msgid="err oport" msgstr="外部端口号不合法" />
+
 </po>

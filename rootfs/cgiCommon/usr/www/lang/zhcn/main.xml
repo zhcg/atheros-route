@@ -36,6 +36,8 @@
 
 	<message msgid="advmenu treeapp_safe" msgstr="安全管理" />
 	<message msgid="advmenu treeapp_safe_ipmac" msgstr="ARP绑定" />
+	<message msgid="advmenu treeapp_safe_port" msgstr="端口映射" />
+	
 	<message msgid="advmenu treeapp_par" msgstr="访问控制" />
 	<message msgid="advmenu treeapp_par_set" msgstr="家长设置" />
 	<message msgid="advmenu treeapp_par_access" msgstr="访问管理" />

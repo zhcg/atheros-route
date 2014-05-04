@@ -35,6 +35,31 @@
 	<message msgid="addIPMAC t1_MAC" msgstr="MAC Address" />    
 	<message msgid="addIPMAC t1_IP" msgstr="IP Address" />    
 	<message msgid="addIPMAC t1_Tye" msgstr="Binding" />    
+	
+		<message msgid="port title" msgstr="Port Mapping" /> 
+	<message msgid="port des" msgstr="The virtual server defines the mapping between a wide area network external port and LAN network server, all access to the wide area network server port will be relocated to the network server IP address specified" /> 
+
+	<message msgid="port t1_title" msgstr="Port Mapping" />
+	
+	<message msgid="port t1_pout" msgstr="External Port" /> 
+	<message msgid="port t1_pin" msgstr="Internal Port" /> 
+	<message msgid="port t1_rule" msgstr="Protocol" /> 
+	<message msgid="port t1_status" msgstr="Status" /> 
+	
+	<message msgid="addport Senable" msgstr="Enable" /> 	
+	<message msgid="addport Sdisable" msgstr="Disable" /> 
+	
+	<message msgid="addport title" msgstr="Add Port Mapping" /> 	
+	<message msgid="addport des" msgstr="Add Port Mapping Rule" /> 	
+	<message msgid="addport t1_title" msgstr="Add Port Mapping" /> 	
+	
+	<message msgid="addport t1_POUT" msgstr="External Port" /> 	
+	<message msgid="addport t1_PIN" msgstr="Internal Port" /> 	
+	<message msgid="addport t1_IP" msgstr="IP Address" /> 
+	<message msgid="addport t1_Rule" msgstr="Protocol" /> 
+	<message msgid="addport t1_Status" msgstr="Status" /> 
+	<message msgid="addport t1_port" msgstr="Commonly used external port" /> 
+	
 	<message msgid="err MAC wuxiao" msgstr="MAC address illegal" />
 	<message msgid="err MAC empty" msgstr="MAC is empty " />
 	<message msgid="err user empty" msgstr="User name is empty " />
@@ -51,4 +76,7 @@
 	<message msgid="err sub format" msgstr="Subnet address illegal" />	
 	<message msgid="err gw format" msgstr="Gateway address illegal" />
 	<message msgid="err DNS format" msgstr="DNS address illegal" />
+	
+	<message msgid="err iport" msgstr="Internal port illegal" />
+	<message msgid="err oport" msgstr="External port illegal" />
 </po>
