@@ -5500,6 +5500,9 @@ int main(int argc,char **argv)
 					num=0;
 					//do check ath0
 					//Execute_cmd("iwlist ath0 scanning > /tmp/scanlist", rspBuff);
+					CFG_get_by_name("WIFION_OFF",wifi0_flag);
+					CFG_get_by_name("WIFION_OFF_3",wifi1_flag);
+					fprintf(errOut,"\n------------------------------------[luodp] %s\n",wifi0_flag);
 					if(strcmp(wifi0_flag,"on") == 0 ) //on
 					{
 						system("iwlist ath0 scanning > /tmp/scanlist 2>&1");
@@ -5621,6 +5624,8 @@ int main(int argc,char **argv)
 					//do check ath2
 					//Execute_cmd("iwlist ath2 scanning > /tmp/scanlist", rspBuff);
 					
+					CFG_get_by_name("WIFION_OFF",wifi0_flag);
+					CFG_get_by_name("WIFION_OFF_3",wifi1_flag);
 					if(strcmp(wifi1_flag,"on") == 0 ) //on
 					{
 						system("iwlist ath2 scanning > /tmp/scanlist_2 2>&1");
