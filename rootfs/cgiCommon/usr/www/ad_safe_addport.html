@@ -270,67 +270,56 @@ function portchange()
 	{
 		document.WORKFORM.ADD_PORTOUT.value="";
 		document.WORKFORM.ADD_PORTIN.value="";
-		document.WORKFORM.ADD_RULE.selectedIndex=0;
 	}
 	if(document.WORKFORM.OTHER_PORT.selectedIndex==1)
 	{
 		document.WORKFORM.ADD_PORTOUT.value="53";
 		document.WORKFORM.ADD_PORTIN.value="53";
-		document.WORKFORM.ADD_RULE.selectedIndex=0;
 	}
 	if(document.WORKFORM.OTHER_PORT.selectedIndex==2)
 	{
 		document.WORKFORM.ADD_PORTOUT.value="21";
 		document.WORKFORM.ADD_PORTIN.value="21";
-		document.WORKFORM.ADD_RULE.selectedIndex=1;
 	}
 	if(document.WORKFORM.OTHER_PORT.selectedIndex==3)
 	{
 		document.WORKFORM.ADD_PORTOUT.value="70";
 		document.WORKFORM.ADD_PORTIN.value="70";
-		document.WORKFORM.ADD_RULE.selectedIndex=1;
 	}
 	if(document.WORKFORM.OTHER_PORT.selectedIndex==4)
 	{
 		document.WORKFORM.ADD_PORTOUT.value="80";
 		document.WORKFORM.ADD_PORTIN.value="80"
-		document.WORKFORM.ADD_RULE.selectedIndex=1;
 	}
 	if(document.WORKFORM.OTHER_PORT.selectedIndex==5)
 	{
 		document.WORKFORM.ADD_PORTOUT.value="119";
 		document.WORKFORM.ADD_PORTIN.value="119";
-		document.WORKFORM.ADD_RULE.selectedIndex=1;
 	}
 	if(document.WORKFORM.OTHER_PORT.selectedIndex==6)
 	{
 		document.WORKFORM.ADD_PORTOUT.value="110";
 		document.WORKFORM.ADD_PORTIN.value="110";
-		document.WORKFORM.ADD_RULE.selectedIndex=1;
 	}
 	if(document.WORKFORM.OTHER_PORT.selectedIndex==7)
 	{
 		document.WORKFORM.ADD_PORTOUT.value="1723";
 		document.WORKFORM.ADD_PORTIN.value="1723";
-		document.WORKFORM.ADD_RULE.selectedIndex=0;
 	}
 	if(document.WORKFORM.OTHER_PORT.selectedIndex==8)
 	{
 		document.WORKFORM.ADD_PORTOUT.value="25"
 		document.WORKFORM.ADD_PORTIN.value="25"
-		document.WORKFORM.ADD_RULE.selectedIndex=1;
 	}
 	if(document.WORKFORM.OTHER_PORT.selectedIndex==9)
 	{
 		document.WORKFORM.ADD_PORTOUT.value="1080";
 		document.WORKFORM.ADD_PORTIN.value="1080";
-		document.WORKFORM.ADD_RULE.selectedIndex=0;
 	}
 	if(document.WORKFORM.OTHER_PORT.selectedIndex==10)
 	{
 		document.WORKFORM.ADD_PORTOUT.value="23";
 		document.WORKFORM.ADD_PORTIN.value="23"
-		document.WORKFORM.ADD_RULE.selectedIndex=1;
 	}
 }
 </script>
@@ -370,7 +359,6 @@ function portchange()
 	<td class="head" id="t1_Rule">协议</td>
 	<td>  
 		<select name="ADD_RULE" size="1">
-		<option value="0">ALL</option>
 		<option value="1">TCP</option>
 		<option value="2">UDP</option>
 		</select>

@@ -50,7 +50,7 @@ function init()
 function listdel(value)
 {
 	document.getElementById("DELXXX").value=value;
-	if(confirm(_("port delit1")+"IP="+value+_("port delit2")))
+	if(confirm(_("port delit1")+"ID="+value+_("port delit2")))
 	{
 		button_commit("DEL_PORT");
 	}
@@ -70,7 +70,7 @@ function lismod(value)
 	document.getElementById("MODXXX").value=value;
 	//alert("修改了"+value +"  "+document.getElementById("ON_OFF").value);
 	
-	button_commit("MOD_IPMAC");
+	button_commit("MOD_PORT");
 }
 function help()
 {
@@ -108,12 +108,12 @@ function help()
 
 <form method="POST" name="DELLIST">
 	<input style="display:none"  type="text" name="DELXXX" id="DELXXX" size="20" maxlength="32">
-	<input style="display:none" type="submit" name="DEL_IPMAC" id="DEL_IPMAC" value="DEL_PORT">
+	<input style="display:none" type="submit" name="DEL_PORT" id="DEL_PORT" value="DEL_PORT">
 </form>
 <form method="POST" name="MODLIST">
 	<input style="display:none"  type="text" name="MODXXX" id="MODXXX" size="20" maxlength="32">
 	<input style="display:none"  type="text" name="ON_OFF" id="ON_OFF" size="20" maxlength="32">
-	<input style="display:none" type="submit" name="MOD_IPMAC" id="MOD_IPMAC" value="MOD_PORT">
+	<input style="display:none" type="submit" name="MOD_PORT" id="MOD_PORT" value="MOD_PORT">
 </form>
 
 </td></tr>
