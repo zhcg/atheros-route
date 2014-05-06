@@ -1048,6 +1048,10 @@ char *processSpecial(char *paramStr, char *outBuff)
 					int open = 0;
 
                     Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
+					
+					CFG_get_by_name("WIFION_OFF",wifi0_flag);
+					CFG_get_by_name("WIFION_OFF_3",wifi1_flag);
+
 					if(strcmp(wifi0_flag,"on") == 0 ) //on
                     	Execute_cmd("wlanconfig ath0 list sta > /etc/.STAlist 2>&1", rspBuff);					
 					if(strcmp(wifi1_flag,"on") == 0 ) //on
@@ -1609,7 +1613,11 @@ char *processSpecial(char *paramStr, char *outBuff)
                     int shi=0;
 					int ret = 0;
 
-                    Execute_cmd("killall -q -USR1 udhcpd", rspBuff);					
+                    Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
+					
+					CFG_get_by_name("WIFION_OFF",wifi0_flag);
+					CFG_get_by_name("WIFION_OFF_3",wifi1_flag);
+
 					if(strcmp(wifi0_flag,"on") == 0 ) //on
 						Execute_cmd("wlanconfig ath0 list sta > /etc/.STAlist 2>&1", rspBuff);
 
@@ -1701,6 +1709,10 @@ char *processSpecial(char *paramStr, char *outBuff)
 					int flag=0;
 fprintf(errOut,"[luodp] get mac from arp89");
                     Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
+					
+					CFG_get_by_name("WIFION_OFF",wifi0_flag);
+					CFG_get_by_name("WIFION_OFF_3",wifi1_flag);
+
 					if(strcmp(wifi0_flag,"on") == 0 ) //on
 	                    Execute_cmd("wlanconfig ath0 list sta > /var/run/.STAlist 2>&1", rspBuff);
 
