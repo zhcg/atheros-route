@@ -43,6 +43,7 @@ void *recv_sock()
 	unsigned int buff[30];
 	char buff_char[10];
 	char cmd[40] = {0};
+	char web_sync[40] = {0};
 	int ret;
 	int len;
 
@@ -50,7 +51,7 @@ void *recv_sock()
 	
 	while (1)
 	{
-		bzero(&buff, 30 * sizeof(unsigned int));
+		bzero(buff, 30 * sizeof(unsigned int));
 		len = recvfrom(sock, buff, 30 * sizeof(unsigned int), 0, (struct sockaddr *)&c_addr, &addr_len);
 		
 		if( len < 0)
@@ -61,12 +62,12 @@ void *recv_sock()
 			return ;
 			//exit(1);
 		}
-		int i;
-		for( i = 0;i<30;i++)
+		//int i;
+		/*for( i = 0;i<30;i++)
 		{
 			printf("buff[%d] = 0x%x",i,buff[i]);
 		}
-		printf("\n");
+		printf("\n");*/
 		if(buff[0] == 0x55556666 && buff[1] == 0x34120000)
 		{
 				printf("buff[1] = 0x%x\n", buff[1]);
@@ -79,7 +80,7 @@ void *recv_sock()
 					
 					printf("val_ip = %x\n",*val_ip);
 					printf("val = %d\n",val);
-					if(0 < val < 14)
+					if(0 < val < 14 || 148 < val < 166)
 					{
 						ret = pthread_create(&thread_id2, NULL,send_ok,NULL);
 						if(ret != 0)
@@ -109,7 +110,6 @@ void *recv_sock()
 								system("cfg -a AP_CHMODE=11NGHT40PLUS");
 								system("cfg -c");
 							}
-							
 							system("ifconfig ath0 down");
 							system("ifconfig ath1 down");
 							sprintf(cmd, "iwconfig ath0 freq %d", val);
@@ -121,10 +121,13 @@ void *recv_sock()
 								sleep(1);
 								system(cmd);
 							}
+							sprintf(web_sync, "cfg -a AP_PRIMARY_CH=%d", val);
+							system(web_sync);
+							system("cfg -c");
 							system("ifconfig ath0 up");
 							system("ifconfig ath1 up");
 						}
-					else 
+					else if(148 < val <166)
 					{
 						if(val >148 && val <162)
 						{
@@ -139,9 +142,6 @@ void *recv_sock()
 								sleep(1);
 								system(cmd);
 							}
-							system("ifconfig ath2 up");
-							system("ifconfig ath3 up");
-							
 						}
 						else if(val == 165)
 						{
@@ -150,15 +150,18 @@ void *recv_sock()
 							system("ifconfig ath3 down");
 							system("iwpriv ath2 mode 11A");
 							system("iwconfig ath2 channel 165");
-							system("ifconfig ath2 up");
-							system("ifconfig ath3 up");
 						}
-						
+						sprintf(web_sync, "cfg -a AP_PRIMARY_CH_3=%d", val);
+						system(web_sync);
+						system("cfg -c");
+						system("ifconfig ath2 up");
+						system("ifconfig ath3 up");
 					
 					}
 					
 					val = 0;
 					memset(cmd, 0, sizeof(cmd));
+					memset(web_sync, 0, sizeof(cmd));
 				}
 					
 			}
