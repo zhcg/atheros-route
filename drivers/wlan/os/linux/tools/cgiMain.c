@@ -56,6 +56,7 @@
 #endif
 
 #define PARC_PATH "/etc/ath/iptables/parc"
+#define PORTMAP_PATH "/etc/ath/iptables/portmap"
 /*
 ** local definitions
 *****************
@@ -774,6 +775,70 @@ char *processSpecial(char *paramStr, char *outBuff)
 					}
 
                 }
+                //端口映射(带配置)
+                else if(strcmp(secArg,"portmaplist")==0)
+                {
+                //viqjeee
+                    FILE *f_portmap;
+                    int id = 1;
+                    char cmd_portmap[512];
+                    char wan_port[6];
+                    char *lan_port;
+                    char *server_ip;
+                    char protocol[10];
+                    char enable_flag[10];
+                    char ip_port[30];
+                    char tmp[100];
+
+                    int i=0;
+                    int ret;
+
+
+                    f_portmap = fopen(PORTMAP_PATH,"a+");
+
+                    if(f_portmap)
+                    {
+                        while(1)
+                        {
+                            ret = fscanf(f_portmap,"%s -t nat -A PREROUTING_PORTMAP  -p %s -m %s --dport %s -j DNAT --to-destination %s\n",enable_flag, protocol, protocol, wan_port, ip_port);
+                            if(ret < 3)
+                                break;
+
+                                server_ip = strtok(ip_port,":");
+                                lan_port = strtok(NULL,":");
+
+                                outBuff += sprintf(outBuff,"<tr>");
+                                outBuff += sprintf(outBuff,"<td>%d</td>",id);
+                                outBuff += sprintf(outBuff,"<td>%s</td>",wan_port);
+                                //outBuff += sprintf(outBuff,"<td>%s</td>","www.baidu.com<br>www.qq.com<br>");
+                                outBuff += sprintf(outBuff,"<td>%s</td>",lan_port);
+                                outBuff += sprintf(outBuff,"<td>%s</td>",server_ip);
+                                outBuff += sprintf(outBuff,"<td>%s</td>",protocol);
+
+
+
+                                if(strncmp(enable_flag,"##",2)!=0)
+		                	        outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%d\" id=\"%d\" onclick=\"lismod(this.name)\" checked></td>",id,id);
+                                else
+							        outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%d\" id=\"%d\" onclick=\"lismod(this.name)\"></td>",id,id);
+                                outBuff += sprintf(outBuff,"<td><img border=\"0\" name=\"%d\"  style=\"cursor:hand;\" src=\"../images/del.gif\" width=\"20\" height=\"20\" onclick=\"listdel(this.name)\" /></td>",id);
+	                            outBuff += sprintf(outBuff,"</tr>");
+
+                                id++;
+                                fgetc(f_portmap);
+                                fgets(tmp,100,f_portmap);
+
+                        }
+
+                    }
+                    else
+                    {
+                        printf("fopen error\n");
+                    }
+
+                    fclose(f_portmap);
+
+              }
                 //家长控制(带配置)
                 else if(strcmp(secArg,"parclist")==0)
                 {
@@ -3190,7 +3255,6 @@ int set_addr_bind(void)
 				valBuff1,valBuff2,valBuff3);
 		#endif
 
-        //viqjeee
         writeParametersWithSync();
 		//save new config to flash 
         //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
@@ -4688,7 +4752,6 @@ int main(int argc,char **argv)
         else if(!strncmp(argv[1],"-b",2))
         {
         //    CFG_set_by_name("WIRELESS_ADVSET","WIRELESS_ADVSET");
-        //viqjeee
             char    *vval;
             int i=0, j=0;
             int err_flag =0;
@@ -4951,7 +5014,6 @@ int main(int argc,char **argv)
                  break;
 
             case '5':
-            //viqjeee
                  printf("terminal_dev_register factory reset\n");
                  if(argc !=3)
                  {
@@ -7802,6 +7864,204 @@ exit(1);
         			        Normal_tiaozhuan("ad_safe_IPMAC");
          gohome =2;
 
+    }
+    /*************************************
+   安全管理    端口映射      添加
+   *************************************/
+    if(strcmp(CFG_get_by_name("ADD_PORT",valBuff),"ADD_PORT") == 0 ) 
+    {		 
+    //viqjeee
+        FILE *f_portmap;
+        int parc_id = 1;
+
+        char cmd_port_map[512];
+
+        char wan_port[6] = {0};
+        char port_tmp[6] = {0};
+        char lan_port[6] = {0};
+        char server_ip[20] = {0};
+        char protocol[10] = {0};
+        char protocol_cmd[10] = {0};
+        char protocol_tmp[10] = {0};
+        char enable_cmd[10] = {0};
+        char enable_tmp[10] = {0};
+        char enable_status[10] = {0};
+        char temp[100] = {0};
+
+
+        int portmap_flag = 0;
+        int i=0;
+        int mode_id=0;
+        int parc_line=0;
+        int repeat_line=0;
+        char *parc_ret;
+        int parc_mode_flag = 0;
+
+
+        CFG_get_by_name("ADD_PORTOUT",wan_port);
+        CFG_get_by_name("ADD_PORTIN",lan_port);
+        CFG_get_by_name("ADD_IP",server_ip);
+        CFG_get_by_name("ADD_RULE",protocol);
+        CFG_get_by_name("ADD_STATUS",enable_status);
+
+        if(strncmp(enable_status,"1",1)==0)
+            strcpy(enable_cmd,"iptables");
+        else
+            strcpy(enable_cmd,"##");
+
+        if(strncmp(protocol,"1",1)==0)
+            strcpy(protocol_cmd,"tcp");
+        else if(strncmp(protocol,"2",1)==0)
+            strcpy(protocol_cmd,"udp");
+
+        f_portmap = fopen(PORTMAP_PATH,"a+");
+
+        if(f_portmap)
+        {
+             while(1)
+             {
+                    ret = fscanf(f_portmap,"%s -t nat -A PREROUTING_PORTMAP  -p %s -m %s --dport %s %[^\n]%*c\n",enable_tmp, protocol_tmp, temp, port_tmp, temp);
+                    //fprintf(errOut,"\nportmap ret :%d\n",ret);
+                    if(ret < 3)
+                       break;
+
+                    //fprintf(errOut,"\nportmap protocol :%s %s\n",protocol_tmp,protocol_cmd);
+                    //fprintf(errOut,"\nportmap port :%s %s\n",port_tmp,wan_port);
+                    if((strcmp(protocol_tmp, protocol_cmd)==0)&&(strcmp(port_tmp, wan_port)==0))
+                    {
+                        portmap_flag = 1;
+                        break;
+                    }
+
+                    fgetc(f_portmap);
+                    fgets(temp,100,f_portmap);
+             }
+             if(!portmap_flag)
+             {
+                fprintf(f_portmap ,"%s -t nat -A PREROUTING_PORTMAP  -p %s -m %s --dport %s -j DNAT --to-destination %s:%s\n", enable_cmd, protocol_cmd, protocol_cmd, wan_port, server_ip, lan_port);
+                fprintf(f_portmap ,"%s -A FORWARD_PORTMAP -d %s -p %s -m %s --dport %s -i eth0 -j ACCEPT\n", enable_cmd, server_ip, protocol_cmd, protocol_cmd, lan_port);
+            }
+
+        }
+        else
+        {
+            fprintf(errOut,"\n%s  %d open %s error \n",__func__,__LINE__,PARC_PATH);
+        }
+
+        fprintf(errOut,"\n%s  %d ADD_PARC \n",__func__,__LINE__);
+        fclose(f_portmap);
+
+        if(!portmap_flag)
+        {
+            Execute_cmd("iptables -t nat -F PREROUTING_PORTMAP" , temp);
+            Execute_cmd("iptables -F FORWARD_PORTMAP" , temp);
+            Execute_cmd("sh /etc/ath/iptables/portmap" , temp);
+
+             Normal_tiaozhuan("ad_safe_port");
+             gohome =2;
+        }
+        else
+        {
+                char tempu2[128]={0};
+                printf("HTTP/1.0 200 OK\r\n");
+                printf("Content-type: text/html\r\n");
+                printf("Connection: Close\r\n");
+                printf("\r\n");
+                printf("\r\n");
+
+                printf("<HTML><HEAD>\r\n");
+                printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+                printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
+                printf("</head><body>");
+                sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err Ruleexist\"));window.location.href=\"ad_parentc_accept?ad_parentc_accept=yes\";</script>");
+                printf(tempu2);
+                printf("</body></html>");
+                exit(1);
+
+        }
+
+    }
+    /*************************************
+    端口映射      删除
+   *************************************/
+    if(strcmp(CFG_get_by_name("DEL_PORT",valBuff),"DEL_PORT") == 0 ) 
+    {		 
+        int del_id = 0;
+        char del_id_str[10] = {0};
+        char del_sed_cmd[100] = {0};
+        char del_sed_err[100] = {0};
+
+        CFG_get_by_name("DELXXX",del_id_str);
+        del_id = atoi(del_id_str);
+
+        sprintf(del_sed_cmd,"sed -i '%d,%dd' %s", 2*del_id-1, 2*del_id, PORTMAP_PATH);
+        Execute_cmd(del_sed_cmd , del_sed_err);
+
+        //sprintf(del_sed_cmd,"sed -i '%dd' %s", 2*del_id-1, PORTMAP_PATH);
+        fprintf(errOut,"\n%s  %d DEL_PRC sed_cmd :%s \n",__func__,__LINE__,del_sed_cmd);
+        //
+        //Execute_cmd(del_sed_cmd , del_sed_err);
+
+        Execute_cmd("iptables -t nat -F PREROUTING_PORTMAP" , del_sed_err);
+        Execute_cmd("iptables -F FORWARD_PORTMAP" , del_sed_err);
+        Execute_cmd("sh /etc/ath/iptables/portmap" , del_sed_err);
+
+        memset(Page,0,64);
+        Normal_tiaozhuan("ad_safe_port");
+         gohome =2;
+
+    }
+    /*************************************
+    端口映射      修改
+   *************************************/
+    if(strcmp(CFG_get_by_name("MOD_PORT",valBuff),"MOD_PORT") == 0 ) 
+    {		 
+    //viqjeee
+        fprintf(errOut,"\n%s  %d MOD_PORT \n",__func__,__LINE__);
+
+        int mod_port_id = 0;
+        int mod_line = 0;
+        char mod_port_id_str[10] = {0};
+        char mod_port_sed_cmd[100] = {0};
+        char mod_sed_err[100] = {0};
+        char enable_port_flag[10];
+
+        CFG_get_by_name("MODXXX",mod_port_id_str);
+        CFG_get_by_name("ON_OFF",enable_port_flag);
+        mod_port_id = atoi(mod_port_id_str);
+
+
+        Execute_cmd("awk 'END{print NR}' /etc/ath/iptables/parc" , mod_sed_err);
+        mod_line=atoi(mod_sed_err);
+
+        if(strncmp(enable_port_flag,"ON",2)==0)
+        {
+            sprintf(mod_port_sed_cmd,"sed -i '%ds/##/iptables/' %s", 2*mod_port_id-1, PORTMAP_PATH);
+            Execute_cmd(mod_port_sed_cmd , mod_sed_err);
+            sprintf(mod_port_sed_cmd,"sed -i '%ds/##/iptables/' %s", 2*mod_port_id, PORTMAP_PATH);
+            Execute_cmd(mod_port_sed_cmd , mod_sed_err);
+
+        }
+        else
+        {
+            sprintf(mod_port_sed_cmd,"sed -i '%ds/iptables/##/' %s", 2*mod_port_id-1, PORTMAP_PATH);
+            Execute_cmd(mod_port_sed_cmd , mod_sed_err);
+            sprintf(mod_port_sed_cmd,"sed -i '%ds/iptables/##/' %s", 2*mod_port_id, PORTMAP_PATH);
+            Execute_cmd(mod_port_sed_cmd , mod_sed_err);
+
+        }
+        fprintf(errOut,"\n%s  %d MOD_PORT sed_cmd :%s \n",__func__,__LINE__,mod_port_sed_cmd);
+
+        Execute_cmd("iptables -t nat -F PREROUTING_PORTMAP" , mod_sed_err);
+        Execute_cmd("iptables -F FORWARD_PORTMAP" , mod_sed_err);
+        Execute_cmd("sh /etc/ath/iptables/portmap" , mod_sed_err);
+
+        memset(Page,0,64);
+        //sprintf(Page,"%s","../ad_parentc_accept.html");
+        //gohome =0;
+
+        Normal_tiaozhuan("ad_safe_port");
+         gohome =2;
     }
     
     /*************************************

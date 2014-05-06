@@ -25,3 +25,11 @@ iptables -I FORWARD -p udp --dport 53 -j ACCEPT
 iptables -N control_sta
 iptables -I FORWARD -j control_sta
 sh /etc/ath/iptables/parc
+
+iptables -t nat -N PREROUTING_PORTMAP
+iptables -t nat -I PREROUTING -j PREROUTING_PORTMAP
+
+iptables -N FORWARD_PORTMAP
+iptables -I FORWARD -j FORWARD_PORTMAP
+
+sh /etc/ath/iptables/portmap
