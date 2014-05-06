@@ -6695,14 +6695,15 @@ int main(int argc,char **argv)
 						k = 1;
 						break;
 					}
-					//fprintf(errOut," is [%c] \n", valBuff[i]);
 					i++;
 				}
 				if(k == 1)
 				{
+                    memset(pr_buf,0,50);
 					memcpy(pr_buf, valBuff, i);
 					//fprintf(errOut," is [%s] \n", pr_buf);
 					sprintf(pChar, "kill %s > /dev/null 2>&1", pr_buf);
+					fprintf(errOut,"kill 1 %s\n", pr_buf);
 					Execute_cmd(pChar, rspBuff);
 
 					j = i+5;
@@ -6718,6 +6719,7 @@ int main(int argc,char **argv)
 					}
 					if(k == 2)
 					{
+                        memset(pr_buf,0,50);
 						memcpy(pr_buf, &valBuff[j], i+5-j);
 						//fprintf(errOut," is [%s] \n", pr_buf);
 						sprintf(pChar, "kill %s > /dev/null 2>&1", pr_buf);
@@ -6961,6 +6963,7 @@ int main(int argc,char **argv)
 				}
 				if(k == 1)
 				{
+                    memset(pr_buf,0,50);
 					memcpy(pr_buf, valBuff, i);
 					//fprintf(errOut," is [%s] \n", pr_buf);
 					sprintf(pChar, "kill %s > /dev/null 2>&1", pr_buf);
@@ -6980,6 +6983,7 @@ int main(int argc,char **argv)
 					}
 					if(k == 2)
 					{
+                        memset(pr_buf,0,50);
 						memcpy(pr_buf, &valBuff[j], i+5-j);
 						//fprintf(errOut," is [%s] \n", pr_buf);
 						sprintf(pChar, "kill %s > /dev/null 2>&1", pr_buf);
