@@ -24,15 +24,35 @@ else
         window.location.href="/index.html";
 
 }
+function WIFI_HS()
+{
+
+	var RS = document.getElementById("RADIO_STATUS").value;
+	var ee ;
+	if(RS=="1")
+	{
+		ee = document.getElementById("SSID1");
+		ee.innerHTML = document.getElementById("apssid").value +"(2.4GHz)";
+	}
+	else if(RS=="2")
+	{
+		ee = document.getElementById("SSID2");
+		ee.innerHTML = document.getElementById("apssid2").value +"(5GHz)";
+	}
+	else
+	{
+		ee = document.getElementById("SSID1");
+		ee.innerHTML = document.getElementById("apssid").value +"(2.4GHz)";
+		ee = document.getElementById("SSID2");
+		ee.innerHTML = document.getElementById("apssid2").value +"(5GHz)";
+
+	}
+}
 
 function initTranslation()
 {
-	var e = document.getElementById("SSID1");
-	e.innerHTML = document.getElementById("apssid").value +"(2.4GHz)";
-	var e = document.getElementById("SSID2");
-	e.innerHTML = document.getElementById("apssid2").value +"(5GHz)";
-	
-	e = document.getElementById("m_bset");
+	WIFI_HS();
+	var e = document.getElementById("m_bset");
 	e.value = _("admw m_bset");
 
 	if (_("toplanguage")=="e")
@@ -162,6 +182,7 @@ function initValue()
 	<input type="text" style="display:none" name="apssid" id="apssid" size="20" maxlength="32" value="~~AP_SSID~">
 	<input type="text" style="display:none" name="apssid2" id="apssid2" size="20" maxlength="32" value="~~AP_SSID_3~">
 	<input type="text" style="display:none" name="IPA" id="IPA" size="20" maxlength="32" value="~~AP_IPADDR~">
+	<input type="text" style="display:none" name="RADIO_STATUS" id="RADIO_STATUS" size="20" maxlength="32" value="~~RADIO_STATUS~">
 	<script language="JavaScript">
 
 	var xmlreq;
