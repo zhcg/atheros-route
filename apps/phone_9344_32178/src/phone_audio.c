@@ -29,6 +29,7 @@ struct class_phone_audio phone_audio =
 	.get_code=0,
 	.get_code_timeout=0,
 	.get_code_timeout_times=0,
+	.start_dtmf=0,
 };
 
 unsigned char input_stream_buffer[AUDIO_STREAM_BUFFER_SIZE];
@@ -37,8 +38,13 @@ unsigned char audio_sendbuf[BUFFER_SIZE_2K];
 unsigned char audio_recvbuf[BUFFER_SIZE_2K*5];
 unsigned char audio_tb_sendbuf[BUFFER_SIZE_2K];
 unsigned char audio_tb_recvbuf[BUFFER_SIZE_2K*5];
+int dtmf_ret = 0;
+int total_dtmf_ret = 0;
+unsigned char dtmf_buf[6000]={0};	
 
-static FILE* dtmffile;
+//#define SAVE_FILE
+static FILE* read_dtmffile;
+static FILE* write_dtmffile;
 
 //开始检测来电
 void start_read_incoming()
@@ -56,6 +62,9 @@ void stop_read_incoming()
 int startaudio(dev_status_t* devp,int flag)
 {
 	PRINT("%s\n",__FUNCTION__);
+	char *bufp = devp->dev_mac;
+	char tmp[3]={0};
+
 	if(devp->audio_client_fd < 0)
 	{
 		return -1;
@@ -69,6 +78,10 @@ int startaudio(dev_status_t* devp,int flag)
 	if(count==1)
 	{
 		PRINT("PSTN....\n");
+#ifdef SAVE_FILE
+	read_dtmffile = fopen("./read_from_pcm.wav", "w"); //for read sound
+	write_dtmffile = fopen("./write_to_pcm.wav", "w"); //for write sound
+#endif
 		if(flag == 0)
 		{
 			//ioctl(phone_audio.phone_audio_pcmfd,SLIC_INIT,0);
@@ -92,6 +105,21 @@ int startaudio(dev_status_t* devp,int flag)
 
 				phone_audio.phone_audio_pcmfd = pcm_fd;
 			}
+		}
+	    if(devp->desencrypt_enable == 1)
+	    {
+			memset(phone_audio.key,0,8);
+			for(i=0;i<6;i++)
+			{
+				memcpy(tmp,bufp,2);
+				tmp[2]='\0';
+				//printf("%s\n",tmp);
+				phone_audio.key[i] = (char)strtoul(tmp,NULL,16);
+				bufp += 2;
+			}
+			phone_audio.key[6] = phone_audio.key[7] = 0x20;
+			//PRINT("Key: ");
+			//ComFunPrintfBuffer(phone_audio.key,8);
 		}
 		phone_audio.audio_talkback_recv_thread_flag = 0;
 		phone_audio.audio_talkbacked_recv_send_thread_flag = 0;
@@ -185,7 +213,10 @@ void stopaudio(dev_status_t* devp,int flag)
 			 //有线程未响应，也许是之前就退出了也许是未关闭，不过不要紧
 		}
 		//关闭声卡
-
+#ifdef SAVE_FILE
+		fclose(read_dtmffile);
+		fclose(write_dtmffile);
+#endif
 		ioctl(phone_audio.phone_audio_pcmfd,SLIC_RELEASE,0);
 		total_dtmf_ret = 0;
 
@@ -255,8 +286,6 @@ int init_audio(void)
 
 		phone_audio.phone_audio_pcmfd = pcm_fd;
 	}
-	//dtmffile = fopen("./read_from_pcm.wav", "w"); //for read sound
-
 	return 0;
 }
 
@@ -390,6 +419,79 @@ int UlawEncodeEncrypt(unsigned char *pout,int offset1,unsigned char *pin,int off
 	
 	return mSampleCount;
 }
+int UlawEncodeDesEncrypt(unsigned char *pout,int offset1,unsigned char *pin,int offset2,int mSampleCount)
+{
+	signed short *pcm;
+	unsigned char *ppout;
+	unsigned char *ppin;
+	int i;
+	int exponent = 7;
+	int expMask;
+	int mantissa;
+	int sign;	
+	unsigned char pout_tmp[AUDIO_SEND_PACKET_SIZE]={0};
+	
+	ppout = pout_tmp + offset1;
+	ppin = pin + offset2;
+	pcm = (signed short *)(ppin);
+	for(i = 0;i < mSampleCount;i++)
+	{
+		sign = (pcm[i] & 0x8000) >> 8;
+		if (sign != 0)
+			pcm[i] = -pcm[i];
+		if (pcm[i] > CODE_MAX)
+			pcm[i] = CODE_MAX;
+		exponent = 7;
+		for (expMask = 0x4000; (pcm[i] & expMask) == 0   && exponent > 0; exponent--, expMask >>= 1)
+		{
+			;
+		}
+		mantissa = (pcm[i] >> ((exponent == 0) ? 4 : (exponent + 3))) & 0x0f;
+		ppout[i] = (unsigned char)(sign | exponent << 4 | mantissa);
+		ppout[i] ^= 0xD5;
+	}
+	
+	DesEcb(pout_tmp,mSampleCount,pout,phone_audio.key,0);
+	
+	return mSampleCount;
+}
+
+int UlawDecodeDesEncrypt(unsigned char *pout,int offset1,unsigned char *pin,int offset2,int inbytes)
+{
+	signed short *pcm;
+	unsigned char *ppout;
+	unsigned char *ppin;
+	int sign;
+	int exponent;
+	int data;
+	int i;
+	unsigned char *pin_tmp=malloc(inbytes);
+	
+	DesEcb(pin,inbytes,pin_tmp,phone_audio.key,1);
+	
+	ppout = pout +offset1;
+	pcm = (signed short *)(ppout);
+	ppin = pin_tmp + offset2;
+	for(i = 0;i < inbytes;i++)
+	{
+		pin_tmp[i] ^= 0xD5;
+		sign = pin_tmp[i] & 0x80;
+		exponent = (pin_tmp[i] & 0x70) >> 4;
+		data = pin_tmp[i] & 0x0f;
+		data <<= 4;
+		data += 8;
+		if (exponent != 0)
+			data += 0x100;
+		if (exponent > 1)
+			data <<= (exponent - 1);
+		if(sign == 0)
+			pcm[i] = data;
+		else
+			pcm[i] = -data;
+	}
+	free(pin_tmp);
+	return inbytes;
+}
 
 int UlawDecodeEncrypt(unsigned char *pout,int offset1,unsigned char *pin,int offset2,int inbytes)
 {
@@ -459,7 +561,6 @@ void* AudioIncomingThreadCallBack(void* argv)
 
 				if(phone_control.get_fsk == 0)
 				{
-					//fwrite(audioincoming_buf, 1, read_ret , dtmffile);
 					if(DtmfDo((signed short *)audioincoming_buf,read_ret/2) == 2)
 					{
 						PRINT("get dtmf num...\n");
@@ -505,6 +606,7 @@ void *AudioReadWriteThreadCallBack(void *argv)
 	int i = 0;
 	unsigned int read_times = 0;
 	int first_recv = 0;
+	int real_data = 0;
 	dev_status_t* devp;
 
 	phone_audio.audio_read_write_thread_flag = 0;
@@ -524,7 +626,7 @@ void *AudioReadWriteThreadCallBack(void *argv)
 		total_write_bytes = 0;
 		total_send_bytes = 0;
 		first_recv = 0;
-
+		real_data = 0;
 		for(i=0;i<CLIENT_NUM;i++)
 		{
 			if(devlist[i].client_fd == -1)
@@ -568,12 +670,14 @@ void *AudioReadWriteThreadCallBack(void *argv)
 			{
 				if(read_times > 5) //丢前5包，屏蔽拨号开始的杂音
 				{
-					if(phone_audio.dtmf_over == 10) //双音多频后延迟一会打开侧音处理
+					if(phone_audio.dtmf_over == 5) //双音多频后延迟一会打开侧音处理
 					{
 						if(total_dtmf_ret <= 0)
 						{
+#ifndef SAVE_FILE
 							//延迟后，检查如果待播放数据大于0（原因：在此延迟间再次二次拨号）则继续关闭侧音消除
 							ioctl(phone_audio.phone_audio_pcmfd,SET_WRITE_TYPE,1);
+#endif
 						}
 						phone_audio.dtmf_over = 0;
 					}
@@ -581,6 +685,9 @@ void *AudioReadWriteThreadCallBack(void *argv)
 					{
 						phone_audio.dtmf_over++;
 					}
+#ifdef SAVE_FILE
+					fwrite(&output_stream_buffer[phone_audio.output_stream_wp], 1, read_ret , read_dtmffile);
+#endif
 					phone_audio.output_stream_wp += read_ret;
 					total_read_bytes += read_ret;
 					if(phone_audio.output_stream_wp >= AUDIO_STREAM_BUFFER_SIZE)
@@ -599,10 +706,17 @@ START_WRITE:
 				valid_bytes	= AUDIO_STREAM_BUFFER_SIZE - phone_audio.input_stream_rp;
 				PRINT("%d,end,back!!\n",valid_bytes);
 			}
-			if(phone_control.start_dial == 1 && valid_bytes < AUDIO_WRITE_BYTE_SIZE && valid_bytes != 0)
+			//PRINT("valid_bytes = %d\n",valid_bytes);
+			if((phone_control.start_dial == 1 || total_dtmf_ret > 0) && valid_bytes < AUDIO_WRITE_BYTE_SIZE && valid_bytes != 0)
 			{
+				real_data = valid_bytes; //数据不够填充０，保存真实数据长度
 				valid_bytes = AUDIO_WRITE_BYTE_SIZE;
+				//PRINT("valid_bytes = %d\n",valid_bytes);
 			}
+			//if(total_dtmf_ret > 0)
+			//{
+				//PRINT("valid_bytes = %d\n",valid_bytes);
+			//}
 			if((valid_bytes >= AUDIO_WRITE_BYTE_SIZE) || (phone_audio.input_stream_wp < phone_audio.input_stream_rp))
 			{
 				if(phone_control.start_dial == 0 && total_dtmf_ret <= 0) //除了拨号和dtmf时，防止延迟
@@ -631,7 +745,21 @@ START_WRITE:
 					//PRINT("phone_audio.input_stream_rp = %d\n",phone_audio.input_stream_rp);
 					//PRINT("phone_audio.input_stream_wp = %d\n",phone_audio.input_stream_wp);
 				//}
-				phone_audio.input_stream_rp += write_ret;
+#ifdef SAVE_FILE
+				fwrite(&input_stream_buffer[phone_audio.input_stream_rp], 1, write_ret , write_dtmffile);
+#endif
+				if(write_ret > real_data && real_data != 0)
+					phone_audio.input_stream_rp += real_data;
+				else
+					phone_audio.input_stream_rp += write_ret;
+				real_data = 0;
+				//if(total_dtmf_ret > 0)
+				//{
+					//PRINT("valid_bytes = %d\n",valid_bytes);
+					//PRINT("write_ret = %d\n",write_ret);
+					//PRINT("phone_audio.input_stream_wp = %d\n",phone_audio.input_stream_wp);
+					//PRINT("phone_audio.input_stream_rp = %d\n",phone_audio.input_stream_rp);
+				//}
 				if(phone_audio.input_stream_rp >= pcm_ret && phone_control.start_dial == 1)
 				{
 					PRINT("dialup over!!!!!\n");
@@ -818,13 +946,22 @@ void* AudioSendThreadCallBack(void* argv)
 				valid_bytes = AUDIO_SEND_PACKET_SIZE;
 			if((valid_bytes >= AUDIO_SEND_PACKET_SIZE) || (phone_audio.output_stream_wp < phone_audio.output_stream_rp))
 			{
-#ifdef ENCRYPT
-				//编码
-				UlawEncodeEncrypt(audio_sendbuf,0,&output_stream_buffer[phone_audio.output_stream_rp],0,valid_bytes/2);
-#else
-				//编码
-				UlawEncode(audio_sendbuf,0,&output_stream_buffer[phone_audio.output_stream_rp],0,valid_bytes/2);
-#endif
+				if(devp->encrypt_enable == 1)
+					//编码
+					UlawEncodeEncrypt(audio_sendbuf,0,&output_stream_buffer[phone_audio.output_stream_rp],0,valid_bytes/2);
+				else if(devp->desencrypt_enable == 1)
+				{
+					if(valid_bytes < AUDIO_SEND_PACKET_SIZE)
+						valid_bytes = valid_bytes - (valid_bytes%8);				
+					//PRINT("valid_bytes = %d\n",valid_bytes);
+					//编码
+					UlawEncodeDesEncrypt(audio_sendbuf,0,&output_stream_buffer[phone_audio.output_stream_rp],0,valid_bytes/2);
+				}
+				else
+				{
+					//编码
+					UlawEncode(audio_sendbuf,0,&output_stream_buffer[phone_audio.output_stream_rp],0,valid_bytes/2);
+				}
 				if(devp->audio_client_fd < 0)
 				{
 					goto SEND_ERR;
@@ -943,7 +1080,9 @@ void* AudioRecvThreadCallBack(void* argv)
 	unsigned int total_recv_bytes = 0;
 	int first_recv_tb = 0;
 	int recv_flag = 0;
+	int tmp_len = 0;
 	int dtmf_recv_times = 0;
+	int tmp = 0;
 	dev_status_t* devp;
 	unsigned char tmp_buf[2000];
 	phone_audio.audio_recv_thread_flag = 0;
@@ -958,6 +1097,8 @@ void* AudioRecvThreadCallBack(void* argv)
 		first_recv_tb = 0;
 		recv_flag = 0;
 		dtmf_recv_times = 0;
+		tmp_len = 0;
+		tmp = 0;
 		for(i=0;i<CLIENT_NUM;i++)
 		{
 			if(devlist[i].client_fd == -1)
@@ -969,6 +1110,34 @@ void* AudioRecvThreadCallBack(void* argv)
 		}
 		while(phone_audio.audio_recv_thread_flag == 1)
 		{
+			if(phone_audio.start_dtmf != 0)
+			{
+				dtmf_ret = GenerateCodePcmData(&phone_audio.start_dtmf,1,dtmf_buf,Big_Endian);
+				//total_dtmf_ret += dtmf_ret;
+				if(total_dtmf_ret <= dtmf_ret)
+					phone_audio.input_stream_wp = phone_audio.input_stream_rp = 0;
+				//total_dtmf_ret = dtmf_ret+32000;
+				if(total_dtmf_ret < 32000)
+				{
+					total_dtmf_ret = 32000+dtmf_ret;
+				}
+				else
+					total_dtmf_ret += dtmf_ret;
+				tmp = AUDIO_STREAM_BUFFER_SIZE-phone_audio.input_stream_wp;
+				if(tmp < dtmf_ret)
+				{
+					memcpy(&input_stream_buffer[phone_audio.input_stream_wp],dtmf_buf,tmp);
+					phone_audio.input_stream_wp = 0;
+					memcpy(&input_stream_buffer[phone_audio.input_stream_wp],dtmf_buf+tmp,dtmf_ret-tmp);
+					phone_audio.input_stream_wp +=(dtmf_ret-tmp);
+				}
+				else
+				{
+					memcpy(&input_stream_buffer[phone_audio.input_stream_wp],dtmf_buf,dtmf_ret);
+					phone_audio.input_stream_wp += dtmf_ret;
+				}
+				phone_audio.start_dtmf = 0;
+			}
 			if(total_dtmf_ret > 0) //双音多频丢数据
 			{
 				//PRINT("dtmfing....\n");
@@ -986,6 +1155,7 @@ void* AudioRecvThreadCallBack(void* argv)
 					goto RECV_ERROR;
 				}
 				usleep(10*1000);
+				//PRINT("total_dtmf_ret = %d\n",total_dtmf_ret);
 				total_dtmf_ret -= (recv_ret*2);
 				dtmf_recv_times ++;
 				if(dtmf_recv_times == 2)
@@ -998,10 +1168,12 @@ void* AudioRecvThreadCallBack(void* argv)
 					PRINT("dtmf over!!!!\n");
 					phone_audio.dtmf_over = 1;
 					dtmf_recv_times = 0;
-					continue;
+					ioctl(phone_audio.phone_audio_pcmfd,SLIC_RELEASE,0);
+					ioctl(phone_audio.phone_audio_pcmfd,SLIC_INIT,0);
+					//continue;
 				}
-				PRINT("total_dtmf_ret = %d\n",total_dtmf_ret);
-				continue;
+				else
+					continue;
 			}
 			while(phone_audio.start_recv)
 			{
@@ -1044,7 +1216,9 @@ void* AudioRecvThreadCallBack(void* argv)
 			}
 			if(recv_flag == 0)
 			{
+#ifndef SAVE_FILE
 				ioctl(phone_audio.phone_audio_pcmfd,SET_WRITE_TYPE,1);
+#endif
 				recv_flag = 1;
 			}
 			phone_audio.start_recv = 0;
@@ -1056,9 +1230,22 @@ void* AudioRecvThreadCallBack(void* argv)
 			{
 				goto RECV_ERROR;
 			}
+			//PRINT("tmp_len = %d\n",tmp_len);
+			if(devp->desencrypt_enable == 1)
+			{
+				if(recv_ret > 0 && tmp_len > 0)
+				{
+					PRINT("tmp_len = %d\n",tmp_len);
+					PRINT("recv_ret = %d\n",recv_ret);
+					memcpy(audio_recvbuf,audio_recvbuf+recv_ret,tmp_len);
+				}
+			}
 			if(free_bytes > BUFFER_SIZE_2K)
 				free_bytes = BUFFER_SIZE_2K;
-			recv_ret = recv(devp->audio_client_fd,audio_recvbuf,free_bytes/2,MSG_DONTWAIT);
+			if(devp->desencrypt_enable == 1)
+				recv_ret = recv(devp->audio_client_fd,audio_recvbuf+tmp_len,free_bytes/2,MSG_DONTWAIT);
+			else
+				recv_ret = recv(devp->audio_client_fd,audio_recvbuf,free_bytes/2,MSG_DONTWAIT);
 			if(recv_ret < 1)//或者小于0。则表示socket异常，此处需要同时处理其他线程的错误
 			{
 				getsockopt(devp->audio_client_fd,SOL_SOCKET,SO_ERROR,&optval, &optlen);
@@ -1083,13 +1270,19 @@ RECV_ERROR:
 			}
 			else
 			{
-#ifdef ENCRYPT			
-				//解码
-				UlawDecodeEncrypt(&input_stream_buffer[phone_audio.input_stream_wp],0,audio_recvbuf,0,recv_ret);
-#else
-				//解码
-				UlawDecode(&input_stream_buffer[phone_audio.input_stream_wp],0,audio_recvbuf,0,recv_ret);
-#endif
+				if(devp->encrypt_enable == 1)
+					//解码
+					UlawDecodeEncrypt(&input_stream_buffer[phone_audio.input_stream_wp],0,audio_recvbuf,0,recv_ret);
+				else if(devp->desencrypt_enable == 1)
+				{
+					tmp_len = (recv_ret%8);
+					recv_ret = recv_ret -tmp_len ;
+					//解码
+					UlawDecodeDesEncrypt(&input_stream_buffer[phone_audio.input_stream_wp],0,audio_recvbuf,0,recv_ret);
+				}
+				else
+					//解码
+					UlawDecode(&input_stream_buffer[phone_audio.input_stream_wp],0,audio_recvbuf,0,recv_ret);
 				phone_audio.input_stream_wp += recv_ret*2;
 				total_recv_bytes += recv_ret*2;
 				if(phone_audio.input_stream_wp >= AUDIO_STREAM_BUFFER_SIZE)

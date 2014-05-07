@@ -3,9 +3,6 @@
 #include "common.h"
 #include "si32178.h"
 
-#define REGISTER
-//#define ENCRYPT			
-
 #define MIN_PACKET_BYTES	        7
 
 #define RING_LIMIT					9
@@ -61,6 +58,9 @@ enum PstnCommand {
 	REQ_SWITCH,
 	REQ_TALK,
 	RET_PHONETOBASE,
+	//
+	REQ_ENC,
+	
 };
 typedef enum PstnCommand PstnCmdEnum;
 
@@ -92,6 +92,8 @@ typedef struct dev_status
 	char dev_name[17];//设备名字
 	char dev_mac[12];
 	int dev_is_using;//设备是否正在使用
+	int encrypt_enable;
+	int desencrypt_enable;
 }dev_status_t ;
 
 typedef struct {
@@ -179,6 +181,7 @@ int do_cmd_talkbackonhook(dev_status_t* dev,char *sendbuf);
 int do_cmd_req_switch(dev_status_t* dev,char *sendbuf);
 int do_cmd_req_talk(dev_status_t* dev,char *sendbuf);
 int do_cmd_ret_ptb(dev_status_t* dev,char *sendbuf);
+int do_cmd_req_enc(dev_status_t * dev, char * sendbuf);
 int parse_msg(cli_request_t *cli);
 void *phone_control_loop_accept(void *argv);
 int ComFunChangeHexBufferToAsc(unsigned char *hexbuf,int hexlen,char *ascstr);

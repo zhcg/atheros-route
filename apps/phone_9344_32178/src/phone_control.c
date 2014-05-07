@@ -1164,6 +1164,13 @@ RET_ERR:
         return -1;
 }
 
+int do_cmd_req_enc(dev_status_t * dev, char * sendbuf)
+{
+	dev->encrypt_enable = 1;
+	netWrite(dev->client_fd,"HEADR0010SUC_ENC000\r\n",22);
+	return 0;
+}
+
 //消息处理
 int parse_msg(cli_request_t* cli)
 {
@@ -1250,6 +1257,12 @@ int parse_msg(cli_request_t* cli)
 				do_cmd_ret_ptb(cli->dev,sendbuf);
 				break;
 		}
+		case REQ_ENC:
+		{
+			PRINT("REQ_ENC from %s\n",cli->dev->client_ip);
+			do_cmd_req_enc(cli->dev,sendbuf);
+			break;
+		}
 		case DEFAULT:
 		{
 			PRINT("other cmd\n");
@@ -1314,6 +1327,10 @@ int getCmdtypeFromString(char *cmd_str)
 	else if (strncmp(cmd_str, "RET_PTB", 7) == 0)
 	{
 		cmdtype = RET_PHONETOBASE;
+	}
+	else if (strncmp(cmd_str, "REQ_ENC", 7) == 0)
+	{
+		cmdtype = REQ_ENC;
 	}
 	else
 	{
@@ -2551,6 +2568,7 @@ int generate_up_msg()
 	return 0;
 }
 
+#ifdef REGISTER
 int check_register_status()
 {
 	int j,i = 0;
@@ -2617,6 +2635,7 @@ int check_register_status()
 	}
 	return 0;
 }
+#endif
 
 //心跳
 void* phone_check_tick(void* argv)
@@ -2638,7 +2657,9 @@ void* phone_check_tick(void* argv)
 		}
 		if(tick_count%2 == 0)
 		{
+#ifdef REGISTER
 			check_register_status();
+#endif
 		}
 		tick_count ++;
 		for(i=0;i<CLIENT_NUM;i++)

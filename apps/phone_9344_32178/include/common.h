@@ -30,6 +30,9 @@
 #include <linux/vt.h>
 #include <signal.h>
 #include <regex.h>
+#include <sys/wait.h>
+
+#define REGISTER
 
 #define Big_Endian	1
 #define Little_Endian	0

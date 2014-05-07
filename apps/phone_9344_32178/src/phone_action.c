@@ -6,9 +6,6 @@
 #include "si32178.h"
 
 int pcm_ret = 0;
-int dtmf_ret = 0;
-int total_dtmf_ret = 0;
-unsigned char dtmf_buf[6000]={0};	
 
 //计算校验
 unsigned char sumxor(const  char  *arr, int len)
@@ -25,10 +22,20 @@ unsigned char sumxor(const  char  *arr, int len)
 
 int senddtmf(char dtmf)
 {
-	int tmp;
+	//int tmp;
+	phone_audio.start_dtmf = dtmf;
+	/*
 	dtmf_ret = GenerateCodePcmData(&dtmf,1,dtmf_buf,Big_Endian);
-	total_dtmf_ret += dtmf_ret;
-	
+	//total_dtmf_ret += dtmf_ret;
+	if(total_dtmf_ret <= 0)
+		phone_audio.input_stream_wp = phone_audio.input_stream_rp = 0;
+	total_dtmf_ret = dtmf_ret+32000;
+	//if(total_dtmf_ret < 16000)
+	//{
+		//total_dtmf_ret = 16000-total_dtmf_ret+dtmf_ret;
+	//}
+	//else
+		//total_dtmf_ret += dtmf_ret;
 	tmp = AUDIO_STREAM_BUFFER_SIZE-phone_audio.input_stream_wp;
 	if(tmp < dtmf_ret)
 	{
@@ -42,7 +49,7 @@ int senddtmf(char dtmf)
 		memcpy(&input_stream_buffer[phone_audio.input_stream_wp],dtmf_buf,dtmf_ret);
 		phone_audio.input_stream_wp += dtmf_ret;
 	}
-
+	*/
 }
 
 int onhook()
