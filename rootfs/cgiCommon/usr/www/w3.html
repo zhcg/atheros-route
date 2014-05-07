@@ -22,6 +22,8 @@ else
         window.location.href="/index.html";
 }
 function button_commit(buttonID){document.getElementById(buttonID).click();}
+function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
+
 var step_num;
 function style_display_on()
 {
@@ -448,6 +450,20 @@ function initValue()
 		document.getElementById("AP_PRIMARY_CH").disabled = true;
 	if(ifwdson2=="on")
 		document.getElementById("AP_PRIMARY_CH_3").disabled = true;
+
+	WIFI_HS();
+}
+function WIFI_HS()
+{
+	var RS = document.getElementById("RADIO_STATUS").value;
+	if(RS=="1")
+	{
+		widget_hide("div_wireless2");
+	}
+	else if(RS=="2")
+	{
+		widget_hide("div_wireless");
+	}
 }
 
 </script>
@@ -462,11 +478,15 @@ function initValue()
 <FORM method="POST" name="wizard_form">
 <!-- =========== Wireless Settings =========== -->
 <h2 id="wifides"></h2>
-<table id="div_wireless"  width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
+<table width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
 <tr>
   <td class="title" colspan="2" id="A_title"></td>
 </tr>
-<tr><td class="title2" colspan="2" id="wsetingst"></td></tr>
+</table>
+<table id="div_wireless"  width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
+<tr>
+	<td class="title2" colspan="2" id="wsetingst"></td>
+</tr>
 <tr>
   <td class="head" id="nname"></td>
   <td><input type="text" name="AP_SSID" size="32" maxlength="24" class="handaer_text_content"  value="~~AP_SSID~">&nbsp;<input type="checkbox" id="hidewifi" onclick="hidewififun();"/>&nbsp;<label for="hidewifi" id="hidewifides"></label>&nbsp;<span id="ssidrequest"></span></td>
@@ -517,7 +537,7 @@ function initValue()
 </table>
 
 <!--------------------------5G---------------------------------------------------->
-<table id="div_wireless"  width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
+<table id="div_wireless2"  width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
 <tr><td class="title2" colspan="2" id="wsetingst2"></td></tr>
 <tr>
   <td class="head" id="nname2"></td>
@@ -570,6 +590,7 @@ function initValue()
 	<input type="text" style="display:none" name="AP_HIDESSID_3" id="AP_HIDESSID_3" size="20" maxlength="32" value="~~AP_HIDESSID_3~">
 	<input type="text" style="display:none" name="WDSON" id="WDSON" size="20" maxlength="32" value="~~WDSON_OFF~">
 	<input type="text" style="display:none" name="WDSON2" id="WDSON2" size="20" maxlength="32" value="~~WDSON_OFF_3~">
+  	<input type="text" style="display:none" name="RADIO_STATUS" id="RADIO_STATUS" size="20" maxlength="32" value="~~RADIO_STATUS~">
   </td>
 </tr>
 </table>

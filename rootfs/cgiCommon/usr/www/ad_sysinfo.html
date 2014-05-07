@@ -24,6 +24,8 @@ else
 function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
 function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
 function widget_disable	(widgetID){document.getElementById(widgetID).disabled = true;}
+function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
+
 function initTranslation()
 {
 	trans_inner("title_all","sysinfo title");
@@ -111,6 +113,7 @@ function init()
 	initTranslation();
 
 	valueinit();
+	WIFI_HS();
 	rebootRequest();
 }
 	//上网状态	INTERNET_ON	on提供为可上网，off提示为不可以上网	
@@ -255,7 +258,19 @@ function valueinit()
 		document.getElementById("ss142").innerHTML=_("sysinfo off");
 	
 }
-
+function WIFI_HS()
+{
+	var RS = document.getElementById("RADIO_STATUS").value;
+	if(RS=="1")
+	{
+		widget_hide("WIFI_5G");
+	}
+	else if(RS=="2")
+	{
+		widget_hide("WIFI_2G");
+	}
+	
+}
 </script>
 </head>
 <body onload="init()"  ondragstart="window.event.returnValue=false" oncontextmenu="window.event.returnValue=false" onselectstart="event.returnValue=false">
@@ -331,6 +346,8 @@ function valueinit()
 <tr>
 	<td class="title" colspan="2" id="t4_title">无线网络</td></tr>
 <tr>
+</table>
+<table id="WIFI_2G" width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
 <tr>
 	<td class="title2" colspan="2" id="t4_title1">无线网络</td></tr>
 <tr>
@@ -353,8 +370,8 @@ function valueinit()
   <td class="head" id="t4_wds">WDS状态</td>
   <td><span  name="ss14" id="ss14" ></span><input size="32" style="display:none" maxlength="64" name="s14" id="s14" value="~~WDSON_OFF~" type="text" readonly></td>
 </tr>
-
-
+</table>
+<table id="WIFI_5G" width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
 <tr>
 	<td class="title2" colspan="2" id="t4_title2">无线网络</td></tr>
 <tr>
@@ -384,5 +401,6 @@ function valueinit()
 </table>
 </div>
 	<input type="text" style="display:none" name="IPA" id="IPA" size="20" maxlength="32" value="~~AP_IPADDR~">
+	<input type="text" style="display:none" name="RADIO_STATUS" id="RADIO_STATUS" size="20" maxlength="32" value="~~RADIO_STATUS~">
 </body>
 </html>

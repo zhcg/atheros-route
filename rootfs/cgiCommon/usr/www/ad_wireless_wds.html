@@ -446,6 +446,20 @@ function initValue()
 		widget_hide("buttontable");
 	}
 	checklistempty();
+	WIFI_HS();
+}
+
+function WIFI_HS()
+{
+	var RS = document.getElementById("RADIO_STATUS").value;
+	if(RS=="1")
+	{
+		widget_hide("div_Router2");
+	}
+	else if(RS=="2")
+	{
+		widget_hide("div_Router");
+	}
 }
 
 function help()
@@ -468,10 +482,12 @@ function help()
 <!-- ============= Wizard Home Page ============= -->
 <h2 id="wirelessdes"></h2>
 <!-- ================= Router Mode ================= -->
-<table id="div_Router" width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
+<table width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
 <tr>
   <td class="title" colspan="2" id="A_title"></td>
 </tr>
+</table>
+<table id="div_Router" width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
 <tr>
   <td class="title2" colspan="2" id="RMd"></td>
 </tr>
@@ -571,6 +587,7 @@ function help()
 	<input type="button" name="REFRESHWFi2" id="REFRESHWFi2" style="display:none" value="REFRESHWFi2" onClick="window.location.href='ad_wireless_wds?INDEX=112'">
 	<input type="text" style="display:none" name="WIFION_OFF" id="WIFION_OFF" size="20" maxlength="32" value="~~WIFION_OFF~">	
 	<input type="text" style="display:none" name="WIFION_OFF_3" id="WIFION_OFF_3" size="20" maxlength="32" value="~~WIFION_OFF_3~">	
+	<input type="text" style="display:none" name="RADIO_STATUS" id="RADIO_STATUS" size="20" maxlength="32" value="~~RADIO_STATUS~">
 </div>
 </td></tr></table></div>
 </body>
