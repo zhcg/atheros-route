@@ -370,7 +370,10 @@ static int get_base_sn_and_mac(char *base_sn, char *base_mac)
 	    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "base sn not find!", BASE_NO_SN_ERR);
         return BASE_NO_SN_ERR;
 	}
+	PRINT("tmp = %s SN_LEN = %d\n", tmp, SN_LEN);
     memcpy(base_sn, tmp + 3, SN_LEN);
+    
+    PRINT("base_sn = %s strlen(base_sn) = %d\n", base_sn, strlen(base_sn));
     if (strlen(base_sn) != SN_LEN)
 	{
 	    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "base sn error!", SN_BASE_ERR);

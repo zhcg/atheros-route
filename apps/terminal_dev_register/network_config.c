@@ -4,7 +4,7 @@
 static int serial_pad_fd = 0, serial_5350_fd = 0, server_pad_fd = 0, server_base_fd = 0;
 static char network_flag = 0; // 否已经注册成功
 static char g_cmd = 0xFF;
-static char pad_cmd = 0xFB;
+static char pad_cmd = INITUAL_STATUS;
 
 #if BOARDTYPE == 5350 || BOARDTYPE == 9344
 // 初始化cmd_list
@@ -1777,8 +1777,8 @@ int network_settings(int fd, int cmd_count, char cmd_word)
         return P_DATA_ERR;
     }
     #else // 20131111 新需求去掉mac地址复制
-    if (((cmd_word == 0x01) && (cmd_count != 4)) || ((cmd_word == 0x02) && (cmd_count != 7)) || 
-        ((cmd_word == 0x03) && (cmd_count != 5)) || ((cmd_word == 0x07) && (cmd_count != 3)) || 
+    if (((cmd_word == DYNAMIC_CONFIG_AND_REGISTER) && (cmd_count != 4)) || ((cmd_word == STATIC_CONFIG_AND_REGISTER) && (cmd_count != 7)) || 
+        ((cmd_word == PPPOE_CONFIG_AND_REGISTER) && (cmd_count != 5)) || ((cmd_word == 0x07) && (cmd_count != 3)) || 
         ((cmd_word == 0x08) && (cmd_count != 2)) || ((cmd_word == 0x09) && (cmd_count != 5)) || 
         ((cmd_word == 0x0A) && (cmd_count != 3)))
     {
@@ -2085,12 +2085,12 @@ int network_settings(int fd, int cmd_count, char cmd_word)
                 #endif
                 break;
             }
-            case 0x53: // 终止命令
+            case STOP_CONFIG: // 终止命令
             {
                 PRINT("stop config!\n");
                 return STOP_CMD;
             }
-            case 0x04: // 询问
+            case ASK_BASE: // 询问
             {
                 PRINT("cmd = %02X\n", pad_and_6410_msg.cmd);
                 for (j = 0; j < common_tools.config->repeat; j++)
@@ -2164,7 +2164,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
     }
     #endif
     
-    if ((unsigned char)pad_cmd == 0xFB) // 局域网络没有设置时
+    if ((unsigned char)pad_cmd == INITUAL_STATUS) // 局域网络没有设置时
     {
         // 获取base_sn mac
         if ((res = terminal_register.get_base_sn_and_mac(network_config.base_sn, network_config.base_mac)) < 0)
@@ -2258,7 +2258,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
     #if BOARDTYPE == 5350
     for (i = 0; i < sizeof(network_config.cmd_list) / sizeof(struct s_cmd); i++)
     {   
-        if ((unsigned char)pad_cmd == 0xFB) // 局域网络没有设置时
+        if ((unsigned char)pad_cmd == INITUAL_STATUS) // 局域网络没有设置时
         {
             // 初始化设备项
             switch (network_config.cmd_list[i].cmd_word)
@@ -2480,7 +2480,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
         // 网络设置项
         switch (cmd_word)
         {
-            case 0x01: // 动态IP
+            case DYNAMIC_CONFIG_AND_REGISTER: // 动态IP
             case 0x08: // 动态IP
             {
                 switch(network_config.cmd_list[i].cmd_word)
@@ -2528,7 +2528,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
                 }
                 break;
             }
-            case 0x02: // 静态IP
+            case STATIC_CONFIG_AND_REGISTER: // 静态IP
             case 0x09: // 静态IP
             {
                 switch(network_config.cmd_list[i].cmd_word)
@@ -2612,7 +2612,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
                 } 
                 break;              
             }
-            case 0x03: // PPPOE
+            case PPPOE_CONFIG_AND_REGISTER: // PPPOE
             case 0x0A: // PPPOE
             {
                 switch(network_config.cmd_list[i].cmd_word)
@@ -2808,17 +2808,17 @@ int network_settings(int fd, int cmd_count, char cmd_word)
     // 网络设置项
     switch (cmd_word)
     {
-        case 0x01: // 动态IP
+        case DYNAMIC_CONFIG_AND_REGISTER: // 动态IP
         {
             snprintf(cmd_buf, sizeof(cmd_buf), "cfg -b 0 dhcp");
             break;
         }
-        case 0x02: // 静态IP
+        case STATIC_CONFIG_AND_REGISTER: // 静态IP
         {
             snprintf(cmd_buf, sizeof(cmd_buf), "cfg -b 1 static %s %s %s %s", wan_gateway, wan_ipaddr, wan_netmask, wan_primary_dns); 
             break;
         }
-        case 0x03: // PPPOE
+        case PPPOE_CONFIG_AND_REGISTER: // PPPOE
         {
             snprintf(cmd_buf, sizeof(cmd_buf), "cfg -b 2 pppoe %s %s &", wan_pppoe_user, wan_pppoe_pass); 
             break;
@@ -2832,7 +2832,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
     PRINT("cmd_buf = %s\n", cmd_buf);
     system(cmd_buf); // 
     
-    if ((unsigned char)pad_cmd == 0xFB) // 局域网络没有设置时
+    if ((unsigned char)pad_cmd == INITUAL_STATUS) // 局域网络没有设置时
     {
         memset(cmd_buf, 0, sizeof(cmd_buf));
         snprintf(cmd_buf, sizeof(cmd_buf), "cfg -b 4 %s %s 1", pad_mac, pad_ip);
@@ -2876,7 +2876,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
         return res;
     }
     
-    if (pad_cmd == 0xFB)
+    if (pad_cmd == INITUAL_STATUS)
     {
         // 延时
         sleep(common_tools.config->route_reboot_time_sec);
@@ -2969,7 +2969,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
     OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "exec cmd success!", 0);
     #endif
     
-    if ((unsigned char)pad_cmd == 0xFB)
+    if ((unsigned char)pad_cmd == INITUAL_STATUS)
     {
         pthread_mutex_lock(&network_config.recv_mutex);
         network_config.pthread_recv_flag = 1;
@@ -3009,7 +3009,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
             {
                 continue;
             }
-            else if (pad_and_6410_msg.cmd == 0x04) // PAD发起询问
+            else if (pad_and_6410_msg.cmd == ASK_BASE) // PAD发起询问
             {
                 // 可以办到SN正确性
                 
@@ -3051,7 +3051,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
                 }
                 i = 0; // 此时认为PAD没有收到SSID ，重新发送SSID
             }
-            else if (pad_and_6410_msg.cmd == 0x53) // 终止命令
+            else if (pad_and_6410_msg.cmd == STOP_CONFIG) // 终止命令
             {
                 PRINT("stop config!\n");
                 return STOP_CMD;
@@ -3076,14 +3076,15 @@ int network_settings(int fd, int cmd_count, char cmd_word)
     if ((res = common_tools.get_network_state(common_tools.config->pad_ip, 4, 6)) < 0)
     #elif BOARDTYPE == 9344
     //if ((res = common_tools.get_network_state(common_tools.config->pad_ip, 1, 3)) < 0)
-    if ((res = common_tools.get_network_state(common_tools.config->pad_ip, 1, 7)) < 0)
+    //if ((res = common_tools.get_network_state(common_tools.config->pad_ip, 1, 7)) < 0) //yangjilong
+    if ((res = common_tools.get_network_state(common_tools.config->pad_ip, 1, 15)) < 0)
     #endif
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_network_state failed!", res);
         return (res == DATA_DIFF_ERR) ? LAN_ABNORMAL : res;
     }
     OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "Local area network normal!", 0);  
-    g_cmd = 0xFD; // 网络设置成功
+    g_cmd = LAN_OK_STATUS; // 网络设置成功
     if (cmd_word != 0x07)
     {
         #if CHECK_WAN_STATE == 1
@@ -3105,7 +3106,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_network_state failed!", res);
             #if 0
-            if (cmd_word == 0x03)
+            if (cmd_word == PPPOE_CONFIG_AND_REGISTER)
             {
                 int ret = 0;
                 if ((ret = get_pppoe_state(serial_5350_fd)) < 0)
@@ -3170,7 +3171,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
     
     if (network_flag == 0)
     {
-        g_cmd = 0xFE; // 网络设置成功 
+        g_cmd = WAN_OK_STATUS; // 网络设置成功 
         #if USER_REGISTER == 1
         common_tools.del_quotation_marks(pad_sn);
         common_tools.del_quotation_marks(pad_mac);
@@ -3181,7 +3182,7 @@ int network_settings(int fd, int cmd_count, char cmd_word)
             //if (res == LOGIN_FAILED) // 无效的设备
             if (res == WRONGFUL_DEV_ERR) // 无效的设备
             {
-                g_cmd = 0xFC;
+                g_cmd = WRONGFUL_DEV_STATUS;
             }
             return res;
         }

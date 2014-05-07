@@ -1618,7 +1618,6 @@ int get_network_state(char *ip, unsigned char ping_count, unsigned char repeat)
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data is different!", res);
             if (i != (repeat - 1))
             {
-                //sleep(5);
                 sleep(3);
                 continue;
             } 

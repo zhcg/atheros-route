@@ -333,7 +333,7 @@ void * request_cmd_0x01_02_03_07_08_09_0A_pthread(void* para)
 
     if ((res == 0) && (ret == 0) && (*network_config.network_flag == 1)) // 说明此时是网络设置
     {
-        if ((res = network_config.send_msg_to_pad(fd, 0x00, NULL, 0)) < 0)
+        if ((res = network_config.send_msg_to_pad(fd, SUCCESS_STATUS, NULL, 0)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
             goto EXIT;
@@ -403,7 +403,7 @@ void * request_cmd_0x01_02_03_07_08_09_0A_pthread(void* para)
         PRINT("%s\n", buf);
 
         // 正确信息发送到PAD
-        if ((res = network_config.send_msg_to_pad(fd, 0x00, buf, strlen(buf))) < 0)
+        if ((res = network_config.send_msg_to_pad(fd, SUCCESS_STATUS, buf, strlen(buf))) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
             goto EXIT;
@@ -466,7 +466,7 @@ EXIT:
     }
     else if (res == STOP_CMD)
     {
-        if ((res = network_config.send_msg_to_pad(fd, 0x00, NULL, 0)) < 0)
+        if ((res = network_config.send_msg_to_pad(fd, SUCCESS_STATUS, NULL, 0)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed!", res);
         }
@@ -556,7 +556,7 @@ int request_cmd_0x01_02_03_07_08_09_0A(struct s_terminal_dev_register * terminal
     PRINT("cmd = %02X, (unsigned char)terminal_dev_register->cmd_word = %02X\n", cmd, (unsigned char)terminal_dev_register->cmd_word);
     if ((cmd == 0x07) || (cmd == 0x08) || (cmd == 0x09) || (cmd == 0x0A)) // 无线网络设置和网络设置
     {
-        if (register_state != 0x00)
+        if (register_state != SUCCESS_STATUS)
         {
             res = NO_INIT_ERR;
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no init!", res);
@@ -582,7 +582,7 @@ int request_cmd_0x01_02_03_07_08_09_0A(struct s_terminal_dev_register * terminal
 		return CONFIG_NOW;
 	}
 
-    if ((res = network_config.send_msg_to_pad(fd, 0x00, NULL, 0)) < 0)
+    if ((res = network_config.send_msg_to_pad(fd, SUCCESS_STATUS, NULL, 0)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
         return res;
@@ -663,17 +663,17 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
     // 说明此时正在设置
     if (terminal_dev_register->config_now_flag == 1)
     {
-        register_state = 0xFA;
+        register_state = CONFIGURING_STATUS;
     }
 
     switch (register_state)
     {
-        case 0xFA: // 说明此时正在设置
+        case CONFIGURING_STATUS: // 说明此时正在设置
         {
             pthread_mutex_lock(&network_config.recv_mutex);
             break;
         }
-        case 0xFB:
+        case INITUAL_STATUS:
         {
              // 此时需查看pad_mac是否为空
             PRINT("terminal_dev_register->data_table.pad_mac = %s\n", terminal_dev_register->data_table.pad_mac);
@@ -707,18 +707,18 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
                     PRINT("pad_mac = %s, terminal_dev_register->data_table.pad_mac = %s\n", pad_mac, terminal_dev_register->data_table.pad_mac);
                     if (memcmp(terminal_dev_register->data_table.pad_mac, pad_mac, strlen(terminal_dev_register->data_table.pad_mac)) == 0)
                     {
-                        *network_config.pad_cmd = 0xFD;
-                        *network_config.cmd = 0xFD;
+                        *network_config.pad_cmd = LAN_OK_STATUS;
+                        *network_config.cmd = LAN_OK_STATUS;
                         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "Local area network normal!", 0);
                     }
                 }
             }
-            if ((unsigned char)*network_config.pad_cmd != 0xFD)
+            if ((unsigned char)*network_config.pad_cmd != LAN_OK_STATUS)
             {
                 break;
             }
         }
-        case 0xFD:
+        case LAN_OK_STATUS:
         {
             #if CHECK_WAN_STATE == 1
             
@@ -740,22 +740,22 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
             }
             else
             {
-                *network_config.pad_cmd = 0xFE;
-                *network_config.cmd = 0xFE;
+                *network_config.pad_cmd = WAN_OK_STATUS;
+                *network_config.cmd = WAN_OK_STATUS;
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "Wide network normal!", 0);
             }
 
-            #else // 不检测WAN口，直接置为0xFE，代表注册没有进行
-            *network_config.pad_cmd = 0xFE;
-            *network_config.cmd = 0xFE;
+            #else // 不检测WAN口，直接置为WAN_OK_STATUS，代表注册没有进行
+            *network_config.pad_cmd = WAN_OK_STATUS;
+            *network_config.cmd = WAN_OK_STATUS;
             #endif // #if CHECK_WAN_STATE == 1
 
-            if ((unsigned char)*network_config.pad_cmd != 0xFE)
+            if ((unsigned char)*network_config.pad_cmd != WAN_OK_STATUS)
             {
                 break;
             }
         }
-        case 0xFE:
+        case WAN_OK_STATUS:
         {
             #if USER_REGISTER == 1 // 1：做终端认证流程
             
@@ -766,10 +766,10 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
             }
             #endif // #if USER_REGISTER == 1
             
-            *network_config.pad_cmd = 0x00;
-            *network_config.cmd = 0x00;
+            *network_config.pad_cmd = SUCCESS_STATUS;
+            *network_config.cmd = SUCCESS_STATUS;
         }
-        case 0x00: // 当已经初始化成功时，PAD询问，BASE把SSID等信息发送到PAD
+        case SUCCESS_STATUS: // 当已经初始化成功时，PAD询问，BASE把SSID等信息发送到PAD
         {
             #if BOARDTYPE == 9344
             // 打包
@@ -796,7 +796,7 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
         }
     }
 
-    if (register_state == 0xFA)
+    if (register_state == CONFIGURING_STATUS)
     {
         pthread_mutex_unlock(&network_config.recv_mutex);
     }
@@ -815,7 +815,7 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
             pad_and_6410_msg.data = NULL;
         }
         
-        if (register_state == 0xFA)
+        if (register_state == CONFIGURING_STATUS)
         {
             res = network_config.send_msg_to_pad(fd, register_state, NULL, len);
         }
@@ -836,7 +836,7 @@ int request_cmd_0x04(struct s_terminal_dev_register * terminal_dev_register)
             continue;
         }
         PRINT("pad_and_6410_msg.cmd = %d\n", pad_and_6410_msg.cmd);
-        if ((pad_and_6410_msg.data != NULL) || (pad_and_6410_msg.cmd != 0x00))
+        if ((pad_and_6410_msg.data != NULL) || (pad_and_6410_msg.cmd != SUCCESS_STATUS))
         {
             res = WRITE_ERR;
             continue;
@@ -857,7 +857,7 @@ EXIT:
         buf = NULL;
     }
 
-    if ((register_state != *network_config.pad_cmd) && (register_state != 0XFA) && ((unsigned char)*network_config.cmd != 0xFF)) // 插入数据库
+    if ((register_state != *network_config.pad_cmd) && (register_state != CONFIGURING_STATUS) && ((unsigned char)*network_config.cmd != 0xFF)) // 插入数据库
     {
         memset(columns_name[0], 0, sizeof(columns_name[0]));
         memset(columns_value[0], 0, sizeof(columns_value[0]));
@@ -927,7 +927,7 @@ int request_cmd_0x05(struct s_terminal_dev_register * terminal_dev_register)
 #endif
     int i = 0;
     int index = 0;
-    if (register_state != 0x00) // PAD没有注册成功
+    if (register_state != SUCCESS_STATUS) // PAD没有注册成功
     {
         res = NO_INIT_ERR;
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no init!", res);
@@ -936,7 +936,7 @@ int request_cmd_0x05(struct s_terminal_dev_register * terminal_dev_register)
 
     #if BOARDTYPE == 5350
     // 生成默认SSID
-    if ((res = network_config.send_msg_to_pad(fd, 0x00, NULL, 0)) < 0)
+    if ((res = network_config.send_msg_to_pad(fd, SUCCESS_STATUS, NULL, 0)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
         return res;
@@ -1046,7 +1046,7 @@ int request_cmd_0x05(struct s_terminal_dev_register * terminal_dev_register)
         return res;
     }
 
-    if ((res = network_config.send_msg_to_pad(fd, 0x00, NULL, 0)) < 0)
+    if ((res = network_config.send_msg_to_pad(fd, SUCCESS_STATUS, NULL, 0)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
         return res;
@@ -1076,7 +1076,7 @@ int request_cmd_0x06(struct s_terminal_dev_register * terminal_dev_register)
     int i = 0;
     int index = 0;
     unsigned short length = 0;
-    if (register_state != 0x00) // PAD没有注册成功
+    if (register_state != SUCCESS_STATUS) // PAD没有注册成功
     {
         res = NO_INIT_ERR;
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no init!", res);
@@ -1085,7 +1085,7 @@ int request_cmd_0x06(struct s_terminal_dev_register * terminal_dev_register)
 
 #if BOARDTYPE == 5350
     // 注销默认SSID
-    if ((res = network_config.send_msg_to_pad(fd, 0x00, NULL, 0)) < 0)
+    if ((res = network_config.send_msg_to_pad(fd, SUCCESS_STATUS, NULL, 0)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
         return res;
@@ -1227,7 +1227,7 @@ int request_cmd_0x06(struct s_terminal_dev_register * terminal_dev_register)
     print_dev_table(dev_count, dev_info);
     PRINT("after print_dev_table dev_info = %p\n", dev_info);
     
-    if ((res = network_config.send_msg_to_pad(fd, 0x00, NULL, 0)) < 0)
+    if ((res = network_config.send_msg_to_pad(fd, SUCCESS_STATUS, NULL, 0)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
         return res;
@@ -1257,7 +1257,7 @@ int request_cmd_0x0B(struct s_terminal_dev_register * terminal_dev_register)
     char buf[256] = {0};
     char send_buf[1024] = {0};
     char config_cmd[128] = {0};
-    if (register_state != 0x00) // PAD没有注册成功
+    if (register_state != SUCCESS_STATUS) // PAD没有注册成功
     {
         res = NO_INIT_ERR;
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no init!", res);
@@ -1637,7 +1637,7 @@ int request_cmd_0x0B(struct s_terminal_dev_register * terminal_dev_register)
         return res;
     }
     
-    if ((res = network_config.send_msg_to_pad(fd, 0x00, NULL, 0)) < 0)
+    if ((res = network_config.send_msg_to_pad(fd, SUCCESS_STATUS, NULL, 0)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
         return res;
@@ -1779,7 +1779,7 @@ int request_cmd_0x0B(struct s_terminal_dev_register * terminal_dev_register)
         }
     }
     PRINT("send_buf = %s\n", send_buf);
-    if ((res = network_config.send_msg_to_pad(fd, 0x00, send_buf, strlen(send_buf))) < 0)
+    if ((res = network_config.send_msg_to_pad(fd, SUCCESS_STATUS, send_buf, strlen(send_buf))) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
         return res;
@@ -1796,7 +1796,7 @@ int request_cmd_0x0C(struct s_terminal_dev_register * terminal_dev_register)
     int res = 0;
     int fd = terminal_dev_register->fd;
 
-    if ((res = network_config.send_msg_to_pad(fd, 0x00, NULL, 0)) < 0)
+    if ((res = network_config.send_msg_to_pad(fd, SUCCESS_STATUS, NULL, 0)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
         return res;
@@ -1855,7 +1855,7 @@ int request_cmd_0x0D(struct s_terminal_dev_register * terminal_dev_register)
         return res;
     }
 
-    if ((res = network_config.send_msg_to_pad(fd, 0x00, buf, strlen(buf))) < 0)
+    if ((res = network_config.send_msg_to_pad(fd, SUCCESS_STATUS, buf, strlen(buf))) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
         return res;
@@ -1874,7 +1874,7 @@ int request_cmd_0x0E(struct s_terminal_dev_register * terminal_dev_register)
     unsigned char register_state = (unsigned char)terminal_dev_register->data_table.register_state;
     char device_token[TOKENLEN] = {0};
     
-    if (register_state != 0x00) // PAD没有注册成功
+    if (register_state != SUCCESS_STATUS) // PAD没有注册成功
     {
         res = NO_INIT_ERR;
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no init!", res);
@@ -1887,7 +1887,7 @@ int request_cmd_0x0E(struct s_terminal_dev_register * terminal_dev_register)
         return res;
     }
 
-    if ((res = network_config.send_msg_to_pad(fd, 0x00, device_token, TOKENLEN)) < 0)
+    if ((res = network_config.send_msg_to_pad(fd, SUCCESS_STATUS, device_token, TOKENLEN)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
         return res;
@@ -1904,7 +1904,7 @@ int request_cmd_0x0F(struct s_terminal_dev_register * terminal_dev_register)
     unsigned char register_state = (unsigned char)terminal_dev_register->data_table.register_state;
     char position_token[16] = {0};
     
-    if (register_state != 0x00) // PAD没有注册成功
+    if (register_state != SUCCESS_STATUS) // PAD没有注册成功
     {
         res = NO_INIT_ERR;
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no init!", res);
@@ -1917,7 +1917,7 @@ int request_cmd_0x0F(struct s_terminal_dev_register * terminal_dev_register)
         return res;
     }
 
-    if ((res = network_config.send_msg_to_pad(fd, 0x00, position_token, 16)) < 0)
+    if ((res = network_config.send_msg_to_pad(fd, SUCCESS_STATUS, position_token, 16)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
         return res;
@@ -1934,7 +1934,7 @@ int request_cmd_0x50(struct s_terminal_dev_register * terminal_dev_register)
     unsigned char register_state = (unsigned char)terminal_dev_register->data_table.register_state;
     char device_token[16] = {0};
     
-    if (register_state != 0x00) // PAD没有注册成功
+    if (register_state != SUCCESS_STATUS) // PAD没有注册成功
     {
         res = NO_INIT_ERR;
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no init!", res);
@@ -1947,7 +1947,7 @@ int request_cmd_0x50(struct s_terminal_dev_register * terminal_dev_register)
         return res;
     }
 
-    if ((res = network_config.send_msg_to_pad(fd, 0x00, device_token, 16)) < 0)
+    if ((res = network_config.send_msg_to_pad(fd, SUCCESS_STATUS, device_token, 16)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
         return res;
@@ -1964,7 +1964,7 @@ int request_cmd_0x51(struct s_terminal_dev_register * terminal_dev_register)
     unsigned char register_state = (unsigned char)terminal_dev_register->data_table.register_state;
     char position_token[16] = {0};
     
-    if (register_state != 0x00) // PAD没有注册成功
+    if (register_state != SUCCESS_STATUS) // PAD没有注册成功
     {
         res = NO_INIT_ERR;
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no init!", res);
@@ -1977,7 +1977,7 @@ int request_cmd_0x51(struct s_terminal_dev_register * terminal_dev_register)
         return res;
     }
 
-    if ((res = network_config.send_msg_to_pad(fd, 0x00, position_token, 16)) < 0)
+    if ((res = network_config.send_msg_to_pad(fd, SUCCESS_STATUS, position_token, 16)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
         return res;
@@ -2044,7 +2044,7 @@ int request_cmd_0x53(struct s_terminal_dev_register * terminal_dev_register)
         }
     }
     
-    if ((res = network_config.send_msg_to_pad(fd, 0x00, NULL, 0)) < 0)
+    if ((res = network_config.send_msg_to_pad(fd, SUCCESS_STATUS, NULL, 0)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
         return res;;
@@ -2074,7 +2074,7 @@ int request_cmd_0x54(struct s_terminal_dev_register * terminal_dev_register)
     memset(&dev_register, 0, sizeof(struct s_dev_register));
 #endif
 
-    if (register_state != 0x00) // PAD没有注册成功
+    if (register_state != SUCCESS_STATUS) // PAD没有注册成功
     {
         res = NO_INIT_ERR;
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no init!", res);
@@ -2127,7 +2127,7 @@ int request_cmd_0x54(struct s_terminal_dev_register * terminal_dev_register)
         return res;
     }
 
-    if ((res = network_config.send_msg_to_pad(fd, 0x00, NULL, 0)) < 0)
+    if ((res = network_config.send_msg_to_pad(fd, SUCCESS_STATUS, NULL, 0)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
         return res;
@@ -2157,15 +2157,23 @@ int request_cmd_0x55(struct s_terminal_dev_register * terminal_dev_register)
 {
     int res = 0;
     int fd = terminal_dev_register->fd;
+    int length = terminal_dev_register->length;
     unsigned char register_state = (unsigned char)terminal_dev_register->data_table.register_state;
     
     unsigned short len = 0;
     char buf[1024] = {0};
 
-    if (register_state != 0x00) // PAD没有注册成功
+    if (register_state != SUCCESS_STATUS) // PAD没有注册成功
     {
         res = NO_INIT_ERR;
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no init!", res);
+        return res;
+    }
+    
+    if (length != SN_LEN) // 序列号
+    {
+        res = P_LENGTH_ERR;
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "length error!", res);
         return res;
     }
     
@@ -2176,7 +2184,7 @@ int request_cmd_0x55(struct s_terminal_dev_register * terminal_dev_register)
     }
     len = strlen(buf);
     PRINT("buf = %s\n", buf);
-    if ((res = network_config.send_msg_to_pad(fd, 0x00, buf, len)) < 0)
+    if ((res = network_config.send_msg_to_pad(fd, SUCCESS_STATUS, buf, len)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
         return res;
@@ -2195,13 +2203,13 @@ int request_cmd_0x56(struct s_terminal_dev_register * terminal_dev_register)
     unsigned short len = 0;
     char buf[1024] = {0};
 
-    if (register_state != 0x00) // PAD没有注册成功
+    if (register_state != SUCCESS_STATUS) // PAD没有注册成功
     {
         res = NO_INIT_ERR;
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no init!", res);
         return res;
     }
-        
+     
     if ((res = database_select_dev_info(buf, sizeof(buf))) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "database_select_dev_info failed!", res);
@@ -2209,7 +2217,7 @@ int request_cmd_0x56(struct s_terminal_dev_register * terminal_dev_register)
     }
     len = strlen(buf);
     
-    if ((res = network_config.send_msg_to_pad(fd, 0x00, buf, len)) < 0)
+    if ((res = network_config.send_msg_to_pad(fd, SUCCESS_STATUS, buf, len)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
         return res;
@@ -2232,7 +2240,7 @@ int request_cmd_0x57(struct s_terminal_dev_register * terminal_dev_register)
     memset(&dev_register, 0, sizeof(struct s_dev_register));
 #endif
     
-    if (register_state != 0x00) // PAD没有注册成功
+    if (register_state != SUCCESS_STATUS) // PAD没有注册成功
     {
         res = NO_INIT_ERR;
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no init!", res);
@@ -2246,7 +2254,7 @@ int request_cmd_0x57(struct s_terminal_dev_register * terminal_dev_register)
         return res;
     }
 
-    if ((res = network_config.send_msg_to_pad(fd, 0x00, NULL, 0)) < 0)
+    if ((res = network_config.send_msg_to_pad(fd, SUCCESS_STATUS, NULL, 0)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
         return res;
@@ -2269,7 +2277,7 @@ int request_cmd_0x58(struct s_terminal_dev_register * terminal_dev_register)
     memset(&dev_register, 0, sizeof(struct s_dev_register));
 #endif
     
-    if (register_state != 0x00) // PAD没有注册成功
+    if (register_state != SUCCESS_STATUS) // PAD没有注册成功
     {
         res = NO_INIT_ERR;
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no init!", res);
@@ -2291,10 +2299,167 @@ int request_cmd_0x58(struct s_terminal_dev_register * terminal_dev_register)
         return res;
     }
 
-    if ((res = network_config.send_msg_to_pad(fd, 0x00, NULL, 0)) < 0)
+    if ((res = network_config.send_msg_to_pad(fd, SUCCESS_STATUS, NULL, 0)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
         return res;
+    }
+    return res;
+}
+
+/**
+ * 请求命令字分析 0x60 设备绑定 即生成隐藏SSID
+ */
+int request_cmd_0x60(struct s_terminal_dev_register * terminal_dev_register)
+{
+    int res = 0;
+    int fd = terminal_dev_register->fd;
+    int len = terminal_dev_register->length;
+    unsigned char register_state = (unsigned char)terminal_dev_register->data_table.register_state;
+    
+#if BOARDTYPE == 9344
+    struct s_dev_register dev_register;
+    memset(&dev_register, 0, sizeof(struct s_dev_register));
+#endif
+    
+    unsigned char redraw_flag = 0;
+    char buf[256] = {0};
+    char cmd_buf[256] = {0};
+    
+    char pad_sn[SN_LEN + 1] = {0};
+    char pad_mac[18] = {0};
+    
+    char base_sn[SN_LEN + 1] = {0};
+    char base_mac[18] = {0};
+    char ssid1[32] = {0};
+    char wpapsk1[32] = {0};
+    
+    PRINT("len = %d %02X\n", len, len);
+    if (len != (SN_LEN + 12))
+    {
+        res = P_DATA_ERR;
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data error!", res);
+        return res;
+    }
+    
+    memcpy(pad_sn, terminal_dev_register->data, SN_LEN);
+    memcpy(pad_mac, terminal_dev_register->data + SN_LEN, 12);
+    
+    // 读取数据库，判断SSID是否存在
+    char columns_name[9][30] = {"base_sn", "base_mac", "base_ip", "ssid_user_name", "ssid_password", "pad_sn", "pad_mac", "pad_ip", "register_state"};
+    char columns_value[9][100] = {0};
+    unsigned short values_len[9] = {0};
+    
+    res = database_management.select(5, columns_name, columns_value);
+    
+    if ((res < 0) && (res != NO_RECORD_ERR))
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_select failed!", res);
+        return res;
+    }
+    else if (res == 0) /*SSID存在*/
+    {
+        // 直接返回
+        redraw_flag = 0;
+        common_tools.mac_add_colon(columns_value[1]);
+        
+        memcpy(base_sn, columns_value[0], strlen(columns_value[0]));
+        memcpy(base_mac, columns_value[1], strlen(columns_value[1]));
+        memcpy(ssid1, columns_value[3], strlen(columns_value[3]));
+        memcpy(wpapsk1, columns_value[4], strlen(columns_value[4]));
+    }
+    else if (res == NO_RECORD_ERR) // 重新生成SSID
+    {
+        redraw_flag = 1;
+        res = 0;
+        
+        // 获取base_sn mac
+        if ((res = terminal_register.get_base_sn_and_mac(base_sn, base_mac)) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_base_sn_and_mac failed", res);
+            return res;
+        }
+        PRINT("get_base_sn_and_mac end!\n");
+        
+        if ((res = common_tools.get_rand_string(12, 0, ssid1, UTF8)) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_rand_string failed", res);
+            return res;
+        }
+        strncat(ssid1, base_mac, strlen(base_mac));
+        PRINT("ssid1 = %s base_mac = %s\n", ssid1, base_mac);
+        common_tools.mac_add_colon(base_mac);
+        
+        if ((res = common_tools.get_rand_string(12, 0, wpapsk1, UTF8)) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_rand_string failed", res);
+            return res;
+        }
+        PRINT("wpapsk1 = %s\n", wpapsk1);
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "SSID and password randomly generated successfully!", 0);
+        
+        // 生成
+        snprintf(cmd_buf, sizeof(cmd_buf), "cfg -b 3 %s_2G %s_5G %s %s &", ssid1, ssid1, wpapsk1, wpapsk1);
+        system(cmd_buf);
+    }
+    
+    snprintf(buf, sizeof(buf), "base_sn:%s,base_mac:%s,base_ip:10.10.10.254,ssid_user_name:%s,ssid_password:%s", base_sn, base_mac, ssid1, wpapsk1);
+    common_tools.mac_del_colon(base_mac);
+    
+    int i = 0;
+    struct s_pad_and_6410_msg pad_and_6410_msg;
+    memset(&pad_and_6410_msg, 0, sizeof(struct s_pad_and_6410_msg));
+    pad_and_6410_msg.head[0] = 0x5A;
+    pad_and_6410_msg.head[1] = 0xA5;
+    
+    for (i = 0; i < 3; i++)
+    {
+        // 发送SSID
+        if ((res = network_config.send_msg_to_pad(fd, SUCCESS_STATUS, buf, strlen(buf))) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed", res);
+            continue;
+        }
+        
+        // 接收正确回复
+        if ((res = network_config.recv_msg_from_pad(fd, &pad_and_6410_msg)) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "recv_msg_from_pad failed", res);
+            continue;
+        }
+        
+        if (pad_and_6410_msg.cmd == SUCCESS_STATUS)
+        {
+            // 修改终端初始化状态并插入数据库
+            memcpy(columns_value[0], base_sn, strlen(base_sn));
+            memcpy(columns_value[1], base_mac, strlen(base_mac));
+            memcpy(columns_value[2], "10.10.10.254", strlen("10.10.10.254"));
+            memcpy(columns_value[3], ssid1,strlen(ssid1));
+            memcpy(columns_value[4], wpapsk1,strlen(wpapsk1));
+            memcpy(columns_value[5], pad_sn, strlen(pad_sn));
+            memcpy(columns_value[6], pad_mac, strlen(pad_mac));
+            memcpy(columns_value[7], "10.10.10.100", strlen("10.10.10.100"));
+            memcpy(columns_value[8], "0", strlen("0"));
+            
+            for (i = 0; i < 9; i++)
+            {
+                values_len[i] = strlen(columns_value[i]);
+            }
+            
+            if ((res = database_management.update(9, columns_name, columns_value, values_len)) < 0)
+            {
+                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_update failed", res);
+                return res;
+            }
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "The database update success!", 0); 
+            
+            break;
+        }
+        else if (pad_and_6410_msg.cmd == ERROR_STATUS)
+        {
+            res = P_DATA_ERR;
+            continue;
+        }
     }
     return res;
 }
@@ -2340,12 +2505,8 @@ static int request_cmd_analyse(struct s_terminal_dev_register * terminal_dev_reg
         {
             switch (pad_and_6410_msg.cmd)
             {
-                case 0x01:   //0x01: 动态IP + 注册
-                case 0x02:   //0x02: 静态IP + 注册
-                case 0x03:   //0x03: PPPOE + 注册
-                case 0x04:   //0x04: 询问当前设置状态
-                case 0x52:   //0x52: 查看WAN口
-                case 0x53:   //0x53: 取消当前配置
+                case STOP_CONFIG:   //0x53: 取消当前配置
+                case INIT_LAN: // 设备绑定 即生成隐藏SSID
                 {
                     cmd = pad_and_6410_msg.cmd;
                     break;
@@ -2363,39 +2524,27 @@ static int request_cmd_analyse(struct s_terminal_dev_register * terminal_dev_reg
         {
             switch (pad_and_6410_msg.cmd)
             {
-                case 0x01:   //0x01: 动态IP + 注册
-                case 0x02:   //0x02: 静态IP + 注册
-                case 0x03:   //0x03: PPPOE + 注册
-                case 0x04:   //0x04: 询问当前设置状态
-                #if BOARDTYPE == 5350
-                case 0x05:   //0x05: 生成默认ssid，用于外围设备的接入
-                case 0x06:   //0x06: 注销默认ssid
-                case 0x07:   //0x07: 无线网络设置
-                case 0x08:   //0x08: 动态IP
-                case 0x09:   //0x09: 静态IP
-                case 0x0A:   //0x0A: PPPOE
-                case 0x0B:   //0x0B: 网络设置询问和无线设置询问
-                #elif BOARDTYPE == 9344
-                case 0x05:   //0x05: 注册命令，PAD将随机生成的4字节串码发给base
-                case 0x06:   //0x06: 注册命令，智能设备将 设备名称、id、mac发送给BASE
-                case 0x0B:   //0x0B: 设备名称修改命令，智能设备将 mac、设备名称发送给BASE
-                #endif // BOARDTYPE == 9344
-                case 0x0C:   //0x0C: 恢复出厂（终端初始化前的状态）
-                case 0x0D:   //0x0D: 查看Base版本
-                #if CTSI_SECURITY_SCHEME == 2
-                case 0x0E:   //0x0E: 获取身份令牌
-                case 0x0F:   //0x0F: 获取位置令牌
-                case 0x50:   //0x50: 重新生成身份令牌
-                case 0x51:   //0x51: 重新生成身份令牌
-                #endif // CTSI_SECURITY_SCHEME == 2
-                case 0x52:   //0x52: 查看WAN口
-                case 0x53:   //0x53: 取消当前配置
                 #if BOARDTYPE == 9344
-                case 0x54:   //0x54：串码对比，智能设备将输入的串码发送到base，base进行对比
-                case 0x55:   //0x55：PAD扫描“发送注册申请”的设备
-                case 0x56:   //0x56：查询已经注册的设备
-                case 0x57:   //0x57：注销命令，删除匹配序列号的行
-                case 0x58:   //0x58：注销命令，智能设备将mac地址发送到base
+                case PAD_MAKE_IDENTIFYING_CODE:   //0x05: 注册命令，PAD将随机生成的4字节串码发给base
+                case INTELLIGENT_DEV_REGISTER_REQUEST:   //0x06: 注册命令，智能设备将 设备名称、id、mac发送给BASE
+                case INTELLIGENT_DEV_CHANGE_NAME:   //0x0B: 设备名称修改命令，智能设备将 mac、设备名称发送给BASE
+                #endif // BOARDTYPE == 9344
+                case RESTORE_FACTORY:   //0x0C: 恢复出厂（终端初始化前的状态）
+                case BASE_VERSION:   //0x0D: 查看Base版本
+                #if CTSI_SECURITY_SCHEME == 2
+                case GET_DEV_TOKEN:   //0x0E: 获取身份令牌
+                case GET_POSITION_TOKEN:   //0x0F: 获取位置令牌
+                case REDRAW_DEV_TOKEN:   //0x50: 重新生成身份令牌
+                case REDRAW_POSITION_TOKEN:   //0x51: 重新生成位置令牌
+                #endif // CTSI_SECURITY_SCHEME == 2
+                case GET_WAN_STATE:   //0x52: 查看WAN口
+                case STOP_CONFIG:   //0x53: 取消当前配置
+                #if BOARDTYPE == 9344
+                case INTELLIGENT_DEV_IDENTIFYING_CODE_COMPARE:   //0x54：串码对比，智能设备将输入的串码发送到base，base进行对比
+                case PAD_GET_REQUEST_REGISTER_DEV:   //0x55：PAD扫描“发送注册申请”的设备
+                case PAD_GET_REGISTER_SUCCESS_DEV:   //0x56：查询已经注册的设备
+                case PAD_LOGOUT_DEV_BY_SN:   //0x57：注销命令，删除匹配序列号的行
+                case INTELLIGENT_DEV_LOGOUT:   //0x58：注销命令，智能设备将mac地址发送到base
                 #endif // BOARDTYPE == 9344
                 {
                     cmd = pad_and_6410_msg.cmd;
@@ -2433,27 +2582,13 @@ static int request_cmd_analyse(struct s_terminal_dev_register * terminal_dev_reg
     *network_config.pad_cmd = terminal_dev_register->data_table.register_state;
     PRINT("register_state = %02X, *network_config.pad_cmd = %02X\n", terminal_dev_register->data_table.register_state, (unsigned char)*network_config.pad_cmd);
 
-    // 不是智能设备都要验证 序列号 // 所有都要验证 序列号
+    // 不是智能设备都要验证 序列号 // 所有都要验证 序列号 通过无线
     #if BOARDTYPE == 9344
-    if ((pad_and_6410_msg.cmd != 0x06) && (pad_and_6410_msg.cmd != 0x0B) && (pad_and_6410_msg.cmd != 0x54) && (pad_and_6410_msg.cmd != 0x58) && (mode == 1)) // 网络通道
+    if ((pad_and_6410_msg.cmd != INTELLIGENT_DEV_REGISTER_REQUEST) && (pad_and_6410_msg.cmd != INTELLIGENT_DEV_CHANGE_NAME) && (pad_and_6410_msg.cmd != INTELLIGENT_DEV_IDENTIFYING_CODE_COMPARE) && (pad_and_6410_msg.cmd != INTELLIGENT_DEV_LOGOUT) && (mode == 1)) // 网络通道
     #endif
     {
         switch (pad_and_6410_msg.cmd)
         {
-            case 0x01: // 设置命令时
-            case 0x02:
-            case 0x03:
-            #if BOARDTYPE == 5350
-            case 0x07:
-            case 0x08:
-            case 0x09:
-            case 0x0A:
-            #elif BOARDTYPE == 5350
-            #endif // BOARDTYPE == 5350
-            {
-                index = 1;
-                break;
-            }
             default:
             {
                 index = 0;
@@ -2467,23 +2602,16 @@ static int request_cmd_analyse(struct s_terminal_dev_register * terminal_dev_reg
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "There is no (pad_sn) record!", res);
             goto EXIT;
         }
- #if 0       
-        if (strlen(pad_and_6410_msg.data + index) != SN_LEN)
-        {
-            res = P_DATA_ERR;
-            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "data error!", res);
-            goto EXIT;
-        }
- #endif       
+
         PRINT("pad_and_6410_msg.data = %s, terminal_dev_register->data_table.pad_sn = %s\n", pad_and_6410_msg.data + index, terminal_dev_register->data_table.pad_sn);
 
         if (memcmp(terminal_dev_register->data_table.pad_sn, pad_and_6410_msg.data + index, strlen(terminal_dev_register->data_table.pad_sn)) != 0)
         {
             // 要记录一个状态，用于确定是否要恢复出厂
-            if ((unsigned char)*network_config.pad_cmd == 0xFC) //广域网设置成功，由于pad和base不是合法设备
+            if ((unsigned char)*network_config.pad_cmd == WRONGFUL_DEV_STATUS) //广域网设置成功，由于pad和base不是合法设备
             {
-                *network_config.cmd = 0xFB;
-                *network_config.pad_cmd = 0xFB;
+                *network_config.cmd = INITUAL_STATUS;
+                *network_config.pad_cmd = INITUAL_STATUS;
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "new pad!", 0);
             }
             else
@@ -2502,9 +2630,9 @@ static int request_cmd_analyse(struct s_terminal_dev_register * terminal_dev_reg
     // 判断命令字
     switch (cmd)
     {
-        case 0x01:
-        case 0x02:
-        case 0x03:
+        case DYNAMIC_CONFIG_AND_REGISTER:
+        case STATIC_CONFIG_AND_REGISTER:
+        case PPPOE_CONFIG_AND_REGISTER:
         #if BOARDTYPE == 5350
         case 0x07:
         case 0x08:
@@ -2517,91 +2645,96 @@ static int request_cmd_analyse(struct s_terminal_dev_register * terminal_dev_reg
             res = request_cmd_0x01_02_03_07_08_09_0A(terminal_dev_register);
             break;
         }
-        case 0x04:
+        case ASK_BASE:
         {
             res = request_cmd_0x04(terminal_dev_register);
             break;
         }
-        case 0x05:
+        case PAD_MAKE_IDENTIFYING_CODE:
         {
             res = request_cmd_0x05(terminal_dev_register);
             break;
         }
-        case 0x06:
+        case INTELLIGENT_DEV_REGISTER_REQUEST:
         {
             res = request_cmd_0x06(terminal_dev_register);
             PRINT("after 0x06\n");
             break;
         }
-        case 0x0B:
+        case INTELLIGENT_DEV_CHANGE_NAME:
         {
             res = request_cmd_0x0B(terminal_dev_register);
             break;
         }
-        case 0x0C:
+        case RESTORE_FACTORY:
         {
             res = request_cmd_0x0C(terminal_dev_register);
             break;
         }
-        case 0x0D:
+        case BASE_VERSION:
         {
             res = request_cmd_0x0D(terminal_dev_register);
             break;
         }
-        case 0x0E:
+        case GET_DEV_TOKEN:
         {
             res = request_cmd_0x0E(terminal_dev_register);
             break;
         }
-        case 0x0F:
+        case GET_POSITION_TOKEN:
         {
             res = request_cmd_0x0F(terminal_dev_register);
             break;
         }
-        case 0x50:
+        case REDRAW_DEV_TOKEN:
         {
             res = request_cmd_0x50(terminal_dev_register);
             break;
         }
-        case 0x51:
+        case REDRAW_POSITION_TOKEN:
         {
             res = request_cmd_0x51(terminal_dev_register);
             break;
         }
-        case 0x52:
+        case GET_WAN_STATE:
         {
             res = request_cmd_0x52(terminal_dev_register);
             break;
         }
-        case 0x53:
+        case STOP_CONFIG:
         {
             res = request_cmd_0x53(terminal_dev_register);
             break;
         }
         #if BOARDTYPE == 9344
-        case 0x54:
+        case INTELLIGENT_DEV_IDENTIFYING_CODE_COMPARE:
         {
             res = request_cmd_0x54(terminal_dev_register);
             break;
         }
-        case 0x55:
+        case PAD_GET_REQUEST_REGISTER_DEV:
         {
             res = request_cmd_0x55(terminal_dev_register);
             break;
         }
-        case 0x56:
+        case PAD_GET_REGISTER_SUCCESS_DEV:
         {
             res = request_cmd_0x56(terminal_dev_register);
             break;
         }
-        case 0x57:
+        case PAD_LOGOUT_DEV_BY_SN:
         {
             res = request_cmd_0x57(terminal_dev_register);
             break;
         }
-        case 0x58:
+        case INTELLIGENT_DEV_LOGOUT:
         {
             res = request_cmd_0x58(terminal_dev_register);
+            break;
+        }
+        case INIT_LAN: // 设备绑定 即生成隐藏SSID
+        {
+            res = request_cmd_0x60(terminal_dev_register);
             break;
         }
         #endif // BOARDTYPE == 9344
@@ -2615,7 +2748,7 @@ static int request_cmd_analyse(struct s_terminal_dev_register * terminal_dev_reg
 
 EXIT:
     // 等于1时说明此时正在设置
-    if ((terminal_dev_register->config_now_flag != 1) || (cmd == 0x53))
+    if ((terminal_dev_register->config_now_flag != 1) || (cmd == STOP_CONFIG))
     {
         network_config.init_cmd_list();  // 初始化命令结构体
     }
@@ -2639,7 +2772,7 @@ EXIT:
             PRINT("buf = %s\n", buf);
         }
 
-        if (network_config.send_msg_to_pad(fd, 0xFF, buf, strlen(buf)) < 0)
+        if (network_config.send_msg_to_pad(fd, ERROR_STATUS, buf, strlen(buf)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_msg_to_pad failed!", res);
         }
