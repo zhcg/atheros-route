@@ -326,6 +326,12 @@ int do_cmd_offhook(dev_status_t *dev)
 		snprintf(sendbuf, 23,"HEADR0011INUSING0015\r\n");
 		goto OFFHOOK_ERR;
 	}
+	if(dev->audio_client_fd < 0)
+	{
+		memset(sendbuf,0,SENDBUF);
+		snprintf(sendbuf, 23,"HEADR0011INUSING0016\r\n");
+		goto OFFHOOK_ERR;
+	}
 	if(phone_control.global_incoming == 1)
 	{
 		if(dev->incoming == 1)
@@ -346,7 +352,7 @@ OFFHOOK:
 #else
 	if(!dev->dev_is_using && dev->audio_client_fd>=0 && phone_control.global_phone_is_using==0)
 #endif	
-{
+	{
 		for(i=0;i<CLIENT_NUM;i++)
 		{
 			if(devlist[i].client_fd == -1 || devlist[i].client_fd == dev->client_fd)
@@ -425,6 +431,7 @@ OFFHOOK_SUCCESS:
 			led_control(LED_OFFHOOK_IN);
 		else
 			led_control(LED_OFFHOOK_OUT);
+		netWrite(dev->client_fd, "HEADR0011INUSING0010\r\n", 23);	
 	}
 	else
 	{
