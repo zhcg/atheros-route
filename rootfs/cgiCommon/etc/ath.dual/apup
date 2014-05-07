@@ -129,6 +129,7 @@ fi
 if [ $NUMRADIO = 1 ]; then
 	cfg -a WDSON_OFF_3=off
 	cfg -a WIFION_OFF_3=off
+	cfg -a RADIO_STATUS=1
 	cfg -c
 fi
 ##

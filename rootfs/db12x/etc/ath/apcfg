@@ -33,6 +33,7 @@ cfg -a SOFT_VERSION=${SOFT_VERSION:="HBD_F2A_B6_V9.9.5_20140504_A"}
 cfg -a ADMPASS=${ADMPASS:="admin"}
 cfg -a WDSON_OFF=${WDSON_OFF:="off"}
 cfg -a WDSON_OFF_3=${WDSON_OFF_3:="off"}
+cfg -a RADIO_STATUS=${RADIO_STATUS:="3"}
 cfg -a DHCPON_OFF=${DHCPON_OFF:="on"}
 cfg -a BEACON_INT=${BEACON_INT:="100"}
 cfg -a BEACON_INT_3=${BEACON_INT_3:="100"}
