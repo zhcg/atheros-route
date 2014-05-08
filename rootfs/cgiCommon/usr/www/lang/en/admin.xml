@@ -141,7 +141,7 @@
 	<message msgid="admw optionXX" msgstr="(optional)" />
 
 	<message msgid="admw auto_dhcp" msgstr="Automatically select DHCP mode" />
-	<message msgid="admw auto_sip" msgstr="Automatically select StaticIP mode" />
+	<message msgid="admw auto_sip" msgstr="Automatically select Static IP mode" />
 	<message msgid="admw auto_ppp" msgstr="Automatically select PPPoE mode" />
 	<message msgid="admw auto_l2tp" msgstr="Automatically select L2TP mode" />
 	<message msgid="admw auto_p2tp" msgstr="Automatically select P2TP mode" />
