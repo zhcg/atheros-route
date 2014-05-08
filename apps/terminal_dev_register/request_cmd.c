@@ -2461,6 +2461,7 @@ int request_cmd_0x60(struct s_terminal_dev_register * terminal_dev_register)
             continue;
         }
     }
+    request_cmd.init_data_table(&terminal_dev_register->data_table);
     return res;
 }
 #endif // BOARDTYPE == 9344
