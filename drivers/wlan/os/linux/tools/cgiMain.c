@@ -210,6 +210,22 @@ static inline int isNumericOnly(char *pStr)
     }
     return 0;
 }
+static int atoii (char *zzzz)
+{
+  int i = 0;
+  int num=0;
+for(i=0;i<20;i++)
+{
+  if(zzzz[i] >= '0' && zzzz[i] <= '9')
+  	{
+	  num = num * 10 + (zzzz[i] - '0');
+ 	}else
+ 	{
+ 			break;
+ 	}
+}
+  return num;
+}
 
 char *get_webuicfg(char *name, char *value)
 {
@@ -1400,9 +1416,12 @@ char *processSpecial(char *paramStr, char *outBuff)
 	                                outBuff += sprintf(outBuff,"<td>%sbit/s</td>",rate_buf);
 	                                
 	                                /*get the Signal strength */
+									int signal_value;
 	                                memset(rssi_buf, 0, sizeof(rssi_buf));
 	                                strncpy(rssi_buf, &STAbuf[35], 5);
-	                                outBuff += sprintf(outBuff,"<td>-%s dBm</td>",rssi_buf);//printf("the RSSI is %s\n", rssi_buf);    
+									signal_value = -100 + atoii(rssi_buf);
+//	                                outBuff += sprintf(outBuff,"<td>-%s dBm</td>",rssi_buf);//printf("the RSSI is %s\n", rssi_buf);    
+	                                outBuff += sprintf(outBuff,"<td>%d dBm</td>",signal_value);//printf("the RSSI is %s\n", rssi_buf);    
 	                                outBuff += sprintf(outBuff,"</tr>");
 									
 									staticIp = 0;
