@@ -19,6 +19,42 @@
 
 #define NAME  "/dev/caldata"
 
+char *Execute_cmd(char *cmd,char *buffer)
+{
+    FILE            *f;
+    char            *retBuff = buffer;
+    char            cmdLine[1024];
+
+    /*
+    ** Provide he command string to popen
+    */
+
+    f = popen(cmd, "r");
+
+    if(f)
+    {
+        /*
+        ** Read each line.
+        */
+
+        while(1)
+        {
+            *buffer = 0;
+            fgets(buffer,120,f);
+            if(strlen(buffer) == 0)
+            {
+                break;
+            }
+
+            strcat(buffer,"<br>");
+            buffer += strlen(buffer);
+        }
+
+        pclose(f);
+    }
+		return(retBuff);
+}
+
 int main(int argc,char **argv)
 {
 
@@ -27,6 +63,7 @@ int main(int argc,char **argv)
 	int i;
 	FILE		*f;
 	int  len;
+	char valBuf[30];
 
 	if(  argc !=  2){
 		printf("usage:set_macaddr 00:11:22:33:44:55 \n");
@@ -133,7 +170,10 @@ int main(int argc,char **argv)
 	len=fwrite(mac_buff,6,1,f);
 	if (len < 0 )
 		printf("write mac addr error\n");
-
+	
+	Execute_cmd("grep -c 168c /proc/bus/pci/devices", valBuf);
+//	printf("\n grep -c 168c /proc/bus/pci/devices value is %s  \n",valBuf);
+	if (strncmp(valBuf,"1",1) == 0){
 	fseek(f, WIFI1_OFFSET, SEEK_SET);
 	if (( mac_data[5] == 0xff ) || ( mac_data[5] == 0xfe )){
 		if( mac_data[5] == 0xfe )
@@ -167,6 +207,7 @@ int main(int argc,char **argv)
 		printf("write mac addr error\n");
 		fclose(f);
 		return -1;
+	}
 	}
 //	system("cfg -a ETH0_MAC=`/usr/sbin/get_mac eth0`");
 //	system("cfg -a ETH0_DFMAC=`/usr/sbin/get_mac eth0`");
