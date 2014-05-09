@@ -1356,6 +1356,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                     unsigned d, h, m;
                     int num=1;
 					int staticIp;
+					int signal_value;
 
                     //Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
                     //Execute_cmd("wlanconfig ath0 list sta > /var/run/.STAlist", rspBuff);
@@ -1416,7 +1417,6 @@ char *processSpecial(char *paramStr, char *outBuff)
 	                                outBuff += sprintf(outBuff,"<td>%sbit/s</td>",rate_buf);
 	                                
 	                                /*get the Signal strength */
-									int signal_value;
 	                                memset(rssi_buf, 0, sizeof(rssi_buf));
 	                                strncpy(rssi_buf, &STAbuf[35], 5);
 									signal_value = -100 + atoii(rssi_buf);
@@ -1454,7 +1454,9 @@ char *processSpecial(char *paramStr, char *outBuff)
                                 /*get the Signal strength */
                                 memset(rssi_buf, 0, sizeof(rssi_buf));
                                 strncpy(rssi_buf, &STAbuf[35], 5);
-                                outBuff += sprintf(outBuff,"<td>-%s dBm</td>",rssi_buf);//printf("the RSSI is %s\n", rssi_buf);    
+								signal_value = -100 + atoii(rssi_buf);
+								outBuff += sprintf(outBuff,"<td>%d dBm</td>",signal_value);//printf("the RSSI is %s\n", rssi_buf);	  
+//                                outBuff += sprintf(outBuff,"<td>-%s dBm</td>",rssi_buf);//printf("the RSSI is %s\n", rssi_buf);    
                                 
                                 outBuff += sprintf(outBuff,"</tr>");
 							}
@@ -1517,7 +1519,9 @@ char *processSpecial(char *paramStr, char *outBuff)
 	                                /*get the Signal strength */
 	                                memset(rssi_buf, 0, sizeof(rssi_buf));
 	                                strncpy(rssi_buf, &STAbuf[35], 5);
-	                                outBuff += sprintf(outBuff,"<td>-%s dBm</td>",rssi_buf);//printf("the RSSI is %s\n", rssi_buf);    
+									signal_value = -100 + atoii(rssi_buf);
+									outBuff += sprintf(outBuff,"<td>%d dBm</td>",signal_value);//printf("the RSSI is %s\n", rssi_buf);	  
+//	                                outBuff += sprintf(outBuff,"<td>-%s dBm</td>",rssi_buf);//printf("the RSSI is %s\n", rssi_buf);    
 	                                
 	                                outBuff += sprintf(outBuff,"</tr>");
 									
@@ -1549,7 +1553,9 @@ char *processSpecial(char *paramStr, char *outBuff)
                                 /*get the Signal strength */
                                 memset(rssi_buf, 0, sizeof(rssi_buf));
                                 strncpy(rssi_buf, &STAbuf[35], 5);
-                                outBuff += sprintf(outBuff,"<td>-%s dBm</td>",rssi_buf);//printf("the RSSI is %s\n", rssi_buf);    
+								signal_value = -100 + atoii(rssi_buf);
+								outBuff += sprintf(outBuff,"<td>%d dBm</td>",signal_value);//printf("the RSSI is %s\n", rssi_buf);	  
+//                                outBuff += sprintf(outBuff,"<td>-%s dBm</td>",rssi_buf);//printf("the RSSI is %s\n", rssi_buf);    
                                 
                                 outBuff += sprintf(outBuff,"</tr>");
 							}
@@ -1791,7 +1797,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                     int num=1;
                     int shi=0;
 					int flag=0;
-fprintf(errOut,"[luodp] get mac from arp89");
+					fprintf(errOut,"[luodp] get mac from arp89");
                     Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
 					
 					CFG_get_by_name("WIFION_OFF",wifi0_flag);
