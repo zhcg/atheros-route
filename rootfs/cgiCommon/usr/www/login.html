@@ -46,6 +46,7 @@ body {
 	font-weight: 800;
 	cursor:pointer;
 }
+.denglukuang_mr{ height:24px; line-height:24px; margin-top:32px; text-align:left; margin-left:52px; color:#999; font-size:12px;}
 -->
 </style>
 <script type="text/javascript">
@@ -75,7 +76,7 @@ function stateChanged()
 			var date=new Date(); 
 			//var expiresDays=10; 
 			//将date设置为10天以后的时间 
-			date.setTime(date.getTime()+1*60*1000); 
+			date.setTime(date.getTime()+1*3600*1000); 
 			//将userId和userName两个cookie设置为10天后过期 
 			document.cookie="userName="+document.getElementById("pwd").value+";expires="+date.toGMTString(); 
 			//alert("登录成功");
@@ -140,18 +141,16 @@ function onb(val)
 		val.value=_("login default");
 	}
 }
-//function document.onkeydown() 
-//{
- // if(event.keyCode==13) //检查按得是不是回车
- // { 
-//	CheckUser();
- // } 
-//} 
+function keyLogin()
+{
+  if (event.keyCode==13)   //回车键的键值为13
+     document.getElementById("tijiao").click();  //调用登录按钮的登录事件
+}
 </script>
 
 </head>
 
-<body oncontextmenu="window.event.returnValue=false" onload="init()">
+<body oncontextmenu="window.event.returnValue=false" onload="init()" onkeydown="keyLogin();">
 <div id="denglukuang">
   <div class="denglukuang_title"><strong>HBD</strong><span id="title">路由器登录</span></div>
   <div id="pwddiv">
