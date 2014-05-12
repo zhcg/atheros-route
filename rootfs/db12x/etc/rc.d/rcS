@@ -168,7 +168,7 @@ fi
 /usr/bin/version_check &
 /bin/server &
 /bin/net_test &
-/usr/sbin/httpd -h /usr/www/ -c /etc/httpd.conf
+/usr/sbin/httpd -h /usr/www/
 #/usr/sbin/threethread &
 #/usr/sbin/ppy &
 /usr/sbin/web_control &
