@@ -1374,161 +1374,92 @@ char *processSpecial(char *paramStr, char *outBuff)
 						
 						/*2.4G*/
 	                    flist = fopen("/etc/.STAlist", "r");    /*  /etc/.STAlist   */
+						memset(STAbuf, 0, sizeof STAbuf);
 						fgets(STAbuf, 128, flist);
-	                    while(fgets(STAbuf, 128, flist))
-	                    {
-	                    	memset(buf, 0, sizeof(buf));
-	                    	strncpy(buf, STAbuf, 17);
-							
-	                    	fp = fopen(UDHCPD_FILE, "r");  /*  /var/run/udhcpd.leases   */	                   						
-							while (fread(&lease, sizeof(lease), 1, fp) == 1)
-							{	
-								staticIp = 1;
-	                            /*compare MAC*/
-	                            memset(mac_buf, 0, sizeof(mac_buf));
-								ret = 0;
-                            	for(i = 0, j = 0 ; i < 6; i++, j+=3)
-                            	{
-                                	sprintf(&mac_buf[j], "%02x:", lease.mac[i]);
-									if(lease.mac[i] == 0)
-										ret++;
-                            	}
-								if(ret == 6)
-									continue;
-	                            
-	                            //fprintf(errOut,"\n%s  %d 2.4G mac_buf:%s buf:%s\n",__func__,__LINE__, mac_buf, buf);
-	                            if(strncmp(buf, mac_buf, 17) == 0)
-	                            {
-	                                outBuff += sprintf(outBuff,"<tr>");
-	                                outBuff += sprintf(outBuff,"<td>%d</td>",num);
-	                                num++; 
-									
-	                            	if (strlen(lease.hostname) > 0)
-	                                    outBuff += sprintf(outBuff,"<td>%s</td>",lease.hostname);
-	                                else
-	                                    outBuff += sprintf(outBuff,"<td>NULL</td>");
-
-									
-									if (lease.ip > 0)
-									{
-										addr.s_addr = lease.ip;
-	                                	expires = ntohl(lease.expires);
-	                                	outBuff += sprintf(outBuff,"<td>%s</td>", inet_ntoa(addr));
-										
-									}
-									else
-										outBuff += sprintf(outBuff,"<td>NULL</td>");
-	                                
-	                                //outBuff += sprintf(outBuff,"<td>%02x", lease.mac[0]);
-	                                //for (i = 1; i < 6; i++)
-	                                //     outBuff += sprintf(outBuff,":%02x", lease.mac[i]);
-	                                //strncpy(buf, mac_buf, 17);
-									outBuff += sprintf(outBuff,"<td>%s</td>", buf);
-	                                outBuff += sprintf(outBuff,"</td>");
-									
-	                                memset(rate_buf, 0, sizeof(rate_buf));
-	                                strncpy(rate_buf, &STAbuf[27], 5);
-	                                outBuff += sprintf(outBuff,"<td>%sbit/s</td>",rate_buf);
-	                                
-	                                /*get the Signal strength */
-	                                memset(rssi_buf, 0, sizeof(rssi_buf));
-	                                strncpy(rssi_buf, &STAbuf[35], 5);
-									signal_value = -100 + atoii(rssi_buf);
-//	                                outBuff += sprintf(outBuff,"<td>-%s dBm</td>",rssi_buf);//printf("the RSSI is %s\n", rssi_buf);    
-	                                outBuff += sprintf(outBuff,"<td>%d dBm</td>",signal_value);//printf("the RSSI is %s\n", rssi_buf);    
-	                                outBuff += sprintf(outBuff,"</tr>");
-									
-									staticIp = 0;
-									break;
-								}
+						if(strlen(STAbuf) > 0)
+						{
+	                    	while(fgets(STAbuf, 128, flist))
+		                    {
+		                    	memset(buf, 0, sizeof(buf));
+		                    	strncpy(buf, STAbuf, 17);
 								
-	                        } /*end while (fread(&lease, sizeof(lease), 1, fp) == 1)*/
-	                        fclose(fp);
-							
-							//fprintf(errOut,"\n%s  %d 2.4G the static is %d\n",__func__, __LINE__, staticIp);
-							if(staticIp == 1) /*the sta is static ip*/
-							{
-								outBuff += sprintf(outBuff,"<tr>");
-                                outBuff += sprintf(outBuff,"<td>%d</td>",num);
-                                num++; 
-								/*hostname*/
-                            	outBuff += sprintf(outBuff,"<td>NULL</td>");
-								/*ip*/
-								outBuff += sprintf(outBuff,"<td>NULL</td>");
-                                /*mac*/	
-                                outBuff += sprintf(outBuff,"<td>%s</td>", buf);
-                                
-                                outBuff += sprintf(outBuff,"</td>");
+		                    	fp = fopen(UDHCPD_FILE, "r");  /*  /var/run/udhcpd.leases   */	                   						
+								while (fread(&lease, sizeof(lease), 1, fp) == 1)
+								{	
+									staticIp = 1;
+		                            /*compare MAC*/
+		                            memset(mac_buf, 0, sizeof(mac_buf));
+									ret = 0;
+	                            	for(i = 0, j = 0 ; i < 6; i++, j+=3)
+	                            	{
+	                                	sprintf(&mac_buf[j], "%02x:", lease.mac[i]);
+										if(lease.mac[i] == 0)
+											ret++;
+	                            	}
+									if(ret == 6)
+										continue;
+		                            
+		                            //fprintf(errOut,"\n%s  %d 2.4G mac_buf:%s buf:%s\n",__func__,__LINE__, mac_buf, buf);
+		                            if(strncmp(buf, mac_buf, 17) == 0)
+		                            {
+		                                outBuff += sprintf(outBuff,"<tr>");
+		                                outBuff += sprintf(outBuff,"<td>%d</td>",num);
+		                                num++; 
+										
+		                            	if (strlen(lease.hostname) > 0)
+		                                    outBuff += sprintf(outBuff,"<td>%s</td>",lease.hostname);
+		                                else
+		                                    outBuff += sprintf(outBuff,"<td>NULL</td>");
 
-                                memset(rate_buf, 0, sizeof(rate_buf));
-                                strncpy(rate_buf, &STAbuf[27], 5);
-                                outBuff += sprintf(outBuff,"<td>%sbit/s</td>",rate_buf);
-                                //printf("the sta's rate is %s\n", rate_buf);
-
-                                /*get the Signal strength */
-                                memset(rssi_buf, 0, sizeof(rssi_buf));
-                                strncpy(rssi_buf, &STAbuf[35], 5);
-								signal_value = -100 + atoii(rssi_buf);
-								outBuff += sprintf(outBuff,"<td>%d dBm</td>",signal_value);//printf("the RSSI is %s\n", rssi_buf);	  
-//                                outBuff += sprintf(outBuff,"<td>-%s dBm</td>",rssi_buf);//printf("the RSSI is %s\n", rssi_buf);    
-                                
-                                outBuff += sprintf(outBuff,"</tr>");
-							}
-							
-	                    }  /*end 2.4G while(fgets(STAbuf, 128, flist))*/
-						fclose(flist);
-						
-						/*for 5G*/
-						flist = fopen("/etc/.STAlist2", "r");    /*  /etc/.STAlist2   */
-						fgets(STAbuf, 128, flist);
-	                    while(fgets(STAbuf, 128, flist))
-	                    {
-	                    	memset(buf, 0, sizeof(buf));
-	                    	strncpy(buf, STAbuf, 17);
-							
-	                    	fp = fopen(UDHCPD_FILE, "r");  /*  /var/run/udhcpd.leases   */	                   						
-							while (fread(&lease, sizeof(lease), 1, fp) == 1)
-							{	
-								staticIp = 1;
-	                            /*compare MAC*/	                           
-	                            memset(mac_buf, 0, sizeof(mac_buf));
-								ret = 0;
-                            	for(i = 0, j = 0 ; i < 6; i++, j+=3)
-                            	{
-                                	sprintf(&mac_buf[j], "%02x:", lease.mac[i]);
-									if(lease.mac[i] == 0)
-										ret++;
-                            	}
-								if(ret == 6)
-									continue;
-	                            
-	                            //fprintf(errOut,"\n%s  %d 5G mac_buf:%s buf:%s\n",__func__,__LINE__,mac_buf,buf);
-	                            if(strncmp(buf, mac_buf, 17) == 0)
-	                            {
-	                                outBuff += sprintf(outBuff,"<tr>");
+										
+										if (lease.ip > 0)
+										{
+											addr.s_addr = lease.ip;
+		                                	expires = ntohl(lease.expires);
+		                                	outBuff += sprintf(outBuff,"<td>%s</td>", inet_ntoa(addr));
+											
+										}
+										else
+											outBuff += sprintf(outBuff,"<td>NULL</td>");
+		                                
+		                                //outBuff += sprintf(outBuff,"<td>%02x", lease.mac[0]);
+		                                //for (i = 1; i < 6; i++)
+		                                //     outBuff += sprintf(outBuff,":%02x", lease.mac[i]);
+		                                //strncpy(buf, mac_buf, 17);
+										outBuff += sprintf(outBuff,"<td>%s</td>", buf);
+		                                outBuff += sprintf(outBuff,"</td>");
+										
+		                                memset(rate_buf, 0, sizeof(rate_buf));
+		                                strncpy(rate_buf, &STAbuf[27], 5);
+		                                outBuff += sprintf(outBuff,"<td>%sbit/s</td>",rate_buf);
+		                                
+		                                /*get the Signal strength */
+		                                memset(rssi_buf, 0, sizeof(rssi_buf));
+		                                strncpy(rssi_buf, &STAbuf[35], 5);
+										signal_value = -100 + atoii(rssi_buf);
+	//	                                outBuff += sprintf(outBuff,"<td>-%s dBm</td>",rssi_buf);//printf("the RSSI is %s\n", rssi_buf);    
+		                                outBuff += sprintf(outBuff,"<td>%d dBm</td>",signal_value);//printf("the RSSI is %s\n", rssi_buf);    
+		                                outBuff += sprintf(outBuff,"</tr>");
+										
+										staticIp = 0;
+										break;
+									}
+									
+		                        } /*end while (fread(&lease, sizeof(lease), 1, fp) == 1)*/
+		                        fclose(fp);
+								
+								//fprintf(errOut,"\n%s  %d 2.4G the static is %d\n",__func__, __LINE__, staticIp);
+								if(staticIp == 1) /*the sta is static ip*/
+								{
+									outBuff += sprintf(outBuff,"<tr>");
 	                                outBuff += sprintf(outBuff,"<td>%d</td>",num);
 	                                num++; 
-									
-	                            	if (strlen(lease.hostname) > 0)
-	                                    outBuff += sprintf(outBuff,"<td>%s</td>",lease.hostname);
-	                                else
-	                                    outBuff += sprintf(outBuff,"<td>NULL</td>");
-
-									
-									if (lease.ip > 0)
-									{
-										addr.s_addr = lease.ip;
-	                                	expires = ntohl(lease.expires);
-	                                	outBuff += sprintf(outBuff,"<td>%s</td>", inet_ntoa(addr));
-									}
-									else
-										outBuff += sprintf(outBuff,"<td>NULL</td>", inet_ntoa(addr));
-	                                
-	                                //outBuff += sprintf(outBuff,"<td>%02x", lease.mac[0]);
-	                                //for (i = 1; i < 6; i++)
-	                                //     outBuff += sprintf(outBuff,":%02x", lease.mac[i]);
-	                                //strncpy(buf, mac_buf, 17);
-									outBuff += sprintf(outBuff,"<td>%s</td>", buf);
+									/*hostname*/
+	                            	outBuff += sprintf(outBuff,"<td>NULL</td>");
+									/*ip*/
+									outBuff += sprintf(outBuff,"<td>NULL</td>");
+	                                /*mac*/	
+	                                outBuff += sprintf(outBuff,"<td>%s</td>", buf);
 	                                
 	                                outBuff += sprintf(outBuff,"</td>");
 
@@ -1542,45 +1473,122 @@ char *processSpecial(char *paramStr, char *outBuff)
 	                                strncpy(rssi_buf, &STAbuf[35], 5);
 									signal_value = -100 + atoii(rssi_buf);
 									outBuff += sprintf(outBuff,"<td>%d dBm</td>",signal_value);//printf("the RSSI is %s\n", rssi_buf);	  
-//	                                outBuff += sprintf(outBuff,"<td>-%s dBm</td>",rssi_buf);//printf("the RSSI is %s\n", rssi_buf);    
+	//                                outBuff += sprintf(outBuff,"<td>-%s dBm</td>",rssi_buf);//printf("the RSSI is %s\n", rssi_buf);    
 	                                
 	                                outBuff += sprintf(outBuff,"</tr>");
-									
-									staticIp = 0;
-									break;
 								}
-	                        } /*end while (fread(&lease, sizeof(lease), 1, fp) == 1)*/
-	                        fclose(fp);
-							//fprintf(errOut,"\n%s  %d 5G the static is %d\n",__func__,__LINE__, staticIp);
-							if(staticIp == 1) /*the sta is static ip*/
-							{
-								outBuff += sprintf(outBuff,"<tr>");
-                                outBuff += sprintf(outBuff,"<td>%d</td>",num);
-                                num++; 
-								/*hostname*/
-                            	outBuff += sprintf(outBuff,"<td>NULL</td>");
-								/*ip*/
-								outBuff += sprintf(outBuff,"<td>NULL</td>");
-                                /*mac*/	
-                                outBuff += sprintf(outBuff,"<td>%s</td>", buf);
-                                
-                                outBuff += sprintf(outBuff,"</td>");
+								
+		                    }  /*end 2.4G while(fgets(STAbuf, 128, flist))*/
+						}
+						fclose(flist);
+						
+						/*for 5G*/
+						flist = fopen("/etc/.STAlist2", "r");    /*  /etc/.STAlist2   */
+						memset(STAbuf, 0, sizeof STAbuf);
+						fgets(STAbuf, 128, flist);
+						if(strlen(STAbuf) > 0)
+						{
+	                    	while(fgets(STAbuf, 128, flist))
+		                    {
+		                    	memset(buf, 0, sizeof(buf));
+		                    	strncpy(buf, STAbuf, 17);
+								
+		                    	fp = fopen(UDHCPD_FILE, "r");  /*  /var/run/udhcpd.leases   */	                   						
+								while (fread(&lease, sizeof(lease), 1, fp) == 1)
+								{	
+									staticIp = 1;
+		                            /*compare MAC*/	                           
+		                            memset(mac_buf, 0, sizeof(mac_buf));
+									ret = 0;
+	                            	for(i = 0, j = 0 ; i < 6; i++, j+=3)
+	                            	{
+	                                	sprintf(&mac_buf[j], "%02x:", lease.mac[i]);
+										if(lease.mac[i] == 0)
+											ret++;
+	                            	}
+									if(ret == 6)
+										continue;
+		                            
+		                            //fprintf(errOut,"\n%s  %d 5G mac_buf:%s buf:%s\n",__func__,__LINE__,mac_buf,buf);
+		                            if(strncmp(buf, mac_buf, 17) == 0)
+		                            {
+		                                outBuff += sprintf(outBuff,"<tr>");
+		                                outBuff += sprintf(outBuff,"<td>%d</td>",num);
+		                                num++; 
+										
+		                            	if (strlen(lease.hostname) > 0)
+		                                    outBuff += sprintf(outBuff,"<td>%s</td>",lease.hostname);
+		                                else
+		                                    outBuff += sprintf(outBuff,"<td>NULL</td>");
 
-                                memset(rate_buf, 0, sizeof(rate_buf));
-                                strncpy(rate_buf, &STAbuf[27], 5);
-                                outBuff += sprintf(outBuff,"<td>%sbit/s</td>",rate_buf);
-                                //printf("the sta's rate is %s\n", rate_buf);
+										
+										if (lease.ip > 0)
+										{
+											addr.s_addr = lease.ip;
+		                                	expires = ntohl(lease.expires);
+		                                	outBuff += sprintf(outBuff,"<td>%s</td>", inet_ntoa(addr));
+										}
+										else
+											outBuff += sprintf(outBuff,"<td>NULL</td>", inet_ntoa(addr));
+		                                
+		                                //outBuff += sprintf(outBuff,"<td>%02x", lease.mac[0]);
+		                                //for (i = 1; i < 6; i++)
+		                                //     outBuff += sprintf(outBuff,":%02x", lease.mac[i]);
+		                                //strncpy(buf, mac_buf, 17);
+										outBuff += sprintf(outBuff,"<td>%s</td>", buf);
+		                                
+		                                outBuff += sprintf(outBuff,"</td>");
 
-                                /*get the Signal strength */
-                                memset(rssi_buf, 0, sizeof(rssi_buf));
-                                strncpy(rssi_buf, &STAbuf[35], 5);
-								signal_value = -100 + atoii(rssi_buf);
-								outBuff += sprintf(outBuff,"<td>%d dBm</td>",signal_value);//printf("the RSSI is %s\n", rssi_buf);	  
-//                                outBuff += sprintf(outBuff,"<td>-%s dBm</td>",rssi_buf);//printf("the RSSI is %s\n", rssi_buf);    
-                                
-                                outBuff += sprintf(outBuff,"</tr>");
-							}
-	                    }  /*end 5G while(fgets(STAbuf, 128, flist))*/
+		                                memset(rate_buf, 0, sizeof(rate_buf));
+		                                strncpy(rate_buf, &STAbuf[27], 5);
+		                                outBuff += sprintf(outBuff,"<td>%sbit/s</td>",rate_buf);
+		                                //printf("the sta's rate is %s\n", rate_buf);
+
+		                                /*get the Signal strength */
+		                                memset(rssi_buf, 0, sizeof(rssi_buf));
+		                                strncpy(rssi_buf, &STAbuf[35], 5);
+										signal_value = -100 + atoii(rssi_buf);
+										outBuff += sprintf(outBuff,"<td>%d dBm</td>",signal_value);//printf("the RSSI is %s\n", rssi_buf);	  
+	//	                                outBuff += sprintf(outBuff,"<td>-%s dBm</td>",rssi_buf);//printf("the RSSI is %s\n", rssi_buf);    
+		                                
+		                                outBuff += sprintf(outBuff,"</tr>");
+										
+										staticIp = 0;
+										break;
+									}
+		                        } /*end while (fread(&lease, sizeof(lease), 1, fp) == 1)*/
+		                        fclose(fp);
+								//fprintf(errOut,"\n%s  %d 5G the static is %d\n",__func__,__LINE__, staticIp);
+								if(staticIp == 1) /*the sta is static ip*/
+								{
+									outBuff += sprintf(outBuff,"<tr>");
+	                                outBuff += sprintf(outBuff,"<td>%d</td>",num);
+	                                num++; 
+									/*hostname*/
+	                            	outBuff += sprintf(outBuff,"<td>NULL</td>");
+									/*ip*/
+									outBuff += sprintf(outBuff,"<td>NULL</td>");
+	                                /*mac*/	
+	                                outBuff += sprintf(outBuff,"<td>%s</td>", buf);
+	                                
+	                                outBuff += sprintf(outBuff,"</td>");
+
+	                                memset(rate_buf, 0, sizeof(rate_buf));
+	                                strncpy(rate_buf, &STAbuf[27], 5);
+	                                outBuff += sprintf(outBuff,"<td>%sbit/s</td>",rate_buf);
+	                                //printf("the sta's rate is %s\n", rate_buf);
+
+	                                /*get the Signal strength */
+	                                memset(rssi_buf, 0, sizeof(rssi_buf));
+	                                strncpy(rssi_buf, &STAbuf[35], 5);
+									signal_value = -100 + atoii(rssi_buf);
+									outBuff += sprintf(outBuff,"<td>%d dBm</td>",signal_value);//printf("the RSSI is %s\n", rssi_buf);	  
+	//                                outBuff += sprintf(outBuff,"<td>-%s dBm</td>",rssi_buf);//printf("the RSSI is %s\n", rssi_buf);    
+	                                
+	                                outBuff += sprintf(outBuff,"</tr>");
+								}
+		                    }  /*end 5G while(fgets(STAbuf, 128, flist))*/
+						}
 						fclose(flist);
 						
 	                    
@@ -1593,84 +1601,92 @@ char *processSpecial(char *paramStr, char *outBuff)
                             fprintf(errOut,"\n%s  %d open STAlist error\n \n",__func__,__LINE__);
                             break;
                         }
+						memset(STAbuf, 0, sizeof STAbuf);
                         fgets(STAbuf, 128, flist);
-                        while(fgets(STAbuf, 128, flist))
-                        {
-                            /*compare MAC*/
-                            memset(buf, 0, sizeof(buf));
-                            memset(mac_buf, 0, sizeof(mac_buf));
-                            strncpy(buf, STAbuf, 17);
-                            
-                            //fprintf(errOut,"\n%s  %d 5G mac_buf:%s buf:%s\n",__func__,__LINE__,mac_buf,buf);
-                            
-                            //if(strncmp(buf, mac_buf, 17) == 0)
-                            {//wireless
-                                outBuff += sprintf(outBuff,"<tr>");
-                                outBuff += sprintf(outBuff,"<td>%d</td>",num);
-                                num++; 
+						if(strlen(STAbuf) > 0)
+						{
+                        	while(fgets(STAbuf, 128, flist))
+	                        {
+	                            /*compare MAC*/
+	                            memset(buf, 0, sizeof(buf));
+	                            memset(mac_buf, 0, sizeof(mac_buf));
+	                            strncpy(buf, STAbuf, 17);
+	                            
+	                            //fprintf(errOut,"\n%s  %d 5G mac_buf:%s buf:%s\n",__func__,__LINE__,mac_buf,buf);
+	                            
+	                            //if(strncmp(buf, mac_buf, 17) == 0)
+	                            {//wireless
+	                                outBuff += sprintf(outBuff,"<tr>");
+	                                outBuff += sprintf(outBuff,"<td>%d</td>",num);
+	                                num++; 
 
-								/*hostname*/
-								outBuff += sprintf(outBuff,"<td>NULL</td>");
-								/*ip*/
-								outBuff += sprintf(outBuff,"<td>NULL</td>");
-								/*mac*/
-								outBuff += sprintf(outBuff,"<td>%s</td>", buf);
-                                
-                                outBuff += sprintf(outBuff,"</td>");
+									/*hostname*/
+									outBuff += sprintf(outBuff,"<td>NULL</td>");
+									/*ip*/
+									outBuff += sprintf(outBuff,"<td>NULL</td>");
+									/*mac*/
+									outBuff += sprintf(outBuff,"<td>%s</td>", buf);
+	                                
+	                                outBuff += sprintf(outBuff,"</td>");
 
-                                memset(rate_buf, 0, sizeof(rate_buf));
-                                strncpy(rate_buf, &STAbuf[27], 5);
-                                outBuff += sprintf(outBuff,"<td>%sbit/s</td>",rate_buf);
-                                //printf("the sta's rate is %s\n", rate_buf);
+	                                memset(rate_buf, 0, sizeof(rate_buf));
+	                                strncpy(rate_buf, &STAbuf[27], 5);
+	                                outBuff += sprintf(outBuff,"<td>%sbit/s</td>",rate_buf);
+	                                //printf("the sta's rate is %s\n", rate_buf);
 
-                                /*get the Signal strength */
-                                memset(rssi_buf, 0, sizeof(rssi_buf));
-                                strncpy(rssi_buf, &STAbuf[35], 5);
-                                outBuff += sprintf(outBuff,"<td>-%s dBm</td>",rssi_buf);//printf("the RSSI is %s\n", rssi_buf);    
-                                
-                                outBuff += sprintf(outBuff,"</tr>");
-							}
-                        }
-                         fclose(flist);
+	                                /*get the Signal strength */
+	                                memset(rssi_buf, 0, sizeof(rssi_buf));
+	                                strncpy(rssi_buf, &STAbuf[35], 5);
+	                                outBuff += sprintf(outBuff,"<td>-%s dBm</td>",rssi_buf);//printf("the RSSI is %s\n", rssi_buf);    
+	                                
+	                                outBuff += sprintf(outBuff,"</tr>");
+								}
+	                        }
+						}
+                        fclose(flist);
 
 						 /*for 5G sta list*/
 						flist = fopen("/etc/.STAlist2", "r");    /*  /etc/.STAlist2   */
+						memset(STAbuf, 0, sizeof STAbuf);
 						fgets(STAbuf, 128, flist);
-						while(fgets(STAbuf, 128, flist))
+						if(strlen(STAbuf) > 0)
 						{
-							/*compare MAC*/
-							memset(buf, 0, sizeof(buf));
-							memset(mac_buf, 0, sizeof(mac_buf));
-							strncpy(buf, STAbuf, 17);
-							//fprintf(errOut,"\n%s  %d mac_buf:%s buf:%s\n",__func__,__LINE__,mac_buf,buf);
-							
-                            //if(strncmp(buf, mac_buf, 17) == 0)
-                            {//wireless
-								outBuff += sprintf(outBuff,"<tr>");
-								outBuff += sprintf(outBuff,"<td>%d</td>",num);
-								num++; 
+							while(fgets(STAbuf, 128, flist))
+							{
+								/*compare MAC*/
+								memset(buf, 0, sizeof(buf));
+								memset(mac_buf, 0, sizeof(mac_buf));
+								strncpy(buf, STAbuf, 17);
+								//fprintf(errOut,"\n%s  %d mac_buf:%s buf:%s\n",__func__,__LINE__,mac_buf,buf);
+								
+	                            //if(strncmp(buf, mac_buf, 17) == 0)
+	                            {//wireless
+									outBuff += sprintf(outBuff,"<tr>");
+									outBuff += sprintf(outBuff,"<td>%d</td>",num);
+									num++; 
 
-								/*hostname*/
-								outBuff += sprintf(outBuff,"<td>NULL</td>");
-								/*ip*/
-								outBuff += sprintf(outBuff,"<td>NULL</td>");
-								/*mac*/
-								outBuff += sprintf(outBuff,"<td>%s</td>", buf);
+									/*hostname*/
+									outBuff += sprintf(outBuff,"<td>NULL</td>");
+									/*ip*/
+									outBuff += sprintf(outBuff,"<td>NULL</td>");
+									/*mac*/
+									outBuff += sprintf(outBuff,"<td>%s</td>", buf);
 
-								outBuff += sprintf(outBuff,"</td>");
+									outBuff += sprintf(outBuff,"</td>");
 
-								memset(rate_buf, 0, sizeof(rate_buf));
-								strncpy(rate_buf, &STAbuf[27], 5);
-								outBuff += sprintf(outBuff,"<td>%sbit/s</td>",rate_buf);
-								//printf("the sta's rate is %s\n", rate_buf);
+									memset(rate_buf, 0, sizeof(rate_buf));
+									strncpy(rate_buf, &STAbuf[27], 5);
+									outBuff += sprintf(outBuff,"<td>%sbit/s</td>",rate_buf);
+									//printf("the sta's rate is %s\n", rate_buf);
 
-								/*get the Signal strength */
-								memset(rssi_buf, 0, sizeof(rssi_buf));
-								strncpy(rssi_buf, &STAbuf[35], 5);
-								outBuff += sprintf(outBuff,"<td>-%s dBm</td>",rssi_buf);//printf("the RSSI is %s\n", rssi_buf);    
+									/*get the Signal strength */
+									memset(rssi_buf, 0, sizeof(rssi_buf));
+									strncpy(rssi_buf, &STAbuf[35], 5);
+									outBuff += sprintf(outBuff,"<td>-%s dBm</td>",rssi_buf);//printf("the RSSI is %s\n", rssi_buf);    
 
-								outBuff += sprintf(outBuff,"</tr>");
-								break;
+									outBuff += sprintf(outBuff,"</tr>");
+									break;
+								}
 							}
 						}
 						fclose(flist);
