@@ -13,4 +13,5 @@
 	<message msgid="login title" msgstr="Router Login" />
 	<message msgid="login but" msgstr="Login" />
 	<message msgid="login default" msgstr="Please Input Password" />
+	<message msgid="login dp" msgstr="Default password:admin" />
 </po>

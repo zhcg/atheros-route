@@ -13,4 +13,6 @@
 	<message msgid="login title" msgstr="路由器登录" />
 	<message msgid="login but" msgstr="登录" />
 	<message msgid="login default" msgstr="请输入密码" />
+	<message msgid="login dp" msgstr="默认密码:admin" />
+	
 </po>
