@@ -5478,8 +5478,7 @@ int main(int argc,char **argv)
 			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
             writeParameters("/tmp/.apcfg","w+",0);
 			//[TODO] reset any args
-			system("echo \"/index.html:admin:admin\" > /etc/httpd.conf");
-			system("echo \"/index2.html:admin:admin\" >> /etc/httpd.conf");
+			system("echo -n \"admin\" > /usr/www/pwd.xml");
 			//MAC and BACKUP
 			system("/usr/sbin/var_backup > /dev/null 2>&1");
 			system("cat /dev/null > /etc/ath/iptables/parc");
@@ -7229,24 +7228,21 @@ int main(int argc,char **argv)
          char cmdd[128]={0};
          int qq=0;
          FILE *fp;
-         if((fp=fopen("/etc/httpd.conf","w+"))==NULL)
+         if((fp=fopen("/usr/www/pwd.xml","w+"))==NULL)
          {
             fprintf(errOut,"\n----------cannot open file  line:%d\n",__LINE__);
             exit(1);
          }
          memset(cmdd,0x00,128);
-         sprintf(cmdd,"/index.html:admin:%s\n",CFG_get_by_name("ADMPASS" ,valBuff));
+         sprintf(cmdd,"%s",CFG_get_by_name("ADMPASS" ,valBuff));
          fwrite(cmdd,strlen(cmdd),1,fp);
-	 memset(cmdd,0x00,128);
-  	 sprintf(cmdd,"/index2.html:admin:%s",valBuff);
-	 fwrite(cmdd,strlen(cmdd),1,fp);
-
+	
          fclose(fp);
             writeParametersWithSync();
             //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
             //writeParameters("/tmp/.apcfg","w+",0);
      
-		 printf("HTTP/1.0 200 OK\r\n");
+         printf("HTTP/1.0 200 OK\r\n");
          printf("Content-type: text/html\r\n");
          printf("Connection: Close\r\n");
          printf("\r\n");
@@ -7257,7 +7253,7 @@ int main(int argc,char **argv)
          printf("</head><body>");
          srand(time(NULL));
          //printf("<script  language=javascript>setTimeout(function(){window.opener=null;window.open('/home.html','_top');},1000);</script>");
-         printf("<script  language=javascript>setTimeout(function(){window.opener=null;window.open('/index.html?hhh=%d','_top');},1000);</script>",rand());
+         printf("<script  language=javascript>setTimeout(function(){window.opener=null;window.open('/index.html','_top');},1000);</script>");
          //printf("<script  language=javascript>setTimeout(function(){window.opener=null;window.open('http://10.10.10.254','_top');},1000);</script>");
          printf("</body></html>");
          gohome =2;
