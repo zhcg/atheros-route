@@ -1263,19 +1263,25 @@ char *processSpecial(char *paramStr, char *outBuff)
 					//fprintf(errOut,"\n%s  %d  zhaozhanwei22222\n",__func__,__LINE__);
                     if((fp = fopen(UDHCPD_FILE, "r")) != NULL)  /*  /var/run/udhcpd.leases   */
                     {
+                    	int ret;
                     	while (fread(&lease, sizeof(lease), 1, fp) == 1)
 	                    {
 	                        shi=0;
 							
-							if(strlen(lease.mac) == 0)
-								continue;
+							//if(strlen(lease.mac) == 0)
+							//	continue;
 							//fprintf(errOut,"\n%s  %d lease.mac is [%x] len is %d\n",__func__,__LINE__, lease.mac, strlen(lease.mac));
 							
 							memset(mac_buf, 0, sizeof(mac_buf));
+							ret = 0;
 							for(i = 0, j = 0 ; i < 6; i++, j+=3)
 	                        {
 	                            sprintf(&mac_buf[j], "%02x:", lease.mac[i]);
+								if(lease.mac[i] == 0)
+									ret++;
 	                        }
+							if(ret == 6)  /*the mac is 0, so the sta is not exit*/
+								continue;
 							//fprintf(errOut,"\n%s  %d mac_buf is [%s] len is %d\n",__func__,__LINE__, mac_buf);
 							
 	                        /*compare MAC*/
@@ -1355,6 +1361,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                     unsigned long expires;
                     unsigned d, h, m;
                     int num=1;
+					int ret;
 					int staticIp;
 					int signal_value;
 
@@ -1364,7 +1371,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 					//fprintf(errOut,"\n%s  %d valBuff is %s\n \n",__func__,__LINE__, valBuff);
 					if(strstr(valBuff, "on"))
 					{
-					
+						
 						/*2.4G*/
 	                    flist = fopen("/etc/.STAlist", "r");    /*  /etc/.STAlist   */
 						fgets(STAbuf, 128, flist);
@@ -1379,8 +1386,15 @@ char *processSpecial(char *paramStr, char *outBuff)
 								staticIp = 1;
 	                            /*compare MAC*/
 	                            memset(mac_buf, 0, sizeof(mac_buf));
+								ret = 0;
                             	for(i = 0, j = 0 ; i < 6; i++, j+=3)
+                            	{
                                 	sprintf(&mac_buf[j], "%02x:", lease.mac[i]);
+									if(lease.mac[i] == 0)
+										ret++;
+                            	}
+								if(ret == 6)
+									continue;
 	                            
 	                            //fprintf(errOut,"\n%s  %d 2.4G mac_buf:%s buf:%s\n",__func__,__LINE__, mac_buf, buf);
 	                            if(strncmp(buf, mac_buf, 17) == 0)
@@ -1477,9 +1491,16 @@ char *processSpecial(char *paramStr, char *outBuff)
 							{	
 								staticIp = 1;
 	                            /*compare MAC*/	                           
-	                            memset(mac_buf, 0, sizeof(mac_buf));	                            
+	                            memset(mac_buf, 0, sizeof(mac_buf));
+								ret = 0;
                             	for(i = 0, j = 0 ; i < 6; i++, j+=3)
+                            	{
                                 	sprintf(&mac_buf[j], "%02x:", lease.mac[i]);
+									if(lease.mac[i] == 0)
+										ret++;
+                            	}
+								if(ret == 6)
+									continue;
 	                            
 	                            //fprintf(errOut,"\n%s  %d 5G mac_buf:%s buf:%s\n",__func__,__LINE__,mac_buf,buf);
 	                            if(strncmp(buf, mac_buf, 17) == 0)
@@ -1700,8 +1721,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                     unsigned long expires;
                     unsigned d, h, m;
                     int num=1;
-                    int shi=0;
-					int ret = 0;
+					int ret;
 
                     Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
 					
@@ -1711,7 +1731,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 					if(strcmp(wifi0_flag,"on") == 0 ) //on
 						Execute_cmd("wlanconfig ath0 list sta > /etc/.STAlist 2>&1", rspBuff);
 
-					fprintf(errOut,"\n%s  %d  to open [dhcpclinetlist] ret is %d\n",__func__,__LINE__, ret);
+					fprintf(errOut,"\n%s  %d  to open [dhcpclinetlist] \n",__func__,__LINE__);
 
                     fp = fopen(UDHCPD_FILE, "r");  /*  /var/run/udhcpd.leases   */
                     if (NULL == fp)
@@ -1722,6 +1742,19 @@ char *processSpecial(char *paramStr, char *outBuff)
 
                     while (fread(&lease, sizeof(lease), 1, fp) == 1) 
                     {
+                    	/*judge the mac is empty or not*/
+                    	ret = 0;
+						for(i = 0, j = 0 ; i < 6; i++, j+=3)
+						{
+							sprintf(&mac_buf[j], "%02x:", lease.mac[i]);
+							if(lease.mac[i] == 0)
+								ret++;
+							//fprintf(errOut,"\n%s  %d the mac is %02x, the ret is %d\n \n",__func__,__LINE__, lease.mac[i], ret);
+						}
+						
+						if(ret == 6)  /*the mac is 0, so the sta is not exit*/
+							continue;
+                    
                         outBuff += sprintf(outBuff,"<tr>");
                         outBuff += sprintf(outBuff,"<td>%d</td>",num);
                         num++; 
@@ -1733,8 +1766,6 @@ char *processSpecial(char *paramStr, char *outBuff)
                         	outBuff += sprintf(outBuff,"<td>NULL</td>");
 
 						/*mac*/
-						for(i = 0, j = 0 ; i < 6; i++, j+=3)
-							sprintf(&mac_buf[j], "%02x:", lease.mac[i]);
 						strncpy(buf, mac_buf, 17);
 						if(strlen(buf) > 0)
 						{
