@@ -13,6 +13,30 @@
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript" src="/style/load.js"></script>
 <script language="JavaScript" type="text/javascript">
+function getCookie()
+{ 
+	var strCookie=document.cookie; 
+	var arrCookie=strCookie.split("; "); 
+	for(var i=0;i<arrCookie.length;i++)
+	{ 
+		var arr=arrCookie[i].split("="); 
+		if(arr[0]=="userName")
+		{
+			//alert("已经登录");
+			return true;
+		}
+	} 
+	//alert("未登录");
+	return false; 
+}
+if(getCookie())
+{
+	
+}
+else
+{
+	window.top.location.href="login.html";	
+}
 function initLanguage()
 {
 	var cook="no";

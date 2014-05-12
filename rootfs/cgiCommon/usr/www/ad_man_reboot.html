@@ -6,20 +6,29 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
-var hbd;
-function GetQueryString(name) {
-        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)","i");
-        var r = window.location.search.substr(1).match(reg);
-        if (r!=null) return (r[2]); return null;
+function getCookie()
+{ 
+	var strCookie=document.cookie; 
+	var arrCookie=strCookie.split("; "); 
+	for(var i=0;i<arrCookie.length;i++)
+	{ 
+		var arr=arrCookie[i].split("="); 
+		if(arr[0]=="userName")
+		{
+			//alert("已经登录");
+			return true;
+		}
+	} 
+	//alert("未登录");
+	return false; 
 }
-hbd=GetQueryString("ad_man_reboot");
-if(hbd)
+if(getCookie())
 {
-
+	
 }
 else
 {
-        window.location.href="/index.html";
+	window.top.location.href="../login.html";	
 }
 function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
 function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}

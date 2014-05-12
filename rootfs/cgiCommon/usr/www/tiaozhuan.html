@@ -5,13 +5,12 @@
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
-
 </head>
+<body>
+<input type="text" style="display:none" name="RESULT" id="RESULT" size="20" maxlength="32" value="~~RESULT~"/>
+<input type="text" style="display:none" name="PAGE" id="PAGE" size="20" maxlength="32" value="~~PAGE~"/>
 
-<body>
-<input type="text" style="display:none" name="RESULT" id="RESULT" size="20" maxlength="32" value="~~RESULT~">
-<input type="text" style="display:none" name="PAGE" id="PAGE" size="20" maxlength="32" value="~~PAGE~">
-<script type="text/javascript">var hbd;function GetQueryString(name) {        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)","i");        var r = window.location.search.substr(1).match(reg);        if (r!=null) return (r[2]); return null;}hbd=GetQueryString("RESULT"); if(hbd){}else{        window.location.href="index.html";}
+<script type="text/javascript">
 Butterlate.setTextDomain("other");
 var a = document.getElementById("RESULT").value;
 var b = document.getElementById("PAGE").value;

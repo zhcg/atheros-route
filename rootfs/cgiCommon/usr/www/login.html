@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/lang/b28n.js"></script>
+<title></title>
+<style type="text/css">
+<!--
+body {
+	background: #ecedef;
+}
+#denglukuang {
+	margin: 200px auto 0;
+	height: 360px;
+	width: 460px;
+	border:1px solid #ddd;
+	background:#fff;
+	text-align:center;
+}
+.denglukuang_title {
+	height: 56px;
+	line-height: 56px;
+	text-align: center;
+	font-size: 24px;
+	color: #ce4034;
+	margin-top:30px;
+}
+#pwd {
+	height: 48px;
+	line-height: 48px;
+	width: 360px;
+	font-size: 18px;
+	border: 1px solid #ddd;
+	margin-top: 32px;
+	color:#808080;
+}
+#pwddiv {
+}
+#tijiao {
+	height: 48px;
+	line-height: 48px;
+	width: 80px;
+	width: 360px;
+	margin-top: 32px;
+	font-size: 18px;
+	font-weight: 800;
+	cursor:pointer;
+}
+-->
+</style>
+<script type="text/javascript">
+
+var xmlHttp
+function CheckUser()
+{
+	xmlHttp=GetXmlHttpObject()
+	if (xmlHttp==null)
+	{
+		alert ("Browser does not support HTTP Request");
+		Return;
+	}
+	var url="http://"+location.hostname+"/pwd.xml?now="+ new Date().getTime();
+
+	xmlHttp.onreadystatechange=stateChanged;
+	xmlHttp.open("GET",url,true);
+	xmlHttp.send(null);
+}
+function stateChanged()
+{
+	if (xmlHttp.readyState==4 || xmlHttp.readyState=="complete")
+	{
+		if(xmlHttp.responseText == document.getElementById("pwd").value)//dosomethinginterestinghere
+		{
+			//获取当前时间 
+			var date=new Date(); 
+			//var expiresDays=10; 
+			//将date设置为10天以后的时间 
+			date.setTime(date.getTime()+1*60*1000); 
+			//将userId和userName两个cookie设置为10天后过期 
+			document.cookie="userName="+document.getElementById("pwd").value+";expires="+date.toGMTString(); 
+			//alert("登录成功");
+			window.location.href="index.html";	
+			
+		}
+		else
+		{
+			Butterlate.setTextDomain("other");
+			alert(_("loginfail"));
+		}
+	}
+}
+function GetXmlHttpObject()
+{
+	var xmlHttp=null;
+	try
+	{
+	// Firefox, Opera 8.0+, Safari
+		xmlHttp=new XMLHttpRequest();
+	}
+	catch (e)
+	{
+		//Internet Explorer
+		try
+		{
+			xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
+		}
+		catch (e)
+		{
+			xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+		}
+	}
+	return xmlHttp;
+
+}
+function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
+function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
+function initTranslation()
+{
+	trans_inner("title","login title");
+	trans_value("pwd","login default");
+	trans_value("tijiao","login but");
+}
+function init()
+{
+	Butterlate.setTextDomain("other");
+	initTranslation();
+}
+function onf(val)
+{
+	 document.getElementById("pwd").type="password";
+	 if(val.value==_("login default"))
+		val.value='';
+}
+function onb(val)
+{
+	if(val.value=="")
+	{
+		document.getElementById("pwd").type="";
+		val.value=_("login default");
+	}
+}
+//function document.onkeydown() 
+//{
+ // if(event.keyCode==13) //检查按得是不是回车
+ // { 
+//	CheckUser();
+ // } 
+//} 
+</script>
+
+</head>
+
+<body oncontextmenu="window.event.returnValue=false" onload="init()">
+<div id="denglukuang">
+  <div class="denglukuang_title"><strong>HBD</strong><span id="title">路由器登录</span></div>
+  <div id="pwddiv">
+    <input name="pwd" id="pwd"  size="32" maxlength="20"  value="" onfocus="onf(this)" onblur="onb(this)" />
+    <br/>
+    <input name="tijiao" id="tijiao"  type="button"  onclick="CheckUser()"/>
+  </div>
+</div>
+</body>
+</html>

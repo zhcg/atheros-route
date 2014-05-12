@@ -144,4 +144,9 @@ function endshow()
 	pxi=90;
 	timer2=setInterval('showpxb()',1000);
 }
-
+function deleteCookie(name)
+{ 
+	var date=new Date(); 
+	date.setTime(date.getTime()-10000); 
+	document.cookie=name+"=v; expires="+date.toGMTString(); 
+} 
