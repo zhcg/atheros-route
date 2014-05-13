@@ -25,7 +25,16 @@ body {
 	color: #ce4034;
 	margin-top:30px;
 }
-#pwd {
+#pwd1 {
+	height: 48px;
+	line-height: 48px;
+	width: 360px;
+	font-size: 18px;
+	border: 1px solid #ddd;
+	margin-top: 32px;
+	color:#808080;
+}
+#pwd2 {
 	height: 48px;
 	line-height: 48px;
 	width: 360px;
@@ -70,7 +79,7 @@ function stateChanged()
 {
 	if (xmlHttp.readyState==4 || xmlHttp.readyState=="complete")
 	{
-		if(xmlHttp.responseText == document.getElementById("pwd").value)//dosomethinginterestinghere
+		if(xmlHttp.responseText == document.getElementById("pwd2").value)//dosomethinginterestinghere
 		{
 			//获取当前时间 
 			var date=new Date(); 
@@ -78,7 +87,7 @@ function stateChanged()
 			//将date设置为10天以后的时间 
 			date.setTime(date.getTime()+1*3600*1000); 
 			//将userId和userName两个cookie设置为10天后过期 
-			document.cookie="userName="+document.getElementById("pwd").value+";expires="+date.toGMTString(); 
+			document.cookie="userName="+document.getElementById("pwd2").value+";expires="+date.toGMTString(); 
 			//alert("登录成功");
 			window.location.href="index.html";	
 			
@@ -118,7 +127,7 @@ function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID)
 function initTranslation()
 {
 	trans_inner("title","login title");
-	trans_value("pwd","login default");
+	trans_value("pwd1","login default");
 	trans_value("tijiao","login but");
 	trans_inner("dp","login dp");
 }
@@ -127,20 +136,7 @@ function init()
 	Butterlate.setTextDomain("other");
 	initTranslation();
 }
-function onf(val)
-{
-	 document.getElementById("pwd").type="password";
-	 if(val.value==_("login default"))
-		val.value='';
-}
-function onb(val)
-{
-	if(val.value=="")
-	{
-		document.getElementById("pwd").type="";
-		val.value=_("login default");
-	}
-}
+
 function keyLogin()
 {
   if (event.keyCode==13)   //回车键的键值为13
@@ -154,11 +150,35 @@ function keyLogin()
 <div id="denglukuang">
   <div class="denglukuang_title"><strong>HBD</strong><span id="title">路由器登录</span></div>
   <div id="pwddiv">
-    <input name="pwd" id="pwd"  size="32" maxlength="20"  value="" onfocus="onf(this)" onblur="onb(this)" />
+
+    <input name="pwd1" id="pwd1"  size="32" maxlength="20"  value="" />
+    <input name="pwd2" id="pwd2"  style="display:none;" type="password" size="32" maxlength="20"  value="" />
+
     <br/>
     <input name="tijiao" id="tijiao"  type="button"  onclick="CheckUser()"/>
   </div>
     <div class="denglukuang_mr" id="dp"></div>
 </div>
+
+<script type="text/javascript">
+var tx = document.getElementById("pwd1"), pwd = document.getElementById("pwd2");
+tx.onfocus = function()
+{
+	if(this.value != _("login default")) 
+		return;
+	this.style.display = "none";
+	pwd.style.display = "";
+	pwd.value = "";
+	pwd.focus();
+}
+pwd.onblur = function()
+{
+	if(this.value != "") 
+		return;
+	this.style.display = "none";
+	tx.style.display = "";
+	tx.value = _("login default");
+}
+</script>
 </body>
 </html>
