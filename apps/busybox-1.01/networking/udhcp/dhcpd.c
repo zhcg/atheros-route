@@ -51,7 +51,7 @@
 struct dhcpOfferedAddr *leases;
 struct server_config_t server_config;
 
-
+#if 0
 void deal_staControl()
 {
 	struct staList
@@ -110,6 +110,7 @@ void deal_staControl()
 	}
 	fclose(fp);
 }
+#endif
 
 #ifdef COMBINED_BINARY
 int udhcpd_main(int argc, char *argv[])
@@ -134,6 +135,7 @@ int main(int argc, char *argv[])
 
 	uint32_t static_lease_ip;
 
+	#if 0
 	if(fork() == 0)
 	{
 		/*deal staControl*/
@@ -141,7 +143,9 @@ int main(int argc, char *argv[])
 		LOG(LOG_ERR, "------- OK ------");
 		exit(0);
 	}
+	
 	LOG(LOG_ERR, "------- dhcp OK------");
+	#endif
 	memset(&server_config, 0, sizeof(struct server_config_t));
 	read_config(argc < 2 ? DHCPD_CONF_FILE : argv[1]);
 
