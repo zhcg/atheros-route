@@ -53,6 +53,14 @@ function update()
 }
 
 
+function Checkformat(val)
+{
+	var usern = /^[a-zA-Z0-9_]{1,}$/;
+	if (!val.match(usern)) 
+		return false;
+	else
+		return true;
+}
 
 function AdmFormCheck()
 {
@@ -68,21 +76,12 @@ function AdmFormCheck()
 		document.Adm.ADMPASS.select();
 		return false;
 	}
+
+	if(!Checkformat(document.Adm.ADMPASS.value))
 	{
-		var xxx=document.Adm.ADMPASS.value;  //用户名（在此赋值）
-
-		var reg  = /^[a-z || A-Z || 0-9]\w+$/;
-		var m = reg.test(xxx);
-		if(m)   
-		{   
-		}   
-		else   
-		{   
-			alert(_("err keychar"));
-			document.Adm.ADMPASS.select();
-			return false;
-		} 
-
+		alert(_("err keychar"));
+		document.Adm.ADMPASS.select();
+		return false;
 	}
 	
 	if (document.Adm.ADMPASS.value != document.Adm.ADMPASS2.value) 
