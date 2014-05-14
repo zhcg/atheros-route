@@ -505,7 +505,7 @@ fi
 if [ "${WIFION_OFF}" = "off" ]; then
 	ifconfig ath0 down
 fi
-if [ $NUMRADIO != 1 ]
+if [ $NUMRADIO != 1 ];then
 	if [ "${WIFION_OFF_3}" = "off" ]; then
 		ifconfig ath2 down
 	fi
