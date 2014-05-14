@@ -6263,7 +6263,7 @@ int main(int argc,char **argv)
 		if((strncmp(valBuff3,"off",3) == 0)&&(strncmp(valBuff3_5g,"off",3) == 0))
 		{
 //			CFG_set_by_name("AP_STARTMODE","standard");
-			if((strncmp(valBuff5,"on",2) == 0)||(strncmp(valBuff2_5g,"on",2) == 0)){
+			if((strncmp(valBuff5,"on",2) == 0)||(strncmp(valBuff2_5g,"on",2) == 0))
 				CFG_set_by_name("AP_STARTMODE","dual");
 			CFG_set_by_name("DHCPON_OFF","on");
 			flag=2;
