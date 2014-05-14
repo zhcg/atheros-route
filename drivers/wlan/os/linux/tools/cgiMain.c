@@ -6242,6 +6242,9 @@ int main(int argc,char **argv)
 		Execute_cmd("cfg -e | grep 'WDSON_OFF=' | awk -F '=' '{print $2}'",valBuff5);
 
 		Execute_cmd("cfg -e | grep 'WDSON_OFF_3=' | awk -F '=' '{print $2}'",valBuff2_5g);
+
+		CFG_get_by_name("WIFION_OFF",wifi0_flag);
+		CFG_get_by_name("WIFION_OFF_3",wifi1_flag);
 		
 		//fprintf(errOut,"[luodp] wds %s,%s\n",valBuff2,valBuff5);
 		CFG_get_by_name("WDSON_OFF",valBuff3);
@@ -6250,17 +6253,17 @@ int main(int argc,char **argv)
 //			valBuff2_5g,valBuff3_5g);
 
 		//on
-		if((strcmp(valBuff3,"on") == 0)||(strcmp(valBuff3_5g,"on") == 0))
+		if((strncmp(valBuff3,"on",2) == 0)||(strncmp(valBuff3_5g,"on",2) == 0))
 		{
 			CFG_set_by_name("AP_STARTMODE","repeater");
 			CFG_set_by_name("DHCPON_OFF","off");
 			flag=1;
 		}
 		//off
-		if((strcmp(valBuff3,"off") == 0)&&(strcmp(valBuff3_5g,"off") == 0))
+		if((strncmp(valBuff3,"off",3) == 0)&&(strncmp(valBuff3_5g,"off",3) == 0))
 		{
 //			CFG_set_by_name("AP_STARTMODE","standard");
-			if((strcmp(valBuff5,"on") == 0)||(strcmp(valBuff2_5g,"on") == 0))
+			if((strncmp(valBuff5,"on",2) == 0)||(strncmp(valBuff2_5g,"on",2) == 0)){
 				CFG_set_by_name("AP_STARTMODE","dual");
 			CFG_set_by_name("DHCPON_OFF","on");
 			flag=2;
@@ -6273,9 +6276,9 @@ int main(int argc,char **argv)
 		//3.do new settings
 		if((flag==3)||(flag==1))
 		{
-		if(strcmp(valBuff3,"on") == 0){
+		if(strncmp(valBuff3,"on",2) == 0){
 			CFG_get_by_name("STA_SECMODE",valBuff3);
-			if(strcmp(valBuff3,"None") != 0)
+			if(strncmp(valBuff3,"None",4) != 0)
 			{
 				//AP_SECMODE=WPA
 				//AP_WPA=3 WPA/WPA2
@@ -6291,7 +6294,7 @@ int main(int argc,char **argv)
 				CFG_set_by_name("STA_CYPHER","CCMP");
 				CFG_set_by_name("STA_SECFILE","PSK"); 
 			}
-			if(strcmp(valBuff3,"WPA") != 0)
+			if(strncmp(valBuff3,"WPA",3) != 0)
 			{
 				//AP_SECMODE=WPA
 				//AP_WPA=3 WPA/WPA2
@@ -6309,9 +6312,9 @@ int main(int argc,char **argv)
 			}
 
 		
-		if(strcmp(valBuff3_5g,"on") == 0){
+		if(strncmp(valBuff3_5g,"on",2) == 0){
 			CFG_get_by_name("STA_SECMODE_2",valBuff4_5g);
-			if(strcmp(valBuff4_5g,"None") != 0)
+			if(strncmp(valBuff4_5g,"None",4) != 0)
 			{
 				//AP_SECMODE=WPA
 				//AP_WPA=3 WPA/WPA2
@@ -6324,7 +6327,7 @@ int main(int argc,char **argv)
 				CFG_set_by_name("STA_CYPHER_2","CCMP");
 				CFG_set_by_name("STA_SECFILE_2","PSK"); 
 			}
-			if(strcmp(valBuff4_5g,"WPA") != 0)
+			if(strncmp(valBuff4_5g,"WPA",3) != 0)
 			{
 				//AP_SECMODE=WPA
 				//AP_WPA=3 WPA/WPA2
@@ -6346,7 +6349,7 @@ int main(int argc,char **argv)
 		}
 		//5.do settings
 		
-		if(strcmp(valBuff3,"off") == 0)
+		if(strncmp(valBuff3,"off",3) == 0)
 		{
 			CFG_get_by_name("AP_PRIMARY_CH_BACK",channel_buf);
 //			fprintf(errOut,"[luodp] -----------  wds %s\n",channel_buf);
@@ -6354,7 +6357,7 @@ int main(int argc,char **argv)
 		}
 
 		
-		if(strcmp(valBuff3_5g,"off") == 0)
+		if(strncmp(valBuff3_5g,"off",3) == 0)
 		{
 			CFG_get_by_name("AP_PRIMARY_CH_BACK_3",channel_buf_5g);
 //			fprintf(errOut,"[luodp] -----------  wds channel_buf_5g %s\n",channel_buf_5g);

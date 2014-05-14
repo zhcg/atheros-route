@@ -505,10 +505,12 @@ fi
 if [ "${WIFION_OFF}" = "off" ]; then
 	ifconfig ath0 down
 fi
-
-if [ "${WIFION_OFF_3}" = "off" ]; then
-	ifconfig ath2 down
+if [ $NUMRADIO != 1 ]
+	if [ "${WIFION_OFF_3}" = "off" ]; then
+		ifconfig ath2 down
+	fi
 fi
+
 if [ "${WIFION_OFF}" = "off" -a "${WIFION_OFF_3}" = "off" ]; then
 echo disable > /dev/wifiled
 else
