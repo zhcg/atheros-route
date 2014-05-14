@@ -73,13 +73,13 @@
 	<message msgid="man localsave" msgstr="Backup" />
 	<message msgid="man cfg backup" msgstr="Are you sure you want to use this profile?" />
 	<message msgid="err cfg empty" msgstr="Please select the need to import the configuration file" />
-	<message msgid="err cfg format" msgstr="Configuration file illegal" />
+	<message msgid="err cfg format" msgstr="Configuration file is illegal" />
 	<message msgid="err cfg upload" msgstr="Configuration file import fail" />
-	<message msgid="man cfg backto1" msgstr="Are you sure to backto" />
+	<message msgid="man cfg backto1" msgstr="Are you sure to back to" />
 	<message msgid="man cfg backto2" msgstr="?" />
 	<message msgid="man cfg backupdel1" msgstr="Are you sure to delete" />	
 	<message msgid="man cfg backupdel2" msgstr=" backup will be delete" />
-	<message msgid="err cfg full" msgstr="Backup space is full, please delete some backup and backup" />
+	<message msgid="err cfg full" msgstr="Backup space is full, please delete some backups" />
 
 	<message msgid="err cfg big" msgstr="Configuration file should smaller than 1M" />	
 	
@@ -102,14 +102,14 @@
 
 	<message msgid="man use" msgstr="USE" />
 	<message msgid="man delete" msgstr="DELETE" />
-	<message msgid="err MAC wuxiao" msgstr="MAC address illegal" />
+	<message msgid="err MAC wuxiao" msgstr="MAC address is illegal" />
 	<message msgid="err MAC empty" msgstr="MAC is empty " />
 	<message msgid="err user empty" msgstr="User name is empty " />
 	<message msgid="err pwd empty" msgstr="Password is empty " />
 	<message msgid="err time empty" msgstr="Time is empty " />
 
-	<message msgid="err MAC format" msgstr="MAC address illegal,Please input as XX:XX:XX:XX:XX:XX (X is hexadecimal digit)" />
-	<message msgid="err format" msgstr="Parameter illegal " />
+	<message msgid="err MAC format" msgstr="MAC address is illegal,Please input as XX:XX:XX:XX:XX:XX (X is hexadecimal digit)" />
+	<message msgid="err format" msgstr="Parameter is illegal " />
 	<message msgid="err range" msgstr="Parameter range error " />
 	<message msgid="man chfile" msgstr="Choose file" />
 	<message msgid="man sysreboot" msgstr="Confirm restart BASE?" />
@@ -117,8 +117,8 @@
 	<message msgid="err sub empty" msgstr="Subnet can not be empty" />
 	<message msgid="err gw empty" msgstr="Gateway can not be empty" />
 	<message msgid="err DNS empty" msgstr="DNS can not be empty" />
-	<message msgid="err IP format" msgstr="IP address illegal" />
-	<message msgid="err sub format" msgstr="Subnet address illegal" />	
-	<message msgid="err gw format" msgstr="Gateway address illegal" />
-	<message msgid="err DNS format" msgstr="DNS address illegal" />
+	<message msgid="err IP format" msgstr="IP address is illegal" />
+	<message msgid="err sub format" msgstr="Subnet address is illegal" />	
+	<message msgid="err gw format" msgstr="Gateway address is illegal" />
+	<message msgid="err DNS format" msgstr="DNS address is illegal" />
 </po>

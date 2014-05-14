@@ -39,35 +39,35 @@
 	<message msgid="wless wifititle1" msgstr="Network Band:2.4GHz" />
 	<message msgid="wless wifititle2" msgstr="Network Band:5GHz" />
 
-	<message msgid="wless offdes" msgstr="The band WiFi is disabled, the advanced options cannot be configured" />
+	<message msgid="wless offdes" msgstr="The band WiFi is disabled. the advanced options cannot be configured" />
 
-	<message msgid="err MAC wuxiao" msgstr="MAC address illegal" />
+	<message msgid="err MAC wuxiao" msgstr="MAC address is illegal" />
 	<message msgid="err MAC empty" msgstr="MAC is empty " />
 	<message msgid="err user empty" msgstr="User name is empty " />
 	<message msgid="err pwd empty" msgstr="Password is empty " />
 	<message msgid="err time empty" msgstr="Time is empty " />
-	<message msgid="err MAC format" msgstr="MAC address illegal,Please input as XX:XX:XX:XX:XX:XX (X is hexadecimal digit)" />
-	<message msgid="err format" msgstr="Parameter illegal " />
+	<message msgid="err MAC format" msgstr="MAC address is illegal,Please input as XX:XX:XX:XX:XX:XX (X is hexadecimal digit)" />
+	<message msgid="err format" msgstr="Parameter is illegal " />
 	<message msgid="err range" msgstr="Parameter range error " />
 	
 	<message msgid="err SSID empty" msgstr="SSID can not be empty" />
 	<message msgid="err SSID length" msgstr="SSID length error" />
-	<message msgid="err SSID" msgstr="SSID illegal" />
+	<message msgid="err SSID" msgstr="SSID is illegal" />
 	<message msgid="err key" msgstr="Password is empty" />
 	<message msgid="err keylen" msgstr="Password should be 8-12" />
-	<message msgid="err keychar" msgstr="Password illegal" />
+	<message msgid="err keychar" msgstr="Password is illegal" />
 
 	<message msgid="err ssidtime empty" msgstr="Broadcast SSID time cannot be empty" />
 	<message msgid="err ssidtime" msgstr="Broadcast SSID time is invalid" />
 	<message msgid="err rstcts empty" msgstr="RST/CTS Limit value cannot be empty" />
-	<message msgid="err rstcts" msgstr="RST/CTS Limit value invalid" />
+	<message msgid="err rstcts" msgstr="RST/CTS Limit value is invalid" />
 	<message msgid="err IP empty" msgstr="IP address can not be empty" />
 	<message msgid="err sub empty" msgstr="Subnet can not be empty" />
 	<message msgid="err gw empty" msgstr="Gateway can not be empty" />
 	<message msgid="err DNS empty" msgstr="DNS can not be empty" />
-	<message msgid="err IP format" msgstr="IP address illegal" />
-	<message msgid="err sub format" msgstr="Subnet address illegal" />	
-	<message msgid="err gw format" msgstr="Gateway address illegal" />
-	<message msgid="err DNS format" msgstr="DNS address illegal" />
+	<message msgid="err IP format" msgstr="IP address is illegal" />
+	<message msgid="err sub format" msgstr="Subnet address is illegal" />	
+	<message msgid="err gw format" msgstr="Gateway address is illegal" />
+	<message msgid="err DNS format" msgstr="DNS address is illegal" />
 	
 </po>

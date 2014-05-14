@@ -32,7 +32,7 @@
 	<message msgid="wan optionXX" msgstr="(optional)" />	
 
 	<message msgid="wan title" msgstr="WAN Settings" />
-	<message msgid="wan introduction" msgstr="You may choose different connection type suitable for your environment. Besides, you may also configure parameters according to the selected connection type." />
+	<message msgid="wan introduction" msgstr="You may choose different connection type that suitable for your environment. Besides, you may also configure parameters according to the selected connection type." />
 	<message msgid="wan connection type" msgstr="WAN Connection Type:" />
 	<message msgid="wan connection type static" msgstr="Manual settings (static IP)" />
 	<message msgid="wan connection type dhcp" msgstr="Automatic acquisition (dynamic IP)" />
@@ -70,25 +70,25 @@
 	<message msgid="macc mactype1" msgstr="Use the management device MAC address" />
 	<message msgid="macc mactype2" msgstr="Manually enter the MAC address" />
 
-	<message msgid="err MAC wuxiao" msgstr="MAC address illegal" />
+	<message msgid="err MAC wuxiao" msgstr="MAC address is illegal" />
 	<message msgid="err MAC empty" msgstr="MAC is empty " />
 	<message msgid="err user empty" msgstr="User name is empty " />
 	<message msgid="err pwd empty" msgstr="Password is empty " />
 	<message msgid="err time empty" msgstr="Time is empty " />
 
-	<message msgid="err MAC format" msgstr="MAC address illegal,Please input as XX:XX:XX:XX:XX:XX (X is hexadecimal digit)" />
+	<message msgid="err MAC format" msgstr="MAC address is illegal,Please input as XX:XX:XX:XX:XX:XX (X is hexadecimal digit)" />
 
-	<message msgid="err format" msgstr="Parameter illegal " />
+	<message msgid="err format" msgstr="Parameter is illegal " />
 	<message msgid="err range" msgstr="Parameter range error " />
 
 	<message msgid="err IP empty" msgstr="IP address can not be empty" />
 	<message msgid="err sub empty" msgstr="Subnet can not be empty" />
 	<message msgid="err gw empty" msgstr="Gateway can not be empty" />
 	<message msgid="err DNS empty" msgstr="DNS can not be empty" />
-	<message msgid="err IP format" msgstr="IP address illegal" />
-	<message msgid="err sub format" msgstr="Subnet address illegal" />	
-	<message msgid="err gw format" msgstr="Gateway address illegal" />
-	<message msgid="err DNS format" msgstr="DNS address illegal" />
+	<message msgid="err IP format" msgstr="IP address is illegal" />
+	<message msgid="err sub format" msgstr="Subnet address is illegal" />	
+	<message msgid="err gw format" msgstr="Gateway address is illegal" />
+	<message msgid="err DNS format" msgstr="DNS address is illegal" />
 
 	<message msgid="wan auto_dhcp" msgstr="Automatically select DHCP mode" />
 	<message msgid="wan auto_sip" msgstr="Automatically select Static IP mode" />
@@ -98,7 +98,7 @@
 	<message msgid="wan auto_fail" msgstr="Automatically select fail,please check the internet connection or select manually " />
 	<message msgid="err MAC no" msgstr="Access management terminal MAC failed" />
 	
-	<message msgid="err user" msgstr="Username illegal" />
-	<message msgid="err pwd" msgstr="Password illegal" />
+	<message msgid="err user" msgstr="Username is illegal" />
+	<message msgid="err pwd" msgstr="Password is illegal" />
 	
  </po>

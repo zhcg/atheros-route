@@ -24,7 +24,7 @@
 	<message msgid="settingwaiting" msgstr="Setting,Please Wait......" />
 	
 	<message msgid="clist title" msgstr="Connected Equipments" />  
-	<message msgid="clist des" msgstr="Displays HBD routing currently has access to the wired and wireless devices information" /> 
+	<message msgid="clist des" msgstr="Displaying the information of wired and wireless devices currently connected to HBD routing" /> 
 	<message msgid="clist t1_title" msgstr="Wired devices" />  
 	<message msgid="clist t2_title" msgstr="Wireless devices" />  
 	<message msgid="clist ip" msgstr="IP Address" />  
@@ -37,7 +37,7 @@
 	<message msgid="conm des" msgstr="Management of accessed wireless devices " />  
 	<message msgid="conm t1_title" msgstr="Wireless Access" />  
 	<message msgid="conm t1_switch" msgstr="wireless access switch" />  
-	<message msgid="conm ts1" msgstr="(Add and modify should after Enable and Apply) " />  
+	<message msgid="conm ts1" msgstr="(Add and modify should be after Enable and Apply) " />  
 
 	<message msgid="conw title" msgstr="Remote Web management" />  
 	<message msgid="conw des" msgstr="Management of equipment remote Web login" />  
@@ -52,23 +52,23 @@
 	<message msgid="addw t1_Des" msgstr="Description" />  
 	<message msgid="addw t1_Status" msgstr="Status" />  
 
-	<message msgid="err MAC wuxiao" msgstr="MAC address illegal" />
+	<message msgid="err MAC wuxiao" msgstr="MAC address is illegal" />
 	<message msgid="err MAC empty" msgstr="MAC is empty " />
 	<message msgid="err user empty" msgstr="User name is empty " />
 	<message msgid="err pwd empty" msgstr="Password is empty " />
 	<message msgid="err time empty" msgstr="Time is empty " />
-	<message msgid="err MAC format" msgstr="MAC address illegal,Please input as XX:XX:XX:XX:XX:XX (X is hexadecimal digit)" />
-	<message msgid="err format" msgstr="Parameter illegal " />
+	<message msgid="err MAC format" msgstr="MAC address is illegal,Please input as XX:XX:XX:XX:XX:XX (X is hexadecimal digit)" />
+	<message msgid="err format" msgstr="Parameter is illegal " />
 	<message msgid="err range" msgstr="Parameter range error " />
 	<message msgid="err des empty" msgstr="Description is empty" />
 	<message msgid="err IP empty" msgstr="IP address can not be empty" />
 	<message msgid="err sub empty" msgstr="Subnet can not be empty" />
 	<message msgid="err gw empty" msgstr="Gateway can not be empty" />
 	<message msgid="err DNS empty" msgstr="DNS can not be empty" />
-	<message msgid="err IP format" msgstr="IP address illegal" />
-	<message msgid="err sub format" msgstr="Subnet address illegal" />	
-	<message msgid="err gw format" msgstr="Gateway address illegal" />
-	<message msgid="err DNS format" msgstr="DNS address illegal" />
+	<message msgid="err IP format" msgstr="IP address is illegal" />
+	<message msgid="err sub format" msgstr="Subnet address is illegal" />	
+	<message msgid="err gw format" msgstr="Gateway address is illegal" />
+	<message msgid="err DNS format" msgstr="DNS address is illegal" />
 	<message msgid="err MAC exist" msgstr="MAC already exist" />
 
 </po>

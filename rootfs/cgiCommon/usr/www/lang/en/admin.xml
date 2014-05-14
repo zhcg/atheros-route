@@ -118,8 +118,8 @@
 	<message msgid="admw modedes1" msgstr="The parameters needed in the opening of the network, the network operators to provide" />  
 
 	<message msgid="admw wifides" msgstr="Please set the HBD router WiFi account and password. Your computer, PAD, intelligent mobile phone will use the following network." />  
-	<message msgid="admw wirelessdes" msgstr="Please select to connect to the WiFi. Note: The two band relay functions are effective; after WDS, please use the static IP connected login Web." />  
-	<message msgid="admw parentdes" msgstr="As a parent, you can control child's Internet time and visiting the webpage through the page settings" />  
+	<message msgid="admw wirelessdes" msgstr="Please select the WiFi to connect. Note: The two band relay functions are effective; after WDS, please use the static IP connected login Web." />  
+	<message msgid="admw parentdes" msgstr="As a parent, you can control child's Internet time and visiting the website through the page settings" />  
 
 	<message msgid="admw PPMAC" msgstr="The MAC address of parent PC" />
 	<message msgid="admw MPMAC" msgstr="The MAC address of management PC" />
@@ -140,12 +140,12 @@
 	<message msgid="admw showp" msgstr="Show Password" />
 	<message msgid="admw optionXX" msgstr="(optional)" />
 
-	<message msgid="admw auto_dhcp" msgstr="Automatically select DHCP mode" />
-	<message msgid="admw auto_sip" msgstr="Automatically select Static IP mode" />
-	<message msgid="admw auto_ppp" msgstr="Automatically select PPPoE mode" />
-	<message msgid="admw auto_l2tp" msgstr="Automatically select L2TP mode" />
-	<message msgid="admw auto_p2tp" msgstr="Automatically select P2TP mode" />
-	<message msgid="admw auto_fail" msgstr="Automatically select fail,please check the internet connection or select manually " />
+	<message msgid="admw auto_dhcp" msgstr="Select DHCP mode Automatically" />
+	<message msgid="admw auto_sip" msgstr="Select Static IP mode Automatically" />
+	<message msgid="admw auto_ppp" msgstr="Select PPPoE mode Automatically" />
+	<message msgid="admw auto_l2tp" msgstr="Select L2TP mode Automatically" />
+	<message msgid="admw auto_p2tp" msgstr="Select P2TP mode Automatically" />
+	<message msgid="admw auto_fail" msgstr="Select fail,please check the internet connection or select manually " />
 
 	<message msgid="admw fresh" msgstr="Scanning" />
 	<message msgid="admw Wlisttitle1" msgstr="WiFi list" />
@@ -163,7 +163,7 @@
 	<message msgid="admw waiting" msgstr="Please Wait......" />
 	<message msgid="admw settingwaiting" msgstr="Setting,Please Wait......" />
 	<message msgid="admw uploadwaiting" msgstr="Upgrading,Please Wait......" />
-	<message msgid="admw settingmanual" msgstr="Setting,Please Wait......If the page long time not jump, please manually" />
+	<message msgid="admw settingmanual" msgstr="Setting,Please Wait......If the page does not jump , please manually" />
 
 	<message msgid="admw ssidrequest" msgstr="  (1-24 letters, numbers, or underscore)" />
 	<message msgid="admw passwordrequest" msgstr="  (8-12 letters, numbers or underscore)" />
@@ -187,8 +187,8 @@
 	<message msgid="err sIT" msgstr="Please specify the automatic disconnection waiting" />
 
 	<message msgid="err number" msgstr="It should be a [0-9] number." />
-	<message msgid="err IPmormat" msgstr="IP adress illegal." />
-	<message msgid="err Maskmormat" msgstr="Mask illegal." />
+	<message msgid="err IPmormat" msgstr="IP adress is illegal." />
+	<message msgid="err Maskmormat" msgstr="Mask is illegal." />
 
 	<message msgid="err IP error" msgstr="WAN IP and local IP cannot be located in the same network, please reset" />
 
@@ -237,22 +237,22 @@
 	<message msgid="err dhcp ip" msgstr="The WAN IP and Route IP are in the same subnet, please set the Route IP in Advanced Settings - Network Settings - Gateway Settings" />
 	<message msgid="man admin setting" msgstr="Administrator settings" />
 
-	<message msgid="err MAC wuxiao" msgstr="MAC address illegal" />
+	<message msgid="err MAC wuxiao" msgstr="MAC address is illegal" />
 	<message msgid="err IP empty" msgstr="IP address can not be empty" />
 	<message msgid="err sub empty" msgstr="Subnet can not be empty" />
 	<message msgid="err gw empty" msgstr="Gateway can not be empty" />
 	<message msgid="err DNS empty" msgstr="DNS can not be empty" />
-	<message msgid="err IP format" msgstr="IP address illegal" />
-	<message msgid="err sub format" msgstr="Subnet address illegal" />	
-	<message msgid="err gw format" msgstr="Gateway address illegal" />
-	<message msgid="err DNS format" msgstr="DNS address illegal" />
-	<message msgid="err SSID" msgstr="SSID illegal" />
+	<message msgid="err IP format" msgstr="IP address is illegal" />
+	<message msgid="err sub format" msgstr="Subnet address is illegal" />	
+	<message msgid="err gw format" msgstr="Gateway address is illegal" />
+	<message msgid="err DNS format" msgstr="DNS address is illegal" />
+	<message msgid="err SSID" msgstr="SSID is illegal" />
 	
 	<message msgid="err Ruleexist" msgstr="This rule is already exist " />	
 	<message msgid="wan not connected" msgstr="Please check WAN line" />
 	
-	<message msgid="err user" msgstr="Username illegal" />
-	<message msgid="err pwd" msgstr="Password illegal" />
+	<message msgid="err user" msgstr="Username is illegal" />
+	<message msgid="err pwd" msgstr="Password is illegal" />
 	<message msgid="admw pwdwaiting" msgstr="Password updated successfully, reconnecting......" />
 	<message msgid="err bin big" msgstr="Upgrade package should smaller than 15M" />
 

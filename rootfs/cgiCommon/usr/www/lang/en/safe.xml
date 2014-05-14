@@ -62,23 +62,23 @@
 	<message msgid="addport t1_Status" msgstr="Status" /> 
 	<message msgid="addport t1_port" msgstr="Commonly used external port" /> 
 	
-	<message msgid="err MAC wuxiao" msgstr="MAC address illegal" />
+	<message msgid="err MAC wuxiao" msgstr="MAC address is illegal" />
 	<message msgid="err MAC empty" msgstr="MAC is empty " />
 	<message msgid="err user empty" msgstr="User name is empty " />
 	<message msgid="err pwd empty" msgstr="Password is empty " />
 	<message msgid="err time empty" msgstr="Time is empty " />
-	<message msgid="err MAC format" msgstr="MAC address illegal,Please input as XX:XX:XX:XX:XX:XX (X is hexadecimal digit)" />
-	<message msgid="err format" msgstr="Parameter illegal " />
+	<message msgid="err MAC format" msgstr="MAC address is illegal,Please input as XX:XX:XX:XX:XX:XX (X is hexadecimal digit)" />
+	<message msgid="err format" msgstr="Parameter is illegal " />
 	<message msgid="err range" msgstr="Parameter range error " />
 	<message msgid="err IP empty" msgstr="IP address can not be empty" />
 	<message msgid="err sub empty" msgstr="Subnet can not be empty" />
 	<message msgid="err gw empty" msgstr="Gateway can not be empty" />
 	<message msgid="err DNS empty" msgstr="DNS can not be empty" />
-	<message msgid="err IP format" msgstr="IP address illegal" />
-	<message msgid="err sub format" msgstr="Subnet address illegal" />	
-	<message msgid="err gw format" msgstr="Gateway address illegal" />
-	<message msgid="err DNS format" msgstr="DNS address illegal" />
+	<message msgid="err IP format" msgstr="IP address is illegal" />
+	<message msgid="err sub format" msgstr="Subnet address is illegal" />	
+	<message msgid="err gw format" msgstr="Gateway address is illegal" />
+	<message msgid="err DNS format" msgstr="DNS address is illegal" />
 	
-	<message msgid="err iport" msgstr="Internal port illegal" />
-	<message msgid="err oport" msgstr="External port illegal" />
+	<message msgid="err iport" msgstr="Internal port is illegal" />
+	<message msgid="err oport" msgstr="External port is illegal" />
 </po>
