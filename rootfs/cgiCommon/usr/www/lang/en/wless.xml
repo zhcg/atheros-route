@@ -10,8 +10,8 @@
 	<message msgid="wless offbutton" msgstr="Off" />  
 	<message msgid="wless bSAVE" msgstr="Save" /> 
 	
-	<message msgid="wless ms" msgstr="MS" />
-	<message msgid="wless byte" msgstr="BYTE" />
+	<message msgid="wless ms" msgstr="ms" />
+	<message msgid="wless byte" msgstr="Byte" />
 
 	<message msgid="help" msgstr="Help" />
 	<message msgid="toplanguage" msgstr="e" />

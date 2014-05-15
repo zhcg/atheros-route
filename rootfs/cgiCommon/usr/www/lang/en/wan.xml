@@ -63,7 +63,7 @@
 	<message msgid="seconds" msgstr="seconds" />
 
 	<message msgid="macc title" msgstr="Clone MAC address" />
-	<message msgid="macc des" msgstr="Set the BASE to the WAN MAC address (Note: only the LAN device can use this function" />
+	<message msgid="macc des" msgstr="Set the BASE to the WAN MAC address (Note: only the LAN device can use this function)" />
 	<message msgid="macc t1_title" msgstr="Clone MAC address" />
 	<message msgid="macc t1_MACS" msgstr="Select the MAC address source" />
 	<message msgid="macc mactype0" msgstr="Use the default MAC address" />

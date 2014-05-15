@@ -36,7 +36,7 @@
 	<message msgid="conm title" msgstr="Wireless Access" />  
 	<message msgid="conm des" msgstr="Management of accessed wireless devices " />  
 	<message msgid="conm t1_title" msgstr="Wireless Access" />  
-	<message msgid="conm t1_switch" msgstr="wireless access switch" />  
+	<message msgid="conm t1_switch" msgstr="Wireless access switch" />  
 	<message msgid="conm ts1" msgstr="(Add and modify should be after Enable and Apply) " />  
 
 	<message msgid="conw title" msgstr="Remote Web management" />  
