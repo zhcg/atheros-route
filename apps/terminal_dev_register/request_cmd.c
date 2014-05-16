@@ -16,6 +16,16 @@ static void *dev_info = NULL;
 static int init();
 
 /**
+ * 初始化请求命令
+ */
+static int broadcast();
+
+/**
+ * 认证线程
+ */
+static void * authenticating_pthread(void* para);
+
+/**
  * 此线程处理网络设置和终端初始化
  */
 static void * request_cmd_0x01_02_03_07_08_09_0A_pthread(void* para);
@@ -213,6 +223,7 @@ static int database_select_dev_info(char *buf, unsigned short len);
 struct class_request_cmd request_cmd = 
 {
     .init = init,
+    .authenticating_pthread = authenticating_pthread,
     .request_cmd_analyse = request_cmd_analyse,
     .init_data_table = init_data_table,
     
@@ -229,6 +240,50 @@ int init()
     common_tools.work_sum->work_sum = 1;
     start_time = time(0);
     return 0;
+}
+
+/**
+ * 认证线程
+ */
+void * authenticating_pthread(void* para)
+{
+    int res = 0;
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);          //允许退出线程
+    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS,   NULL);   //设置立即取消
+    struct s_terminal_dev_register * terminal_dev_register = (struct s_terminal_dev_register *)para;
+    
+    
+    while (1)
+    {
+        if ((res = common_tools.get_network_state(common_tools.config->center_ip, 1, 3)) < 0)
+        {
+            sleep(60);
+            continue;
+        }
+        
+        if ((res = terminal_register.user_register(terminal_dev_register->data_table.pad_sn, terminal_dev_register->data_table.pad_mac)) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "user_register failed", res);
+            
+            if (res == WRONGFUL_DEV_ERR) // 无效的设备
+            {
+                // 发送UDP广播，通知PAD
+                break;
+            }
+            sleep(10);
+        }
+    }
+    // 启动CACM
+    if (terminal_authentication.start_up_CACM() < 0)
+    {
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "start_up_CACM failed!", -1);
+    }
+    else
+    {
+        PRINT("start_up_CACM success!\n");
+    }
+    terminal_dev_register->authenticating_flag = 0;
+    return (void *)res;
 }
 
 /**
@@ -602,7 +657,7 @@ int request_cmd_0x01_02_03_07_08_09_0A(struct s_terminal_dev_register * terminal
     // 这将该子线程的状态设置为detached,则该线程运行结束后会自动释放所有资源（非阻塞，可立即返回）
     if (pthread_detach(terminal_dev_register->request_cmd_0x01_02_03_07_08_09_0A_id) < 0)
     {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "pthread_detach failed!", PTHREAD_CREAT_ERR);
+        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "pthread_detach failed!", PTHREAD_DETACH_ERR);
         
         #if BOARDTYPE == 5350
         pthread_mutex_lock(&nvram_interface.mutex);
@@ -618,7 +673,7 @@ int request_cmd_0x01_02_03_07_08_09_0A(struct s_terminal_dev_register * terminal
         pthread_mutex_unlock(&nvram_interface.mutex);
         #endif
         
-        return PTHREAD_CREAT_ERR;
+        return PTHREAD_DETACH_ERR;
     }
     // 说明此时正在配置
     terminal_dev_register->config_now_flag = 1;
@@ -2334,6 +2389,8 @@ int request_cmd_0x60(struct s_terminal_dev_register * terminal_dev_register)
     char ssid1[32] = {0};
     char wpapsk1[32] = {0};
     
+    unsigned char columns_count = 0;
+    
     PRINT("len = %d %02X\n", len, len);
     if (len != (SN_LEN + 12))
     {
@@ -2346,11 +2403,11 @@ int request_cmd_0x60(struct s_terminal_dev_register * terminal_dev_register)
     memcpy(pad_mac, terminal_dev_register->data + SN_LEN, 12);
     
     // 读取数据库，判断SSID是否存在
-    char columns_name[9][30] = {"base_sn", "base_mac", "base_ip", "ssid_user_name", "ssid_password", "pad_sn", "pad_mac", "pad_ip", "register_state"};
-    char columns_value[9][100] = {0};
-    unsigned short values_len[9] = {0};
+    char columns_name[10][30] = {"base_sn", "base_mac", "base_ip", "ssid_user_name", "ssid_password", "pad_sn", "pad_mac", "pad_ip", "register_state", "authentication_state"};
+    char columns_value[10][100] = {0};
+    unsigned short values_len[10] = {0};
     
-    res = database_management.select(5, columns_name, columns_value);
+    res = database_management.select(6, columns_name, columns_value);
     
     if ((res < 0) && (res != NO_RECORD_ERR))
     {
@@ -2436,17 +2493,29 @@ int request_cmd_0x60(struct s_terminal_dev_register * terminal_dev_register)
             memcpy(columns_value[2], "10.10.10.254", strlen("10.10.10.254"));
             memcpy(columns_value[3], ssid1,strlen(ssid1));
             memcpy(columns_value[4], wpapsk1,strlen(wpapsk1));
+            
+            // 如果是一个新的PAD序列号，则认证状态恢复到原始状态
+            if (memcmp(pad_sn, columns_value[5], SN_LEN) != 0)
+            {
+                memcpy(columns_value[9], "240", strlen("240")); // NO_AUTHENTICATION_STATUS
+                columns_count = 10;
+            }
+            else
+            {
+                columns_count = 9;
+            }
+            
             memcpy(columns_value[5], pad_sn, strlen(pad_sn));
             memcpy(columns_value[6], pad_mac, strlen(pad_mac));
             memcpy(columns_value[7], "10.10.10.100", strlen("10.10.10.100"));
             memcpy(columns_value[8], "0", strlen("0"));
             
-            for (i = 0; i < 9; i++)
+            for (i = 0; i < columns_count; i++)
             {
                 values_len[i] = strlen(columns_value[i]);
             }
             
-            if ((res = database_management.update(9, columns_name, columns_value, values_len)) < 0)
+            if ((res = database_management.update(columns_count, columns_name, columns_value, values_len)) < 0)
             {
                 OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_update failed", res);
                 return res;
@@ -2462,6 +2531,29 @@ int request_cmd_0x60(struct s_terminal_dev_register * terminal_dev_register)
         }
     }
     request_cmd.init_data_table(&terminal_dev_register->data_table);
+    
+    // 启动认证线程
+    if (columns_count == 10) // 说明是一个新的PAD序列号，此时需要重新认证
+    {
+        if (terminal_dev_register->authenticating_flag == 1)
+        {
+            pthread_cancel(terminal_dev_register->authenticating_id);
+        }
+        // 启动线程
+        if (pthread_create(&terminal_dev_register->authenticating_id, NULL, (void*)authenticating_pthread, (void *)terminal_dev_register) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "pthread_create failed!", PTHREAD_CREAT_ERR);
+            terminal_dev_register->authenticating_flag = 0;
+            return PTHREAD_CREAT_ERR;
+        }
+        
+        // 这将该子线程的状态设置为detached,则该线程运行结束后会自动释放所有资源（非阻塞，可立即返回）
+        if (pthread_detach(terminal_dev_register->authenticating_id) < 0)
+        {
+            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "pthread_detach failed!", PTHREAD_DETACH_ERR);
+            return PTHREAD_DETACH_ERR;
+        }
+    }
     return res;
 }
 #endif // BOARDTYPE == 9344
@@ -2860,17 +2952,17 @@ int init_data_table(struct s_data_table *data_table)
     memset(data_table, 0, sizeof(struct s_data_table));
     
     int res = 0;
-    char columns_name[4][30] = {"base_sn", "base_mac", "pad_sn", "pad_mac"};
-    char columns_value[4][100] = {0};
+    char columns_name[5][30] = {"base_sn", "base_mac", "pad_sn", "pad_mac", "authentication_state"};
+    char columns_value[5][100] = {0};
 
     #if BOARDTYPE == 9344
-    if ((res = database_management.select(4, columns_name, columns_value)) < 0)
+    if ((res = database_management.select(5, columns_name, columns_value)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_select failed!", res);
         return res;
     }
     #elif BOARDTYPE == 5350
-    if ((res = nvram_interface.select(RT5350_FREE_SPACE, 4, columns_name, columns_value)) < 0)
+    if ((res = nvram_interface.select(RT5350_FREE_SPACE, 5, columns_name, columns_value)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "nvram_select failed!", res);
         return res;
@@ -2881,6 +2973,8 @@ int init_data_table(struct s_data_table *data_table)
     memcpy(data_table->base_mac, columns_value[1], sizeof(data_table->base_mac) - 1);
     memcpy(data_table->pad_sn, columns_value[2], sizeof(data_table->pad_sn) - 1);
     memcpy(data_table->pad_mac, columns_value[3], sizeof(data_table->pad_mac) - 1);
+    data_table->authentication_state = atoi(columns_value[4]);
+    
     if ((res = get_register_state()) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_register_state failed!", res);
@@ -2896,6 +2990,7 @@ int init_data_table(struct s_data_table *data_table)
     PRINT("data_table->base_mac = %s\n", data_table->base_mac);
     PRINT("data_table->pad_sn = %s\n", data_table->pad_sn);
     PRINT("data_table->pad_mac = %s\n", data_table->pad_mac);
+    PRINT("data_table->authentication_state = %02X\n", data_table->authentication_state);
     PRINT("data_table->register_state = %02X\n", data_table->register_state);
     return 0;
 }
@@ -3174,6 +3269,7 @@ int delete_dev_info(unsigned short *dev_count, void **dev_info, struct s_dev_reg
     int i = 0;
     void *dev_info_tmp = NULL;
     struct s_dev_register *dev_tmp;
+    PRINT("*dev_info = %p\n", *dev_info);
     for (i = 0; i < *dev_count; i++)
     {
         dev_tmp = (struct s_dev_register *)((*dev_info) + i * sizeof(struct s_dev_register));
@@ -3184,9 +3280,15 @@ int delete_dev_info(unsigned short *dev_count, void **dev_info, struct s_dev_reg
             memcpy(dev_register->dev_name, dev_tmp->dev_name, strlen(dev_tmp->dev_name));
             
             memset(dev_tmp, 0, sizeof(struct s_dev_register));
-            memcpy(dev_tmp, dev_tmp + sizeof(struct s_dev_register), ((*dev_count) - i - 1) * sizeof(struct s_dev_register));
+            memcpy(*dev_info + i * sizeof(struct s_dev_register), *dev_info + (i + 1) * sizeof(struct s_dev_register), ((*dev_count) - i - 1) * sizeof(struct s_dev_register));
+            
+            PRINT("((*dev_count) - i - 1) * sizeof(struct s_dev_register) = %d\n", ((*dev_count) - i - 1) * sizeof(struct s_dev_register));
+            PRINT("name = %s mac = %s dev_code = %s\n", ((struct s_dev_register *)(*dev_info + (i + 1) *  sizeof(struct s_dev_register)))->dev_name, ((struct s_dev_register *)(*dev_info + (i + 1) *  sizeof(struct s_dev_register)))->dev_mac, ((struct s_dev_register *)(*dev_info + (i + 1) * sizeof(struct s_dev_register)))->dev_code);
             (*dev_count)--;
             
+            PRINT("*dev_count = %d i = %d\n", *dev_count, i);
+            PRINT("name = %s mac = %s dev_code = %s\n", ((struct s_dev_register *)(*dev_info))->dev_name, ((struct s_dev_register *)(*dev_info))->dev_mac, ((struct s_dev_register *)(*dev_info))->dev_code);
+            PRINT("*dev_info = %p\n", *dev_info);
             if (*dev_count == 0)
             {
                 free(*dev_info);
@@ -3200,6 +3302,8 @@ int delete_dev_info(unsigned short *dev_count, void **dev_info, struct s_dev_reg
                     return MALLOC_ERR;
                 }
                 *dev_info = dev_info_tmp;
+                PRINT("name = %s mac = %s dev_code = %s\n", ((struct s_dev_register *)(*dev_info))->dev_name, ((struct s_dev_register *)(*dev_info))->dev_mac, ((struct s_dev_register *)(*dev_info))->dev_code);
+                PRINT("*dev_info = %p\n", *dev_info); 
             }
             return 0;
         }
@@ -3234,9 +3338,9 @@ int select_dev_info(unsigned short dev_count, void *dev_info, char *buf, unsigne
     for (i = 0; i < dev_count; i++)
     {
         dev_tmp = (struct s_dev_register *)(dev_info + i * sizeof(struct s_dev_register));
-
+        
         snprintf(buf + buf_len, len - buf_len, "%s,%s,%s;", dev_tmp->dev_name, dev_tmp->dev_id, dev_tmp->dev_mac);
-        buf_len = strlen(dev_tmp->dev_name) + strlen(dev_tmp->dev_id) + strlen(dev_tmp->dev_mac) + 3;
+        buf_len += (strlen(dev_tmp->dev_name) + strlen(dev_tmp->dev_id) + strlen(dev_tmp->dev_mac) + 3);
     }
     PRINT("buf = %s\n", buf);
     return 0;

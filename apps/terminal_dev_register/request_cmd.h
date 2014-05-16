@@ -31,7 +31,8 @@ struct s_data_table // 此结构对应数据库
     char pad_sn[SN_LEN + 1];
     char pad_mac[18];
     unsigned char register_state;
-
+    unsigned char authentication_state;
+    
     #if BOARDTYPE == 5350
     char default_ssid[22];
     char default_ssid_password[9];
@@ -46,8 +47,10 @@ struct s_terminal_dev_register
     int cmd_count; // 接收命令的个数
     unsigned short length; // 数据包长度
     char data[256];
+    unsigned char authenticating_flag; // 认证线程标志
     
     pthread_t request_cmd_0x01_02_03_07_08_09_0A_id; // 配置线程id
+    pthread_t authenticating_id; // 线程id
     
     volatile char cmd_word; // 命令字
     volatile char config_now_flag; // 正在配置标准 1：代表正在配置
@@ -60,6 +63,8 @@ struct s_terminal_dev_register
 struct class_request_cmd
 {
     int (* init)();
+    void * (* authenticating_pthread)(void *para);
+    
     int (* request_cmd_analyse)(struct s_terminal_dev_register * terminal_dev_register);
     int (* init_data_table)(struct s_data_table *data_table);
     
