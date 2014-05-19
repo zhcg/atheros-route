@@ -6577,7 +6577,7 @@ int main(int argc,char **argv)
 		if((strstr(valBuff5,valBuff3) == 0)&&(strcmp(valBuff3,"WPA") != 0))
 		{
 			CFG_set_by_name("AP_SECMODE","None");
-			Execute_cmd("cfg -r PSK_KEY > /dev/null 2>&1", rspBuff);
+			//Execute_cmd("cfg -r PSK_KEY > /dev/null 2>&1", rspBuff);
 			flag=5;
 			//Execute_cmd("iwpriv ath0 authmode 1 > /dev/null 2>&1", rspBuff);
 			//fprintf(errOut,"333333 2.4G flag is %d\n", flag);
