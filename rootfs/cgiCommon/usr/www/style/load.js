@@ -142,7 +142,7 @@ function showpxe()
 function endshow()
 {
 	pxi=90;
-	timer2=setInterval('showpxb()',1000);
+	timer2=setInterval('showpxe()',1000);
 }
 function deleteCookie(name)
 { 
