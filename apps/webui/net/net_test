@@ -1,6 +1,8 @@
 #!/bin/sh
+###############net_test
 BAIDU=www.baidu.com
-GOOGLE=8.8.8.8
+BAIDU_IP=202.108.22.5
+DNS=8.8.8.8
 
 while true
 do
@@ -12,23 +14,27 @@ VAL=$(($VAL&0x0400))
 #echo $VAL
 
 if [ $VAL -eq 1024 ];then
-#	ping -c 3 $BAIDU  > /tmp/ping.log
-	ping -c 3 $BAIDU  > /tmp/ping.log &
-	sleep 3
-	mes=`grep icmp_seq /tmp/ping.log`
-
-	if [ -z "${mes}" ];then
-	        echo "0">/usr/www/ping.xml
-	else
-	        echo "1">/usr/www/ping.xml
+	#echo link up
+	IP_FLAG=`ifconfig eth0 | grep "inet addr:"`
+	if [ ! -z "$IP_FLAG" ];then
+		#echo link up 2
+		ping $BAIDU_IP test
+		if [ $? -eq 0 ]; then
+			#echo link up 3
+			ping $BAIDU test
+			#echo link up 4
+			if [ $? -eq 0 ]; then
+				echo "1">/usr/www/ping.xml
+			else
+				echo "0">/usr/www/ping.xml
+			fi
+		fi
 	fi
-	rm -fr /tmp/ping.log
 else
 if [ $VAL -eq 0 ];then
-	echo "0">/usr/www/ping.xml
-	sleep 3
+     echo "0">/usr/www/ping.xml
 fi
 fi
 #cfg -c
-#sleep 3
+sleep 3
 done
