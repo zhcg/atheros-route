@@ -136,19 +136,6 @@ static int init_thread_run_env(struct s_cacm * cacm)
 {
     int res = 0;
     
-    #if PHONE_STATE_INTERFACE == 1
-    #elif PHONE_STATE_INTERFACE == 2
-    
-    // 创建本地socket，接收电话线状态的上报
-    if ((res = communication_network.make_server_link(CACM_SOCKCT_PORT)) < 0)
-    {
-        PERROR("make_server_link failed!\n");
-        return res;
-    }
-    cacm->fd = res;
-    
-    #elif PHONE_STATE_INTERFACE == 3
-    
     // 打开/dev/uartpassage，接收电话线状态的上报
     if ((res = open(PHONE_STATE_NODE, O_RDWR, 0644)) < 0)
     {
@@ -156,8 +143,6 @@ static int init_thread_run_env(struct s_cacm * cacm)
         return res;
     }
     cacm->fd = res;
-    
-    #endif // PHONE_STATE_INTERFACE == 3
     return 0;
 }
 
@@ -254,19 +239,11 @@ static int start_threads(struct s_cacm *cacm)
     
     char columns_name[2][30] = {"heart_beat_cycle", "business_cycle"};
     char columns_value[2][100] = {0};
-#if BOARDTYPE == 5350
-    if ((res = nvram_interface.select(RT5350_FREE_SPACE, 2, columns_name, columns_value)) < 0)
-    {
-        PERROR("nvram_select failed!\n");
-        return res;
-    }
-#elif BOARDTYPE == 9344
     if ((res = database_management.select(2, columns_name, columns_value)) < 0)
     {
         PERROR("sqlite_select failed!\n");
         return res;
     }
-#endif
     if ((strlen(columns_value[0]) == 0) || (memcmp(columns_value[0], "\"\"", 2) == 0) ||
         (strlen(columns_value[1]) == 0) || (memcmp(columns_value[1], "\"\"", 2) == 0))
     {
@@ -445,21 +422,14 @@ static int cacm_init(struct s_cacm *cacm)
         return EXOSIP_LISTEN_ERR;
     }
     PRINT("after eXosip_listen_addr!\n");
-#if BOARDTYPE == 5350
-    if ((res = nvram_interface.select(RT5350_FREE_SPACE, 5, columns_name, columns_value)) < 0)
-    {
-        eXosip_quit();
-        PERROR("nvram_select failed!\n");
-        return res;
-    }
-#elif BOARDTYPE == 9344
+    
     if ((res = database_management.select(5, columns_name, columns_value)) < 0)
     {
         eXosip_quit();
         PERROR("sqlite_select failed!\n");
         return res;
     }
-#endif 
+    
     if ((strlen(columns_value[0]) == 0) || (memcmp(columns_value[0], "\"\"", 2) == 0) || 
         (strlen(columns_value[1]) == 0) || (memcmp(columns_value[1], "\"\"", 2) == 0) ||
         (strlen(columns_value[2]) == 0) || (memcmp(columns_value[2], "\"\"", 2) == 0) ||

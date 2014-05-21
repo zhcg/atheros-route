@@ -9,7 +9,6 @@
 #include "terminal_authentication.h"
 #include "terminal_register.h"
 #include "network_config.h"
-#include "communication_usb.h"
 #include "communication_serial.h"
 
 #define LOCAL_IP "127.0.0.1"
@@ -28,11 +27,6 @@
 #define CMD_l "l"
 #define CMD_m "m"
 
-#if PHONE_CHANNEL_INTERFACE == 2
-#define CMD_n "n"
-#define CMD_o "o"
-#endif // PHONE_CHANNEL_INTERFACE == 2
-
 #define CMD_p "p"
 #define CMD_q "q"
 #define CMD_r "r"
@@ -41,9 +35,7 @@
 #define CMD_u "u"
 #define CMD_v "v"
 #define CMD_w "w"
-#define CMD_x "x"
 #define CMD_y "y"
-#define CMD_z "z"
 
 #define CMD_B "B"
 #define CMD_C "C"
@@ -77,21 +69,6 @@ int cmd_a()
     char device_token[TOKENLEN] = {0};
     char position_token[TOKENLEN] = {0};
     
-    #if 0
-    if (common_tools.get_phone_stat() < 0)
-    {
-        PRINT("get_phone_stat failed!\n");
-        return res;
-    }
-    #endif
-    
-    #if CTSI_SECURITY_SCHEME == 1
-    if ((res = terminal_authentication.insert_token()) < 0)
-    {
-        PRINT("insert_token failed!\n");
-        return res;
-    }
-    #elif CTSI_SECURITY_SCHEME == 2
     if ((res = terminal_authentication.rebuild_device_token(device_token)) < 0)
     {
         PERROR("rebuild_device_token failed!\n");
@@ -102,7 +79,6 @@ int cmd_a()
         PERROR("rebuild_position_token failed!\n");
         return res; 
     }
-    #endif // CTSI_SECURITY_SCHEME == 2
     return res;
 }
     
@@ -155,12 +131,8 @@ int cmd_e(char *phone)
     int res = 0;
     char fsk_82_send_buf[14] = {0xA5, 0x5A, 0x76, 0x09, 0x82, 0x00, 0x05, 0xCD, 0xD0, 0x53, 0x43, 0x00, 0x46, 0xB3};
     
-    #if PHONE_CHANNEL_INTERFACE == 2
-    if ((res = spi_rt_interface.send_data(UART1, fsk_82_send_buf, sizeof(fsk_82_send_buf)))< 0)
-    #elif PHONE_CHANNEL_INTERFACE == 3
     struct timeval tv = {5, 0};
     if ((res = communication_serial.send_data(fsk_82_send_buf, sizeof(fsk_82_send_buf), &tv))< 0)
-    #endif // PHONE_CHANNEL_INTERFACE == 3
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_data failed!", res);
     	return res;
@@ -187,23 +159,6 @@ int cmd_f(char *phone)
     
     sleep(4);
     
-    #if PHONE_CHANNEL_INTERFACE == 2
-    // 发送建链请求
-    if ((res = spi_rt_interface.send_data(UART1, fsk_81_send_buf, sizeof(fsk_81_send_buf)))< 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_data failed!", res);
-    	return res; 
-    }
-    
-    // 接收建链应答
-    if ((res = spi_rt_interface.recv_data(UART1, fsk_82_recv_buf, sizeof(fsk_82_recv_buf)))< 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_data failed!", res);
-    	return res; 
-    }
-    
-    #elif PHONE_CHANNEL_INTERFACE == 3
-    
     struct timeval tv = {5, 0};
     // 发送建链请求
     if ((res = communication_serial.send_data(fsk_81_send_buf, sizeof(fsk_81_send_buf), &tv))< 0)
@@ -218,8 +173,6 @@ int cmd_f(char *phone)
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_data failed!", res);
     	return res; 
     }
-    
-    #endif // PHONE_CHANNEL_INTERFACE == 3
     
     PRINT_BUF_BY_HEX(fsk_82_recv_buf, NULL, sizeof(fsk_82_recv_buf), __FILE__, __FUNCTION__, __LINE__);
     
@@ -307,12 +260,8 @@ int cmd_k()
     int res = 0;
     char fsk_87_send_buf[] = {0xA5, 0x5A, 0x76, 0x64, 0x87, 0x00, 0x60, 0x51, 0xDC, 0xB0, 0x74, 0x02, 0x00, 0x59, 0x02, 0x00, 0x20, 0x01, 0x20, 0x13, 0x01, 0x09, 0x31, 0x00, 0x00, 0x00, 0x00, 0x11, 0x11, 0x11, 0x11, 0x00, 0x00, 0x20, 0x31, 0x35, 0x30, 0x03, 0x0C, 0x92, 0x0C, 0x28, 0x0C, 0x2B, 0x00, 0x39, 0x22, 0x30, 0x31, 0x41, 0x31, 0x30, 0x31, 0x30, 0x31, 0x30, 0x30, 0x31, 0x30, 0x30, 0x33, 0x31, 0x32, 0x31, 0x32, 0x32, 0x30, 0x30, 0x31, 0x42, 0x38, 0x35, 0x41, 0x46, 0x45, 0x46, 0x46, 0x46, 0x30, 0x30, 0x44, 0x04, 0x37, 0x45, 0xB1, 0x74, 0x08, 0x51, 0x9B, 0x50, 0x0D, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x52, 0x5E};
     
-    #if PHONE_CHANNEL_INTERFACE == 2
-    if ((res = spi_rt_interface.send_data(UART1, fsk_87_send_buf, sizeof(fsk_87_send_buf)))< 0)
-    #elif PHONE_CHANNEL_INTERFACE == 3
     struct timeval tv = {5, 0};
     if ((res = communication_serial.send_data(fsk_87_send_buf, sizeof(fsk_87_send_buf), &tv))< 0)
-    #endif // PHONE_CHANNEL_INTERFACE == 3
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_data failed!", res);
     	return res;
@@ -348,12 +297,8 @@ int cmd_m()
     char fsk_84_recv_buf[128] = {0};
     char fsk_82_send_buf[14] = {0xA5, 0x5A, 0x76, 0x09, 0x82, 0x00, 0x05, 0xCD, 0xD0, 0x53, 0x43, 0x00, 0x46, 0xB3};
     
-    #if PHONE_CHANNEL_INTERFACE == 2
-    if ((res = spi_rt_interface.send_data(UART1, fsk_82_send_buf, sizeof(fsk_82_send_buf)))< 0)
-    #elif PHONE_CHANNEL_INTERFACE == 3
     struct timeval tv = {5, 0};
     if ((res = communication_serial.send_data(fsk_82_send_buf, sizeof(fsk_82_send_buf), &tv))< 0)
-    #endif // PHONE_CHANNEL_INTERFACE == 3
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_data failed!", res);
     	return res;
@@ -362,12 +307,8 @@ int cmd_m()
     {
         while (1)
         {
-            #if PHONE_CHANNEL_INTERFACE == 2
-            if ((res = spi_rt_interface.recv_data(UART1, &tmp, sizeof(tmp))) == sizeof(tmp))
-            #elif PHONE_CHANNEL_INTERFACE == 3
             tv.tv_sec = 5;
             if ((res = communication_serial.recv_data(&tmp, sizeof(tmp), &tv)) == sizeof(tmp))
-            #endif // PHONE_CHANNEL_INTERFACE == 3
             {
                 if (tmp == 0x55)
                 {   
@@ -390,12 +331,8 @@ int cmd_m()
         
         while (1)
         {
-            #if PHONE_CHANNEL_INTERFACE == 2
-            if ((res = spi_rt_interface.recv_data(UART1, &tmp, sizeof(tmp))) == sizeof(tmp))
-            #elif PHONE_CHANNEL_INTERFACE == 3
             tv.tv_sec = 5;
             if ((res = communication_serial.recv_data(&tmp, sizeof(tmp), &tv)) == sizeof(tmp))
-            #endif // PHONE_CHANNEL_INTERFACE == 3
             {
                 if (tmp == 0x84)
                 {   
@@ -410,12 +347,8 @@ int cmd_m()
         
         fsk_84_recv_buf[0] = tmp;
         
-        #if PHONE_CHANNEL_INTERFACE == 2
-        if ((res = spi_rt_interface.recv_data(UART1, fsk_len, sizeof(fsk_len))) != sizeof(fsk_len))
-        #elif PHONE_CHANNEL_INTERFACE == 3
         tv.tv_sec = 5;
         if ((res = communication_serial.recv_data(fsk_len, sizeof(fsk_len), &tv)) != sizeof(fsk_len))
-        #endif // PHONE_CHANNEL_INTERFACE == 3
         {
             PERROR("spi_rt_interface.recv_data failed!\n");
             return res;
@@ -425,12 +358,8 @@ int cmd_m()
         len = fsk_len[1];
         len += (fsk_len[0] << 8);
         
-        #if PHONE_CHANNEL_INTERFACE == 2
-        if ((res = spi_rt_interface.recv_data(UART1, fsk_84_recv_buf + 3, len + 1)) != (len + 1))
-        #elif PHONE_CHANNEL_INTERFACE == 3
         tv.tv_sec = 5;
         if ((res = communication_serial.recv_data(fsk_84_recv_buf + 3, len + 1, &tv)) != (len + 1))
-        #endif // PHONE_CHANNEL_INTERFACE == 3
         {
             PERROR("spi_rt_interface.recv_data failed!\n");
             return res;
@@ -446,49 +375,6 @@ int cmd_m()
     tmp = 0;
     return res;
 }
-
-#if PHONE_CHANNEL_INTERFACE == 2
-/**
- * 命令字 n 重发命令
- */
-int cmd_n()
-{
-    int res = 0;
-    unsigned char tmp = 0x08;
-    
-    if ((res = spi_rt_interface.send_data(EXPAND, &tmp, sizeof(tmp)))< 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_data failed!", res);
-    	return res;
-    }
-    
-    return res;
-}
-
-/**
- * 命令字 o 发送读磁条卡命令
- */
-int cmd_o()
-{
-    int res = 0; 
-    char buf[7] = {0};
-    buf[0] = 0xA5;
-    buf[1] = 0x01;
-    buf[2] = 0x03;
-    buf[3] = 0x15;
-    buf[4] = 0x00;
-    buf[5] = 0x00;
-    buf[6] = 0x17;
-    
-    if ((res = spi_rt_interface.send_data(UART2, buf, 7))< 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_data failed!", res);
-    	return res;
-    }
-    memset(buf, 0, sizeof(buf));
-    return res;
-}
-#endif // PHONE_CHANNEL_INTERFACE == 2
 
 /**
  * 命令字 p 接收81 发送87
@@ -506,12 +392,8 @@ int cmd_p()
     
     while (1)
     {
-        #if PHONE_CHANNEL_INTERFACE == 2
-        if ((res = spi_rt_interface.recv_data(UART1, &tmp, sizeof(tmp))) == sizeof(tmp))
-        #elif PHONE_CHANNEL_INTERFACE == 3
         tv.tv_sec = 5;
         if ((res = communication_serial.recv_data(&tmp, sizeof(tmp), &tv)) == sizeof(tmp))
-        #endif // PHONE_CHANNEL_INTERFACE == 3
         {
             if (tmp == 0x55)
             {   
@@ -534,12 +416,8 @@ int cmd_p()
     
     while (1)
     {
-        #if PHONE_CHANNEL_INTERFACE == 2
-        if ((res = spi_rt_interface.recv_data(UART1, &tmp, sizeof(tmp))) == sizeof(tmp))
-        #elif PHONE_CHANNEL_INTERFACE == 3
         tv.tv_sec = 5;
         if ((res = communication_serial.recv_data(&tmp, sizeof(tmp), &tv)) == sizeof(tmp))
-        #endif // PHONE_CHANNEL_INTERFACE == 3
         {
             if (tmp == 0x81)
             {   
@@ -553,12 +431,8 @@ int cmd_p()
     }
                  
     fsk_81_recv_buf[0] = tmp;
-    #if PHONE_CHANNEL_INTERFACE == 2
-    if ((res = spi_rt_interface.recv_data(UART1, fsk_len, sizeof(fsk_len))) != sizeof(fsk_len))
-    #elif PHONE_CHANNEL_INTERFACE == 3
     tv.tv_sec = 5;
     if ((res = communication_serial.recv_data(fsk_len, sizeof(fsk_len), &tv)) != sizeof(fsk_len))
-    #endif // PHONE_CHANNEL_INTERFACE == 3
     {
         PERROR("spi_rt_interface.recv_data failed!\n");
         return res;
@@ -568,14 +442,10 @@ int cmd_p()
     len = fsk_len[1];
     len += (fsk_len[0] << 8);
     
-    #if PHONE_CHANNEL_INTERFACE == 2
-    if ((res = spi_rt_interface.recv_data(UART1, fsk_81_recv_buf + 3, len + 1)) != (len + 1))
-    #elif PHONE_CHANNEL_INTERFACE == 3
     tv.tv_sec = 5;
     if ((res = communication_serial.recv_data(fsk_81_recv_buf + 3, len + 1, &tv)) != (len + 1))
-    #endif // PHONE_CHANNEL_INTERFACE == 3
     {
-        PERROR("spi_rt_interface.recv_data failed!\n");
+        PERROR("recv_data failed!\n");
         return res;
     }
     PRINT_BUF_BY_HEX(fsk_81_recv_buf, NULL, len + 4, __FILE__, __FUNCTION__, __LINE__);
@@ -587,12 +457,8 @@ int cmd_p()
     len = 0;
     tmp = 0;
     
-    #if PHONE_CHANNEL_INTERFACE == 2
-    if ((res = spi_rt_interface.send_data(UART1, fsk_87_send_buf, sizeof(fsk_87_send_buf)))< 0)
-    #elif PHONE_CHANNEL_INTERFACE == 3
     tv.tv_sec = 5;
     if ((res = communication_serial.send_data(fsk_87_send_buf, sizeof(fsk_87_send_buf), &tv))< 0)
-    #endif // PHONE_CHANNEL_INTERFACE == 3
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_data failed!", res);
     	return res; 
@@ -614,21 +480,12 @@ int cmd_q()
     char fsk_81_recv_buf[9] = {0};
     char fsk_87_send_buf[] = {0xA5, 0x5A, 0x76, 0x64, 0x87, 0x00, 0x60, 0x51, 0xDC, 0xB0, 0x74, 0x02, 0x00, 0x59, 0x02, 0x00, 0x20, 0x01, 0x20, 0x13, 0x01, 0x09, 0x31, 0x00, 0x00, 0x00, 0x00, 0x11, 0x11, 0x11, 0x11, 0x00, 0x00, 0x20, 0x31, 0x35, 0x30, 0x03, 0x0C, 0x92, 0x0C, 0x28, 0x0C, 0x2B, 0x00, 0x39, 0x22, 0x30, 0x31, 0x41, 0x31, 0x30, 0x31, 0x30, 0x31, 0x30, 0x30, 0x31, 0x30, 0x30, 0x33, 0x31, 0x32, 0x31, 0x32, 0x32, 0x30, 0x30, 0x31, 0x42, 0x38, 0x35, 0x41, 0x46, 0x45, 0x46, 0x46, 0x46, 0x30, 0x30, 0x44, 0x04, 0x37, 0x45, 0xB1, 0x74, 0x08, 0x51, 0x9B, 0x50, 0x0D, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x52, 0x5E};
     
-    #if CTSI_SECURITY_SCHEME == 1
-    // 接收来电
-    if ((res = communication_serial.recv_display_msg()) < 0)
-    {
-        PERROR("recv_display_msg failed!\n");
-        return res;
-    }
-    #else
     // 接收来电
     if ((res = communication_serial.recv_display_msg(common_tools.config->center_phone)) < 0)
     {
         PERROR("recv_display_msg failed!\n");
         return res;
     }
-    #endif
     // 摘机
     if ((res = communication_serial.cmd_off_hook()) < 0)
     {
@@ -640,12 +497,8 @@ int cmd_q()
     // 接收建链
     while (1)
     {
-        #if PHONE_CHANNEL_INTERFACE == 2
-        if ((res = spi_rt_interface.recv_data(UART1, &tmp, sizeof(tmp))) == sizeof(tmp))
-        #elif PHONE_CHANNEL_INTERFACE == 3
         tv.tv_sec = 5;
         if ((res = communication_serial.recv_data(&tmp, sizeof(tmp), &tv)) == sizeof(tmp))
-        #endif // PHONE_CHANNEL_INTERFACE == 3
         {
             if (tmp == 0x55)
             {   
@@ -669,12 +522,8 @@ int cmd_q()
     
     while (1)
     {
-        #if PHONE_CHANNEL_INTERFACE == 2
-        if ((res = spi_rt_interface.recv_data(UART1, &tmp, sizeof(tmp))) == sizeof(tmp))
-        #elif PHONE_CHANNEL_INTERFACE == 3
         tv.tv_sec = 5;
         if ((res = communication_serial.recv_data(&tmp, sizeof(tmp), &tv)) == sizeof(tmp))
-        #endif // PHONE_CHANNEL_INTERFACE == 3
         {
             if (tmp == 0x81)
             {   
@@ -689,14 +538,10 @@ int cmd_q()
     }
                  
     fsk_81_recv_buf[0] = tmp;
-    #if PHONE_CHANNEL_INTERFACE == 2
-    if ((res = spi_rt_interface.recv_data(UART1, fsk_len, sizeof(fsk_len))) != sizeof(fsk_len))
-    #elif PHONE_CHANNEL_INTERFACE == 3
     tv.tv_sec = 5;
     if ((res = communication_serial.recv_data(fsk_len, sizeof(fsk_len), &tv)) != sizeof(fsk_len))
-    #endif // PHONE_CHANNEL_INTERFACE == 3
     {
-        PERROR("spi_rt_interface.recv_data failed!\n");
+        PERROR("recv_data failed!\n");
         hook_flag = 1;
         return res;
     }
@@ -705,14 +550,10 @@ int cmd_q()
     len = fsk_len[1];
     len += (fsk_len[0] << 8);
     
-    #if PHONE_CHANNEL_INTERFACE == 2
-    if ((res = spi_rt_interface.recv_data(UART1, fsk_81_recv_buf + 3, len + 1)) != (len + 1))
-    #elif PHONE_CHANNEL_INTERFACE == 3
     tv.tv_sec = 5;
     if ((res = communication_serial.recv_data(fsk_81_recv_buf + 3, len + 1, &tv)) != (len + 1))
-    #endif // PHONE_CHANNEL_INTERFACE == 3
     {
-        PERROR("spi_rt_interface.recv_data failed!\n");
+        PERROR("recv_data failed!\n");
         hook_flag = 1;
         return res;
     }
@@ -726,12 +567,8 @@ int cmd_q()
     tmp = 0;
     
     // 发送87
-    #if PHONE_CHANNEL_INTERFACE == 2
-    if ((res = spi_rt_interface.send_data(UART1, fsk_87_send_buf, sizeof(fsk_87_send_buf)))< 0)
-    #elif PHONE_CHANNEL_INTERFACE == 3
     tv.tv_sec = 5;
     if ((res = communication_serial.send_data(fsk_87_send_buf, sizeof(fsk_87_send_buf), &tv))< 0)
-    #endif // PHONE_CHANNEL_INTERFACE == 3
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "send_data failed!", res);
         hook_flag = 1;
@@ -776,16 +613,6 @@ int cmd_s()
     unsigned char recv_buf[6] = {0};
     unsigned char send_buf[6] = {0x5A, 0xA5, 0x01, 0x00, 0x00, 0x00};
     
-    #if 0
-    // 创建客户端连接
-    if ((client_fd = communication_network.make_local_socket_client_link(TERMINAL_LOCAL_SOCKET_NAME)) < 0)
-    {
-        PERROR("make_client_link failed!\n");
-        res = client_fd;
-        client_fd = 0;
-        return res;
-    }
-    #else
     // 创建客户端连接
     PRINT("LOCAL_IP = %s, TERMINAL_LOCAL_SERVER_PORT = %s\n", LOCAL_IP, TERMINAL_LOCAL_SERVER_PORT);
     if ((client_fd = communication_network.make_client_link(LOCAL_IP, TERMINAL_LOCAL_SERVER_PORT)) < 0)
@@ -795,7 +622,6 @@ int cmd_s()
         client_fd = 0;
         return res;
     }
-    #endif
     PRINT("client_fd = %d\n", client_fd);
     
     for (i = 0; i < 3; i++)
@@ -905,20 +731,6 @@ int cmd_w()
 #if 1
 
 /**
- * 命令字 x 检测WAN口
- */
-int cmd_x()
-{
-    int res = 0;
-    if ((res = network_config.get_wan_state()) < 0)
-    {
-        PERROR("get_wan_state failed!\n");
-        return res;
-    }
-    return res;
-}
-
-/**
  * 命令字 y 连接服务器
  */
 int cmd_y(char *ip, char *port)
@@ -936,101 +748,6 @@ int cmd_y(char *ip, char *port)
 }
 #endif
 
-/**
- * 命令字 z USB通路测试
- */
-int cmd_z()
-{
-    int res = 0;
-    int fd = 0;
-    int client_fd = 0;
-    fd_set fdset;
-    unsigned long num = 0;
-    unsigned long num_tmp = 0;
-    struct timeval tv = {5, 0};
-    if ((res = communication_network.make_server_link(USB_SOCKET_PORT)) < 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "make_server_link failed", res); 
-        return res;
-    }
-    fd = res;
-    while (1)
-    {
-        FD_ZERO(&fdset);
-        FD_SET(fd, &fdset);       
-        tv.tv_sec = 5;
-        switch(select(fd + 1, &fdset, NULL, NULL, &tv))
-        {
-            case -1:             
-            case 0:
-            {
-                PRINT("waiting to receive data...\n");
-                continue;
-            }
-            default:
-            {
-                if (FD_ISSET(fd, &fdset) > 0)
-                {
-                    if ((res = communication_network.accept_client_connection(fd)) < 0)
-                    {
-                        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "accept_client_connection failed", res); 
-                        continue;
-                    }
-                    client_fd = res;
-                    PRINT("client_fd = %d\n", client_fd);
-                    while (1)
-                    {
-                        if ((res = common_tools.recv_data(client_fd, (char *)&num_tmp, NULL, sizeof(num_tmp), &tv)) < 0)
-                        {
-                            PRINT("recv_data failed!\n");
-                            break;
-                        }
-                        /*
-                        if (num + 1 != num_tmp)
-                        {
-                            PRINT("data err!\n");
-                            res = DATA_ERR;
-                            break;
-                        }
-                        */
-                        PRINT("num = %08X %d\n", num, num);
-                        PRINT("num_tmp = %08X %d\n", num_tmp, num_tmp);
-                        num = num_tmp;
-                        num_tmp++;
-                        if ((res = common_tools.send_data(client_fd, (char *)&num_tmp, NULL, sizeof(num_tmp), &tv)) < 0)
-                        {
-                            PRINT("send_data failed!\n");
-                            break; 
-                        }
-                    }
-                    if (res < 0)
-                    {
-                        break;
-                    }
-                }
-            }
-        }
-        /*
-        if (fd != 0)
-        {
-            close(fd);
-            fd = 0;
-        }
-        */
-        if (client_fd != 0)
-        {
-            close(client_fd);
-            client_fd = 0;
-        }
-        /*
-        if (res < 0)
-        {
-            break;
-        }
-        */
-    }
-
-}
 
 /**
  * 命令字 B 测试PIC单片机运行
@@ -1285,16 +1002,6 @@ int analyse_cmd(unsigned short cmd_count, char *cmd_buf)
         {
             word = 'm';
         }
-        #if PHONE_CHANNEL_INTERFACE == 2
-        else if (strcmp(index, CMD_n) == 0)
-        {
-            word = 'n';
-        }
-        else if (strcmp(index, CMD_o) == 0)
-        {
-            word = 'o';
-        }
-        #endif // PHONE_CHANNEL_INTERFACE == 2
         else if (strcmp(index, CMD_p) == 0)
         {
             word = 'p';
@@ -1329,17 +1036,9 @@ int analyse_cmd(unsigned short cmd_count, char *cmd_buf)
             word = 'w';
         }
         #endif // CTSI_SECURITY_SCHEME == 2
-        else if (strcmp(index, CMD_x) == 0)
-        {
-            word = 'x';
-        }
         else if (strcmp(index, CMD_y) == 0)
         {
             word = 'y';
-        }
-        else if (strcmp(index, CMD_z) == 0)
-        {
-            word = 'z';
         }
         else if (strcmp(index, CMD_B) == 0)
         {
@@ -1532,18 +1231,6 @@ int analyse_cmd(unsigned short cmd_count, char *cmd_buf)
                 res = cmd_m();
                 break;
             }
-            #if PHONE_CHANNEL_INTERFACE == 2
-            case 'n':
-            {
-                res = cmd_n();
-                break;
-            }
-            case 'o':
-            {
-                res = cmd_o();
-                break;
-            }
-            #endif // #if PHONE_CHANNEL_INTERFACE == 2
             case 'p':
             {
                 res = cmd_p();
@@ -1586,19 +1273,9 @@ int analyse_cmd(unsigned short cmd_count, char *cmd_buf)
                 break;
             }
             #endif // CTSI_SECURITY_SCHEME == 2
-            case 'x':
-            {
-                res = cmd_x();
-                break;
-            }
             case 'y':
             {
                 res = cmd_y(ip, port);
-                break;
-            }
-            case 'z':
-            {
-                res = cmd_z();
                 break;
             }
             case 'B':

@@ -444,33 +444,13 @@ static int get_sip_info(char *pad_sn, char *pad_mac)
         return NULL_ERR;
     }       
     
-    #if BOARDTYPE == 6410 || BOARDTYPE == 9344
     // 数据库查询数据
     if ((res = database_management.select(4, columns_name, columns_value)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_select failed!", res);
         return res;
     }
-    #elif BOARDTYPE == 5350
     
-    // 数据库查询数据
-    if ((res = nvram_interface.select(RT5350_FREE_SPACE, 4, columns_name, columns_value)) < 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "nvram__select failed!", res);
-        return res;
-    }
-    int i = 0;
-    for (i = 0; i < 4; i++)
-    {
-        if ((strcmp("\"\"", columns_value[i]) == 0) || (strlen(columns_value[i]) == 0))
-        {
-            memset(columns_value[i], 0, sizeof(columns_value[i]));
-            sprintf(columns_value[i], "There is no (%s) record!", columns_name[i]);
-            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, columns_value[i], NULL_ERR); 
-            return NULL_ERR;
-        }
-    }
-    #endif
     PRINT("sqlite pad_sn = %s\n", columns_value[0]);
     PRINT("sqlite pad_mac = %s\n", columns_value[1]);
     PRINT("pad_sn = %s\n", pad_sn);
@@ -624,21 +604,11 @@ static int get_sip_info(char *pad_sn, char *pad_mac)
         memcpy(columns_value[7], (respond_pack.business_cycle + strlen("businessCycle:")), (strlen(respond_pack.business_cycle) - strlen("businessCycle:")));
         columns_value_len[7] = strlen(respond_pack.business_cycle) - strlen("businessCycle:");
         
-        #if BOARDTYPE == 6410 || BOARDTYPE == 9344
         if ((res = database_management.update(8, columns_name, columns_value, columns_value_len)) < 0)
         {
             OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_update failed!", res);
             return res;
         }
-        #elif BOARDTYPE == 5350
-        PRINT("before update!\n");
-        if ((res = nvram_interface.update(RT5350_FREE_SPACE, 8, columns_name, columns_value, columns_value_len)) < 0)
-        {
-            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "nvram_update failed!", res);
-            return res;
-        }
-        PRINT("after update!\n");
-        #endif
     }
     else if (strcmp(msg_data_status_num, "401") == 0) // functionId找不到
     {
@@ -681,29 +651,8 @@ static int user_register(char *pad_sn, char *pad_mac)
 {
     PRINT_STEP("entry...\n");
     int res = 0;
-    #if 0
-    if ((res = common_tools.get_phone_stat()) < 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_phone_stat failed!", res);
-        return res;
-    }
-    #endif
-    #if CTSI_SECURITY_SCHEME == 1
-    if ((res = terminal_authentication.insert_token()) < 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "insert_token failed!", res);
-        return res;
-    }
     
-    if ((res = get_sip_info(pad_sn, pad_mac)) < 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_sip_info failed!", res);
-        return res;
-    }
-    
-    #else
     char device_token[TOKENLEN] = {0};
-    //char position_token[TOKENLEN] = {0};
     if ((res = terminal_authentication.rebuild_device_token(device_token)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "rebuild_device_token failed!", res);
@@ -715,15 +664,6 @@ static int user_register(char *pad_sn, char *pad_mac)
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_sip_info failed!", res);
         return res;
     }
-    
-	/*
-    if ((res = terminal_authentication.rebuild_position_token(position_token)) < 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "rebuild_position_token failed!", res);
-        return res;
-    }
-	*/
-    #endif
     
     PRINT_STEP("exit...\n");
     return 0;

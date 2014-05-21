@@ -12,16 +12,11 @@
 #include <eXosip2/eXosip.h>
 
 #include "common_tools.h"
-#if BOARDTYPE == 5350
-#include "nvram_interface.h"
-#elif BOARDTYPE == 9344
 #include "database_management.h"
-#endif 
 #include "communication_network.h"
 
 #define CACM_STOP 0
 #define PHONE_STATE_NODE "/dev/uartpassage"
-#define PHONE_STATE_INTERFACE 3 // 电话线状态接口 1：spi interface接口读取； 2：接收本地socket；3：直接读取 节点uartpassage
 
 enum CACM_ERR_NUM 
 { 
@@ -138,13 +133,7 @@ struct class_cacm_tools
     int (* init_logout)(struct s_cacm *cacm);
     int (* send_message)(struct s_cacm *cacm, char *buf);
     
-    #if PHONE_STATE_INTERFACE == 1
-    int (* recv_phone_state_msg)(char *buf, unsigned short len, struct timeval *timeout);
-    #elif PHONE_STATE_INTERFACE == 2 
     int (* recv_phone_state_msg)(int fd, char *buf, unsigned short len, struct timeval *timeout);
-    #elif PHONE_STATE_INTERFACE == 3 
-    int (* recv_phone_state_msg)(int fd, char *buf, unsigned short len, struct timeval *timeout);
-    #endif // PHONE_STATE_INTERFACE == 3 
     
     int (* phone_state_msg_unpack)(struct s_cacm *cacm, char *buf, unsigned short buf_len);
     int (* phone_state_monitor)(struct s_cacm *cacm, char *buf, unsigned short buf_len, struct timeval *timeout);

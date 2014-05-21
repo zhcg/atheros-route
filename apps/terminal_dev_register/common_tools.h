@@ -1,10 +1,6 @@
 #ifndef _COMMON_TOOLS_H_
 #define _COMMON_TOOLS_H_
 
-//#define BOARDTYPE 6410
-//#define BOARDTYPE 5350
-#define BOARDTYPE 9344
-
 // 头文件包含
 #include <stdio.h>
 #include <unistd.h>
@@ -31,22 +27,14 @@
 #include <sys/mman.h>
 #include <linux/vt.h>
 #include <signal.h>
-#if BOARDTYPE == 6410 || BOARDTYPE == 9344
 #include <sqlite3.h>
-#endif
 #include <regex.h>
 #include <arpa/inet.h>
+
 // 宏定义
 
-#define TERMIANL_SCHEME 1  // 终端初始化方案。0代表是旧UI方案（无取消）；1代表新UI方案
-
 // 大小端的问题
-
-#if BOARDTYPE == 9344
 #define ENDIAN 1 // 0代表小端；1代表大端
-#elif BOARDTYPE == 5350 || BOARDTYPE == 6410
-#define ENDIAN 0 // 0代表小端；1代表大端
-#endif
  
 // 数据大小端互转 short 2字节
 #define DATA_ENDIAN_CHANGE_SHORT(A)  ((((unsigned short)(A) & 0xff00) >> 8 ) | (((unsigned short)(A) & 0x00ff) << 8 ))
@@ -54,57 +42,21 @@
 #define DATA_ENDIAN_CHANGE_LONG(A)  ((((unsigned long)(A) & 0xff000000) >> 24)  | (((unsigned long)(A) & 0x00ff0000) >> 8 ) | \
                                     (((unsigned long)(A) & 0x0000ff00) << 8 )  | (((unsigned long)(A) & 0x000000ff) << 24))
                                     
-#if BOARDTYPE == 5350
-
-#ifdef CONFIG_DUAL_IMAGE
-#define NVRAM_RT5350 1
-#define RT5350_FREE_SPACE 2
-#define RT5350_BACKUP_SPACE 3
-#else
-#define NVRAM_RT5350 0
-#define RT5350_FREE_SPACE 1
-#define RT5350_BACKUP_SPACE 2
-#endif
-
-#endif
 
 #define CACM_SOCKCT_PORT "8658"
-#define SPI_UART1_MUTEX_SOCKET_PORT "5225"
-
-#define MSGNAME "./phone_status"
-#define MSGTYPE_SND 61
-#define MSGTYPE_RCV 16
 
 #define TERMINAL_AUTHOR "Yang Jilong"
 #define TERMINAL_VERSION "F2A_V1.0.0"
 #define TERMINAL_REMARKS "终端初始化demoV0.4"
 
-#define TEL_UP 	 0
-#define TEL_DOWN 1
-
 #define DEBUG 0
 #define PRINT_DATA 1
 #define PRINT_DEBUG 1
 #define LOG_DEBUG 1
-#define RECORD_DEBUG 0
 
-#define SSID3_MONITOR 0
-#define SMART_RECOVERY 0 // 智能恢复路由器 Smart recovery 
 #define CTSI_SECURITY_SCHEME 2 // CTSI安全方案 
 
-#define CHECK_WAN_STATE 1 //0：不检测与平台服务器连接状态；1：检测
-
-#if BOARDTYPE == 6410
-#define AUTHENTICATION_CONFIG   "/terminal_init/config/base_init_config"
-#define __STEP_LOG "/terminal_init/log/step_log/"
-#define __SERIAL_DATA_LOG_FILE "/terminal_init/log/serial_data_log/"
-#elif BOARDTYPE == 5350
-#define AUTHENTICATION_CONFIG   "/var/terminal_init/config/base_init_config"
-#define __STEP_LOG "/var/terminal_init/log/step_log/"
-#define __SERIAL_DATA_LOG_FILE "/var/terminal_init/log/serial_data_log/"
-#elif BOARDTYPE == 9344
 #define AUTHENTICATION_CONFIG   "/var/terminal_dev_register/config"
-#endif
 
 #if DEBUG
 #define PRINT_STEP(format, ...) printf("%s["__FILE__"][%s][%05d] "format"", common_tools.get_datetime_buf(), __FUNCTION__, __LINE__, ##__VA_ARGS__)
@@ -133,7 +85,6 @@
 #define OPERATION_LOG(file, func, line, info, flag) 
 #endif
 
-#define TERMINAL_LOCAL_SOCKET_NAME "/var/terminal_init/log/.socket_name"
 #define TERMINAL_LOCAL_SERVER_PORT "53535"
 
 #define SN_LEN 18 // 序列号长度 包括18字节SN
@@ -143,11 +94,6 @@
  * 枚举和结构体定义
  */
 #pragma pack(1)
-// 交易类型枚举 
-enum enum_deal_type
-{
-    TERMINAL_AUTHENTICATION = 1,       // 终端认证
-};
 
 enum enum_chinese_type
 {
@@ -288,62 +234,10 @@ enum ERROR_NUM
 	REPEAT_ERR,            // 重复操作
 };
 
-//错误码
-enum DEAL_ERROR_TYPE
-{
-    BEFORE_CALL_ID_BUSY_TONE = 1,  // 错误类型一   80包接收之前 出现忙音
-    CALL_ID_DATA_ERR,              // 错误类型二   80包数据错误 包不正确
-    CALL_ID_DATA_TIMEOUT,          // 错误类型三   80包接收超时 包不存在 
-    
-    BEFORE_LINK_BUSY_TONE,         // 错误类型四   81包接收之前 出现忙音
-    LINK_DATA_ERR,                 // 错误类型五   81包数据错误 包不正确
-    LINK_DATA_TIMEOUT,             // 错误类型六   81包接收超时 包不存在 
-    
-    BEFORE_DEAL_BUSY_TONE,         // 错误类型七   84包接收之前 出现忙音
-    DEAL_DATA_ERR,                 // 错误类型八   84包数据错误 包不正确
-    DEAL_DATA_TIMEOUT,             // 错误类型九   84包接收超时 包不存在 
-    
-    BEFORE_DATA_FINISH_BUSY_TONE,  // 错误类型十   83包接收之前 出现忙音
-    DATA_FINISH_DATA_ERR,          // 错误类型十一 83包数据错误 包不正确
-    DATA_FINISH_DATA_TIMEOUT,      // 错误类型十二 83包接收超时 包不存在
-    
-    DEAL_OVER_BUSY_TONE,           // 错误类型十三 84包接收成功 出现忙音
-    
-};
-
 enum enum_options
 {
     STEP_LOG,                  // 运行步骤日志 
-    
-    #if BOARDTYPE == 5350 || BOARDTYPE == 6410
-    SERIAL_DATA_LOG,           // 串口数据日志
-    #endif 
-    #if BOARDTYPE == 6410 || BOARDTYPE == 9344
     DB,                        // 数据库目录 
-    #endif
-    
-    OLD_ROUTE_CONFIG,          // 设置前的路由配置 
-    PPPOE_STATE_FILE,          // 路由器PPPOE设置后，保存路由设置状态
-    SPI_PARA_FILE,             // spi参数文件
-    WAN_STATE_FILE,            // wan口插入状态文件 
-    
-    #if BOARDTYPE == 6410 || BOARDTYPE == 5350
-    SERIAL_STC,    
-    SERIAL_PAD,
-    #endif
-    
-    #if BOARDTYPE == 6410
-    SERIAL_5350,
-    #endif
-    
-    #if BOARDTYPE == 6410 || BOARDTYPE == 5350
-    SERIAL_STC_BAUD,
-    SERIAL_PAD_BAUD,
-    #endif
-    
-    #if BOARDTYPE == 6410
-    SERIAL_5350_BAUD,
-    #endif
     
     CENTERPHONE,
     CENTERIP,
@@ -358,10 +252,7 @@ enum enum_options
     TOTAL_TIME_OUT,            // 总超时时间
     ONE_BYTE_TIMEOUT_SEC,      // 接收或发送一个字节数据超时时间 s
     ONE_BYTE_TIMEOUT_USEC,     // 接收或发送一个字节数据超时时间 us
-    #if BOARDTYPE == 6410 || BOARDTYPE == 5350
-    ONE_BYTE_DELAY_USEC,       // 接收或发送一个字节数据延时时间 us
-    #endif
-    ROUTE_REBOOT_TIME_SEC,     // 路由器重启时间 
+    
     REPEAT,                    // 错误重发次数 
     
     TERMINAL_SERVER_IP,
@@ -376,20 +267,7 @@ enum enum_options
  struct s_config
 {
     char step_log[64];
-    char serial_data_log[64];
     char db[64];
-    char old_route_config[64];
-    char pppoe_state[64];
-    char spi_para_file[64];
-    char wan_state[64];
-    
-    char serial_stc[50];
-    char serial_pad[50];
-    char serial_5350[50];
-    
-    unsigned int serial_stc_baud;
-    unsigned int serial_pad_baud;
-    unsigned int serial_5350_baud;
     
     char center_ip[30];
     char center_phone[20];
@@ -404,19 +282,12 @@ enum enum_options
     char total_timeout;
     char one_byte_timeout_sec;
     unsigned short one_byte_timeout_usec;
-    unsigned short one_byte_delay_usec;
-    unsigned char route_reboot_time_sec; 
     char repeat;
 
     char terminal_server_ip[30];
     char terminal_server_port[15];
     char local_server_port[15]; 
     char wan_check_name[30];
-    
-    #if CTSI_SECURITY_SCHEME == 2
-    char private_key[8];
-    char public_key[8];
-    #endif
 };
 struct s_work_sum
 {
@@ -438,28 +309,6 @@ struct s_record_info
 	char print_info[5120];           // 需要打印的信息 
 };
 
-struct s_deal_fail_file
-{
-    unsigned char deal_error_type;                      // 交易错误类型
-    
-    unsigned short before_call_id_busy_tone_count;      // 错误类型一计数
-    unsigned short call_id_data_err_count;              // 错误类型二计数
-    unsigned short call_id_data_timeout_count;          // 错误类型三计数
-    
-    unsigned short before_link_busy_tone_count;         // 错误类型四计数
-    unsigned short link_data_err_count;                 // 错误类型五计数
-    unsigned short link_data_timeout_count;             // 错误类型六计数
-    
-    unsigned short before_deal_busy_tone_count;         // 错误类型七计数
-    unsigned short deal_data_err_count;                 // 错误类型八计数
-    unsigned short deal_data_timeout_count;             // 错误类型九计数
-    
-    unsigned short before_data_finish_busy_tone_count;  // 错误类型十计数
-    unsigned short data_finish_data_err_count;          // 错误类型十一计数
-    unsigned short data_finish_data_timeout_count;      // 错误类型十二计数
-    
-    unsigned short deal_over_busy_tone_count;           // 错误类型十三计数 
-};
 /**
  * 交易属性
  */
@@ -646,42 +495,24 @@ struct s_dial_back_respond
 	char BASE_id[SN_LEN + 1];                 // BASE_id SN_LEN
 	char PAD_id[SN_LEN + 1];                  // PAD_id  SN_LEN
 	
-	#if CTSI_SECURITY_SCHEME == 1
-	long base_random;                         // 终端随机数
-	#else
 	char base_random[8];                         // 终端随机数
-	#endif
 	
 	char base_random_mac[8];                  // 终端随机数MAC
 	
-	#if CTSI_SECURITY_SCHEME == 1
-	long terrace_random;                      // 平台随机数
-	#else
 	char system_random[8];                      // 系统随机数
-	#endif
 	char terrace_random_mac[8];               // 平台随机数 MAC   
 		
 	char *failed_reason;                      // 失败原因 成功的时候没有
 	unsigned char terminal_token_len;         // 终端令牌的长度
 	char result_num;                          // 结果 0为成功 1为失败
 	
-	#if CTSI_SECURITY_SCHEME == 1
-	char terminal_token[100];                 // 终端令牌
-	#else
 	char device_token[100];                   // 设备令牌
 	char position_token[100];                 // 位置令牌
 	char discrete_factor[8];                  // 离散因子
 	char phone_num[16];
 	char call_permit;                         // 呼叫许可
 	char call_result;                         // 接收语音中心结果 // 0 呼叫成功并且拒接等步骤成功 1 中间错误 
-	#endif
 	unsigned short cmd;                       // 命令字
-};
-
-struct s_msgbuf
-{
-    long mtype;
-    char mtext[256];
 };
 
 // common_tools结构体定义
@@ -699,10 +530,6 @@ struct class_common_tools
     int (* get_config)();
     int (* set_GPIO4)(int cmd);
     int (* make_menulist)(time_t start_time, struct timeval start, struct timeval end);
-    #if BOARDTYPE == 6410 || BOARDTYPE == 5350
-    int (* make_serial_data_file)(int *write_buf_fd, char buf, int buf_len);
-    #endif
-    int (* get_phone_stat)();
     int (* get_network_state)(char *ip, unsigned char ping_count, unsigned char repeat);
     int (* get_user_prompt)(int error_num, char **out_buf);
     int (* get_errno)(char role, int error_num);
@@ -712,7 +539,6 @@ struct class_common_tools
     // 项目无关
     // 字符串操作
     int (* BCD_to_string)(char* p_src, int src_size, char* p_dst, int dst_size);
-//  int (* make_data_middle)(char *data, int data_len, int array_len);
     int (* long_to_str)(unsigned long src, char *dst, unsigned char dst_len);
     int (* str_in_str)(const void *src, unsigned short src_len, const char dest, unsigned short dest_len);
     void* (* memncat)(void *dest, const void *src, const int index, const int len);
@@ -727,9 +553,7 @@ struct class_common_tools
     
     // 时间操作
     char* (* get_datetime_buf)();
-//  int (* get_service_use_time)(time_t start_time, char *service_use_time);
     double (* get_use_time)(struct timeval start, struct timeval end);
-//  int (* time_out)(struct timeval *start, struct timeval *end);
     int (* set_start_time)(char *start_time);
     
     // 数据发送与接收

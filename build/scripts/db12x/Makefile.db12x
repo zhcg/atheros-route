@@ -436,7 +436,6 @@ terminal_dev_register:
 	cd ../apps/terminal_dev_register; make clean; make; \
 	$(STRIP) sqlite-mips-linux/lib/libsqlite3.so.0.8.6; \
 	$(STRIP) libdata_storager.so; \
-	$(STRIP) libspi_rt.so; \
 	$(STRIP) libterminal_authentication.so; \
 	$(STRIP) libterminal_register.so; \
 	$(STRIP) libcommunication.so; \
@@ -447,7 +446,6 @@ terminal_dev_register:
 	cp -af sqlite-mips-linux/lib/libsqlite3.so.0.8.6 $(INSTALL_ROOT)/lib; \
 	cp -af sqlite-mips-linux/bin/sqlite3 $(INSTALL_ROOT)/bin; \
 	cp -af libdata_storager.so $(INSTALL_ROOT)/lib; \
-	cp -af libspi_rt.so $(INSTALL_ROOT)/lib; \
 	cp -af libterminal_authentication.so $(INSTALL_ROOT)/lib; \
 	cp -af libterminal_register.so $(INSTALL_ROOT)/lib; \
 	cp -af libcommunication.so $(INSTALL_ROOT)/lib; \

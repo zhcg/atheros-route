@@ -7,15 +7,9 @@
 **************************************************************************/
 #include "network_config.h"
 #include "request_cmd.h"
-#include "spi_rt_interface.h"
 #include "terminal_register.h"
 
-#if BOARDTYPE == 6410 || BOARDTYPE == 9344
 #include "database_management.h"
-#elif BOARDTYPE == 5350
-#include "nvram_interface.h"
-#endif
-
 #include "communication_network.h"
 #include "terminal_authentication.h"
 
@@ -26,21 +20,7 @@ static int analyse_command_line(int argc, char ** argv)
 {
     int i = 0;
     int res = 0;
-
-    // 终端初始化参数
-    char columns_name[31][30] =
-    {
-        "STEP_LOG", "SERIAL_DATA_LOG", "OLD_ROUTE_CONFIG", "PPPOE_STATE_FILE", "SPI_PARA_FILE", "WAN_STATE_FILE",
-        "SERIAL_STC", "SERIAL_PAD", "SERIAL_STC_BAUD", "SERIAL_PAD_BAUD",
-        "CENTERPHONE", "CENTERIP", "CENTERPORT", "BASE_IP",
-        "PAD_IP", "PAD_SERVER_PORT", "PAD_SERVER_PORT2", "PAD_CLIENT_PORT",
-        "TOTALTIMEOUT", "ONE_BYTE_TIMEOUT_SEC",
-        "ONE_BYTE_TIMEOUT_USEC", "ONE_BYTE_DELAY_USEC",
-        "ROUTE_REBOOT_TIME_SEC", "REPEAT",
-        "TERMINAL_SERVER_IP", "TERMINAL_SERVER_PORT", "LOCAL_SERVER_PORT", "WAN_CHECK_NAME",
-        "default_ssid", "default_ssid_password", "register_state"
-    };
-
+    
     if (memcmp(argv[1], "-v", strlen("-v")) == 0)
     {
         PRINT("author %s\n", TERMINAL_AUTHOR);
@@ -50,22 +30,13 @@ static int analyse_command_line(int argc, char ** argv)
     }
     else if (memcmp(argv[1], "-c", strlen("-c")) == 0) // 情况数据
     {
-        #if BOARDTYPE == 6410 || BOARDTYPE == 9344
         if ((res = database_management.clear()) < 0)
         {
             PRINT("sqlite3_clear_table failed!\n");
             return res;
         }
-        #elif BOARDTYPE == 5350
-        if ((res = nvram_interface.clear()) < 0)
-        {
-            PRINT("nvram_clear_all_data failed!\n");
-            return res;
-        }
-        #endif
         PRINT("data clear success!\n");
     }
-    #if BOARDTYPE == 9344
     else if (memcmp(argv[1], "-d", strlen("-d")) == 0) // 恢复出厂设置
     {
         // 1.情况数据库
@@ -75,130 +46,18 @@ static int analyse_command_line(int argc, char ** argv)
             return res;
         }
         
-        // 2.取消绑定
-        //request_cmd.cancel_mac_and_ip_bind();
-
-        // 3.
-        //system("cfg -x");
+        // 2.删除隐藏SSID
 		system("cfg -b 5"); // default config
-        //sleep(2);
         system("reboot");
     }
-    #endif
-    #if BOARDTYPE == 5350
-    else if (memcmp(argv[1], "-i", strlen("-i")) == 0) // 填充配置文件
-    {
-        unsigned short values_len[31] = {0};
-        char columns_values[31][100] =
-        {
-            "/var/terminal_init/log/operation_steps/",
-            "/var/terminal_init/log/serial_date_log/",
-            "/var/terminal_init/log/old_route_config",
-            "/var/terminal_init/log/pppoe_state",
-            "/var/terminal_init/log/spi_para_file", "/dev/gpio", "/dev/ttyS1", "/dev/ttyS0",
-            "9600", "9600", "62916698", "192.168.0.141", "15005", "10.10.10.101",
-            "10.10.10.100", "7789", "7799", "7788", "10", "5",
-            "0", "25", "40", "3", "192.168.0.120", "7000",
-            "13435", "www.baidu.com", "handaer_wifi_register", "12345678", "251",
-        };
-        for (i = 0; i < sizeof(values_len) / sizeof(values_len[0]); i++)
-        {
-            values_len[i] = strlen(columns_values[i]);
-        }
-
-        if ((res = nvram_interface.insert(RT5350_FREE_SPACE, sizeof(values_len)/sizeof(unsigned short), columns_name, columns_values, values_len)) < 0)
-        {
-            PRINT("nvram_insert failed!\n");
-            return res;
-        }
-        PRINT("make config file success!\n");
-    }
-    else if (memcmp(argv[1], "-u", strlen("-u")) == 0) // 修改特定的配置项
-    {
-        if (argc != 4)
-        {
-            printf("ex: cmd -u column_name column_value\n");
-            return DATA_ERR;
-        }
-
-        for (i = 0; i < sizeof(columns_name) / sizeof(columns_name[0]); i++)
-        {
-            if (memcmp(argv[2], columns_name[i], strlen(columns_name[i])) == 0)
-            {
-                break;
-            }
-        }
-        if (i == i < sizeof(columns_name) / sizeof(columns_name[0]))
-        {
-            PRINT("column_name error!\n");
-            return DATA_ERR;
-        }
-        unsigned short value_len = strlen(argv[3]);
-        if ((res = nvram_interface.update(RT5350_FREE_SPACE, 1, (char (*)[30])argv[2], (char (*)[100])argv[3], &value_len)) < 0)
-        {
-            PRINT("nvram_update failed!\n");
-            return res;
-        }
-        PRINT("update success!\n");
-    }
-    else if (memcmp(argv[1], "-t", strlen("-t")) == 0) // pad串口测试
-    {
-        if (argc != 3)
-        {
-            printf("ex: cmd -t send count\n");
-            return DATA_ERR;
-        }
-
-        int j = 0;
-        int count = atoi(argv[2]);
-        struct timeval tv = {1, 0};
-        char send_buf[128] = {0};
-        char recv_buf[128] = {0};
-
-        for (j = 0; j < 128; j++)
-        {
-            send_buf[j] = 0xF0;
-        }
-
-        for (i = 0; i < count; i++)
-        {
-            #if BOARDTYPE == 5350 || BOARDTYPE == 6410
-            if ((res = common_tools.recv_data(*network_config.serial_pad_fd, recv_buf, NULL, sizeof(recv_buf), &tv)) < 0)
-            #elif BOARDTYPE == 9344
-            if ((res = common_tools.recv_data(usb_client_fd, recv_buf, NULL, sizeof(recv_buf), &tv)) < 0)
-            #endif
-            {
-                PRINT("recv_data failed!\n");
-                return res;
-            }
-
-            tv.tv_sec = 1;
-            #if BOARDTYPE == 5350 || BOARDTYPE == 6410
-            if ((res = common_tools.send_data(*network_config.serial_pad_fd, send_buf, NULL, sizeof(send_buf), &tv)) < 0)
-            #elif BOARDTYPE == 9344
-            if ((res = common_tools.send_data(usb_client_fd, send_buf, NULL, sizeof(send_buf), &tv)) < 0)
-            #endif
-            {
-                PRINT("send_data failed!\n");
-                return res;
-            }
-            PRINT("success!\n");
-        }
-        return res;
-    }
-    #endif
     else if (memcmp(argv[1], "-h", strlen("-h")) == 0)
     {
         PRINT("terminal_init %s (%s %s)\n", TERMINAL_VERSION, __DATE__, __TIME__);
         PRINT("usage1: terminal_dev_register [option]\n");
-        PRINT("usage2: terminal_dev_register [option] [column_name column_value]\n");
         PRINT("options:\n");
         PRINT("\t-c: 清空数据表\n");
         PRINT("\t-d: 恢复出厂设置\n");
         PRINT("\t-h: 帮助\n");
-        PRINT("\t-i: 配置文件制作\n");
-        //PRINT("\t-t: pad串口测试\n");
-        PRINT("\t-u: 修改特定的配置项\n");
         PRINT("\t-v: 查看应用程序版本\n");
         return 0;
     }
@@ -254,18 +113,6 @@ static void signal_handle(int sig)
             PRINT("SIGTERM sig no:%d; sig info:软件终止\n", sig);
             break;
         }
-        #if 0
-        case SIGCHLD:
-        {
-            pid_t pid;
-            while ((pid = waitpid(-1, &res, WNOHANG)) > 0)
-			{
-				PRINT("pid = %d, state = %d\n", pid, res);
-			}
-            PRINT("SIGCHLD sig no:%d; sig info:子进程结束信号\n", sig);
-            break;
-        }
-        #endif // BOARDTYPE == 9344
         case SIGCLD:
         {
             pid_t pid;
@@ -326,11 +173,7 @@ int monitor_request(struct s_terminal_dev_register * terminal_dev_register)
     int fd_way1 = *network_config.server_base_fd; // 监听的通道一，此通道为网络通道
     int fd_way2 = 0; // 监听的通道二
 
-    #if BOARDTYPE == 5350
-    fd_way2 = *network_config.serial_pad_fd;
-    #elif BOARDTYPE == 9344
     fd_way2 = network_config.usb_pad_fd;
-    #endif
     terminal_dev_register->non_network_fd = fd_way2;
     /*************************************************************************************/
     /************************   以上全局变量的定义 以下为主要功能实现   ******************/
@@ -392,17 +235,11 @@ int monitor_request(struct s_terminal_dev_register * terminal_dev_register)
                 }
                 if ((fd_tmp == fd_way1) || (fd_tmp == fd_way2))
                 {
-                    #if BOARDTYPE == 5350
-                    if (fd_way1 == fd_tmp) // 网络通道
-                    #elif BOARDTYPE == 9344
-                    
                     #if USB_INTERFACE == 1
                     if (1)
                     #elif USB_INTERFACE == 2
                     if (fd_way1 == fd_tmp)
                     #endif // USB_INTERFACE == 2
-                    
-                    #endif // BOARDTYPE == 9344
                     {
                         if ((fd = accept(fd_tmp, (struct sockaddr*)&client, &len)) < 0)
                     	{
@@ -426,7 +263,7 @@ int monitor_request(struct s_terminal_dev_register * terminal_dev_register)
                 }
             }
         }
-
+        
         communication_mode = 0;
         fd = 0;
         fd_tmp = 0;
@@ -461,7 +298,6 @@ int main(int argc, char ** argv)
     int res = 0;
     
     request_cmd.init();
-    network_config.init_cmd_list();
     
     if ((res = common_tools.get_config()) < 0)
     {
@@ -505,32 +341,8 @@ int main(int argc, char ** argv)
     {
          OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "init_data_table failed!", res);
     }
-
-    #if CTSI_SECURITY_SCHEME == 2
-     // 用户登录：当base上电时，检测是否终端初始化成功，当成功时，主动向平台请求设备令牌，保存在本地
-    char device_token[TOKENLEN] = {0};
-    int i = 0;
-
-    // 查询状态
-    if (terminal_dev_register.data_table.register_state == 0)
-    {
-        for (i = 0; i < common_tools.config->repeat; i++)
-        {
-            if ((res = terminal_authentication.rebuild_device_token(device_token)) < 0)
-            {
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "rebuild_device_token failed", res);
-                continue;
-            }
-            break;
-        }
-    }
-    #endif
     
     pthread_mutex_init(&network_config.recv_mutex, NULL);
-    
-    #if BOARDTYPE == 5350
-    pthread_mutex_init(&nvram_interface.mutex, NULL);
-    #endif
     
     if ((res = monitor_request(&terminal_dev_register)) < 0)
     {
@@ -538,9 +350,6 @@ int main(int argc, char ** argv)
         return res;
     }
     
-    #if BOARDTYPE == 5350
-    pthread_mutex_destroy(&nvram_interface.mutex);
-    #endif
     pthread_mutex_destroy(&network_config.recv_mutex);
     return 0;
 }

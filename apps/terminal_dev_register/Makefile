@@ -19,16 +19,12 @@ COMMON_TOOLSOBJ = common_tools.o
 
 DATA_STORAGERBIN = libdata_storager.so
 DATA_STORAGEROBJ = database_management.o
-#DATA_STORAGEROBJ = nvram_interface.o
 
 COMMUNICATIONBIN = libcommunication.so
-COMMUNICATIONOBJ = communication_serial.o communication_usb.o communication_network.o
-
-SPI_RTBIN = libspi_rt.so
-SPI_RTOBJ = spi_rt_interface.o
+COMMUNICATIONOBJ = communication_serial.o communication_network.o
 
 TERMINAL_AUTHENTICATIONBIN = libterminal_authentication.so
-TERMINAL_AUTHENTICATIONOBJ = terminal_authentication.o safe_strategy.o
+TERMINAL_AUTHENTICATIONOBJ = terminal_authentication.o
 
 TERMINAL_REGISTERBIN = libterminal_register.so
 TERMINAL_REGISTEROBJ = terminal_register.o
@@ -38,23 +34,24 @@ SQLITE_DIR=./sqlite-mips-linux
 
 #编译 动态库
 all:so app
-so:$(COMMON_TOOLSBIN) $(DATA_STORAGERBIN) $(COMMUNICATIONBIN) $(SPI_RTBIN) $(TERMINAL_AUTHENTICATIONBIN) $(TERMINAL_REGISTERBIN)
+
+so:$(COMMON_TOOLSBIN) $(DATA_STORAGERBIN) $(COMMUNICATIONBIN) $(TERMINAL_AUTHENTICATIONBIN) $(TERMINAL_REGISTERBIN)
 app:$(TERMINAL_DEV_REGISTERBIN) $(INTERFACE_TESTBIN) $(MONITOR_APPBIN)
 
 #编译 终端初始化 整体测试执行文件
 $(TERMINAL_DEV_REGISTERBIN):$(TERMINAL_DEV_REGISTEROBJ) 
-	$(GCC) -o $@ $^ -I. -lpthread -L. -lcommon_tools -lterminal_authentication -lterminal_register -lspi_rt -ldata_storager -lcommunication -L$(SQLITE_DIR)/lib -lsqlite3
+	$(GCC) -o $@ $^ -I. -lpthread -L. -lcommon_tools -lterminal_authentication -lterminal_register -ldata_storager -lcommunication -L$(SQLITE_DIR)/lib -lsqlite3
 	-@ echo ":::::::::::::::::terminal_dev_register ok:::::::::::::::::"
 	-@ echo
 	
 #编译终端初始化 测试
 $(INTERFACE_TESTBIN):$(INTERFACE_TESTOBJ) 
-	$(GCC) -o $@ $^ -I. -lpthread -L. -lcommon_tools -lterminal_authentication -lterminal_register -lspi_rt -ldata_storager -lcommunication -L$(SQLITE_DIR)/lib -lsqlite3
+	$(GCC) -o $@ $^ -I. -lpthread -L. -lcommon_tools -lterminal_authentication -lterminal_register -ldata_storager -lcommunication -L$(SQLITE_DIR)/lib -lsqlite3
 	-@ echo ":::::::::::::::::interface_test ok:::::::::::::::::"
 	-@ echo
 
 $(MONITOR_APPBIN):$(MONITOR_APPOBJ)
-	$(GCC) -o $@ $^ -I. -lpthread -L. -lcommon_tools -lterminal_authentication -lterminal_register -lspi_rt -ldata_storager -lcommunication -L$(SQLITE_DIR)/lib -lsqlite3
+	$(GCC) -o $@ $^ -I. -lpthread -L. -lcommon_tools -lterminal_authentication -lterminal_register -ldata_storager -lcommunication -L$(SQLITE_DIR)/lib -lsqlite3
 	-@ echo ":::::::::::::::::monitor_application ok:::::::::::::::::"
 	-@ echo
 
@@ -72,11 +69,6 @@ $(DATA_STORAGERBIN):$(DATA_STORAGEROBJ) -lcommon_tools
 $(COMMUNICATIONBIN):$(COMMUNICATIONOBJ) -lcommon_tools
 	$(GCC) -shared -o $@ $^ -L$(SQLITE_DIR)/lib -lsqlite3
 	-@ echo ":::::::::::::::::libcommunication.so ok:::::::::::::::::"
-	-@ echo
-	
-$(SPI_RTBIN):$(SPI_RTOBJ) -lcommon_tools
-	$(GCC) -shared -o $@ $^
-	-@ echo ":::::::::::::::::libspi_rt.so ok:::::::::::::::::"
 	-@ echo
 	
 $(TERMINAL_REGISTERBIN):$(TERMINAL_REGISTEROBJ) -lcommon_tools -lterminal_authentication

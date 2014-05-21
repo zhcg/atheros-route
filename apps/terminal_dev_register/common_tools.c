@@ -2,7 +2,6 @@
 
 static struct s_deal_attr g_deal_attr;
 static struct s_config g_config;
-static struct s_deal_fail_file g_deal_fail_file;
 static struct s_work_sum g_work_sum;
 static struct s_timer g_timer;
 static char __datetime_buf[128];
@@ -28,12 +27,6 @@ static int set_GPIO4(int cmd);
  */
 static int make_menulist(time_t start_time, struct timeval start, struct timeval end);
 
-#if BOARDTYPE == 6410 || BOARDTYPE == 5350
-/**
- * 串口数据日志
- */
-static int make_serial_data_file(int *write_buf_fd, char buf, int buf_len);
-#endif
 
 /**
  * 获取电话线状态
@@ -253,11 +246,8 @@ struct class_common_tools common_tools =
     &phone_status_flag,
     {0},
     get_large_number,
-    get_config, set_GPIO4, make_menulist, /*operation_steps_log, */
-    #if BOARDTYPE == 6410 || BOARDTYPE == 5350
-    make_serial_data_file, 
-    #endif
-    get_phone_stat, get_network_state, get_user_prompt, get_errno, get_list_MAC, get_MAC, get_wan_mac,
+    get_config, set_GPIO4, make_menulist,
+    get_network_state, get_user_prompt, get_errno, get_list_MAC, get_MAC, get_wan_mac,
     BCD_to_string,
     long_to_str, str_in_str, memncat, trim, match_str, mac_add_horizontal, mac_add_colon, mac_del_colon, mac_format_conversion, add_quotation_marks,
     del_quotation_marks, get_datetime_buf, get_use_time, set_start_time,
@@ -276,9 +266,6 @@ int get_large_number(int num1, int num2)
 {
     return ((num1 > num2) ? num1 : num2);
 }
-
-#if BOARDTYPE == 6410 || BOARDTYPE == 9344
-
 /**
  * 读取配置文件，并设置全局变量
  */
@@ -296,32 +283,13 @@ int get_config()
     char config_options[][25] = 
     {
         "STEP_LOG", 
-        
-        #if BOARDTYPE == 6410
-        "SERIAL_DATA_LOG", 
-        #endif
-        
         "DB", 
-        "OLD_ROUTE_CONFIG", 
-        
-        "PPPOE_STATE_FILE", "SPI_PARA_FILE", "WAN_STATE_FILE", 
-        
-        #if BOARDTYPE == 6410
-        "SERIAL_STC", "SERIAL_PAD", 
-        "SERIAL_5350", 
-        "SERIAL_STC_BAUD", 
-        "SERIAL_PAD_BAUD", "SERIAL_5350_BAUD", 
-        #endif
         
         "CENTERPHONE", "CENTERIP", "CENTERPORT", 
         "BASE_IP", "PAD_IP", "PAD_SERVER_PORT", "PAD_SERVER_PORT2", "PAD_CLIENT_PORT", 
         "TOTALTIMEOUT", "ONE_BYTE_TIMEOUT_SEC", "ONE_BYTE_TIMEOUT_USEC", 
         
-        #if BOARDTYPE == 6410
-        "ONE_BYTE_DELAY_USEC",
-        #endif 
-        
-        "ROUTE_REBOOT_TIME_SEC", "REPEAT", "TERMINAL_SERVER_IP", "TERMINAL_SERVER_PORT", "LOCAL_SERVER_PORT", "WAN_CHECK_NAME",
+        "REPEAT", "TERMINAL_SERVER_IP", "TERMINAL_SERVER_PORT", "LOCAL_SERVER_PORT", "WAN_CHECK_NAME",
     };
     
     if ((fp = fopen(AUTHENTICATION_CONFIG, "r")) < 0)
@@ -375,24 +343,6 @@ int get_config()
                         k++;
                         break;
                     }
-                    #if BOARDTYPE == 6410
-                    case SERIAL_DATA_LOG:
-                    {
-                        for (j = 0; j < sizeof(g_config.serial_data_log); j++)
-                        {
-                            if (*(tmp + strlen(config_options[i]) + 1 + j) == '\n')
-                            {
-                                break;
-                            }
-                            g_config.serial_data_log[j] = *(tmp + strlen(config_options[i]) + j + 1);
-                        }
-                        memset(print_buf, 0, sizeof(print_buf));
-                        sprintf(print_buf, "serial_data_log = %s", g_config.serial_data_log);
-                        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                        k++;
-                        break;
-                    }
-                    #endif
                     case DB:
                     {
                         for (j = 0; j < sizeof(g_config.db); j++)
@@ -409,174 +359,6 @@ int get_config()
                         k++;
                         break;
                     }
-                    case OLD_ROUTE_CONFIG:
-                    {
-                        for (j = 0; j < sizeof(g_config.old_route_config); j++)
-                        {
-                            if (*(tmp + strlen(config_options[i]) + 1 + j) == '\n')
-                            {
-                                break;
-                            }
-                            g_config.old_route_config[j] = *(tmp + strlen(config_options[i]) + j + 1);
-                        }
-                        memset(print_buf, 0, sizeof(print_buf));
-                        sprintf(print_buf, "old_route_config = %s", g_config.old_route_config);
-                        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                        k++;
-                        break;
-                    }
-                    case PPPOE_STATE_FILE:
-                    {
-                        for (j = 0; j < sizeof(g_config.pppoe_state); j++)
-                        {
-                            if (*(tmp + strlen(config_options[i]) + 1 + j) == '\n')
-                            {
-                                break;
-                            }
-                            g_config.pppoe_state[j] = *(tmp + strlen(config_options[i]) + j + 1);
-                        }
-                        memset(print_buf, 0, sizeof(print_buf));
-                        sprintf(print_buf, "pppoe_state = %s", g_config.pppoe_state);
-                        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                        k++;
-                        break;
-                    }
-                    case SPI_PARA_FILE:
-                    {
-                        for (j = 0; j < sizeof(g_config.spi_para_file); j++)
-                        {
-                            if (*(tmp + strlen(config_options[i]) + 1 + j) == '\n')
-                            {
-                                break;
-                            }
-                            g_config.spi_para_file[j] = *(tmp + strlen(config_options[i]) + j + 1);
-                        }
-                        memset(print_buf, 0, sizeof(print_buf));
-                        sprintf(print_buf, "spi_para_file = %s", g_config.spi_para_file);
-                        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                        k++;
-                        break;
-                    } 
-                    case WAN_STATE_FILE:
-                    {
-                        for (j = 0; j < sizeof(g_config.wan_state); j++)
-                        {
-                            if (*(tmp + strlen(config_options[i]) + 1 + j) == '\n')
-                            {
-                                break;
-                            }
-                            g_config.wan_state[j] = *(tmp + strlen(config_options[i]) + j + 1);
-                        }
-                        memset(print_buf, 0, sizeof(print_buf));
-                        sprintf(print_buf, "wan_state = %s", g_config.wan_state);
-                        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                        k++;
-                        break;
-                    }
-                    #if BOARDTYPE == 6410
-                    case SERIAL_STC:
-                    {
-                        for (j = 0; j < sizeof(g_config.serial_stc); j++)
-                        {
-                            if (*(tmp + strlen(config_options[i]) + 1 + j) == '\n')
-                            {
-                                break;
-                            }
-                            g_config.serial_stc[j] = *(tmp + strlen(config_options[i]) + j + 1);
-                        }
-                        memset(print_buf, 0, sizeof(print_buf));
-                        sprintf(print_buf, "serial_stc = %s", g_config.serial_stc);
-                        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                        k++;
-                        break;
-                    }
-                    case SERIAL_PAD:
-                    {
-                        for (j = 0; j < sizeof(g_config.serial_pad); j++)
-                        {
-                            if (*(tmp + strlen(config_options[i]) + 1 + j) == '\n')
-                            {
-                                break;
-                            }
-                            g_config.serial_pad[j] = *(tmp + strlen(config_options[i]) + j + 1);
-                        }
-                        memset(print_buf, 0, sizeof(print_buf));
-                        sprintf(print_buf, "serial_pad = %s", g_config.serial_pad);
-                        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                        k++;
-                        break;
-                    }
-                    case SERIAL_5350:
-                    {
-                        for (j = 0; j < sizeof(g_config.serial_5350); j++)
-                        {
-                            if (*(tmp + strlen(config_options[i]) + 1 + j) == '\n')
-                            {
-                                break;
-                            }
-                            g_config.serial_5350[j] = *(tmp + strlen(config_options[i]) + j + 1);
-                        }
-                        memset(print_buf, 0, sizeof(print_buf));
-                        sprintf(print_buf, "serial_5350 = %s", g_config.serial_5350);
-                        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                        k++;
-                        break;
-                    }
-                    case SERIAL_STC_BAUD:
-                    {
-                        char baud[10] = {0};
-                        for (j = 0; j < sizeof(baud); j++)
-                        {
-                            if (*(tmp + strlen(config_options[i]) + 1 + j) == '\n')
-                            {
-                                break;
-                            }
-                            baud[j] = *(tmp + strlen(config_options[i]) + j + 1);
-                        }
-                        g_config.serial_stc_baud = atoi(baud);
-                        memset(print_buf, 0, sizeof(print_buf));
-                        sprintf(print_buf, "serial_stc_baud = %d", g_config.serial_stc_baud);
-                        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                        k++;
-                        break;
-                    }
-                    case SERIAL_PAD_BAUD:
-                    {
-                        char baud[10] = {0};
-                        for (j = 0; j < sizeof(baud); j++)
-                        {
-                            if (*(tmp + strlen(config_options[i]) + 1 + j) == '\n')
-                            {
-                                break;
-                            }
-                            baud[j] = *(tmp + strlen(config_options[i]) + j + 1);
-                        }
-                        g_config.serial_pad_baud = atoi(baud);
-                        memset(print_buf, 0, sizeof(print_buf));
-                        sprintf(print_buf, "serial_pad_baud = %d", g_config.serial_pad_baud);
-                        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                        k++;
-                        break;
-                    }
-                    case SERIAL_5350_BAUD:
-                    {
-                        char baud[10] = {0};
-                        for (j = 0; j < sizeof(baud); j++)
-                        {
-                            if (*(tmp + strlen(config_options[i]) + 1 + j) == '\n')
-                            {
-                                break;
-                            }
-                            baud[j] = *(tmp + strlen(config_options[i]) + j + 1);
-                        }
-                        g_config.serial_5350_baud = atoi(baud);
-                        memset(print_buf, 0, sizeof(print_buf));
-                        sprintf(print_buf, "serial_5350_baud = %d", g_config.serial_5350_baud);
-                        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                        k++;
-                        break;
-                    }
-                    #endif
                     case CENTERPHONE:
                     {
                         for (j = 0; j < sizeof(g_config.center_phone); j++)
@@ -758,45 +540,7 @@ int get_config()
                         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
                         k++;
                         break;
-                    }
-                    #if BOARDTYPE == 6410
-                    case ONE_BYTE_DELAY_USEC:
-                    {
-                        char one_byte_delay_usec[12] = {0};
-                        for (j = 0; j < sizeof(one_byte_delay_usec); j++)
-                        {
-                            if (*(tmp + strlen(config_options[i]) + 1 + j) == '\n')
-                            {
-                                break;
-                            }
-                            one_byte_delay_usec[j] = *(tmp + strlen(config_options[i]) + j + 1);
-                        }
-                        g_config.one_byte_delay_usec = atoi(one_byte_delay_usec);
-                        memset(print_buf, 0, sizeof(print_buf));
-                        sprintf(print_buf, "one_byte_delay_usec = %d", g_config.one_byte_delay_usec);
-                        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                        k++;
-                        break;
-                    }
-                    #endif              
-                    case ROUTE_REBOOT_TIME_SEC:
-                    {
-                        char route_reboot_time_sec[12] = {0};
-                        for (j = 0; j < sizeof(route_reboot_time_sec); j++)
-                        {
-                            if (*(tmp + strlen(config_options[i]) + 1 + j) == '\n')
-                            {
-                                break;
-                            }
-                            route_reboot_time_sec[j] = *(tmp + strlen(config_options[i]) + j + 1);
-                        }
-                        g_config.route_reboot_time_sec = atoi(route_reboot_time_sec);
-                        memset(print_buf, 0, sizeof(print_buf));
-                        sprintf(print_buf, "route_reboot_time_sec = %d", g_config.route_reboot_time_sec);
-                        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                        k++;
-                        break;
-                    }             
+                    }         
                     case REPEAT:
                     {
                         char repeat[12] = {0};
@@ -882,7 +626,6 @@ int get_config()
                     default:
                     {
                         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "config_options error!", MISMATCH_ERR);
-                        //break;
                         continue;
                     }
                 }
@@ -895,371 +638,6 @@ int get_config()
     return 0;
 }
 
-#elif BOARDTYPE == 5350
-
-/**
- * 读取配置文件，并设置全局变量
- */
-int get_config()
-{
-    PRINT_STEP("entry...\n");
-    int res = 0;
-    int i = 0;
-    struct stat config_stat;
-    char *tmp;
-    char print_buf[64] = {0};
-    
-    char config_options[][25] = 
-    {
-        "STEP_LOG", "SERIAL_DATA_LOG", "OLD_ROUTE_CONFIG", "PPPOE_STATE_FILE", "SPI_PARA_FILE", "WAN_STATE_FILE", 
-        "SERIAL_STC", "SERIAL_PAD", "SERIAL_STC_BAUD", "SERIAL_PAD_BAUD", "CENTERPHONE", 
-        "CENTERIP", "CENTERPORT", "BASE_IP", "PAD_IP", "PAD_SERVER_PORT", "PAD_SERVER_PORT2", "PAD_CLIENT_PORT", 
-        "TOTALTIMEOUT", "ONE_BYTE_TIMEOUT_SEC", "ONE_BYTE_TIMEOUT_USEC", "ONE_BYTE_DELAY_USEC", 
-        "ROUTE_REBOOT_TIME_SEC", "REPEAT", "TERMINAL_SERVER_IP", "TERMINAL_SERVER_PORT", "LOCAL_SERVER_PORT", "WAN_CHECK_NAME",       
-    };
-    //PRINT("LOCAL_SERVER_PORT = %d\n", LOCAL_SERVER_PORT);
-    for (i = 0; i < sizeof(config_options)/sizeof(config_options[0]); i++)
-    {
-        switch (i)
-        {
-            case STEP_LOG:
-            {
-                strcpy(g_config.step_log, (char *)nvram_bufget(RT5350_FREE_SPACE, config_options[i]));
-                memset(print_buf, 0, sizeof(print_buf));
-                sprintf(print_buf, "step_log = %s", g_config.step_log);
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                memset(print_buf, 0, sizeof(print_buf));
-                strcpy(print_buf, g_config.step_log);
-                break;
-            }
-            case SERIAL_DATA_LOG:
-            {
-                strcpy(g_config.serial_data_log, (char *)nvram_bufget(RT5350_FREE_SPACE, config_options[i]));
-                memset(print_buf, 0, sizeof(print_buf));
-                sprintf(print_buf, "serial_data_log = %s", g_config.serial_data_log);
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                memset(print_buf, 0, sizeof(print_buf));
-                strcpy(print_buf, g_config.serial_data_log);
-                break;
-            }
-            case OLD_ROUTE_CONFIG:
-            {
-                strcpy(g_config.old_route_config, (char *)nvram_bufget(RT5350_FREE_SPACE, config_options[i]));
-                memset(print_buf, 0, sizeof(print_buf));
-                sprintf(print_buf, "old_route_config = %s", g_config.old_route_config);
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                memset(print_buf, 0, sizeof(print_buf));
-                strcpy(print_buf, g_config.old_route_config);
-                break;
-            }
-            case PPPOE_STATE_FILE:
-            {
-                strcpy(g_config.pppoe_state, (char *)nvram_bufget(RT5350_FREE_SPACE, config_options[i]));
-                memset(print_buf, 0, sizeof(print_buf));
-                sprintf(print_buf, "pppoe_state = %s", g_config.pppoe_state);
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                memset(print_buf, 0, sizeof(print_buf));
-                strcpy(print_buf, g_config.pppoe_state);
-                break;
-            }
-            case SPI_PARA_FILE:
-            {
-                strcpy(g_config.spi_para_file, (char *)nvram_bufget(RT5350_FREE_SPACE, config_options[i]));
-                memset(print_buf, 0, sizeof(print_buf));
-                sprintf(print_buf, "spi_para_file = %s", g_config.spi_para_file);
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                memset(print_buf, 0, sizeof(print_buf));
-                strcpy(print_buf, g_config.spi_para_file);
-                break;
-            }
-            case WAN_STATE_FILE:
-            {
-                strcpy(g_config.wan_state, (char *)nvram_bufget(RT5350_FREE_SPACE, config_options[i]));
-                memset(print_buf, 0, sizeof(print_buf));
-                sprintf(print_buf, "wan_state = %s", g_config.wan_state);
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                memset(print_buf, 0, sizeof(print_buf));
-                strcpy(print_buf, g_config.wan_state);
-                break;
-            }           
-            case SERIAL_STC:
-            {
-                strcpy(g_config.serial_stc, (char *)nvram_bufget(RT5350_FREE_SPACE, config_options[i]));
-                memset(print_buf, 0, sizeof(print_buf));
-                sprintf(print_buf, "serial_stc = %s", g_config.serial_stc);
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                memset(print_buf, 0, sizeof(print_buf));
-                strcpy(print_buf, g_config.serial_stc);
-                break;
-            }         
-            case SERIAL_PAD:
-            {
-                strcpy(g_config.serial_pad, (char *)nvram_bufget(RT5350_FREE_SPACE, config_options[i]));
-                memset(print_buf, 0, sizeof(print_buf));
-                sprintf(print_buf, "serial_pad = %s", g_config.serial_pad);
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                memset(print_buf, 0, sizeof(print_buf));
-                strcpy(print_buf, g_config.serial_pad);
-                break;
-            }     
-            case SERIAL_STC_BAUD:
-            {
-                char baud[10] = {0};
-                strcpy(baud, (char *)nvram_bufget(RT5350_FREE_SPACE, config_options[i]));
-                if (strcmp(baud, "") == 0)
-                {
-                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no data", NULL_ERR);
-                    return NULL_ERR;
-                }
-                memset(print_buf, 0, sizeof(print_buf));
-                g_config.serial_stc_baud = atoi(baud);
-                sprintf(print_buf, "serial_stc_baud = %d", g_config.serial_stc_baud);
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                break;
-            }
-            case SERIAL_PAD_BAUD:
-            {
-                char baud[10] = {0};
-                strcpy(baud, (char *)nvram_bufget(RT5350_FREE_SPACE, config_options[i]));
-                if (strcmp(baud, "") == 0)
-                {
-                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no data", NULL_ERR);
-                    return NULL_ERR;
-                }
-                memset(print_buf, 0, sizeof(print_buf));
-                g_config.serial_pad_baud = atoi(baud);
-                sprintf(print_buf, "serial_pad_baud = %d", g_config.serial_pad_baud);
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                break;
-            }
-            case CENTERPHONE:
-            {
-                strcpy(g_config.center_phone, (char *)nvram_bufget(RT5350_FREE_SPACE, config_options[i]));
-                memset(print_buf, 0, sizeof(print_buf));
-                sprintf(print_buf, "center_phone = %s", g_config.center_phone);
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                memset(print_buf, 0, sizeof(print_buf));
-                strcpy(print_buf, g_config.center_phone);
-                break;
-            }      
-            case CENTERIP:
-            {
-                strcpy(g_config.center_ip, (char *)nvram_bufget(RT5350_FREE_SPACE, config_options[i]));
-                memset(print_buf, 0, sizeof(print_buf));
-                sprintf(print_buf, "center_ip = %s", g_config.center_ip);
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                memset(print_buf, 0, sizeof(print_buf));
-                strcpy(print_buf, g_config.center_ip);
-                break;
-            }   
-            case CENTERPORT:
-            {
-                strcpy(g_config.center_port, (char *)nvram_bufget(RT5350_FREE_SPACE, config_options[i]));
-                memset(print_buf, 0, sizeof(print_buf));
-                sprintf(print_buf, "center_port = %s", g_config.center_port);
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                memset(print_buf, 0, sizeof(print_buf));
-                strcpy(print_buf, g_config.center_port);
-                break;
-            }
-            case BASE_IP:
-            {
-                strcpy(g_config.base_ip, (char *)nvram_bufget(RT5350_FREE_SPACE, config_options[i]));
-                memset(print_buf, 0, sizeof(print_buf));
-                sprintf(print_buf, "base_ip = %s", g_config.base_ip);
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                memset(print_buf, 0, sizeof(print_buf));
-                strcpy(print_buf, g_config.base_ip);
-                break;
-            }
-            case PAD_IP:
-            {
-                strcpy(g_config.pad_ip, (char *)nvram_bufget(RT5350_FREE_SPACE, config_options[i]));
-                memset(print_buf, 0, sizeof(print_buf));
-                sprintf(print_buf, "pad_ip = %s", g_config.pad_ip);
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                memset(print_buf, 0, sizeof(print_buf));
-                strcpy(print_buf, g_config.pad_ip);
-                break;
-            }
-            case PAD_SERVER_PORT:
-            {
-                strcpy(g_config.pad_server_port, (char *)nvram_bufget(RT5350_FREE_SPACE, config_options[i]));
-                memset(print_buf, 0, sizeof(print_buf));
-                sprintf(print_buf, "pad_server_port = %s", g_config.pad_server_port);
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                memset(print_buf, 0, sizeof(print_buf));
-                strcpy(print_buf, g_config.pad_server_port);
-                break;
-            }
-            case PAD_SERVER_PORT2:
-            {
-                strcpy(g_config.pad_server_port2, (char *)nvram_bufget(RT5350_FREE_SPACE, config_options[i]));
-                memset(print_buf, 0, sizeof(print_buf));
-                sprintf(print_buf, "pad_server_port2 = %s", g_config.pad_server_port2);
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                memset(print_buf, 0, sizeof(print_buf));
-                strcpy(print_buf, g_config.pad_server_port2);
-                break;
-            }
-            case PAD_CLIENT_PORT:
-            {
-                strcpy(g_config.pad_client_port, (char *)nvram_bufget(RT5350_FREE_SPACE, config_options[i]));
-                memset(print_buf, 0, sizeof(print_buf));
-                sprintf(print_buf, "pad_client_port = %s", g_config.pad_client_port);
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                memset(print_buf, 0, sizeof(print_buf));
-                strcpy(print_buf, g_config.pad_client_port);
-                break;
-            }
-            case TOTAL_TIME_OUT:
-            {
-                char total_timeout[12] = {0};
-                strcpy(total_timeout, (char *)nvram_bufget(RT5350_FREE_SPACE, config_options[i]));
-                if (strcmp(total_timeout, "") == 0)
-                {
-                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no data", NULL_ERR);
-                    return NULL_ERR;
-                }
-                memset(print_buf, 0, sizeof(print_buf));
-                g_config.total_timeout = atoi(total_timeout);
-                sprintf(print_buf, "total_timeout = %d", g_config.total_timeout);
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                break;
-            }
-            case ONE_BYTE_TIMEOUT_SEC:
-            {
-                char one_byte_timeout_sec[12] = {0};
-                strcpy(one_byte_timeout_sec, (char *)nvram_bufget(RT5350_FREE_SPACE, config_options[i]));
-                if (strcmp(one_byte_timeout_sec, "") == 0)
-                {
-                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no data", NULL_ERR);
-                    return NULL_ERR;
-                }
-                memset(print_buf, 0, sizeof(print_buf));
-                g_config.one_byte_timeout_sec = atoi(one_byte_timeout_sec);
-                sprintf(print_buf, "one_byte_timeout_sec = %d", g_config.one_byte_timeout_sec);
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                break;
-            }
-            case ONE_BYTE_TIMEOUT_USEC:
-            {
-                char one_byte_timeout_usec[12] = {0};
-                strcpy(one_byte_timeout_usec, (char *)nvram_bufget(RT5350_FREE_SPACE, config_options[i]));
-                if (strcmp(one_byte_timeout_usec, "") == 0)
-                {
-                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no data", NULL_ERR);
-                    return NULL_ERR;
-                }
-                memset(print_buf, 0, sizeof(print_buf));
-                g_config.one_byte_timeout_usec = atoi(one_byte_timeout_usec);
-                sprintf(print_buf, "one_byte_timeout_usec = %d", g_config.one_byte_timeout_usec);
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                break;
-            }
-            case ONE_BYTE_DELAY_USEC:
-            {
-                char one_byte_delay_usec[12] = {0};
-                strcpy(one_byte_delay_usec, (char *)nvram_bufget(RT5350_FREE_SPACE, config_options[i]));
-                if (strcmp(one_byte_delay_usec, "") == 0)
-                {
-                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no data", NULL_ERR);
-                    return NULL_ERR;
-                }
-                memset(print_buf, 0, sizeof(print_buf));
-                g_config.one_byte_delay_usec = atoi(one_byte_delay_usec);
-                sprintf(print_buf, "one_byte_delay_usec = %d", g_config.one_byte_delay_usec);
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                break;
-            }        
-            case ROUTE_REBOOT_TIME_SEC:
-            {
-                char route_reboot_time_sec[12] = {0};
-                strcpy(route_reboot_time_sec, (char *)nvram_bufget(RT5350_FREE_SPACE, config_options[i]));
-                if (strcmp(route_reboot_time_sec, "") == 0)
-                {
-                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no data", NULL_ERR);
-                    return NULL_ERR;
-                }
-                memset(print_buf, 0, sizeof(print_buf));
-                g_config.route_reboot_time_sec = atoi(route_reboot_time_sec);
-                sprintf(print_buf, "route_reboot_time_sec = %d", g_config.route_reboot_time_sec);
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                break;
-            }    
-            case REPEAT:
-            {
-                char repeat[12] = {0};
-                strcpy(repeat, (char *)nvram_bufget(RT5350_FREE_SPACE, config_options[i]));
-                if (strcmp(repeat, "") == 0)
-                {
-                    OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no data", NULL_ERR);
-                    return NULL_ERR;
-                }
-                memset(print_buf, 0, sizeof(print_buf));
-                g_config.repeat = atoi(repeat);
-                sprintf(print_buf, "repeat = %d", g_config.repeat);
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                break;
-            }
-            case TERMINAL_SERVER_IP:
-            {
-                strcpy(g_config.terminal_server_ip, (char *)nvram_bufget(RT5350_FREE_SPACE, config_options[i]));
-                memset(print_buf, 0, sizeof(print_buf));
-                sprintf(print_buf, "terminal_server_ip = %s", g_config.terminal_server_ip);
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                memset(print_buf, 0, sizeof(print_buf));
-                strcpy(print_buf, g_config.terminal_server_ip);
-                break;
-            }   
-            case TERMINAL_SERVER_PORT:
-            {
-                strcpy(g_config.terminal_server_port, (char *)nvram_bufget(RT5350_FREE_SPACE, config_options[i]));
-                memset(print_buf, 0, sizeof(print_buf));
-                sprintf(print_buf, "terminal_server_port = %s", g_config.terminal_server_port);
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                memset(print_buf, 0, sizeof(print_buf));
-                strcpy(print_buf, g_config.terminal_server_port);
-                break;
-            }
-            case LOCAL_SERVER_PORT:
-            {
-                strcpy(g_config.local_server_port, (char *)nvram_bufget(RT5350_FREE_SPACE, config_options[i]));
-                memset(print_buf, 0, sizeof(print_buf));
-                sprintf(print_buf, "local_server_port = %s", g_config.local_server_port);
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                memset(print_buf, 0, sizeof(print_buf));
-                strcpy(print_buf, g_config.local_server_port);
-                break;
-            }
-            case WAN_CHECK_NAME:
-            {
-                strcpy(g_config.wan_check_name, (char *)nvram_bufget(RT5350_FREE_SPACE, config_options[i]));
-                memset(print_buf, 0, sizeof(print_buf));
-                sprintf(print_buf, "wan_check_name = %s", g_config.wan_check_name);
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, print_buf, 0);
-                memset(print_buf, 0, sizeof(print_buf));
-                strcpy(print_buf, g_config.wan_check_name);
-                break;
-            }
-            default:
-            {
-                OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "config_options error!", MISMATCH_ERR);
-                continue;
-            }
-        }
-        
-        if (strcmp(print_buf, "") == 0)
-        {
-            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "no data", NULL_ERR);
-            return NULL_ERR;
-        }
-    }
-    PRINT_STEP("exit...\n");
-    return 0;
-}
-
-#endif
 /**
  * 设置GPIO4
  */
@@ -1469,112 +847,6 @@ int operation_steps_log(const char *file_name, const char *function_name, const 
     #endif
     
     PRINT_STEP("exit...\n");    
-    return 0;
-}
-#if BOARDTYPE == 6410 || BOARDTYPE == 5350
-/**
- * 串口（ttySAC2）接收数据
- */
-int make_serial_data_file(int *write_buf_fd, char buf, int buf_len)
-{
-    char serial_file_name[50] = {0};          // 接收收到文件名 ./serial_file/ + 测试次数 
-    unsigned char buf_tmp[3] = {0, 0, ' '};
-    
-    sprintf(serial_file_name,"%s%ld", __SERIAL_DATA_LOG_FILE, g_work_sum.work_sum);
-    
-    // 文件不存在
-    if (access(serial_file_name, F_OK | W_OK) == -1)
-    {
-        //PRINT("*write_buf_fd = %d\n", *write_buf_fd); 
-        if (*write_buf_fd > 0)
-        {
-            close(*write_buf_fd);
-        }
-        char cmd[64] = {0}; 
-        sprintf(cmd, "mkdir -p %s", __SERIAL_DATA_LOG_FILE);
-        system(cmd);
-    	if ((*write_buf_fd = open(serial_file_name, O_WRONLY | O_APPEND | O_CREAT, 0644)) < 0)
-        {
-            OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "open failed!", OPEN_ERR);
-        	return OPEN_ERR;    
-        }
-        //PRINT("*write_buf_fd = %d\n", *write_buf_fd); 
-    }
-    BCD_to_string(&buf, 1, buf_tmp, 2);
-    switch (*write_buf_fd)
-    {
-        case 0:
-             PRINT("*write_buf_fd = 0\n");
-            break;
-        case 1:
-             PRINT("*write_buf_fd = 1\n");
-            break;
-        case 2:
-             PRINT("*write_buf_fd = 2\n");
-            break;
-        default:
-            break;
-    }
-    
-    if (write(*write_buf_fd, &buf_tmp, 3) != 3)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "write failed!", WRITE_ERR);
-        return WRITE_ERR;    
-    }
-    if (buf_len % 40 == 0)
-    {
-        write(*write_buf_fd, "\n", 1);
-    }
-    //close(write_buf_fd);
-    return *write_buf_fd;
-}
-#endif
-
-/**
- * 获取电话线状态
- */
-int get_phone_stat()
-{
-    int res = 0;
-    key_t phone_status_key = 0;
-    struct s_msgbuf msgp;
-    memset((void *)&msgp, 0, sizeof(struct s_msgbuf));
-    int msg_id = 0;
-    
-    if ((phone_status_key = ftok(MSGNAME, 'a')) < 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "ftok failed!", FTOK_ERR);
-        return FTOK_ERR;
-    }
-        
-    if ((msg_id = msgget(phone_status_key, IPC_EXCL | 0666)) < 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "msgget failed!", MSGGET_ERR);
-        return MSGGET_ERR;
-    }
-    
-    msgp.mtype = MSGTYPE_SND;
-    strcpy(msgp.mtext, "phone status?");
-    printf("%s\n", msgp.mtext);
-    if (msgsnd(msg_id, (void *)&msgp, 256, 0) < 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "msgsnd failed!", MSGSND_ERR);
-        return MSGSND_ERR;
-    }
-    
-    memset((void *)&msgp, 0, sizeof(struct s_msgbuf));
-    msgp.mtype = MSGTYPE_RCV;
-    if (msgrcv(msg_id, (void *)&msgp, 256, MSGTYPE_RCV, 0) < 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "msgrcv failed!", MSGRCV_ERR);
-        return MSGRCV_ERR;
-    }
-    printf("%s\n", msgp.mtext);
-    if (strcmp(msgp.mtext, "52") != 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "the data is different!", DATA_ERR);
-        return DATA_ERR;
-    }
     return 0;
 }
 
@@ -2093,67 +1365,6 @@ int get_MAC(int src, char *MAC)
     return 0;
 }
 
-#if BOARDTYPE == 5350
-/**
- * 获取WAN口的MAC地址
- */
-int get_wan_mac(char *mac)
-{
-    int res = 0;
-    // 获取ra0的mac
-    char *cmd1 = "iwpriv ra0 e2p 4 | grep 0x0004";
-    char *cmd2 = "iwpriv ra0 e2p 6 | grep 0x0006";
-    char *cmd3 = "iwpriv ra0 e2p 8 | grep 0x0008";
-    
-    char buf1[16] = {0};
-    char buf2[16] = {0};
-    char buf3[16] = {0};
-    
-    if (mac == NULL)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "mac is NULL!", NULL_ERR);
-        return NULL_ERR;
-    }
-    
-    if ((res = common_tools.get_cmd_out(cmd1, buf1, sizeof(buf1))) < 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_cmd_out failed!", res);
-        return res;
-    }
-    mac[0] = buf1[13];
-    mac[1] = buf1[14];
-    mac[2] = ':';
-    mac[3] = buf1[11];
-    mac[4] = buf1[12];
-    mac[5] = ':';
-    
-    if ((res = common_tools.get_cmd_out(cmd2, buf2, sizeof(buf2))) < 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_cmd_out failed!", res);
-        return res;
-    }
-    mac[6] = buf2[13];
-    mac[7] = buf2[14];
-    mac[8] = ':';
-    mac[9] = buf2[11];
-    mac[10] = buf2[12];
-    mac[11] = ':';
-    
-    if ((res = common_tools.get_cmd_out(cmd3, buf3, sizeof(buf3))) < 0)
-    {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "get_cmd_out failed!", res);
-        return res;
-    }
-    mac[12] = buf3[13];
-    mac[13] = buf3[14];
-    mac[14] = ':';
-    mac[15] = buf3[11];
-    mac[16] = buf3[12];
-    
-    return 0;
-}
-
-#elif BOARDTYPE == 9344
 /**
  * 获取WAN口的MAC地址
  */
@@ -2180,7 +1391,6 @@ int get_wan_mac(char *mac)
     PRINT("mac = %s buf = %s\n", mac, buf);
     return 0;
 }
-#endif
 /*******************************************************************************/
 /************************        以下为项目无关代码         ********************/
 /*******************************************************************************/
@@ -3312,11 +2522,7 @@ long get_rand_num(unsigned long start, unsigned long end, unsigned short type_le
         return READ_ERR;
     }
     
-    #if BOARDTYPE == 5350 
-    value = 'A' + value % ('Z' - 'A' + 1); 
-    #else
     value = start + value % (end - start + 1);
-    #endif
     close(fd);
     PRINT("value = %08X %02X\n", value, (char)value);
     return value;
