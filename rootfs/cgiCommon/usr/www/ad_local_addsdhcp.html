@@ -236,7 +236,7 @@ function CheckValue()
 	{
 		var mmac = document.WORKFORM.ADD_MAC.value;
 		var mmh = mmac.substr(0, 2);
-		var mmh_int=parseInt(mmh);
+		var mmh_int=parseInt("0x"+mmh);
 		var lastb = mmh_int%2;
 		if(lastb==1)
 		{

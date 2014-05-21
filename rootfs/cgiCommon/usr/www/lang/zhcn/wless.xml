@@ -53,8 +53,8 @@
 	<message msgid="err SSID empty" msgstr="请您输入网络名称（SSID）" />
 	<message msgid="err SSID length" msgstr="SSID长度错误" />
 	<message msgid="err SSID" msgstr="SSID不合法" />
-	<message msgid="err key" msgstr="请您输入密钥" />
-	<message msgid="err keylen" msgstr="密钥长度必须是8-12位" />
+	<message msgid="err key" msgstr="请您输入密码" />
+	<message msgid="err keylen" msgstr="密码长度必须是8-12位" />
 	<message msgid="err keychar" msgstr="密码中存在无效字符" />
 
 	<message msgid="err ssidtime empty" msgstr="广播SSID时间不能为空" />
@@ -68,7 +68,7 @@
 	<message msgid="err DNS empty" msgstr="DNS不能为空" />
 
 	<message msgid="err IP format" msgstr="IP地址不合法" />
-	<message msgid="err sub format" msgstr="掩码地址不合法" />	
+	<message msgid="err sub format" msgstr="掩码地址不合法" />
 	<message msgid="err gw format" msgstr="网关地址不合法" />
 	<message msgid="err DNS format" msgstr="DNS地址不合法" />
 </po>

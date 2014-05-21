@@ -209,6 +209,8 @@ upload.cgi: upload.cgi.c
 	cp download.cgi $(INSTALL_ROOT)/usr/www/cgi-bin
 	${CC} -o cfgupload.cgi ${CFLAGS} ${LDFLAGS} cfgupload.cgi.c
 	cp cfgupload.cgi $(INSTALL_ROOT)/usr/www/cgi-bin
+	${CC} -o search.cgi ${CFLAGS} ${LDFLAGS} search.cgi.c
+	cp search.cgi $(INSTALL_ROOT)/usr/www/cgi-bin
 
 athdebug: athdebug.c
 	${CC} -o athdebug ${CFLAGS} ${LDFLAGS} athdebug.c

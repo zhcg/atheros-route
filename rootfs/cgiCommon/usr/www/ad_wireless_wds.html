@@ -8,8 +8,10 @@
 <script language="JavaScript" type="text/javascript">
 var show = 0;
 var show2 = 0;
+var search1 = 0;
+var search2 = 0;
 function button_commit(buttonID){document.getElementById(buttonID).click();}
-function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "table-row";}}
+function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "";}}
 function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
 function widget_display(widgetID){document.getElementById(widgetID).style.visibility = "visible";document.getElementById(widgetID).style.display = style_display_on();}
 
@@ -90,7 +92,15 @@ function CheckWirelessValue()
 {
 	if(document.wizard_form.WDSON_OFF[0].checked == true)
 	{
-		if((document.getElementById("INDEX").value == "11") || (document.getElementById("INDEX").value == 11))
+		if(document.getElementById("now_1").value == "")
+		{
+			if(search1 == 0)
+			{
+				alert(_("err no choose"));
+				return false;
+			}
+		}
+		if(search1 == 1)
 		{
 			if(document.getElementById("STA_SECMODE").value == "WPA")
 			{
@@ -99,17 +109,9 @@ function CheckWirelessValue()
 					alert(_("err pwd empty"));
 					return false;
 				}
+			}
+		}
 
-			}
-		}
-		else
-		{
-			if(document.getElementById("now_1").value == "")
-			{
-				alert(_("err no choose"));
-				return false;
-			}
-		}
 	}
 	else
 	{
@@ -123,7 +125,15 @@ function CheckWirelessValue()
 
 	if(document.wizard_form.WDSON_OFF_3[0].checked == true)
 	{
-		if((document.getElementById("INDEX").value == "112") || (document.getElementById("INDEX").value == 112))
+		if(document.getElementById("now_2").value == "")
+		{
+			if(search2 == 0)
+			{
+				alert(_("err no choose"));
+				return false;
+			}
+		}
+		if(search2 == 1)
 		{
 			if(document.getElementById("STA_SECMODE_2").value == "WPA")
 			{
@@ -132,16 +142,7 @@ function CheckWirelessValue()
 					alert(_("err pwd empty"));
 					return false;
 				}
-
 			}
-		}
-		else
-		{
-			if(document.getElementById("now_2").value == "")
-			{
-				alert(_("err no choose"));
-				return false;
-			}			
 		}
 	}
 	else
@@ -157,7 +158,6 @@ function CheckWirelessValue()
 	document.getElementById("WIFION_OFF").disabled = true;	 
 	document.getElementById("WIFION_OFF_3").disabled = true;	 
 	waitgifshow();
-	document.wizard_form.INDEX.disabled = true;
 	button_commit('WIRRE');
 	return true;
 }
@@ -266,19 +266,106 @@ function  WIFSwitch2()
 			document.getElementById("pwd2").value="";
 		}	}
 }
+var xmlHttp;
+var Gname="";
+function search(str)
+{
+	xmlHttp=GetXmlHttpObject();
+	Gname = str;
+	if (xmlHttp==null)
+	{
+		alert ("Browser does not support HTTP Request");
+		Return;
+	}
+	var url="/cgi-bin/search.cgi";
+	url=url+"?q="+Gname;
+	
+	url=url+"&sid="+Math.random();
+	xmlHttp.onreadystatechange=stateChanged;
+	xmlHttp.open("GET",url,true);
+	xmlHttp.send(null);
+}
+function stateChanged()
+{
+	if (xmlHttp.readyState==4 || xmlHttp.readyState=="complete")
+	{
+		xmlHttp=GetXmlHttpObject();
+		if (xmlHttp==null)
+		{
+			alert ("Browser does not support HTTP Request");
+			Return;
+		}
+		if(Gname == "2G")
+			var url="http://"+location.hostname+"/DWS_2G.xml";
+		else
+			var url="http://"+location.hostname+"/DWS_5G.xml";
+		url=url+"?sid="+Math.random();
+		xmlHttp.onreadystatechange=showlist;
+		xmlHttp.open("GET",url,true);
+		xmlHttp.send(null);
+	}
+}
+function showlist()
+{
+	if (xmlHttp.readyState==4 || xmlHttp.readyState=="complete")
+	{
+		if(xmlHttp.status==200)
+		{
+			window.parent.DialogHide();
+			widget_display("WFILIST");
+			if(Gname == "2G")
+			{
+				widget_display("WFILIST");
+				document.getElementById("WFILIST").innerHTML = xmlHttp.responseText;
+				WIFSwitch();
+			}
+			else
+			{
+				widget_display("WFILIST_3");
+				document.getElementById("WFILIST_3").innerHTML = xmlHttp.responseText;
+				WIFSwitch2();
+			}
+			checklistempty();
+		}
+
+
+	}
+}
+function GetXmlHttpObject()
+{
+	var xmlHttp=null;
+	try
+	{
+	// Firefox, Opera 8.0+, Safari
+		xmlHttp=new XMLHttpRequest();
+	}
+	catch (e)
+	{
+		//Internet Explorer
+		try
+		{
+			xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
+		}
+		catch (e)
+		{
+			xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+		}
+	}
+	return xmlHttp;
+}
+
+
 function refreshwds()
 {
 	Butterlate.setTextDomain("other");
 	window.parent.Demo(_("wait"));
-	button_commit('REFRESHWFi');
-
+	search("2G");
 }
 function refreshwds2()
 {
 	Butterlate.setTextDomain("other");
 	window.parent.Demo(_("wait"));
-	button_commit('REFRESHWFi2');
-
+	search("5G");
 }
 function waitgifshow()
 {
@@ -295,10 +382,6 @@ function switch_wds()
 		}
 		widget_display("dwsset3");
 		
-		if((document.getElementById("INDEX").value == "11") || (document.getElementById("INDEX").value == 11))
-		{
-			WIFSwitch();
-		}
 	}
 	else
 	{
@@ -306,6 +389,8 @@ function switch_wds()
 		widget_hide("dwsset3");
 		widget_hide("tt2");
 	}
+	checklistempty();
+	WIFSwitch();
 	window.parent.iFrameHeight();
 }
 function switch_wds2()
@@ -317,11 +402,7 @@ function switch_wds2()
 			widget_display("dwsset22");
 		}
 		widget_display("dwsset32");
-		
-		if((document.getElementById("INDEX").value == "112") || (document.getElementById("INDEX").value == 112))
-		{
-			WIFSwitch2();
-		}
+
 	}
 	else
 	{
@@ -329,6 +410,8 @@ function switch_wds2()
 		widget_hide("dwsset32");
 		widget_hide("tt22");
 	}
+	checklistempty();
+	WIFSwitch2();
 	window.parent.iFrameHeight();
 }
 function initshow()
@@ -348,10 +431,20 @@ function initshow2()
 function checklistempty()
 {
 	if (document.getElementById("WFILIST").innerHTML=="")
+	{
 		widget_hide("WFILIST");
-
+		search1 = 0;
+	}
+	else
+		search1 = 1;
+		
 	if (document.getElementById("WFILIST_3").innerHTML=="")
+	{
 		widget_hide("WFILIST_3");
+		search2 = 0;
+	}
+	else
+		search2 = 1;
 }
 function initValue()
 {
@@ -366,61 +459,6 @@ function initValue()
 		show2 = 1;
 	else
 		show2 = 0;	
-	
-	
-	if((document.getElementById("INDEX").value == "11") || (document.getElementById("INDEX").value == 11))
-	{
-
-		document.wizard_form.WDSON_OFF[0].checked = true;
-		window.parent.DialogHide();
-		initshow();
-		initshow2();
-		switch_wds();
-		switch_wds2();
-		WIFSwitch();
-		if(document.getElementById("WIFION_OFF_3").value=="off")
-		{
-			widget_hide("hide2");
-			widget_hide("dwsset22");
-			widget_hide("dwsset32");
-			widget_hide("tt22");
-			widget_display("tishi2");
-		}
-		checklistempty();
-		WIFI_HS()
-		return true;
-	}
-	//else
-	//{
-	//	widget_hide("WFILIST");
-	//}
-	
-	if((document.getElementById("INDEX").value == "112") || (document.getElementById("INDEX").value == 112))
-	{
-
-		document.wizard_form.WDSON_OFF_3[0].checked = true;
-		window.parent.DialogHide();
-		initshow();
-		initshow2();
-		switch_wds();
-		switch_wds2();
-		WIFSwitch2();
-		if(document.getElementById("WIFION_OFF").value=="off")
-		{
-			widget_hide("hide1");
-			widget_hide("dwsset2");
-			widget_hide("dwsset3");
-			widget_hide("tt2");
-			widget_display("tishi1");
-		}
-		checklistempty();
-		WIFI_HS();
-		return true;
-	}
-	//else
-	//{
-	//	widget_hide("WFILIST_3");
-	//}
 	initshow();
 	initshow2();
 	switch_wds();
@@ -447,7 +485,6 @@ function initValue()
 	{
 		widget_hide("buttontable");
 	}
-	checklistempty();
 	WIFI_HS();
 }
 
@@ -497,8 +534,8 @@ function help()
 <tr id="hide1">
 <td class="head_s" id="wdsswitch"></td>
 	<td>
-	<input type="radio" ~cWDSON_OFF:on~ id="rad_1" name="WDSON_OFF" value="on" onclick="switch_wds();" checked /><label for="rad_1" id="onbutton"></label>
-	<input type="radio" ~cWDSON_OFF:off~ id="rad_2" name="WDSON_OFF" value="off" onclick="switch_wds();"/><label for="rad_2" id="offbutton"></label>
+	<input type="radio" ~cWDSON_OFF:on~ id="rad_1" name="WDSON_OFF" value="on" onClick="switch_wds();" checked /><label for="rad_1" id="onbutton"></label>
+	<input type="radio" ~cWDSON_OFF:off~ id="rad_2" name="WDSON_OFF" value="off" onClick="switch_wds();"/><label for="rad_2" id="offbutton"></label>
 	<input style="display:none" name="STA_SSID" id="STA_SSID" maxlength=32 size=32 class="handaer_text_content" value="~~STA_SSID~">
 	<input style="display:none" name="ROOTAP_MAC" id="ROOTAP_MAC" maxlength=32 size=32 class="handaer_text_content" value="~~ROOTAP_MAC~">
 	</td>
@@ -511,7 +548,7 @@ function help()
 <tr id="dwsset3">
     <td class="head" id="Wlisttitle1"></td>
     <td>
-	<select name="WFILIST" id="WFILIST" size="1" onchange="WIFSwitch()">~L:List~</select>&nbsp;&nbsp;<input type="button" name="refresh" id="fresh" class="handaer_small_button" value="Fresh" onClick="refreshwds()">
+	<select name="WFILIST" id="WFILIST" size="1" onChange="WIFSwitch()"></select>&nbsp;&nbsp;<input type="button" name="refresh" id="fresh" class="handaer_small_button" value="Fresh" onClick="refreshwds()">
 	</td>
   </tr>
     
@@ -538,8 +575,8 @@ function help()
 <tr id="hide2">
 <td class="head_s" id="wdsswitch2"></td>
 	<td>
-	<input type="radio" ~cWDSON_OFF_3:on~ id="rad_12" name="WDSON_OFF_3" value="on" onclick="switch_wds2();" checked /><label for="rad_12" id="onbutton2"></label>
-	<input type="radio" ~cWDSON_OFF_3:off~ id="rad_22" name="WDSON_OFF_3" value="off" onclick="switch_wds2();"/><label for="rad_22" id="offbutton2"></label>
+	<input type="radio" ~cWDSON_OFF_3:on~ id="rad_12" name="WDSON_OFF_3" value="on" onClick="switch_wds2();" checked /><label for="rad_12" id="onbutton2"></label>
+	<input type="radio" ~cWDSON_OFF_3:off~ id="rad_22" name="WDSON_OFF_3" value="off" onClick="switch_wds2();"/><label for="rad_22" id="offbutton2"></label>
 	<input style="display:none" name="STA_SSID_2" id="STA_SSID_2" maxlength=32 size=32 class="handaer_text_content" value="~~STA_SSID_2~">
 	<input style="display:none" name="ROOTAP_MAC_2" id="ROOTAP_MAC_2" maxlength=32 size=32 class="handaer_text_content" value="~~ROOTAP_MAC_2~">
 
@@ -553,7 +590,7 @@ function help()
 <tr id="dwsset32">
     <td class="head" id="Wlisttitle12"></td>
     <td>
-	<select name="WFILIST_3" id="WFILIST_3" size="1" onchange="WIFSwitch2()">~L:List2~</select>&nbsp;&nbsp;<input type="button" name="refresh2" id="fresh2" class="handaer_small_button" onClick="refreshwds2()">
+	<select name="WFILIST_3" id="WFILIST_3" size="1" onChange="WIFSwitch2()"></select>&nbsp;&nbsp;<input type="button" name="refresh2" id="fresh2" class="handaer_small_button" onClick="refreshwds2()">
 	</td>
   </tr>
     
@@ -575,7 +612,6 @@ function help()
     <input type="button" name="cancel_motion" id="bCANCEL" class="handaer_input" value="Cancel" onClick="reloadd();">
     <input type="button" name="apply_motion" id="bAPPLY" class="handaer_input" value="Apply" onClick="CheckWirelessValue();">
 	<input type="submit" name="WIRRE" id="WIRRE" style="display:none" value="WIRRE">
-	<input type="text" style="display:none" name="INDEX" id="INDEX" value="~~INDEX~">
 	<input type="text" style="display:none" name="WDS_CHAN" id="WDS_CHAN" size="20" maxlength="32" value="~~WDS_CHAN~">	
 	<input type="text" style="display:none" name="STA_SECMODE" id="STA_SECMODE" size="20" maxlength="32" value="~~STA_SECMODE~">	
 	<input type="text" style="display:none" name="WDS_CHAN_2" id="WDS_CHAN_2" size="20" maxlength="32" value="~~WDS_CHAN_2~">	
@@ -585,8 +621,6 @@ function help()
 </table>
 <!--/form-->
 <div style="display:none">    
-	<input type="button" name="REFRESHWFi" id="REFRESHWFi" style="display:none" value="REFRESHWFi" onClick="window.location.href='ad_wireless_wds?INDEX=11'">
-	<input type="button" name="REFRESHWFi2" id="REFRESHWFi2" style="display:none" value="REFRESHWFi2" onClick="window.location.href='ad_wireless_wds?INDEX=112'">
 	<input type="text" style="display:none" name="WIFION_OFF" id="WIFION_OFF" size="20" maxlength="32" value="~~WIFION_OFF~">	
 	<input type="text" style="display:none" name="WIFION_OFF_3" id="WIFION_OFF_3" size="20" maxlength="32" value="~~WIFION_OFF_3~">	
 	<input type="text" style="display:none" name="RADIO_STATUS" id="RADIO_STATUS" size="20" maxlength="32" value="~~RADIO_STATUS~">
