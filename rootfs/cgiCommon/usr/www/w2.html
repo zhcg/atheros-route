@@ -112,7 +112,92 @@ function checkInjection(str)
 	}
     return true;
 }
+var xmlHttp;
+function wan_check()
+{
+	xmlHttp=GetXmlHttpObject();
+	if (xmlHttp==null)
+	{
+		alert ("Browser does not support HTTP Request");
+		Return;
+	}
+	var url="/cgi-bin/wan_check.cgi";
+	url=url+"?sid="+Math.random();
+	xmlHttp.onreadystatechange=stateChanged;
+	xmlHttp.open("GET",url,true);
+	xmlHttp.send(null);
+}
 
+function stateChanged()
+{
+	if (xmlHttp.readyState==4 || xmlHttp.readyState=="complete")
+	{
+		if(xmlHttp.status==200)
+		{
+			window.parent.DialogHide();
+			//alert(xmlHttp.responseText);
+			var zidong = xmlHttp.responseText;
+			
+			if(zidong.indexOf("static") == 0 )
+			{
+				document.wizard_form.WAN_MODE[2].checked = true;
+				alert(_("admw auto_sip"));
+				hideAllTables();
+				connectionTypeSwitch();
+				butwork("false","true","true","false");
+			}
+			else if(zidong.indexOf("dhcp") == 0 )
+			{
+				document.wizard_form.WAN_MODE[1].checked = true;
+				alert(_("admw auto_dhcp"));
+				hideAllTables();
+				connectionTypeSwitch();
+				butwork("false","true","true","false");
+			}
+			else if(zidong.indexOf("pppoe") == 0 )
+			{
+				document.wizard_form.WAN_MODE[3].checked = true;
+				alert(_("admw auto_ppp"));
+				hideAllTables();
+				connectionTypeSwitch();
+				butwork("false","true","true","false");
+			}
+			else if(zidong.indexOf("l2tp") == 0 )
+			{
+				document.wizard_form.WAN_MODE[4].checked = true;
+				alert(_("admw auto_l2tp"));
+				hideAllTables();
+				connectionTypeSwitch();
+				butwork("false","true","true","false");
+			}
+			else if(zidong.indexOf("p2tp") == 0 )
+			{
+				document.wizard_form.WAN_MODE[5].checked = true;
+				alert(_("admw auto_p2tp"));
+				hideAllTables();
+				connectionTypeSwitch();
+				butwork("false","true","true","false");
+			}
+			else
+			{
+				alert(_("admw auto_fail"));
+				document.getElementById("div_wan_opmode").style.visibility = "visible";
+				document.getElementById("div_wan_opmode").style.display = style_display_on();
+				document.getElementById("modedes").style.visibility = "visible";
+				document.getElementById("modedes").style.display = style_display_on();
+
+				butwork("true","false","true","true");
+				change_step(0);
+			}
+		}		
+	}
+}
+function GetXmlHttpObject()
+{
+	var xmlHttp=null;
+	try	{xmlHttp=new XMLHttpRequest();}catch (e){try{xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");}catch (e){xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");}}
+	return xmlHttp;
+}
 function change_step(offset)
 {
 	if (offset == 1)
@@ -133,10 +218,11 @@ function change_step(offset)
 	{
 		if (document.wizard_form.WAN_MODE[0].checked == true) 
 		{
-			document.getElementById("buttontable").style.visibility = "hidden";
-			document.getElementById("buttontable").style.display = "none";	
+			//document.getElementById("buttontable").style.visibility = "hidden";
+			//document.getElementById("buttontable").style.display = "none";	
 			window.parent.Demo(_("admw waiting"));
-			button_commit('AUTOGET');
+			wan_check();
+
 		}
 		else if (document.wizard_form.WAN_MODE[1].checked == true) 
 		{
@@ -146,8 +232,6 @@ function change_step(offset)
 		}
 		else
 		{
-			//document.getElementById("modedes").style.visibility = "visible";
-			//document.getElementById("modedes").style.display = style_display_on();
 			hideAllTables();
 			connectionTypeSwitch();
 			butwork("false","true","true","false");
@@ -158,32 +242,27 @@ function change_step(offset)
 		if (document.wizard_form.WAN_MODE[1].checked == true) 
 		{
 			waitgifshow();
-			document.wizard_form.AUTOTYPE.disabled=true;
 			button_commit('DHCP');
 		}
 		else if (document.wizard_form.WAN_MODE[2].checked == true) 
 		{
 			waitgifshow();
-			document.wizard_form.AUTOTYPE.disabled=true;
 			button_commit('SIP');
 		}
 		else if (document.wizard_form.WAN_MODE[3].checked == true) 
 		{
 			waitgifshow();
-			document.wizard_form.AUTOTYPE.disabled=true;
 			window.parent.pppoe_tiaozhuan();
 			button_commit('PPP');
 		}
 		else if (document.wizard_form.WAN_MODE[4].checked == true) 
 		{
 			waitgifshow();
-			document.wizard_form.AUTOTYPE.disabled=true;
 			button_commit('L2TP');
 		}
 		else if (document.wizard_form.WAN_MODE[5].checked == true) 
 		{
 			waitgifshow();
-			document.wizard_form.AUTOTYPE.disabled=true;
 			button_commit('P2TP');
 		}
 		else 
@@ -196,7 +275,7 @@ function change_step(offset)
 	}
 	else
 	{
-		window.location.href="w2?INDEX=00";
+		window.location.href="w2";
 	}
 	window.parent.iFrameHeight();
 	return true;
@@ -1084,52 +1163,6 @@ function initValue()
 	step_num = 0;
 	showothers = 0;
 	showoadv = 0;
-	if((document.getElementById("INDEX").value == "12") || (document.getElementById("INDEX").value == 12))
-	{
-		document.getElementById("INDEX").value = "99";
-		var zidong = document.getElementById("AUTOTYPE").value;
-		if(zidong == "static")
-		{
-			document.wizard_form.WAN_MODE[2].checked = true;
-			setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_sip"));},100);
-			change_step(1);
-		}
-		else if(zidong == "dhcp")
-		{
-			document.wizard_form.WAN_MODE[1].checked = true;
-			setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_dhcp"));},100);
-			change_step(1);
-		}
-		else if(zidong == "pppoe")
-		{
-			document.wizard_form.WAN_MODE[3].checked = true;
-			setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_ppp"));},100);
-			change_step(1);
-		}
-		else if(zidong == "l2tp")
-		{
-			document.wizard_form.WAN_MODE[4].checked = true;
-			setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_l2tp"));},100);
-			change_step(1);
-		}
-		else if(zidong == "p2tp")
-		{
-			document.wizard_form.WAN_MODE[5].checked = true;
-			setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_p2tp"));},100);
-			change_step(1);
-		}
-		else
-		{
-			setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_fail"));},100);
-			document.getElementById("div_wan_opmode").style.visibility = "visible";
-			document.getElementById("div_wan_opmode").style.display = style_display_on();
-			document.getElementById("modedes").style.visibility = "visible";
-			document.getElementById("modedes").style.display = style_display_on();
-
-			butwork("true","false","true","true");
-		}
-		return true;
-	}
 	document.getElementById("div_wan_opmode").style.visibility = "visible";
 	document.getElementById("div_wan_opmode").style.display = style_display_on();
 	document.getElementById("modedes").style.visibility = "visible";
@@ -1575,9 +1608,6 @@ function workoutgw()
     <input type="submit" name="L2TP" id="L2TP" style="display:none" value="L2TP">
     <input type="submit" name="P2TP" id="P2TP" style="display:none" value="P2TP">
 	
-	<input type="text" style="display:none" name="AUTOTYPE" id="AUTOTYPE" size="20" maxlength="32" value="~~AUTOTYPE~">	
-	<input type="text" style="display:none" name="INDEX" id="INDEX" value="~~INDEX~">
-    <input type="button" name="AUTOGET" id="AUTOGET" style="display:none" value="AUTOGET" onClick="window.location.href='w2?INDEX=12'">
 	<input type="text" style="display:none" name="AP_locatIP" id="AP_locatIP" size="20" maxlength="32" value="~~AP_IPADDR~">	
 
   </td>

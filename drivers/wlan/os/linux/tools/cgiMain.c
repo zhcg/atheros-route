@@ -4658,10 +4658,8 @@ int main(int argc,char **argv)
     char            *update;
     FILE            *f;
 
-    int             lock11=0;
-    int             lock12=0;
-	int             lock13=0;
-    int             lock112=0;
+    int             lock13=0;
+
     int             gohome = 3;
 
 	
@@ -5584,35 +5582,10 @@ int main(int argc,char **argv)
 				static  char rspBuff4[65536];
 				static  char rspBuff5[65536];
                 parameterIndex = atoi(Value);
-               
-                if((parameterIndex==12)&&(lock12==0))//do wan mode detect
+                if((parameterIndex==13)&&(lock13==0))//do wan mode detect
                 {
-					Execute_cmd("net_check", rspBuff);
-				    memset(&config,0,sizeof(config));
-                    f = fopen("/tmp/.apcfg","r");
-                    if ( !f )
-                    {
-                        f = fopen( NVRAM, "r" );
-                        if (!f)
-                        {
-                        fprintf(errOut,"ERROR:  %s not defined on this device\n", NVRAM);
-                        fprintf(errOut,"ERROR:  Cannot store data in flash!!!!\n");
-                        exit(-1);
-                        }
-
-                        fseek(f, NVRAM_OFFSET, SEEK_SET);
-                    }
-                    if ( f )
-                    {
-                        fillParamStruct(f);
-                        fclose(f);
-                    }
-                    lock12 = 1;
-                }
-				else if((parameterIndex==13)&&(lock13==0))//do wan mode detect
-                {
-					Execute_cmd("wan_check", rspBuff);
-				    memset(&config,0,sizeof(config));
+                    Execute_cmd("wan_check", rspBuff);
+                    memset(&config,0,sizeof(config));
                     f = fopen("/tmp/.apcfg","r");
                     if ( !f )
                     {

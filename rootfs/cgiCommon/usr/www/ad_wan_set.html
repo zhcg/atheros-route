@@ -80,8 +80,6 @@ function disableall()
 	widget_disable("pptpOPMode");
 	widget_disable("pptpRedialPeriod");
 
-	widget_disable("INDEX");
-	widget_disable("AUTOTYPE");
 	widget_disable("AP_locatIP");
 }
 function enableSTATICIP()
@@ -795,48 +793,6 @@ function initValue()
 	Butterlate.setTextDomain("wan");
 	initTranslation();
 	connectionTypeSwitch();	
-	
-	if((document.getElementById("INDEX").value == "12") || (document.getElementById("INDEX").value == 12))
-	{
-		document.getElementById("INDEX").value = "99";
-		var zidong = document.getElementById("AUTOTYPE").value;
-		if(zidong == "static")
-		{
-			setTimeout(function(){window.parent.DialogHide();alert(_("wan auto_sip"));},100);
-			document.wanCfg.WAN_MODE.options.selectedIndex = 0;
-			connectionTypeSwitch();
-		}
-		else if(zidong == "dhcp")
-		{
-			setTimeout(function(){window.parent.DialogHide();alert(_("wan auto_dhcp"));},100);
-			document.wanCfg.WAN_MODE.options.selectedIndex = 1;
-			connectionTypeSwitch();
-		}
-		else if(zidong == "pppoe")
-		{
-			setTimeout(function(){window.parent.DialogHide();alert(_("wan auto_ppp"));},100);
-			document.wanCfg.WAN_MODE.options.selectedIndex = 2;
-			connectionTypeSwitch();
-		}
-		else if(zidong == "l2tp")
-		{
-			setTimeout(function(){window.parent.DialogHide();alert(_("wan auto_l2tp"));},100);
-			document.wanCfg.WAN_MODE.options.selectedIndex = 3;
-			connectionTypeSwitch();
-		}
-		else if(zidong == "p2tp")
-		{
-			setTimeout(function(){window.parent.DialogHide();alert(_("wan auto_p2tp"));},100);
-			document.wanCfg.WAN_MODE.options.selectedIndex = 4;
-			connectionTypeSwitch();
-		}
-		else
-		{
-			setTimeout(function(){window.parent.DialogHide();alert(_("wan auto_fail"));},100);
-			//document.wanCfg.WAN_MODE.options.selectedIndex = 0;
-		}
-		
-	}
 }
 function pppshowpwd()
 {
@@ -915,10 +871,80 @@ function setwaitgifshow()
 {
 	window.parent.Demo( _("inet setwaiting"));
 }
+
+var xmlHttp;
+function wan_check()
+{
+	xmlHttp=GetXmlHttpObject();
+	if (xmlHttp==null)
+	{
+		alert ("Browser does not support HTTP Request");
+		Return;
+	}
+	var url="/cgi-bin/wan_check.cgi";
+	url=url+"?sid="+Math.random();
+	xmlHttp.onreadystatechange=stateChanged;
+	xmlHttp.open("GET",url,true);
+	xmlHttp.send(null);
+}
+
+function stateChanged()
+{
+	if (xmlHttp.readyState==4 || xmlHttp.readyState=="complete")
+	{
+		if(xmlHttp.status==200)
+		{
+			window.parent.DialogHide();
+			//alert(xmlHttp.responseText);
+			var zidong = xmlHttp.responseText;
+			if(zidong.indexOf("static") == 0  )
+			{
+				alert(_("wan auto_sip"));
+				document.wanCfg.WAN_MODE.options.selectedIndex = 0;
+				connectionTypeSwitch();
+			}
+			else if(zidong.indexOf("dhcp") == 0 )
+			{
+				alert(_("wan auto_dhcp"));
+				document.wanCfg.WAN_MODE.options.selectedIndex = 1;
+				connectionTypeSwitch();
+			}
+			else if(zidong.indexOf("pppoe") == 0 )
+			{
+				alert(_("wan auto_ppp"));
+				document.wanCfg.WAN_MODE.options.selectedIndex = 2;
+				connectionTypeSwitch();
+			}
+			else if(zidong.indexOf("l2tp") == 0 )
+			{
+				alert(_("wan auto_l2tp"));
+				document.wanCfg.WAN_MODE.options.selectedIndex = 3;
+				connectionTypeSwitch();
+			}
+			else if(zidong.indexOf("p2tp") == 0 )
+			{
+				alert(_("wan auto_p2tp"));
+				document.wanCfg.WAN_MODE.options.selectedIndex = 4;
+				connectionTypeSwitch();
+			}
+			else
+			{
+				alert(_("wan auto_fail"));
+			}
+		}		
+	}
+}
+function GetXmlHttpObject()
+{
+	var xmlHttp=null;
+	try	{xmlHttp=new XMLHttpRequest();}catch (e){try{xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");}catch (e){xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");}}
+	return xmlHttp;
+}
+
 function connecttypecheck()
 {
 	waitgifshow();
-	button_commit('AUTOGET');
+	wan_check();
 }
 function help()
 {
@@ -1149,9 +1175,6 @@ function help()
     <input type="submit" name="PPP" id="PPP" style="display:none" value="PPP">
     <input type="submit" name="L2TP" id="L2TP" style="display:none" value="L2TP">
     <input type="submit" name="P2TP" id="P2TP" style="display:none" value="P2TP">
-	<input type="text" style="display:none" name="INDEX" id="INDEX" value="~~INDEX~">	
-	<input type="text" style="display:none" name="AUTOTYPE" id="AUTOTYPE" size="20" maxlength="32" value="~~AUTOTYPE~">	
-	<input type="button" name="AUTOGET" id="AUTOGET" style="display:none" value="AUTOGET" onClick="window.location.href='ad_wan_set?INDEX=12&ad_wan_set=yes'">
 	<input type="text" style="display:none" name="AP_locatIP" id="AP_locatIP" size="20" maxlength="32" value="~~AP_IPADDR~">		
   </td>
 </tr>

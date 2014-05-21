@@ -97,6 +97,8 @@ function tr()
 	ee.innerHTML = _("admw m_wan");
 	ee = document.getElementById("m_wifi");
 	ee.innerHTML = _("admw m_wifi");
+	ee = document.getElementById("m_wirere");
+	ee.innerHTML = _("admw m_wirere");
 	document.title=_("HBDt");
 }
 function onInit()
@@ -146,33 +148,33 @@ function switchsa()//quick to adv
 
 function hidehead()
 {
-  document.getElementById("c1").innerHTML='<a href="cgi-bin/map?map=yes" target="ifm" id="m_normal" onclick="showpwd1()"></a>';
-  document.getElementById("c2").innerHTML='<a href="cgi-bin/w2?INDEX=00" target="ifm" id="m_wan"  onclick="showpwd2()"></a>';
-  //document.getElementById("c3").innerHTML='<a href="cgi-bin/w4" target="ifm" id="m_wirere" onclick="showpwd3()"></a>';
-  document.getElementById("c4").innerHTML='<a href="cgi-bin/w3?w3=yes" target="ifm" id="m_wifi" onclick="showpwd4()"></a>';
+  document.getElementById("c1").innerHTML='<a href="cgi-bin/map" target="ifm" id="m_normal" onclick="showpwd1()"></a>';
+  document.getElementById("c2").innerHTML='<a href="cgi-bin/w2" target="ifm" id="m_wan"  onclick="showpwd2()"></a>';
+  document.getElementById("c3").innerHTML='<a href="cgi-bin/w3" target="ifm" id="m_wifi" onclick="showpwd3()"></a>';
+  document.getElementById("c4").innerHTML='<a href="cgi-bin/w4" target="ifm" id="m_wirere" onclick="showpwd4()"></a>';
 }
 function showpwd1()
 {
 	hidehead();
- 	document.getElementById("c1").innerHTML='<a href="cgi-bin/map?map=yes" target="ifm" id="m_normal"  onclick="showpwd1()" class="handaer_common"></a>';
+ 	document.getElementById("c1").innerHTML='<a href="cgi-bin/map" target="ifm" id="m_normal"  onclick="showpwd1()" class="handaer_common"></a>';
 	tr();
 }
 function showpwd2()
 {
 	hidehead();
- 	document.getElementById("c2").innerHTML='<a href="cgi-bin/w2?INDEX=00" target="ifm" id="m_wan"  onclick="showpwd2()" class="handaer_common"></a>';
+ 	document.getElementById("c2").innerHTML='<a href="cgi-bin/w2" target="ifm" id="m_wan"  onclick="showpwd2()" class="handaer_common"></a>';
 	tr();
 }
 function showpwd3()
 {
 	hidehead();
- 	//document.getElementById("c3").innerHTML='<a href="cgi-bin/w4" target="ifm" id="m_wirere" onclick="showpwd3()" class="handaer_common"></a>';
+ 	document.getElementById("c3").innerHTML='<a href="cgi-bin/w3" target="ifm" id="m_wifi" onclick="showpwd3()" class="handaer_common"></a>';
 	tr();
 }
 function showpwd4()
 {
 	hidehead();
- 	document.getElementById("c4").innerHTML='<a href="cgi-bin/w3?w3=yes" target="ifm" id="m_wifi" onclick="showpwd4()" class="handaer_common"></a>';
+ 	document.getElementById("c4").innerHTML='<a href="cgi-bin/w4" target="ifm" id="m_wirere" onclick="showpwd4()" class="handaer_common"></a>';
 	tr();
 }
 
@@ -303,9 +305,10 @@ function pppoe_tiaozhuan()
 <div class="handaer_left" id="leftmenu" style="background-color:#ECEDEF;">
 <dl>
 <dt id="m_fast1">快速设置</dt>
-	<dd><span id="c1"><a href="cgi-bin/map?map=yes" target="ifm" id="m_normal" onClick="showpwd1()" class="handaer_common">设置向导</a></span></dd>
-	<dd><span id="c2"><a href="cgi-bin/w2?INDEX=00" target="ifm" id="m_wan" onClick="showpwd2()">外网设置</a></span></dd>
-	<dd><span id="c4"><a href="cgi-bin/w3?w3=yes" target="ifm" id="m_wifi" onClick="showpwd4()">WiFi设置</a></span></dd>
+	<dd><span id="c1"><a href="cgi-bin/map" target="ifm" id="m_normal" onClick="showpwd1()" class="handaer_common">设置向导</a></span></dd>
+	<dd><span id="c2"><a href="cgi-bin/w2" target="ifm" id="m_wan" onClick="showpwd2()">外网设置</a></span></dd>
+	<dd><span id="c3"><a href="cgi-bin/w3" target="ifm" id="m_wifi" onClick="showpwd3()">WiFi设置</a></span></dd>
+	<dd><span id="c4"><a href="cgi-bin/w4" target="ifm" id="m_wirere" onClick="showpwd4()">无线中继</a></span></dd>
    </dl>
     </div>     
 </div>

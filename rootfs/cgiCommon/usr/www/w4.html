@@ -68,8 +68,7 @@ function initTranslation()
 	e.innerHTML = _("admw offwifides");
 	e = document.getElementById("offwifides2");
 	e.innerHTML = _("admw offwifides");
-	e = document.getElementById("help_r");
-	e.innerHTML = _("help");
+
 	e = document.getElementById("bCANCEL");
 	e.value = _("admw bCANCEL");
 	e = document.getElementById("bAPPLY");
@@ -163,7 +162,7 @@ function CheckWirelessValue()
 }
 function reloadd()
 {
-	window.location.href='ad_wireless_wds?ad_wireless_wds=yes';
+	window.location.href='ad_wireless_wds';
 }
 function showpwd()
 {
@@ -507,13 +506,6 @@ function WIFI_HS()
 	}
 }
 
-function help()
-{
-	if (_("toplanguage")=="e")
-		window.location.href='../help/ad_wireless_wds_help_e.html';
-	else
-		window.location.href='../help/ad_wireless_wds_help_z.html';
-}
 </script>
 
 </head>
@@ -521,7 +513,7 @@ function help()
 <body onLoad="initValue()" oncontextmenu="window.event.returnValue=false" >
 <div class="handaer_main">
 <table  width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td>
-<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="qsettitle"></h1>
+<h1 id="qsettitle"></h1>
 <p></p>
 <form method="post" name="wizard_form">
 <!-- ============= Wizard Home Page ============= -->

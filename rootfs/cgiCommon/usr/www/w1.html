@@ -56,7 +56,6 @@ function button_commit(buttonID){document.getElementById(buttonID).click();}
 
 function disableunneedSettings()
 {
-	document.wizard_form.AUTOTYPE.disabled = true;
 	document.wizard_form.AP_locatIP.disabled = true;
 }
 function butwork(zhi1,zhi2,zhi3,zhi4)
@@ -117,7 +116,91 @@ function checkInjection(str)
 	}
     return true;
 }
+var xmlHttp;
+function wan_check()
+{
+	xmlHttp=GetXmlHttpObject();
+	if (xmlHttp==null)
+	{
+		alert ("Browser does not support HTTP Request");
+		Return;
+	}
+	var url="/cgi-bin/wan_check.cgi";
+	url=url+"?sid="+Math.random();
+	xmlHttp.onreadystatechange=stateChanged;
+	xmlHttp.open("GET",url,true);
+	xmlHttp.send(null);
+}
 
+function stateChanged()
+{
+	if (xmlHttp.readyState==4 || xmlHttp.readyState=="complete")
+	{
+		if(xmlHttp.status==200)
+		{
+			window.parent.DialogHide();
+			//alert(xmlHttp.responseText);
+			var zidong = xmlHttp.responseText;
+			
+			if(zidong.indexOf("static") == 0 )
+			{
+				document.wizard_form.WAN_MODE[2].checked = true;
+				alert(_("admw auto_sip"));
+				hideAllTables();
+				connectionTypeSwitch();
+				butwork("false","false","true","true");			
+			}
+			else if(zidong.indexOf("dhcp") == 0)
+			{
+				document.wizard_form.WAN_MODE[1].checked = true;
+				alert(_("admw auto_dhcp"));
+				hideAllTables();
+				connectionTypeSwitch();
+				butwork("false","false","true","true");			
+			}
+			else if(zidong.indexOf("pppoe") == 0)
+			{
+				document.wizard_form.WAN_MODE[3].checked = true;
+				alert(_("admw auto_ppp"));
+				hideAllTables();
+				connectionTypeSwitch();
+				butwork("false","false","true","true");			
+			}
+			else if(zidong.indexOf("l2tp") == 0)
+			{
+				document.wizard_form.WAN_MODE[4].checked = true;
+				alert(_("admw auto_l2tp"));
+				hideAllTables();
+				connectionTypeSwitch();
+				butwork("false","false","true","true");			
+			}
+			else if(zidong.indexOf("p2tp") == 0)
+			{
+				document.wizard_form.WAN_MODE[5].checked = true;
+				hideAllTables();
+				connectionTypeSwitch();
+				butwork("false","false","true","true");			
+				alert(_("admw auto_p2tp"));
+			}
+			else
+			{
+				alert(_("admw auto_fail"));
+				document.getElementById("div_wan_title").style.visibility = "visible";
+				document.getElementById("div_wan_title").style.display = style_display_on();
+				document.getElementById("div_wan_opmode").style.visibility = "visible";
+				document.getElementById("div_wan_opmode").style.display = style_display_on();
+				butwork("true","false","true","true");
+				change_step(0);
+			}
+		}		
+	}
+}
+function GetXmlHttpObject()
+{
+	var xmlHttp=null;
+	try	{xmlHttp=new XMLHttpRequest();}catch (e){try{xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");}catch (e){xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");}}
+	return xmlHttp;
+}
 function change_step(offset)
 {
 	if (offset == 1)
@@ -154,10 +237,11 @@ function change_step(offset)
 
 		if (document.wizard_form.WAN_MODE[0].checked == true) 
 		{
-			document.getElementById("buttontable").style.visibility = "hidden";
-			document.getElementById("buttontable").style.display = "none";	
+			//document.getElementById("buttontable").style.visibility = "hidden";
+			//document.getElementById("buttontable").style.display = "none";	
 			window.parent.Demo(_("admw waiting"));
-			button_commit('AUTOGET');
+			wan_check();
+
 		}
 		else if (document.wizard_form.WAN_MODE[1].checked == true) 
 		{
@@ -1437,55 +1521,6 @@ function initValue()
 	if(ifwdson2=="on")
 		document.getElementById("AP_PRIMARY_CH_3").disabled = true;
 
-	if((document.getElementById("INDEX").value == "12") || (document.getElementById("INDEX").value == 12))
-	{
-		document.getElementById("INDEX").value = "99";
-		var zidong = document.getElementById("AUTOTYPE").value;
-		if(zidong == "static")
-		{
-			document.wizard_form.WAN_MODE[2].checked = true;
-			setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_sip"));},100);
-			change_step(1);
-		}
-		else if(zidong == "dhcp")
-		{
-			document.wizard_form.WAN_MODE[1].checked = true;
-			setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_dhcp"));},100);
-			change_step(1);
-		
-		}
-		else if(zidong == "pppoe")
-		{
-			document.wizard_form.WAN_MODE[3].checked = true;
-			setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_ppp"));},100);
-			change_step(1);
-		
-		}
-		else if(zidong == "l2tp")
-		{
-			document.wizard_form.WAN_MODE[4].checked = true;
-			setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_l2tp"));},100);
-			change_step(1);
-	
-		}
-		else if(zidong == "p2tp")
-		{
-			document.wizard_form.WAN_MODE[5].checked = true;
-			setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_p2tp"));},100);
-			change_step(1);
-		}
-		else
-		{
-			setTimeout(function(){window.parent.DialogHide();alert(_("admw auto_fail"));},100);
-			document.getElementById("div_wan_title").style.visibility = "visible";
-			document.getElementById("div_wan_title").style.display = style_display_on();
-			document.getElementById("div_wan_opmode").style.visibility = "visible";
-			document.getElementById("div_wan_opmode").style.display = style_display_on();
-
-			butwork("true","false","true","true");
-		}
-		return true;
-	}
 	/*if((document.getElementById("INDEX").value == "13") || (document.getElementById("INDEX").value == 13))
 	{
 		document.getElementById("INDEX").value = "99";
@@ -1738,7 +1773,7 @@ function WIFI_HS()
 <tr>
   <td>
   <input style="font-size: 12pt; color: #000000" id="wrad_3" type="radio" name="WAN_MODE" value="auto" checked>
-  <label style="font-size: 12pt; font-weight: bold;; margin-left: 20px; color: #000000" for="wrad_3" id="AutoMode" onclick=""></label></td>
+  <label style="font-size: 12pt; font-weight: bold;; margin-left: 20px; color: #000000" for="wrad_3" id="AutoMode" onClick=""></label></td>
 </tr>
 <tr>
   <td ><div style="margin-left: 43px;" id="Autodisc"></div></td>
@@ -1747,7 +1782,7 @@ function WIFI_HS()
 <tr>
   <td>
   <input style="font-size: 12pt; color: #000000" id="wrad_4" type="radio" name="WAN_MODE" value="dhcp">
-  <label style="font-size: 12pt; font-weight: bold;; margin-left: 20px; color: #000000" for="wrad_4" id="DHCP" onclick=""></label></td>
+  <label style="font-size: 12pt; font-weight: bold;; margin-left: 20px; color: #000000" for="wrad_4" id="DHCP" onClick=""></label></td>
 </tr>
 <tr>
   <td ><div style="margin-left: 43px;" id="DHCPdisc"></div></td>
@@ -1755,14 +1790,14 @@ function WIFI_HS()
 <tr>
   <td>
   <input style="font-size: 12pt; color: #000000" id="wrad_5" type="radio" name="WAN_MODE" value="static">
-  <label style="font-size: 12pt; font-weight: bold;; margin-left: 20px; color: #000000" for="wrad_5" id="SM" onclick=""></label></td>
+  <label style="font-size: 12pt; font-weight: bold;; margin-left: 20px; color: #000000" for="wrad_5" id="SM" onClick=""></label></td>
 </tr>
 <tr>
   <td ><div style="margin-left: 43px;" id="SMdisc"></div></td>
 </tr>
   <td>
   <input style="font-size: 12pt; color: #000000" id="wrad_6" type="radio" name="WAN_MODE" value="pppoe">
-  <label style="font-size: 12pt; font-weight: bold;; margin-left: 20px; color: #000000" for="wrad_6" id="PPPOE" onclick=""></label></td>
+  <label style="font-size: 12pt; font-weight: bold;; margin-left: 20px; color: #000000" for="wrad_6" id="PPPOE" onClick=""></label></td>
 </tr>
 <tr>
   <td ><div style="margin-left: 43px;" id="PPPOEdisc"></div></td>
@@ -1774,7 +1809,7 @@ function WIFI_HS()
 <tr id="l2tptr1" style="display:none">
   <td>
   <input style="font-size: 12pt; color: #000000" id="wrad_7" type="radio" name="WAN_MODE" value="l2tp">
-  <label style="font-size: 12pt; font-weight: bold;; margin-left: 20px; color: #000000" for="wrad_7" onclick="">L2TP</label></td>
+  <label style="font-size: 12pt; font-weight: bold;; margin-left: 20px; color: #000000" for="wrad_7" onClick="">L2TP</label></td>
 </tr>
 <tr id="l2tptr2" style="display:none">
   <td ><div style="margin-left: 43px;" id="L2TPc"></div></td>
@@ -1782,7 +1817,7 @@ function WIFI_HS()
 <tr id="pptptr1" style="display:none">
   <td>
   <input style="font-size: 12pt; color: #000000" id="wrad_8" type="radio" name="WAN_MODE" value="pptp">
-  <label style="font-size: 12pt; font-weight: bold;; margin-left: 20px; color: #000000" for="wrad_8" onclick="">PPTP</label></td>
+  <label style="font-size: 12pt; font-weight: bold;; margin-left: 20px; color: #000000" for="wrad_8" onClick="">PPTP</label></td>
 </tr>
 <tr id="pptptr2" style="display:none">
   <td ><div style="margin-left: 43px;" id="PPTPc"></div></td>
@@ -1790,7 +1825,7 @@ function WIFI_HS()
 <tr style="display:none">
   <td>
   <input style="font-size: 12pt; color: #000000" id="wrad_9" type="radio" name="WAN_MODE" value="3g">
-  <label style="font-size: 12pt; font-weight: bold;; margin-left: 20px; color: #000000" for="wrad_9" onclick="">3G</label></td>
+  <label style="font-size: 12pt; font-weight: bold;; margin-left: 20px; color: #000000" for="wrad_9" onClick="">3G</label></td>
 </tr>
 <tr style="display:none">
   <td ><div style="margin-left: 43px;">3G Client</div></td>
@@ -2035,12 +2070,12 @@ function WIFI_HS()
 <tr><td class="title2" colspan="2" id="wsetingst"></td></tr>
 <tr>
   <td class="head" id="nname"></td>
-  <td><input type="text" name="AP_SSID" size="32" maxlength="24" class="handaer_text_content" value="~~AP_SSID~">&nbsp;<input type="checkbox" id="hidewifi" onclick="hidewififun();"/>&nbsp;<label for="hidewifi" id="hidewifides"></label>&nbsp;<span id="ssidrequest"></span></td>
+  <td><input type="text" name="AP_SSID" size="32" maxlength="24" class="handaer_text_content" value="~~AP_SSID~">&nbsp;<input type="checkbox" id="hidewifi" onClick="hidewififun();"/>&nbsp;<label for="hidewifi" id="hidewifides"></label>&nbsp;<span id="ssidrequest"></span></td>
 </tr>
 
 <tr>
  <td class="head" id="wifiswitch"></td>
-	<td><input type="radio" ~cWIFION_OFF:on~ id="rad_3" name="WIFION_OFF" value="on" onclick="switch_wifi();" checked /><label for="rad_3"  id="wifionbutton"></label>
+	<td><input type="radio" ~cWIFION_OFF:on~ id="rad_3" name="WIFION_OFF" value="on" onClick="switch_wifi();" checked /><label for="rad_3"  id="wifionbutton"></label>
 	<input type="radio" ~cWIFION_OFF:off~  id="rad_4" name="WIFION_OFF" value="off"  onclick="switch_wifi();"/><label for="rad_4"  id="wifioffbutton"></label>
 	</td>
 </tr>
@@ -2085,12 +2120,12 @@ function WIFI_HS()
 <tr><td class="title2" colspan="2" id="wsetingst2"></td></tr>
 <tr>
   <td class="head" id="nname2"></td>
-  <td><input type="text" name="AP_SSID_3" size="32" maxlength="24" class="handaer_text_content" value="~~AP_SSID_3~">&nbsp;<input type="checkbox" id="hidewifi2" onclick="hidewififun2();"/>&nbsp;<label for="hidewifi2" id="hidewifides2"></label>&nbsp;<span id="ssidrequest2"></span></td>
+  <td><input type="text" name="AP_SSID_3" size="32" maxlength="24" class="handaer_text_content" value="~~AP_SSID_3~">&nbsp;<input type="checkbox" id="hidewifi2" onClick="hidewififun2();"/>&nbsp;<label for="hidewifi2" id="hidewifides2"></label>&nbsp;<span id="ssidrequest2"></span></td>
 </tr>
 
 <tr>
  <td class="head" id="wifiswitch2"></td>
-	<td><input type="radio" ~cWIFION_OFF_3:on~ id="rad_32" name="WIFION_OFF_3" value="on" onclick="switch_wifi2();" checked /><label for="rad_32"  id="wifionbutton2"></label>
+	<td><input type="radio" ~cWIFION_OFF_3:on~ id="rad_32" name="WIFION_OFF_3" value="on" onClick="switch_wifi2();" checked /><label for="rad_32"  id="wifionbutton2"></label>
 	<input type="radio" ~cWIFION_OFF_3:off~  id="rad_42" name="WIFION_OFF_3" value="off"  onclick="switch_wifi2();"/><label for="rad_42"  id="wifioffbutton2"></label>
 	</td>
 </tr>
@@ -2135,11 +2170,8 @@ function WIFI_HS()
     <input type="submit" name="PPPW" id="PPPW" style="display:none" value="PPPW">
     <input type="submit" name="L2TPW" id="L2TPW" style="display:none" value="L2TPW">
     <input type="submit" name="P2TPW" id="P2TPW" style="display:none" value="P2TPW">
-	<input type="text" style="display:none" name="AUTOTYPE" id="AUTOTYPE" size="20" maxlength="32" value="~~AUTOTYPE~">	
-	<input type="text" style="display:none" name="INDEX" id="INDEX" value="~~INDEX~">
 
-    <input type="button" name="AUTOGET" id="AUTOGET" style="display:none" value="AUTOGET" onClick="window.location.href='w1?INDEX=12'">
-    <input type="button" name="CHECKLINE" id="CHECKLINE" style="display:none" value="CHECKLINE" onClick="window.location.href='w1?INDEX=13'">
+    <input type="button" name="CHECKLINE" id="CHECKLINE" style="display:none" value="CHECKLINE" onClick="window.location.href='w1'">
 	<input type="text" style="display:none" name="LINEIN_OUT" id="LINEIN_OUT" size="20" maxlength="32" value="~~LINEIN_OUT~">	
 
 	<input type="text" style="display:none" name="AP_HIDESSID" id="AP_HIDESSID" size="20" maxlength="32" value="~~AP_HIDESSID~">	
