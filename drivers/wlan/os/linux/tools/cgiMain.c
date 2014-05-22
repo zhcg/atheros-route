@@ -754,7 +754,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                     {
                         while(1)
                         {
-                            ret = fscanf(f_portmap,"%s -t nat -A PREROUTING_PORTMAP  -p %s -m %s --dport %s -j DNAT --to-destination %s\n",enable_flag, protocol, protocol, wan_port, ip_port);
+                            ret = fscanf(f_portmap,"%s -t nat -A PREROUTING_PORTMAP -i eth0 -p %s -m %s --dport %s -j DNAT --to-destination %s\n",enable_flag, protocol, protocol, wan_port, ip_port);
                             if(ret < 3)
                                 break;
 
@@ -7658,7 +7658,7 @@ exit(1);
         {
              while(1)
              {
-                    ret = fscanf(f_portmap,"%s -t nat -A PREROUTING_PORTMAP  -p %s -m %s --dport %s %[^\n]%*c\n",enable_tmp, protocol_tmp, temp, port_tmp, temp);
+                    ret = fscanf(f_portmap,"%s -t nat -A PREROUTING_PORTMAP -i eth0 -p %s -m %s --dport %s %[^\n]%*c\n",enable_tmp, protocol_tmp, temp, port_tmp, temp);
                     //fprintf(errOut,"\nportmap ret :%d\n",ret);
                     if(ret < 3)
                        break;
@@ -7676,7 +7676,7 @@ exit(1);
              }
              if(!portmap_flag)
              {
-                fprintf(f_portmap ,"%s -t nat -A PREROUTING_PORTMAP  -p %s -m %s --dport %s -j DNAT --to-destination %s:%s\n", enable_cmd, protocol_cmd, protocol_cmd, wan_port, server_ip, lan_port);
+                fprintf(f_portmap ,"%s -t nat -A PREROUTING_PORTMAP -i eth0 -p %s -m %s --dport %s -j DNAT --to-destination %s:%s\n", enable_cmd, protocol_cmd, protocol_cmd, wan_port, server_ip, lan_port);
                 fprintf(f_portmap ,"%s -A FORWARD_PORTMAP -d %s -p %s -m %s --dport %s -i eth0 -j ACCEPT\n", enable_cmd, server_ip, protocol_cmd, protocol_cmd, lan_port);
             }
 
