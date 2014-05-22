@@ -3303,7 +3303,7 @@ int set_addr_bind(void)
                 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
                 printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
                 printf("</head><body>");
-                printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"lan\");window.parent.DialogHide();alert(_(\"err IPMAC exist\"));window.location.href=\"ad_local_addsdhcp?ad_local_addsdhcp=yes\";</script>");
+                printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"lan\");window.parent.DialogHide();alert(_(\"err IPMAC exist\"));window.location.href=\"ad_local_addsdhcp\";</script>");
                 printf("</body></html>");
                 result = 1;
 			}
@@ -3470,7 +3470,7 @@ error:
         printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
         printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
         printf("</head><body>");
-        printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"lan\");window.parent.DialogHide();alert(_(\"err IPMAC exist\"));window.location.href=\"ad_safe_IPMAC?ad_safe_IPMAC=yes\";</script>");
+        printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"lan\");window.parent.DialogHide();alert(_(\"err IPMAC exist\"));window.location.href=\"ad_safe_IPMAC\";</script>");
         printf("</body></html>");
 		return result;
 	}
@@ -3498,7 +3498,7 @@ error:
                 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
                 printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
                 printf("</head><body>");
-                printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"lan\");window.parent.DialogHide();alert(_(\"err IPMAC exist\"));window.location.href=\"ad_safe_IPMAC?ad_safe_IPMAC=yes\";</script>");
+                printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"lan\");window.parent.DialogHide();alert(_(\"err IPMAC exist\"));window.location.href=\"ad_safe_IPMAC\";</script>");
                 printf("</body></html>");
                 result = 1;
 		}
@@ -4575,7 +4575,7 @@ static void  Normal_tiaozhuan(char * gopage)
     printf("<HTML><HEAD>\r\n");
     printf("</head><body>");
 
-    sprintf(temp,"<script language=javascript>window.location.href=\"%s?%s=yes?INDEX=33\";</script>",gopage,gopage);
+    sprintf(temp,"<script language=javascript>window.location.href=\"%s\";</script>",gopage);
     printf(temp);
     printf("</body></html>");
 }
@@ -5683,11 +5683,11 @@ int main(int argc,char **argv)
                  
 			if((strcmp(argv[0],"w1")==0)||(strcmp(argv[0],"w2")==0)||(strcmp(argv[0],"w3")==0)||(strcmp(argv[0],"w4")==0)||(strcmp(argv[0],"wwai")==0))
 			{
-			    sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"wan not connected\"));window.parent.showpwd1();window.location.href=\"map?map=yes\";</script>");
+			    sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"wan not connected\"));window.parent.showpwd1();window.location.href=\"map\";</script>");
 			}
 			else
 			{
-			    sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"wan not connected\"));window.location.href=\"%s?%s=yes\";</script>",argv[0],argv[0]);
+			    sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"wan not connected\"));window.location.href=\"%s\";</script>",argv[0]);
 			}
 			printf(tempu);
 			printf("</body></html>");
@@ -5747,11 +5747,11 @@ int main(int argc,char **argv)
                  
                             if((strcmp(argv[0],"w1")==0)||(strcmp(argv[0],"w2")==0)||(strcmp(argv[0],"w3")==0)||(strcmp(argv[0],"w4")==0)||(strcmp(argv[0],"wwai")==0))
                             {
-                                sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err dhcp null\"));window.parent.showpwd1();window.location.href=\"map?map=yes\";</script>");
+                                sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err dhcp null\"));window.parent.showpwd1();window.location.href=\"map\";</script>");
                             }
                             else
                             {
-                                sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err dhcp null\"));window.location.href=\"%s?%s=yes\";</script>",argv[0],argv[0]);
+                                sprintf(tempu,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err dhcp null\"));window.location.href=\"%s\";</script>",argv[0]);
                             }
 				 printf(tempu);
 				 printf("</body></html>");
@@ -5782,11 +5782,11 @@ int main(int argc,char **argv)
 				 printf("</head><body>");
                             if((strcmp(argv[0],"w1")==0)||(strcmp(argv[0],"w2")==0)||(strcmp(argv[0],"w3")==0)||(strcmp(argv[0],"w4")==0)||(strcmp(argv[0],"wwai")==0))
                             {
-                                sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err dhcp ip\"));window.parent.showpwd1();window.location.href=\"map?map=yes\";</script>");
+                                sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err dhcp ip\"));window.parent.showpwd1();window.location.href=\"map\";</script>");
                             }
                             else
                             {
-                                sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err dhcp ip\"));window.location.href=\"%s?%s=yes\";</script>",argv[0],argv[0]);
+                                sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err dhcp ip\"));window.location.href=\"%s\";</script>",argv[0]);
                             }
 
 				 printf(tempu2);
@@ -7244,7 +7244,7 @@ int main(int argc,char **argv)
 				 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
 				 printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
 				 printf("</head><body>");
-                 sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err WANsame\"));window.location.href=\"%s?%s=yes\";</script>",argv[0],argv[0]);
+                 sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err WANsame\"));window.location.href=\"%s\";</script>",argv[0]);
 				 printf(tempu2);
 				 printf("</body></html>");
 				 exit(1);
@@ -7332,7 +7332,7 @@ printf("<HTML><HEAD>\r\n");
 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
 printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
 printf("</head><body>");
-sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"conn\");window.parent.DialogHide();alert(_(\"err MAC exist\"));window.location.href=\"ad_con_manage?ad_con_manage=yes\";</script>");
+sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"conn\");window.parent.DialogHide();alert(_(\"err MAC exist\"));window.location.href=\"ad_con_manage\";</script>");
 printf(tempu2);
 printf("</body></html>");
 exit(1);
@@ -7711,7 +7711,7 @@ exit(1);
                 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
                 printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
                 printf("</head><body>");
-                sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err Ruleexist\"));window.location.href=\"ad_parentc_accept?ad_parentc_accept=yes\";</script>");
+                sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err Ruleexist\"));window.location.href=\"ad_parentc_accept\";</script>");
                 printf(tempu2);
                 printf("</body></html>");
                 exit(1);
@@ -7960,7 +7960,7 @@ exit(1);
                     printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
                     printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
                     printf("</head><body>");
-                    sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err Ruleexist\"));window.location.href=\"ad_parentc_accept?ad_parentc_accept=yes\";</script>");
+                    sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err Ruleexist\"));window.location.href=\"ad_parentc_accept\";</script>");
                     printf(tempu2);
                     printf("</body></html>");
                     exit(1);
