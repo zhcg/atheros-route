@@ -6269,7 +6269,7 @@ int main(int argc,char **argv)
             sprintf(valBuff5,"%s\n<br>",valBuff4);
 		//fprintf(errOut,"[%s][%s]\n", valBuff2, valBuff5);
 		//if((strcmp(valBuff2,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0))
-		if(strcmp(valBuff2, valBuff5) && (strcmp(valBuff3,"on") == 0))
+		if(strcmp(valBuff2, valBuff5))
 		{
 			//fprintf(errOut,"[luodp] SECMODE here6");
 			sprintf(pChar,"iwconfig ath0 essid %s  > /dev/null 2>&1",valBuff4);
@@ -6545,7 +6545,7 @@ int main(int argc,char **argv)
         else
             sprintf(valBuff5,"%s\n<br>",valBuff4);
 		//if((strcmp(valBuff2_3,valBuff5) != 0)&&(flag==0)&&(strcmp(valBuff3,"on") == 0))
-		if(strcmp(valBuff2_3,valBuff5) &&(strcmp(valBuff3,"on") == 0))
+		if(strcmp(valBuff2_3,valBuff5))
 		{
 			sprintf(pChar,"iwconfig ath2 essid %s  > /dev/null 2>&1",valBuff4);
 			Execute_cmd(pChar, rspBuff);
