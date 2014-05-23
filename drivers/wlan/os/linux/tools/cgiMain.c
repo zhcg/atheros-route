@@ -5919,6 +5919,24 @@ int main(int argc,char **argv)
 		if((strncmp(valBuff3,"off",3) == 0)&&(strncmp(valBuff3_5g,"off",3) == 0))
 		{
 //			CFG_set_by_name("AP_STARTMODE","standard");
+
+			if(strncmp(valBuff3,"off",3) == 0)	
+			{
+	//			fprintf(errOut,"[luodp] -----------  wds off--------\n");
+				CFG_remove_by_name("STA_SSID");
+				CFG_remove_by_name("STA_PSK_KEY");
+			}
+
+			if(strncmp(valBuff3_5g,"off",3) == 0)	
+			{
+	//			fprintf(errOut,"[luodp] -----------  wds 5g off--------\n");
+				CFG_remove_by_name("STA_SSID_2");
+				CFG_remove_by_name("STA_PSK_KEY_2");
+			}
+			
+            writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            writeParameters("/tmp/.apcfg","w+",0);	
+			
 			if((strncmp(valBuff5,"on",2) == 0)||(strncmp(valBuff2_5g,"on",2) == 0))
 				CFG_set_by_name("AP_STARTMODE","dual");
 			CFG_set_by_name("DHCPON_OFF","on");

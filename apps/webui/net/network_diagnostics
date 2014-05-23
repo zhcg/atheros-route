@@ -2,14 +2,14 @@
 
 BAIDU=www.baidu.com
 QQ=www.qq.com
-sleep 3
+sleep 5
 ping_flag=`cat /usr/www/ping.xml`
-if [ "$ping_flag" -eq 0 ]; then
-        PING_BD=NO
-	PING_QQ=NO
-else
+if [ "$ping_flag" -eq 1 ]; then
         PING_BD=OK
 	PING_QQ=OK
+else
+        PING_BD=NO
+	PING_QQ=NO
 fi
 
 if [ "$PING_QQ" = "NO" -a "$PING_BD" = "NO" ]; then
