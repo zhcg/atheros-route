@@ -626,7 +626,7 @@ static void ag7240_get_ethaddr(struct eth_device *dev)
     }
 #endif  /* CONFIG_ATH_NAND_BR */
     /* Use fixed address if the above address is invalid */
-    if (mac[0] != 0x00 || (mac[0] == 0xff && mac[5] == 0xff)) {
+    if (mac[0] != 0xb8 || (mac[0] == 0xff && mac[5] == 0xff)) {
 #else
     if (1) {
 #endif 
