@@ -4595,8 +4595,8 @@ void set_wireless_wan(void)
 //			CFG_set_by_name("DHCPON_OFF","on");
 			flag=2;
 		}
-		sprintf(wds2g_bak, "%s\n<br>", wdsonoff_flag);
-		sprintf(wds5g_bak, "%s\n<br>", wdsonoff5g_flag);
+		sscanf(wdsonoff_flag, "%s\n<br>", wds2g_bak);
+		sscanf(wdsonoff5g_flag, "%s\n<br>", wds5g_bak);
 		
 		if(strcmp(wds2g_bak,wdsonoff_flag_new) !=  0)
 			strncpy(wds2gturn_flag,"on",2);
@@ -6219,8 +6219,11 @@ int main(int argc,char **argv)
 			flag=2;
 		}
 
-		sprintf(wds2g_bak, "%s\n<br>", valBuff5);
-		sprintf(wds5g_bak, "%s\n<br>", valBuff2_5g);
+		sscanf(valBuff5, "%s\n<br>", wds2g_bak);
+		sscanf(valBuff2_5g, "%s\n<br>", wds5g_bak);
+
+//		fprintf(errOut,"[luodp] -----------  wds2g_bak %s  wds5g_bak %s valBuff3 %s  valBuff3_5g %s --------\n",
+//			wds2g_bak,wds5g_bak,valBuff3,valBuff3_5g);
 		
 		if(strcmp(wds2g_bak,valBuff3) !=  0)
 			strncpy(wds2gturn_flag,"on",2);
@@ -6231,6 +6234,7 @@ int main(int argc,char **argv)
 			strncpy(wds5gturn_flag,"on",2);
 		else
 			strncpy(wds5gturn_flag,"off",3);
+//		fprintf(errOut,"[luodp] -----------  wds2gturn_flag %s wds5gturn_flag %s \n",wds2gturn_flag,wds5gturn_flag);
 
 		//2.save new config to flash 
             writeParametersWithSync();
