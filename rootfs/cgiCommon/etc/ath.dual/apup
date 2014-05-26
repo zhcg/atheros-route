@@ -293,6 +293,115 @@ if [ "${AP_STARTMODE}" = "repeater" -o "${AP_STARTMODE}" = "repeater-ind" ]; the
     fi
 fi
 
+if [ "${AP_STARTMODE}" = "repeater_wisp" ]; then
+        APMODE="ap-wds"
+        STAMODE="sta-wds"
+
+
+    rm -rf /tmp/.apcfg
+
+    VAP_NUM=0
+    makeVAP ${APMODE} "$AP_SSID" $AP_RADIO_ID:$AP_RFPARAM $BEACON_INT
+    if [ $? != 0 ]; then
+        echo "Unable to create VAP!"
+        exit
+    fi
+	
+	makeVAP ${APMODE} "$AP_SSID_2" $AP_RADIO_ID_2:$AP_RFPARAM_2 $BEACON_INT
+    if [ $? != 0 ]; then
+        echo "Unable to create VAP!"
+        exit
+    fi
+	VAP_NUM=$(($VAP_NUM+1))
+	if [ $NUMRADIO = 2 ]; then
+		makeVAP ${APMODE} "$AP_SSID_3" $AP_RADIO_ID_3:$AP_RFPARAM_3 $BEACON_INT_2
+		if [ $? != 0 ]; then
+			echo "Unable to create VAP!"
+			exit
+		fi
+		VAP_NUM=$(($VAP_NUM+1))
+		
+		makeVAP ${APMODE} "$AP_SSID_4" $AP_RADIO_ID_4:$AP_RFPARAM_4 $BEACON_INT_2
+		if [ $? != 0 ]; then
+			echo "Unable to create VAP!"
+			exit
+		fi
+		VAP_NUM=$(($VAP_NUM+1))
+	fi
+	export STA_RFPARAM=RF:$AP_PRIMARY_CH:$AP_CHMODE
+	export STA_RFPARAM_3=RF:$AP_PRIMARY_CH_3:$AP_CHMODE_3
+	
+	wds_flag=`cfg -e | grep  WDSON_OFF= | awk -F'=' '{print $2}'`
+	if [ "${wds_flag}" = "on" ];then
+	if [ "s$STA_SSID" != "s" ];then
+ 	   makeVAP ${STAMODE} "$STA_SSID" $STA_RADIO_ID:$STA_RFPARAM
+	    if [ $? != 0 ]; then
+	        echo "Unable to create VAP!"
+        	exit
+	    fi
+		VAP_NUM=$(($VAP_NUM+1))
+	    if [ "${STA_SECMODE}" != "WPA" -a "${ROOTAP_MAC}" != "" ]; then
+        	iwconfig ath$VAP_NUM ap $ROOTAP_MAC
+	    fi
+	fi
+	fi
+	
+	wds_flag_2=`cfg -e | grep  WDSON_OFF_3= | awk -F'=' '{print $2}'`
+	if [ "${wds_flag_2}" = "on" ];then
+	if [ "s$STA_SSID_2" != "s" ];then
+ 	   makeVAP ${STAMODE} "$STA_SSID_2" $STA_RADIO_ID_2:$STA_RFPARAM_3
+	    if [ $? != 0 ]; then
+	        echo "Unable to create VAP!"
+        	exit
+	    fi
+		VAP_NUM=$(($VAP_NUM+1))
+	    if [ "${STA_SECMODE_2}" != "WPA" -a "${ROOTAP_MAC_2}" != "" ]; then
+        	iwconfig ath$VAP_NUM ap $ROOTAP_MAC_2
+	    fi
+	fi
+	fi
+
+	VAP_NUM=0
+
+
+        activateVAP ath$VAP_NUM:$AP_RADIO_ID br0 $AP_SECMODE $AP_SECFILE $WPS_ENABLE
+	VAP_NUM=$(($VAP_NUM+1))
+        activateVAP ath$VAP_NUM:$AP_RADIO_ID_2 br0 $AP_SECMODE_2 $AP_SECFILE_2 $WPS_ENABLE_2
+	VAP_NUM=$(($VAP_NUM+1))
+	if [ $NUMRADIO = 2 ]; then	
+        activateVAP ath$VAP_NUM:$AP_RADIO_ID_3 br0 $AP_SECMODE_3 $AP_SECFILE_3 $WPS_ENABLE_3
+		VAP_NUM=$(($VAP_NUM+1))
+        activateVAP ath$VAP_NUM:$AP_RADIO_ID_4 br0 $AP_SECMODE_4 $AP_SECFILE_4 $WPS_ENABLE_4
+		VAP_NUM=$(($VAP_NUM+1))	
+	fi
+	
+	if [ "${wds_flag}" = "on" ];then
+	if [ "s$STA_SSID" != "s" ];then
+        activateVAP ath$VAP_NUM:$STA_RADIO_ID - $STA_SECMODE $STA_SECFILE $WPS_ENABLE
+		if [ -f /tmp/sta_conf_filename ]; then
+            wpa_supplicant `cat /tmp/sta_conf_filename` &
+			sleep 2
+        fi
+		nat_wwan.sh ath$VAP_NUM
+		udhcpc -b -i ath$VAP_NUM -h HBD-Router -s /etc/udhcpc.script
+		VAP_NUM=$(($VAP_NUM+1))
+    fi
+	fi
+	
+	if [ "${wds_flag_2}" = "on" ];then	
+	if [ "s$STA_SSID_2" != "s" ];then
+	rm -fr /tmp/sta_conf_filename
+        activateVAP ath$VAP_NUM:$STA_RADIO_ID_2 - $STA_SECMODE_2 $STA_SECFILE_2 $WPS_ENABLE_2
+		if [ -f /tmp/sta_conf_filename ]; then
+            wpa_supplicant `cat /tmp/sta_conf_filename` &
+        fi
+		nat_wwan.sh ath$VAP_NUM
+		udhcpc -b -i ath$VAP_NUM -h HBD-Router -s /etc/udhcpc.script
+    fi
+	fi
+
+fi
+
 ## Extender AP
 ##
 if [ "${AP_STARTMODE}" = "extap" ]; then

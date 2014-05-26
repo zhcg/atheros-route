@@ -39,6 +39,11 @@ fi
 APMODE="ap-wds"
 STAMODE="sta-wds"
 
+#work_flag=`cfg -e | grep  AP_STARTMODE= | awk -F'=' '{print $2}'`
+#if [ "${work_flag}" = "repeater" ];then
+#	ifconfig eth0 down
+#fi
+
 if [ $number_pci = 1 ]; then
 	VAP_NUM=3
 else
@@ -86,23 +91,42 @@ fi
 
 if [ "${wds_flag}" = "on" ];then
 	if [ "s$STA_SSID" != "s" ];then
-	    activateVAP ath$VAP_NUM:$STA_RADIO_ID br0 $STA_SECMODE $STA_SECFILE $WPS_ENABLE
-		VAP_NUM=$(($VAP_NUM+1))
-		if [ -f /tmp/sta_conf_filename ]; then
+	#	echo "------------there are task"
+		pid_2g_sta=`ps | grep "udhcpc -b -i ath${VAP_NUM}" | awk -F' ' '{print $1}'`
+	#	echo ---------------- $pid_2g_sta
+
+		
+		if [ ! -z "${pid_2g_sta}" ]; then
+	#		echo "------------there are task"
+			kill -9 $pid_2g_sta
+		fi
+	    activateVAP ath$VAP_NUM:$STA_RADIO_ID - $STA_SECMODE $STA_SECFILE $WPS_ENABLE
+		if [ -f /tmp/sta_conf_filename ];then
 		    wpa_supplicant `cat /tmp/sta_conf_filename` &
 			sleep 2
 		fi
+		nat_wwan.sh ath$VAP_NUM
+		udhcpc -b -i ath$VAP_NUM -h HBD-Router -s /etc/udhcpc.script
+		VAP_NUM=$(($VAP_NUM+1))
 	fi
 fi
 
 if [ $number_pci = 1 ]; then
 	if [ "${wds_flag_2}" = "on" ];then	
 		if [ "s$STA_SSID_2" != "s" ];then
-			rm -fr /tmp/sta_conf_filename
-			activateVAP ath$VAP_NUM:$STA_RADIO_ID_2 br0 $STA_SECMODE_2 $STA_SECFILE_2 $WPS_ENABLE_2
-			if [ -f /tmp/sta_conf_filename ]; then
-				wpa_supplicant `cat /tmp/sta_conf_filename` &
+			pid_5g_sta=`ps | grep "udhcpc -b -i ath${VAP_NUM}" | awk -F' ' '{print $1}'"`
+			#echo ---------------- $pid_5g_sta
+			if [ ! -z "${pid_5g_sta}" ];then
+			#	echo "--------------there are task"
+				kill -9 $pid_5g_sta
 			fi
+			rm -fr /tmp/sta_conf_filename
+			activateVAP ath$VAP_NUM:$STA_RADIO_ID_2 - $STA_SECMODE_2 $STA_SECFILE_2 $WPS_ENABLE_2
+			if [ -f /tmp/sta_conf_filename ]; then
+				wpa_supplicant `cat /tmp/sta_conf_filename` &				
+			fi
+			nat_wwan.sh ath$VAP_NUM
+			udhcpc -b -i ath$VAP_NUM -h HBD-Router -s /etc/udhcpc.script
 		fi
 	fi
 fi

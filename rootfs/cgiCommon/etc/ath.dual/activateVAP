@@ -196,7 +196,7 @@ if [ "${BRIDGE}" != "none" -a "${BRIDGE}" != "-" ]; then
     arping -U -c 1 -I ${BRIDGE} $AP_IPADDR
 
 else
-    ifconfig ${APNAME} up ${WAN_IPADDR}
+    ifconfig ${APNAME} up ${WWAN_IPADDR}
 fi
 
 #

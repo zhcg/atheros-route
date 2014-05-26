@@ -2577,6 +2577,8 @@ void writeParameters(char *name,char *mode,unsigned long offset)
                 continue;
             if( !strcmp(config.Param[i].Name,"WIRRE") )
                 continue;
+            if( !strcmp(config.Param[i].Name,"WIRRE_WAN") )
+                continue;
             if( !strcmp(config.Param[i].Name,"WIRELESS") )
                 continue;
             if( !strcmp(config.Param[i].Name,"DHCPW") )
@@ -3216,7 +3218,7 @@ int getRadioID(int index)
 */
 int set_dhcp(void)
 { 
-		fprintf(errOut,"\n%s  %d WIRRE \n",__func__,__LINE__);		
+		fprintf(errOut,"\n%s  %d set_dhcp \n",__func__,__LINE__);		
 		char valBuff1[128]; 
 				
 		CFG_get_by_name("DHCPON_OFF",valBuff1);
@@ -4539,6 +4541,276 @@ int set_pctime(void)
 	Execute_cmd("/usr/sbin/set_pctime > /dev/null 2>&1",rspBuff);
 
 	return 0;
+}
+
+void set_wireless_wan(void)
+{
+		char pChar[128];
+		char mac[128];
+		char channel[128];
+		char channel_buf[128];
+		char ap_secmode[128]; 
+		char wdsonoff_flag_new[128]; 
+		char wdsonoff_flag[128];
+		char channel_5g[128];
+		char channel_buf_5g[128];
+		char wdsonoff5g_flag[128];	
+		char wdsonoff_flag5g_new[128];	
+		char sta_secmode[128];
+		char sta_secmode_5g[128];
+		char wifionoff_flag[128];
+		int flag=0;
+		char wds2gturn_flag[128],wds5gturn_flag[128];
+		char wds2g_bak[128],wds5g_bak[128];
+		char order[128];
+		//2.get old config from flash 
+		Execute_cmd("cfg -e | grep 'AP_SECMODE_2=' |  awk -F '\"' '{print $2}'",ap_secmode);
+		Execute_cmd("cfg -e | grep 'WDSON_OFF=' | awk -F '=' '{print $2}'",wdsonoff_flag);
+
+		Execute_cmd("cfg -e | grep 'WDSON_OFF_3=' | awk -F '=' '{print $2}'",wdsonoff5g_flag);
+		
+		//fprintf(errOut,"[luodp] wds %s,%s\n",valBuff2,valBuff5);
+		CFG_get_by_name("WDSON_OFF",wdsonoff_flag_new);
+		CFG_get_by_name("WDSON_OFF_3",wdsonoff_flag5g_new);
+//		fprintf(errOut,"[luodp] -----------  wds %s,%s----------%s,%s--------\n",wdsonoff_flag,wdsonoff5g_flag,
+//			wdsonoff_flag_new,wdsonoff_flag5g_new);
+		
+		memset(wds2gturn_flag,0,sizeof(wds2gturn_flag));
+		memset(wds5gturn_flag,0,sizeof(wds5gturn_flag));
+		memset(order,0,sizeof(order));
+		//on
+		if((strncmp(wdsonoff_flag_new,"on",2) == 0)||(strncmp(wdsonoff_flag5g_new,"on",2) == 0))
+		{
+//			CFG_set_by_name("AP_STARTMODE","repeater");
+			CFG_set_by_name("AP_STARTMODE","repeater_wisp");
+//			CFG_set_by_name("DHCPON_OFF","off");
+			flag=1;
+		}
+		//off
+		if((strncmp(wdsonoff_flag_new,"off",3) == 0)&&(strncmp(wdsonoff_flag5g_new,"off",3) == 0))
+		{
+//			CFG_set_by_name("AP_STARTMODE","standard");
+			if((strncmp(wdsonoff_flag,"on",2) == 0)||(strncmp(wdsonoff5g_flag,"on",2) == 0))
+				CFG_set_by_name("AP_STARTMODE","dual");
+//			CFG_set_by_name("DHCPON_OFF","on");
+			flag=2;
+		}
+		sprintf(wds2g_bak, "%s\n<br>", wdsonoff_flag);
+		sprintf(wds5g_bak, "%s\n<br>", wdsonoff5g_flag);
+		
+		if(strcmp(wds2g_bak,wdsonoff_flag_new) !=  0)
+			strncpy(wds2gturn_flag,"on",2);
+		else
+			strncpy(wds2gturn_flag,"off",3);
+
+		if(strcmp(wds5g_bak,wdsonoff_flag5g_new) !=  0)
+			strncpy(wds5gturn_flag,"on",2);
+		else
+			strncpy(wds5gturn_flag,"off",3);
+//		fprintf(errOut,"[luodp] -----------  wds2gturn_flag %s wds5gturn_flag %s \n",wds2gturn_flag,wds5gturn_flag);
+
+		//2.save new config to flash 
+			writeParametersWithSync();
+			//writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+			//writeParameters("/tmp/.apcfg","w+",0);
+		//3.do new settings
+		if((flag==3)||(flag==1))
+		{
+		if(strncmp(wdsonoff_flag_new,"on",2) == 0){
+			CFG_get_by_name("STA_SECMODE",sta_secmode);
+			if(strncmp(sta_secmode,"None",4) != 0)
+			{
+				//AP_SECMODE=WPA
+				//AP_WPA=3 WPA/WPA2
+				//AP_CYPHER="TKIP CCMP"
+				//CFG_set_by_name("AP_RADIO_ID_2","0");
+//				CFG_set_by_name("AP_SECMODE_2","WPA");
+//				CFG_set_by_name("AP_WPA_2","3");
+//				CFG_set_by_name("AP_CYPHER_2","TKIP CCMP");
+//				CFG_set_by_name("AP_SECFILE_2","PSK"); 
+				CFG_set_by_name("STA_SECMODE","WPA");
+				CFG_set_by_name("STA_WPA","3");
+//				CFG_set_by_name("STA_CYPHER","TKIP CCMP");
+				CFG_set_by_name("STA_CYPHER","CCMP");
+				CFG_set_by_name("STA_SECFILE","PSK"); 
+			}
+			if(strncmp(sta_secmode,"WPA",3) != 0)
+			{
+				//AP_SECMODE=WPA
+				//AP_WPA=3 WPA/WPA2
+				//AP_CYPHER="TKIP CCMP"
+				//CFG_set_by_name("AP_RADIO_ID_2","0");
+//				CFG_set_by_name("AP_SECMODE_2","None");
+				CFG_set_by_name("STA_SECMODE","None");
+			}
+			CFG_get_by_name("WDS_CHAN",channel);
+			CFG_get_by_name("AP_PRIMARY_CH",channel_buf);
+//			fprintf(errOut,"[luodp] -----------  wds %s\n",channel_buf);
+			CFG_set_by_name("AP_PRIMARY_CH_BACK",channel_buf);
+			
+			CFG_set_by_name("AP_PRIMARY_CH",channel);
+			}
+
+		
+		if(strncmp(wdsonoff_flag5g_new,"on",2) == 0){
+			CFG_get_by_name("STA_SECMODE_2",sta_secmode_5g);
+			if(strncmp(sta_secmode_5g,"None",4) != 0)
+			{
+				//AP_SECMODE=WPA
+				//AP_WPA=3 WPA/WPA2
+				//AP_CYPHER="TKIP CCMP"
+				//CFG_set_by_name("AP_RADIO_ID_2","0");
+
+				CFG_set_by_name("STA_SECMODE_2","WPA");
+				CFG_set_by_name("STA_WPA_2","3");
+//				CFG_set_by_name("STA_CYPHER_2","TKIP CCMP");
+				CFG_set_by_name("STA_CYPHER_2","CCMP");
+				CFG_set_by_name("STA_SECFILE_2","PSK"); 
+			}
+			if(strncmp(sta_secmode_5g,"WPA",3) != 0)
+			{
+				//AP_SECMODE=WPA
+				//AP_WPA=3 WPA/WPA2
+				//AP_CYPHER="TKIP CCMP"
+				//CFG_set_by_name("AP_RADIO_ID_2","0");
+//				CFG_set_by_name("AP_SECMODE_2","None");
+				CFG_set_by_name("STA_SECMODE_2","None");
+			}
+			CFG_get_by_name("WDS_CHAN_2",channel_5g);
+			CFG_get_by_name("AP_PRIMARY_CH_3",channel_buf_5g);
+//			fprintf(errOut,"[luodp] -----------  wds channel_buf_5g %s\n",channel_buf_5g);
+			CFG_set_by_name("AP_PRIMARY_CH_BACK_3",channel_buf_5g);
+			CFG_set_by_name("AP_PRIMARY_CH_3",channel_5g);
+			}
+			//4.save new config to flash 
+			writeParametersWithSync();
+			//writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+			//writeParameters("/tmp/.apcfg","w+",0);
+		}
+		//5.do settings
+		
+		if(strncmp(wdsonoff_flag_new,"off",3) == 0)
+		{
+			CFG_get_by_name("AP_PRIMARY_CH_BACK",channel_buf);
+//			fprintf(errOut,"[luodp] -----------  wds %s\n",channel_buf);
+			CFG_set_by_name("AP_PRIMARY_CH",channel_buf);
+		}
+
+		
+		if(strncmp(wdsonoff_flag5g_new,"off",3) == 0)
+		{
+			CFG_get_by_name("AP_PRIMARY_CH_BACK_3",channel_buf_5g);
+//			fprintf(errOut,"[luodp] -----------  wds channel_buf_5g %s\n",channel_buf_5g);
+			CFG_set_by_name("AP_PRIMARY_CH_3",channel_buf_5g);
+		}
+			writeParametersWithSync();
+			//writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+			//writeParameters("/tmp/.apcfg","w+",0);
+
+		//TODO if close do commit no ath1
+		if(flag==2) //on->off
+		{
+			//Execute_cmd("wlanconfig ath1 destroy > /dev/null 2>&1", rspBuff);
+			Execute_cmd("cfg -e | grep 'WIFION_OFF=' | awk -F \"=\" \'{print $2}\'",wifionoff_flag);
+			//wifi on ,then wds on/off
+			if(strstr(wifionoff_flag,"off") == 0)
+			{
+				//[TODO]sta mode
+//				Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
+//				Execute_cmd("apup > /dev/null 2>&1", rspBuff);
+				sprintf(order,"repeatVAP_WISP %s %s > /dev/null 2>&1",wds2gturn_flag,wds5gturn_flag);
+				Execute_cmd(order, rspBuff);
+//				Execute_cmd("repeatVAP > /dev/null 2>&1", rspBuff);
+
+				//kill udhcpd
+				//[TODO]if dhcp no exist ,then up
+				//Execute_cmd("ps | grep udhcpd",rspBuff);
+				//if(strstr(rspBuff,"udhcpd")==0)
+				//{
+					//Execute_cmd("killall udhcpd > /dev/null 2>&1",rspBuff);
+					//Execute_cmd("/usr/sbin/udhcpd /etc/udhcpd.conf > /dev/null 2>&1",rspBuff);
+					//[TODO] wired device re-assign
+				//}
+				//fprintf(errOut,"[luodp] wds open\n");
+
+				//reboot hostapd
+				//Execute_cmd("killall hostapd > /dev/null 2>&1",rspBuff);
+				//Execute_cmd("hostapd -B /tmp/secath0 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+				//Execute_cmd("hostapd -B /tmp/secath1 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+				//Execute_cmd("hostapd -B /tmp/secath2 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+				//Execute_cmd("hostapd -B /tmp/secath3 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+			}
+		}		
+		if((flag==1)||(flag==3)) //off->on and on->on 
+		{
+			Execute_cmd("cfg -e | grep 'WIFION_OFF=' | awk -F \"=\" \'{print $2}\'",wifionoff_flag);
+			//wifi on ,then wds on/off
+			if(strstr(wifionoff_flag,"off") == 0)
+			{
+				//if dhcp exist ,then kill
+				//Execute_cmd("killall udhcpd > /dev/null 2>&1",rspBuff);
+				//Execute_cmd("rm -rf /var/run/udhcpd.leases > /dev/null 2>&1",rspBuff);
+				//fprintf(errOut,"[luodp] wds open\n");
+				//[TODO]sta mode
+	//			Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
+	//			Execute_cmd("apup > /dev/null 2>&1", rspBuff);
+				sprintf(order,"repeatVAP_WISP %s %s > /dev/null 2>&1",wds2gturn_flag,wds5gturn_flag);
+				Execute_cmd(order, rspBuff);
+//				Execute_cmd("repeatVAP > /dev/null 2>&1", rspBuff);
+				
+				//reboot hostapd
+				//Execute_cmd("killall hostapd > /dev/null 2>&1",rspBuff);
+				//Execute_cmd("hostapd -B /tmp/secath0 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+				//Execute_cmd("hostapd -B /tmp/secath1 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+				//Execute_cmd("hostapd -B /tmp/secath2 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+				//Execute_cmd("hostapd -B /tmp/secath3 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+			}
+		}
+		/*CFG_get_by_name("AP_RADIO_ID_2",valBuff);
+		CFG_get_by_name("AP_SECMODE_2",valBuff2);
+		CFG_get_by_name("AP_SECFILE_2",valBuff3);
+		CFG_get_by_name("WPS_ENABLE_2",valBuff4);
+		sprintf(pChar,"activateVAP ath1:%s br0 %s %s %s",valBuff,valBuff2,valBuff3,valBuff4);
+		
+		Execute_cmd(pChar, rspBuff);*/
+		//maybe can replace by makeVAP
+		/*Execute_cmd("wlanconfig ath1 create wlandev wifi0 wlanmode sta nosbeacon", rspBuff);
+		CFG_get_by_name("AP_SSID_2",valBuff);
+		sprintf(pChar,"iwconfig ath1 essid %s",valBuff);
+		Execute_cmd(pChar, rspBuff);
+		
+		CFG_get_by_name("WDS_MAC",mac);
+		sprintf(pChar,"iwconfig ath1 ap  %s",mac);
+		Execute_cmd(pChar, rspBuff);*/
+	#if 0
+		if((flag==1)||(flag==3))
+		{
+			if(strcmp(valBuff3,"on") == 0){
+				sprintf(pChar,"iwconfig ath0 channel %s  > /dev/null 2>&1",channel);	
+				Execute_cmd(pChar, rspBuff);
+				sprintf(pChar,"iwconfig ath4 channel %s  > /dev/null 2>&1",channel);	
+				Execute_cmd(pChar, rspBuff);
+				
+				if(strcmp(valBuff3_5g,"on") == 0){
+					sprintf(pChar,"iwconfig ath2 channel %s  > /dev/null 2>&1",channel_5g); 
+					Execute_cmd(pChar, rspBuff);
+					sprintf(pChar,"iwconfig ath5 channel %s  > /dev/null 2>&1",channel_5g); 
+					Execute_cmd(pChar, rspBuff);
+				}
+			}
+			else {
+				sprintf(pChar,"iwconfig ath2 channel %s  > /dev/null 2>&1",channel_5g); 
+				Execute_cmd(pChar, rspBuff);
+				sprintf(pChar,"iwconfig ath4 channel %s  > /dev/null 2>&1",channel_5g); 
+				Execute_cmd(pChar, rspBuff);
+			}
+		}
+	#endif
+
+	/*Execute_cmd("iwpriv ath1 wds 1", rspBuff);
+	Execute_cmd("brctl addif br0 ath1", rspBuff);
+	Execute_cmd("ifconfig ath1 up", rspBuff);*/
+
 }
 
 /**************************************************************************/
@@ -5893,6 +6165,10 @@ int main(int argc,char **argv)
 		char valBuff5_5g[128];
 		int flag=0;
 		
+		char wds2gturn_flag[128],wds5gturn_flag[128];
+		char wds2g_bak[128],wds5g_bak[128];
+		char order[128];
+
 		//2.get old config from flash 
 		Execute_cmd("cfg -e | grep 'AP_SECMODE_2=' |  awk -F '\"' '{print $2}'",valBuff2);
 		Execute_cmd("cfg -e | grep 'WDSON_OFF=' | awk -F '=' '{print $2}'",valBuff5);
@@ -5942,6 +6218,19 @@ int main(int argc,char **argv)
 			CFG_set_by_name("DHCPON_OFF","on");
 			flag=2;
 		}
+
+		sprintf(wds2g_bak, "%s\n<br>", valBuff5);
+		sprintf(wds5g_bak, "%s\n<br>", valBuff2_5g);
+		
+		if(strcmp(wds2g_bak,valBuff3) !=  0)
+			strncpy(wds2gturn_flag,"on",2);
+		else
+			strncpy(wds2gturn_flag,"off",3);
+
+		if(strcmp(wds5g_bak,valBuff3_5g) !=  0)
+			strncpy(wds5gturn_flag,"on",2);
+		else
+			strncpy(wds5gturn_flag,"off",3);
 
 		//2.save new config to flash 
             writeParametersWithSync();
@@ -6052,7 +6341,9 @@ int main(int argc,char **argv)
 				//[TODO]sta mode
 //				Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
 //				Execute_cmd("apup > /dev/null 2>&1", rspBuff);
-				Execute_cmd("repeatVAP > /dev/null 2>&1", rspBuff);
+//				Execute_cmd("repeatVAP > /dev/null 2>&1", rspBuff);
+				sprintf(order,"repeatVAP %s %s > /dev/null 2>&1",wds2gturn_flag,wds5gturn_flag);
+				Execute_cmd(order, rspBuff);
 
 				//kill udhcpd
 				//[TODO]if dhcp no exist ,then up
@@ -6086,7 +6377,9 @@ int main(int argc,char **argv)
 				//[TODO]sta mode
 	//			Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
 	//			Execute_cmd("apup > /dev/null 2>&1", rspBuff);
-				Execute_cmd("repeatVAP > /dev/null 2>&1", rspBuff);
+//				Execute_cmd("repeatVAP > /dev/null 2>&1", rspBuff);
+				sprintf(order,"repeatVAP %s %s > /dev/null 2>&1",wds2gturn_flag,wds5gturn_flag);
+				Execute_cmd(order, rspBuff);
 				
 				//reboot hostapd
 				Execute_cmd("killall hostapd > /dev/null 2>&1",rspBuff);
@@ -6141,6 +6434,15 @@ int main(int argc,char **argv)
 		Execute_cmd("ifconfig ath1 up", rspBuff);*/
 		gohome =1;
     }
+	//WIRRE_WAN 
+	if(strcmp(CFG_get_by_name("WIRRE_WAN",valBuff),"WIRRE_WAN") == 0 ) 
+	{
+		fprintf(errOut,"\n%s  %d WIRRE_WAN \n",__func__,__LINE__);
+
+		set_wireless_wan();
+		gohome =1;
+	}
+
 	//wifi settings
      if((strcmp(CFG_get_by_name("WIRELESS",valBuff),"WIRELESS") == 0 ) || (strcmp(CFG_get_by_name("DHCPW",valBuff),"DHCPW") == 0 ) || (strcmp(CFG_get_by_name("SIPW",valBuff),"SIPW") == 0 ) || (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 ) || (strcmp(CFG_get_by_name("L2TPW",valBuff),"L2TPW") == 0 ) || (strcmp(CFG_get_by_name("P2TPW",valBuff),"P2TPW") == 0 ) )
     {
