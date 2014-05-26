@@ -149,7 +149,9 @@ if [ "$DEBUG" != "" ] ; then
     exit 0
 fi
 
-$CONNECT "$@" > /dev/null 2>&1 &
+#added by yhl,2014.05.26
+#$CONNECT "$@" > /dev/null 2>&1 &
+$CONNECT "$@" > /usr/www/pppoe_status.xml &
 CONNECT_PID=$!
 
 if [ "$CONNECT_TIMEOUT" = "" -o "$CONNECT_TIMEOUT" = 0 ] ; then
