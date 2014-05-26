@@ -2,8 +2,37 @@
 #include <stdlib.h>
 #include <string.h>
 
+typedef struct wireless_signal{
+	char ssid[128];
+	char Encryption[128];
+	char freq[128];
+	char macaddr[128];
+	int signal;
+}wireless_signal_t;
+
+wireless_signal_t signal_list_2g[100];
+wireless_signal_t signal_list_5g[100];
+wireless_signal_t param_bak;
+static int ii = 0;
+
 char* getcgidata(FILE* fp, char* requestmethod);
 static FILE *errOut;
+static int atoii (char *zzzz)
+{
+  int i = 0;
+  int num=0;
+for(i=0;i<20;i++)
+{
+  if(zzzz[i] >= '0' && zzzz[i] <= '9')
+  	{
+	  num = num * 10 + (zzzz[i] - '0');
+ 	}else
+ 	{
+ 			break;
+ 	}
+}
+  return num;
+}
 
 char *Execute_cmd(char *cmd,char *buffer)
 {
@@ -96,6 +125,7 @@ int main()
     if(strcmp(name,"2G")==0)
     {
         num=0;
+		ii = 0;
         //do check ath0
         //Execute_cmd("iwlist ath0 scanning > /tmp/scanlist", rspBuff);
 
@@ -187,8 +217,19 @@ int main()
             memset(cmdd,0x00,128);	
             memset(buf,0x00,100);	
             memcpy(buf,val2[0]+1,(strlen(val2[0])-2));
+			
+			#if 0
             sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(-%sdbm)</option>",buf,val1[0],val4[0],val3[0],buf,val5[0]);
             fwrite(cmdd,strlen(cmdd),1,fp);
+			#endif	
+			
+			memcpy(signal_list_2g[ii].ssid,buf,(strlen(buf)));
+			memcpy(signal_list_2g[ii].Encryption,val3[0],(strlen(val3[0])));			
+			memcpy(signal_list_2g[ii].freq,val4[0],(strlen(val4[0])));
+			memcpy(signal_list_2g[ii].macaddr,val1[0],(strlen(val1[0])));
+			signal_list_2g[ii].signal= 0 - atoii(val5[0]);
+			ii ++;
+
             }
             for(i=1;i<lists;i++)
             {
@@ -202,16 +243,53 @@ int main()
                // fprintf(errOut,"[luodp] %s(%s)(%s)(%s) \n",val2[i]+4,val1[i]+4,val3[i]+4,val4[i]+4);
                 memset(buf,0x00,100);	
                 memcpy(buf,val2[i]+5,(strlen(val2[i]+4)-2));
+				#if 0
                 sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(-%sdbm)</option>",buf,val1[i]+4,val4[i]+4,val3[i]+4,buf,val5[i]+4);
                 fwrite(cmdd,strlen(cmdd),1,fp);
+				#endif
+				
+				memcpy(signal_list_2g[ii].ssid,buf,(strlen(buf)));
+				memcpy(signal_list_2g[ii].Encryption,val3[i]+4,(strlen(val3[i]+4)));
+				memcpy(signal_list_2g[ii].freq,val4[i]+4,(strlen(val4[i]+4)));
+				memcpy(signal_list_2g[ii].macaddr,val1[i]+4,(strlen(val1[i]+4)));
+				signal_list_2g[ii].signal= 0 - atoii(val5[i]+4);
+				ii ++;
+				
                 }
             }
+			for(i=0;i<ii;i++){
+				for(j=0; j<ii-1-i;j++){
+	//				fprintf(errOut,"2-----------signal_list_2g \n");
+					memset(&param_bak,0,sizeof(struct wireless_signal));
+					if ((signal_list_2g[j].signal) < (signal_list_2g[j + 1].signal)){
+	//					fprintf(errOut,"33-----------signal_list_2g \n");
+						
+						memcpy(&param_bak,&signal_list_2g[j],sizeof(struct wireless_signal));
+						memcpy(&signal_list_2g[j],&signal_list_2g[j + 1],sizeof(struct wireless_signal));
+						memcpy(&signal_list_2g[j + 1],&param_bak,sizeof(struct wireless_signal));
+					}
+				}							
+			}
+		
+			for ( j = 0; j < ii ; j++ ){
+                memset(cmdd,0x00,128);
+                sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(%ddbm)</option>",
+					signal_list_2g[j].ssid,signal_list_2g[j].macaddr,signal_list_2g[j].freq,signal_list_2g[j].Encryption,signal_list_2g[j].ssid,signal_list_2g[j].signal);
+                fwrite(cmdd,strlen(cmdd),1,fp);
+
+//				fprintf(errOut,"22-----------signal_list_2g[%d]:ssid %s Encryption %s signal %d dbm \n",
+//					j,signal_list_2g[j].ssid,signal_list_2g[j].Encryption,signal_list_2g[j].signal);
+			}
+			
         }
         fclose(fp);
+		
+		
     }
     else
     {
         num=0;
+		ii = 0;
         //do check ath2
         //Execute_cmd("iwlist ath2 scanning > /tmp/scanlist", rspBuff);
 
@@ -303,12 +381,20 @@ int main()
         memset(buf,0x00,100);	
         memcpy(buf,val2[0]+1,(strlen(val2[0])-2));
         //					fprintf(errOut,"[luodp] buff----------- %s\n",buf);
+		#if 0
         sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(-%sdbm)</option>",buf,val1[0],val4[0],val3[0],buf,val5[0]);
         fwrite(cmdd,strlen(cmdd),1,fp);
+		#endif
+
+		memcpy(signal_list_5g[ii].ssid,buf,(strlen(buf)));
+		memcpy(signal_list_5g[ii].Encryption,val3[0],(strlen(val3[0])));
+		memcpy(signal_list_5g[ii].freq,val4[0],(strlen(val4[0])));
+		memcpy(signal_list_5g[ii].macaddr,val1[0],(strlen(val1[0])));
+		signal_list_5g[ii].signal= 0 - atoii(val5[0]);
+		ii ++;
         }
         for(i=1;i<lists;i++)
         {
-        memset(cmdd,0x00,128);
         if(strcmp(val2[i]+4,"\"\""))
         {
         if(strcmp(val3[i]+4,"on")==0)
@@ -316,16 +402,49 @@ int main()
         else
         sprintf(val3[i]+4,"None");
         //fprintf(errOut,"[luodp] %s(%s)(%s)(%s) \n",val2[i]+4,val1[i]+4,val3[i]+4,val4[i]+4);
+        memset(cmdd,0x00,128);
         memset(buf,0x00,100);	
         memcpy(buf,val2[i]+5,(strlen(val2[i]+4)-2));
         //							fprintf(errOut,"[luodp] buff----------- %s\n",buf);
+		#if 0
         sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(-%sdbm)</option>",buf,val1[i]+4,val4[i]+4,val3[i]+4,buf,val5[i]+4);
         fwrite(cmdd,strlen(cmdd),1,fp);
+	#endif
+		memcpy(signal_list_5g[ii].ssid,buf,(strlen(buf)));
+		memcpy(signal_list_5g[ii].Encryption,val3[i]+4,(strlen(val3[i]+4)));
+		memcpy(signal_list_5g[ii].freq,val4[i]+4,(strlen(val4[i]+4)));
+		memcpy(signal_list_5g[ii].macaddr,val1[i]+4,(strlen(val1[i]+4)));
+		signal_list_5g[ii].signal= 0 - atoii(val5[i]+4);
+		ii ++;
         }
         }
+		
+		for(i=0;i<ii;i++){
+			for(j=0; j<ii-1-i;j++){
+//				fprintf(errOut,"2-----------signal_list_5g \n");
+				memset(&param_bak,0,sizeof(struct wireless_signal));
+				if ((signal_list_5g[j].signal) < (signal_list_5g[j + 1].signal)){
+//					fprintf(errOut,"33-----------signal_list_5g \n");
+					
+					memcpy(&param_bak,&signal_list_5g[j],sizeof(struct wireless_signal));
+					memcpy(&signal_list_5g[j],&signal_list_5g[j + 1],sizeof(struct wireless_signal));
+					memcpy(&signal_list_5g[j + 1],&param_bak,sizeof(struct wireless_signal));
+				}
+			}							
+		}
+	
+		for ( j = 0; j < ii ; j++ ){
+			
+			memset(cmdd,0x00,100);					
+			sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(%ddbm)</option>",
+				signal_list_5g[j].ssid,signal_list_5g[j].macaddr,signal_list_5g[j].freq,signal_list_5g[j].Encryption,signal_list_5g[j].ssid,signal_list_5g[j].signal);
+			fwrite(cmdd,strlen(cmdd),1,fp);
+
+//				fprintf(errOut,"22-----------signal_list_5g[%d]:ssid %s Encryption %s signal %d dbm \n",
+//					j,signal_list_5g[j].ssid,signal_list_5g[j].Encryption,signal_list_5g[j].signal);
+			}
         }
         fclose(fp);
-
         }
     return 1;
 }
