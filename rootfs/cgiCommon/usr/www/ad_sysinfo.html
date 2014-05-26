@@ -70,24 +70,15 @@ function initTranslation()
 	trans_inner("t4_wds2","sysinfo t4_wds");
 
 }
+	var wtype;
+	
 	var xmlreq;
 	var desIPreboot;	
-
-	function createxmlreq()
-	{
-		if(window.ActiveXObject)
-		{
-			xmlreq=new ActiveXObject("Microsoft.XMLHTTP");
-		}
-		else if(window.XMLHttpRequest)
-		{
-			xmlreq=new XMLHttpRequest();
-		}
-	}
-
+	function createxmlreq()	{if(window.ActiveXObject){xmlreq=new ActiveXObject("Microsoft.XMLHTTP");}else if(window.XMLHttpRequest){xmlreq=new XMLHttpRequest();}}
 	function rebootRequest()
 	{
-		//setTimeout(function(){rebootRequest();},1000);
+		if(wtype == "pppoe")
+			return;
 		createxmlreq();
 		xmlreq.onreadystatechange=handleState;
 		desIPreboot = location.hostname;
@@ -96,24 +87,60 @@ function initTranslation()
 	}
 	function handleState()
 	{
-		if(xmlreq.readyState==4)
+		if(xmlreq.readyState==4){if(xmlreq.status==200)
 		{
-			if(xmlreq.status==200)
-			{
 				if ((xmlreq.responseText=="1")||(xmlreq.responseText==1))
 					document.getElementById("ss3").innerHTML=_("sysinfo ok");
 				else
 					document.getElementById("ss3").innerHTML=_("sysinfo fail");
-			}
-			else
-			{
-				//alert("3"+xmlreq.status);
-			}
-		}
-		else
+		}}
+	}
+	var xmlreq2;
+	var desIPreboot2;	
+	function createxmlreq2(){if(window.ActiveXObject){xmlreq2=new ActiveXObject("Microsoft.XMLHTTP");}else if(window.XMLHttpRequest){xmlreq2=new XMLHttpRequest();}}
+	function PPPoERequest()
+	{
+		createxmlreq2();
+		xmlreq2.onreadystatechange=handleState2;
+		desIPreboot2 = location.hostname;
+		xmlreq2.open("GET","http://"+desIPreboot2+"/pppoe_status.xml?now=" + new Date().getTime(),true);
+		xmlreq2.send(null);
+	}
+	function handleState2()
+	{
+		if(xmlreq2.readyState==4){if(xmlreq2.status==200)
 		{
-			//alert("2"+xmlreq.readyState);
-		}
+			var pstatus = xmlreq2.responseText;
+			//alert(pstatus);
+			if(pstatus.indexOf("Authentication success") != -1 )
+			{
+				document.getElementById("ss3").innerHTML=_("sysinfo ok");
+				document.getElementById("ss5").innerHTML=document.getElementById("s5e").value +"/"+document.getElementById("s5f").value;	
+				document.getElementById("ss7").innerHTML=document.getElementById("s7c").value;		
+			}
+			else//不可以上网
+			{
+				if(pstatus.indexOf("LCP: timeout") != -1 )
+				{
+					document.getElementById("ss3").innerHTML=_("sysinfo fail")+"("+_("sysinfo ppptimeout")+")";	//连接超时
+				}
+				else if(pstatus.indexOf("Remote message: 24") != -1 )
+				{
+					document.getElementById("ss3").innerHTML=_("sysinfo fail")+"("+_("sysinfo pppusererr")+")";	//用户名错误
+				}
+				else if(pstatus.indexOf("Remote message: 29") != -1 )
+				{
+					document.getElementById("ss3").innerHTML=_("sysinfo fail")+"("+_("sysinfo ppppwderr")+")";	//密码错误
+				}
+				else
+				{
+					document.getElementById("ss3").innerHTML=_("sysinfo fail");	
+				}
+
+				document.getElementById("ss5").innerHTML=_("sysinfo unset");	
+				document.getElementById("ss7").innerHTML=_("sysinfo unset");				
+			}
+		}}
 	}
 
 function init()
@@ -125,10 +152,10 @@ function init()
 	WIFI_HS();
 	rebootRequest();
 }
-	//上网状态	INTERNET_ON	on提供为可上网，off提示为不可以上网	
-	//无线状态	WIFION_OFF	on提示为开启off提示为未开启	
-	//安全类型	AP_SECMODE	WPA提示为加密None提示为公开	
-	//WDS状态	WDSON_OFF	on提示为开启off提示为未开启	
+//上网状态	INTERNET_ON	on提供为可上网，off提示为不可以上网	
+//无线状态	WIFION_OFF	on提示为开启off提示为未开启	
+//安全类型	AP_SECMODE	WPA提示为加密None提示为公开	
+//WDS状态	WDSON_OFF	on提示为开启off提示为未开启	
 function valueinit()
 {
 	document.getElementById("ss1").innerHTML=document.getElementById("s1").value;
@@ -140,10 +167,8 @@ function valueinit()
 	document.getElementById("ss13").innerHTML=document.getElementById("s13").value;
 	document.getElementById("ss132").innerHTML=document.getElementById("s132").value;
 	document.getElementById("ss112").innerHTML=document.getElementById("s112").value;
-
-	var wtype;
+	
 	wtype = document.getElementById("s6").value;
-
 
 	//IP/MASK
 	{
@@ -170,32 +195,42 @@ function valueinit()
 			}
 	
 		}
-		else if(wtype == "pppoe")
-		{
-			if((document.getElementById("s5e").value == "")||(document.getElementById("s5f").value == ""))
-			{
-				document.getElementById("ss5").innerHTML=_("sysinfo unset");
-			}
-			else
-			{
-				document.getElementById("ss5").innerHTML=document.getElementById("s5e").value +"/"+document.getElementById("s5f").value;				
-			}
 
-		}
 	}
-	if(document.getElementById("s6").value == "dhcp")	
+	if(wtype == "dhcp")	
+	{
 		document.getElementById("ss6").innerHTML=_("sysinfo dhcp");
-	else if(document.getElementById("s6").value == "static")	
+	}
+	else if(wtype == "static")
+	{
 		document.getElementById("ss6").innerHTML=_("sysinfo static");
-	else if(document.getElementById("s6").value == "pppoe")	
+	}
+	else if(wtype == "pppoe")	
+	{
 		document.getElementById("ss6").innerHTML=_("sysinfo pppoe");
-	else if(document.getElementById("s6").value == "l2tp")	
+		var pppoe_mode=document.getElementById("PPPOE_MODE").value;
+		if(pppoe_mode == "auto")
+			document.getElementById("ss6").innerHTML=_("sysinfo pppoe")+"("+_("sysinfo keepalive")+")";
+		else if(pppoe_mode == "demand")
+			document.getElementById("ss6").innerHTML=_("sysinfo pppoe")+"("+_("sysinfo ondemand")+")";
+		else if(pppoe_mode == "manual")
+			document.getElementById("ss6").innerHTML=_("sysinfo pppoe")+"("+_("sysinfo manual")+")";
+		else if(pppoe_mode == "timing")
+			document.getElementById("ss6").innerHTML=_("sysinfo pppoe")+"("+_("sysinfo Timing")+")";
+		else
+			document.getElementById("ss6").innerHTML=_("sysinfo pppoe");
+		PPPoERequest();
+	}
+	else if(wtype == "l2tp")
+	{	
 		document.getElementById("ss6").innerHTML=_("sysinfo l2tp");
-	else if(document.getElementById("s6").value == "pptp")	
+	}
+	else if(wtype == "pptp")
+	{
 		document.getElementById("ss6").innerHTML=_("sysinfo pptp");
+	}
 	else
 		document.getElementById("ss6").innerHTML="";
-		
 
 	//GW
 	{
@@ -221,17 +256,7 @@ function valueinit()
 				document.getElementById("ss7").innerHTML=document.getElementById("s7b").value;			
 			}
 		}
-		else if(wtype == "pppoe")
-		{
-			if(document.getElementById("s7c").value == "")
-			{
-				document.getElementById("ss7").innerHTML=_("sysinfo unset");
-			}
-			else
-			{
-				document.getElementById("ss7").innerHTML=document.getElementById("s7c").value;			
-			}
-		}
+
 	}
 	
 		
@@ -313,6 +338,10 @@ function WIFI_HS()
   <td><span id="ss4" name="ss4"></span><input size="32" style="display:none" maxlength="64" name="s4" id="s4" value="~~ETH0_MAC~" type="text" readonly></td>
 </tr>
 <tr>
+  <td class="head" id="t2_ctpye">接入方式</td>
+  <td><span id="ss6" name="ss6"></span><input size="32" style="display:none" maxlength="64" name="s6" id="s6" value="~~WAN_MODE~" type="text" readonly></td>
+</tr>
+<tr>
   <td class="head" id="t2_ip">IP地址</td>
   <td><span id="ss5" name="ss5"></span>
   <input size="32" style="display:none" maxlength="64" name="s5a" id="s5a" value="~~WAN_IPADDR~" type="text" readonly>
@@ -323,10 +352,7 @@ function WIFI_HS()
   <input size="32" style="display:none" maxlength="64" name="s5f" id="s5f" value="~~WAN_NETMASK3~" type="text" readonly>
   </td>
 </tr>
-<tr>
-  <td class="head" id="t2_ctpye">接入方式</td>
-  <td><span id="ss6" name="ss6"></span><input size="32" style="display:none" maxlength="64" name="s6" id="s6" value="~~WAN_MODE~" type="text" readonly></td>
-</tr>
+
 <tr>
   <td class="head" id="t2_gw">网关</td>
   <td><span id="ss7" name="ss7"></span>
@@ -411,5 +437,7 @@ function WIFI_HS()
 </div>
 	<input type="text" style="display:none" name="IPA" id="IPA" size="20" maxlength="32" value="~~AP_IPADDR~">
 	<input type="text" style="display:none" name="RADIO_STATUS" id="RADIO_STATUS" size="20" maxlength="32" value="~~RADIO_STATUS~">
+	<input type="text" style="display:none" name="PPPOE_MODE" id="PPPOE_MODE" size="20" maxlength="32" value="~~PPPOE_MODE~">
+	
 </body>
 </html>

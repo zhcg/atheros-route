@@ -100,6 +100,12 @@
 	<message msgid="sysinfo pptp" msgstr="PPTP" />
 	<message msgid="sysinfo un" msgstr="Unknown" />
 
+	<message msgid="sysinfo keepalive" msgstr="Auto" />
+	<message msgid="sysinfo ondemand" msgstr="On Demand" />
+	<message msgid="sysinfo manual" msgstr="Manual" />
+	<message msgid="sysinfo timing" msgstr="Timing" />
+
+
 	<message msgid="netcheck title" msgstr="Network check" />
 	<message msgid="netcheck des" msgstr="Detection of the type of network connection and the network Ping" />
 	<message msgid="netcheck netc" msgstr="Start" />
@@ -131,5 +137,10 @@
 	<message msgid="err sub format" msgstr="Subnet address is illegal" />	
 	<message msgid="err gw format" msgstr="Gateway address is illegal" />
 	<message msgid="err DNS format" msgstr="DNS address is illegal" />
+	
+	<message msgid="sysinfo ppptimeout" msgstr="PPPoE Connecting timed out" />
+	<message msgid="sysinfo pppusererr" msgstr="PPPoE user name not exist" />
+	<message msgid="sysinfo ppppwderr" msgstr="PPPoE password error" />
+	
 </po>
 

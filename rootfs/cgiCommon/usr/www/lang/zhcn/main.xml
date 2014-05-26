@@ -99,6 +99,12 @@
 	<message msgid="sysinfo l2tp" msgstr="L2TP" />
 	<message msgid="sysinfo pptp" msgstr="PPTP" />
 	<message msgid="sysinfo un" msgstr="未知" />
+	
+	<message msgid="sysinfo keepalive" msgstr="自动连接" />
+	<message msgid="sysinfo ondemand" msgstr="按需连接" />
+	<message msgid="sysinfo manual" msgstr="手动连接" />
+	<message msgid="sysinfo timing" msgstr="定时连接" />
+
 
 
 	<message msgid="netcheck title" msgstr="网络诊断" />
@@ -133,4 +139,9 @@
 	<message msgid="err sub format" msgstr="掩码地址不合法" />	
 	<message msgid="err gw format" msgstr="网关地址不合法" />
 	<message msgid="err DNS format" msgstr="DNS地址不合法" />
+	
+	<message msgid="sysinfo ppptimeout" msgstr="PPPoE连接超时" />
+	<message msgid="sysinfo pppusererr" msgstr="PPPoE登录用户名不存在" />
+	<message msgid="sysinfo ppppwderr" msgstr="PPPoE登录密码错误" />
+	
 </po>
