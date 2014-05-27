@@ -96,7 +96,7 @@ ar934x_set_gmac_caps(void *arg)
                         ((athr_reg_rd(ATHR_GPIO_OUT_FUNCTION4) & 0xffff) | (0x292d << 16)));
 
                     athr_reg_wr(ATHR_GPIO_OUT_FUNCTION5,
-                        ((athr_reg_rd(ATHR_GPIO_OUT_FUNCTION5) & (0xff << 24)) | 0x2c2b2a));
+                        ((athr_reg_rd(ATHR_GPIO_OUT_FUNCTION5) & (0xff << 24)) | 0x2c2b00)); //0x2c2b2a->0x2c2b00
                }
             }
         }
@@ -287,6 +287,7 @@ void ath_gpio_out_val(int gpio, int val);
 void inline
 athr_gmac_off_led(ath_led_ctrl_t *lc, int port)
 {
+    if(port!=2)
     athr_gmac_led_on_off(lc, port,
         ATHR_GMAC_PORT_LED(port), ATHR_GMAC_LED_OFF);
 }
@@ -329,10 +330,13 @@ athr_gmac_blink_led(ath_led_ctrl_t *lc, uint32_t rate, int port)
             lc->hold[port] --;
 
             if (lc->intvl[port] >= max) {
-                // toggle led state
-                lc->led[port] = athr_led_get_next_state(lc->led[port]);
-                lc->intvl[port] = 0;
-                ath_gpio_out_val(ATHR_GMAC_PORT_LED(port), lc->led[port]);
+		if(port!=2)
+		{
+                 // toggle led state
+                 lc->led[port] = athr_led_get_next_state(lc->led[port]);
+                 lc->intvl[port] = 0;
+                 ath_gpio_out_val(ATHR_GMAC_PORT_LED(port), lc->led[port]);
+		}
             }
 
 #if blink_debug
@@ -473,6 +477,7 @@ int ar934x_gmac_attach(void *arg )
     for (i = 0; i < 5; i++) {
         ath_gpio_config_output(ATHR_GMAC_PORT_LED(i));
     }
+    ath_gpio_out_val(ATHR_GMAC_PORT_LED(2),0);
 
     ops->set_pll   = NULL;
 
