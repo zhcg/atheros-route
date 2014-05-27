@@ -198,7 +198,8 @@ int main()
         {
         fprintf(errOut,"[luodp] %s(%s)(%s)(%s)\n",val2[i]+4,val1[i]+4,val3[i]+4,val4[i]+4);
         }*/
-        char cmdd[128]={0};
+        char cmdd[512]={0};
+        char pic[16]={0};
         FILE *fp;
         if((fp=fopen("/usr/www/DWS_2G.xml","w+"))==NULL)
         {
@@ -214,7 +215,7 @@ int main()
                 sprintf(val3[0],"WPA");
             else  
                 sprintf(val3[0],"None");
-            memset(cmdd,0x00,128);	
+            memset(cmdd,0x00,512);	
             memset(buf,0x00,100);	
             memcpy(buf,val2[0]+1,(strlen(val2[0])-2));
 			
@@ -233,7 +234,7 @@ int main()
             }
             for(i=1;i<lists;i++)
             {
-                memset(cmdd,0x00,128);
+                memset(cmdd,0x00,512);
                 if(strcmp(val2[i]+4,"\"\""))
                 {
                 if(strcmp(val3[i]+4,"on")==0)
@@ -272,9 +273,50 @@ int main()
 			}
 		
 			for ( j = 0; j < ii ; j++ ){
-                memset(cmdd,0x00,128);
-                sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(%ddbm)</option>",
-					signal_list_2g[j].ssid,signal_list_2g[j].macaddr,signal_list_2g[j].freq,signal_list_2g[j].Encryption,signal_list_2g[j].ssid,signal_list_2g[j].signal);
+                memset(cmdd,0x00,512);
+
+
+                
+              //  sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(%ddbm)</option>",
+		//			signal_list_2g[j].ssid,signal_list_2g[j].macaddr,signal_list_2g[j].freq,signal_list_2g[j].Encryption,signal_list_2g[j].ssid,signal_list_2g[j].signal);
+
+                if(strcmp(signal_list_2g[j].Encryption,"WPA")==0)
+                {
+                    int power=signal_list_2g[j].signal;
+                    if(power<-90)
+                    {
+                        sprintf(pic,"WPAxiao.gif");
+
+                    }
+                    else if((power>=-90)&&(power<-60))
+                    {
+                        sprintf(pic,"WPAzhong.gif");
+                    }
+                    else
+                    {
+                        sprintf(pic,"WPAda.gif");                   
+                    }
+
+                }
+                else
+                {
+                    int power=signal_list_2g[j].signal;
+                    if(power<-90)
+                    {
+                        sprintf(pic,"NONExiao.gif");
+                        
+                    }
+                    else if((power>=-90)&&(power<-60))
+                    {
+                        sprintf(pic,"NONEzhong.gif");
+                    }
+                    else
+                    {
+                        sprintf(pic,"NONEda.gif");
+                    }
+
+                }
+                sprintf(cmdd,"<li rel=\"%s(%s)(%s)(%s)\"> <span><img src=\"/images/%s\"/></span>%s </li>",signal_list_2g[j].ssid,signal_list_2g[j].macaddr,signal_list_2g[j].freq,signal_list_2g[j].Encryption,pic,signal_list_2g[j].ssid);
                 fwrite(cmdd,strlen(cmdd),1,fp);
 
 //				fprintf(errOut,"22-----------signal_list_2g[%d]:ssid %s Encryption %s signal %d dbm \n",
@@ -361,7 +403,8 @@ int main()
         {
         fprintf(errOut,"[luodp] %s(%s)(%s)(%s)\n",val2[i]+4,val1[i]+4,val3[i]+4,val4[i]+4);
         }*/
-        char cmdd[128]={0};
+        char cmdd[512]={0};
+        char pic[16]={0};
         FILE *fp;
         if((fp=fopen("/usr/www/DWS_5G.xml","w+"))==NULL)
         {
@@ -377,7 +420,7 @@ int main()
         sprintf(val3[0],"WPA");
         else  
         sprintf(val3[0],"None");
-        memset(cmdd,0x00,128);
+        memset(cmdd,0x00,512);
         memset(buf,0x00,100);	
         memcpy(buf,val2[0]+1,(strlen(val2[0])-2));
         //					fprintf(errOut,"[luodp] buff----------- %s\n",buf);
@@ -402,7 +445,7 @@ int main()
         else
         sprintf(val3[i]+4,"None");
         //fprintf(errOut,"[luodp] %s(%s)(%s)(%s) \n",val2[i]+4,val1[i]+4,val3[i]+4,val4[i]+4);
-        memset(cmdd,0x00,128);
+        memset(cmdd,0x00,512);
         memset(buf,0x00,100);	
         memcpy(buf,val2[i]+5,(strlen(val2[i]+4)-2));
         //							fprintf(errOut,"[luodp] buff----------- %s\n",buf);
@@ -435,9 +478,47 @@ int main()
 	
 		for ( j = 0; j < ii ; j++ ){
 			
-			memset(cmdd,0x00,100);					
-			sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(%ddbm)</option>",
-				signal_list_5g[j].ssid,signal_list_5g[j].macaddr,signal_list_5g[j].freq,signal_list_5g[j].Encryption,signal_list_5g[j].ssid,signal_list_5g[j].signal);
+			memset(cmdd,0x00,512);	
+                if(strcmp(signal_list_5g[j].Encryption,"WPA")==0)
+                {
+                    int power=signal_list_5g[j].signal;
+                    if(power<-90)
+                    {
+                        sprintf(pic,"WPAxiao.gif");
+
+                    }
+                    else if((power>=-90)&&(power<-60))
+                    {
+                        sprintf(pic,"WPAzhong.gif");
+                    }
+                    else
+                    {
+                        sprintf(pic,"WPAda.gif");                   
+                    }
+
+                }
+                else
+                {
+                    int power=signal_list_5g[j].signal;
+                    if(power<-90)
+                    {
+                        sprintf(pic,"NONExiao.gif");
+                        
+                    }
+                    else if((power>=-90)&&(power<-60))
+                    {
+                        sprintf(pic,"NONEzhong.gif");
+                    }
+                    else
+                    {
+                        sprintf(pic,"NONEda.gif");
+                    }
+
+                }
+                sprintf(cmdd,"<li rel=\"%s(%s)(%s)(%s)\"> <span><img src=\"/images/%s\"/></span>%s </li>",signal_list_5g[j].ssid,signal_list_5g[j].macaddr,signal_list_5g[j].freq,signal_list_5g[j].Encryption,pic,signal_list_5g[j].ssid);
+                
+			//sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(%ddbm)</option>",
+			//	signal_list_5g[j].ssid,signal_list_5g[j].macaddr,signal_list_5g[j].freq,signal_list_5g[j].Encryption,signal_list_5g[j].ssid,signal_list_5g[j].signal);
 			fwrite(cmdd,strlen(cmdd),1,fp);
 
 //				fprintf(errOut,"22-----------signal_list_5g[%d]:ssid %s Encryption %s signal %d dbm \n",
