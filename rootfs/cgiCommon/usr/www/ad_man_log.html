@@ -1,0 +1,126 @@
+﻿<html>
+<head>
+<title></title>
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="/lang/b28n.js"></script>
+<script>
+function getCookie()
+{ 
+	var strCookie=document.cookie; 
+	var arrCookie=strCookie.split("; "); 
+	for(var i=0;i<arrCookie.length;i++)
+	{ 
+		var arr=arrCookie[i].split("="); 
+		if(arr[0]=="userName")
+		{
+			//alert("已经登录");
+			return true;
+		}
+	} 
+	//alert("未登录");
+	return false; 
+}
+if(getCookie())
+{
+	
+}
+else
+{
+	window.top.location.href="../login.html";	
+}
+function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
+function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
+function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "table-row";}}
+function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
+function widget_display(widgetID){document.getElementById(widgetID).style.visibility = "visible";document.getElementById(widgetID).style.display = style_display_on();}
+function widget_disable(widgetID){document.getElementById(widgetID).disabled = true;}
+function button_commit(buttonID){document.getElementById(buttonID).click();}
+
+function initTranslation()
+{
+	trans_inner("title","log title");
+	trans_inner("des","log des");
+	
+	trans_inner("t1des","log t1des");
+	trans_value("setmanExpSetExport","man export");
+	
+}
+function init()
+{
+	Butterlate.setTextDomain("man");
+	initTranslation();
+}
+
+
+function getdatef()
+{
+	var currentTime = new Date();
+
+	var seconds = currentTime.getSeconds();
+	var minutes = currentTime.getMinutes();
+	var hours = currentTime.getHours();
+	var month = currentTime.getMonth() + 1;
+	var day = currentTime.getDate();
+	var year = currentTime.getFullYear();
+
+	var seconds_str = " ";
+	var minutes_str = " ";
+	var hours_str = " ";
+	var month_str = " ";
+	var day_str = " ";
+	var year_str = " ";
+
+	if(seconds < 10)
+		seconds_str = "0" + seconds;
+	else
+		seconds_str = ""+seconds;
+
+	if(minutes < 10)
+		minutes_str = "0" + minutes;
+	else
+		minutes_str = ""+minutes;
+
+	if(hours < 10)
+		hours_str = "0" + hours;
+	else
+		hours_str = ""+hours;
+
+	if(month < 10)
+		month_str = "0" + month;
+	else
+		month_str = ""+month;
+
+	if(day < 10)
+		day_str = "0" + day;
+	else
+		day_str = day;
+
+	return (year+'-'+month_str+'-'+day_str+'-'+hours_str+':'+minutes_str+':'+seconds_str);
+}
+ 
+</script> 
+</head>
+
+<body onload="init();" oncontextmenu="window.event.returnValue=false" >
+<div class="handaer_main">
+<table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
+<h1 id="title"></h1>
+<h2 id="des"></h2>
+<table id="t1" width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
+<form method="post" name="ExportSettings" action="/cgi-bin/log_download.cgi">
+<tr> 
+	<td class="title" colspan="2" id="t1des">导出LOG文件</td>
+</tr>
+<tr>
+	<td> <input value="Export" id="setmanExpSetExport" name="Export" class="handaer_input" type="submit"/></td>
+</tr>
+</form>
+</table>
+
+</td></tr></table>
+</div>
+
+</body>
+</html>
