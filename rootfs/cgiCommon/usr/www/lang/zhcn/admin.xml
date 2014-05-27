@@ -112,6 +112,8 @@
 	<message msgid="admw w4ttitle" msgstr="无线中继" />  
 	<message msgid="admw w5ttitle" msgstr="家长控制" />  
 	<message msgid="admw wwtitle" msgstr="外网/无线中继设置" />  
+	
+	<message msgid="admw current" msgstr="请选择您要中继的WiFi" />  
 
 	<message msgid="admw modedes" msgstr="请您选择HBD路由器WAN口的连接方式。所需参数在开通网络时，由网络运营商（中国电信、中国联通、中国移动等）提供" />  
 	<message msgid="admw modedes1" msgstr="所需参数在开通网络时，由网络运营商（中国电信、中国联通、中国移动等）提供" />  

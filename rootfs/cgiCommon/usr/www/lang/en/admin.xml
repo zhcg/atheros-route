@@ -113,6 +113,8 @@
 	<message msgid="admw w4ttitle" msgstr="WDS Settings" />  
 	<message msgid="admw w5ttitle" msgstr="Parental Control" /> 
 	<message msgid="admw wwtitle" msgstr="Network/WDS" />     
+	
+	<message msgid="admw current" msgstr="Please select the WiFi for WDS" />  
 
 	<message msgid="admw modedes" msgstr="Please select the HBD router WAN connection type." />  
 	<message msgid="admw modedes1" msgstr="The parameters needed in the opening of the network, the network operators to provide" />  

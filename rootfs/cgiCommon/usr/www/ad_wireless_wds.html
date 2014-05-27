@@ -4,12 +4,40 @@
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
+ <style type="text/css">
+#current,#options { border:1px solid #999; }
+#replace {cursor:default;overflow:visible; }
+#current { height:30px!important; overflow:hidden; background:url("/images/dropdown.png") right center no-repeat; margin-bottom:0; font-weight: bold;}
+#current img{ float:right; margin-right:30px;}
+#current,#replace,#options li { width:400px; }
+#options li { width:400px; height:30px!important; overflow:hidden;margin:0;padding:0;list-style-type:none；text-indent:0}
+#options li img{ float:right;margin-right:30px;}
+#options { border-top:0 none; list-style-type:none;margin-top:0;width:400px; height:120px; overflow:scroll;overflow-x:hidden; }
+#current,#options li {padding:0px;}
+#current,#options,#options li {background-color:#FFF;}
+#bbs { word-wrap: break-word; word-break: normal; }
+  
+#current2,#options2 { border:1px solid #999; }
+#replace2 {cursor:default;overflow:visible; }
+#current2 { height:30px!important; overflow:hidden; background:url("/images/dropdown.png") right center no-repeat; margin-bottom:0;font-weight: bold; }
+#current2 img{ float:right; margin-right:30px;}
+#current2,#replace2,#options2 li { width:400px; }
+#options2 li { width:400px; height:30px!important; overflow:hidden;}
+#options2 li img{ float:right;margin-right:30px;}
+#options2 { border-top:0 none; list-style-type:none;margin-top:0;width:400px; height:120px; overflow:scroll;overflow-x:hidden; }
+#current2,#options2 li {padding:0px;}
+#current2,#options2,#options2 li {background-color:#FFF;}
+
+ul,li{margin:0;padding:0;list-style-type:none；text-indent:0}
+ </style>
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
 var show = 0;
 var show2 = 0;
 var search1 = 0;
 var search2 = 0;
+var showlist1 = 0;
+var showlist2 = 0;
 function button_commit(buttonID){document.getElementById(buttonID).click();}
 function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "";}}
 function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
@@ -45,6 +73,12 @@ function initTranslation()
 	e = document.getElementById("offbutton");
 	e.innerHTML = _("admw offbutton");	
 
+	
+	e = document.getElementById("current");
+	e.innerHTML = _("admw current");
+	e = document.getElementById("current2");
+	e.innerHTML = _("admw current");
+	
 	e = document.getElementById("Alreadc2");
 	e.innerHTML = _("admw Alreadc");
 	e = document.getElementById("RMd2");
@@ -110,6 +144,11 @@ function CheckWirelessValue()
 					return false;
 				}
 			}
+			else if(document.getElementById("STA_SECMODE").value == "")
+			{
+				alert(_("err no choose"));
+				return false;
+			}
 		}
 
 	}
@@ -118,7 +157,6 @@ function CheckWirelessValue()
 		document.getElementById("STA_SSID").disabled = true;	
 		document.getElementById("ROOTAP_MAC").disabled = true;	
 		document.getElementById("pwd").disabled = true;	
-		document.getElementById("WFILIST").disabled = true;	 
 		document.getElementById("WDS_CHAN").disabled = true;	 
 		document.getElementById("STA_SECMODE").disabled = true;	 
 	}
@@ -143,6 +181,11 @@ function CheckWirelessValue()
 					return false;
 				}
 			}
+			else if(document.getElementById("STA_SECMODE_2").value == "")
+			{
+				alert(_("err no choose"));
+				return false;
+			}
 		}
 	}
 	else
@@ -150,7 +193,6 @@ function CheckWirelessValue()
 		document.getElementById("STA_SSID_2").disabled = true;	
 		document.getElementById("ROOTAP_MAC_2").disabled = true;	
 		document.getElementById("pwd2").disabled = true;	
-		document.getElementById("WFILIST_3").disabled = true;	 
 		document.getElementById("WDS_CHAN_2").disabled = true;	 
 		document.getElementById("STA_SECMODE_2").disabled = true;	 
 	}
@@ -163,7 +205,7 @@ function CheckWirelessValue()
 }
 function reloadd()
 {
-	window.location.href='ad_wireless_wds?ad_wireless_wds=yes';
+	window.location.href='ad_wireless_wds';
 }
 function showpwd()
 {
@@ -192,15 +234,11 @@ function showpwd()
 		document.getElementById("pwdinput2").innerHTML='<input type="password" name="STA_PSK_KEY_2" id="pwd2" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
    }
  }
-function  WIFSwitch()
+function  WIFSwitch(val)
 {
-	var obj=document.getElementById("WFILIST");
-	var index=obj.selectedIndex; //序号，取当前选中选项的序号
-	
-	if((index!=-1)&&(index!="-1"))
+	var myString=val;
+	if(myString!="")
 	{
-		var myString=obj.options[index].id;
-		
 		var a = myString.indexOf("(");
 		var b = myString.indexOf(")(");
 		var c = myString.lastIndexOf(")(");
@@ -230,18 +268,15 @@ function  WIFSwitch()
 			document.wizard_form.STA_PSK_KEY.disabled = false;
 			document.getElementById("pwd").value="";
 		}
-	}
+		window.parent.iFrameHeight();	
+	}	
 }
 
-function  WIFSwitch2()
+function  WIFSwitch2(val)
 {
-	var obj=document.getElementById("WFILIST_3");
-	var index=obj.selectedIndex; //序号，取当前选中选项的序号
-	
-	if((index!=-1)&&(index!="-1"))
+	var myString=val;
+	if(myString!="")
 	{
-		var myString=obj.options[index].id;
-		
 		var a = myString.indexOf("(");
 		var b = myString.indexOf(")(");
 		var c = myString.lastIndexOf(")(");
@@ -270,6 +305,84 @@ function  WIFSwitch2()
 			document.wizard_form.STA_PSK_KEY_2.disabled = false;
 			document.getElementById("pwd2").value="";
 		}
+		window.parent.iFrameHeight();	
+	}
+	
+}
+function getEle(id){return document.getElementById(id);}
+function liinit()
+{
+	var i;
+	getEle("replace").style.display = "block";
+	showlist1=0;	
+	getEle("options").style.display = "block";
+	var e = document.getElementById("current");
+	e.innerHTML = _("admw current");
+	document.getElementById("STA_SECMODE").value = "";
+	
+	var lis = getEle("options").getElementsByTagName("li");
+	for(i=0,len = lis.length;i<len;i++)
+	{
+		lis[i].onclick = function()
+		{
+			getEle("current").innerHTML = this.innerHTML;
+			WIFSwitch(this.getAttribute("rel"));
+			getEle("options").style.display = "none";
+			showlist1 ++;
+		}
+		lis[i].onmouseover = function(){this.style.backgroundColor = "#DEDEDE";}
+		lis[i].onmouseout = function(){this.style.backgroundColor = "transparent";}
+	}
+
+	getEle("current").onclick = function()
+	{
+		if(showlist1%2==1)
+		{
+			getEle("options").style.display = "block";
+		}
+		else
+		{
+			getEle("options").style.display = "none";
+		}
+		showlist1 ++;
+	}
+}
+function liinit2()
+{
+	var i;
+	getEle("replace2").style.display = "block";
+	showlist2=0;
+	getEle("options2").style.display = "block";
+	var e = document.getElementById("current2");
+	e.innerHTML = _("admw current");
+	document.getElementById("STA_SECMODE_2").value = "";
+	
+	
+	var lis = getEle("options2").getElementsByTagName("li");
+	for(i=0,len = lis.length;i<len;i++)
+	{
+		lis[i].onclick = function()
+		{
+			getEle("current2").innerHTML = this.innerHTML;
+			WIFSwitch2(this.getAttribute("rel"));
+			getEle("options2").style.display = "none";
+			showlist2 ++;
+		}
+		lis[i].onmouseover = function(){this.style.backgroundColor = "#DEDEDE";}
+		lis[i].onmouseout = function(){this.style.backgroundColor = "transparent";}
+	}
+
+	getEle("current2").onclick = function()
+	{
+		if(showlist2%2==1)
+		{
+			getEle("options2").style.display = "block";
+		}
+		else
+		{
+			getEle("options2").style.display = "none";
+		}
+		showlist2 ++;
 	}
 }
 var xmlHttp;
@@ -318,23 +431,22 @@ function showlist()
 		if(xmlHttp.status==200)
 		{
 			window.parent.DialogHide();
-			widget_display("WFILIST");
+			widget_display("replace");
 			if(Gname == "2G")
 			{
-				widget_display("WFILIST");
-				document.getElementById("WFILIST").innerHTML = xmlHttp.responseText;
-				WIFSwitch();
+				widget_display("replace");
+				document.getElementById("options").innerHTML = xmlHttp.responseText;
+				liinit();
 			}
 			else
 			{
-				widget_display("WFILIST_3");
-				document.getElementById("WFILIST_3").innerHTML = xmlHttp.responseText;
-				WIFSwitch2();
+				widget_display("replace2");
+				document.getElementById("options2").innerHTML = xmlHttp.responseText;
+				liinit2();
 			}
 			checklistempty();
+			window.parent.iFrameHeight();			
 		}
-
-
 	}
 }
 function GetXmlHttpObject()
@@ -387,7 +499,22 @@ function switch_wds()
 			widget_display("dwsset2");
 		}
 		widget_display("dwsset3");
-		
+		var ssss = document.getElementById("STA_SECMODE").value;
+		if(ssss != "")
+		{	
+			if(ssss == "None")
+			{
+				document.wizard_form.STA_PSK_KEY.disabled = true;
+				widget_hide("tt2");
+
+			}
+			else 
+			{
+				widget_display("tt2");
+				document.wizard_form.STA_PSK_KEY.disabled = false;
+				document.getElementById("pwd").value="";
+			}
+		}		
 	}
 	else
 	{
@@ -396,7 +523,7 @@ function switch_wds()
 		widget_hide("tt2");
 	}
 	checklistempty();
-	WIFSwitch();
+	
 	window.parent.iFrameHeight();
 }
 function switch_wds2()
@@ -408,7 +535,21 @@ function switch_wds2()
 			widget_display("dwsset22");
 		}
 		widget_display("dwsset32");
-
+		var ssss=document.getElementById("STA_SECMODE_2").value;
+		if(ssss != "")
+		{	
+			if(ssss == "None")
+			{
+				document.wizard_form.STA_PSK_KEY_2.disabled = true;
+				widget_hide("tt22");
+			}
+			else
+			{
+				widget_display("tt22");
+				document.wizard_form.STA_PSK_KEY_2.disabled = false;
+				document.getElementById("pwd2").value="";
+			}
+		}
 	}
 	else
 	{
@@ -417,7 +558,7 @@ function switch_wds2()
 		widget_hide("tt22");
 	}
 	checklistempty();
-	WIFSwitch2();
+
 	window.parent.iFrameHeight();
 }
 function initshow()
@@ -436,17 +577,17 @@ function initshow2()
 }
 function checklistempty()
 {
-	if (document.getElementById("WFILIST").innerHTML=="")
+	if (document.getElementById("options").innerHTML=="")
 	{
-		widget_hide("WFILIST");
+		widget_hide("replace");
 		search1 = 0;
 	}
 	else
 		search1 = 1;
 		
-	if (document.getElementById("WFILIST_3").innerHTML=="")
+	if (document.getElementById("options2").innerHTML=="")
 	{
-		widget_hide("WFILIST_3");
+		widget_hide("replace2");
 		search2 = 0;
 	}
 	else
@@ -492,6 +633,7 @@ function initValue()
 		widget_hide("buttontable");
 	}
 	WIFI_HS();
+	checklistempty();
 }
 
 function WIFI_HS()
@@ -554,7 +696,12 @@ function help()
 <tr id="dwsset3">
     <td class="head" id="Wlisttitle1"></td>
     <td>
-	<select name="WFILIST" id="WFILIST" size="1" onChange="WIFSwitch()"></select>&nbsp;&nbsp;<input type="button" name="refresh" id="fresh" class="handaer_small_button" value="Fresh" onClick="refreshwds()">
+	<div id="replace">
+		<div id="current"></div>
+		<ul id="options"></ul>
+	</div>
+	
+	<div id="bbs"><input type="button" name="refresh" id="fresh" class="handaer_small_button" value="Fresh" onClick="refreshwds()"></div>
 	</td>
   </tr>
     
@@ -596,7 +743,11 @@ function help()
 <tr id="dwsset32">
     <td class="head" id="Wlisttitle12"></td>
     <td>
-	<select name="WFILIST_3" id="WFILIST_3" size="1" onChange="WIFSwitch2()"></select>&nbsp;&nbsp;<input type="button" name="refresh2" id="fresh2" class="handaer_small_button" onClick="refreshwds2()">
+		<div id="replace2">
+		<div id="current2"></div>
+		<ul id="options2"></ul>
+	</div>
+	&nbsp;&nbsp;<input type="button" name="refresh2" id="fresh2" class="handaer_small_button" onClick="refreshwds2()">
 	</td>
   </tr>
     
@@ -619,9 +770,9 @@ function help()
     <input type="button" name="apply_motion" id="bAPPLY" class="handaer_input" value="Apply" onClick="CheckWirelessValue();">
 	<input type="submit" name="WIRRE" id="WIRRE" style="display:none" value="WIRRE">
 	<input type="text" style="display:none" name="WDS_CHAN" id="WDS_CHAN" size="20" maxlength="32" value="~~WDS_CHAN~">	
-	<input type="text" style="display:none" name="STA_SECMODE" id="STA_SECMODE" size="20" maxlength="32" value="~~STA_SECMODE~">	
+	<input type="text" style="display:none" name="STA_SECMODE" id="STA_SECMODE" size="20" maxlength="32" value="">	
 	<input type="text" style="display:none" name="WDS_CHAN_2" id="WDS_CHAN_2" size="20" maxlength="32" value="~~WDS_CHAN_2~">	
-	<input type="text" style="display:none" name="STA_SECMODE_2" id="STA_SECMODE_2" size="20" maxlength="32" value="~~STA_SECMODE_2~">	
+	<input type="text" style="display:none" name="STA_SECMODE_2" id="STA_SECMODE_2" size="20" maxlength="32" value="">	
   </td>
 </tr>
 </table>
