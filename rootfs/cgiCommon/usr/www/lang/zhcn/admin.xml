@@ -118,7 +118,7 @@
 	<message msgid="admw modedes" msgstr="请您选择HBD路由器WAN口的连接方式。所需参数在开通网络时，由网络运营商（中国电信、中国联通、中国移动等）提供" />  
 	<message msgid="admw modedes1" msgstr="所需参数在开通网络时，由网络运营商（中国电信、中国联通、中国移动等）提供" />  
 	<message msgid="admw wifides" msgstr="请您设置HBD路由器的WiFi名称和密码。您的电脑、PAD、智能手机等将使用以下网络上网" />  
-	<message msgid="admw wirelessdes" msgstr="请您选择要连接的WiFi。注意:两种频段中继功能需分开生效;中继之后,请使用静态IP方式连接登录Web" />  
+	<message msgid="admw wirelessdes" msgstr="请您选择要连接的WiFi。注意:中继之后,请使用静态IP方式连接登录Web" />  
 	<message msgid="admw parentdes" msgstr="作为家长，您可以通过在本页进行设置，对孩子的上网时间和访问网页进行控制" />  
 
 	<message msgid="admw PPMAC" msgstr="家长PC的MAC地址" />
