@@ -316,6 +316,65 @@ void board_init_f(ulong bootflag)
  *
  ************************************************************************
  */
+#if 1
+#include "ar934x_soc.h"
+
+
+/*uart driver */
+#define ATH_HS_UART_BAUD                115200
+#define ATH_HS_UART_CLK                 0x18500008
+#define ATH_HS_UART_CS                  0x18500004
+
+
+#define KSEG1                   0xa0000000
+#define KSEG1ADDR(a)            (((a) & 0x1fffffff) | KSEG1)
+#define ar7240_reg_rd(_phys)    (*(volatile unsigned int *)KSEG1ADDR(_phys))
+#define ar7240_reg_wr_nf(_phys, _val) \
+                    ((*(volatile unsigned int *)KSEG1ADDR(_phys)) = (_val))
+
+#define ar7240_reg_wr(_phys, _val) do {     \
+                    ar7240_reg_wr_nf(_phys, _val);  \
+                    ar7240_reg_rd(_phys);       \
+}while(0);
+
+#define ar7240_reg_rmw_set(_reg, _mask)  do {                        \
+    ar7240_reg_wr((_reg), (ar7240_reg_rd((_reg)) | (_mask)));      \
+    ar7240_reg_rd((_reg));                                           \
+}while(0);
+
+#define ar7240_reg_rmw_clear(_reg, _mask)  do {                        \
+    ar7240_reg_wr((_reg), (ar7240_reg_rd((_reg)) & ~(_mask)));      \
+    ar7240_reg_rd((_reg));                                           \
+}while(0);
+
+#define GPIO_OE					0x18040000
+#define	ATH_GPIO_OUT			GPIO_OE+0x08
+#define GPIO_OUT_FUNC5			GPIO_OE+0x40
+
+#endif
+
+int gpio_a20_rest()
+{
+	unsigned int rddata, c;
+	int i;
+	
+	printf("Begin Gpio rest\n");
+	rddata = ar7240_reg_rd(GPIO_OE);
+	rddata &= 0xffefffff;
+	//rddata |= (0x6<<20);
+	ar7240_reg_wr(GPIO_OE, rddata);//GPIO 20 Out
+
+	rddata = ar7240_reg_rd(GPIO_OUT_FUNC5);
+	rddata = rddata & 0xffffff00;
+	ar7240_reg_wr(GPIO_OUT_FUNC5, rddata);
+
+	
+	ar7240_reg_rmw_set(ATH_GPIO_OUT, 1<<20);
+	udelay(150*1000);
+	ar7240_reg_rmw_clear(ATH_GPIO_OUT, 1<<20);
+	printf("Gpio rest End\n");
+	return 0;
+}
 
 void board_init_r (gd_t *id, ulong dest_addr)
 {
@@ -457,6 +516,9 @@ void board_init_r (gd_t *id, ulong dest_addr)
 #ifdef CONFIG_WASP_SUPPORT
         ath_set_tuning_caps(); /* Needed here not to mess with Ethernet clocks */
 #endif
+
+	//add for a20 reset
+	gpio_a20_rest();
 
 	/* main_loop() can return to retry autoboot, if so just run it again. */
 	for (;;) {
