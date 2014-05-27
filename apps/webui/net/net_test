@@ -28,7 +28,11 @@ if [ $VAL -eq 1024 ];then
 			else
 				echo "0">/usr/www/ping.xml
 			fi
+		else
+			echo "0">/usr/www/ping.xml
 		fi
+	else
+		echo "0">/usr/www/ping.xml
 	fi
 else
 if [ $VAL -eq 0 ];then

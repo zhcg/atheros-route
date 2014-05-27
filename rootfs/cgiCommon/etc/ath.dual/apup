@@ -131,6 +131,10 @@ if [ $NUMRADIO = 1 ]; then
 	cfg -a WIFION_OFF_3=off
 	cfg -a RADIO_STATUS=1
 	cfg -c
+else if [ $NUMRADIO = 2 ]; then
+	cfg -a RADIO_STATUS=3
+	cfg -c
+fi
 fi
 ##
 ## Now, process the modes
