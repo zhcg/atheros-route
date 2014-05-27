@@ -208,7 +208,8 @@ function BarMenu(id)
 			this.id_openbox2 = "bar-menu2-0-0-2-3-3-2-1-2-0";
 			window.ifm.location.href="cgi-bin/ad_man_timezone?ad_man_timezone=yes";
 		}
-		if(id=="bar-menu2-0-0-2-3-3-2-2-2-5")
+		//if(id=="bar-menu2-0-0-2-3-3-2-2-2-5")添加了log到处，5变6
+		if(id=="bar-menu2-0-0-2-3-3-2-2-2-6")
 		{
 			window.ifm.location.href="cgi-bin/ad_netcheck?INDEX=00";
 		}

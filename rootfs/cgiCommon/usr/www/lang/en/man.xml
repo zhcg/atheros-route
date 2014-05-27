@@ -100,6 +100,11 @@
 	<message msgid="man date" msgstr="Date" />
 	<message msgid="man modify" msgstr="Delete" />
 
+	<message msgid="log title" msgstr="LOG Management" />
+	<message msgid="log des" msgstr="Export LOG file" />
+	<message msgid="log t1des" msgstr="Export LOG file" />
+
+
 	<message msgid="man use" msgstr="USE" />
 	<message msgid="man delete" msgstr="DELETE" />
 	<message msgid="err MAC wuxiao" msgstr="MAC address is illegal" />

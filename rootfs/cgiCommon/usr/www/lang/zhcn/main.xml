@@ -49,7 +49,7 @@
 	<message msgid="advmenu treeapp_man_factory" msgstr="恢复出厂设置" />
 	<message msgid="advmenu treeapp_man_reboot" msgstr="系统重启" />
 	<message msgid="advmenu treeapp_netcheck" msgstr="网络诊断" />
-
+	<message msgid="advmenu treeapp_man_log" msgstr="LOG管理" />
 
 	<message msgid="sset exit" msgstr="你确定要退出吗？" />  
 	<message msgid="admw m_fast" msgstr="快速设置" />

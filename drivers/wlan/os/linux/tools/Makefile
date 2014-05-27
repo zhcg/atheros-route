@@ -213,6 +213,9 @@ upload.cgi: upload.cgi.c
 	cp search.cgi $(INSTALL_ROOT)/usr/www/cgi-bin
 	${CC} -o wan_check.cgi ${CFLAGS} ${LDFLAGS} wan_check.cgi.c
 	cp wan_check.cgi $(INSTALL_ROOT)/usr/www/cgi-bin
+	${CC} -o log_download.cgi ${CFLAGS} ${LDFLAGS} log_download.cgi.c
+	cp log_download.cgi $(INSTALL_ROOT)/usr/www/cgi-bin
+	
 
 athdebug: athdebug.c
 	${CC} -o athdebug ${CFLAGS} ${LDFLAGS} athdebug.c
