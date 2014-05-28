@@ -3,6 +3,7 @@
 #include "stdlib.h"
 #include "dirent.h"
 #include <assert.h>
+#include "cgiMain.h"
 #include "filelist.h"
 
 static FILE *errOut;
@@ -156,6 +157,8 @@ main()
 	len=atoii(getenv("CONTENT_LENGTH"));
 
     
+	write_systemLog("cfgupload setting begin"); 
+
     errOut = fopen("/dev/ttyS0","w");
 
         
@@ -387,6 +390,8 @@ error:
 				 printf("</body></html>");
 			}
 	}
+	
+	write_systemLog("cfgupload setting end"); 
 	return;
 	
 }

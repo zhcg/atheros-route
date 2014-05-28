@@ -5,6 +5,7 @@
 	#include<unistd.h>
     #include "filelist.h"
 
+#include "cgiMain.h"
 	#define MAX_FILE_LEN  (1024*30)
 	#define DOWNLOAD_FILE_PATH	"/tmp/"
 	#define DOWNLOAD_FILE_NAME	"cal.bin"
@@ -60,6 +61,8 @@ void backup_file(void)
 		struct stat sb;
 		struct staList stalist;
 		
+		write_systemLog("cfgdownload setting begin"); 
+
 		system("dd if=/dev/caldata of=/tmp/cal.bin  > /dev/null 2>&1");
 
         backup_file();
@@ -102,6 +105,7 @@ void backup_file(void)
 			}while(!feof(fp));
 			fclose(fp);	
 		}
+		write_systemLog("cfgdownload setting end"); 
 
 		return 1;
 	}

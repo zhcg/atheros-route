@@ -3,6 +3,7 @@
 #include "stdlib.h"
 #include "dirent.h"
 #include <assert.h>
+#include "cgiMain.h"
 
 static FILE *errOut;
 
@@ -123,6 +124,9 @@ main()
 	char tmpBuf[512];
 	char filePath[256]="/tmp/";//directory of uploaded file
 	FILE *fileBuf=NULL;
+
+	write_systemLog("upload setting begin"); 
+	
 	reqMethod=getenv("REQUEST_METHOD");
 	len=atoii(getenv("CONTENT_LENGTH"));
 
@@ -338,6 +342,9 @@ error:
 				 printf("</body></html>");
 			}
 	}
+	
+	write_systemLog("upload setting  end"); 
+	
 	return;
 	
 }

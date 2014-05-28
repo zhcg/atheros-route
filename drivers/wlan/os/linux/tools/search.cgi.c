@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "cgiMain.h"
 
 typedef struct wireless_signal{
 	char ssid[128];
@@ -91,6 +92,8 @@ int main()
     int num=0;
     char  buf[100];//wangyu add  for ath scan
     int lists=0;
+
+	write_systemLog("search wireless signal list  begin"); 
 
     req_method = getenv("REQUEST_METHOD");
     input = getcgidata(stdin, req_method);
@@ -527,6 +530,7 @@ int main()
         }
         fclose(fp);
         }
+	write_systemLog("search wireless signal list  end"); 
     return 1;
 }
 

@@ -37,6 +37,7 @@
 #include <sys/reboot.h>
 
 #include <sys/file.h>
+#include "cgiMain.h"
 
 #ifdef CONFIG_NVRAM
 #define NVRAM  "/dev/nvram"
@@ -3220,7 +3221,9 @@ int set_dhcp(void)
 { 
 		fprintf(errOut,"\n%s  %d set_dhcp \n",__func__,__LINE__);		
 		char valBuff1[128]; 
-				
+		
+		write_systemLog("-----set_dhcp begin");	
+		
 		CFG_get_by_name("DHCPON_OFF",valBuff1);
 		//save new config to flash 
             writeParametersWithSync();
@@ -3243,6 +3246,8 @@ int set_dhcp(void)
 			Execute_cmd("/usr/sbin/set_addr_conf > /dev/null 2>&1",rspBuff);
 			Execute_cmd("/usr/sbin/udhcpd /etc/udhcpd.conf",rspBuff);
 		}
+		
+		write_systemLog("-----set_dhcp end");	
 		return 0;
 }
 /*
@@ -3265,6 +3270,7 @@ int set_addr_bind(void)
 		CFG_get_by_name("ADD_IP",valBuff2);
 		CFG_get_by_name("ADD_STATUS",valBuff3);
 		//off
+		write_systemLog("set_addr_bind begin");			
 		
 		#ifdef MESSAGE
 		fprintf(errOut,"%s  %d  valBuff1 %s valBuff2 %s valBuff3 %s\n",__func__,__LINE__,
@@ -3313,6 +3319,8 @@ int set_addr_bind(void)
 		}
 		
 		Execute_cmd("/usr/sbin/udhcpd /etc/udhcpd.conf",rspBuff);
+		
+		write_systemLog("set_addr_bind end");			
 		return result;
 }
 
@@ -3320,6 +3328,10 @@ int modify_addr_bind(void)
 {					
 		char tmp[128];
 		char valBuff[128];
+
+		write_systemLog("modify_addr_bind begin");			
+
+		
 		CFG_get_by_name("ON_OFF",valBuff);
             writeParametersWithSync();
             //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
@@ -3329,6 +3341,10 @@ int modify_addr_bind(void)
 		sprintf(tmp,"/usr/sbin/modify_addr %s > /dev/null 2>&1",valBuff);
 		Execute_cmd(tmp,rspBuff);
 		Execute_cmd("/usr/sbin/udhcpd /etc/udhcpd.conf",rspBuff);
+
+		
+		write_systemLog("modify_addr_bind end");			
+
 		return 1;
 }
 
@@ -3340,6 +3356,8 @@ int del_addr_bind(void)
 	char valBuff2[128]; 
 	char valBuff3[128]; 
 
+	write_systemLog("del_addr_bind begin");			
+
 	//CFG_get_by_name("DELXXX",valBuff1);
             writeParametersWithSync();
             //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
@@ -3349,6 +3367,9 @@ int del_addr_bind(void)
 	Execute_cmd("/usr/sbin/del_addr > /dev/null 2>&1",rspBuff);
 	
 	Execute_cmd("/usr/sbin/udhcpd /etc/udhcpd.conf",rspBuff);
+
+	write_systemLog("del_addr_bind end");			
+	
 	return 0;
 }
 /*end :  wangyu add for dhcp server operation */
@@ -3356,29 +3377,37 @@ int del_addr_bind(void)
 //luodp route rule
 void add_route_rule(void)
 {
-            writeParametersWithSync();
-            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-            //writeParameters("/tmp/.apcfg","w+",0);
+	write_systemLog("add_route_rule begin");			
+	writeParametersWithSync();
+	//writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+	//writeParameters("/tmp/.apcfg","w+",0);
 	Execute_cmd("/usr/sbin/set_route > /dev/null 2>&1",rspBuff);
+
+	write_systemLog("add_route_rule end");			
 } 
 void del_route_rule(void)
 {
-            writeParametersWithSync();
-            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-            //writeParameters("/tmp/.apcfg","w+",0);
+	write_systemLog("del_route_rule begin");			
+
+	writeParametersWithSync();
+	//writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+	//writeParameters("/tmp/.apcfg","w+",0);
 	Execute_cmd("/usr/sbin/del_route > /dev/null 2>&1",rspBuff);
+	write_systemLog("del_route_rule end");			
 }
 
 void modify_route_rule(void)
 {
 	char tmp[128];
 	char valBuff[128];
+	write_systemLog("modify_route_rule begin");			
 	CFG_get_by_name("ON_OFF",valBuff);
             writeParametersWithSync();
             //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
             //writeParameters("/tmp/.apcfg","w+",0);
 	sprintf(tmp,"/usr/sbin/modify_route %s > /dev/null 2>&1",valBuff);
 	Execute_cmd(tmp,rspBuff);
+	write_systemLog("modify_route_rule end");			
 }
 
 int add_arp(void)
@@ -3396,6 +3425,7 @@ int add_arp(void)
 	struct in_addr addr_ip, addr_mask;
 	struct in_addr addr_ip2, addr_mask2;
 	
+	write_systemLog("add_arp begin");			
             writeParametersWithSync();
             //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
             //writeParameters("/tmp/.apcfg","w+",0);
@@ -3506,32 +3536,45 @@ error:
 		}
 		fclose(fileBuf2);
 	}
+	
+	write_systemLog("add_arp end");			
 	return result;
 }
 void del_arp(void)
 {
+	write_systemLog("del_arp begin");			
             writeParametersWithSync();
             //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
             //writeParameters("/tmp/.apcfg","w+",0);
 	Execute_cmd("/usr/sbin/del_arp > /dev/null 2>&1",rspBuff);
+	
+	write_systemLog("del_arp end");			
 }
 
 void modify_arp(void)
 {
 	char tmp[128];
 	char valBuff[128];
+	
+	write_systemLog("modify_arp begin");			
+
 	CFG_get_by_name("ON_OFF",valBuff);
             writeParametersWithSync();
             //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
             //writeParameters("/tmp/.apcfg","w+",0);
 	sprintf(tmp,"/usr/sbin/modify_arp %s > /dev/null 2>&1",valBuff);
 	Execute_cmd(tmp,rspBuff);
+
+	write_systemLog("modify_arp end");			
 }
 
 void add_backup(void)
 {
 	char pChar[128];
 	char valBuff1[128];
+	
+	write_systemLog("add_backup begin");			
+
 	errOut = fopen("/dev/ttyS0","w");
             writeParametersWithSync();
             //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
@@ -3540,11 +3583,17 @@ void add_backup(void)
 	fprintf(errOut,"\n%s  %d valBuff1 is %s \n",__func__,__LINE__, valBuff1);
 	sprintf(pChar,"/usr/sbin/set_backup %s > /dev/null 2>&1",valBuff1);
 	Execute_cmd(pChar,rspBuff);
+	
+	write_systemLog("add_backup end");	
+	
 }
 void del_backup(void)
 {
 	char pChar[128];
 	char valBuff1[128];
+	
+	write_systemLog("del_backup begin");			
+	
 	CFG_get_by_name("ACT",valBuff1);
             writeParametersWithSync();
             //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
@@ -3552,9 +3601,12 @@ void del_backup(void)
 	sprintf(pChar,"/usr/sbin/del_backup %s > /dev/null 2>&1",valBuff1);
 	Execute_cmd(pChar,rspBuff);
 	CFG_set_by_name(valBuff1,"");
-            writeParametersWithSync();
-            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-            //writeParameters("/tmp/.apcfg","w+",0);
+    writeParametersWithSync();
+    //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+    //writeParameters("/tmp/.apcfg","w+",0);
+    
+	write_systemLog("del_backup end");			
+            
 }
 void use_backup(void)
 {
@@ -3564,6 +3616,9 @@ void use_backup(void)
 	char *bakupName;
 	int i;
 	FILE *fp;
+	
+	write_systemLog("use_backup begin");			
+
 	errOut = fopen("/dev/ttyS0","w");
             writeParametersWithSync();
             //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
@@ -3622,6 +3677,8 @@ void use_backup(void)
 	system(cmdd);
 
 	free(bakupName);
+	
+	write_systemLog("use_backup end");			
 	system("reboot"); 
 }
 //luodp end  route rule 
@@ -3857,6 +3914,7 @@ int  add_sta_access()
     char wifi0_flag[5];
     char wifi1_flag[5];
 
+	write_systemLog("add_sta_access begin");			
 
 	CFG_get_by_name("WIFION_OFF",wifi0_flag);
 	CFG_get_by_name("WIFION_OFF_3",wifi1_flag);
@@ -3984,6 +4042,9 @@ int  add_sta_access()
 		}
 		
 	} 
+
+	write_systemLog("add_sta_access end");	
+	
     return same;
 }
 
@@ -3999,6 +4060,7 @@ void del_sta_access()
     char wifi0_flag[5];
     char wifi1_flag[5];
 
+	write_systemLog("del_sta_access begin");	
 
 	CFG_get_by_name("WIFION_OFF",wifi0_flag);
 	CFG_get_by_name("WIFION_OFF_3",wifi1_flag);
@@ -4062,6 +4124,9 @@ void del_sta_access()
 			fclose(fp);
 		}
 	}
+	
+	write_systemLog("del_sta_access end");	
+	
 }
 
 void control_sta_access()
@@ -4076,6 +4141,7 @@ void control_sta_access()
     char wifi0_flag[5];
     char wifi1_flag[5];
 
+	write_systemLog("control_sta_access begin");	
 
 	CFG_get_by_name("WIFION_OFF",wifi0_flag);
 	CFG_get_by_name("WIFION_OFF_3",wifi1_flag);
@@ -4166,6 +4232,8 @@ void control_sta_access()
 		//Execute_cmd("killall -q -USR1 udhcpd", rspBuff);
 		fprintf(errOut,"\n%s  %d --------CONM_WORK off--------- \n",__func__,__LINE__);
 	}
+	
+	write_systemLog("control_sta_access end");	
 }
 
 void modify_sta_access()
@@ -4181,6 +4249,7 @@ void modify_sta_access()
     char wifi0_flag[5];
     char wifi1_flag[5];
 
+	write_systemLog("modify_sta_access begin");	
 
 	CFG_get_by_name("WIFION_OFF",wifi0_flag);
 	CFG_get_by_name("WIFION_OFF_3",wifi1_flag);
@@ -4248,6 +4317,9 @@ void modify_sta_access()
 		p = p->next;
 	}
 	fclose(fp);
+
+	write_systemLog("modify_sta_access end"); 
+	
 }
 
 struct staList *scan_staList(struct staList *list)
@@ -4465,7 +4537,8 @@ int set_ntp_server( void)
 	char valBuff3[128]; 
 	char valBuff4[128]; 
 	int  set_ntp_flag;
-
+	
+	write_systemLog("set_ntp_server begin");	
 
 	CFG_get_by_name("NTPON_OFF",valBuff1);
 	CFG_get_by_name("TIME_ZONE",valBuff2);
@@ -4511,6 +4584,8 @@ int set_ntp_server( void)
 		}
 		fclose(fileBuf2);
 	}
+	write_systemLog("set_ntp_server end");	
+
 	return set_ntp_flag;
 #endif
 }
@@ -4520,6 +4595,7 @@ int set_pctime(void)
 #ifdef MESSAGE
 	fprintf(errOut,"\n%s  %d TIMEZONE_SET \n",__func__,__LINE__);
 #endif		
+	write_systemLog("set_pctime begin");	
 	
 	char valBuff1[128]; 
 	char valBuff2[128]; 
@@ -4539,6 +4615,8 @@ int set_pctime(void)
             //writeParameters("/tmp/.apcfg","w+",0);
 
 	Execute_cmd("/usr/sbin/set_pctime > /dev/null 2>&1",rspBuff);
+
+	write_systemLog("set_pctime end");	
 
 	return 0;
 }
@@ -4563,6 +4641,9 @@ void set_wireless_wan(void)
 		char wds2gturn_flag[128],wds5gturn_flag[128];
 		char wds2g_bak[128],wds5g_bak[128];
 		char order[128];
+
+		write_systemLog("set_wireless_wan WISP begin");	
+
 		//2.get old config from flash 
 		Execute_cmd("cfg -e | grep 'AP_SECMODE_2=' |  awk -F '\"' '{print $2}'",ap_secmode);
 		Execute_cmd("cfg -e | grep 'WDSON_OFF=' | awk -F '=' '{print $2}'",wdsonoff_flag);
@@ -4806,6 +4887,7 @@ void set_wireless_wan(void)
 			}
 		}
 	#endif
+	write_systemLog("set_wireless_wan WISP end"); 
 
 	/*Execute_cmd("iwpriv ath1 wds 1", rspBuff);
 	Execute_cmd("brctl addif br0 ath1", rspBuff);
@@ -5050,6 +5132,7 @@ int main(int argc,char **argv)
                 {"AP_SSID_2","AP_SSID_4","PSK_KEY_2","PSK_KEY_4" },  
                 {"ADD_MAC","ADD_IP","ADD_STATUS"  }
             };
+			write_systemLog("WIRELESS_ADVSET begin"); 
 
 
             if(argc < 3)
@@ -5307,6 +5390,7 @@ int main(int argc,char **argv)
                     err_flag=1;
                     break;
                  }
+				 write_systemLog("terminal_dev_register factory reset begin"); 
 
                 //factory reset
                  system("cfg -x");
@@ -5347,6 +5431,7 @@ int main(int argc,char **argv)
                 writeParameters("/tmp/.apcfg","w+",0);
                 //remove ip_mac  bing
                  system("rm /etc/ip_mac.conf > /dev/null 2>&1");
+				write_systemLog("terminal_dev_register factory reset end"); 
 
                 exit(0);
                  break;
@@ -5354,6 +5439,7 @@ int main(int argc,char **argv)
             default:
                  break;
             }
+			write_systemLog("WIRELESS_ADVSET end"); 
 
             if(err_flag)
             {
@@ -5856,6 +5942,7 @@ int main(int argc,char **argv)
                 parameterIndex = atoi(Value);
                 if((parameterIndex==13)&&(lock13==0))//do wan mode detect
                 {
+					write_systemLog("wan_check begin"); 
                     Execute_cmd("wan_check", rspBuff);
                     memset(&config,0,sizeof(config));
                     f = fopen("/tmp/.apcfg","r");
@@ -5877,6 +5964,7 @@ int main(int argc,char **argv)
                         fclose(f);
                     }
 					lock13 = 1;
+					write_systemLog("wan_check end"); 
 				}
                sprintf(Value,"%d",parameterIndex);
             }
@@ -5929,6 +6017,7 @@ int main(int argc,char **argv)
 		//if dhcp fail ,WAN_MODE rollback to last value
 		char tmp[128],*tmp2;
 		//static  char     rspBuff2[65536];
+		write_systemLog("wan mode setting begin");	
 		
 		if(strcmp(CFG_get_by_name("DHCPW",valBuff),"DHCPW")== 0 )
 		{
@@ -6065,6 +6154,9 @@ int main(int argc,char **argv)
 				 printf("</body></html>");
 				 exit(1);
 		}
+		
+		write_systemLog("wan mode setting end");	
+
 		gohome =1;
     }
 	//wan mode static ip
@@ -6075,6 +6167,9 @@ int main(int argc,char **argv)
 		char pChar[128];
 		char valBuff2[128];	
 		int flag=0;
+
+		write_systemLog("wan mode static ip begin");	
+
 		if(strcmp(CFG_get_by_name("SIPW",valBuff),"SIPW") == 0 )
 		{
 			flag=1;
@@ -6128,6 +6223,8 @@ int main(int argc,char **argv)
 			Execute_cmd(pChar, rspBuff);
 		}
 		*/
+		write_systemLog("wan mode static ip end");	
+
 		gohome =1;
     }
 
@@ -6168,6 +6265,8 @@ int main(int argc,char **argv)
 		char wds2gturn_flag[128],wds5gturn_flag[128];
 		char wds2g_bak[128],wds5g_bak[128];
 		char order[128];
+		
+		write_systemLog("wds setting begin"); 
 
 		//2.get old config from flash 
 		Execute_cmd("cfg -e | grep 'AP_SECMODE_2=' |  awk -F '\"' '{print $2}'",valBuff2);
@@ -6437,6 +6536,8 @@ int main(int argc,char **argv)
 		Execute_cmd("brctl addif br0 ath1", rspBuff);
 		Execute_cmd("ifconfig ath1 up", rspBuff);*/
 		gohome =1;
+		
+		write_systemLog("wds setting end"); 
     }
 	//WIRRE_WAN 
 	if(strcmp(CFG_get_by_name("WIRRE_WAN",valBuff),"WIRRE_WAN") == 0 ) 
@@ -6473,6 +6574,8 @@ int main(int argc,char **argv)
 		int flag=0;
 		int ii;
         int led_flag=0;
+		
+		write_systemLog("WIRELESS basic setting begin"); 
 
 		//1.get old value from flash
 		Execute_cmd("cfg -e | grep \"WIFION_OFF=\" | awk -F \"=\" \'{print $2}\'",valBuff);
@@ -7064,6 +7167,8 @@ int main(int argc,char **argv)
 		}
 #endif
 	
+		write_systemLog("WIRELESS basic setting end"); 
+
 		gohome =1;
     }
 
@@ -7084,6 +7189,8 @@ int main(int argc,char **argv)
 			memset(cmdstr,'\0',128);
 			memset(route_gw,'\0',20);
 			int flag=0; 
+			
+			write_systemLog("pppoe basic setting begin"); 
 
 			system("ifconfig eth0 0.0.0.0 up"); //wangyu add for the wan mode change from static to pppoe			
 			
@@ -7202,6 +7309,8 @@ int main(int argc,char **argv)
 			system("killall ppy > /dev/null 2>&1");sleep(3);
 			system("ppy > /dev/null 2>&1 &");sleep(2);//bash  avoid let syntax error
 			//system("sleep 1 && reboot &");
+			
+			write_systemLog("pppoe basic setting end"); 
 
 		}
 
@@ -7210,6 +7319,8 @@ int main(int argc,char **argv)
      if(strcmp(CFG_get_by_name("ADMINSET",valBuff),"ADMINSET") == 0 )
     {
          fprintf(errOut,"\n%s  %d ADMINSET \n",__func__,__LINE__);
+
+		 write_systemLog("login settings begin");	 
             
          char cmdd[128]={0};
          int qq=0;
@@ -7242,6 +7353,9 @@ int main(int argc,char **argv)
          printf("<script  language=javascript>setTimeout(function(){window.opener=null;window.open('/index.html','_top');},1000);</script>");
          //printf("<script  language=javascript>setTimeout(function(){window.opener=null;window.open('http://10.10.10.254','_top');},1000);</script>");
          printf("</body></html>");
+		 
+		 write_systemLog("login settings end");	 
+         
          gohome =2;
     }
 	if(strcmp(CFG_get_by_name("FACTORY",valBuff),"FACTORY") == 0 )
@@ -7251,10 +7365,12 @@ int main(int argc,char **argv)
 		//char valBuff[128];
 		
 		//CFG_get_by_name("SOFT_VERSION",valBuff);		
+		write_systemLog("factory reset begin"); 
 
         
         system("cfg -x");
 
+		write_systemLog("factory reset end"); 
         
 		sleep(3);
 		//backup version
@@ -7306,6 +7422,8 @@ int main(int argc,char **argv)
 		char linenum[128];
 		char valBuff_eth0[128];
 		
+		write_systemLog("factory reset begin"); 
+		
 //		Execute_cmd("cat /etc/mac.bin",mymac);
 //		mymac2=strtok(mymac,"\n");
 		Execute_cmd("/usr/sbin/get_mac eth0",mymac);
@@ -7356,6 +7474,7 @@ int main(int argc,char **argv)
             //writeParameters("/tmp/.apcfg","w+",0);
         Result_tiaozhuan("yes",argv[0]);   
         gohome =2;
+		write_systemLog("factory reset end"); 
     }
     /*************************************
     内网设置    DHCP服务器
@@ -7429,6 +7548,8 @@ int main(int argc,char **argv)
 		char valBuff3[1000];
 		
 		int num,i=0;
+		
+		write_systemLog("gateway setting begin"); 
 
 		CFG_get_by_name("AP_IPADDR",br0_ip);
 		CFG_get_by_name("AP_NETMASK",br0_sub);
@@ -7576,6 +7697,7 @@ int main(int argc,char **argv)
        } 
 		gohome =2;
         sleep(10);
+		write_systemLog("gateway setting end"); 
     }
     
     /*************************************
@@ -7584,6 +7706,7 @@ int main(int argc,char **argv)
     if(strcmp(CFG_get_by_name("ADD_STATICR",valBuff),"ADD_STATICR") == 0 ) 
     {		 
         fprintf(errOut,"\n%s  %d ADD_STATICR \n",__func__,__LINE__);
+		write_systemLog("ADD_STATICR setting begin"); 
 		add_route_rule();
         memset(Page,0,64);
         //sprintf(Page,"%s","../ad_local_rulist.html");
@@ -7591,6 +7714,7 @@ int main(int argc,char **argv)
 
         Normal_tiaozhuan("ad_local_rulist");
          gohome =2;
+		 write_systemLog("ADD_STATICR setting end"); 
 
     }
     /*************************************
@@ -7708,6 +7832,9 @@ exit(1);
     if(strcmp(CFG_get_by_name("WEBCONM_WORK",valBuff),"WEBCONM_WORK") == 0 ) 
     {
     	char valBuf[20];
+		
+		write_systemLog("WEBCONM_WORK setting begin"); 
+		
     	Execute_cmd("cfg -e | grep \"WEBCONON_OFF=\" | awk -F \"=\" \'{print $2}\'",valBuf);
 		CFG_get_by_name("WEBCONON_OFF",valBuff);
 		fprintf(errOut,"\n%s  %d valBuf is [%s] [%s] \n",__func__,__LINE__, valBuf, valBuff);
@@ -7730,6 +7857,9 @@ exit(1);
             //writeParameters("/tmp/.apcfg","w+",0);
         Result_tiaozhuan("yes",argv[0]);   
         gohome =2;
+		
+		write_systemLog("WEBCONM_WORK setting end"); 
+		
     }
    /*************************************
     无线设置    高级
@@ -7751,6 +7881,8 @@ exit(1);
 		char valShorGiCfg_3[128];
 		char valBuffTemp1[128];
 		char valBuffTemp2[128];
+		
+		write_systemLog("WIRELESS_ADVSET setting begin"); 
 
     //2G
 		Execute_cmd("cfg -e | grep \"BEACON_INT=\" | awk -F \"BEACON_INT=\" '{print $2}'",valBintCfg);
@@ -7873,6 +8005,9 @@ exit(1);
             //writeParameters("/tmp/.apcfg","w+",0);			
         Result_tiaozhuan("yes",argv[0]);   
         gohome =2;
+		
+		write_systemLog("WIRELESS_ADVSET setting end"); 
+
     }
 
 
@@ -7958,6 +8093,7 @@ exit(1);
         int repeat_line=0;
         char *parc_ret;
         int parc_mode_flag = 0;
+		write_systemLog("ADD_PORT setting begin"); 
 
 
         CFG_get_by_name("ADD_PORTOUT",wan_port);
@@ -8041,6 +8177,7 @@ exit(1);
                 exit(1);
 
         }
+		write_systemLog("ADD_PORT setting end"); 
 
     }
     /*************************************
@@ -8052,6 +8189,8 @@ exit(1);
         char del_id_str[10] = {0};
         char del_sed_cmd[100] = {0};
         char del_sed_err[100] = {0};
+
+		write_systemLog("DEL_PORT setting begin"); 
 
         CFG_get_by_name("DELXXX",del_id_str);
         del_id = atoi(del_id_str);
@@ -8072,6 +8211,8 @@ exit(1);
         Normal_tiaozhuan("ad_safe_port");
          gohome =2;
 
+		 write_systemLog("DEL_PORT setting end"); 
+
     }
     /*************************************
     端口映射      修改
@@ -8080,6 +8221,8 @@ exit(1);
     {		 
     //viqjeee
         fprintf(errOut,"\n%s  %d MOD_PORT \n",__func__,__LINE__);
+
+		write_systemLog("MOD_PORT setting begin"); 
 
         int mod_port_id = 0;
         int mod_line = 0;
@@ -8124,6 +8267,8 @@ exit(1);
 
         Normal_tiaozhuan("ad_safe_port");
          gohome =2;
+		 
+		 write_systemLog("MOD_PORT setting end"); 
     }
     
     /*************************************
@@ -8164,6 +8309,7 @@ exit(1);
         int parc_flag = 0;
         int parc_mode_flag = 0;
 
+		write_systemLog("ADD_PARC setting begin"); 
 
         CFG_get_by_name("IFMOD",parc_mode);
         CFG_get_by_name("ADD_MAC",parc_mac);
@@ -8295,6 +8441,8 @@ exit(1);
                         gohome =2;
                     }
 		}
+				
+	write_systemLog("ADD_PARC setting end"); 
     }
     /*************************************
     家长控制    访问管理      删除
@@ -8306,6 +8454,8 @@ exit(1);
         char del_id_str[10] = {0};
         char del_sed_cmd[100] = {0};
         char del_sed_err[100] = {0};
+
+		write_systemLog("DEL_PRC setting begin"); 
 
         CFG_get_by_name("DELXXX",del_id_str);
         del_id = atoi(del_id_str);
@@ -8331,6 +8481,7 @@ exit(1);
         Normal_tiaozhuan("ad_parentc_accept");
          gohome =2;
 
+	write_systemLog("DEL_PRC setting end"); 
     }
     /*************************************
     家长控制    访问管理      修改
@@ -8345,6 +8496,8 @@ exit(1);
         char mod_sed_cmd[100] = {0};
         char mod_sed_err[100] = {0};
         char enable_flag[10];
+
+		write_systemLog("MOD_PRC setting begin"); 
 
         CFG_get_by_name("MODXXX",mod_id_str);
         CFG_get_by_name("ON_OFF",enable_flag);
@@ -8381,6 +8534,9 @@ exit(1);
 
         Normal_tiaozhuan("ad_parentc_accept");
          gohome =2;
+		 
+	write_systemLog("MOD_PRC setting end"); 
+	
     }
     
 	/*************************************
@@ -8451,6 +8607,8 @@ exit(1);
    *************************************/
     if(strcmp(CFG_get_by_name("NETCHECK",valBuff),"NETCHECK") == 0 ) 
     {		
+		write_systemLog("NETCHECK setting begin"); 
+
 		Execute_cmd("network_diagnostics > /dev/null 2>&1", rspBuff); 		
         fprintf(errOut,"\n%s  %d NETCHECK \n",__func__,__LINE__);
 		
@@ -8466,6 +8624,9 @@ exit(1);
         printf("<script language=javascript>window.location.href=\"ad_netcheck?INDEX=14\";</script>");
         printf("</body></html>");
         gohome =2;
+		
+		write_systemLog("NETCHECK setting end"); 
+		
     }
 	
 	/*************************************
