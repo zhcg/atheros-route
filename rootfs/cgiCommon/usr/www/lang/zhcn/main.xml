@@ -106,16 +106,19 @@
 	<message msgid="sysinfo timing" msgstr="定时连接" />
 
 
-
+	<message msgid="sysinfo tong" msgstr="连接成功" />
+	<message msgid="sysinfo butong" msgstr="连接失败" />
+	
 	<message msgid="netcheck title" msgstr="网络诊断" />
 	<message msgid="netcheck des" msgstr="检测网络连接类型和进行网络Ping操作" />
 	<message msgid="netcheck netc" msgstr="开始诊断" />
-	<message msgid="netcheck checkingwaiting" msgstr="正在进行检测,请您稍等......" />
+	<message msgid="netcheck checkingwaiting" msgstr="正在检测" />
 	<message msgid="netcheck Result" msgstr="诊断结果" />
 	<message msgid="netcheck t1_wantype" msgstr="自动检测WAN口类型" />
 	<message msgid="netcheck t1_basetype" msgstr="HBD路由器路由设置类型" />
 	<message msgid="netcheck t1_pngBD" msgstr="Ping百度结果" />
 	<message msgid="netcheck t1_pingQQ" msgstr="Ping腾讯结果" />
+	<message msgid="netcheck unknown" msgstr="未知" />
 
 	<message msgid="netcheck renetc" msgstr="重新诊断" />
 

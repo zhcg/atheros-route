@@ -106,16 +106,19 @@
 	<message msgid="sysinfo manual" msgstr="Manual" />
 	<message msgid="sysinfo timing" msgstr="Timing" />
 
+	<message msgid="sysinfo tong" msgstr="Connect successfully" />
+	<message msgid="sysinfo butong" msgstr="Connect fail" />
 
 	<message msgid="netcheck title" msgstr="Network check" />
 	<message msgid="netcheck des" msgstr="Detection of the type of network connection and the network Ping" />
 	<message msgid="netcheck netc" msgstr="Start" />
-	<message msgid="netcheck checkingwaiting" msgstr="Please wait patiently" />
+	<message msgid="netcheck checkingwaiting" msgstr="Checking" />
 	<message msgid="netcheck Result" msgstr="Result" />
 	<message msgid="netcheck t1_wantype" msgstr="Automatic detection of WAN type" />
 	<message msgid="netcheck t1_basetype" msgstr="BASE option type" />
 	<message msgid="netcheck t1_pngBD" msgstr="Result of Ping www.baidu.com" />
 	<message msgid="netcheck t1_pingQQ" msgstr="Result of Ping www.qq.com" />
+	<message msgid="netcheck unknown" msgstr="Unknown" />
 
 	<message msgid="netcheck renetc" msgstr="Re diagnosis" />
 

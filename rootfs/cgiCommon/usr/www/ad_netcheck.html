@@ -39,90 +39,184 @@ function initTranslation()
 {
 	trans_inner("title","netcheck title");
 	trans_inner("des","netcheck des");
-	trans_value("netc","netcheck renetc");
+	trans_value("netc","netcheck netc");
 	trans_inner("Result","netcheck Result");
+	
 	trans_inner("t1_wantype","netcheck t1_wantype");
 	trans_inner("t1_basetype","netcheck t1_basetype");
 	trans_inner("t1_pngBD","netcheck t1_pngBD");
 	trans_inner("t1_pingQQ","netcheck t1_pingQQ");
+	    
+	trans_inner("type1","netcheck unknown");
+	trans_inner("type2","netcheck unknown");
+	trans_inner("PBDR","netcheck unknown");
+	trans_inner("PQQR","netcheck unknown");
+	
 }
 
 function init()
 {
 	Butterlate.setTextDomain("main");
 	initTranslation();
-	
-	if((document.getElementById("INDEX").value == "14") || (document.getElementById("INDEX").value == 14))
-	{
-		window.parent.DialogHide();
-		resultshow();
-	}
-	else
-		netcheckf();		
 }
+var xmlHttp;
+var step=1;
+var p1=0;
+var p2=0;
+
+function check()
+{
+	xmlHttp=GetXmlHttpObject();
+	if (xmlHttp==null)
+	{
+		alert ("Browser does not support HTTP Request");
+		Return;
+	}
+	var url="/cgi-bin/network_diagnostics.cgi";
+	if(step == 1)
+	{
+		url=url+"?q=WAN";	
+	}
+	else if(step == 2)
+	{
+		url=url+"?q=PBD";	
+	}
+	else if(step == 3)
+	{
+		url=url+"?q=PQQ";	
+	}
+	url=url+"&sid="+Math.random();
+	xmlHttp.onreadystatechange=stateChanged;
+	xmlHttp.open("GET",url,true);
+	xmlHttp.send(null);
+}
+function stateChanged()
+{
+	if (xmlHttp.readyState==4 || xmlHttp.readyState=="complete")
+	{
+		if(step == 1)
+		{
+			var zidong = xmlHttp.responseText;
+			//alert(zidong);
+			if(zidong.indexOf("static") == 0  )
+			{
+				trans_inner("type1","sysinfo static");
+			}
+			else if(zidong.indexOf("dhcp") == 0 )
+			{
+				trans_inner("type1","sysinfo dhcp");
+			}
+			else if(zidong.indexOf("pppoe") == 0 )
+			{
+				trans_inner("type1","sysinfo pppoe");
+			}
+			else if(zidong.indexOf("l2tp") == 0 )
+			{
+				trans_inner("type1","sysinfo l2tp");
+			}
+			else if(zidong.indexOf("p2tp") == 0 )
+			{
+				trans_inner("type1","sysinfo pptp");
+			}
+			else
+			{
+				trans_inner("type1","sysinfo un");	
+			}
+			widget_hide("TYPE1IMG");
+			
+			var ps2 = document.getElementById("s2").value;	
+			if(ps2=="static")
+				trans_inner("type2","sysinfo static");
+			else if(ps2=="dhcp")
+				trans_inner("type2","sysinfo dhcp");	
+			else if(ps2=="pppoe")
+				trans_inner("type2","sysinfo pppoe");	
+			else if(ps2=="l2tp")
+				trans_inner("type2","sysinfo l2tp");	
+			else if(ps2=="p2tp")
+				trans_inner("type2","sysinfo pptp");	
+			else
+				trans_inner("type2","sysinfo un");	
+			widget_hide("TYPE2IMG");
+
+			step ++;
+			setTimeout(function(){check();},500);
+		}
+		else if(step == 2)
+		{
+			var r1 = xmlHttp.responseText;
+			//alert(r1);
+			if(r1.indexOf("ms") != -1  )
+			{
+				trans_inner("PBDR","sysinfo tong");	
+				p1=1;
+			}
+			else
+			{
+				trans_inner("PBDR","sysinfo butong");
+				p1=0;
+			}
+			widget_hide("PBDRIMG");
+			step ++;
+			setTimeout(function(){check();},500);			
+		}
+		else if(step == 3)
+		{
+			var r2 = xmlHttp.responseText;
+			//alert(r2);
+			if(r2.indexOf("ms") != -1)
+			{
+				trans_inner("PQQR","sysinfo tong");	
+				p2=1;
+			}
+			else
+			{
+				trans_inner("PQQR","sysinfo butong");
+				p2=0;
+			}
+			
+			widget_hide("PQQRIMG");
+			
+			if((p1==1)&&(p2==1))
+			{
+				widget_display("checkresultshow");
+				document.getElementById("checkresultshow").style.color="green";
+				trans_inner("checkresultshow","netcheck r2");	
+			}
+			else
+			{
+				widget_display("checkresultshow");
+				document.getElementById("checkresultshow").style.color="red";
+				trans_inner("checkresultshow","netcheck r1");
+			}
+			widget_display("netc");
+			trans_value("netc","netcheck renetc");			
+		}
+	}
+}
+function GetXmlHttpObject()
+{var xmlHttp=null;try{xmlHttp=new XMLHttpRequest();}catch (e){try{xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");}	catch (e){xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");}}return xmlHttp;}
 
 function netcheckf()
 {
-	widget_hide("checkresultshow");
-	waitgifshow();
-	button_commit('NETCHECK');
-}
-function waitgifshow()
-{
-	//widget_hide("des");
-	widget_hide("netc");
-	//widget_hide("checkresult");
-	window.parent.Demo( _("netcheck checkingwaiting"));
-}
-function resultshow()
-{
-	//widget_hide("des");
-	widget_display("netc");
-	
-	widget_display("checkresult");
-	var p1 = document.getElementById("ping1").value;
-	var p2 = document.getElementById("ping2").value;
-	if((p1=="OK")&&(p2=="OK"))
-	{
-		document.getElementById("checkresultshow").style.color="green";
-		trans_inner("checkresultshow","netcheck r2");	
-	}
-	else
-	{
-		document.getElementById("checkresultshow").style.color="red";
-		trans_inner("checkresultshow","netcheck r1");
-	}
-	var ps1 = document.getElementById("s1").value;
-	var ps2 = document.getElementById("s2").value;
-	if(ps1=="static")
-		trans_inner("type1","sysinfo static");
-	else if(ps1=="dhcp")
-		trans_inner("type1","sysinfo dhcp");	
-	else if(ps1=="pppoe")
-		trans_inner("type1","sysinfo pppoe");	
-	else if(ps1=="l2tp")
-		trans_inner("type1","sysinfo l2tp");	
-	else if(ps1=="p2tp")
-		trans_inner("type1","sysinfo pptp");	
-	else
-		trans_inner("type1","sysinfo un");	
+	step=1;
+	p1=0;
+	p2=0;
+	trans_inner("type1","netcheck checkingwaiting");
+	trans_inner("type2","netcheck checkingwaiting");
+	trans_inner("PBDR","netcheck checkingwaiting");
+	trans_inner("PQQR","netcheck checkingwaiting");
 
-	if(ps2=="static")
-		trans_inner("type2","sysinfo static");
-	else if(ps2=="dhcp")
-		trans_inner("type2","sysinfo dhcp");	
-	else if(ps2=="pppoe")
-		trans_inner("type2","sysinfo pppoe");	
-	else if(ps2=="l2tp")
-		trans_inner("type2","sysinfo l2tp");	
-	else if(ps2=="p2tp")
-		trans_inner("type2","sysinfo pptp");	
-	else
-		trans_inner("type2","sysinfo un");	
-	
-		
-	widget_display("checkresultshow");
+	widget_display("TYPE1IMG");	
+	widget_display("TYPE2IMG");
+	widget_display("PBDRIMG");
+	widget_display("PQQRIMG");
+	   
+	widget_hide("checkresultshow");
+	widget_hide("netc");
+	check();
 }
+
 
 </script>
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
@@ -136,7 +230,7 @@ function resultshow()
 
 <h2 id="des">检测网络连接类型和进行网络PING操作</h2> 
 
-<table id="checkresult"  width="100%" cellpadding="0" cellspacing="0"  style="display:none" class="handaer_text">
+<table id="checkresult"  width="100%" cellpadding="0" cellspacing="0" class="handaer_text">
 <tr>
 	<td class="title" colspan="2" id="Result">诊断结果</td>
 </tr>
@@ -148,36 +242,36 @@ function resultshow()
 <tr>
 	<td class="head" id="t1_wantype">自动检测WAN口类型</td>
 	<td>
-		<span id="type1" name="type1">
-		<input size="32" style="display:none" maxlength="64" name="s1" id="s1" value="~~AUTOTYPE~" type="text" readonly>
+		<span id="type1" name="type1"></span><image id="TYPE1IMG" style="display:none;" align="absbottom" src="/images/lue.gif"></image>
 	</td>
 </tr>
 <tr>
+
 	<td class="head" id="t1_basetype">BASE路由设置类型</td>
 	<td>
-		<span id="type2" name="type2">
+		<span id="type2" name="type2"></span>
+		<image id="TYPE2IMG" style="display:none;" align="absbottom" src="/images/lue.gif"></image>
 		<input size="32" style="display:none" maxlength="64" name="s2" id="s2" value="~~WAN_MODE~" type="text" readonly>
 	</td>
 </tr>
 <tr>
   <td class="head" id="t1_pngBD">PING百度结果</td>
-  <td><input size="32" maxlength="64" name="ping1" id="ping1" value="~~PING_BD~" type="text" readonly></td>
+  <td><span id="PBDR"></span><image id="PBDRIMG" style="display:none;" align="absbottom" src="/images/lue.gif"></image></td>
 </tr>
 <tr>
   <td class="head" id="t1_pingQQ">PING腾讯结果</td>
-  <td><input size="32" maxlength="64" name="ping2" id="ping2" value="~~PING_QQ~" type="text" readonly></td>
+  <td><span id="PQQR"></span><image id="PQQRIMG" style="display:none;" align="absbottom" src="/images/lue.gif"></image></td>
 </tr>
 
 </table>
-<form method="post" name="WORKFORM">  
-	<input type="button" name="netc" id="netc" class="handaer_input" onclick="netcheckf();">
-    <input type="submit" name="NETCHECK" id="NETCHECK" style="display:none" value="NETCHECK">
-</form>
+
+<input type="button" name="netc" id="netc" class="handaer_input" onclick="netcheckf();">
+
+
 </td>
 </tr>
 
 </table>
 </div>
-	<input type="text" style="display:none" name="INDEX" id="INDEX" value="~~INDEX~">	
 </body>
 </html>
