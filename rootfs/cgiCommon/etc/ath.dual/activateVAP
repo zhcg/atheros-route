@@ -187,6 +187,7 @@ fi
 
 if [ "${BRIDGE}" != "none" -a "${BRIDGE}" != "-" ]; then
     ifconfig ${APNAME} up
+    sleep 1
     brctl addif ${BRIDGE} ${APNAME}
     echo -e "\tinterface ${APNAME}" >> /tmp/${BRIDGE}
     #
