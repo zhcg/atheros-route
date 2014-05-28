@@ -26,13 +26,14 @@ void __write_systemLog(char *message)
 	//fprintf(errOut,"%s  %d\n",__func__,__LINE__);
 	f = fopen("/tmp/systemLog", "a" );
 
-	system("echo -------------------------cut here ---------------  >>  /tmp/systemLog");
+	system("echo ----------------  >>  /tmp/systemLog");
 	system("date  >>  /tmp/systemLog");
 	system("dmesg -c  >>  /tmp/systemLog");
 	fseek(f, 0, SEEK_END);
 	fwrite(message,strlen(message),1,f);
 
 	fclose(f);
+	system("echo   >>  /tmp/systemLog");
 
 	flock(fd, LOCK_UN);
 	close(fd);
