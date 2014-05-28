@@ -38,6 +38,9 @@ var search1 = 0;
 var search2 = 0;
 var showlist1 = 0;
 var showlist2 = 0;
+
+var cho1 = 0;
+var cho2 = 0;
 function button_commit(buttonID){document.getElementById(buttonID).click();}
 function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "";}}
 function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
@@ -136,18 +139,18 @@ function CheckWirelessValue()
 		}
 		if(search1 == 1)
 		{
-			if(document.getElementById("STA_SECMODE").value == "WPA")
+			if(cho1 == 0)
+			{
+				alert(_("err no choose"));
+				return false;
+			}
+			else if(document.getElementById("STA_SECMODE").value == "WPA")
 			{
 				if(document.getElementById("pwd").value =="")
 				{
 					alert(_("err pwd empty"));
 					return false;
 				}
-			}
-			else if(document.getElementById("STA_SECMODE").value == "")
-			{
-				alert(_("err no choose"));
-				return false;
 			}
 		}
 
@@ -173,7 +176,12 @@ function CheckWirelessValue()
 		}
 		if(search2 == 1)
 		{
-			if(document.getElementById("STA_SECMODE_2").value == "WPA")
+			if(cho2 == 0)
+			{
+				alert(_("err no choose"));
+				return false;
+			}
+			else if(document.getElementById("STA_SECMODE_2").value == "WPA")
 			{
 				if(document.getElementById("pwd2").value =="")
 				{
@@ -181,11 +189,7 @@ function CheckWirelessValue()
 					return false;
 				}
 			}
-			else if(document.getElementById("STA_SECMODE_2").value == "")
-			{
-				alert(_("err no choose"));
-				return false;
-			}
+			
 		}
 	}
 	else
@@ -329,6 +333,7 @@ function liinit()
 			WIFSwitch(this.getAttribute("rel"));
 			getEle("options").style.display = "none";
 			showlist1 ++;
+			cho1 = 1;
 		}
 		lis[i].onmouseover = function(){this.style.backgroundColor = "#DEDEDE";}
 		lis[i].onmouseout = function(){this.style.backgroundColor = "transparent";}
@@ -367,6 +372,7 @@ function liinit2()
 			WIFSwitch2(this.getAttribute("rel"));
 			getEle("options2").style.display = "none";
 			showlist2 ++;
+			cho2 = 1;
 		}
 		lis[i].onmouseover = function(){this.style.backgroundColor = "#DEDEDE";}
 		lis[i].onmouseout = function(){this.style.backgroundColor = "transparent";}
@@ -477,12 +483,16 @@ function refreshwds()
 {
 	Butterlate.setTextDomain("other");
 	window.parent.Demo(_("wait"));
+	cho1 = 0;
+	widget_hide("tt2");
 	search("2G");
 }
 function refreshwds2()
 {
 	Butterlate.setTextDomain("other");
 	window.parent.Demo(_("wait"));
+	cho2 = 0;
+	widget_hide("tt22");
 	search("5G");
 }
 function waitgifshow()
@@ -770,9 +780,9 @@ function help()
     <input type="button" name="apply_motion" id="bAPPLY" class="handaer_input" value="Apply" onClick="CheckWirelessValue();">
 	<input type="submit" name="WIRRE_WAN" id="WIRRE_WAN" style="display:none" value="WIRRE_WAN">
 	<input type="text" style="display:none" name="WDS_CHAN" id="WDS_CHAN" size="20" maxlength="32" value="~~WDS_CHAN~">	
-	<input type="text" style="display:none" name="STA_SECMODE" id="STA_SECMODE" size="20" maxlength="32" value="">	
+	<input type="text" style="display:none" name="STA_SECMODE" id="STA_SECMODE" size="20" maxlength="32" value="~~STA_SECMODE~">	
 	<input type="text" style="display:none" name="WDS_CHAN_2" id="WDS_CHAN_2" size="20" maxlength="32" value="~~WDS_CHAN_2~">	
-	<input type="text" style="display:none" name="STA_SECMODE_2" id="STA_SECMODE_2" size="20" maxlength="32" value="">	
+	<input type="text" style="display:none" name="STA_SECMODE_2" id="STA_SECMODE_2" size="20" maxlength="32" value="~~STA_SECMODE_2~">	
   </td>
 </tr>
 </table>
