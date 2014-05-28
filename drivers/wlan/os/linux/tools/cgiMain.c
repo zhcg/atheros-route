@@ -5201,6 +5201,7 @@ int main(int argc,char **argv)
                     err_flag=1;
                     break;
                  }
+				 write_systemLog("terminal_dev_register WIRELESS begin"); 
 
                  for (i = 0; i < 4; i++) 
                  {
@@ -5363,6 +5364,7 @@ int main(int argc,char **argv)
 					Execute_cmd("ifconfig ath3 down > /dev/null 2>&1", rspBuff);
 					Execute_cmd("ifconfig ath3 up > /dev/null 2>&1", rspBuff);
 				}
+				write_systemLog("terminal_dev_register WIRELESS end"); 
 
 				 /*end zzw*/
                  break;
