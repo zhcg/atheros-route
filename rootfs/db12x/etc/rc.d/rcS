@@ -147,9 +147,9 @@ if [ -f /etc/ip_mac.conf ]; then
 else
 	touch /etc/ip_mac.conf
 fi
-if [ "${WDSON_OFF}" != "on" -a "${DHCPON_OFF}" != "off" ]; then
+#if [ "${WDSON_OFF}" != "on" -a "${DHCPON_OFF}" != "off" ]; then
 	/usr/sbin/udhcpd /etc/udhcpd.conf
-fi
+#fi
 if [ -f /etc/arp_ip_mac_on.conf ]; then
 	/usr/sbin/arp -f /etc/arp_ip_mac_on.conf
 fi
