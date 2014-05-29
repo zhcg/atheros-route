@@ -40,6 +40,7 @@ export AS532HMODPATH=$(INSTALL_ROOT)/lib/modules/$(KERNELVER)/as532h
 export AS532HDEFIMAGEPATH=$(INSTALL_ROOT)/var/default_image/as532h
 export STM32DEFIMAGEPATH=$(INSTALL_ROOT)/var/default_image/stm32
 export AS532HDEFIMAGE=$(TOPDIR)/apps/modules_server/default_image/as532h/as532h_default_image
+export B6LAS532HDEFIMAGE=$(TOPDIR)/apps/as532_interface/default_image/as532h/b6l_as532h_default_image
 export STM32DEFIMAGE=$(TOPDIR)/apps/modules_server/default_image/stm32/stm32_default_image
 #
 # Makefile for WASP Fusion build.  It has dependancies for both
@@ -121,9 +122,17 @@ ifeq ($(strip ${ATH_SUPPORT_SPECTRAL}),1)
 db12x_build: common_mainline driver_build usb_build pci_build spectral_app_build $(BUILD_TYPE)_build art_mod
 else
 ifeq ($(BUILD_FOR_32178), yes)
+ifeq ($(BUILD_VERSION), B6)
+db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) system_bak si32178_build spi32178_build phone_9344_32178 check_phone_status modules_server OTA_Base env  usbpassage_build phonepassage_build as532h_build ntpclient_arm  ppy pppoe_build channel webui terminal_dev_register cacm tester $(fs_build) makeotaimage makeoneimage 
+endif
+ifeq ($(BUILD_VERSION), B6L)
+db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) system_bak si32178_build spi32178_build phone_9344_32178 phone_lite_register check_phone_status as532_interface OTA_Base env ntpclient_arm  ppy pppoe_build channel webui cacm tester $(fs_build) makeotaimage makeoneimage 
+endif
+ifeq ($(BUILD_VERSION), S1)
+db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) system_bak si32178_build spi32178_build phone_9344_32178 check_phone_status modules_server OTA_Base env  usbpassage_build ntpclient_arm  ppy pppoe_build channel webui terminal_dev_register cacm tester $(fs_build) makeotaimage makeoneimage 
+endif
 #db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) OTA_Base env ppy pppoe_build  webui  $(fs_build)
 
-db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) system_bak si32178_build spi32178_build phone_9344_32178 check_phone_status modules_server OTA_Base env  usbpassage_build uartpassage_build spipassage_build phonepassage_build as532h_build ntpclient_arm  ppy pppoe_build channel webui terminal_dev_register cacm tester $(fs_build) makeotaimage makeoneimage 
 else
 db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si3000_build si3000_app stm32_build stm32_app phone_9344  ntpclient_arm  ppy pppoe_build channel webui terminal_dev_register cacm tester $(fs_build) makeotaimage makeoneimage 
 endif
@@ -610,7 +619,29 @@ phone_9344_32178:
 	$(STRIP) phone_control; \
 	cp -f phone_control $(INSTALL_ROOT)/bin;
 
+phone_lite_register:
+	@echo making phone_lite_register application
+	cd ../apps/phone_lite_register; make clean; make; \
+	$(STRIP) phone_lite_register; \
+	$(STRIP) sqlite-mips-linux/lib/libsqlite3.so.0.8.6; \
+	cp -f phone_lite_register $(INSTALL_ROOT)/bin; \
+	cp -af sqlite-mips-linux/lib/libsqlite3.so.0.8.6 $(INSTALL_ROOT)/lib; \
+	mkdir -p $(INSTALL_ROOT)/var/db/; \
+	cp -af terminal_base_db $(INSTALL_ROOT)/var/db/; \
 
+as532_interface:
+	@echo making as532_interface application
+	cd ../apps/as532_interface; make clean; make; \
+	$(STRIP) as532_interface; \
+	$(STRIP) tools/json/lib/libmjson-1.5.so; \
+	$(STRIP) tools/wget/wget; \
+	cp -f as532_interface $(INSTALL_ROOT)/bin; \
+	cp -f config/532.conf $(INSTALL_ROOT)/etc; \
+	cp -af tools/json/lib/libmjson-1.5.so $(INSTALL_ROOT)/lib; \
+	cp -af tools/wget/wget $(INSTALL_ROOT)/bin; \
+	mkdir -p $(AS532HDEFIMAGEPATH); \
+	cp -r $(B6LAS532HDEFIMAGE) $(AS532HDEFIMAGEPATH);
+	
 OTA_Base:
 	@echo making OTA_Base application
 	cd ../apps/OTA_Base; make clean; make; \
@@ -631,10 +662,16 @@ modules_server:
 	cd ../apps/modules_server; make clean; make; \
 	$(STRIP) modules_server; \
 	cp -f modules_server $(INSTALL_ROOT)/bin;
+ifeq ($(BUILD_VERSION),S1)
+	cd ../apps/modules_server; \
+	cp -f dnat.sh $(INSTALL_ROOT)/bin;
+endif
+ifeq ($(BUILD_VERSION),B6)
 	mkdir -p $(AS532HDEFIMAGEPATH)
 	mkdir -p $(STM32DEFIMAGEPATH)
 	cp -r $(AS532HDEFIMAGE) $(AS532HDEFIMAGEPATH)
 	cp -r $(STM32DEFIMAGE) $(STM32DEFIMAGEPATH)
+endif
 	
 check_phone_status:
 	@echo making check_phone_status application

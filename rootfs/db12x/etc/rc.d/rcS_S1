@@ -1,0 +1,49 @@
+#
+# Enable USB
+#
+insmod /lib/modules/2.6.31/usb/usbcore.ko
+insmod /lib/modules/2.6.31/usb/ehci-hcd.ko
+insmod /lib/modules/2.6.31/usb/usb-storage.ko
+insmod /lib/modules/2.6.31/usb/usbnet.ko
+insmod /lib/modules/2.6.31/usb/cdc_ether.ko
+
+##
+## add si32178 and spi node
+##
+if [ -c /dev/spiS1 ]
+then
+	echo "/dev/spiS1 node exist"
+else
+	mknod /dev/spiS1 c 217 0
+fi
+if [ -c /dev/slic ]
+then
+	echo "/dev/slic node exist"
+else
+	mknod /dev/slic c 252 0
+fi
+if [ -c /dev/usbpassage ]
+then
+	echo "/dev/usbpassage node exist"
+else
+	mknod /dev/usbpassage c 200 0
+fi
+if [ -s /lib/libsqlite3.so.0 ]
+then
+	echo "sqlite found"
+else
+	ln -s /lib/libsqlite3.so.0.8.6 /lib/libsqlite3.so.0
+fi
+
+insmod /lib/modules/2.6.31/si32178/ath_si32178.ko
+insmod /lib/modules/2.6.31/spi32178/ath_spi_si32178.ko
+insmod /lib/modules/2.6.31/passage/usb/usb_passage.ko
+
+/bin/dnat.sh &
+
+modules_server &
+
+phone_control &
+check_phone_status modules_server phone_control &
+
+
