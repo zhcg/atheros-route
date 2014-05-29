@@ -103,6 +103,10 @@
 	<message msgid="log title" msgstr="LOG Management" />
 	<message msgid="log des" msgstr="Export LOG file" />
 	<message msgid="log t1des" msgstr="Export LOG file" />
+	
+	<message msgid="log t2des" msgstr="Tcpdump" />
+	<message msgid="log begin" msgstr="Begin" />
+	<message msgid="log end" msgstr="End" />
 
 
 	<message msgid="man use" msgstr="USE" />

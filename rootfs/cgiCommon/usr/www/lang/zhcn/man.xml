@@ -105,7 +105,10 @@
 	<message msgid="log des" msgstr="导出LOG文件" />
 	<message msgid="log t1des" msgstr="导出LOG文件" />
 	
-	
+	<message msgid="log t2des" msgstr="抓包" />
+	<message msgid="log begin" msgstr="开始抓包" />
+	<message msgid="log end" msgstr="结束抓包" />
+
 
 	<message msgid="err MAC empty" msgstr="MAC地址不能为空" />
 	<message msgid="err MAC wuxiao" msgstr="MAC地址不合法" />

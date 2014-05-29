@@ -519,9 +519,12 @@ function switch_wds()
 			}
 			else 
 			{
-				widget_display("tt2");
-				document.wizard_form.STA_PSK_KEY.disabled = false;
-				document.getElementById("pwd").value="";
+				if(cho1 == 1)
+				{
+					widget_display("tt2");
+					document.wizard_form.STA_PSK_KEY.disabled = false;
+					//document.getElementById("pwd").value="";
+				}
 			}
 		}		
 	}
@@ -554,9 +557,12 @@ function switch_wds2()
 			}
 			else
 			{
-				widget_display("tt22");
-				document.wizard_form.STA_PSK_KEY_2.disabled = false;
-				document.getElementById("pwd2").value="";
+				if(cho2 == 1)
+				{
+					widget_display("tt22");
+					document.wizard_form.STA_PSK_KEY_2.disabled = false;
+					//document.getElementById("pwd2").value="";
+				}
 			}
 		}
 	}
@@ -617,8 +623,10 @@ function initValue()
 		show2 = 0;	
 	initshow();
 	initshow2();
-	switch_wds();
 	switch_wds2();
+	switch_wds();
+	widget_hide("tt22");
+	widget_hide("tt2");	
 	
 	if(document.getElementById("WIFION_OFF").value=="off")
 	{

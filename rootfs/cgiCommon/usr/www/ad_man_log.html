@@ -36,6 +36,7 @@ function style_display_on(){if (window.ActiveXObject){return "inline-block";}els
 function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
 function widget_display(widgetID){document.getElementById(widgetID).style.visibility = "visible";document.getElementById(widgetID).style.display = style_display_on();}
 function widget_disable(widgetID){document.getElementById(widgetID).disabled = true;}
+function widget_enable(widgetID){document.getElementById(widgetID).disabled = false;}
 function button_commit(buttonID){document.getElementById(buttonID).click();}
 
 function initTranslation()
@@ -45,12 +46,18 @@ function initTranslation()
 	
 	trans_inner("t1des","log t1des");
 	trans_value("setmanExpSetExport","man export");
-	
+
+	trans_inner("t2des","log t2des");
+	trans_value("begin","log begin");
+	trans_value("end","log end");
+	trans_value("dumpExport","man export");
 }
 function init()
 {
 	Butterlate.setTextDomain("man");
 	initTranslation();
+	widget_hide("end");
+	widget_hide("dumpExport");
 }
 
 
@@ -99,6 +106,55 @@ function getdatef()
 
 	return (year+'-'+month_str+'-'+day_str+'-'+hours_str+':'+minutes_str+':'+seconds_str);
 }
+var xmlHttp;
+
+function check(val)
+{
+	xmlHttp=GetXmlHttpObject();
+	if (xmlHttp==null)
+	{
+		alert ("Browser does not support HTTP Request");
+		Return;
+	}
+	var url="/cgi-bin/tcpdump.cgi";
+	if(val == 1)
+	{
+		url=url+"?q=begin";	
+		widget_hide("begin");		
+		widget_hide("end");
+		widget_hide("dumpExport");
+		xmlHttp.onreadystatechange=stateChanged1;
+
+	}
+	else if(val == 2)
+	{
+		url=url+"?q=end";	
+		xmlHttp.onreadystatechange=stateChanged2;
+	}
+
+	url=url+"&sid="+Math.random();
+	xmlHttp.open("GET",url,true);
+	xmlHttp.send(null);
+}
+function stateChanged1()
+{
+	if (xmlHttp.readyState==4 || xmlHttp.readyState=="complete")
+	{	
+		widget_display("end");
+		 
+	}
+}
+function stateChanged2()
+{
+	if (xmlHttp.readyState==4 || xmlHttp.readyState=="complete")
+	{	
+		widget_display("begin");
+		widget_display("dumpExport");
+		widget_hide("end");
+	}
+}
+function GetXmlHttpObject()
+{var xmlHttp=null;try{xmlHttp=new XMLHttpRequest();}catch (e){try{xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");}	catch (e){xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");}}return xmlHttp;}
  
 </script> 
 </head>
@@ -119,6 +175,23 @@ function getdatef()
 </form>
 </table>
 
+<h2></h2>
+<table id="t2" width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
+
+<tr> 
+	<td class="title" colspan="2" id="t2des"></td>
+</tr>
+<tr>
+	<td>
+	<input type="button" name="begin" id="begin" class="handaer_input" onclick="check(1);"></input>
+	<input type="button" name="end" id="end" class="handaer_input" onclick="check(2);"></input>
+	<form method="post" name="ExportSettings" action="/cgi-bin/tcp_download.cgi">
+	<input value="Export" id="dumpExport" name="Export" class="handaer_input" type="submit"/>
+	</form>	
+	</td>
+</tr>
+
+</table>
 </td></tr></table>
 </div>
 

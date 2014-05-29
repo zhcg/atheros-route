@@ -217,6 +217,10 @@ upload.cgi: upload.cgi.c
 	cp log_download.cgi $(INSTALL_ROOT)/usr/www/cgi-bin
 	${CC} -o network_diagnostics.cgi ${CFLAGS} ${LDFLAGS} network_diagnostics.cgi.c
 	cp network_diagnostics.cgi $(INSTALL_ROOT)/usr/www/cgi-bin
+	${CC} -o tcpdump.cgi ${CFLAGS} ${LDFLAGS} tcpdump.cgi.c
+	cp tcpdump.cgi $(INSTALL_ROOT)/usr/www/cgi-bin
+	${CC} -o tcp_download.cgi ${CFLAGS} ${LDFLAGS} tcp_download.cgi.c
+	cp tcp_download.cgi $(INSTALL_ROOT)/usr/www/cgi-bin
 
 athdebug: athdebug.c
 	${CC} -o athdebug ${CFLAGS} ${LDFLAGS} athdebug.c
