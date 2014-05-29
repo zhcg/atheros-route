@@ -17,6 +17,20 @@
 #0x000000fe0000-0x000000ff0000 : "mib0"
 #0x000000ff0000-0x000001000000 : "ART"
 #
+#256k(u-boot),64k(u-boot-env),8320k(rootfs),5568k(rootfs_bak),1024k(uImage),64k(mib0),64k(ART),1024k(uImage_bak)
+#0x000000000000-0x000000040000 : "u-boot"
+#0x000000040000-0x000000050000 : "u-boot-env"
+#0x000000050000-0x000000870000 : "rootfs"
+#0x000000870000-0x000000de0000 : "rootfs_bak"
+#0x000000de0000-0x000000ee0000 : "uImage"
+#0x000000ee0000-0x000000ef0000 : "mib0"
+#0x000000ef0000-0x000000f00000 : "ART"
+#0x000000f00000-0x000001000000 : "uImage_bak"
+
+
+#bootargs=console=ttyS0,115200 rootfstype=jffs2 init=/sbin/init mtdparts=ath-nor0:256k(u-boot),64k(u-boot-env),8320k(rootfs),5568k(rootfs_bak),1024k(uImage),960k(uImage_bak),64k(mib0),64k(nvram),64k(ART)
+
+
 
 #
 # Image Information
@@ -28,14 +42,28 @@ UBOOT_IMAGE_NAME = u-boot.bin
 UBOOT_SIZE = 0x40000
 
 UBOOT_ENV_SIZE = 0x10000
-
+#uImage
 KERNEL_IMAGE_NAME = vmlinux.lzma.uImage
-KERNEL_SIZE = 0x160000
+KERNEL_SIZE = 0x100000
+#uImage_bak
+KERNEL_IMAGE_NAME_BAK = vmlinux.lzma.uImage_bak
+#KERNEL_SIZE_BAK = 0x100000
+KERNEL_SIZE_BAK = 0xF0000
 
+
+#rootfs
 ROOTFS_IMAGE_NAME = db12x-jffs2
-ROOTFS_SIZE = 0xe30000
+ROOTFS_SIZE = 0x820000
 
-LEFT_SIZE = 0x20000
+
+#uImage_bak
+ROOTFS_IMAGE_NAME_BAK = db12x-jffs2_bak
+#ROOTFS_SIZE_BAK = 0x570000
+ROOTFS_SIZE_BAK = 0x520000
+
+#LEFT_SIZE = 0x20000
+#LEFT_SIZE = 0x30000
+LEFT_SIZE = 0x80000
 
 #
 # OneImage Information
@@ -68,13 +96,36 @@ makeoneimage: check_img
 	PAD=`expr $$ROOTFS_PART_SIZE - $$SIZE` ; \
 	dd if=/dev/zero count=1 bs=$$PAD 2> /dev/null | \
 	tr \\000 \\377 >> $(Image_DIR)/$(PACKED_IMAGE)
+
 	
+# Copy Rootfs_bak
+	@cat $(Image_DIR)/$(ROOTFS_IMAGE_NAME_BAK) >> $(Image_DIR)/$(PACKED_IMAGE)
+
+# Finish Rootfs_bak Padding
+	@SIZE=`wc -c $(Image_DIR)/$(ROOTFS_IMAGE_NAME_BAK) | awk '{ print $$1 }'` ; \
+	ROOTFS_PART_SIZE=`printf "%d" $(ROOTFS_SIZE_BAK)` ; \
+	PAD=`expr $$ROOTFS_PART_SIZE - $$SIZE` ; \
+	dd if=/dev/zero count=1 bs=$$PAD 2> /dev/null | \
+	tr \\000 \\377 >> $(Image_DIR)/$(PACKED_IMAGE)
+
+
+
 # Copy Kernel
 	@cat $(Image_DIR)/$(KERNEL_IMAGE_NAME) >> $(Image_DIR)/$(PACKED_IMAGE)
 
-# Finish Kernel and mib0 and ART Padding
+# Finish Kernel
 	@SIZE=`wc -c $(Image_DIR)/$(KERNEL_IMAGE_NAME) | awk '{ print $$1 }'` ; \
 	KERNEL_PART_SIZE=`printf "%d" $(KERNEL_SIZE)` ; \
+	PAD=`expr $$KERNEL_PART_SIZE - $$SIZE` ; \
+	dd if=/dev/zero count=1 bs=$$PAD 2> /dev/null | \
+	tr \\000 \\377 >> $(Image_DIR)/$(PACKED_IMAGE)
+
+# Copy Kernel_bak
+	@cat $(Image_DIR)/$(KERNEL_IMAGE_NAME_BAK) >> $(Image_DIR)/$(PACKED_IMAGE)
+
+# Finish Kernel_bak and mib0 and ART Padding
+	@SIZE=`wc -c $(Image_DIR)/$(KERNEL_IMAGE_NAME_BAK) | awk '{ print $$1 }'` ; \
+	KERNEL_PART_SIZE=`printf "%d" $(KERNEL_SIZE_BAK)` ; \
 	LEFT_PART_SIZE=`printf "%d" $(LEFT_SIZE)` ; \
 	PAD=`expr $$KERNEL_PART_SIZE - $$SIZE + $$LEFT_PART_SIZE` ; \
 	dd if=/dev/zero count=1 bs=$$PAD 2> /dev/null | \
@@ -98,9 +149,26 @@ check_img:
 	exit 1; \
 	fi
 		
+	@if [ ! -f $(Image_DIR)/$(KERNEL_IMAGE_NAME_BAK) ]; then \
+	echo "" ; \
+	echo "Please copy \"$(KERNEL_IMAGE_NAME_BAK)\" to $(Image_DIR)"; \
+	echo "" ; \
+	exit 1; \
+	fi
+
 	@if [ ! -f $(Image_DIR)/$(ROOTFS_IMAGE_NAME) ]; then \
 	echo "" ; \
 	echo "Please copy \"$(ROOTFS_IMAGE_NAME)\" to $(Image_DIR)"; \
 	echo "" ; \
 	exit 1; \
 	fi
+
+	
+	@if [ ! -f $(Image_DIR)/$(ROOTFS_IMAGE_NAME_BAK) ]; then \
+	echo "" ; \
+	echo "Please copy \"$(ROOTFS_IMAGE_NAME_BAK)\" to $(Image_DIR)"; \
+	echo "" ; \
+	exit 1; \
+	fi
+
+

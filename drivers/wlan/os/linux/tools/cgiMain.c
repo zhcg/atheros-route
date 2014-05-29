@@ -39,6 +39,8 @@
 #include <sys/file.h>
 #include "cgiMain.h"
 
+
+#define CONFIG_NVRAM
 #ifdef CONFIG_NVRAM
 #define NVRAM  "/dev/nvram"
 #define NVRAM_OFFSET 0

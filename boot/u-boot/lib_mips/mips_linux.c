@@ -89,18 +89,39 @@ void do_bootm_linux (cmd_tbl_t * cmdtp, int flag, int argc, char *argv[],
 
 	char *command = getenv ("bootargs");
 	char *sn = getenv ("SN");
+
 	if(sn == NULL)
 	{
 		char *num = "000000";
 		setenv ("SN", num);	
 		saveenv();	
-		sprintf(commandline, "%s SN=%s", command, num);
+		
+		if(strcmp(getenv("status"), "0"))
+        	{       
+                	sprintf(commandline, "%s %s SN=%s", command, "root=31:03", num);
 
+        	}
+        	else
+        	{
+                	sprintf(commandline, "%s %s SN=%s", command, "root=31:02", num);
+
+        	}	
 	}
 	else
 	{
-		sprintf(commandline, "%s SN=%s", command, sn);
+	
+		if(strcmp(getenv("status"), "0"))
+                {
+                        sprintf(commandline, "%s %s SN=%s", command, "root=31:03", sn);
+
+                }
+                else
+                {
+                        sprintf(commandline, "%s %s SN=%s", command, "root=31:02", sn);
+
+                }      
 	}
+
 // add cyj end
 	char env_buf[12];
 

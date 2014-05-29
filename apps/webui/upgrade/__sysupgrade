@@ -1,11 +1,11 @@
 #!/bin/sh
 if [ $# -ne 1 ] ;then
-#        echo "Usage: sysupgrade [SYSTEM-FILENAME]"
+        echo "Usage: sysupgrade [SYSTEM-FILENAME]"
         exit 1
 fi
 
 if [ ! -e $1 ];then
-#	echo "the file is not exist"
+	echo "the file is not exist"
 	exit 1
 fi
 
@@ -27,6 +27,10 @@ mkdir  -p usr/bin
 mkdir  -p usr/sbin
 
 cp -f /bin/busybox bin
+
+cp -a /bin/fw_setenv bin
+cp -a /etc/fw_env.config etc
+
 
 cp -a /bin/echo bin
 cp -a /bin/cp bin

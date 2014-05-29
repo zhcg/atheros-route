@@ -70,7 +70,9 @@ uchar default_environment[] = {
 	"bootargs="	CONFIG_BOOTARGS			"\0"
 #endif
 #ifdef	CONFIG_BOOTCOMMAND
+	"status=" 	MK_STR(0)			"\0"
 	"bootcmd="	CONFIG_BOOTCOMMAND		"\0"
+	"bootcmd_bak_sys="	CONFIG_BOOTCOMMAND_BAK		"\0"
 #endif
 #ifdef	CONFIG_RAMBOOTCOMMAND
 	"ramboot="	CONFIG_RAMBOOTCOMMAND		"\0"

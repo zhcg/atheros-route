@@ -10,8 +10,10 @@ echo "*** Unmounting existing file systems"
 /bin/umount -f /oldroot/
 
 
-ROOTFS_SIZE=14876672
-KERNEL_SIZE=1441792
+#ROOTFS_SIZE=14876672
+ROOTFS_SIZE=8519680
+#KERNEL_SIZE=1441792
+KERNEL_SIZE=1048576
 
 SIZE=`wc -c /tmp/9344version.img | awk -F' ' '{print $1}'`
 #echo $SIZE
@@ -29,9 +31,12 @@ ROOTFSSIZE=`expr $ROOTFSSIZE / 1024`
 #echo $PAD
 #echo $ROOTFSSIZE
 
-echo "*** Erasing / Copying kernel image to flash (/dev/mtdblock3)"
+fw_setenv status 1
+
+
+echo "*** Erasing / Copying kernel image to flash (/dev/mtdblock4)"
 #dd   if=/tmp/$1 of=/dev/mtdblock3 bs=1024  count=1408  skip=14528
-dd   if=/tmp/9344version.img of=/dev/mtdblock3 bs=1024  count=1408
+dd   if=/tmp/9344version.img of=/dev/mtdblock4 bs=1024  count=1024
 if [ $? -ne 0 ];
 then
 	echo  "ERROR: failed to copy kernel image"
@@ -39,7 +44,7 @@ then
 fi
 
 echo "*** Erasing / Copying rootfs image to flash (/dev/mtdblock2)"
-dd   if=/tmp/9344version.img of=/dev/mtdblock2 bs=1024  count=$ROOTFSSIZE skip=1408
+dd   if=/tmp/9344version.img of=/dev/mtdblock2 bs=1024  count=$ROOTFSSIZE skip=1024
 if [ $? -ne 0 ];
 then
 	echo  "ERROR: failed to copy  rootfs image"
@@ -52,5 +57,6 @@ then
         echo  "ERROR: failed to copy  rootfs image l"
         exit 3
 fi
+fw_setenv status 0
 /sbin/reboot
 sleep 2

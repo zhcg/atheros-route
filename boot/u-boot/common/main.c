@@ -34,6 +34,7 @@
 #include <hush.h>
 #endif
 
+
 #include <post.h>
 
 #ifdef CONFIG_SILENT_CONSOLE
@@ -233,7 +234,7 @@ static __inline__ int abortboot(int bootdelay)
 #ifdef CONFIG_MENUPROMPT
 	printf(CONFIG_MENUPROMPT, bootdelay);
 #else
-	printf("Hit any key to stop autoboot: %2d ", bootdelay);
+	printf("changyongjin Hit any key to stop autoboot: %2d ", bootdelay);
 #endif
 
 #if defined CONFIG_ZERO_BOOTDELAY_CHECK
@@ -257,12 +258,16 @@ static __inline__ int abortboot(int bootdelay)
 		/* delay 100 * 10ms */
 		for (i=0; !abort && i<100; ++i) {
 			if (tstc()) {	/* we got a key press	*/
-				abort  = 1;	/* don't auto boot	*/
-				bootdelay = 0;	/* no more delay	*/
 # ifdef CONFIG_MENUKEY
 				menukey = getc();
 # else
-				(void) getc();  /* consume input	*/
+			//	(void) getc();  /* consume input	*/
+				if(27 == getc())
+				{
+					abort  = 1;	/* don't auto boot	*/
+					bootdelay = 0;	/* no more delay	*/
+				}
+
 # endif
 				break;
 			}
@@ -417,7 +422,26 @@ void main_loop (void)
 #ifdef CONFIG_DUALIMAGE_SUPPORT
 		findbdr(0);
 #endif
-		s = getenv ("bootcmd");
+
+
+// cyj add start
+#if 0
+
+                s = getenv ("bootcmd");
+#else
+        if(strcmp(getenv("status"), "0"))
+        {
+
+                s = getenv ("bootcmd_bak_sys");
+        }
+        else
+        {
+
+                s = getenv ("bootcmd");
+        }
+
+#endif
+// cyj add end
 
 //	debug ("### main_loop: bootcmd=\"%s\"\n", s ? s : "<UNDEFINED>");
 

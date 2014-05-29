@@ -13,7 +13,8 @@
 
 #define FIRST_OFFSET 16
 
-#define FLAG_OFFSET 1441776
+//#define FLAG_OFFSET 1441776
+#define FLAG_OFFSET 1048560
 #define MAX_SIZE  1024
 #define FILE_READ  "/tmp/9344version.img"
 

@@ -31,6 +31,7 @@
 /dev/mtdblock5	b	666	0	0	31	5	1	4
 /dev/mtdblock6	b	666	0	0	31	6	1	4
 /dev/mtdblock7	b	666	0	0	31	7	1	4
+/dev/mtdblock8	b	666	0	0	31	8	1	4
 /dev/sda	b	666	0	0	8	0
 /dev/sda1	b	666	0	0	8	1
 /dev/sda2	b	666	0	0	8	2
@@ -79,7 +80,8 @@
 /dev/sdc13	b	666	0	0	8	45
 /dev/sdc14	b	666	0	0	8	46
 /dev/sdc15	b	666	0	0	8	47
-/dev/caldata	b	666	0	0	31	5	1	4
+/dev/caldata	b	666	0	0	31	8	1	4
+/dev/nvram	b	666	0	0	31	7	1	4
 /dev/armem	c	666	0	0	1	13
 /dev/freset	c	666	0	0	10	129
 /dev/otp	c	666	0	0	10	132

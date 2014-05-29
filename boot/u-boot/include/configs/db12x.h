@@ -174,12 +174,31 @@
 #	define MTDPARTS_DEFAULT		"mtdparts=ath-nor0:256k(u-boot),64k(u-boot-env),6336k(rootfs),1408k(uImage),64k(mib0),64k(ART)"
 #else
 #	define ATH_U_FILE		u-boot.bin
+
+// lf
 #	define ATH_F_FILE		db12x${bc}-jffs2
-#	define ATH_F_LEN		0xe30000
+//#	define ATH_F_LEN		0xe30000
+#	define ATH_F_LEN		0x820000
 #	define ATH_F_ADDR		0x9f050000
+// lf_bak
+#	define ATH_F_BAK_FILE		db12x${bc}-jffs2_bak
+#	define ATH_F_BAK_LEN		0x570000
+#	define ATH_F_BAK_ADDR		0x9f870000
+// lk
 #	define ATH_K_FILE		vmlinux${bc}.lzma.uImage
-#	define ATH_K_ADDR		0x9fe80000
-#	define MTDPARTS_DEFAULT		"mtdparts=ath-nor0:256k(u-boot),64k(u-boot-env),14528k(rootfs),1408k(uImage),64k(mib0),64k(ART)"
+//#	define ATH_K_ADDR		0x9fe80000
+//#	define ATH_K_ADDR		0x9fde0000
+#	define ATH_K_ADDR		0x9fd90000
+// lk_bak
+#	define ATH_K_BAK_FILE		vmlinux${bc}.lzma.uImage_bak
+//#	define ATH_K_BAK_ADDR		0x9ff00000
+//#	define ATH_K_BAK_ADDR		0x9fee0000
+#	define ATH_K_BAK_ADDR		0x9fe90000
+
+//#	define MTDPARTS_DEFAULT		"mtdparts=ath-nor0:256k(u-boot),64k(u-boot-env),14528k(rootfs),1408k(uImage),64k(mib0),64k(ART)"
+//#	define MTDPARTS_DEFAULT		"mtdparts=ath-nor0:256k(u-boot),64k(u-boot-env),8320k(rootfs),5568k(rootfs_bak),1024k(uImage),64k(mib0),64k(ART),1024k(uImage_bak)"
+//#	define MTDPARTS_DEFAULT		"mtdparts=ath-nor0:256k(u-boot),64k(u-boot-env),8320k(rootfs),5568k(rootfs_bak),1024k(uImage),1024k(uImage_bak),64k(mib0),64k(ART)"
+#	define MTDPARTS_DEFAULT		"mtdparts=ath-nor0:256k(u-boot),64k(u-boot-env),8320k(rootfs),5248k(rootfs_bak),1024k(uImage),960k(uImage_bak),384k(mib0),64K(nvram),64k(ART)"
 #endif /*CONFIG_MI124*/
 
 #ifndef ATH_ROOT_DEV
@@ -193,19 +212,37 @@
 #ifndef ATH_U_CMD
 #	define ATH_U_CMD	gen_cmd(lu, 0x9f000000, ATH_U_FILE)
 #endif
-
+// lf
 #ifndef ATH_F_CMD
 #	define ATH_F_CMD	gen_cmd_el(lf, ATH_F_ADDR, ATH_F_FILE, ATH_F_LEN)
 #endif
 
+//lf_bak
+#ifndef ATH_F_BAK_CMD
+#	define ATH_F_BAK_CMD	gen_cmd_el(lf_bak, ATH_F_BAK_ADDR, ATH_F_BAK_FILE, ATH_F_BAK_LEN)
+#endif
+
+// lk
 #ifndef ATH_K_CMD
 #	define ATH_K_CMD	gen_cmd(lk, ATH_K_ADDR, ATH_K_FILE)
 #endif
 
-#define CONFIG_EXTRA_ENV_SETTINGS	\
-	"dir=\0" ATH_U_CMD ATH_F_CMD ATH_K_CMD ""
+// lk_bak
+#ifndef ATH_K_BAK_CMD
+#	define ATH_K_BAK_CMD	gen_cmd(lk_bak, ATH_K_BAK_ADDR, ATH_K_BAK_FILE)
+#endif
 
-#define	CONFIG_BOOTARGS		"console=ttyS0,115200 root=" ATH_ROOT_DEV " rootfstype=jffs2 init=/sbin/init " MTDPARTS_DEFAULT
+
+#define CONFIG_EXTRA_ENV_SETTINGS	\
+	"dir=\0" ATH_U_CMD ATH_F_CMD ATH_K_CMD ATH_F_BAK_CMD ATH_K_BAK_CMD ""
+
+//	"dir=\0" ATH_U_CMD ATH_F_CMD ATH_K_CMD ""
+//#define	CONFIG_BOOTARGS		"console=ttyS0,115200 root=" ATH_ROOT_DEV " rootfstype=jffs2 init=/sbin/init " MTDPARTS_DEFAULT
+#define	CONFIG_BOOTARGS		"console=ttyS0,115200  rootfstype=jffs2 init=/sbin/init " MTDPARTS_DEFAULT
+
+
+
+
 
 #undef CFG_PLL_FREQ
 
@@ -308,7 +345,9 @@
 #ifndef CONFIG_ATH_NAND_SUPPORT
 #	define CFG_ENV_ADDR		0x9f040000
 #	if (FLASH_SIZE == 16)
-#		define CONFIG_BOOTCOMMAND "bootm 0x9fe80000"
+//#		define CONFIG_BOOTCOMMAND "bootm 0x9fe80000"
+#		define CONFIG_BOOTCOMMAND "bootm 0x9fd90000"
+#		define CONFIG_BOOTCOMMAND_BAK "bootm 0x9fe90000"
 #	else  /* FLASH_SIZE == 16 */
 #		ifdef COMPRESSED_UBOOT
 #			if (FLASH_SIZE == 4)
