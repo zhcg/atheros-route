@@ -98,6 +98,27 @@ static int led_dri_write(
         ath_reg_rmw_set(ATH_GPIO_OUT, 0x1<<21); 
         ath_reg_rmw_set(ATH_GPIO_OUT, 0x1<<22); 
 	}
+	else if(strncmp(buf,"led1_on",7) == 0)
+    {
+		ath_reg_rmw_clear(ATH_GPIO_OE, 0x1<<3); 
+        ath_reg_rmw_clear(ATH_GPIO_OUT_FUNCTION0, 0xff000000<<0);
+        ath_reg_rmw_clear(ATH_GPIO_OUT, 0x1<<3);
+	}
+    else if(strncmp(buf,"led1_off",8) == 0)
+    {
+        ath_reg_rmw_set(ATH_GPIO_OE, 0x1<<3); 		
+	}
+    else if(strncmp(buf,"led2_on",7) == 0)
+    {
+ 		ath_reg_rmw_clear(ATH_GPIO_OE, 0x1<<4); 
+  	    ath_reg_rmw_clear(ATH_GPIO_OUT_FUNCTION1, 0xff<<0);
+        ath_reg_rmw_clear(ATH_GPIO_OUT, 0x1<<4);		
+	}
+    else if(strncmp(buf,"led2_off",8) == 0)
+    {
+        ath_reg_rmw_set(ATH_GPIO_OUT, 0x1<<4); 
+        ath_reg_rmw_set(ATH_GPIO_OE, 0x1<<4); 		
+	}
     else
     {
         ath_reg_rmw_set(ATH_GPIO_OE, 0x1<<13); 
