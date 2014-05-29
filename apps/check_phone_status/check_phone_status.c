@@ -78,43 +78,41 @@ int get_cmd_out(char *cmd, char *buf, unsigned short buf_len)
 
 int main(int argc, char ** argv)
 {
-    char *phone_cmd = "ps | grep phone_control | sed '/grep/'d | sed '/\\[phone_control\\]/'d | sed '/sed/'d";
-    char *modules_cmd = "ps | grep modules_server | sed '/grep/'d | sed '/\\[modules_server\\]/'d | sed '/sed/'d";
+    //char *modules_cmd = "ps | grep modules_server | sed '/grep/'d | sed '/\\[modules_server\\]/'d | sed '/sed/'d";
+	char cmd[128] = {0};
 	char buf[128] = {0};
-
+	int i;
+	if(argc <= 1)
+	{
+		printf("cmd err\n");
+		exit(-1);
+	}
     while (1)
     {
-        if (get_cmd_out(phone_cmd, buf, sizeof(buf)) < 0)
-        {
-            printf("get_cmd_out failed!\n");
-			goto NEXT;
-        }
-        else
-        {
-            if (strlen(buf) == 0)
-            {
-                printf("phone_control stop!\n");
-                system("/bin/phone_control &");
-                printf("phone_control restart!\n");
-            }
-        }
-NEXT:
-        usleep(200*1000);
-        memset(buf,0,128);
-        if (get_cmd_out(modules_cmd, buf, sizeof(buf)) < 0)
-        {
-            printf("get_cmd_out failed!\n");
-			continue;
-        }
-        else
-        {
-            if (strlen(buf) == 0)
-            {
-                printf("modules_server stop!\n");
-                system("/bin/modules_server &");
-                printf("modules_server restart!\n");
-            }
-        }
+		for(i=0;i<argc-1;i++)
+		{
+			memset(cmd,0,128);
+			sprintf(cmd,"ps | grep %s | sed '/%s/'d  | sed '/grep/'d | sed '/\\[%s\\]/'d | sed '/sed/'d",argv[i+1],argv[0],argv[i+1]);
+//		printf("cmd = %s\n",cmd);
+			usleep(200*1000);
+			memset(buf,0,128);
+			if (get_cmd_out(cmd, buf, sizeof(buf)) < 0)
+			{
+				printf("get_cmd_out failed!\n");
+				continue;
+			}
+			else
+			{
+				if (strlen(buf) == 0)
+				{
+					printf("%s stop!\n",argv[i+1]);
+					memset(cmd,0,128);
+					sprintf(cmd,"%s &",argv[i+1]);
+					system(cmd);
+					printf("%s restart!\n",argv[i+1]);
+				}
+			}
+		}
         sleep(5);
     }
 }

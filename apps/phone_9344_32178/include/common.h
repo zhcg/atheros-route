@@ -37,8 +37,18 @@
 #define Big_Endian	1
 #define Little_Endian	0
 
+#ifdef B6L
+#define AS532_NUM	"get532ver"
+#define AS532_VER	"HBD_B6L_AS532_V"
+#define TMP_AS532_VER_FILE "/tmp/tmp_as532_ver_file"
+#endif
 #define PCMNAME "/dev/slic"
+#ifdef B6
 #define PASSAGE_NAME "/dev/phonepassage"
+#else
+#define LED_NAME "/dev/wifiled"
+#endif
+
 #define AUTHOR	"ZhangBo"
 #define PRINT_INFO 1
 
@@ -56,9 +66,11 @@
 
 
 #define MAX(A,B) ((A)>(B))?(A):(B)
-
+#ifdef B6
 #define CLIENT_NUM 5	//实际设备数目限制为4
-
+#else
+#define CLIENT_NUM 21	//实际设备数目限制为20
+#endif
 #define SENDBUF 					128
 #define BUF_LEN_256					256
 #define BUF_LEN   					512
@@ -69,9 +81,16 @@
 #define DELAY						20000
 #define CODE_MAX					32635	
 #define AUDIO_SEND_PACKET_SIZE		1600
-#define AUDIO_READ_BYTE_SIZE		1024
-#define AUDIO_WRITE_BYTE_SIZE		1024
-#define AUDIO_STREAM_BUFFER_SIZE	AUDIO_READ_BYTE_SIZE*200
+#define AUDIO_READ_BYTE_SIZE		448
+//#define AUDIO_WRITE_BYTE_SIZE		640
+//#define AUDIO_READ_BYTE_SIZE		448
+#define AUDIO_WRITE_BYTE_SIZE		AUDIO_READ_BYTE_SIZE
+#define AUDIO_STREAM_BUFFER_SIZE	AUDIO_READ_BYTE_SIZE*300
+#define AUDIO_PACKET_LIMIT			14
+//#define AUDIO_PACKET_LIMIT		10
+//speex
+#define NN 							(AUDIO_READ_BYTE_SIZE / 2)
+#define TAIL 						1024
 
 #endif
 

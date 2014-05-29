@@ -6,9 +6,11 @@ int global_server_fd;
 int global_uart_fd;
 Passage passage_list[PASSAGE_NUM] = {
 	{-1,(char)TYPE_USB_PASSAGE,USBPASSAGE},
-	{-1,(char)TYPE_UART_PASSAGE,UARTPASSAGE},
-	{-1,(char)TYPE_SPI_PASSAGE,SPIPASSAGE},
+	//{-1,(char)TYPE_UART_PASSAGE,UARTPASSAGE},
+	//{-1,(char)TYPE_SPI_PASSAGE,SPIPASSAGE},
+#ifdef B6
 	{-1,(char)TYPE_PHONE_PASSAGE,PHONEPASSAGE},
+#endif
 };
 //0--usb,1--uart,2--spi,3--phone
 
@@ -314,7 +316,7 @@ int init_stm32()
 void init_env(void)
 {
 	int sockfd,on,i,ret;
-	
+#ifdef B6
 	struct sockaddr_in servaddr,cliaddr;
 
 	sockfd = socket(AF_INET,SOCK_DGRAM,0);;
@@ -363,7 +365,7 @@ void init_env(void)
     {       
 		global_pukey->fd = global_sg_fd;
 	}
-	
+#endif	
 	global_uart_fd = open(UARTNAME,O_RDWR | O_NONBLOCK);
 	if(global_uart_fd < 0)
 	{
@@ -375,9 +377,11 @@ void init_env(void)
 	{
 		serialConfig(global_uart_fd,B115200);
 		PRINT("open uart success\n");
+#ifdef B6
 		ret = init_stm32();
 		if(ret != 0)
 			PRINT("Stm32 ---- Not Ok!%d\n",ret);
+#endif
 	}
 	
 	for(i=0;i<PASSAGE_NUM;i++)
@@ -394,7 +398,7 @@ void init_env(void)
 			PRINT("open %s success\n",passage_list[i].passage_name);
 		}
 	}
-	
+#ifdef B6	
 	mkfifo(READ_FIFO,0600);
 	global_read_fifo_fd = open(READ_FIFO,O_RDWR);
 	if(global_read_fifo_fd < 0)
@@ -411,6 +415,7 @@ void init_env(void)
 	}
 	else
 		PRINT("open %s success\n",WRITE_FIFO);
+#endif
 }
 
 int generate_stm32_down_msg(char *databuf,int databuf_len,int passage)
@@ -1739,7 +1744,9 @@ int UartPacketDis(unsigned char *ppacket,int bytes)
 			break;
 		case TYPE_USB_PASSAGE:
 			PRINT("UsbPassage\r\n");
+#ifdef B6
 			if(factory_test(ppacket+7,len_tmp-1) == -1)
+#endif
 			{
 				rtn = UartPassageDo(TYPE_USB_PASSAGE,ppacket,bytes);
 			}

@@ -95,7 +95,8 @@ static int last_do_flag = 0;
 static int extra_do_filter_count=3;
 
 static int do_echo_filter=0;
-
+static char *current_read_buf = NULL;
+static int last_offset = 0;
 //侧音处理
 
 static int AudioDriverReadFilterDo(char *pplay_pos, char *precord_pos, int len)
@@ -489,7 +490,12 @@ int ath_slic_open(struct inode *inode, struct file *filp)
 	}
 #endif
 //	opened = (sc->ropened | sc->popened);
-
+	current_read_buf = kmalloc(1600,GFP_KERNEL);
+	if(current_read_buf == NULL)
+	{
+		return -1;
+	}
+	last_offset = 0;
 	//初始化SLIC
 	if(!slic_dma_open)
 	{
@@ -525,8 +531,9 @@ int ath_slic_open(struct inode *inode, struct file *filp)
 		dmabuf = &sc->sc_rbuf;
 		scbuf = dmabuf->db_buf;
 		desc_p = (unsigned long) dmabuf->db_desc_p;
-		memset(sc->sc_rmall_buf, 0, NUM_DESC * ath_slic_buf_size);
+		//memset(sc->sc_rmall_buf, 0, NUM_DESC * ath_slic_buf_size);
 		for (j = 0; j < NUM_DESC; j++) {
+			memset(scbuf[j].bf_vaddr, 0, ath_slic_buf_size);
  			dma_cache_sync(NULL, scbuf[j].bf_vaddr, ath_slic_buf_size, DMA_FROM_DEVICE);
 		}
 		ath_slic_dma_start(desc_p, 1);
@@ -538,8 +545,9 @@ int ath_slic_open(struct inode *inode, struct file *filp)
 		dmabuf = &sc->sc_pbuf;
 		scbuf = dmabuf->db_buf;
 		memset(&sc_pbuf_flag, 0, sizeof(sc_pbuf_flag));
-		memset(sc->sc_pmall_buf, 0, NUM_DESC * ath_slic_buf_size);
+		//memset(sc->sc_pmall_buf, 0, NUM_DESC * ath_slic_buf_size);
 		for (j = 0; j < NUM_DESC; j++) {
+			memset(scbuf[j].bf_vaddr, 0, ath_slic_buf_size);
  			dma_cache_sync(NULL, scbuf[j].bf_vaddr, ath_slic_buf_size, DMA_TO_DEVICE);
 		}
 		desc_p = (unsigned long) dmabuf->db_desc_p;
@@ -557,7 +565,10 @@ ssize_t ath_slic_read(struct file * filp, char __user * buf,
 			 size_t count, loff_t * f_pos)
 {
 	uint8_t *data;
+	uint8_t *pdes_buffer;
+	uint8_t *psrc_buffer;	
 	ssize_t retval;
+	int i,j;
 	int byte_cnt, offset = 0, need_start = 0;
 	int mode = 1, index = 0;
 	struct ath_slic_softc *sc = &sc_buf_var;
@@ -567,6 +578,7 @@ ssize_t ath_slic_read(struct file * filp, char __user * buf,
 	int tail = dmabuf->tail;
 //	int play_tail = dmabuf->play_tail;
 	unsigned long desc_p;
+	int blocks;
 	
 #ifdef DO_AUDIO_FILTER
 	int postion_r;
@@ -576,93 +588,69 @@ ssize_t ath_slic_read(struct file * filp, char __user * buf,
 	slic_buf_t *pl_scbuf = pl_dmabuf->db_buf;
 #endif
 	
-	byte_cnt = count;
-
-
-/*	if (sc->ropened < 2) {
-		ath_reg_rmw_set(ATH_MBOX_SLIC_INT_ENABLE, 
-				( ATH_MBOX_SLIC_TX_DMA_COMPLETE ));
-		need_start = 1;
-	}*/
-
+	byte_cnt = 0;
+	blocks = count / SLIC_BUF_SIZE;//只取整数
 	sc->ropened = 2;
-
-	scbuf = dmabuf->db_buf;
-	desc = dmabuf->db_desc;
-	desc_p = (unsigned long) dmabuf->db_desc_p;
-//	data = scbuf[0].bf_vaddr;
-
-//	desc_p += tail * sizeof(ath_mbox_dma_desc);
+	scbuf = rl_dmabuf->db_buf;
+	desc = rl_dmabuf->db_desc;
+	desc_p = (unsigned long) rl_dmabuf->db_desc_p;
+		
+	postion_r = space_valid(rl_dmabuf->play_tail, dmabuf->tail);	
+	//printk("%d\n",postion_r);
+	if(postion_r < blocks)//待读取数据不足
+	{
+		return 0;
+	}	
+	postion_w = space_valid(pl_dmabuf->play_tail, postion_r);
+//	for(i = 0;i < 8;i++)
+//		postion_w = prev_tail(postion_w);
+//	for(i = 0;i < 3;i++)
+//		postion_w = next_tail(postion_w);
 	
-/*	if (!need_start) {
-//		wait_event_interruptible(wq_tx, desc[tail].OWN != 1);
-		wait_event_interruptible(wq_tx, (play_tail != dmabuf->tail));
-
-	}*/
-
-//	while (byte_cnt && !desc[tail].OWN) {
-	while(byte_cnt && (tail != dmabuf->play_tail)){
+	pdes_buffer = (unsigned char *)(&current_read_buf[count]);	
+	for(i=0;i<blocks;i++)
+	{
+		psrc_buffer = (unsigned char *)(pl_scbuf[postion_w].bf_vaddr);	
+		for(j=0;j<SLIC_BUF_SIZE;j++)
+		{
+			*(pdes_buffer++) = *(psrc_buffer++);
+		}
+		postion_w = next_tail(postion_w);
+	}
+	byte_cnt = 0;
+	offset = 0;
+	tail = rl_dmabuf->tail;
+	do
+	{
 		desc[tail].rsvd1 = 0;
 		desc[tail].size = ath_slic_buf_size;
-		if (byte_cnt >= ath_slic_buf_size) {
-			desc[tail].length = ath_slic_buf_size;
-			byte_cnt -= ath_slic_buf_size;
-			desc[tail].EOM = 0;
-		} else {
-			desc[tail].length = byte_cnt;
-			byte_cnt = 0;
-			desc[tail].EOM = 0;
-		}
-
-			dma_cache_sync(NULL, scbuf[tail].bf_vaddr, desc[tail].length, DMA_FROM_DEVICE);
-
-			desc[tail].rsvd2 = 0;
-#if 0
-			for(index = 0; index < desc[tail].length; index = index + 2){	
-				le16_to_cpus(scbuf[tail].bf_vaddr + index); 
-				} 
-#endif
-//进行侧音处理
-#ifdef DO_AUDIO_FILTER
-
-		//按照条件执行回声抑制处理
-		if(do_echo_filter)
+		desc[tail].length = ath_slic_buf_size;
+		desc[tail].EOM = 0;
+			
+		dma_cache_sync(NULL, scbuf[tail].bf_vaddr, desc[tail].length, DMA_FROM_DEVICE);
+		desc[tail].rsvd2 = 0;
+		pdes_buffer = (unsigned char *)(&current_read_buf[offset]);	
+		psrc_buffer = (unsigned char *)(scbuf[tail].bf_vaddr);	
+		for(i=0;i<desc[tail].length;i++)
 		{
-			postion_r = prev_tail(rl_dmabuf->play_tail);
-			postion_r = space_valid(postion_r, tail);
-			
-			postion_w = prev_tail(pl_dmabuf->play_tail);
-			postion_w = space_valid(postion_w, postion_r);
-			
-			AudioDriverReadFilterDo(pl_scbuf[postion_w].bf_vaddr,scbuf[tail].bf_vaddr, desc[tail].length);
+			*(pdes_buffer++) = *(psrc_buffer++);
 		}
-#endif
-			retval = copy_to_user(buf + offset, scbuf[tail].bf_vaddr, desc[tail].length);
-//			printk("copy_to_user....\n");
-			if (retval)
-				return retval;
-
 		desc[tail].BufPtr = (unsigned int) scbuf[tail].bf_paddr;
-
 		desc[tail].rsvd3 = 0;
 		/* Give ownership back to MBOX. */
 		desc[tail].OWN = 1;
-
 		offset += desc[tail].length;
-		tail = next_tail(tail);
-	}
+		byte_cnt += desc[tail].length;	
+		rl_dmabuf->tail = next_tail(tail);
+		tail = rl_dmabuf->tail;
+		if(byte_cnt >= count)
+			break;
+	}while(byte_cnt < count);
 
-	dmabuf->tail = tail;
-//	dmabuf->play_tail = play_tail;
-
-//	if (need_start) {
-		/* Start DMA */
-//		printk("TX DMA Start....\n");
-//		ath_slic_dma_start((unsigned long) desc_p, mode);
-//	} else if (!sc->rpause) {
-//		ath_slic_dma_resume(mode);
-//	}
-	return offset;
+	retval = copy_to_user(buf, current_read_buf, count * 2);
+	if (retval)
+		return retval;
+	return count;
 }
 
 /* Transmit */
@@ -683,7 +671,8 @@ ssize_t ath_slic_write(struct file * filp, const char __user * buf,
 //	si3000 = 0;
 	byte_cnt = count;
 //	unsigned short test;
-
+	if(count == 0 )
+		return 0;
 /*	if (sc->popened < 2) {
 		ath_reg_rmw_set(ATH_MBOX_SLIC_INT_ENABLE, 
 				( ATH_MBOX_SLIC_RX_DMA_COMPLETE ));
@@ -693,16 +682,15 @@ ssize_t ath_slic_write(struct file * filp, const char __user * buf,
 	sc->popened = 2;
 */
 	//判断当前是否是无效数据
-	while(space_valid(tail, dmabuf->play_tail) > 1)
+	if(space_valid(tail, dmabuf->play_tail) >= 1)
 	{
-		if(sc_pbuf_flag.user_add[tail] == 0)
+		if(sc_pbuf_flag.user_add[prev_tail(tail)] == 0)
 		{
 			tail = prev_tail(tail);
 		}
 		else
 		{
 			dmabuf->tail = tail;
-			break;
 		}
 	}
 	
@@ -711,6 +699,7 @@ ssize_t ath_slic_write(struct file * filp, const char __user * buf,
 //	desc_p = (unsigned long) dmabuf->db_desc_p;
 	offset = 0;
 	data = scbuf[0].bf_vaddr;
+	//printk("space = %d\n",space_valid(dmabuf->play_tail, tail));
 
 //	desc_p += tail * sizeof(ath_mbox_dma_desc);
 	
@@ -721,7 +710,9 @@ ssize_t ath_slic_write(struct file * filp, const char __user * buf,
 		if(dmabuf->play_tail == tail)
 			;
 		else if(space_valid(dmabuf->play_tail, tail) < (NUM_DESC/4))
+		{
 			break;
+		}
 //		if(space_valid(tail, dmabuf->play_tail) > (NUM_DESC*4/5))
 //			break;
 		desc[tail].rsvd1 = 0;
@@ -759,7 +750,7 @@ ssize_t ath_slic_write(struct file * filp, const char __user * buf,
 		tail = next_tail(tail);
 		dmabuf->tail = tail;
 	}
-
+	//printk("total_length = %d\n",total_length);
 /*	if (need_start) {
 		ath_slic_dma_start((unsigned long) desc_p, mode);
 	} else if (!sc->ppause) {
@@ -875,6 +866,7 @@ int ath_slic_close(struct inode *inode, struct file *filp)
 //		ath_reg_rmw_set(RST_RESET_ADDRESS, RST_RESET_SLIC_RESET_SET(1));
 //		ath_reg_wr(ATH_SLIC_CTRL, ATH_SLIC_CTRL_MASTER);
 		printk("slic both close over\n");
+		kfree(current_read_buf);
 		slic_dma_open = 0;
 	}
 	
@@ -956,8 +948,9 @@ int ath_slic_ioctl(struct inode *inode, struct file *filp,
 				scbuf = dmabuf->db_buf;
 				slic_dma_open = 0;
 				//清空写缓存
-				memset(sc->sc_pmall_buf, 0, NUM_DESC * ath_slic_buf_size);
+				//memset(sc->sc_pmall_buf, 0, NUM_DESC * ath_slic_buf_size);
 				for (j = 0; j < NUM_DESC; j++) {
+					memset(scbuf[j].bf_vaddr, 0, ath_slic_buf_size);
 					dma_cache_sync(NULL, scbuf[j].bf_vaddr, ath_slic_buf_size, DMA_TO_DEVICE);
 				}
 				printk("Slic release...\n");
@@ -995,6 +988,7 @@ irqreturn_t ath_slic_intr(int irq, void *dev_id)
 		if(slic_dma_open)
 		{
 			//如果后续第二包没有数据，则用0补充
+			//zhangbo
 			if(space_valid(dmabuf->tail, dmabuf->play_tail) <= 1)
 			{
 				scbuf = dmabuf->db_buf;
@@ -1017,7 +1011,6 @@ irqreturn_t ath_slic_intr(int irq, void *dev_id)
 				sc_pbuf_flag.user_add[dmabuf->tail] = 0;
 				
 				dmabuf->tail = next_tail(dmabuf->tail);
-//				printk("ath_slic_intr add one block\n");
 			}
 		}
 		dmabuf->play_tail = next_tail(dmabuf->play_tail);

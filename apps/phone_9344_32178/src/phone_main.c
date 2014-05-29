@@ -9,6 +9,16 @@ int main(int argc,char **argv)
 	{
 		exit(-1);
 	}
+#ifdef B6
+	PRINT("Version:B6\n");
+#elif defined(B6L)
+	PRINT("Version:B6L\n");
+#elif defined(S1)
+	PRINT("Version:S1\n");
+#else
+	PRINT("Version:NULL\n");
+#endif
+
 	PRINT("%s %s\n",__DATE__,__TIME__);
 	PRINT("Author: %s\n",AUTHOR);
 	
@@ -20,8 +30,14 @@ int main(int argc,char **argv)
 	pthread_t audiosend_pthread;
 	pthread_t audiorecv_pthread;
 	pthread_t audio_readwrite_pthread;
+	pthread_t audio_echo_pthread;
 	pthread_t audio_incoming_pthread;
+#ifdef B6
 	pthread_t passage_pthread;
+#else
+	pthread_t led_pthread;
+#endif
+
 
 	init_control();
 
@@ -39,6 +55,7 @@ int main(int argc,char **argv)
 	pthread_create(&audio_readwrite_pthread,NULL,(void*)AudioReadWriteThreadCallBack,NULL);
 	pthread_create(&audiosend_pthread,NULL,(void*)AudioSendThreadCallBack,NULL);
 	pthread_create(&audiorecv_pthread,NULL,(void*)AudioRecvThreadCallBack,NULL);
+	pthread_create(&audio_echo_pthread,NULL,(void*)AudioEchoThreadCallBack,NULL);
 	
 	//audio accept
 	pthread_create(&phone_audio_pthread,NULL,(void*)audio_loop_accept,NULL);
@@ -55,10 +72,17 @@ int main(int argc,char **argv)
 	//control accept
 	pthread_create(&phone_control_pthread,NULL,(void*)phone_control_loop_accept,NULL);
 
+#ifdef B6
 	//passage
 	pthread_create(&passage_pthread,NULL,(void*)passage_pthread_func,NULL);
-
+	
 	pthread_join(passage_pthread,NULL);
+#else
+	//led
+	pthread_create(&led_pthread,NULL,(void*)led_control_pthread_func,NULL);
+	
+	pthread_join(led_pthread,NULL);
+#endif
 	pthread_join(audio_incoming_pthread,NULL);
 	pthread_join(handle_down_msg_pthread,NULL);
 	pthread_join(handle_up_msg_pthread,NULL);
@@ -71,6 +95,7 @@ int main(int argc,char **argv)
 	pthread_join(audiosend_pthread,NULL);
 	pthread_join(audiorecv_pthread,NULL);
 	pthread_join(audio_readwrite_pthread,NULL);
+	pthread_join(audio_echo_pthread,NULL);
 
 	return 0;
 }

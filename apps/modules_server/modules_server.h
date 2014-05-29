@@ -39,7 +39,11 @@
 #define PACKET_STM32_DATA_LEN_POS_LOW 5
 
 //通道、命令
-#define PASSAGE_NUM 4
+#ifdef B6
+#define PASSAGE_NUM 2
+#else
+#define PASSAGE_NUM 1
+#endif
 #define TYPE_STM32	0X10
 #define TYPE_USB_PASSAGE	0X20
 #define TYPE_UART_PASSAGE	0X30

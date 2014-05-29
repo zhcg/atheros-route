@@ -26,12 +26,18 @@
 #define DTMF 1
 
 //led
+#ifdef B6
 #define LED_LINE_IN 	0X01
 #define LED_LINE_OUT 	0X10
 #define LED_INCOMING	0X02
 #define LED_OFFHOOK_IN	0X03
 #define LED_OFFHOOK_OUT	0X13
-
+#else
+#define LED_LINE_IN 	0X01
+#define LED_LINE_OUT 	0X02
+#define LED2_ON			0X03
+#define LED2_OFF		0X04
+#endif
 
 enum PstnCommand {
 	UNDEFINED = -1,
@@ -58,6 +64,12 @@ enum PstnCommand {
 	REQ_SWITCH,
 	REQ_TALK,
 	RET_PHONETOBASE,
+#ifndef B6
+	//
+	TEST_ON,
+	SET_MAC,
+	SET_SN,
+#endif
 	//
 	REQ_ENC,
 	
@@ -92,6 +104,9 @@ typedef struct dev_status
 	char dev_name[17];//设备名字
 	char dev_mac[12];
 	int dev_is_using;//设备是否正在使用
+#ifndef B6
+	int test_on;
+#endif
 	int encrypt_enable;
 	int desencrypt_enable;
 }dev_status_t ;
@@ -141,7 +156,11 @@ struct class_phone_control
 	int ring_neg_count;
 	int ring_pos_count;
 	int ring_count;
+#ifdef B6
 	int passage_fd;
+#else
+	int led_control_fd;
+#endif
 	char vloop; //电话线插入检测
 	int dial_over;
 	int offhook_kill_talkback;
@@ -181,6 +200,11 @@ int do_cmd_talkbackonhook(dev_status_t* dev,char *sendbuf);
 int do_cmd_req_switch(dev_status_t* dev,char *sendbuf);
 int do_cmd_req_talk(dev_status_t* dev,char *sendbuf);
 int do_cmd_ret_ptb(dev_status_t* dev,char *sendbuf);
+#ifndef B6
+int do_cmd_test_on(dev_status_t * dev, char * sendbuf);
+int do_cmd_set_sn(dev_status_t * dev, char * sendbuf);
+int do_cmd_set_mac(dev_status_t * dev, char * sendbuf);
+#endif
 int do_cmd_req_enc(dev_status_t * dev, char * sendbuf);
 int parse_msg(cli_request_t *cli);
 void *phone_control_loop_accept(void *argv);
@@ -204,7 +228,11 @@ int generate_incoming_msg(unsigned char *buf,const unsigned char *num,int num_le
 int sqlite3_interface(char *tb_name,char *data_name, char *data_value,char *where_name,char *out_value);
 int call_test();
 void led_control(char type);
+#ifdef B6
 void passage_pthread_func(void *argv);
+#else
+void led_control_pthread_func(void *argv);
+#endif
 
 extern struct class_phone_control phone_control;
 extern struct class_phone_audio phone_audio;

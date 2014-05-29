@@ -9,7 +9,7 @@ STRIP=$(CROSS)strip
 
 
 all:
-	$(CC) modules_main.c modules_server.c as532.c as532_update.c stm32_update.c file.c -o $(BIN) -lpthread
+	$(CC) -D$(BUILD_VERSION) modules_main.c modules_server.c as532.c as532_update.c stm32_update.c file.c -o $(BIN) -lpthread
 
 clean:
 	rm -rf $(BIN)

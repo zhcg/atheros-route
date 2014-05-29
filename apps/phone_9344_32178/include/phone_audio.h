@@ -8,8 +8,8 @@
 #define SET_WRITE_TYPE      _IOW('N', 0x26, int)
 #define SLIC_INIT			_IOW('N', 0x27, int)
 #define SLIC_RELEASE		_IOW('N', 0x28, int)
-#define PSTN 1
-#define TALKBACK 0
+#define PSTN 				1
+#define TALKBACK 			0
 struct class_phone_audio
 {
 	int (*init_audio)(void);
@@ -21,13 +21,17 @@ struct class_phone_audio
 	int input_stream_rp;
 	int output_stream_wp;
 	int output_stream_rp;
+	int echo_stream_wp;
+	int echo_stream_rp;
 	int audio_reconnect_loops;
 	int audio_reconnect_flag;
 	int audio_send_thread_exit_flag;
 	int audio_recv_thread_exit_flag;
+	int audio_echo_thread_exit_flag;
 	int audio_read_write_thread_exit_flag;
 	int audio_send_thread_flag;
 	int audio_recv_thread_flag;
+	int audio_echo_thread_flag;
 	int audio_read_write_thread_flag;
 	int audio_incoming_thread_flag;
 	int audio_talkbacked_recv_send_thread_flag;
@@ -46,7 +50,7 @@ int init_audio(void);
 void start_read_incoming();
 void stop_read_incoming();
 int startaudio(dev_status_t* devp,int flag);
-void stopaudio(dev_status_t *devp,int flag);
+void stopaudio(dev_status_t* devp,int flag,int reconnect_flag);
 void* audio_loop_accept(void *argv);
 int Encrypt(unsigned char *data,int len);
 int Decrypt(unsigned char *data,int len);
@@ -60,6 +64,7 @@ void* AudioSendThreadCallBack(void* argv);
 void* AudioReadThreadCallBack(void* argv);
 void* AudioReadWriteThreadCallBack(void* argv);
 void* AudioIncomingThreadCallBack(void* argv);
+void* AudioEchoThreadCallBack(void* argv);
 
 extern struct class_phone_audio phone_audio;
 extern struct class_phone_control phone_control;

@@ -37,7 +37,11 @@ struct class_phone_control phone_control =
 	.ring_count = 0, //来电标志后计数
 	.ring_neg_count = 0,
 	.ring_pos_count = 0,
+#ifdef B6
 	.passage_fd = -1,
+#else
+	.led_control_fd = -1,
+#endif
 	.vloop = 0,
 	.offhook_kill_talkback = 0,
 };
@@ -158,7 +162,11 @@ int sqlite3_interface(char *tb_name,char *data_name, char *data_value,char *wher
         PRINT("para is NULL!\n");
         return -1;
     }
+#ifndef B6L
     if (sqlite3_open("/var/terminal_dev_register/db/terminal_base_db", &db) != 0)
+#else
+    if (sqlite3_open("/var/db/terminal_base_db", &db) != 0)
+#endif	
     {
         PRINT("%s\n",sqlite3_errmsg(db));
         return -1;
@@ -273,11 +281,21 @@ int destroy_client(dev_status_t *dev)
 			dev->audio_reconnect=0;
 			clean_who_is_online();
 			if(phone_control.vloop > 3 || phone_control.vloop < -3)
+			{
 				led_control(LED_LINE_IN);
+#ifndef B6
+				led_control(LED2_ON);
+#endif
+			}
 			else
+			{
 				led_control(LED_LINE_OUT);
+#ifndef B6
+				led_control(LED2_OFF);
+#endif
+			}
 		}
-		stopaudio(dev,PSTN);
+		stopaudio(dev,PSTN,0);
 	}
 	if(dev->talkbacking == 1 || dev->talkbacked == 1)
 	{
@@ -377,7 +395,6 @@ OFFHOOK:
 			if(devlist[i].talkbacking || devlist[i].talkbacked)
 			{
 				PRINT("stop talkbacking!\n");
-				//stopaudio(&devlist[i],TALKBACK);
 				do_cmd_talkbackonhook(&devlist[i],sendbuf);
 				phone_control.offhook_kill_talkback = 1;
 				usleep(100*1000);
@@ -395,8 +412,7 @@ OFFHOOK:
 		}
 		dev->dev_is_using = 1;
 		phone_control.start_dial = 1;
-
-		startaudio(dev,0);
+		phone_control.dial_over = 0;
 
 		if(dev->isswtiching == 0)
 		{
@@ -420,6 +436,8 @@ START_OFFHOOK:
 OFFHOOK_SUCCESS:
 			offhook_limit = 0;
 		}
+		startaudio(dev,0);
+		
 		dev->attach=1;
 		memcpy(&phone_control.who_is_online,dev,sizeof(dev_status_t));
 		//PRINT("phone_control.who_is_online.attach = %d\n",phone_control.who_is_online.attach);
@@ -427,10 +445,12 @@ OFFHOOK_SUCCESS:
 		phone_control.global_incoming = 0;
 		dev->incoming = 0;
 		phone_control.ringon_flag = 0;
+#ifdef B6
 		if(phone_control.vloop > 3 || phone_control.vloop < -3)
 			led_control(LED_OFFHOOK_IN);
 		else
 			led_control(LED_OFFHOOK_OUT);
+#endif
 		netWrite(dev->client_fd, "HEADR0011INUSING0010\r\n", 23);	
 	}
 	else
@@ -499,11 +519,12 @@ int do_cmd_onhook(dev_status_t *dev)
 			phone_control.global_incoming = 0;
 			usleep(400*1000);
 		}
+		else
+			stopaudio(dev,PSTN,0);		
 		phone_control.global_phone_is_using = 0;
 		dev->dev_is_using = 0;
 		dev->isswtiching = 0;
 		clean_who_is_online();
-		stopaudio(dev,PSTN);
 START_ONHOOK:
 		onhook();
 		if(!set_onhook_monitor())
@@ -532,10 +553,19 @@ ONHOOK_SUCCESS:
 
 		start_read_incoming();
 		if(phone_control.vloop > 3 || phone_control.vloop < -3)
+		{
 			led_control(LED_LINE_IN);
+#ifndef B6
+			led_control(LED2_ON);
+#endif
+		}
 		else
+		{
 			led_control(LED_LINE_OUT);
-
+#ifndef B6
+			led_control(LED2_OFF);
+#endif
+		}
 		//sleep(1);
 		return 0;
 	}
@@ -699,7 +729,7 @@ int do_cmd_talkbackonhook(dev_status_t* dev,char *sendbuf)
 	}
 	if(flag == 0)
 	{
-		stopaudio(dev,TALKBACK);
+		stopaudio(dev,TALKBACK,0);
 	}
 	//memset(sendbuf,0,SENDBUF);
 	//snprintf(sendbuf, 22,"HEADR0010STOPTB_000\r\n");
@@ -761,6 +791,41 @@ int strtosmall(unsigned char *data,unsigned int len)
 	return 0;
 }
 
+#ifdef B6L
+int get_532_ver(dev_status_t *dev)
+{
+	int ret = 0;
+	char buf[SENDBUF] = {0};
+	char sendbuf[SENDBUF] = {0};	
+	int fd = open(TMP_AS532_VER_FILE,O_RDWR);
+	if(fd < 0)
+	{
+		PRINT("open 532 file err\n");
+		goto GET_532VER_ERR;
+	}
+	ret = read(fd,buf,SENDBUF);
+	//HBD_B6L_AS532_xxxxxxxx
+	if(ret > strlen(AS532_VER))
+	{
+		if(!strncmp(buf,AS532_VER,strlen(AS532_VER)))
+		{
+			PRINT("get ver\n");
+			//HEADR0011532_VER0xxHBD_B6L_AS532_xxxxxxxx
+			sprintf(sendbuf,"HEADR0%03d532_VER%03d%s",strlen(buf)+10-1,strlen(buf)-1,buf);
+			PRINT("send_buf = %s\n",sendbuf);
+			netWrite(dev->client_fd,sendbuf,strlen(sendbuf));
+			close(fd);
+			return 0;
+		}
+		close(fd);
+		goto GET_532VER_ERR;
+	}
+GET_532VER_ERR:
+	netWrite(dev->client_fd,"HEADR1011532_VER000",strlen("HEADR1011532_VER000"));
+	return -1;
+}
+#endif
+
 #ifdef REGISTER
 int do_cmd_heartbeat(dev_status_t *dev,char *buf)
 {
@@ -808,7 +873,7 @@ int do_cmd_heartbeat(dev_status_t *dev,char *buf)
 			netWrite(dev->client_fd,"HEADR0010REG_SUC000\r\n",21);
 			goto REGISTERED;
 		}
-		
+#ifndef B6L		
 		sqlite3_interface("terminal_base_tb","register_state","0","register_state",register_state);
 		//PRINT("register_state = %s\n",register_state);
 		sqlite3_interface("terminal_base_tb","pad_mac",buf,"pad_mac",pad_mac);
@@ -833,6 +898,7 @@ int do_cmd_heartbeat(dev_status_t *dev,char *buf)
 			netWrite(dev->client_fd,"HEADR0010REG_SUC000\r\n",21);
 			goto REGISTERED;
 		}
+#endif
 UNREGISTERED:		
 		PRINT("dev is unregistered\n");
 		for(i=0;i<CLIENT_NUM;i++)
@@ -850,6 +916,7 @@ UNREGISTERED:
 		return -1;
 	}
 REGISTERED:
+	//dev->encrypt_enable = 1;
 	dev->tick_time++;
 	dev->registered = 1;
 	if(dev->tick_time == 1)
@@ -919,6 +986,24 @@ int do_cmd_dialup(dev_status_t* dev)
 			phone_control.telephone_num_len = cli_req_buf[phone_control.cli_req_buf_rp].arglen;
 			dialup(phone_control.telephone_num, cli_req_buf[phone_control.cli_req_buf_rp].arglen);
 		}
+#ifdef B6L
+	}
+	else
+	{
+		memset(phone_control.telephone_num,0,64);
+		if(cli_req_buf[phone_control.cli_req_buf_rp].arglen > 64)
+			cli_req_buf[phone_control.cli_req_buf_rp].arglen = 64;
+		memcpy(phone_control.telephone_num, cli_req_buf[phone_control.cli_req_buf_rp].arg,cli_req_buf[phone_control.cli_req_buf_rp].arglen);
+		phone_control.telephone_num[cli_req_buf[phone_control.cli_req_buf_rp].arglen]='\0';
+		PRINT("phone_num:%s\n",phone_control.telephone_num);
+		phone_control.telephone_num_len = cli_req_buf[phone_control.cli_req_buf_rp].arglen;
+		if(!strncmp(phone_control.telephone_num,AS532_NUM,strlen(AS532_NUM)))
+		{
+			get_532_ver(dev);
+			return 0;
+		}
+		netWrite(dev->client_fd,"HEADR1011532_VER000",strlen("HEADR1011532_VER000"));
+#endif
 	}
 	return 0;
 }
@@ -996,7 +1081,7 @@ int do_cmd_switch(dev_status_t* dev,char *sendbuf)
 		dev->attach=0;
 		dev->audio_reconnect=0;
 		clean_who_is_online();
-		stopaudio(dev,PSTN);
+		stopaudio(dev,PSTN,0);
 		memset(sendbuf,0,SENDBUF);
 		snprintf(sendbuf, 23,"HEADR0011SON_RET0011\r\n");
 		netWrite(dev->client_fd, sendbuf, strlen(sendbuf));
@@ -1137,39 +1222,147 @@ REQ_TALK_ERR:
 
 int do_cmd_ret_ptb(dev_status_t * dev, char * sendbuf)
 {
-        int i,id;
-        char client_ip[16]={0};
-        char flag;
-		char id_buf[3]={0};
-		memcpy(id_buf,&cli_req_buf[phone_control.cli_req_buf_rp].arg[0],3);
-		id = atoi(id_buf);
-        memcpy(client_ip,&cli_req_buf[phone_control.cli_req_buf_rp].arg[3],cli_req_buf[phone_control.cli_req_buf_rp].arglen-3);//10.10.10.103 //172.16.0.1
-        client_ip[cli_req_buf[phone_control.cli_req_buf_rp].arglen]='\0';
-        PRINT("ret id = %d\n",id);
-        PRINT("ret ip = %s\n",client_ip);
+	int i,id;
+	char client_ip[16]={0};
+	char flag;
+	char id_buf[3]={0};
+	memcpy(id_buf,&cli_req_buf[phone_control.cli_req_buf_rp].arg[0],3);
+	id = atoi(id_buf);
+	memcpy(client_ip,&cli_req_buf[phone_control.cli_req_buf_rp].arg[3],cli_req_buf[phone_control.cli_req_buf_rp].arglen-3);//10.10.10.103 //172.16.0.1
+	client_ip[cli_req_buf[phone_control.cli_req_buf_rp].arglen]='\0';
+	PRINT("ret id = %d\n",id);
+	PRINT("ret ip = %s\n",client_ip);
 
-        if(id<0 || id>=CLIENT_NUM)
-        {
-                PRINT("ID error\n");
-                goto RET_ERR;
-        }
-        if(devlist[id].client_fd <0)
-        {
-                PRINT("dev is not online\n");
-                goto RET_ERR;
-        }
-        if(strcmp(devlist[id].client_ip,client_ip))
-        {
-                PRINT("ip error\n");
-                goto RET_ERR;
-        }
-        memset(sendbuf,0,SENDBUF);
-        snprintf(sendbuf, 23,"HEADR0011RET_BTP0011\r\n");
-        netWrite(devlist[id].client_fd, sendbuf, strlen(sendbuf));
-        return 0;
+	if(id<0 || id>=CLIENT_NUM)
+	{
+		PRINT("ID error\n");
+		goto RET_ERR;
+	}
+	if(devlist[id].client_fd <0)
+	{
+		PRINT("dev is not online\n");
+		goto RET_ERR;
+	}
+	if(strcmp(devlist[id].client_ip,client_ip))
+	{
+		PRINT("ip error\n");
+		goto RET_ERR;
+	}
+	memset(sendbuf,0,SENDBUF);
+	snprintf(sendbuf, 23,"HEADR0011RET_BTP0011\r\n");
+	netWrite(devlist[id].client_fd, sendbuf, strlen(sendbuf));
+	return 0;
 RET_ERR:
-        return -1;
+	return -1;
 }
+
+#ifndef B6
+int do_cmd_test_on(dev_status_t * dev, char * sendbuf)
+{
+	dev->registered = 1;
+	dev->tick_time = 1;
+	dev->test_on = 1;
+	return 0;
+}
+
+int do_cmd_set_mac(dev_status_t * dev, char * sendbuf)
+{
+	int i,ret = 0;
+	char mac_buf[20]={0};
+	char mac_buf_out[30]={0};
+	char cmdbuf[50]={0};
+	char *macp=mac_buf_out;
+	pid_t status;
+	if(dev->registered == 1 && dev->test_on == 1)
+	{
+		memcpy(mac_buf, cli_req_buf[phone_control.cli_req_buf_rp].arg,(cli_req_buf[phone_control.cli_req_buf_rp].arglen > 20)?20:(cli_req_buf[phone_control.cli_req_buf_rp].arglen));
+		for(i=0;i<12;i++)
+		{
+			sprintf(macp,"%c",mac_buf[i]);
+			macp++;
+			if(i == 11)
+				break;
+			if(i % 2 != 0)
+			{
+				sprintf(macp,"%c",':');
+				macp++;
+			}
+		}
+		macp = '\0';
+		sprintf(cmdbuf,"%s%s","set_macaddr ",mac_buf_out);
+		PRINT("cmdbuf = %s\n",cmdbuf);
+		status = system(cmdbuf);
+		PRINT("status = %d\n",status);
+		if(status == -1)
+		{
+			PRINT("system fail!\n");
+			netWrite(dev->client_fd,"HEADR0011SET_MAC0011\r\n",22);
+			return -1;
+		}
+		else
+		{
+			ret = WEXITSTATUS(status);
+			PRINT("ret = %d\n",ret);
+			if(ret == 0)
+			{
+				PRINT("Update Mac Success!\n");
+				netWrite(dev->client_fd,"HEADR0011SET_MAC0010\r\n",22);
+				return 0;
+			}
+			else
+			{
+				PRINT("Update Mac Fail!\n");
+				netWrite(dev->client_fd,"HEADR0011SET_MAC0011\r\n",22);
+				return -1;
+			}
+		}
+	}
+	netWrite(dev->client_fd,"HEADR0011SET_MAC0011\r\n",22);
+	return -1;
+}
+
+int do_cmd_set_sn(dev_status_t * dev, char * sendbuf)
+{
+	int ret = 0;
+	int i = 0;
+    unsigned char databuf[20] = {0};
+    unsigned char cmdbuf[50] = {0};
+	pid_t status;
+	if(dev->registered == 1 && dev->test_on == 1)
+	{
+		memcpy(databuf, cli_req_buf[phone_control.cli_req_buf_rp].arg,(cli_req_buf[phone_control.cli_req_buf_rp].arglen > 20)?20:(cli_req_buf[phone_control.cli_req_buf_rp].arglen));
+		snprintf(cmdbuf,32,"%s%s","fw_setenv SN ",databuf);
+		PRINT("cmdbuf = %s\n",cmdbuf);
+		status = system(cmdbuf);
+		PRINT("status = %d\n",status);
+		if(status == -1)
+		{
+			PRINT("system fail!\n");
+			netWrite(dev->client_fd,"HEADR0011SET__SN0011\r\n",22);
+			return -1;
+		}
+		else
+		{
+			ret = WEXITSTATUS(status);
+			PRINT("ret = %d\n",ret);
+			if(ret == 0)
+			{
+				PRINT("Update Sn Success!\n");
+				netWrite(dev->client_fd,"HEADR0011SET__SN0010\r\n",22);
+				return 0;
+			}
+			else
+			{
+				PRINT("Update Sn Fail!\n");
+				netWrite(dev->client_fd,"HEADR0011SET__SN0011\r\n",22);
+				return -1;
+			}
+		}
+	}
+	netWrite(dev->client_fd,"HEADR0011SET__SN0011\r\n",22);
+	return -1;
+}
+#endif
 
 int do_cmd_req_enc(dev_status_t * dev, char * sendbuf)
 {
@@ -1248,22 +1441,42 @@ int parse_msg(cli_request_t* cli)
 		}
 		case REQ_SWITCH:
 	    {
-			   PRINT("REQ_SWITCH from %s\n",cli->dev->client_ip);
-			   do_cmd_req_switch(cli->dev,sendbuf);
-			   break;
+		   PRINT("REQ_SWITCH from %s\n",cli->dev->client_ip);
+		   do_cmd_req_switch(cli->dev,sendbuf);
+		   break;
 		}
 		 case REQ_TALK:
 		{
-				PRINT("REQ_TALK from %s\n",cli->dev->client_ip);
-				do_cmd_req_talk(cli->dev,sendbuf);
-				break;
+			PRINT("REQ_TALK from %s\n",cli->dev->client_ip);
+			do_cmd_req_talk(cli->dev,sendbuf);
+			break;
 		}
 		case RET_PHONETOBASE:
 		{
-				PRINT("RET_PHONETOBASE from %s\n",cli->dev->client_ip);
-				do_cmd_ret_ptb(cli->dev,sendbuf);
-				break;
+			PRINT("RET_PHONETOBASE from %s\n",cli->dev->client_ip);
+			do_cmd_ret_ptb(cli->dev,sendbuf);
+			break;
 		}
+#ifndef B6
+		case TEST_ON:
+		{
+			PRINT("TEST_ON from %s\n",cli->dev->client_ip);
+			do_cmd_test_on(cli->dev,sendbuf);
+			break;
+		}
+		case SET_MAC:
+		{
+			PRINT("SET_MAC from %s\n",cli->dev->client_ip);
+			do_cmd_set_mac(cli->dev,sendbuf);
+			break;
+		}
+		case SET_SN:
+		{
+			PRINT("SET_SN from %s\n",cli->dev->client_ip);
+			do_cmd_set_sn(cli->dev,sendbuf);
+			break;
+		}
+#endif
 		case REQ_ENC:
 		{
 			PRINT("REQ_ENC from %s\n",cli->dev->client_ip);
@@ -1335,6 +1548,20 @@ int getCmdtypeFromString(char *cmd_str)
 	{
 		cmdtype = RET_PHONETOBASE;
 	}
+#ifndef B6
+	else if (strncmp(cmd_str, "TEST_ON", 7) == 0)
+	{
+		cmdtype = TEST_ON;
+	}
+	else if (strncmp(cmd_str, "SET_MAC", 7) == 0)
+	{
+		cmdtype = SET_MAC;
+	}
+	else if (strncmp(cmd_str, "SET__SN", 7) == 0)
+	{
+		cmdtype = SET_SN;
+	}
+#endif
 	else if (strncmp(cmd_str, "REQ_ENC", 7) == 0)
 	{
 		cmdtype = REQ_ENC;
@@ -1376,7 +1603,7 @@ int init_control()
 	}
 	PRINT("control bind success\n");
 
-	if(listen(sockfd,10)<0)
+	if(listen(sockfd,CLIENT_NUM)<0)
 	{
 		perror("control listen error\n");
 		exit(-1);
@@ -1424,6 +1651,7 @@ int init_control()
 	//开始检测incoming
 	start_read_incoming();
 
+#ifdef B6
 	phone_control.passage_fd = open(PASSAGE_NAME,O_RDWR);
 	if(phone_control.passage_fd < 0)
 	{
@@ -1434,7 +1662,18 @@ int init_control()
 	{
 		PRINT("open %s success\n",PASSAGE_NAME);
 	}
-
+#else
+	phone_control.led_control_fd = open(LED_NAME,O_RDWR);
+	if(phone_control.led_control_fd < 0)
+	{
+		PRINT("open %s error\n",LED_NAME);
+		//exit(-1);
+	}
+	else
+	{
+		PRINT("open %s success\n",LED_NAME);
+	}	
+#endif
 	return 0;
 }
 
@@ -1469,7 +1708,9 @@ void Incomingcall(unsigned char *ppacket,int bytes,int flag)
 	int index = 0;
 	PRINT("INCOMMINGCALL!\n");
 	int num_len=0;
+#ifdef B6
 	led_control(LED_INCOMING);
+#endif
 	if(flag == FSK)
 	{
 		num_len=(int)ppacket[12];
@@ -1488,7 +1729,6 @@ void Incomingcall(unsigned char *ppacket,int bytes,int flag)
 		if(devlist[i].talkbacking || devlist[i].talkbacked)
 		{
 			PRINT("stop talkbacking!\n");
-			//stopaudio(&devlist[i],TALKBACK);
 			do_cmd_talkbackonhook(&devlist[i],sendbuf);
 			usleep(300*1000);
 			break;
@@ -1517,6 +1757,7 @@ void Incomingcall(unsigned char *ppacket,int bytes,int flag)
 	phone_control.telephone_num[num_len]='\0';
 	PRINT("incoming num : %s\n",phone_control.telephone_num);
 	
+#ifdef B6
 	//生产测试被叫
 	sendbuf[index++] = 0xA5;
 	sendbuf[index++] = 0x5A;
@@ -1528,6 +1769,7 @@ void Incomingcall(unsigned char *ppacket,int bytes,int flag)
 	memcpy(&sendbuf[index],phone_control.telephone_num,num_len);
 	index += num_len;
 	write(phone_control.passage_fd,sendbuf,index);
+#endif
 
 	snprintf(sendbuf, 22+num_len, "HEADR0%03dINCOMIN%03d%s\r\n",10+num_len, num_len, phone_control.telephone_num);
 	//snprintf(sendbuf, 22, "HEADR0%03dINCOMIN%03d\r\n",10,0);
@@ -1812,13 +2054,14 @@ int generate_incoming_msg(unsigned char *buf,const unsigned char *num,int num_le
 	//ComFunPrintfBuffer(buf,num_len+11);
 }
 
+#ifdef B6
 void led_control(char type)
 {
 	char led[3] = {0x5A,0XA5};
 	led[2] = type;
 	write(phone_control.passage_fd,led,3);
 }
-
+#endif
 
 void *loop_check_ring(void * argv)
 {
@@ -1850,6 +2093,9 @@ void *loop_check_ring(void * argv)
 					PRINT("line in!\n");
 					line = 1;
 					led_control(LED_LINE_IN);
+#ifndef B6
+					led_control(LED2_ON);
+#endif
 				}
 			}
 		}
@@ -1865,6 +2111,9 @@ void *loop_check_ring(void * argv)
 					PRINT("line out!\n");
 					line = -1;
 					led_control(LED_LINE_OUT);
+#ifndef B6
+					led_control(LED2_OFF);
+#endif
 				}
 			}
 		}
@@ -2257,7 +2506,7 @@ int parse_msg_inside(char *msg)
 		//PRINT("dev %d will be destroyed\n",(int)num-48);
 		//destroy_client(&devlist[(int)num-48]);
 	//}
-	PRINT("num=%d\n",num);
+	PRINT("name=%s\n",devlist[num-1].dev_name);
 	if(num>= 1 && num <=CLIENT_NUM)
 	{
 		PRINT("dev %d will be destroyed\n",num-1);
@@ -2289,9 +2538,19 @@ void check_ringon_func()
 					}
 				}
 				if(phone_control.vloop > 3 || phone_control.vloop < -3)
+				{
 					led_control(LED_LINE_IN);
+#ifndef B6
+					led_control(LED2_ON);
+#endif
+				}
 				else
+				{
 					led_control(LED_LINE_OUT);
+#ifndef B6
+					led_control(LED2_OFF);
+#endif
+				}
 				phone_control.check_ringon_count = 0;
 			}
 		}
@@ -2395,7 +2654,6 @@ void send_tb_ringon()
 				phone_control.send_tb_ringon_limit++;
 				if(phone_control.send_tb_ringon_limit == 60 && devlist[i].talkback_answer == 0)
 				{
-					//stopaudio(&devlist[i],TALKBACK);
 					//响铃超时
 					do_cmd_talkbackonhook(&devlist[i],tb_sendbuf);
 					//devlist[i].talkbacked = 0;
@@ -2445,10 +2703,8 @@ void get_code_timeout_func()
 //检测音频重连
 void check_audio_reconnect()
 {
-	//PRINT("attach = %d\n",phone_control.who_is_online.attach);
 	if(phone_audio.audio_reconnect_flag)
 	{
-		//PRINT("audio_reconnect_loops = %d\n",phone_audio.audio_reconnect_loops);
 		phone_audio.audio_reconnect_loops++;
 		if(phone_audio.audio_reconnect_loops >= 16)//超过3秒没有重连，则需要挂机
 		{
@@ -2595,13 +2851,15 @@ int check_register_status()
 		memset(device_name,0,30);
 		//转换mac为大写
 		strtobig(devlist[i].dev_mac,strlen(devlist[i].dev_mac));
-		sqlite3_interface("terminal_register_tb","device_mac",devlist[i].dev_mac,"device_mac",dev_mac);
+		if(sqlite3_interface("terminal_register_tb","device_mac",devlist[i].dev_mac,"device_mac",dev_mac) != 0)
+			continue;
 		//PRINT("dev_mac=%s\n",dev_mac);
 		strtobig(dev_mac,strlen(dev_mac));
 		if(!strncmp(dev_mac,devlist[i].dev_mac,strlen(devlist[i].dev_mac)))
 		{
 			//PRINT("dev is registered!\n");
-			sqlite3_interface("terminal_register_tb","device_name",devlist[i].dev_mac,"device_mac",device_name);
+			if(sqlite3_interface("terminal_register_tb","device_name",devlist[i].dev_mac,"device_mac",device_name) != 0)
+				continue;
 			if(strcmp(device_name,devlist[i].dev_name))
 			{
 				memset(devlist[i].dev_name,' ',16);
@@ -2619,10 +2877,13 @@ int check_register_status()
 			}
 			continue;
 		}
-		
-		sqlite3_interface("terminal_base_tb","register_state","0","register_state",register_state);
+
+#ifndef B6L		
+		if(sqlite3_interface("terminal_base_tb","register_state","0","register_state",register_state) != 0)
+  			continue;
 		//PRINT("register_state = %s\n",register_state);
-		sqlite3_interface("terminal_base_tb","pad_mac",devlist[i].dev_mac,"pad_mac",pad_mac);
+		if(sqlite3_interface("terminal_base_tb","pad_mac",devlist[i].dev_mac,"pad_mac",pad_mac) != 0)
+		 	continue;
 		strtobig(pad_mac,strlen(pad_mac));
 	//		PRINT("buf=%s\n",buf);
 	//	PRINT("pad_mac = %s\n",pad_mac);
@@ -2633,6 +2894,7 @@ int check_register_status()
 			//PRINT("pad is registered!\n");
 			continue;
 		}
+#endif
 		PRINT("dev is unregistered\n");
 		netWrite(devlist[i].client_fd,"HEADR0010REGFAIL000\r\n",21);
 		memset(insidebuf,0,10);
@@ -2844,6 +3106,7 @@ int call_test()
 	return ret;
 }
 
+#ifdef B6
 void passage_pthread_func(void *argv)
 {
 	int ret = 0;
@@ -2894,3 +3157,76 @@ void passage_pthread_func(void *argv)
 		usleep(100*1000);
 	}
 }
+#else
+void led_control(char type)
+{
+	switch(type)
+	{
+		case LED2_ON:
+			write(phone_control.led_control_fd,"led2_on",7);
+			break;
+		case LED2_OFF:
+			write(phone_control.led_control_fd,"led2_off",8);
+			break;
+		case LED_LINE_IN:
+			write(phone_control.led_control_fd,"led1_off",8);
+			break;
+		case LED_LINE_OUT:
+			write(phone_control.led_control_fd,"led1_on",7);
+			break;		
+	}
+}
+
+void led_control_pthread_func(void *argv)
+{
+	int incoming_on_times = 0;
+	int offhook_times = 1;
+	int led1_on = 0;
+	while(1)
+	{
+		if(phone_control.global_incoming == 1)
+		{
+			incoming_on_times++;
+		}
+		else
+		{
+			incoming_on_times = 1;
+		}
+		if(incoming_on_times%3 == 0)
+		{
+			if(led1_on == 1)
+			{
+				led_control(LED2_OFF);
+				led1_on = 0;
+			}
+			else
+			{
+				led_control(LED2_ON);
+				led1_on = 1;
+			}
+		}
+		if(phone_control.global_phone_is_using == 1)
+		{
+			offhook_times++;
+		}
+		else
+		{
+			offhook_times = 1;
+		}
+		if(offhook_times%7 == 0)
+		{
+			if(led1_on == 1)
+			{
+				led_control(LED2_OFF);
+				led1_on = 0;
+			}
+			else
+			{
+				led_control(LED2_ON);
+				led1_on = 1;
+			}
+		}
+		usleep(200*1000);
+	}
+}
+#endif
