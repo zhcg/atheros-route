@@ -20,18 +20,18 @@
 
 
 struct	TPCCmd{
-		unsigned char cflag[2]; //A5.5A
-		unsigned char cHead[2];
-		unsigned char cCmd;
-		unsigned char Resved;  //UINT8 cOrder; 
-		unsigned short int cParam;   
-		unsigned char cLen[2];	
-		unsigned char buf[6];
+		unsigned short int CMD;	//SCSI 命令
+		unsigned char CLA;		//命令类别	
+		unsigned char INS;		//命令	
+		unsigned char P1;		//参数1	
+		unsigned char P2;		//参数2	
+		unsigned short int LC;	//发送的数据包长度	
+		unsigned short int LE;	//希望接收的最大数据包长度
 		};
 
 struct 	TRespond{
-		unsigned char CMD[2];	//SCSI 命令
-		unsigned char SW[2];	//传输响应数据
+		unsigned short int CMD;	//SCSI 命令
+		unsigned short int SW;	//传输响应数据
 		};
 
 struct 	TDataPack{
