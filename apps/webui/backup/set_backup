@@ -28,6 +28,11 @@ if [ "$str" = "" ];then
 		dd if=/dev/caldata of=$BACKUP_DIR/$BACKUP_DATE.bin
 		cp /configure_backup/.staAcl $BACKUP_DIR/$BACKUP_DATE.staAcl
 		cp /configure_backup/.staMac $BACKUP_DIR/$BACKUP_DATE.staMac
+		cp /configure_backup/ip_mac.conf $BACKUP_DIR/$BACKUP_DATE.ip_mac.conf
+		cp /configure_backup/route.conf $BACKUP_DIR/$BACKUP_DATE.route.conf
+		cp /configure_backup/arp_ip_mac.conf $BACKUP_DIR/$BACKUP_DATE.arp_ip_mac.conf
+		cp /configure_backup/ath/iptables/portmap $BACKUP_DIR/$BACKUP_DATE.portmap
+		cp /configure_backup/ath/iptables/parc $BACKUP_DIR/$BACKUP_DATE.parc
 else
         echo "the backup is exist"
         exit 1

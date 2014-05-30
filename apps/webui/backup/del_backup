@@ -23,6 +23,11 @@ else
 		sed -i '/'$1'/d' $BACKUP_LIST
 		rm $BACKUP_DIR/$BACKUP_DATE.bin
 		rm $BACKUP_DIR/$BACKUP_DATE.sta*
+		rm $BACKUP_DIR/$BACKUP_DATE.ip_mac.conf
+		rm $BACKUP_DIR/$BACKUP_DATE.route.conf
+		rm $BACKUP_DIR/$BACKUP_DATE.arp_ip_mac.conf
+		rm $BACKUP_DIR/$BACKUP_DATE.portmap
+		rm $BACKUP_DIR/$BACKUP_DATE.parc
         echo "delete backup done"
         exit 1
 fi

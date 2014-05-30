@@ -3623,6 +3623,7 @@ void use_backup(void)
 	char buf[128];
 	char bakname[128];
 	char extBuff[128];
+	char pChar[128];
 	char *bakupName;
 	int i;
 	int len;
@@ -3714,12 +3715,17 @@ void use_backup(void)
 	}
 	
 	/*recover the /configure_backup/backup/*.staAcl & *.staMac to /configure_backup/.staAcl & .staMac*/
+	#if 0
 	memset(cmdd, 0, sizeof cmdd);
 	sprintf(cmdd, "cp /configure_backup/backup/%s.staMac /configure_backup/.staMac > /dev/null 2>&1", bakupName);
 	system(cmdd);
 	memset(cmdd, 0, sizeof cmdd);
 	sprintf(cmdd, "cp /configure_backup/backup/%s.staAcl /configure_backup/.staAcl > /dev/null 2>&1", bakupName);
 	system(cmdd);
+	#endif
+	
+	sprintf(pChar,"/usr/sbin/use_backup %s > /dev/null 2>&1", bakupName);
+	Execute_cmd(pChar,rspBuff);
 
 	free(bakupName);
 	

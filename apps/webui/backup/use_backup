@@ -1,0 +1,29 @@
+#!/bin/sh
+
+BACKUP_DIR="/configure_backup/backup/"
+BACKUP_LIST="/configure_backup/backup/backup_list.conf"
+
+
+if [ ! -d "$BACKUP_DIR" ]; then 
+	mkdir "$BACKUP_DIR" 
+fi 
+if [ ! -f "$BACKUP_LIST" ]; then
+	touch "$BACKUP_LIST"
+fi
+
+if [ x$1 = x ]; then
+	exit 1
+fi
+
+BACKUP_DATE=`cfg -e | grep "$1" |awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`
+if [ -z $BACKUP_DATE ];then
+	exit 1
+	cp -rf $BACKUP_DIR/$BACKUP_DATE.staAcl /configure_backup/.staAcl
+        cp -rf $BACKUP_DIR/$BACKUP_DATE.staMac /configure_backup/.staMac
+        cp -rf $BACKUP_DIR/$BACKUP_DATE.ip_mac.conf /configure_backup/ip_mac.conf
+        cp -rf $BACKUP_DIR/$BACKUP_DATE.route.conf /configure_backup/route.conf
+        cp -rf $BACKUP_DIR/$BACKUP_DATE.arp_ip_mac.conf /configure_backup/arp_ip_mac.conf
+        cp -rf $BACKUP_DIR/$BACKUP_DATE.portmap /configure_backup/ath/iptables/portmap
+        cp -rf $BACKUP_DIR/$BACKUP_DATE.parc /configure_backup/ath/iptables/parc
+
+echo "use_backup done"
