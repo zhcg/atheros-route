@@ -254,7 +254,15 @@ int destroy_client(dev_status_t *dev)
 					memset(devlist[j].client_ip,0,sizeof(devlist[j].client_ip));
 					print_devlist();
 					dev->dying = 0;
+#ifdef B6
+					netWrite(dev->client_fd,"HEADR0012REG_SUC002B6\r\n",23);
+#elif defined(B6L)	
+					netWrite(dev->client_fd,"HEADR0013REG_SUC003B6L\r\n",24);
+#elif defined(S1)
+					netWrite(dev->client_fd,"HEADR0012REG_SUC002S1\r\n",23);
+#else
 					netWrite(dev->client_fd,"HEADR0010REG_SUC000\r\n",21);
+#endif
 					return 0;
 				}
 			}
@@ -870,7 +878,15 @@ int do_cmd_heartbeat(dev_status_t *dev,char *buf)
 				}
 			}
 			PRINT("name = %s\n",dev->dev_name);
+#ifdef B6
+			netWrite(dev->client_fd,"HEADR0012REG_SUC002B6\r\n",23);
+#elif defined(B6L)	
+			netWrite(dev->client_fd,"HEADR0013REG_SUC003B6L\r\n",24);
+#elif defined(S1)
+			netWrite(dev->client_fd,"HEADR0012REG_SUC002S1\r\n",23);
+#else
 			netWrite(dev->client_fd,"HEADR0010REG_SUC000\r\n",21);
+#endif
 			goto REGISTERED;
 		}
 #ifndef B6L		
@@ -895,7 +911,15 @@ int do_cmd_heartbeat(dev_status_t *dev,char *buf)
 				}
 			}
 			PRINT("name = %s\n",dev->dev_name);
+#ifdef B6
+			netWrite(dev->client_fd,"HEADR0012REG_SUC002B6\r\n",23);
+#elif defined(B6L)	
+			netWrite(dev->client_fd,"HEADR0013REG_SUC003B6L\r\n",24);
+#elif defined(S1)
+			netWrite(dev->client_fd,"HEADR0012REG_SUC002S1\r\n",23);
+#else
 			netWrite(dev->client_fd,"HEADR0010REG_SUC000\r\n",21);
+#endif
 			goto REGISTERED;
 		}
 #endif
@@ -908,7 +932,15 @@ UNREGISTERED:
 			if(dev == &devlist[i])
 				break;
 		}
+#ifdef B6
+		netWrite(dev->client_fd,"HEADR0012REGFAIL002B6\r\n",23);
+#elif defined(B6L)	
+		netWrite(dev->client_fd,"HEADR0013REGFAIL003B6L\r\n",24);
+#elif defined(S1)
+		netWrite(dev->client_fd,"HEADR0012REGFAIL002S1\r\n",23);
+#else
 		netWrite(dev->client_fd,"HEADR0010REGFAIL000\r\n",21);
+#endif
 		memset(insidebuf,0,10);
 		sprintf(insidebuf,"%s","INSIDE");
 		insidebuf[6]=i+1;
@@ -932,7 +964,15 @@ int do_cmd_heartbeat(dev_status_t *dev)
 	dev->tick_time++;
 	if(dev->tick_time == 1)
 	{
+#ifdef B6
+		netWrite(dev->client_fd,"HEADR0012REG_SUC002B6\r\n",23);
+#elif defined(B6L)	
+		netWrite(dev->client_fd,"HEADR0013REG_SUC003B6L\r\n",24);
+#elif defined(S1)
+		netWrite(dev->client_fd,"HEADR0012REG_SUC002S1\r\n",23);
+#else
 		netWrite(dev->client_fd,"HEADR0010REG_SUC000\r\n",21);
+#endif
 		generate_up_msg();
 	}
 	//memset(dev->dev_name,' ',16);
@@ -2896,7 +2936,15 @@ int check_register_status()
 		}
 #endif
 		PRINT("dev is unregistered\n");
+#ifdef B6
+		netWrite(devlist[i].client_fd,"HEADR0012REGFAIL002B6\r\n",23);
+#elif defined(B6L)	
+		netWrite(devlist[i].client_fd,"HEADR0013REGFAIL003B6L\r\n",24);
+#elif defined(S1)
+		netWrite(devlist[i].client_fd,"HEADR0012REGFAIL002S1\r\n",23);
+#else
 		netWrite(devlist[i].client_fd,"HEADR0010REGFAIL000\r\n",21);
+#endif	
 		memset(insidebuf,0,10);
 		sprintf(insidebuf,"%s","INSIDE");
 		insidebuf[6]=i+1;
