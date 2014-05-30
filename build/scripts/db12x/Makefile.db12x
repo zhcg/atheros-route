@@ -363,6 +363,7 @@ webui:
 	cp -f arp/modify_arp $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f backup/set_backup $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f backup/del_backup $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f backup/use_backup $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f backup/var_backup $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f backup/upgrade_backup $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f backup/upgrade_backup_reboot $(INSTALL_ROOT)/usr/sbin;  \
