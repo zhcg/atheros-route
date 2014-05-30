@@ -18,6 +18,7 @@ fi
 BACKUP_DATE=`cfg -e | grep "$1" |awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`
 if [ -z $BACKUP_DATE ];then
 	exit 1
+fi
 	cp -rf $BACKUP_DIR/$BACKUP_DATE.staAcl /configure_backup/.staAcl
         cp -rf $BACKUP_DIR/$BACKUP_DATE.staMac /configure_backup/.staMac
         cp -rf $BACKUP_DIR/$BACKUP_DATE.ip_mac.conf /configure_backup/ip_mac.conf
