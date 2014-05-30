@@ -86,7 +86,7 @@ int main()
     if(strcmp(name,"begin")==0)
     {
         //Execute_cmd("net_check", rspBuff1);
-        system("tcpdumps > /tmp/tcpdump.log &");sleep(2);//bash  avoid let syntax error
+        system("tcpdumps -w /tmp/tcpdump.cap &");sleep(2);//bash  avoid let syntax error
        // printf("%s",rspBuff1);
        // fprintf(errOut,"WAN:%s!!!!!  %d \n",rspBuff1,strlen(rspBuff1));
     }

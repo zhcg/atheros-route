@@ -7,7 +7,7 @@
 
 #define MAX_FILE_LEN  (1024*30)
 #define DOWNLOAD_FILE_PATH	"/tmp/"
-#define DOWNLOAD_FILE_NAME	"tcpdump.log"
+#define DOWNLOAD_FILE_NAME	"tcpdump.cap"
 
 
 static FILE *errOut;
