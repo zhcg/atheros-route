@@ -31,7 +31,9 @@
 #include "common.h"
 #include "static_leases.h"
 
-#define OLD_STAFILE  "/etc/.OldStaList"
+#define OLD_STAFILE  "/var/run/.OldStaList"
+#define STA_LIST "/configure_backup/.STAlist"
+#define STA_LIST2 "/configure_backup/.STAlist2"
 struct staList
 {
 	int id;
@@ -247,15 +249,15 @@ void add_staMac()
 	int open = 0;
 	struct staList oldstalist;
 	
-	system("wlanconfig ath0 list sta > /etc/.STAlist");
-	system("wlanconfig ath2 list sta > /etc/.STAlist2");  /*for 5G*/
+	system("wlanconfig ath0 list sta > /configure_backup/.STAlist");
+	system("wlanconfig ath2 list sta > /configure_backup/.STAlist2");  /*for 5G*/
 	
-	/*if the /etc/.OldStaList is not exit, creat it*/
-	if((fp = fopen(OLD_STAFILE, "r")) == NULL)     /*  /etc/.OldStaList  */
+	/*if the /var/run/.OldStaList is not exit, creat it*/
+	if((fp = fopen(OLD_STAFILE, "r")) == NULL)     /*  /var/run/.OldStaList  */
 	{
 		open = 1;
 		fp = fopen(OLD_STAFILE, "at");
-		flist = fopen("/etc/.STAlist", "r");    /*  /etc/.STAlist   */
+		flist = fopen(STA_LIST, "r");    /*  /configure_backup/.STAlist   */
 		memset(STAbuf, 0, sizeof STAbuf);
         fgets(STAbuf, 128, flist);
 		if(strlen(STAbuf) > 0)
@@ -272,7 +274,7 @@ void add_staMac()
 		fclose(fp);
 	}
 
-	flist = fopen("/etc/.STAlist", "r");    /*  /etc/.STAlist   */
+	flist = fopen(STA_LIST, "r");    /*  /configure_backup/.STAlist   */
 	memset(STAbuf, 0, sizeof STAbuf);
 	fgets(STAbuf, 128, flist);
 	if(strlen(STAbuf) > 0)
@@ -286,7 +288,7 @@ void add_staMac()
 
 			if(open == 1)
 			{
-				fp = fopen(OLD_STAFILE, "r");			/*  /etc/.OldStaList  */
+				fp = fopen(OLD_STAFILE, "r");			/*  /var/run/.OldStaList  */
 			}
 			while(fread(&oldstalist, sizeof oldstalist, 1, fp) == 1)
 			{
@@ -313,7 +315,7 @@ void add_staMac()
 	fclose(flist);
 
 	/*for 5G*/
-	flist = fopen("/etc/.STAlist2", "r");    /*  /etc/.STAlist2   */
+	flist = fopen(STA_LIST2, "r");    /*  /configure_backup/.STAlist2   */
 	memset(STAbuf, 0, sizeof STAbuf);
 	fgets(STAbuf, 128, flist);
 	if(strlen(STAbuf) > 0)
@@ -325,7 +327,7 @@ void add_staMac()
 			strncpy(buf, STAbuf, 17);
 			LOG(LOG_INFO, "open is %d", open);
 
-			fp = fopen(OLD_STAFILE, "r");			/*  /etc/.OldStaList  */
+			fp = fopen(OLD_STAFILE, "r");			/*  /var/run/.OldStaList  */
 			while(fread(&oldstalist, sizeof oldstalist, 1, fp) == 1)
 			{
 				LOG(LOG_INFO, "buf is %s, oldmac is %s", buf, oldstalist.macAddr);

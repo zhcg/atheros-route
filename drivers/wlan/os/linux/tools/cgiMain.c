@@ -58,8 +58,8 @@
 #endif
 #endif
 
-#define PARC_PATH "/etc/ath/iptables/parc"
-#define PORTMAP_PATH "/etc/ath/iptables/portmap"
+#define PARC_PATH "/configure_backup/ath/iptables/parc"
+#define PORTMAP_PATH "/configure_backup/ath/iptables/portmap"
 /*
 ** local definitions
 *****************
@@ -88,11 +88,17 @@ struct staList
 
 static struct staList *staHostList;
 static int staId = 0;
-#define OLD_STAFILE  "/etc/.OldStaList"
+#define OLD_STAFILE  "/var/run/.OldStaList"
 #define UDHCPD_FILE  "/var/run/udhcpd.leases"
-#define STA_MAC "/etc/.staMac"
+#define STA_MAC "/configure_backup/.staMac"
+#define STA_ACL "/configure_backup/.staAcl"
+#define STA_LIST "/configure_backup/.STAlist"
+#define STA_LIST2 "/configure_backup/.STAlist2"
 #define ARP_IP_MAC_ON_FILE "/etc/arp_ip_mac_on.conf"
 #define ARP_IP_MAC_OFF_FILE "/etc/arp_ip_mac_off.conf"
+#define ARP_IP_MAC_FILE "/configure_backup/arp_ip_mac.conf"
+#define DHCP_STATIC_BAND "/configure_backup/ip_mac.conf"
+#define ROUTE_USR_TABLE "/configure_backup/route.conf"
 #define MAX_WLAN_ELEMENT    1024
 
 typedef struct {
@@ -874,11 +880,11 @@ char *processSpecial(char *paramStr, char *outBuff)
                 	/*wangyu add for ipmac list*/
 					unsigned int id ,num ;	
 					char addr_buf[1024];
-					FILE *f = fopen("/etc/ip_mac.conf","r");
+					FILE *f = fopen(DHCP_STATIC_BAND,"r");
 					
 					if ( !f )
 					{
-						 fprintf(errOut,"\n%s  %d open ip_mac error\n \n",__func__,__LINE__);
+						 fprintf(errOut,"\n%s  %d open /configure_backup/ip_mac error\n \n",__func__,__LINE__);
 						 break;
 					}
 					char addr_mac[17],addr_ip[15],addr_status[10];		
@@ -923,10 +929,10 @@ char *processSpecial(char *paramStr, char *outBuff)
 					char buf[1024];
 					char des_ip[15],de_mask[15],gw_ip[15],rule_status[10];		
 					
-					FILE *f = fopen("/etc/route.conf","r");
+					FILE *f = fopen(ROUTE_USR_TABLE,"r");
 					if ( !f )
 					{
-						 fprintf(errOut,"\n%s  %d open /etc/route.conf error\n \n",__func__,__LINE__);
+						 fprintf(errOut,"\n%s  %d open /configure_backup/route.conf error\n \n",__func__,__LINE__);
 						 break;
 					}
 					memset(buf,0,1024);
@@ -965,10 +971,10 @@ char *processSpecial(char *paramStr, char *outBuff)
 					char buf[1024];
 					char arp_ip[15],arp_mac[17],arp_status[10];		
 					
-					FILE *f = fopen("/etc/arp_ip_mac.conf","r");
+					FILE *f = fopen(ARP_IP_MAC_FILE,"r");
 					if ( !f )
 					{
-						 fprintf(errOut,"\n%s  %d open /etc/arp_ip_mac_on.conf error\n \n",__func__,__LINE__);
+						 fprintf(errOut,"\n%s  %d open /configure_backup/arp_ip_mac_on.conf error\n \n",__func__,__LINE__);
 						 break;
 					}
 					memset(buf,0,1024);
@@ -1075,19 +1081,19 @@ char *processSpecial(char *paramStr, char *outBuff)
 					CFG_get_by_name("WIFION_OFF_3",wifi1_flag);
 
 					if(strcmp(wifi0_flag,"on") == 0 ) //on
-                    	Execute_cmd("wlanconfig ath0 list sta > /etc/.STAlist 2>&1", rspBuff);					
+                    	Execute_cmd("wlanconfig ath0 list sta > /configure_backup/.STAlist 2>&1", rspBuff);					
 					if(strcmp(wifi1_flag,"on") == 0 ) //on
-						Execute_cmd("wlanconfig ath2 list sta > /etc/.STAlist2 2>&1", rspBuff);  /*for 5G*/
+						Execute_cmd("wlanconfig ath2 list sta > /configure_backup/.STAlist2 2>&1", rspBuff);  /*for 5G*/
 
 					fprintf(errOut,"\n%s  %d  to open [dhcpclinetlist]\n",__func__,__LINE__);
 
-					/*if the /etc/.OldStaList is not exit, creat it*/
-					if((fp1 = fopen(OLD_STAFILE, "r")) == NULL)     /*  /etc/.OldStaList  */
+					/*if the /var/run/.OldStaList is not exit, creat it*/
+					if((fp1 = fopen(OLD_STAFILE, "r")) == NULL)     /*  /var/run/.OldStaList  */
 					{
 						open = 1;
 						fprintf(errOut,"\n%s  %d  creat the file %s\n",__func__,__LINE__, OLD_STAFILE);
 						fp1 = fopen(OLD_STAFILE, "at");
-						flist = fopen("/etc/.STAlist", "r");    /*  /etc/.STAlist   */
+						flist = fopen(STA_LIST, "r");    /*  /configure_backup/.STAlist   */
 						memset(STAbuf, 0, sizeof STAbuf);
 						fgets(STAbuf, 128, flist);
 						if(strlen(STAbuf) > 0)
@@ -1103,7 +1109,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 						fclose(fp1);
 					}
 					
-					if((flist = fopen("/etc/.STAlist", "r")) != NULL)    /*  /etc/.STAlist   */
+					if((flist = fopen(STA_LIST, "r")) != NULL)    /*  /configure_backup/.STAlist   */
 					{
 						add = 0;
 						memset(STAbuf, 0, sizeof STAbuf);
@@ -1117,7 +1123,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 		                    	memset(buf, 0, sizeof buf);
 								strncpy(buf, STAbuf, 17);
 								if(open == 1)
-									fp1 = fopen(OLD_STAFILE, "r");			/*  /etc/.OldStaList  */
+									fp1 = fopen(OLD_STAFILE, "r");			/*  /var/run/.OldStaList  */
 								//fprintf(errOut,"\n%s  %d  buf is %s\n",__func__,__LINE__, buf);
 								while(fread(&oldstalist, sizeof oldstalist, 1, fp1) == 1)
 								{
@@ -1139,7 +1145,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 		                    }
 							fclose(flist);
 							
-							if((add == 1) && (fp1 = fopen(OLD_STAFILE, "at")))			/*  /etc/.OldStaList  */
+							if((add == 1) && (fp1 = fopen(OLD_STAFILE, "at")))			/*  /var/run/.OldStaList  */
 							{
 								p = scan_staList(staHostList);
 								while(p)
@@ -1152,7 +1158,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 						}
                 	}
 					
-					if((flist = fopen("/etc/.STAlist2", "r")) != NULL)    /*  /etc/.STAlist2   */
+					if((flist = fopen(STA_LIST2, "r")) != NULL)    /*  /configure_backup/.STAlist2   */
 					{
 						add = 0;
 						memset(STAbuf, 0, sizeof STAbuf);
@@ -1166,7 +1172,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 		                    	memset(buf, 0, sizeof buf);
 								strncpy(buf, STAbuf, 17);
 								if(open == 1)
-									fp1 = fopen(OLD_STAFILE, "r");			/*  /etc/.OldStaList  */
+									fp1 = fopen(OLD_STAFILE, "r");			/*  /var/run/.OldStaList  */
 								//fprintf(errOut,"\n%s  %d  buf is %s\n",__func__,__LINE__, buf);
 								while(fread(&oldstalist, sizeof oldstalist, 1, fp1) == 1)
 								{
@@ -1188,7 +1194,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 		                    }
 							fclose(flist);
 							
-							if((add == 1) && (fp1 = fopen(OLD_STAFILE, "at")))			/*  /etc/.OldStaList  */
+							if((add == 1) && (fp1 = fopen(OLD_STAFILE, "at")))			/*  /var/run/.OldStaList  */
 							{
 								p = scan_staList(staHostList);
 								while(p)
@@ -1226,7 +1232,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 							//fprintf(errOut,"\n%s  %d mac_buf is [%s] len is %d\n",__func__,__LINE__, mac_buf);
 							
 	                        /*compare MAC*/
-							if((fp1 = fopen(OLD_STAFILE, "r")) != NULL)		/*  /etc/.OldStaList  */
+							if((fp1 = fopen(OLD_STAFILE, "r")) != NULL)		/*  /var/run/.OldStaList  */
 							{
 								while(fread(&oldstalist, sizeof(struct staList), 1, fp1) == 1)
 								{
@@ -1318,7 +1324,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 					{
 						
 						/*2.4G*/
-	                    flist = fopen("/etc/.STAlist", "r");    /*  /etc/.STAlist   */
+	                    flist = fopen(STA_LIST, "r");    /*  /configure_backup/.STAlist   */
 						memset(STAbuf, 0, sizeof STAbuf);
 						fgets(STAbuf, 128, flist);
 						if(strlen(STAbuf) > 0)
@@ -1428,7 +1434,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 						fclose(flist);
 						
 						/*for 5G*/
-						flist = fopen("/etc/.STAlist2", "r");    /*  /etc/.STAlist2   */
+						flist = fopen(STA_LIST2, "r");    /*  /configure_backup/.STAlist2   */
 						memset(STAbuf, 0, sizeof STAbuf);
 						fgets(STAbuf, 128, flist);
 						if(strlen(STAbuf) > 0)
@@ -1540,7 +1546,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 	                }/*end if(strstr(valBuff, "on")) */
 					else
 					{
-						flist = fopen("/etc/.STAlist", "r");    /*  /etc/.STAlist   */
+						flist = fopen(STA_LIST, "r");    /*  /configure_backup/.STAlist   */
                         if (NULL == flist)
                         {
                             fprintf(errOut,"\n%s  %d open STAlist error\n \n",__func__,__LINE__);
@@ -1591,7 +1597,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                         fclose(flist);
 
 						 /*for 5G sta list*/
-						flist = fopen("/etc/.STAlist2", "r");    /*  /etc/.STAlist2   */
+						flist = fopen(STA_LIST2, "r");    /*  /configure_backup/.STAlist2   */
 						memset(STAbuf, 0, sizeof STAbuf);
 						fgets(STAbuf, 128, flist);
 						if(strlen(STAbuf) > 0)
@@ -1690,7 +1696,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 					CFG_get_by_name("WIFION_OFF_3",wifi1_flag);
 
 					if(strcmp(wifi0_flag,"on") == 0 ) //on
-						Execute_cmd("wlanconfig ath0 list sta > /etc/.STAlist 2>&1", rspBuff);
+						Execute_cmd("wlanconfig ath0 list sta > /configure_backup/.STAlist 2>&1", rspBuff);
 
 					fprintf(errOut,"\n%s  %d  to open [dhcpclinetlist] \n",__func__,__LINE__);
 
@@ -1796,7 +1802,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 					CFG_get_by_name("WIFION_OFF_3",wifi1_flag);
 
 					if(strcmp(wifi0_flag,"on") == 0 ) //on
-	                    Execute_cmd("wlanconfig ath0 list sta > /var/run/.STAlist 2>&1", rspBuff);
+	                    Execute_cmd("wlanconfig ath0 list sta > /configure_backup/.STAlist 2>&1", rspBuff);
 
                     fp = fopen(UDHCPD_FILE, "r");  /*  /var/run/udhcpd.leases   */
                     if (NULL == fp)
@@ -3615,12 +3621,12 @@ void use_backup(void)
 	char valBuff1[128];
 	char cmdd[128];
 	char buf[128];
+	char bakname[128];
+	char extBuff[128];
 	char *bakupName;
 	int i;
-	FILE *fp;
-	
-	write_systemLog("use_backup begin");			
-
+	int len;
+	FILE *fp, *fp2;
 	errOut = fopen("/dev/ttyS0","w");
             writeParametersWithSync();
             //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
@@ -3641,7 +3647,7 @@ void use_backup(void)
 	//reconfig
     Reboot_tiaozhuan("cfgback","index.html");
 
-	if((fp = fopen("/etc/backup/backup_list.conf", "r")) != NULL)
+	if((fp = fopen("/configure_backup/backup/backup_list.conf", "r")) != NULL)
 	{
 		while(fgets(buf, 128, fp))
 		{
@@ -3662,20 +3668,57 @@ void use_backup(void)
 	}
 	
 	//fprintf(errOut,"\n%s  %d bakupName is %s the size is %d\n",__func__,__LINE__, bakupName, strlen(bakupName));
-	sprintf(cmdd,"dd if=/etc/backup/%s.bin of=/dev/caldata   > /dev/null 2>&1", bakupName);
+	sprintf(cmdd,"dd if=/configure_backup/backup/%s.bin of=/dev/caldata   > /dev/null 2>&1", bakupName);
 	i = 5;
 	while(i--)
 	{
 		usleep(10);
 		system(cmdd);
 	}
+
 	
-	/*recover the /etc/backup/*.staAcl & *.staMac to /etc/.staAcl & .staMac*/
+	if((fp = fopen("/configure_backup/backup/backup_list.conf", "r")) != NULL)
+	{
+		memset(buf, 0, sizeof buf);
+		while(fgets(buf, 128, fp))
+		{
+			//fprintf(errOut,"the buf [%s] \n", buf);
+			
+			if(strncmp(buf, valBuff1, strlen(valBuff1) ))
+			{
+				memset(bakname, 0, sizeof bakname);
+				strncpy(bakname, buf, strlen(valBuff1));
+				for(i = strlen(valBuff1)+1; ; i++)
+				{
+					if(!strncmp(&buf[i], "20", 2))
+						break;
+				}
+				
+				memset(bakupName, 0, sizeof bakupName);
+				strncpy(bakupName, &buf[i], strlen(&buf[i]));
+				//fprintf(errOut,"bakname [%s] \n", bakname);
+				//fprintf(errOut,"bakupName [%s] \n", bakupName);
+				sprintf(extBuff, "%s=%s", bakname, bakupName);
+				
+				if((fp2 = fopen("/dev/caldata", "at")) != NULL)
+				{
+					len = fwrite("\r\n", 2, 1, fp2);
+					len = fwrite(extBuff, strlen(extBuff), 1, fp2);
+					fprintf(errOut,"the extBuff [%s] \n", extBuff);
+					fprintf(errOut,"the len %d \n", len);
+				}
+				fclose(fp2);
+			}
+		}
+		fclose(fp);
+	}
+	
+	/*recover the /configure_backup/backup/*.staAcl & *.staMac to /configure_backup/.staAcl & .staMac*/
 	memset(cmdd, 0, sizeof cmdd);
-	sprintf(cmdd, "cp /etc/backup/%s.staMac /etc/.staMac > /dev/null 2>&1", bakupName);
+	sprintf(cmdd, "cp /configure_backup/backup/%s.staMac /configure_backup/.staMac > /dev/null 2>&1", bakupName);
 	system(cmdd);
 	memset(cmdd, 0, sizeof cmdd);
-	sprintf(cmdd, "cp /etc/backup/%s.staAcl /etc/.staAcl > /dev/null 2>&1", bakupName);
+	sprintf(cmdd, "cp /configure_backup/backup/%s.staAcl /configure_backup/.staAcl > /dev/null 2>&1", bakupName);
 	system(cmdd);
 
 	free(bakupName);
@@ -3931,7 +3974,7 @@ int  add_sta_access()
 	{
 		if ((fp = fopen(STA_MAC, "w+")) == NULL) 
 		{
-			fprintf(errOut,"\nUnable to open /etc/.staMac for writing\n");
+			fprintf(errOut,"\nUnable to open /configure_backup/.staMac for writing\n");
 		}
 		else
 		{
@@ -3946,7 +3989,7 @@ int  add_sta_access()
 			fclose(fp);
 
 			
-			if ((fp1 = fopen("/etc/.staAcl", "r")) != NULL)
+			if ((fp1 = fopen(STA_ACL, "r")) != NULL)
 			{
 				memset(con_buf, 0, 20);
 				fgets(con_buf, 8, fp1);
@@ -4006,7 +4049,7 @@ int  add_sta_access()
 			fwrite(&stalist, sizeof(struct staList), 1, fp);
 			fclose(fp);
 
-			if ((fp1 = fopen("/etc/.staAcl", "r")) != NULL)
+			if ((fp1 = fopen(STA_ACL, "r")) != NULL)
 			{
 				memset(con_buf, 0, 20);
 				fgets(con_buf, 8, fp1);
@@ -4078,7 +4121,7 @@ void del_sta_access()
 				if(!strcmp(stalist.macAddr, staMac))
 				{
 					#if 0
-					if ((fp1 = fopen("/etc/.staAcl", "r")) != NULL)
+					if ((fp1 = fopen(STA_ACL, "r")) != NULL)
 					{
 						memset(con_buf, 0, 20);
 						fgets(con_buf, 8, fp1);
@@ -4152,7 +4195,7 @@ void control_sta_access()
 	Execute_cmd("grep -c 168c /proc/bus/pci/devices", valBuf);
 	if(strcmp(CFG_get_by_name("WCONON_OFF",valBuff),"on") == 0 )
 	{
-		if ((fp = fopen(staAcl, "w")) != NULL)
+		if ((fp = fopen(STA_ACL, "w")) != NULL)
 		{
 			fwrite("enable", sizeof("enable"), 1, fp);
 			fclose(fp);
@@ -4198,7 +4241,7 @@ void control_sta_access()
 	}
 	else if(strcmp(CFG_get_by_name("WCONON_OFF",valBuff),"off") == 0 )
 	{
-		if ((fp = fopen(staAcl, "w")) != NULL)
+		if ((fp = fopen(STA_ACL, "w")) != NULL)
 		{
 			fwrite("disable", sizeof("disable"), 1, fp);
 			fclose(fp);
@@ -5434,7 +5477,7 @@ int main(int argc,char **argv)
                 writeParameters(NVRAM,"w+", NVRAM_OFFSET);
                 writeParameters("/tmp/.apcfg","w+",0);
                 //remove ip_mac  bing
-                 system("rm /etc/ip_mac.conf > /dev/null 2>&1");
+                 system("rm /configure_backup/ip_mac.conf > /dev/null 2>&1");
 				write_systemLog("terminal_dev_register factory reset end"); 
 
                 exit(0);
@@ -5782,13 +5825,14 @@ int main(int argc,char **argv)
 			system("echo -n \"admin\" > /usr/www/pwd.xml");
 			//MAC and BACKUP
 			system("/usr/sbin/var_backup > /dev/null 2>&1");
-			system("cat /dev/null > /etc/ath/iptables/parc");
+			system("rm -f /configure_backup/ath/iptables/parc");
+			system("rm -f /configure_backup/ath/iptables/portmap");
 //			system("rm -f /etc/ip_mac.conf");//wangyu add for ip and mac address bond operation
-			system("echo `grep 10.10.10.100 /etc/ip_mac.conf` > /etc/ip_mac.conf");//wangyu add for ip and mac address bond operation
+			system("echo `grep 10.10.10.100 /configure_backup/ip_mac.conf` > /configure_backup/ip_mac.conf");//wangyu add for ip and mac address bond operation
 
-			system("rm -f /etc/.staAcl /etc/.staMac");//wangyu add for wireless client manage
-			system("rm -f  /etc/arp_ip_mac_on.conf /etc/arp_ip_mac_off.conf /etc/arp_ip_mac.conf");//wangyu add for arp  ip and mac address bond operation
-			system("rm -f /etc/route.conf");//wangyu add for static route list
+			system("rm -f /configure_backup/.staAcl /configure_backup/.staMac");//wangyu add for wireless client manage
+			system("rm -f /configure_backup/arp_ip_mac.conf");//wangyu add for arp  ip and mac address bond operation
+			system("rm -f /configure_backup/route.conf");//wangyu add for static route list
 
 			CFG_set_by_name("FACTORY_RESET","1");
 			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
@@ -8157,7 +8201,7 @@ exit(1);
         {
             Execute_cmd("iptables -t nat -F PREROUTING_PORTMAP" , temp);
             Execute_cmd("iptables -F FORWARD_PORTMAP" , temp);
-            Execute_cmd("sh /etc/ath/iptables/portmap" , temp);
+            Execute_cmd("sh /configure_backup/ath/iptables/portmap" , temp);
 
              Normal_tiaozhuan("ad_safe_port");
              gohome =2;
@@ -8209,7 +8253,7 @@ exit(1);
 
         Execute_cmd("iptables -t nat -F PREROUTING_PORTMAP" , del_sed_err);
         Execute_cmd("iptables -F FORWARD_PORTMAP" , del_sed_err);
-        Execute_cmd("sh /etc/ath/iptables/portmap" , del_sed_err);
+        Execute_cmd("sh /configure_backup/ath/iptables/portmap" , del_sed_err);
 
         memset(Page,0,64);
         Normal_tiaozhuan("ad_safe_port");
@@ -8240,7 +8284,7 @@ exit(1);
         mod_port_id = atoi(mod_port_id_str);
 
 
-        Execute_cmd("awk 'END{print NR}' /etc/ath/iptables/parc" , mod_sed_err);
+        Execute_cmd("awk 'END{print NR}' /configure_backup/ath/iptables/parc" , mod_sed_err);
         mod_line=atoi(mod_sed_err);
 
         if(strncmp(enable_port_flag,"ON",2)==0)
@@ -8263,7 +8307,7 @@ exit(1);
 
         Execute_cmd("iptables -t nat -F PREROUTING_PORTMAP" , mod_sed_err);
         Execute_cmd("iptables -F FORWARD_PORTMAP" , mod_sed_err);
-        Execute_cmd("sh /etc/ath/iptables/portmap" , mod_sed_err);
+        Execute_cmd("sh /configure_backup/ath/iptables/portmap" , mod_sed_err);
 
         memset(Page,0,64);
         //sprintf(Page,"%s","../ad_parentc_accept.html");
@@ -8409,7 +8453,7 @@ exit(1);
                             }
                     }
 			Execute_cmd("iptables -F FORWARD_ACCESSCTRL" , add_cmd_err);
-			Execute_cmd("sh /etc/ath/iptables/parc" , add_cmd_err);
+			Execute_cmd("sh /configure_backup/ath/iptables/parc" , add_cmd_err);
 
 			memset(Page,0,64);
 			//sprintf(Page,"%s","../ad_parentc_accept.html");
@@ -8465,7 +8509,7 @@ exit(1);
         del_id = atoi(del_id_str);
 
 
-        Execute_cmd("awk 'END{print NR}' /etc/ath/iptables/parc" , del_sed_err);
+        Execute_cmd("awk 'END{print NR}' /configure_backup/ath/iptables/parc" , del_sed_err);
         del_line=atoi(del_sed_err);
 
         sprintf(del_sed_cmd,"sed -i '%dd' %s", del_id, PARC_PATH);
@@ -8476,7 +8520,7 @@ exit(1);
 
         Execute_cmd(del_sed_cmd , del_sed_err);
         Execute_cmd("iptables -F FORWARD_ACCESSCTRL" , del_sed_err);
-        Execute_cmd("sh /etc/ath/iptables/parc" , del_sed_err);
+        Execute_cmd("sh /configure_backup/ath/iptables/parc" , del_sed_err);
 
         memset(Page,0,64);
         //sprintf(Page,"%s","../ad_parentc_accept.html");
@@ -8508,7 +8552,7 @@ exit(1);
         mod_id = atoi(mod_id_str);
 
 
-        Execute_cmd("awk 'END{print NR}' /etc/ath/iptables/parc" , mod_sed_err);
+        Execute_cmd("awk 'END{print NR}' /configure_backup/ath/iptables/parc" , mod_sed_err);
         mod_line=atoi(mod_sed_err);
 
         if(strncmp(enable_flag,"ON",2)==0)
@@ -8530,7 +8574,7 @@ exit(1);
         fprintf(errOut,"\n%s  %d MOD_PRC sed_cmd :%s \n",__func__,__LINE__,mod_sed_cmd);
 
         Execute_cmd("iptables -F FORWARD_ACCESSCTRL" , mod_sed_err);
-        Execute_cmd("sh /etc/ath/iptables/parc" , mod_sed_err);
+        Execute_cmd("sh /configure_backup/ath/iptables/parc" , mod_sed_err);
 
         memset(Page,0,64);
         //sprintf(Page,"%s","../ad_parentc_accept.html");

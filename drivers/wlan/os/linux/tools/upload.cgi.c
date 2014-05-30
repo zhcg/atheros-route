@@ -303,6 +303,8 @@ error:
 				fgets(cmdd,sizeof(cmdd),fileBuf2);
 				if(strstr(cmdd,"OK")!=NULL)
 				{
+					/*deal /etc/backup to mtdblock4(umount /etc)  zzw*/
+					system("upgrade_backup_reboot > /dev/null 2>&1");
 					firmware_flag=2;
 				}else
 				{

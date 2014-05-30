@@ -24,7 +24,13 @@ iptables -I FORWARD -p udp --dport 53 -j ACCEPT
 #deal staControl save by zzw
 iptables -N control_sta
 iptables -I FORWARD -j control_sta
-sh /etc/ath/iptables/parc
+
+mkdir -p /configure_backup/
+mkdir -p /configure_backup/ath/
+mkdir -p /configure_backup/ath/iptables/
+touch /configure_backup/ath/iptables/parc
+touch /configure_backup/ath/iptables/portmap
+sh /configure_backup/ath/iptables/parc
 
 iptables -t nat -N PREROUTING_PORTMAP
 iptables -t nat -I PREROUTING -j PREROUTING_PORTMAP
@@ -32,4 +38,4 @@ iptables -t nat -I PREROUTING -j PREROUTING_PORTMAP
 iptables -N FORWARD_PORTMAP
 iptables -I FORWARD -j FORWARD_PORTMAP
 
-sh /etc/ath/iptables/portmap
+sh /configure_backup/ath/iptables/portmap

@@ -1,9 +1,9 @@
 #!/bin/sh
 
-ROUTE_FILE=/etc/route.conf
+ROUTE_FILE=/configure_backup/route.conf
 
-if [ ! -f /etc/route.conf ]; then
-	touch /etc/route.conf
+if [ ! -f /configure_backup/route.conf ]; then
+	touch /configure_backup/route.conf
 fi
 
 SR_DESIP=`cfg -e | grep "SR_DESIP" |awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`

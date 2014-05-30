@@ -15,6 +15,7 @@
 
 #define FLAG_OFFSET 32772
 #define MAX_SIZE  1024
+#define STA_MAC "/configure_backup/.staMac"
 
 struct staList
 {
@@ -53,8 +54,8 @@ void parse_staControl(FILE *fp)
 		
 		if(!strncmp(buf, "staMac=", 7))
 		{
-			system("rm -rf /etc/.staMac");
-			fpp = fopen("/etc/.staMac", "at");
+			system("rm -rf /configure_backup/.staMac");
+			fpp = fopen(STA_MAC, "at");
 			while(fread(&stalist, sizeof stalist, 1, fp) == 1)
 			{
 				//fprintf(errOut,"%s  %d stalist.macAddr is %s \n",__func__,__LINE__, stalist.macAddr);

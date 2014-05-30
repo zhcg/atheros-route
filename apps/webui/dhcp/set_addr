@@ -5,11 +5,11 @@
 #        exit 1
 #fi
 
-IP_MAC_FILE=/etc/ip_mac.conf
+IP_MAC_FILE=/configure_backup/ip_mac.conf
 UDHCPD_FILE=/etc/udhcpd.conf
 
-if [ ! -f /etc/ip_mac.conf ]; then
-	touch /etc/ip_mac.conf
+if [ ! -f /configure_backup/ip_mac.conf ]; then
+	touch /configure_backup/ip_mac.conf
 fi
 
 cat $IP_MAC_FILE | grep "enable" | awk 'BEGIN{OFS=FS=" "}{print $1,$2,$3}' >> $UDHCPD_FILE

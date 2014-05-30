@@ -12,15 +12,16 @@
 
 
 static FILE *errOut;
-	const char *staFile = "/etc/.staMac";
-	struct staList
-	{
-		int id;
-		char macAddr[20];
-		char staDesc[80];
-		char status[10];  /*on-enable-1; off-disable-0 */
-		struct staList *next;
-	};
+#define STA_MAC "/configure_backup/.staMac"
+struct staList
+{
+	int id;
+	char macAddr[20];
+	char staDesc[80];
+	char status[10];  /*on-enable-1; off-disable-0 */
+	struct staList *next;
+};
+
 void backup_file(void)
 {
     int i = 0;
@@ -70,7 +71,7 @@ void backup_file(void)
 		if ((fp = fopen("/tmp/cal.bin", "ab")) != NULL) 
 		{
 			fwrite("\nstaMac=\n", 9, 1, fp);
-			if ((fpp = fopen(staFile, "r")) != NULL)
+			if ((fpp = fopen(STA_MAC, "r")) != NULL)
 			{	
 				while(fread(&stalist, sizeof stalist, 1, fpp) == 1)
 				{

@@ -69,7 +69,7 @@ void deal_staControl()
 
 	//system("iptables -N control_sta");
 	//system("iptables -A INPUT -j control_sta");
-    if ((fp = fopen("/etc/.staAcl", "r")) != NULL)
+    if ((fp = fopen("/configure_backup/.staAcl", "r")) != NULL)
 	{
 		if(fread(con_buf, 7, 1, fp) == 0)
 		{
@@ -84,7 +84,7 @@ void deal_staControl()
 		}
 		else if(strstr(con_buf, "enable"))
 		{
-			if ((fp1 = fopen("/etc/.staMac", "r")) != NULL) 
+			if ((fp1 = fopen("/configure_backup/.staMac", "r")) != NULL) 
 			{
 				while(fread(&stalist, sizeof stalist, 1, fp1) == 1)
 				{

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-IP_MAC_FILE=/etc/ip_mac.conf
+IP_MAC_FILE=/configure_backup/ip_mac.conf
 UDHCPD_FILE=/etc/udhcpd.conf
 
 MAC_ADDR=`cfg -e | grep "MODXXX" |awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`

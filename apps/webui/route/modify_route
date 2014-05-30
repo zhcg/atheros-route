@@ -1,6 +1,6 @@
 #!/bin/sh
 
-ROUTE_FILE=/etc/route.conf
+ROUTE_FILE=/configure_backup/route.conf
 
 MOD_IP_ADDR=`cfg -e | grep "MODXXX" |awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`
 if [ -z $MOD_IP_ADDR ];then

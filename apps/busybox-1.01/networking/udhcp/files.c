@@ -406,7 +406,7 @@ void write_leases(void)
 
 		if(open == 1)
 		{
-			fp = fopen(ALL_ACCESS, "r");			/*  /etc/.OldStaList  */
+			fp = fopen(ALL_ACCESS, "r");
 		}
 		while(fread(&access_lease2, sizeof access_lease2, 1, fp) == 1)
 		{

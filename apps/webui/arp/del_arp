@@ -1,6 +1,6 @@
 #!/bin/sh
 
-ARP_IP_MAC_FILE=/etc/arp_ip_mac.conf
+ARP_IP_MAC_FILE=/configure_backup/arp_ip_mac.conf
 
 IP_ADDR=`cfg -e | grep "DELXXX" |awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`
 if [ -z $IP_ADDR ];then

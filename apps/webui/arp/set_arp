@@ -1,9 +1,9 @@
 #!/bin/sh
 
-ARP_IP_MAC_FILE=/etc/arp_ip_mac.conf
+ARP_IP_MAC_FILE=/configure_backup/arp_ip_mac.conf
 
-if [ ! -f /etc/arp_ip_mac.conf ]; then
-        touch /etc/arp_ip_mac.conf
+if [ ! -f /configure_backup/arp_ip_mac.conf ]; then
+        touch /configure_backup/arp_ip_mac.conf
 fi
 
 MAC_ADDR=`cfg -e | grep "ADD_MAC" |awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`

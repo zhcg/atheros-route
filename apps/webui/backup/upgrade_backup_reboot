@@ -1,0 +1,14 @@
+#!/bin/sh
+
+#BACKUP_STATUS=`cfg -e | grep "BACKUP"`
+#echo "$BACKUP_STATUS"
+
+#if [ -z $BACKUP_STATUS ];then
+#	exit 1
+#fi
+
+#mkdir /mnt
+umount /configure_backup/
+#cp -rf /mnt/backup /etc/
+#rm -r /mnt
+#umount /mnt

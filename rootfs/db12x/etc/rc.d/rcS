@@ -75,8 +75,6 @@ if [ "${MACTYPE_FLAG}" != "0" ]; then
 fi
 #yuhaolei
 
-#rm the old sta list by zzw
-rm /etc/.OldStaList
 
 /usr/bin/cal_check 
 ifconfig $WAN_IF up
@@ -122,6 +120,9 @@ echo 5 > /proc/sys/vm/dirty_background_ratio
 if [ "${WLAN_ON_BOOT}" = "y" ]; then
     /etc/ath/apup
 fi
+
+#deal backup for upgrade by zzw
+/usr/sbin/upgrade_backup
 
 ##
 ## nat settings 
@@ -173,3 +174,6 @@ fi
 #/usr/sbin/ppy &
 /usr/sbin/web_control &
 /bin/OTA_Base &
+#deal sta access control; by zzw 
+/usr/sbin/sta_access_control > /dev/null 2>&1
+

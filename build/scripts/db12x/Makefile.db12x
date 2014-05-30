@@ -364,6 +364,8 @@ webui:
 	cp -f backup/set_backup $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f backup/del_backup $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f backup/var_backup $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f backup/upgrade_backup $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f backup/upgrade_backup_reboot $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f ntp/set_pctime $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f ntp/set_ntpserver $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f net/network_diagnostics $(INSTALL_ROOT)/usr/sbin;  \

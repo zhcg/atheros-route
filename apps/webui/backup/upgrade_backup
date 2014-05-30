@@ -1,0 +1,12 @@
+#!/bin/sh
+
+#BACKUP_STATUS=`cfg -e | grep "BACKUP"`
+#echo "$BACKUP_STATUS"
+
+#if [ -z $BACKUP_STATUS ];then
+#	exit 1
+#fi
+
+mkdir -p /configure_backup
+mount -t jffs2 /dev/mtdblock6 /configure_backup/
+#cp -rf /etc/backup /mnt

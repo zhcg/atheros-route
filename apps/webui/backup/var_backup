@@ -1,6 +1,6 @@
 #!/bin/sh
 
-BACKUP_LIST="/etc/backup/backup_list.conf"
+BACKUP_LIST="/configure_backup/backup/backup_list.conf"
 #mac factory
 #backup
 #if [ -f /etc/mac.bin ]; then

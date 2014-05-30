@@ -1,7 +1,7 @@
 #!/bin/sh
 
-BACKUP_DIR="/etc/backup/"
-BACKUP_LIST="/etc/backup/backup_list.conf"
+BACKUP_DIR="/configure_backup/backup/"
+BACKUP_LIST="/configure_backup/backup/backup_list.conf"
 
 
 if [ x$1 = x ]; then

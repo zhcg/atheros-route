@@ -4,7 +4,7 @@
 #        echo "Usage:del_addr 00:03:7F:11:3B:1B 192.168.1.147"
 #        exit 1
 #fi
-IP_MAC_FILE=/etc/ip_mac.conf
+IP_MAC_FILE=/configure_backup/ip_mac.conf
 UDHCPD_FILE=/etc/udhcpd.conf
 
 IP_ADDR=`cfg -e | grep "DELXXX" |awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`

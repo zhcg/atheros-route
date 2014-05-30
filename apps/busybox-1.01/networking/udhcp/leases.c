@@ -18,6 +18,8 @@
 
 #include "static_leases.h"
 
+#define STA_MAC "/configure_backup/.staMac"
+#define STA_ACL "/configure_backup/.staAcl"
 
 uint8_t blank_chaddr[] = {[0 ... 15] = 0};
 struct staList
@@ -240,12 +242,12 @@ struct dhcpOfferedAddr *deal_control_staMac()
 	struct staList stalist;
 	char mac_buf[20];
 	char buf[10];
-	const char *staFile = "/etc/.staMac";
-	const char *staFile1 = "/etc/.staAcl";
+	//const char *staFile = "/configure_backup/.staMac";
+	//const char *staFile1 = "/configure_backup/.staAcl";
 
-	if((fpp = fopen(staFile1, "r")) == NULL)
+	if((fpp = fopen(STA_ACL, "r")) == NULL)
 	{
-		LOG(LOG_ERR, "Unable to open %s for reading", staFile1);
+		//LOG(LOG_ERR, "Unable to open %s for reading", staFile1);
 		return NULL;
 	}
 	if(fread(buf, 7, 1, fpp) == 1)
@@ -253,7 +255,7 @@ struct dhcpOfferedAddr *deal_control_staMac()
 		//LOG(LOG_ERR, "******the %s's buf is %s", staFile1, buf);
 		if(strncmp(buf, "enable", 6) == 0)
 		{
-			if ((fp = fopen(staFile, "r")) != NULL)
+			if ((fp = fopen(STA_MAC, "r")) != NULL)
 			{
 				while(fread(&stalist, sizeof stalist, 1, fp) == 1)
 				{
@@ -288,7 +290,7 @@ struct dhcpOfferedAddr *deal_control_staMac()
 	}
 	else
 	{
-		LOG(LOG_ERR, "the read %s for reading is not disable", staFile1);
+		//LOG(LOG_ERR, "the read %s for reading is not disable", staFile1);
 		fclose(fpp);
 	}
 

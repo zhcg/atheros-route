@@ -21,6 +21,9 @@
 #include <sys/time.h>
 #include <stdio.h>
 
+#define STA_MAC "/configure_backup/.staMac"
+#define STA_ACL "/configure_backup/.staAcl"
+
 int main(int argc, char *argv[])
 {
 
@@ -39,7 +42,7 @@ int main(int argc, char *argv[])
 
 	//system("iptables -N control_sta");
 	//system("iptables -A INPUT -j control_sta");
-    if ((fp = fopen("/etc/.staAcl", "r")) != NULL)
+    if ((fp = fopen(STA_ACL, "r")) != NULL)
 	{
 		if(fread(con_buf, 7, 1, fp) == 0)
 		{
@@ -54,7 +57,7 @@ int main(int argc, char *argv[])
 		}
 		else if(strstr(con_buf, "enable"))
 		{
-			if ((fp1 = fopen("/etc/.staMac", "r")) != NULL) 
+			if ((fp1 = fopen("STA_MAC", "r")) != NULL) 
 			{
 				while(fread(&stalist, sizeof stalist, 1, fp1) == 1)
 				{
