@@ -1145,12 +1145,12 @@ int is_b6l()
 			if(strstr(buf, "SOFT_VERSION") != 0)
 			{
 				sscanf(buf, "SOFT_VERSION=%s", ver);
-				if(strstr(ver, "HBD_B6L") != 0)
+				if(strstr(ver, "HBD_F2A_B6_V7") != 0)
 				{
 					fclose(fp);
 					return 0;
 				}
-				else if(strstr(ver, "HBD_F2B") != 0)
+				else if(strstr(ver, "HBD_F2A_B6_V8") != 0)
 				{
 					printf("%s\nExit....\n",ver);
 					system("/bin/dnat.sh");
