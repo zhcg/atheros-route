@@ -44,6 +44,15 @@
 	<message msgid="wan protocol opmode ondemand" msgstr="On Demand" />
 	<message msgid="wan protocol opmode manual" msgstr="Manual" />
 	<message msgid="wan protocol opmode timing" msgstr="Timing" />
+	<message msgid="wan cs" msgstr="Connect status" />
+	<message msgid="wan cstatus" msgstr="Unknown" />
+	<message msgid="sysinfo ppptimeout" msgstr="PPPoE Connecting timed out" />
+	<message msgid="sysinfo pppusererr" msgstr="PPPoE user name not exist" />
+	<message msgid="sysinfo ppppwderr" msgstr="PPPoE password error" />
+	<message msgid="sysinfo ok" msgstr="Access to the Internet" />
+	<message msgid="sysinfo fail" msgstr="Unable to access the Internet" />	
+	<message msgid="sysinfo cing" msgstr="Connecting......" />	
+
 	<message msgid="PPPOE_TIMING" msgstr="Timing ：Timing Period" />
 
 	<message msgid="wan static mode" msgstr="Static Mode" />

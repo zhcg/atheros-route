@@ -45,7 +45,15 @@
 	<message msgid="wan protocol opmode ondemand" msgstr="按需连接" />
 	<message msgid="wan protocol opmode manual" msgstr="手动连接" />  
 	<message msgid="wan protocol opmode timing" msgstr="定时连接" />
-
+	<message msgid="wan cs" msgstr="连接状态" />
+	<message msgid="wan cstatus" msgstr="未知" />
+	
+	<message msgid="sysinfo ppptimeout" msgstr="PPPoE连接超时" />
+	<message msgid="sysinfo pppusererr" msgstr="PPPoE登录用户名不存在" />
+	<message msgid="sysinfo ppppwderr" msgstr="PPPoE登录密码错误" />
+	<message msgid="sysinfo ok" msgstr="可上网" />
+	<message msgid="sysinfo fail" msgstr="不可上网" />
+	<message msgid="sysinfo cing" msgstr="正在连接......" />
 
 	<message msgid="wan static mode" msgstr="静态模式" />
 	<message msgid="wan dhcp mode" msgstr="DHCP 模式" />

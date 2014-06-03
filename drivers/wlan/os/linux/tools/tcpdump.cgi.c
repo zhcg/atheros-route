@@ -86,12 +86,14 @@ int main()
     if(strcmp(name,"begin")==0)
     {
         //Execute_cmd("net_check", rspBuff1);
+        system("tcpdumps -w /tmp/tcpdump.cap &");sleep(2);//bash  avoid let syntax error
        // printf("%s",rspBuff1);
        // fprintf(errOut,"WAN:%s!!!!!  %d \n",rspBuff1,strlen(rspBuff1));
     }
     else if(strcmp(name,"end")==0)
     {
        // Execute_cmd("ping -c 3 www.baidu.com", rspBuff1);
+       Execute_cmd("killall tcpdumps", rspBuff1);
        // printf("%s",rspBuff1);
        // fprintf(errOut,"BD:%s!!!!!  %d \n",rspBuff1,strlen(rspBuff1));
     } 

@@ -197,6 +197,7 @@ int init_as532()
 	global_sg_fd = user_open_usb(SGNAME);
 	char path_new[128]={0};
 	//PRINT("open sg file fd = %d\n" ,global_sg_fd);
+	
 	if (global_sg_fd < 0)
 	{
 		PRINT("failed to open 532 usr_mode,try boot_mode\n");
@@ -316,6 +317,7 @@ int init_stm32()
 void init_env(void)
 {
 	int sockfd,on,i,ret;
+
 #ifdef B6
 	struct sockaddr_in servaddr,cliaddr;
 
@@ -1412,7 +1414,7 @@ int factory_test_cmd_update_mac(unsigned char* data,int len)
 			}
 		}
 		macp = '\0';
-		sprintf(cmdbuf,"%s%s","set_macaddr ",macbuf);
+		sprintf(cmdbuf,"%s%s","set_macaddr -a ",macbuf);
 		PRINT("cmdbuf = %s\n",cmdbuf);
 		status = system(cmdbuf);
 		PRINT("status = %d\n",status);

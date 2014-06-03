@@ -233,7 +233,7 @@
 	<message msgid="err file format" msgstr="升级包与系统硬件不匹配，请您选择正确的升级包" />
 	<message msgid="err file upload" msgstr="文件上传失败" />
 	<message msgid="admw chfile" msgstr="选择文件" />
-	<message msgid="admw waring" msgstr="注意:升级文件不得超过15M,升级过程完全自动,请您不要关闭电源,否则将导致HBD路由器损坏而无法使用,升级过程约130秒,当升级结束后,HBD路由器将自动重新启动" />	
+	<message msgid="admw waring" msgstr="注意:升级文件不得超过15M,升级过程完全自动,请您不要关闭电源,否则将导致HBD路由器损坏而无法使用,升级过程约80秒,当升级结束后,HBD路由器将自动重新启动" />	
 	<message msgid="admw sysupgrade" msgstr="确认进行固件升级?" />
 	<message msgid="err dhcp null" msgstr="无法自动获取到WAN口IP,请您检查是否为自动获取方式连接" />
 	<message msgid="err dhcp ip" msgstr="DHCP获取到WAN口IP跟当前路由器在同一个网段,请您在高级设置-内网设置-网关设置里面修改路由器的网段" />

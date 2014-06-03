@@ -254,7 +254,15 @@ int destroy_client(dev_status_t *dev)
 					memset(devlist[j].client_ip,0,sizeof(devlist[j].client_ip));
 					print_devlist();
 					dev->dying = 0;
+#ifdef B6
+					netWrite(dev->client_fd,"HEADR0012REG_SUC002B6\r\n",23);
+#elif defined(B6L)	
+					netWrite(dev->client_fd,"HEADR0013REG_SUC003B6L\r\n",24);
+#elif defined(S1)
+					netWrite(dev->client_fd,"HEADR0012REG_SUC002S1\r\n",23);
+#else
 					netWrite(dev->client_fd,"HEADR0010REG_SUC000\r\n",21);
+#endif
 					return 0;
 				}
 			}
@@ -870,7 +878,15 @@ int do_cmd_heartbeat(dev_status_t *dev,char *buf)
 				}
 			}
 			PRINT("name = %s\n",dev->dev_name);
+#ifdef B6
+			netWrite(dev->client_fd,"HEADR0012REG_SUC002B6\r\n",23);
+#elif defined(B6L)	
+			netWrite(dev->client_fd,"HEADR0013REG_SUC003B6L\r\n",24);
+#elif defined(S1)
+			netWrite(dev->client_fd,"HEADR0012REG_SUC002S1\r\n",23);
+#else
 			netWrite(dev->client_fd,"HEADR0010REG_SUC000\r\n",21);
+#endif
 			goto REGISTERED;
 		}
 #ifndef B6L		
@@ -895,7 +911,15 @@ int do_cmd_heartbeat(dev_status_t *dev,char *buf)
 				}
 			}
 			PRINT("name = %s\n",dev->dev_name);
+#ifdef B6
+			netWrite(dev->client_fd,"HEADR0012REG_SUC002B6\r\n",23);
+#elif defined(B6L)	
+			netWrite(dev->client_fd,"HEADR0013REG_SUC003B6L\r\n",24);
+#elif defined(S1)
+			netWrite(dev->client_fd,"HEADR0012REG_SUC002S1\r\n",23);
+#else
 			netWrite(dev->client_fd,"HEADR0010REG_SUC000\r\n",21);
+#endif
 			goto REGISTERED;
 		}
 #endif
@@ -908,7 +932,15 @@ UNREGISTERED:
 			if(dev == &devlist[i])
 				break;
 		}
+#ifdef B6
+		netWrite(dev->client_fd,"HEADR0012REGFAIL002B6\r\n",23);
+#elif defined(B6L)	
+		netWrite(dev->client_fd,"HEADR0013REGFAIL003B6L\r\n",24);
+#elif defined(S1)
+		netWrite(dev->client_fd,"HEADR0012REGFAIL002S1\r\n",23);
+#else
 		netWrite(dev->client_fd,"HEADR0010REGFAIL000\r\n",21);
+#endif
 		memset(insidebuf,0,10);
 		sprintf(insidebuf,"%s","INSIDE");
 		insidebuf[6]=i+1;
@@ -932,7 +964,15 @@ int do_cmd_heartbeat(dev_status_t *dev)
 	dev->tick_time++;
 	if(dev->tick_time == 1)
 	{
+#ifdef B6
+		netWrite(dev->client_fd,"HEADR0012REG_SUC002B6\r\n",23);
+#elif defined(B6L)	
+		netWrite(dev->client_fd,"HEADR0013REG_SUC003B6L\r\n",24);
+#elif defined(S1)
+		netWrite(dev->client_fd,"HEADR0012REG_SUC002S1\r\n",23);
+#else
 		netWrite(dev->client_fd,"HEADR0010REG_SUC000\r\n",21);
+#endif
 		generate_up_msg();
 	}
 	//memset(dev->dev_name,' ',16);
@@ -1289,7 +1329,7 @@ int do_cmd_set_mac(dev_status_t * dev, char * sendbuf)
 			}
 		}
 		macp = '\0';
-		sprintf(cmdbuf,"%s%s","set_macaddr ",mac_buf_out);
+		sprintf(cmdbuf,"%s%s","set_macaddr -b ",mac_buf_out);
 		PRINT("cmdbuf = %s\n",cmdbuf);
 		status = system(cmdbuf);
 		PRINT("status = %d\n",status);
@@ -1360,6 +1400,62 @@ int do_cmd_set_sn(dev_status_t * dev, char * sendbuf)
 		}
 	}
 	netWrite(dev->client_fd,"HEADR0011SET__SN0011\r\n",22);
+	return -1;
+}
+#endif
+
+#ifdef S1
+int do_cmd_get_s1_ip(dev_status_t * dev, char * sendbuf)
+{
+	struct in_addr addr;
+	int i,j;
+	char mac_buf[20]={0};
+	struct dhcpOfferedAddr 
+	{
+		unsigned char hostname[16];
+		unsigned char mac[16];
+		unsigned long ip;
+		unsigned long expires;
+	} lease;
+	system("killall -q -USR1 udhcpd");
+	FILE *fp = fopen(UDHCPD_FILE, "r");  /*  /var/run/udhcpd.leases   */
+	if (NULL == fp)
+	{
+		printf("open udhcpd error\n \n");
+		netWrite(dev->client_fd,"HEADR1011GETS1IP000",strlen("HEADR1011GETS1IP000"));
+		return -1;
+	}
+
+	while (fread(&lease, sizeof(lease), 1, fp) == 1) 
+	{
+		addr.s_addr = lease.ip;
+		//for(i = 0, j = 0 ; i < 6; i++, j+=3)
+		//{
+			//sprintf(&mac_buf[j], "%02x:", lease.mac[i]);
+		//}
+
+		printf("hostname = %s\n",lease.hostname);
+		printf("strlen(hostname) = %d\n",strlen(lease.hostname));
+		//printf("mac = %s\n",mac_buf);
+		printf("ip = %s\n",inet_ntoa(addr));
+		//if(lease.hostname == NULL)
+			//strcpy(lease.hostname,A20_NAME);
+		if(!strncmp(lease.hostname,A20_NAME,strlen(A20_NAME)))
+		{
+			netWrite(dev->client_fd,"HEADR0011GETS1IP000",strlen("HEADR1011GETS1IP000"));
+			sprintf(sendbuf,"HEADR0%03dGETS1IP%03d%s",strlen(inet_ntoa(addr))+10,strlen(inet_ntoa(addr)),inet_ntoa(addr));
+			PRINT("send_buf = %s\n",sendbuf);
+			netWrite(dev->client_fd,sendbuf,strlen(sendbuf));
+			fclose(fp);
+			return 0;
+		}
+		//printf("expires = %ld\n",lease.expires);
+		//printf("******************\n");
+	
+	}
+	PRINT("not found a20\n");
+	netWrite(dev->client_fd,"HEADR1011GETS1IP000",strlen("HEADR1011GETS1IP000"));
+	fclose(fp);
 	return -1;
 }
 #endif
@@ -1477,6 +1573,14 @@ int parse_msg(cli_request_t* cli)
 			break;
 		}
 #endif
+#ifdef S1
+		case GET_S1_IP:
+		{
+			PRINT("GET_S1_IP from %s\n",cli->dev->client_ip);
+			do_cmd_get_s1_ip(cli->dev,sendbuf);
+			break;
+		}
+#endif
 		case REQ_ENC:
 		{
 			PRINT("REQ_ENC from %s\n",cli->dev->client_ip);
@@ -1560,6 +1664,12 @@ int getCmdtypeFromString(char *cmd_str)
 	else if (strncmp(cmd_str, "SET__SN", 7) == 0)
 	{
 		cmdtype = SET_SN;
+	}
+#endif
+#ifdef S1
+	else if (strncmp(cmd_str, "GETS1IP", 7) == 0)
+	{
+		cmdtype = GET_S1_IP;
 	}
 #endif
 	else if (strncmp(cmd_str, "REQ_ENC", 7) == 0)
@@ -2328,7 +2438,7 @@ void* tcp_loop_recv(void* argv)
 							netWrite(phone_control_fd[0],sendbuf, 7);
 							break;
 						}
-						//PRINT("%s\n",msg);
+					//	PRINT("%s\n",msg);
 						pbuf=msg;
 again:
 						if(getoutcmd(pbuf,ret,&devlist[i])==-1)
@@ -2896,7 +3006,15 @@ int check_register_status()
 		}
 #endif
 		PRINT("dev is unregistered\n");
+#ifdef B6
+		netWrite(devlist[i].client_fd,"HEADR0012REGFAIL002B6\r\n",23);
+#elif defined(B6L)	
+		netWrite(devlist[i].client_fd,"HEADR0013REGFAIL003B6L\r\n",24);
+#elif defined(S1)
+		netWrite(devlist[i].client_fd,"HEADR0012REGFAIL002S1\r\n",23);
+#else
 		netWrite(devlist[i].client_fd,"HEADR0010REGFAIL000\r\n",21);
+#endif	
 		memset(insidebuf,0,10);
 		sprintf(insidebuf,"%s","INSIDE");
 		insidebuf[6]=i+1;
@@ -2919,8 +3037,10 @@ void* phone_check_tick(void* argv)
 	//HEADR0172OPTI_BS4#DEV#IP010.10.10.105#NAMEA31s-Tablet
 	while(1)
 	{
-		if(tick_count == 20)
+		//zb
+		if(tick_count == TICK_INTERVAL)
 		{
+			PRINT("up tick\n");
 			tick_count = 0;
             generate_up_msg();
 		}
@@ -2937,7 +3057,7 @@ void* phone_check_tick(void* argv)
 				continue;
 			if(devlist[i].old_tick_time == devlist[i].tick_time)
 			{
-				if(devlist[i].destroy_count >= 20)
+				if(devlist[i].destroy_count >= TICK_INTERVAL)
 				{
 					PRINT("dev%d.destroy_count = %d\n",i,devlist[i].destroy_count);
 				}
@@ -2948,7 +3068,7 @@ void* phone_check_tick(void* argv)
 				devlist[i].destroy_count = 0;
 				devlist[i].old_tick_time = devlist[i].tick_time;
 			}
-			if(devlist[i].destroy_count >= 25)
+			if(devlist[i].destroy_count >= (TICK_INTERVAL+5))
 			{
 				PRINT("no tick!!!\n");
 				devlist[i].dying = 1;

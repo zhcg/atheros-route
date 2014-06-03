@@ -70,6 +70,9 @@ enum PstnCommand {
 	SET_MAC,
 	SET_SN,
 #endif
+#ifdef	S1
+	GET_S1_IP,
+#endif
 	//
 	REQ_ENC,
 	
