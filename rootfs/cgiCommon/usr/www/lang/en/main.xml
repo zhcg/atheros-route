@@ -25,7 +25,7 @@
 	<message msgid="advmenu treeapp_local_gwset" msgstr="Gateway Settings" />
 	<message msgid="advmenu treeapp_local_rulist" msgstr="Routing Table Settings" />
 
-	<message msgid="advmenu treeapp_conm" msgstr="Access management " />
+	<message msgid="advmenu treeapp_conm" msgstr="Access Management " />
 	<message msgid="advmenu treeapp_conm_list" msgstr="Connected Equipments" />
 	<message msgid="advmenu treeapp_conm_ctrl" msgstr="Wireless Access" />
 	<message msgid="advmenu treeapp_conm_web" msgstr="Remote Web Management" />
@@ -50,7 +50,7 @@
 	<message msgid="advmenu treeapp_man_factory" msgstr="Restore Factory" />
 	<message msgid="advmenu treeapp_man_reboot" msgstr="System Restart" />
 	<message msgid="advmenu treeapp_netcheck" msgstr="Network Diagnosis" />
-	<message msgid="advmenu treeapp_man_log" msgstr="LOG Management" />
+	<message msgid="advmenu treeapp_man_log" msgstr="System Log" />
 
 	<message msgid="sset exit" msgstr="Are you sure you want to exit?" /> 
 	<message msgid="admw m_fast" msgstr="Quick Setting" />

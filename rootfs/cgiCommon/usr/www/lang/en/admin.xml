@@ -233,7 +233,7 @@
 	<message msgid="err file format" msgstr="Upgrade package and system hardware does not match, please select the correct upgrade package  " />
 	<message msgid="err file upload" msgstr="Firmware upload fail " />
 	<message msgid="admw chfile" msgstr="Choose file" />	
-	<message msgid="admw waring" msgstr="Note: the file should less than 15M,the upgrade process is completely automatic, please don't turn off the power, otherwise it will result in BASE damage and can not be used, the upgrade process about 130 seconds, when the upgrade is complete, the BASE will automatically restart." />	
+	<message msgid="admw waring" msgstr="Note: the file should less than 15M,the upgrade process is completely automatic, please don't turn off the power, otherwise it will result in BASE damage and can not be used, the upgrade process about 80 seconds, when the upgrade is complete, the BASE will automatically restart." />	
 	<message msgid="admw sysupgrade" msgstr="Confirm the firmware upgrade?" />
 	<message msgid="err dhcp null" msgstr="Unable to get WAN IP through automatic acquisition,please check that the  automatic acquisition server provider?" />
 	<message msgid="err dhcp ip" msgstr="The WAN IP and Route IP are in the same subnet, please set the Route IP in Advanced Settings - Network Settings - Gateway Settings" />

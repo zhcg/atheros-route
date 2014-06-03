@@ -97,8 +97,8 @@ function tr()
 	ee.innerHTML = _("admw m_wan");
 	ee = document.getElementById("m_wifi");
 	ee.innerHTML = _("admw m_wifi");
-	ee = document.getElementById("m_wirere");
-	ee.innerHTML = _("admw m_wirere");
+	//ee = document.getElementById("m_wirere");
+	//ee.innerHTML = _("admw m_wirere");
 	document.title=_("HBDt");
 }
 function onInit()
@@ -151,7 +151,7 @@ function hidehead()
   document.getElementById("c1").innerHTML='<a href="cgi-bin/map" target="ifm" id="m_normal" onclick="showpwd1()"></a>';
   document.getElementById("c2").innerHTML='<a href="cgi-bin/w2" target="ifm" id="m_wan"  onclick="showpwd2()"></a>';
   document.getElementById("c3").innerHTML='<a href="cgi-bin/w3" target="ifm" id="m_wifi" onclick="showpwd3()"></a>';
-  document.getElementById("c4").innerHTML='<a href="cgi-bin/w4" target="ifm" id="m_wirere" onclick="showpwd4()"></a>';
+  //document.getElementById("c4").innerHTML='<a href="cgi-bin/w4" target="ifm" id="m_wirere" onclick="showpwd4()"></a>';
 }
 function showpwd1()
 {
@@ -171,12 +171,12 @@ function showpwd3()
  	document.getElementById("c3").innerHTML='<a href="cgi-bin/w3" target="ifm" id="m_wifi" onclick="showpwd3()" class="handaer_common"></a>';
 	tr();
 }
-function showpwd4()
-{
-	hidehead();
- 	document.getElementById("c4").innerHTML='<a href="cgi-bin/w4" target="ifm" id="m_wirere" onclick="showpwd4()" class="handaer_common"></a>';
-	tr();
-}
+//function showpwd4()
+//{
+//	hidehead();
+// 	document.getElementById("c4").innerHTML='<a href="cgi-bin/w4" target="ifm" id="m_wirere" onclick="showpwd4()" class="handaer_common"></a>';
+//	tr();
+//}
 
 function iFrameHeight() 
 { 
@@ -283,7 +283,7 @@ function pppoe_tiaozhuan()
 <a href="javascript:void(0)" id="top_en" onClick="en()">English</a> 
 </div>
 <div class="handaer_top_r_bottom">   
-<a href="cgi-bin/adminset?adminset=yes" target="ifm" id="top_admin">密码管理</a> 
+<a href="cgi-bin/adminset" target="ifm" id="top_admin">密码管理</a> 
 <a href="javascript:void(0)" id="top_adv" onClick="switchsa(); return false;">高级设置</a>
 </div>
 </div>
@@ -308,13 +308,13 @@ function pppoe_tiaozhuan()
 	<dd><span id="c1"><a href="cgi-bin/map" target="ifm" id="m_normal" onClick="showpwd1()" class="handaer_common">设置向导</a></span></dd>
 	<dd><span id="c2"><a href="cgi-bin/w2" target="ifm" id="m_wan" onClick="showpwd2()">外网设置</a></span></dd>
 	<dd><span id="c3"><a href="cgi-bin/w3" target="ifm" id="m_wifi" onClick="showpwd3()">WiFi设置</a></span></dd>
-	<dd><span id="c4"><a href="cgi-bin/w4" target="ifm" id="m_wirere" onClick="showpwd4()">无线中继</a></span></dd>
+	<!--dd><span id="c4"><a href="cgi-bin/w4" target="ifm" id="m_wirere" onClick="showpwd4()">无线中继</a></span></dd-->
    </dl>
     </div>     
 </div>
 <!--  左侧结束 -->
 <div class="hbd_menu_r left"><!-- TemplateBeginEditable name="EditRegion3" -->
-<iframe src="cgi-bin/map?map=yes" id="ifm" name="ifm" frameBorder=0 scrolling=no  onLoad="iFrameHeight()"></iframe>
+<iframe src="cgi-bin/map" id="ifm" name="ifm" frameBorder=0 scrolling=no  onLoad="iFrameHeight()"></iframe>
 <div class="clear"></div>
 </div>
 
