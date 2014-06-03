@@ -317,6 +317,7 @@ int init_stm32()
 void init_env(void)
 {
 	int sockfd,on,i,ret;
+
 #ifdef B6
 	struct sockaddr_in servaddr,cliaddr;
 
@@ -1413,7 +1414,7 @@ int factory_test_cmd_update_mac(unsigned char* data,int len)
 			}
 		}
 		macp = '\0';
-		sprintf(cmdbuf,"%s%s","set_macaddr ",macbuf);
+		sprintf(cmdbuf,"%s%s","set_macaddr -a ",macbuf);
 		PRINT("cmdbuf = %s\n",cmdbuf);
 		status = system(cmdbuf);
 		PRINT("status = %d\n",status);

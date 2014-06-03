@@ -726,6 +726,7 @@ START_WRITE:
 				valid_bytes	= AUDIO_STREAM_BUFFER_SIZE - phone_audio.input_stream_rp;
 				PRINT("%d,end,back!!\n",valid_bytes);
 			}
+
 			//if((phone_control.start_dial == 1 || total_dtmf_ret > 0) && valid_bytes < AUDIO_WRITE_BYTE_SIZE && valid_bytes != 0)
 			//{
 				//PRINT("valid_bytes = %d\n",valid_bytes);
@@ -978,6 +979,7 @@ void* AudioEchoThreadCallBack(void* argv)
 				}
 				speex_echo_cancellation(st,(spx_int16_t*)&echo_stream_buffer[phone_audio.echo_stream_rp], (spx_int16_t*)(&echo_stream_buffer[phone_audio.echo_stream_rp+AUDIO_WRITE_BYTE_SIZE]), (spx_int16_t*)out_buf);
 				speex_preprocess_run(den, (spx_int16_t*)out_buf);
+				//memcpy(out_buf,(spx_int16_t*)&echo_stream_buffer[phone_audio.echo_stream_rp],AUDIO_WRITE_BYTE_SIZE);
 				out_bufp = (short*)out_buf;
 				for(i=0;i<valid_bytes/4;i++)
 				{
@@ -1242,6 +1244,7 @@ void* AudioRecvThreadCallBack(void* argv)
 		{
 			if(phone_audio.start_dtmf != 0)
 			{
+				PRINT("start_dtmf = %c\n",phone_audio.start_dtmf);
 				dtmf_ret = GenerateCodePcmData(&phone_audio.start_dtmf,1,dtmf_buf,Big_Endian);
 				//total_dtmf_ret += dtmf_ret;
 				if(total_dtmf_ret <= dtmf_ret)

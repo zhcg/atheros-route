@@ -42,11 +42,19 @@
 #define AS532_VER	"HBD_B6L_AS532_V"
 #define TMP_AS532_VER_FILE "/tmp/tmp_as532_ver_file"
 #endif
+
 #define PCMNAME "/dev/slic"
+#define TICK_INTERVAL 20
+
 #ifdef B6
 #define PASSAGE_NAME "/dev/phonepassage"
 #else
 #define LED_NAME "/dev/wifiled"
+#endif
+
+#ifdef S1
+#define UDHCPD_FILE  "/var/run/udhcpd.leases"
+#define A20_NAME 	"dragonboard"
 #endif
 
 #define AUTHOR	"ZhangBo"
@@ -81,13 +89,13 @@
 #define DELAY						20000
 #define CODE_MAX					32635	
 #define AUDIO_SEND_PACKET_SIZE		1600
+//#define AUDIO_READ_BYTE_SIZE		256
 #define AUDIO_READ_BYTE_SIZE		448
-//#define AUDIO_WRITE_BYTE_SIZE		640
-//#define AUDIO_READ_BYTE_SIZE		448
 #define AUDIO_WRITE_BYTE_SIZE		AUDIO_READ_BYTE_SIZE
 #define AUDIO_STREAM_BUFFER_SIZE	AUDIO_READ_BYTE_SIZE*300
 #define AUDIO_PACKET_LIMIT			14
-//#define AUDIO_PACKET_LIMIT		10
+//#define AUDIO_PACKET_LIMIT			25
+
 //speex
 #define NN 							(AUDIO_READ_BYTE_SIZE / 2)
 #define TAIL 						1024
