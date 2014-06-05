@@ -47,7 +47,7 @@ int main()
 	
     errOut = fopen("/dev/ttyS0","w");
 
-    Execute_cmd("net_check", rspBuff1);
+    Execute_cmd("network_diagnostics", rspBuff1);
     printf("%s",rspBuff1);
     fprintf(errOut,"%s!!!!!  %d \n",rspBuff1,strlen(rspBuff1));
 	
