@@ -129,10 +129,10 @@ ifeq ($(BUILD_VERSION), B6_bak)
 db12x_build:common_mainline kernel_modules iptables_build driver_build  pci_build art_mod $(i2s_mod) OTA_Base env ppy pppoe_build  webui rm_tcpdumps $(fs_build) system_bak
 endif
 ifeq ($(BUILD_VERSION), B6L)
-db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) system_bak si32178_build spi32178_build phone_9344_32178 phone_lite_register check_phone_status as532_interface OTA_Base env ntpclient_arm  ppy pppoe_build channel webui cacm tester $(fs_build) makeotaimage makeoneimage 
+db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si32178_build spi32178_build phone_9344_32178 phone_lite_register check_phone_status as532_interface OTA_Base env ntpclient_arm  ppy pppoe_build channel webui cacm tester $(fs_build) makeotaimage makeoneimage 
 endif
 ifeq ($(BUILD_VERSION), S1)
-db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) system_bak si32178_build spi32178_build phone_9344_32178 check_phone_status modules_server OTA_Base env  usbpassage_build ntpclient_arm  ppy pppoe_build channel webui terminal_dev_register cacm tester $(fs_build) makeotaimage makeoneimage 
+db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si32178_build spi32178_build phone_9344_32178 check_phone_status modules_server OTA_Base env  usbpassage_build ntpclient_arm  ppy pppoe_build channel webui terminal_dev_register cacm tester $(fs_build) makeotaimage makeoneimage 
 endif
 #db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) OTA_Base env ppy pppoe_build  webui  $(fs_build)
 
