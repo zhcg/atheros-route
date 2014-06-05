@@ -161,7 +161,7 @@ function initValue()
   </tr>
   <tr>
    <td><img name="n11111111_r6_c1" src="/images/11111111_r6_c1.png" width="68" height="65" id="n11111111_r6_c1" alt="" /></td>
-   <td><a href="w2" target="ifm" onclick="window.parent.showpwd2()"><img border="0" name="n11111111_r6_c2"  width="65" height="65" id="n11111111_r6_c2" alt="" /></a></td>
+   <td><a href="w2" target="ifm" onclick="window.parent.showpwd2()"><img border="0" name="n11111111_r6_c2" src="/images/11111111_r8_c2111.png"  width="65" height="65" id="n11111111_r6_c2" alt="" /></a></td>
    <td colspan="3"><img name="n11111111_r6_c3" src="/images/11111111_r6_c3.png" width="485" height="65" id="n11111111_r6_c3" alt="" /></td>
    <td><a href="w3" target="ifm" onclick="window.parent.showpwd3()"><img border="0" name="n11111111_r6_c6" width="65" height="65" id="n11111111_r6_c6" alt="" /></a></td>
    <td><img name="n11111111_r6_c7" src="/images/11111111_r6_c7.png" width="100" height="65" id="n11111111_r6_c7" alt="" /></td>
@@ -195,7 +195,8 @@ function initValue()
 	var xmlreq;
 	var timeID;
 	var desIPreboot;	
-	var w;
+	var w;	
+	var last = 0;
 	function createxmlreq()
 	{
 		//alert("1");
@@ -236,7 +237,15 @@ function initValue()
 				}
 				else
 				{
-					w.src = "/images/11111111_r8_c2111.png";
+					if(last == 0)
+					{
+						last ++;
+					}
+					else
+					{
+						w.src = "/images/11111111_r8_c2111.png";
+						last = 0;
+					}
 					clearTimeout(timeID);
 					timeID = setTimeout(function(){rebootRequest();},3000);
 				}

@@ -1134,8 +1134,8 @@ function initTranslation()
 	
 	e = document.getElementById("otherbutton");
 	e.value = _("admw otherbutton");
-	e = document.getElementById("advbutton");
-	e.value = _("admw advbutton");
+	//e = document.getElementById("advbutton");
+	//e.value = _("admw advbutton");
 
 	e = document.getElementById("pppshowp");
 	e.innerHTML = _("admw showp");
@@ -1316,7 +1316,7 @@ function workoutgw()
 </tr> 
 <tr>
   <td>
-  <input style="font-size: 12pt; color: #000000" id="wrad_2" type="radio" name="WAN_MODE" value="dhcp">
+  <input style="font-size: 12pt; color: #000000" id="wrad_2" type="radio" name="WAN_MODE" ~cWAN_MODE:dhcp~ value="dhcp">
   <label style="font-size: 12pt; font-weight: bold; margin-left: 20px; color: #000000" for="wrad_2" id="DHCPac" onclick=""></label></td>
 </tr>
 <tr>
@@ -1324,7 +1324,7 @@ function workoutgw()
 </tr> 
 <tr>
   <td>
-  <input style="font-size: 12pt; color: #000000" id="wrad_3" type="radio" name="WAN_MODE" value="static">
+  <input style="font-size: 12pt; color: #000000" id="wrad_3" type="radio" name="WAN_MODE" ~cWAN_MODE:static~ value="static">
   <label style="font-size: 12pt; font-weight: bold; margin-left: 20px; color: #000000" for="wrad_3" id="SM" onclick=""></label>
   </td>
 
@@ -1333,7 +1333,7 @@ function workoutgw()
   <td><div style="margin-left: 43px;" id="SMdisc"></div></td>
 </tr>
   <td>
-  <input style="font-size: 12pt; color: #000000" id="wrad_4" type="radio" name="WAN_MODE" value="pppoe">
+  <input style="font-size: 12pt; color: #000000" id="wrad_4" type="radio" name="WAN_MODE" ~cWAN_MODE:pppoe~ value="pppoe">
   <label style="font-size: 12pt; font-weight: bold; margin-left: 20px; color: #000000" for="wrad_4" id="PPPOE" onclick=""></label>
   </td>
 </tr>
@@ -1417,10 +1417,10 @@ function workoutgw()
   <td><span id="ppppwdinput"><input type="password" id="ppppass" name="PPPOE_PWD" class="handaer_text_content" maxlength="32" size="32" value="~~PPPOE_PWD~"/></span>&nbsp;<input type="checkbox" id="aaaa" onClick="pppshowpwd()"/>&nbsp;<label for="aaaa" id="pppshowp"></label></td>
 </tr>
 
-<tr>
+<!--tr>
   <td><input id="advbutton" type="button"   class="handaer_small_button" onClick="advance()" /></td>
   <td>&nbsp; &nbsp;</td>
-</tr>
+</tr-->
 <tr id="div_pppoe_opmode" style="display:none">
   <td class="head" rowspan="2" id="opmope"></td>
   <td>

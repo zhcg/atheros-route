@@ -116,7 +116,7 @@ function switch_mac()
 	else
 	{
 		widget_enable("ETH0_MAC");
-		document.WORKFORM.ETH0_MAC.value="";
+		document.WORKFORM.ETH0_MAC.value=document.getElementById("MUMAC").value;
 		document.WORKFORM.ETH0_MAC.focus();
 	}
 }
@@ -163,6 +163,7 @@ function help()
 </FORM>
 	<input type="text" name="PCMAC" style="display:none"  id="PCMAC" maxlength="15" class="handaer_text_content" value="~Bmac~">
 	<input type="text" name="DFMAC" style="display:none"  id="DFMAC" maxlength="15" class="handaer_text_content" value="~~ETH0_DFMAC~">
+	<input type="text" name="MUMAC" style="display:none"  id="MUMAC" maxlength="15" class="handaer_text_content" value="~~ETH0_MAC~">
 </td></tr>
 </table>
 </div>
