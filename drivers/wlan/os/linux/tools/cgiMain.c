@@ -6208,7 +6208,13 @@ int main(int argc,char **argv)
 				 printf("</body></html>");
 				 exit(1);
 		}
-		
+
+        //restart udhcpd
+        system("killall udhcpd > /dev/null 2>&1");           
+        system("/etc/rc.d/rc.udhcpd > /dev/null 2>&1");
+        system("/usr/sbin/set_addr_conf > /dev/null 2>&1"); 
+        system("/usr/sbin/udhcpd /etc/udhcpd.conf > /dev/null 2>&1");
+
 		write_systemLog("wan mode setting end");	
 
 		gohome =1;

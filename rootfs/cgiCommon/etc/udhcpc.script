@@ -93,6 +93,12 @@ else
 #	cfg -c
 	rflag=
 fi
+
+pridns=`echo $dns | awk -F' ' '{print $1}'`
+cfg -a PRIDNS=$pridns
+cfg -c
+echo "nameserver ${pridns}" > /etc/resolv.conf
+
 #wangyu add end
 
 #/sbin/ifconfig $interface $ip broadcast $broadcast netmask $subnet up
