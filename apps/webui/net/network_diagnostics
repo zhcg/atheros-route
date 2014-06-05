@@ -29,7 +29,7 @@ fi
 cfg -c
 
 if [ "$NCHECK" = "yes" ]; then
-	echo type
+	echo $type
 	exit 1
 else
 	net_check
