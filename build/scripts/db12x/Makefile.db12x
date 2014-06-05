@@ -123,7 +123,10 @@ db12x_build: common_mainline driver_build usb_build pci_build spectral_app_build
 else
 ifeq ($(BUILD_FOR_32178), yes)
 ifeq ($(BUILD_VERSION), B6)
-db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) system_bak si32178_build spi32178_build phone_9344_32178 check_phone_status modules_server OTA_Base env  usbpassage_build phonepassage_build as532h_build ntpclient_arm  ppy pppoe_build channel webui terminal_dev_register cacm tester $(fs_build) makeotaimage makeoneimage 
+db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si32178_build spi32178_build phone_9344_32178 check_phone_status modules_server OTA_Base env  usbpassage_build phonepassage_build as532h_build ntpclient_arm  ppy pppoe_build channel webui terminal_dev_register cacm tester $(fs_build) makeotaimage makeoneimage 
+endif
+ifeq ($(BUILD_VERSION), B6_bak)
+db12x_build:common_mainline kernel_modules iptables_build driver_build  pci_build art_mod $(i2s_mod) OTA_Base env ppy pppoe_build  webui rm_tcpdumps $(fs_build) system_bak
 endif
 ifeq ($(BUILD_VERSION), B6L)
 db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) system_bak si32178_build spi32178_build phone_9344_32178 phone_lite_register check_phone_status as532_interface OTA_Base env ntpclient_arm  ppy pppoe_build channel webui cacm tester $(fs_build) makeotaimage makeoneimage 
@@ -163,6 +166,10 @@ common_mainline: check_tftp rootfs_prep toolchain_build \
 endif
 #	lzma_uimage kernel_info enet_build busybox_build wpa2 \
 #	uboot_mainline sar cgi
+
+
+
+
 
 #
 #pppoe_build added by yhl 2013.10.29
@@ -325,13 +332,13 @@ si3000_build: kernel_build
 	test -d $(STM32MODPATH) || mkdir -p $(SI3000MODPATH)
 	cp $(SI3000DIR)/ath_si3000.ko $(SI3000MODPATH)	
 
+rm_tcpdumps:
+	rm $(INSTALL_ROOT)/usr/sbin/tcpdumps
 
 system_bak:
-	cd ../apps/system_bak; \
-	cp -f db12x-jffs2_bak ../../images/db12x; \
-	cp -f vmlinux.lzma.uImage_bak ../../images/db12x
-
-
+	cd ../images/db12x; \
+	mv db12x-jffs2 db12x-jffs2_bak; \
+	mv vmlinux.lzma.uImage vmlinux.lzma.uImage_bak
 
 	
 webui: 

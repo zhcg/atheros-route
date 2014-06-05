@@ -354,6 +354,10 @@ ifeq ($(BUILD_VERSION), B6)
 	cat $(INSTALL_ROOT)/etc/rc.d/rcS_B6 >> $(INSTALL_ROOT)/etc/rc.d/rcS
 	cat $(INSTALL_ROOT)/etc/ath/apcfg_B6 >> $(INSTALL_ROOT)/etc/ath/apcfg
 endif
+ifeq ($(BUILD_VERSION), B6_bak)
+	cat $(INSTALL_ROOT)/etc/rc.d/rcS_B6 >> $(INSTALL_ROOT)/etc/rc.d/rcS
+	cat $(INSTALL_ROOT)/etc/ath/apcfg_B6_BAK >> $(INSTALL_ROOT)/etc/ath/apcfg
+endif
 ifeq ($(BUILD_VERSION), B6L)
 	cat $(INSTALL_ROOT)/etc/rc.d/rcS_B6L >> $(INSTALL_ROOT)/etc/rc.d/rcS
 	cat $(INSTALL_ROOT)/etc/ath/apcfg_B6L >> $(INSTALL_ROOT)/etc/ath/apcfg
