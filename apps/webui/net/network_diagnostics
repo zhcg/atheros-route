@@ -19,6 +19,7 @@ if [ "$PING_QQ" = "NO" -a "$PING_BD" = "NO" ]; then
 	 NCHECK=no
 else
 	 cfg -a AUTOTYPE=`cfg -e | grep "WAN_MODE" |awk -F'=' '{print $2}'`
+	 type=`cfg -e | grep "WAN_MODE" |awk -F'=' '{print $2}'`
 	 cfg -a INTERNET_ON=on
 	 cfg -a PING_BD=OK
 	 cfg -a PING_QQ=OK
@@ -28,6 +29,7 @@ fi
 cfg -c
 
 if [ "$NCHECK" = "yes" ]; then
+	echo type
 	exit 1
 else
 	net_check

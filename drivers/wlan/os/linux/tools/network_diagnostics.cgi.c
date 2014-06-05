@@ -86,7 +86,7 @@ int main()
     if(strcmp(name,"WAN")==0)
     {
 
-        Execute_cmd("net_check", rspBuff1);
+        Execute_cmd("network_diagnostics", rspBuff1);
         printf("%s",rspBuff1);
         fprintf(errOut,"WAN:%s!!!!!  %d \n",rspBuff1,strlen(rspBuff1));
     }
