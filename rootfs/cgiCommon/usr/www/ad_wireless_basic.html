@@ -437,16 +437,17 @@ function help()
 </tr>
 
 <tr  id="tt1">
-  <td class="head" rowspan="2" id="security"></td>
+  <td class="head" id="security"></td>
   <td>
-    <select name="AP_SECMODE" size="1" onChange="switch_security_mode();">
-	  <option ~sAP_SECMODE:WPA~ value="WPA" id="Senable" ></option>
+    <select name="AP_SECMODE" style="width:150px" size="1" onChange="switch_security_mode();">
+	  <option ~sAP_SECMODE:WPA~ value="WPA" id="Senable"></option>
       <option ~sAP_SECMODE:None~  value="None" id="Sdisable"></option>
     </select>
   </td>
 </tr>
 <tr id="div_security_key">
-  <td><span id="wkey"></span><span id="pwdinput"><input type="password" id="pwd" name="PSK_KEY" maxlength="64" size="28"  class="handaer_text_content"  value="~~PSK_KEY~"/></span>&nbsp;<input type="checkbox" id="cccc" />&nbsp;<label for="cccc" id="showp"></label>&nbsp;<span id="passwordrequest"></span></td>
+<td class="head" id="wkey"></td>
+  <td><span id="pwdinput"><input type="password" id="pwd" name="PSK_KEY" maxlength="64" size="28"  class="handaer_text_content"  value="~~PSK_KEY~"/></span>&nbsp;<input type="checkbox" id="cccc" />&nbsp;<label for="cccc" id="showp"></label>&nbsp;<span id="passwordrequest"></span></td>
 </tr>
 </table>
 <!-----------------------------------5Ghz--------------------------------------------------->
@@ -478,16 +479,17 @@ function help()
 </tr>
 
 <tr  id="tt12">
-  <td class="head" rowspan="2" id="security2"></td>
+  <td class="head" id="security2"></td>
   <td>
-    <select name="AP_SECMODE_3" size="1" onChange="switch_security_mode2();">
-	  <option ~sAP_SECMODE_3:WPA~ value="WPA" id="Senable2" ></option>
+    <select name="AP_SECMODE_3" style="width:150px" size="1" onChange="switch_security_mode2();">
+	  <option ~sAP_SECMODE_3:WPA~ value="WPA" id="Senable2"></option>
       <option ~sAP_SECMODE_3:None~  value="None" id="Sdisable2"></option>
     </select>
   </td>
 </tr>
 <tr id="div_security_key2">
-  <td><span id="wkey2"></span><span id="pwdinput2"><input type="password" id="pwd2" name="PSK_KEY_3" maxlength="64" size="28"  class="handaer_text_content"  value="~~PSK_KEY_3~"/></span>&nbsp;<input type="checkbox" id="cccc2" />&nbsp;<label for="cccc2" id="showp2"></label>&nbsp;<span id="passwordrequest2"></span></td>
+<td class="head" id="wkey2"></td>
+  <td><span id="pwdinput2"><input type="password" id="pwd2" name="PSK_KEY_3" maxlength="64" size="28"  class="handaer_text_content"  value="~~PSK_KEY_3~"/></span>&nbsp;<input type="checkbox" id="cccc2" />&nbsp;<label for="cccc2" id="showp2"></label>&nbsp;<span id="passwordrequest2"></span></td>
 </tr>
 </table>
 
