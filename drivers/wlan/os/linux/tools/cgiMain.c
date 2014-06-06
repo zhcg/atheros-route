@@ -6285,7 +6285,7 @@ int main(int argc,char **argv)
 
 //restart udhcpd  add by mingyue
 		CFG_get_by_name("PRIDNS",valBuff);
-		sprintf(pChar,"echo nameserver %s > /dev/null 2>&1",valBuff);
+		sprintf(pChar,"echo nameserver %s > /etc/resolv.conf",valBuff);
 		Execute_cmd(pChar, rspBuff);
 		system("killall udhcpd > /dev/null 2>&1");			 
 		system("/etc/rc.d/rc.udhcpd > /dev/null 2>&1");
@@ -7377,6 +7377,7 @@ int main(int argc,char **argv)
 //add by mingyue
 			Execute_cmd("awk -F' ' 'BEGIN{i=0;}{i++; if(i==1) {print $2}}' /etc/resolv.conf", pppoe_dns);
 			CFG_set_by_name("PRIDNS",pppoe_dns);
+            writeParametersWithSync();
 
 //restart udhcpd
 		system("killall udhcpd > /dev/null 2>&1");			 
