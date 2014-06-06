@@ -2572,8 +2572,6 @@ void writeParameters(char *name,char *mode,unsigned long offset)
                 continue;
 			if( !strcmp(config.Param[i].Name,"DEL_SDHCP") )
                 continue;
-            if( !strcmp(config.Param[i].Name,"REBOOT") )
-                continue;
             if( !strcmp(config.Param[i].Name,"DHCP") )
                 continue;
             if( !strcmp(config.Param[i].Name,"SIP") )
@@ -7418,55 +7416,7 @@ int main(int argc,char **argv)
          
          gohome =2;
     }
-	if(strcmp(CFG_get_by_name("FACTORY",valBuff),"FACTORY") == 0 )
-	{
-        fprintf(errOut,"\n%s  %d FACTORY \n",__func__,__LINE__);
-		
-		//char valBuff[128];
-		
-		//CFG_get_by_name("SOFT_VERSION",valBuff);		
-		write_systemLog("factory reset begin"); 
 
-        
-        system("cfg -x");
-
-		write_systemLog("factory reset end"); 
-        
-		sleep(3);
-		//backup version
-		//CFG_set_by_name("SOFT_VERSION",valBuff);
-	    //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-        //writeParameters("/tmp/.apcfg","w+",0);	
-		//[TODO] reset any args
-		//system("echo \"/:admin:admin\" > /etc/httpd.conf");
-		//MAC and BACKUP
-		//system("/usr/sbin/var_backup > /dev/null 2>&1");
-#if 0		
-        printf("HTTP/1.0 200 OK\r\n");
-        printf("Content-type: text/html\r\n");
-        printf("Connection: close\r\n");
-        printf("\r\n");
-        printf("\r\n");
-
-        printf("<HTML><HEAD>\r\n");
-        printf("<LINK REL=\"stylesheet\" HREF=\"../style/handaer.css\"  TYPE=\"text/css\" media=\"all\">");
-        printf("<link rel=\"stylesheet\" href=\"../style/normal_ws.css\" type=\"text/css\">");
-		printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
-        printf("</head><body>");
-        
-        printf("<div class=\"handaer_main\">");
-        printf("<h1>鎭㈠鍑哄巶璁剧疆</h1>\n");	
-        printf("<div align=\"center\"> <img align=\"center\" src=\"../images/loading.gif\"></img></div>");
-        printf("<p  align=\"center\">鎭㈠鍑哄巶璁剧疆瀹屾垚,姝ｅ湪閲嶅惎BASE..........</p><br>\n");	
-        printf("<p  align=\"center\">Restore factory settings was completed, restartting BASE..........</p><br>\n");	
-        printf("<script  language=javascript>setTimeout(function(){window.location.href=\"crfact\";},60000);</script>");
-        printf("</div>");
-		printf("</body></html>");
-	#endif
-        Reboot_tiaozhuan("factory","index.html");
-        system("sleep 1 && reboot &");
-         gohome =2;
-    }
     /*************************************
     外网设置     恢复初始mac克隆
    *************************************/
@@ -8689,41 +8639,7 @@ exit(1);
 		
     }
 	
-	/*************************************
-   重启
-   *************************************/
-    if(strcmp(CFG_get_by_name("REBOOT",valBuff),"REBOOT") == 0 ) 
-    {		 
-        fprintf(errOut,"\n%s  %d REBOOT \n",__func__,__LINE__);
-#if 0
-        printf("HTTP/1.0 200 OK\r\n");
-        printf("Content-type: text/html\r\n");
-        printf("Connection: close\r\n");
-        printf("\r\n");
-        printf("\r\n");
 
-        printf("<HTML><HEAD>\r\n");
-        printf("<LINK REL=\"stylesheet\" HREF=\"../style/handaer.css\"  TYPE=\"text/css\" media=\"all\">");
-        printf("<link rel=\"stylesheet\" href=\"../style/normal_ws.css\" type=\"text/css\">");
-		printf("<meta http-equiv=\"Content-Type\" content=\"text/html;charset=UTF-8\">");
-        printf("</head><body>");
-        
-        printf("<div class=\"handaer_main\">");
-        printf("<h1>绯荤粺閲嶅惎</h1>\n");	
-        printf("<div align=\"center\"> <img align=\"center\" src=\"../images/loading.gif\"></img></div>");
-        printf("<p  align=\"center\">姝ｅ湪閲嶅惎BASE..........璇风◢绛?...........</p><br>\n");	
-        printf("<p  align=\"center\">Restartting BASE............Please wait............</p><br>\n");	
-        printf("<script language=javascript>setTimeout(function(){window.location.href=\"map\";},60000);</script>");
-        printf("</div>");
-        printf("</body></html>");
-#endif	
-        Reboot_tiaozhuan("reboot","index.html");
-        system("sleep 1 && reboot &");
-        gohome =2;
-		//luodp
-		//reboot(RB_AUTOBOOT);
-    }
-	
     fprintf(errOut,"\n----------argv[0]:%s gohome:%d\n",argv[0],gohome);
 
     if( gohome == 0)//高级设置不显示设置结果

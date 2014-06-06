@@ -5,7 +5,7 @@
 	<message msgid="R_FAIL" msgstr="Config Fail " />
 	<message msgid="REBOOT" msgstr="HBD BASE is being restarted,Please wait......" />
 	<message msgid="CFGBACK" msgstr="Configuration import over, restarting , please wait , If don't jump, please manual" />
-	<message msgid="FACTORY" msgstr="Restore factory settings over,HBD BASE is being restarted,please wait,If don't jump,please manual" />
+	<message msgid="FACTORY" msgstr="Restoring factory settings ,HBD BASE will be restarted later,please wait,If don't jump,please manual" />
 	<message msgid="UPLOAD" msgstr="Firmware upgrade over, HBD BASE is being restarted , please wait......" />
 	<message msgid="settingwaiting" msgstr="Setting,Please Wait......" />
 	<message msgid="FUPLOAD" msgstr="Firmware upgrading,HBD BASE is being restarted later, please wait......" />

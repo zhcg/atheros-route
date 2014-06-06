@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script type="text/javascript" src="/lang/b28n.js"></script>
-
+<script type="text/javascript" src="/style/reboot.js"></script>
 <script>
 function getCookie()
 { 
@@ -55,14 +55,15 @@ function init()
 }
 function waitgifshow()
 {
-	window.parent.Demo( _("admw settingwaiting"));
+	window.parent.Demo(_("admw settingwaiting"));
 }
 function factoryset()
 {
 	if(confirm(_("factory reset")))
 	{
-		waitgifshow();
-		button_commit('FACTORY');
+		//waitgifshow();
+		//button_commit('FACTORY');
+		search("factory");
 	}
 }
 function help()
@@ -72,6 +73,8 @@ function help()
 	else
 		window.location.href='../help/ad_man_factory_help_z.html';
 }
+
+
 </script>
 
 </head>

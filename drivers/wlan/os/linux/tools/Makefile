@@ -221,6 +221,8 @@ upload.cgi: upload.cgi.c
 	cp tcpdump.cgi $(INSTALL_ROOT)/usr/www/cgi-bin
 	${CC} -o tcp_download.cgi ${CFLAGS} ${LDFLAGS} tcp_download.cgi.c
 	cp tcp_download.cgi $(INSTALL_ROOT)/usr/www/cgi-bin
+	${CC} -o reboot.cgi ${CFLAGS} ${LDFLAGS} reboot.cgi.c
+	cp reboot.cgi $(INSTALL_ROOT)/usr/www/cgi-bin
 
 athdebug: athdebug.c
 	${CC} -o athdebug ${CFLAGS} ${LDFLAGS} athdebug.c
