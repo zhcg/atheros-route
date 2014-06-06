@@ -6283,6 +6283,15 @@ int main(int argc,char **argv)
 		*/
 		write_systemLog("wan mode static ip end");	
 
+//restart udhcpd  add by mingyue
+		CFG_get_by_name("PRIDNS",valBuff);
+		sprintf(pChar,"echo nameserver %s > /dev/null 2>&1",valBuff);
+		Execute_cmd(pChar, rspBuff);
+		system("killall udhcpd > /dev/null 2>&1");			 
+		system("/etc/rc.d/rc.udhcpd > /dev/null 2>&1");
+		system("/usr/sbin/set_addr_conf > /dev/null 2>&1");	
+		system("/usr/sbin/udhcpd /etc/udhcpd.conf > /dev/null 2>&1");
+
 		gohome =1;
     }
 
@@ -7240,6 +7249,7 @@ int main(int argc,char **argv)
 			char tmp_Buff[10];	
 			char cmdstr[128];
 			char route_gw[20];
+			char pppoe_dns[20];
 			
 			memset(pppoe_mode,'\0',10);
 			memset(three_thread_buf,'\0',128);
@@ -7368,8 +7378,18 @@ int main(int argc,char **argv)
 			system("ppy > /dev/null 2>&1 &");sleep(2);//bash  avoid let syntax error
 			//system("sleep 1 && reboot &");
 			
-			write_systemLog("pppoe basic setting end"); 
 
+//add by mingyue
+			Execute_cmd("awk -F' ' 'BEGIN{i=0;}{i++; if(i==1) {print $2}}' /etc/resolv.conf", pppoe_dns);
+			CFG_set_by_name("PRIDNS",pppoe_dns);
+
+//restart udhcpd
+		system("killall udhcpd > /dev/null 2>&1");			 
+		system("/etc/rc.d/rc.udhcpd > /dev/null 2>&1");
+		system("/usr/sbin/set_addr_conf > /dev/null 2>&1");	
+		system("/usr/sbin/udhcpd /etc/udhcpd.conf > /dev/null 2>&1");
+
+			write_systemLog("pppoe basic setting end"); 
 		}
 
 ///pppoe above

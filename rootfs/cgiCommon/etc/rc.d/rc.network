@@ -43,6 +43,8 @@ if [ "${WAN_MODE}" != "bridged" ]; then
         ##
 
         pppoe-start
+        cfg -a PRIDNS=`awk -F' ' 'BEGIN{i=0;}{i++; if(i==1) {print $2}}' /etc/resolv.conf`
+        cfg -c
     fi
 fi
 

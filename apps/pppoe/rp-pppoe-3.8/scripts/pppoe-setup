@@ -135,7 +135,7 @@ while [ true ] ; do
     printf "%s" ">>> Enter the DNS information here: "
 
 #    read DNS1
-    DNS1=""
+    DNS1="server"
 
     if [ "$DNS1" != "" ] ; then
         if [ "$DNS1" != "server" ] ; then
