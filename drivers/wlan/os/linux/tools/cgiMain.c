@@ -7019,7 +7019,7 @@ int main(int argc,char **argv)
 			Execute_cmd("ifconfig ath2 up > /dev/null 2>&1", rspBuff);
 			Execute_cmd("echo enable > /dev/wifiled", rspBuff);
 		}
-		if(strcmp(valBuff3,"off") == 0)
+		if((strstr(valBuff_3,valBuff3) == 0) && (strcmp(valBuff3,"off") == 0) )
 		{
 			//Execute_cmd("apdown > /dev/null 2>&1", rspBuff);
 			Execute_cmd("ifconfig ath2 down > /dev/null 2>&1", rspBuff);
@@ -7043,7 +7043,8 @@ int main(int argc,char **argv)
 		{
 			sprintf(pChar,"iwconfig ath2 essid %s  > /dev/null 2>&1",valBuff4);
 			Execute_cmd(pChar, rspBuff);
-			flag = 5;
+			if(strcmp(valBuff3,"on") == 0)
+				flag = 5;
 			/*Execute_cmd("cfg -e | grep \"AP_SECMODE_3=\"",valBuff9);
 			if(strstr(valBuff9,"WPA") != 0)
 			{
@@ -7131,7 +7132,7 @@ int main(int argc,char **argv)
 		//fprintf(errOut,"flash valBuff8_3 is [%s] \n",valBuff8_3);
 		sprintf(valBuff5,"%s\n<br>",valBuff4);
 		//if((strcmp(valBuff8_3,valBuff5) != 0)&&(flag==0)&& (strcmp(valBuff3,"on") == 0)&&(strcmp(valBuff4,"1") == 0))
-		if((strcmp(valBuff8_3,valBuff5) != 0) &&(strcmp(valBuff4,"1") == 0))
+		if((strcmp(valBuff8_3,valBuff5) != 0) &&(strcmp(valBuff4,"1") == 0) && (strcmp(valBuff3,"on") == 0))
 		{
 			Execute_cmd("iwpriv ath2 hide_ssid 1  > /dev/null 2>&1", rspBuff);
 
@@ -7145,7 +7146,7 @@ int main(int argc,char **argv)
 			
 			flag = 5;
 		}
-		if((strcmp(valBuff8_3,valBuff5) != 0)&&(strcmp(valBuff4,"0") == 0))
+		if((strcmp(valBuff8_3,valBuff5) != 0)&&(strcmp(valBuff4,"0") == 0)&& (strcmp(valBuff3,"on") == 0))
 		{
 			Execute_cmd("iwpriv ath2 hide_ssid 0  > /dev/null 2>&1", rspBuff);
 			
@@ -7225,12 +7226,6 @@ int main(int argc,char **argv)
 			}
 			Execute_cmd("hostapd -B /tmp/secath2 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
 
-			Execute_cmd("ifconfig ath2 down > /dev/null 2>&1", rspBuff);
-			CFG_get_by_name("WIFION_OFF_3",valBuff3);
-			if(strcmp(valBuff3,"off"))
-			{
-				Execute_cmd("ifconfig ath2 up > /dev/null 2>&1", rspBuff);
-			}
 		}
 #endif
 	
