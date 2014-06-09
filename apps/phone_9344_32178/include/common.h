@@ -54,7 +54,7 @@
 
 #ifdef S1
 #define UDHCPD_FILE  "/var/run/udhcpd.leases"
-#define A20_NAME 	"dragonboard"
+#define A20_NAME 	"HBD_F2B_A20"
 #endif
 
 #define AUTHOR	"ZhangBo"

@@ -1422,12 +1422,15 @@ int do_cmd_get_s1_ip(dev_status_t * dev, char * sendbuf)
 	if (NULL == fp)
 	{
 		printf("open udhcpd error\n \n");
-		netWrite(dev->client_fd,"HEADR1011GETS1IP000",strlen("HEADR1011GETS1IP000"));
+		netWrite(dev->client_fd,"HEADR1010GETS1IP000",strlen("HEADR1010GETS1IP000"));
 		return -1;
 	}
 
-	while (fread(&lease, sizeof(lease), 1, fp) == 1) 
+	while(1) 
 	{
+		memset(&lease,0, sizeof(lease));
+		if(fread(&lease, sizeof(lease), 1, fp) != 1)
+			break;
 		addr.s_addr = lease.ip;
 		//for(i = 0, j = 0 ; i < 6; i++, j+=3)
 		//{
@@ -1440,9 +1443,9 @@ int do_cmd_get_s1_ip(dev_status_t * dev, char * sendbuf)
 		printf("ip = %s\n",inet_ntoa(addr));
 		//if(lease.hostname == NULL)
 			//strcpy(lease.hostname,A20_NAME);
-		if(!strncmp(lease.hostname,A20_NAME,strlen(A20_NAME)))
+		if(!strcmp(lease.hostname,A20_NAME))
 		{
-			netWrite(dev->client_fd,"HEADR0011GETS1IP000",strlen("HEADR1011GETS1IP000"));
+			//netWrite(dev->client_fd,"HEADR0011GETS1IP000",strlen("HEADR1011GETS1IP000"));
 			sprintf(sendbuf,"HEADR0%03dGETS1IP%03d%s",strlen(inet_ntoa(addr))+10,strlen(inet_ntoa(addr)),inet_ntoa(addr));
 			PRINT("send_buf = %s\n",sendbuf);
 			netWrite(dev->client_fd,sendbuf,strlen(sendbuf));
@@ -1454,7 +1457,7 @@ int do_cmd_get_s1_ip(dev_status_t * dev, char * sendbuf)
 	
 	}
 	PRINT("not found a20\n");
-	netWrite(dev->client_fd,"HEADR1011GETS1IP000",strlen("HEADR1011GETS1IP000"));
+	netWrite(dev->client_fd,"HEADR1010GETS1IP000",strlen("HEADR1010GETS1IP000"));
 	fclose(fp);
 	return -1;
 }
