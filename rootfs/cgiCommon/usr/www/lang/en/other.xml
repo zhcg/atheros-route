@@ -1,6 +1,6 @@
 <po>
 	<message msgid="toplanguage" msgstr="e" />
-	<message msgid="wait" msgstr="Searching,Please wait............" />
+	<message msgid="wait" msgstr="Searching,Please wait......" />
 	<message msgid="R_SUCCESS" msgstr="Config Success " />
 	<message msgid="R_FAIL" msgstr="Config Fail " />
 	<message msgid="REBOOT" msgstr="HBD BASE is being restarted,Please wait......" />
