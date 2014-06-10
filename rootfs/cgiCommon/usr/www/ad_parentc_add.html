@@ -288,8 +288,8 @@ function initValue()
 	Butterlate.setTextDomain("par");
 	initTranslation();
 	document.getElementById("WEEK").value="0";
-	var res=GetQueryString("pgg1");
-	if(res)
+	var res="~~pgg1~";//GetQueryString("pgg1");
+	if(res!=="")
 	{
 		var p1="~~pgg1~";
 		var p2="~~pgg2~";

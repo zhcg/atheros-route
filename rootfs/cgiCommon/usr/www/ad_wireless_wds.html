@@ -146,14 +146,30 @@ function CheckWirelessValue()
 			}
 			else if(document.getElementById("STA_SECMODE").value == "WPA")
 			{
-				if(document.getElementById("pwd").value =="")
+				var keyvalue = document.getElementById("pwd").value;
+				
+				if (keyvalue.length == 0)
 				{
 					alert(_("err pwd empty"));
 					return false;
 				}
+				if ((keyvalue.length < 8)||( keyvalue.length > 12))
+				{
+					alert(_("err keylen"));
+					return false;
+				}
+				{
+					var xxx=keyvalue;  //用户名（在此赋值）
+
+					var usern = /^[a-zA-Z0-9_]{1,}$/;
+					if(!xxx.match(usern))   
+					{   
+						alert(_("err keychar"));
+						return false;
+					}   
+				}
 			}
 		}
-
 	}
 	else
 	{
@@ -183,10 +199,26 @@ function CheckWirelessValue()
 			}
 			else if(document.getElementById("STA_SECMODE_2").value == "WPA")
 			{
-				if(document.getElementById("pwd2").value =="")
+				var keyvalue = document.getElementById("pwd2").value;
+				if (keyvalue.length == 0)
 				{
 					alert(_("err pwd empty"));
 					return false;
+				}
+				if ((keyvalue.length < 8)||( keyvalue.length > 12))
+				{
+					alert(_("err keylen"));
+					return false;
+				}
+				{
+					var xxx=keyvalue;  //用户名（在此赋值）
+
+					var usern = /^[a-zA-Z0-9_]{1,}$/;
+					if(!xxx.match(usern))   
+					{   
+						alert(_("err keychar"));
+						return false;
+					}   
 				}
 			}
 			
