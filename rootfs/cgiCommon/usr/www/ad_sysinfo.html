@@ -77,8 +77,16 @@ function initTranslation()
 	function createxmlreq()	{if(window.ActiveXObject){xmlreq=new ActiveXObject("Microsoft.XMLHTTP");}else if(window.XMLHttpRequest){xmlreq=new XMLHttpRequest();}}
 	function rebootRequest()
 	{
-		if(wtype == "pppoe")
-			return;
+		if((document.getElementById("s142").value == "on")||(document.getElementById("s14").value == "on"))
+		{
+		
+		}
+		else
+		{
+			if(wtype == "pppoe")
+				return;		
+		}
+
 		createxmlreq();
 		xmlreq.onreadystatechange=handleState;
 		desIPreboot = location.hostname;
@@ -208,18 +216,44 @@ function valueinit()
 	else if(wtype == "pppoe")	
 	{
 		document.getElementById("ss6").innerHTML=_("sysinfo pppoe");
-		var pppoe_mode=document.getElementById("PPPOE_MODE").value;
-		if(pppoe_mode == "auto")
-			document.getElementById("ss6").innerHTML=_("sysinfo pppoe")+"("+_("sysinfo keepalive")+")";
-		else if(pppoe_mode == "demand")
-			document.getElementById("ss6").innerHTML=_("sysinfo pppoe")+"("+_("sysinfo ondemand")+")";
-		else if(pppoe_mode == "manual")
-			document.getElementById("ss6").innerHTML=_("sysinfo pppoe")+"("+_("sysinfo manual")+")";
-		else if(pppoe_mode == "timing")
-			document.getElementById("ss6").innerHTML=_("sysinfo pppoe")+"("+_("sysinfo Timing")+")";
+		if((document.getElementById("s142").value == "on")||(document.getElementById("s14").value == "on"))
+		{
+			var iip = document.getElementById("s5e").value;
+			var mmask = document.getElementById("s5f").value;
+			var ggw = document.getElementById("s7c").value;
+			if(iip=="")
+			{
+				document.getElementById("ss5").innerHTML=_("sysinfo unset");			
+			}
+			else
+			{
+				document.getElementById("ss5").innerHTML=document.getElementById("s5e").value +"/"+document.getElementById("s5f").value;				
+			}
+			if(ggw == "")
+			{
+				document.getElementById("ss7").innerHTML=_("sysinfo unset");			
+			}
+			else
+			{
+				document.getElementById("ss7").innerHTML=document.getElementById("s7c").value;	
+			}
+		}
 		else
-			document.getElementById("ss6").innerHTML=_("sysinfo pppoe");
-		PPPoERequest();
+		{
+			var pppoe_mode=document.getElementById("PPPOE_MODE").value;
+			if(pppoe_mode == "auto")
+				document.getElementById("ss6").innerHTML=_("sysinfo pppoe")+"("+_("sysinfo keepalive")+")";
+			else if(pppoe_mode == "demand")
+				document.getElementById("ss6").innerHTML=_("sysinfo pppoe")+"("+_("sysinfo ondemand")+")";
+			else if(pppoe_mode == "manual")
+				document.getElementById("ss6").innerHTML=_("sysinfo pppoe")+"("+_("sysinfo manual")+")";
+			else if(pppoe_mode == "timing")
+				document.getElementById("ss6").innerHTML=_("sysinfo pppoe")+"("+_("sysinfo Timing")+")";
+			else
+				document.getElementById("ss6").innerHTML=_("sysinfo pppoe");
+			PPPoERequest();
+		}
+		
 	}
 	else if(wtype == "l2tp")
 	{	

@@ -851,9 +851,16 @@ char *processSpecial(char *paramStr, char *outBuff)
                                 outBuff += sprintf(outBuff,"<td>%s-%s</td>", time_start, time_stop);
 
                                 if(strncmp(enable_flag,"##",2)==0)
-		                            outBuff += sprintf(outBuff,"<td>off</td>");
+                                    {
+		                            //outBuff += sprintf(outBuff,"<td>off</td>");
+                                         outBuff += sprintf(outBuff,"<td><img border=\"0\" src=\"../images/off.gif\" width=\"54\" height=\"20\" /></td>");
+                                    }
                                 else
-		                            outBuff += sprintf(outBuff,"<td>on</td>");
+                                    {
+                                         outBuff += sprintf(outBuff,"<td><img border=\"0\" src=\"../images/on.gif\" width=\"54\" height=\"20\" /></td>");
+
+                                }
+		                           // outBuff += sprintf(outBuff,"<td>on</td>");
                         //        outBuff += sprintf(outBuff,"<td>%s</td>","ON");
                                 outBuff += sprintf(outBuff,"<td><img border=\"0\" name=\"%d\" src=\"../images/mod.gif\" width=\"20\" height=\"20\" onclick=\"modify(this.name)\" /></td>",id);
 	          
