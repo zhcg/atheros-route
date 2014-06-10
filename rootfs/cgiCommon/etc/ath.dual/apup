@@ -88,8 +88,8 @@ HOSTAPD_VER=`hostapd -v 2>&1|grep hostapd|cut -f2 -d' '`
 if [ "${BEACON_INT}" = "" ]; then
     BEACON_INT=100
 fi
-if [ "${BEACON_INT_2}" = "" ]; then
-    BEACON_INT_2=400
+if [ "${BEACON_INT_3}" = "" ]; then
+    BEACON_INT_3=100
 fi
 ##
 ## For safety, delete all /tmp nodes we may re-create
@@ -299,9 +299,7 @@ fi
 
 if [ "${AP_STARTMODE}" = "repeater_wisp" ]; then
         APMODE="ap-wds"
-        STAMODE="sta-wds"
-
-
+	STAMODE="sta-wds"
     rm -rf /tmp/.apcfg
 
     VAP_NUM=0
@@ -318,14 +316,14 @@ if [ "${AP_STARTMODE}" = "repeater_wisp" ]; then
     fi
 	VAP_NUM=$(($VAP_NUM+1))
 	if [ $NUMRADIO = 2 ]; then
-		makeVAP ${APMODE} "$AP_SSID_3" $AP_RADIO_ID_3:$AP_RFPARAM_3 $BEACON_INT_2
+		makeVAP ${APMODE} "$AP_SSID_3" $AP_RADIO_ID_3:$AP_RFPARAM_3 $BEACON_INT_3
 		if [ $? != 0 ]; then
 			echo "Unable to create VAP!"
 			exit
 		fi
 		VAP_NUM=$(($VAP_NUM+1))
 		
-		makeVAP ${APMODE} "$AP_SSID_4" $AP_RADIO_ID_4:$AP_RFPARAM_4 $BEACON_INT_2
+		makeVAP ${APMODE} "$AP_SSID_4" $AP_RADIO_ID_4:$AP_RFPARAM_4 $BEACON_INT_3
 		if [ $? != 0 ]; then
 			echo "Unable to create VAP!"
 			exit
@@ -933,7 +931,7 @@ if [ "${IS_WPA}" != "" -o "${IS_WPS}" != "" ]; then
                 hostapd  -B $secath -e /etc/wpa2/entropy
             fi
         fi
-	if [ "${AP_STARTMODE}" != "repeater" ]; then
+	if [ "${AP_STARTMODE}" != "repeater" -o "${AP_STARTMODE}" != "repeater_wisp"]; then
         	if [ -f /tmp/sta_conf_filename ]; then
         	    wpa_supplicant `cat /tmp/sta_conf_filename` &
 		fi

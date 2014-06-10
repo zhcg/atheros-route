@@ -6,34 +6,20 @@ DNS=8.8.8.8
 
 while true
 do
-#VAL="`ethreg -p 4 0x11 | awk -F' ' '/Read Reg/{print $5}'`"
-VAL="`ethreg -p 4 0x11 | grep "Read Reg" | sed 's/.* //g' `"
-VAL2=0x0400
-#echo $VAL
-VAL=$(($VAL&0x0400))
-#echo $VAL
-
-if [ $VAL -eq 1024 ];then
-	#echo link up
-		ping $BAIDU_IP test
-		if [ $? -eq 0 ]; then
-			#echo link up 3
-			ping $BAIDU test
-			#echo link up 4
-			if [ $? -eq 0 ]; then
-				echo "1">/usr/www/ping.xml
-			else
-				echo "0">/usr/www/ping.xml
-			fi
-		else
-			echo "0">/usr/www/ping.xml
-		fi
-
-else
-if [ $VAL -eq 0 ];then
-     echo "0">/usr/www/ping.xml
-fi
-fi
+#echo link up 2
+ping $BAIDU_IP test
+if [ $? -eq 0 ]; then
+	#echo link up 3
+	ping $BAIDU test
+	#echo link up 4
+	if [ $? -eq 0 ]; then
+		echo "1">/usr/www/ping.xml
+	else
+		echo "0">/usr/www/ping.xml
+	fi
+	else
+		echo "0">/usr/www/ping.xml
+	fi
 #cfg -c
 sleep 3
 done
