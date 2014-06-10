@@ -42,7 +42,7 @@ cfg -a TXRATE=${TXRATE:="0"}
 cfg -a TXRATE_3=${TXRATE_3:="0"}
 cfg -a WCONON_OFF=${WCONON_OFF:="off"}
 cfg -a AP_IPADDR=${AP_IPADDR:="10.10.10.254"}
-cfg -a PRIDNS=${PRIDNS:="8.8.8.8"}
+#cfg -a PRIDNS=${PRIDNS:="8.8.8.8"}
 cfg -a DHCP_BIP=${DHCP_BIP:="10.10.10.101"}
 cfg -a DHCP_EIP=${DHCP_EIP:="10.10.10.199"}
 cfg -a DHCP_TIME=${DHCP_TIME:="120"}
