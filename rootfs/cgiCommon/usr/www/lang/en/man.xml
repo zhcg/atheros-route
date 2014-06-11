@@ -56,6 +56,7 @@
 
 	<message msgid="man ntp server1" msgstr="NTP Server1" />
 	<message msgid="man ntp server2" msgstr="NTP Server2" />
+	<message msgid="man ntp tzs" msgstr="Connection status" />
 	<message msgid="man ntp current time" msgstr="Current Time" />
 	<message msgid="man ntp sync with host" msgstr="Sync with host" />
 	<message msgid="man ntpswitch" msgstr="NTP switch" />

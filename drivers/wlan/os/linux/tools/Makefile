@@ -225,6 +225,8 @@ upload.cgi: upload.cgi.c
 	cp reboot.cgi $(INSTALL_ROOT)/usr/www/cgi-bin
 	${CC} -o upgrade.cgi ${CFLAGS} ${LDFLAGS} upgrade.cgi.c
 	cp upgrade.cgi $(INSTALL_ROOT)/usr/www/cgi-bin
+	${CC} -o ota.cgi ${CFLAGS} ${LDFLAGS} ota.cgi.c
+	cp ota.cgi $(INSTALL_ROOT)/usr/www/cgi-bin
 
 athdebug: athdebug.c
 	${CC} -o athdebug ${CFLAGS} ${LDFLAGS} athdebug.c

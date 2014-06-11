@@ -8,6 +8,7 @@
 <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript" src="/style/load.js"></script>
+<script language="JavaScript" type="text/javascript" src="/style/ota.js"></script>
 <script type="text/javascript">
 function getCookie()
 { 
@@ -49,7 +50,13 @@ function initTranslation()
 	trans_value("Upload","admw Upload");
 	trans_inner("hardware","admw hardware");	
 	trans_inner("software","admw software");	
-	trans_inner("waring","admw waring");	
+	trans_inner("waring","admw waring");
+
+	trans_inner("otades","admw otades");	
+	trans_inner("otatitle","admw otatitle");	
+	trans_value("otacheck","admw otacheck");	
+	trans_value("otaupload","admw otaupload");	
+
 }
 
 function waitgifshow()
@@ -141,13 +148,34 @@ function init()
   </td>
 </tr>
 </table>
-<span align="center" id="waring" style="color:#ff3c00"></span>
+<table width="100%" cellpadding="0" cellspacing="0"   style="border-top: 0px;" class="handaer_text">
+<tr>
+  <td>
+	<span id="waring"  style="color:#ff3c00"></span><br>
+
+  </td>
+</tr>
+<table>
 </form>
 </td>
 </tr>
 </table>
-
-
+<table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
+<h2 id="otades"></h2>
+<table width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
+<tr>
+  <td class="title" colspan="2" id="otatitle"></td>
+</tr>
+<tr>
+  <td colspan="2">
+	<input id="otacheck" class="handaer_input" onclick="check(1)" type="button" name="otacheck" ><span id="cres"></span>
+	<input id="otaupload"  style="display:none" class="handaer_input" onclick="check(2)" type="button" name="otaupload">
+  </td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
 </div>
 <input type="text" style="display:none" name="IPA" id="IPA" size="20" maxlength="32" value="~~AP_IPADDR~">
 </body>
