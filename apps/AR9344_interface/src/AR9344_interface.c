@@ -589,7 +589,7 @@ int main(int argc,char **argv)
 	if(testendian()==0)
 	{
 		printf("This is not A20\n");
-		is_b6l();
+//		is_b6l();
 	}
 	load_config();
 	init_as532();
