@@ -123,10 +123,10 @@ db12x_build: common_mainline driver_build usb_build pci_build spectral_app_build
 else
 ifeq ($(BUILD_FOR_32178), yes)
 ifeq ($(BUILD_VERSION), B6)
-db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si32178_build spi32178_build phone_9344_32178 check_phone_status modules_server OTA_Base env  usbpassage_build phonepassage_build as532h_build ntpclient_arm  ppy pppoe_build channel webui terminal_dev_register cacm tester $(fs_build) makeotaimage makeoneimage 
+db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si32178_build spi32178_build phone_9344_32178 check_phone_status modules_server OTA_Base env  usbpassage_build phonepassage_build AR9344_interface  as532h_build ntpclient_arm  ppy pppoe_build channel webui terminal_dev_register cacm tester $(fs_build) makeotaimage makeoneimage 
 endif
 ifeq ($(BUILD_VERSION), B6_bak)
-db12x_build:common_mainline kernel_modules iptables_build driver_build  pci_build art_mod $(i2s_mod) OTA_Base env ppy pppoe_build  webui rm_tcpdumps $(fs_build) system_bak
+db12x_build:common_mainline kernel_modules iptables_build driver_build  pci_build art_mod $(i2s_mod) OTA_Base env pppoe_build  webui rm_tcpdumps $(fs_build) system_bak
 endif
 ifeq ($(BUILD_VERSION), B6L)
 db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si32178_build spi32178_build phone_9344_32178 phone_lite_register check_phone_status as532_interface OTA_Base env ntpclient_arm  ppy pppoe_build channel webui cacm tester $(fs_build) makeotaimage makeoneimage 
@@ -647,6 +647,17 @@ phone_lite_register:
 	mkdir -p $(INSTALL_ROOT)/var/db/; \
 	cp -af terminal_base_db $(INSTALL_ROOT)/var/db/; \
 
+AR9344_interface:
+	@echo making AR9344_interface application
+	cd ../apps/AR9344_interface; make clean; make; \
+	$(STRIP) AR9344_interface; \
+	$(STRIP) tools/json/lib/libmjson-1.5.so; \
+	$(STRIP) tools/wget/wget; \
+	cp -f AR9344_interface $(INSTALL_ROOT)/bin; \
+	cp -f config/AR9344.conf $(INSTALL_ROOT)/etc; \
+	cp -af tools/json/lib/libmjson-1.5.so $(INSTALL_ROOT)/lib; \
+	cp -af tools/wget/wget $(INSTALL_ROOT)/bin; \
+	
 as532_interface:
 	@echo making as532_interface application
 	cd ../apps/as532_interface; make clean; make; \
