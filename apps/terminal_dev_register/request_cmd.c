@@ -890,6 +890,7 @@ int request_cmd_init_lan(struct s_terminal_dev_register * terminal_dev_register)
     unsigned short values_len[10] = {0};
     
     res = database_management.select(6, columns_name, columns_value);
+    PRINT("res = %d\n", res);
     
     if ((res < 0) && (res != NO_RECORD_ERR))
     {
@@ -906,6 +907,10 @@ int request_cmd_init_lan(struct s_terminal_dev_register * terminal_dev_register)
         memcpy(base_mac, columns_value[1], strlen(columns_value[1]));
         memcpy(ssid1, columns_value[3], strlen(columns_value[3]));
         memcpy(wpapsk1, columns_value[4], strlen(columns_value[4]));
+	
+	//fixed by suxiaozhi 20140611
+	snprintf(cmd_buf, sizeof(cmd_buf), "cfg -b 3 %s_2G %s_5G %s %s &", ssid1, ssid1, wpapsk1, wpapsk1);
+	system(cmd_buf);
     }
     else if (res == NO_RECORD_ERR) // 重新生成SSID
     {
