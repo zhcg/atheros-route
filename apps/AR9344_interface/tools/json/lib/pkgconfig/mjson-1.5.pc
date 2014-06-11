@@ -1,0 +1,12 @@
+prefix=/home/zhangbo/workspace/json-1.5/__install
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: mjson-1.5
+Description: M's JSON Parser
+Requires:
+Version: 1.5
+Libs: -L${libdir} -lmjson-1.5
+Cflags: -I${includedir}/mjson-1.5
+
