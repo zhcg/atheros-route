@@ -75,6 +75,8 @@ if [ "${MACTYPE_FLAG}" != "0" ]; then
 fi
 #yuhaolei
 
+#deal backup for upgrade by zzw
+/usr/sbin/upgrade_backup
 
 /usr/bin/cal_check 
 ifconfig $WAN_IF up
@@ -121,8 +123,6 @@ if [ "${WLAN_ON_BOOT}" = "y" ]; then
     /etc/ath/apup
 fi
 
-#deal backup for upgrade by zzw
-/usr/sbin/upgrade_backup
 
 ##
 ## nat settings 
