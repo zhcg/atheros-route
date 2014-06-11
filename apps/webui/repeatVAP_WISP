@@ -106,6 +106,7 @@ if [ "${wds_flag}" = "on" ];then
 			sleep 2
 		fi
 		nat_wwan.sh ath$VAP_NUM
+		sleep 5
 		udhcpc -b -i ath$VAP_NUM -h HBD-Router -s /etc/udhcpc.script
 		VAP_NUM=$(($VAP_NUM+1))
 	fi
@@ -126,6 +127,7 @@ if [ $number_pci = 1 ]; then
 				wpa_supplicant `cat /tmp/sta_conf_filename` &				
 			fi
 			nat_wwan.sh ath$VAP_NUM
+			sleep 5
 			udhcpc -b -i ath$VAP_NUM -h HBD-Router -s /etc/udhcpc.script
 		fi
 	fi
