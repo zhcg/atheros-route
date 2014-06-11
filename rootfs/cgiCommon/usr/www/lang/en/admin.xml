@@ -154,6 +154,8 @@
 	<message msgid="admw Wlisttitle2" msgstr="Existing WiFi:SSID(Signal strength)" />
 	<message msgid="admw Wlisttitle3" msgstr="Drop-down list" />
 	<message msgid="admw Alreadc" msgstr="Current connected WiFi" />
+	<message msgid="admw ws" msgstr="Connection status" />
+
 	<message msgid="admin open" msgstr="Open" />
 	<message msgid="admin jiami" msgstr="Security（Recommend）" />
 
@@ -213,6 +215,11 @@
 	<message msgid="admw channelchoose" msgstr="Channel" />
 	<message msgid="admw channelauto" msgstr="AUTO" />
 
+	<message msgid="admw otades" msgstr="Online upgrade(OTA)" />
+	<message msgid="admw otatitle" msgstr="Online upgrade" />
+	<message msgid="admw otacheck" msgstr="Version Check" />
+	<message msgid="admw otaupload" msgstr="Upgrade" />
+	
 	<message msgid="factory reset" msgstr="Restore factory settings will be lost the existing configuration, are you sure you want to continue?" />
 	<message msgid="admw factitle" msgstr="Restore Factory" />
 	<message msgid="admw facdes" msgstr="Click on this button will restore all settings to the router's factory default state" />

@@ -640,7 +640,7 @@ void* AudioIncomingThreadCallBack(void* argv)
 					}
 				}
 			}
-			usleep(30*1000);
+			usleep(15*1000);
 		}
 		PRINT("audio incoming thread entry idle...\n");
 		while(phone_audio.audio_incoming_thread_flag == 0)

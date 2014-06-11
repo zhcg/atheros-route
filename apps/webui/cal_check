@@ -1,20 +1,36 @@
 #!/bin/sh
 
-if [ ! -f /etc/cal.bin ]; then
-	echo "[luodp] Backup caldata"
-	echo "Backup caldata at `date`"  >> /etc/callog.txt 
-	dd if=/dev/caldata of=/etc/cal.bin
+if [ ! -f /configure_backup/nvram.bin ]; then
+	echo "[luodp] Backup nvram"
+	echo "Backup nvram at `date`"  >> /etc/callog.txt 
+	dd if=/dev/nvram of=/configure_backup/nvram.bin
 fi
 CAL_MSG=`cfg -e |grep FACTORY`
 if [ -z "$CAL_MSG" ]; then
-	echo "[luodp] Restore caldata"
-	echo "Restore caldata at `date`"  >> /etc/callog.txt    
+	echo "[luodp] Restore nvram"
+	echo "Restore nvram at `date`"  >> /etc/callog.txt    
     rm /tmp/.apcfg
-	dd if=/etc/cal.bin of=/dev/caldata
+	dd if=/configure_backup/nvram.bin of=/dev/nvram
     cfg -a FACTORY=0
     cfg -c
 #	/etc/ath/apdown
 #	/etc/ath/apup
+fi
+
+#check /dev/caldata
+if [ ! -f /configure_backup/cal.bin ]; then
+	echo "[luodp] Backup caldata"
+	echo "Backup caldata at `date`"  >> /etc/callog.txt 
+    echo FACTORY | dd of=/dev/caldata bs=1 count=7 seek=32768
+	dd if=/dev/caldata of=/configure_backup/cal.bin
+fi
+CAL_MSG=`dd if=/dev/caldata bs=1 count=7 skip=32768`
+if [ "$CAL_MSG" != "FACTORY" ];then
+	echo "[luodp] Restore caldata"
+	echo "Restore caldata at `date`"  >> /etc/callog.txt    
+	dd if=/configure_backup/cal.bin of=/dev/caldata
+
+    echo FACTORY | dd of=/dev/caldata bs=1 count=7 seek=32768
 fi
 
 #added by yhl 2013.12.20 below

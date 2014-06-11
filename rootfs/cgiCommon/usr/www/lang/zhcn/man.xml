@@ -57,6 +57,7 @@
 
 	<message msgid="man ntp server1" msgstr="网络时间服务器1" />  
 	<message msgid="man ntp server2" msgstr="网络时间服务器2" />
+	<message msgid="man ntp tzs" msgstr="连接状态" />
 	<message msgid="man ntp current time" msgstr="当前时间" />
 	<message msgid="man ntp sync with host" msgstr="主机同步" />
 	<message msgid="man ntpswitch" msgstr="NTP启用" />

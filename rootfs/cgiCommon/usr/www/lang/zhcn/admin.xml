@@ -97,6 +97,7 @@
 	<message msgid="admw RMd" msgstr="无线中继" />  
 	<message msgid="admw RMd1" msgstr="网络频段:2.4GHz" /> 
 	<message msgid="admw RMd2" msgstr="网络频段:5GHz" /> 
+	
 
 	<message msgid="admw R_uname" msgstr="网络名称（SSID）" />  
 	<message msgid="admw R_pword" msgstr="密码" />  
@@ -149,6 +150,7 @@
 	<message msgid="admw Wlisttitle1" msgstr="WiFi列表" />
 	<message msgid="admw Wlisttitle2" msgstr="目前存在的WiFi:网络名称(信号强度)" />
 	<message msgid="admw Wlisttitle3" msgstr="可下拉选择" />
+	<message msgid="admw ws" msgstr="连接状态" />
 	<message msgid="admw Alreadc" msgstr="当前已连接WiFi" />
 
 	<message msgid="admin open" msgstr="不加密" />
@@ -209,6 +211,13 @@
 	<message msgid="admw Upload" msgstr="升级" />
 	<message msgid="err file empty" msgstr="请您选择升级文件" />
 	<message msgid="upgrade success" msgstr="升级成功" />
+	
+	<message msgid="admw otades" msgstr="在线升级(OTA)" />
+	<message msgid="admw otatitle" msgstr="在线升级" />
+	<message msgid="admw otacheck" msgstr="检查新版本" />
+	<message msgid="admw otaupload" msgstr="升级" />
+	
+	
 	<message msgid="admw channelchoose" msgstr="信道" />
 	<message msgid="admw channelauto" msgstr="自动" />
 

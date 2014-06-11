@@ -741,7 +741,6 @@ char *processSpecial(char *paramStr, char *outBuff)
                 //¶Ë¿ÚÓ³Éä(´øÅäÖÃ)
                 else if(strcmp(secArg,"portmaplist")==0)
                 {
-                //viqjeee
                     FILE *f_portmap;
                     int id = 1;
                     char cmd_portmap[512];
@@ -4956,7 +4955,8 @@ static void  Result_tiaozhuan(char* res,char * gopage)
 {
     char temp[256]={0};
 	
-	system("dd if=/dev/caldata of=/etc/cal.bin > /dev/null 2>&1");
+    //viqjeee
+	system("dd if=/dev/nvram of=/configure_backup/nvram.bin > /dev/null 2>&1");
 	
     printf("HTTP/1.0 200 OK\r\n");
     printf("Content-type: text/html\r\n");
@@ -8100,7 +8100,6 @@ exit(1);
    *************************************/
     if(strcmp(CFG_get_by_name("ADD_PORT",valBuff),"ADD_PORT") == 0 ) 
     {		 
-    //viqjeee
         FILE *f_portmap;
         int parc_id = 1;
 
@@ -8252,7 +8251,6 @@ exit(1);
    *************************************/
     if(strcmp(CFG_get_by_name("MOD_PORT",valBuff),"MOD_PORT") == 0 ) 
     {		 
-    //viqjeee
         fprintf(errOut,"\n%s  %d MOD_PORT \n",__func__,__LINE__);
 
 		write_systemLog("MOD_PORT setting begin"); 
@@ -8672,7 +8670,9 @@ exit(1);
     	printf("Connection: close\r\n");
     	printf("\r\n");
     	printf("\r\n");
-        system("dd if=/dev/caldata of=/etc/cal.bin   > /dev/null 2>&1");
+        //system("dd if=/dev/caldata of=/etc/cal.bin   > /dev/null 2>&1");
+        //viqjeee
+	    system("dd if=/dev/nvram of=/configure_backup/nvram.bin > /dev/null 2>&1");
         if(translateFile(Page) < 0)
         {
 			fprintf(errOut,"\n%s  %d \n",__func__,__LINE__);

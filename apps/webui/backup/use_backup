@@ -1,6 +1,6 @@
 #!/bin/sh
 
-BACKUP_DIR="/configure_backup/backup/"
+BACKUP_DIR="/configure_backup/backup"
 BACKUP_LIST="/configure_backup/backup/backup_list.conf"
 
 
@@ -19,12 +19,26 @@ BACKUP_DATE=`cfg -e | grep "$1" |awk -F'=' '{print $2}' | awk -F'"' '{print $2}'
 if [ -z $BACKUP_DATE ];then
 	exit 1
 fi
-	cp -rf $BACKUP_DIR/$BACKUP_DATE.staAcl /configure_backup/.staAcl
+	if [ -f "$BACKUP_DIR/$BACKUP_DATE.staAcl" ]; then
+		cp -rf $BACKUP_DIR/$BACKUP_DATE.staAcl /configure_backup/.staAcl
+	fi
+	if [ -f "$BACKUP_DIR/$BACKUP_DATE.staMac" ]; then
         cp -rf $BACKUP_DIR/$BACKUP_DATE.staMac /configure_backup/.staMac
+	fi
+	if [ -f "$BACKUP_DIR/$BACKUP_DATE.ip_mac.conf" ]; then
         cp -rf $BACKUP_DIR/$BACKUP_DATE.ip_mac.conf /configure_backup/ip_mac.conf
+	fi
+	if [ -f "$BACKUP_DIR/$BACKUP_DATE.route.conf" ]; then
         cp -rf $BACKUP_DIR/$BACKUP_DATE.route.conf /configure_backup/route.conf
+	fi
+	if [ -f "$BACKUP_DIR/$BACKUP_DATE.arp_ip_mac.conf" ]; then
         cp -rf $BACKUP_DIR/$BACKUP_DATE.arp_ip_mac.conf /configure_backup/arp_ip_mac.conf
+	fi
+	if [ -f "$BACKUP_DIR/$BACKUP_DATE.portmap" ]; then
         cp -rf $BACKUP_DIR/$BACKUP_DATE.portmap /configure_backup/ath/iptables/portmap
+	fi
+	if [ -f "$BACKUP_DIR/$BACKUP_DATE.parc" ]; then
         cp -rf $BACKUP_DIR/$BACKUP_DATE.parc /configure_backup/ath/iptables/parc
+	fi
 
 echo "use_backup done"

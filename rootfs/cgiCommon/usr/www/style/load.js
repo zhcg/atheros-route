@@ -120,6 +120,7 @@ function showpxb()
 	if(pxi==91)
 	{
 		clearInterval(timer1);
+		pxi=90;
 	}
 	
 }
@@ -136,6 +137,7 @@ function showpxe()
 	if(pxi==101)
 	{
 		clearInterval(timer2);
+		pxi=100;
 	}
 	
 }
