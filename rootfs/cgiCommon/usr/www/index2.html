@@ -263,7 +263,7 @@ var xmlHttp;
 var desIP;
 var destination;
 var timeID;
-
+var finaltimeID;
 function createXMLHttpRequest()
 {
 	if(window.ActiveXObject)
@@ -296,7 +296,7 @@ function  handleStateChange2()
 		if(xmlHttp.status==200)
 		{
 			//window.location.href=destination;
-			clearTimeout(timeID);
+			clearTimeout(finaltimeID);
 			window.parent.endshow();
 			setTimeout(function(){window.top.location.href=destination;},10000);
 		}
@@ -340,7 +340,7 @@ function clearttzhuan()
 }
 function startRequest()
 {
-	setTimeout(function(){startRequest();},8000);
+	finaltimeID = setTimeout(function(){startRequest();},8000);
 	createXMLHttpRequest();
 	xmlHttp.onreadystatechange=handleStateChange2;
 	destination ="http://"+desIP+"/cgi-bin/"+"crupload";

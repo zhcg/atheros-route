@@ -315,24 +315,32 @@ error:
 					
 			if(firmware_flag!=1)
 			{
-			#if 0
-				printf("Content-Type:text/html\n\n");
-				printf("<HTML><HEAD>\r\n");
-				printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
-				printf("</head><body>");
-				printf("<div style=\"font-size: 14pt; font-weight: bold; margin-left: 10px; font-family: Î¢ÈíÑÅºÚ, Arial, Helvetica, sans-serif; color: #848484;border-bottom:1px dotted #d0d0d0; padding-bottom:10px; margin-bottom:10px;height:30px; line-height:30px; padding:5px;\">¹Ì¼þÉý¼¶</div>\n");	
-				printf("<p align=\"center\" style=\"font-size: 9pt; margin-left: 10px; font-family: Î¢ÈíÑÅºÚ, Arial, Helvetica, sans-serif; color: #848484\">Éý¼¶Íê³É,ÕýÔÚÖØÆôBASE..........</p><br>\n");	
-				printf("<p align=\"center\" style=\"font-size: 9pt; margin-left: 10px; font-family: Î¢ÈíÑÅºÚ, Arial, Helvetica, sans-serif; color: #848484\">The upgrade was completed, restartting BASE..........</p><br>\n");	
-				printf("<script  language=javascript>setTimeout(function(){window.location.href=\"crupload?crupload=yes\";},140000);</script>");
-				printf("</body></html>");	
+			#if 1
+				//printf("Content-Type:text/html\n\n");
+				//printf("<HTML><HEAD>\r\n");
+				//printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+				//printf("</head><body>");
+				//printf("<script type=\"text/javascript\">var xmlHttp; xmlHttp=GetXmlHttpObject()	if (xmlHttp==null)	{alert (\"Browser does not support HTTP Request\");	Return;}");
+                            //printf("var url=\"/cgi-bin/upgrade.cgi\"; url=url+\"?q=%s\"; url=url+\"&sid=\"+Math.random();xmlHttp.onreadystatechange=stateChanged;xmlHttp.open(\"GET\",url,true);xmlHttp.send(null);alert (\"Browser does not support HTTP Request %s\")",filePath,filePath);
+                            //printf("function stateChanged(){}");
+                            //printf("function GetXmlHttpObject(){	var xmlHttp=null;	try	{	xmlHttp=new XMLHttpRequest();	}catch (e){try	{xmlHttp=new ActiveXObject(\"Msxml2.XMLHTTP\");	}catch (e){xmlHttp=new ActiveXObject(\"Microsoft.XMLHTTP\");}}return xmlHttp;}</script>");
+				//printf("</body></html>");	
+
+                            printf("Content-Type:text/html\n\n");
+                            printf("<HTML><HEAD>\r\n");
+                            printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+                            printf("<script type=\"text/javascript\"  src=\"/style/upload.js\"></script>");
+                            printf("</head><body>");
+                            printf("<script type='text/javascript' language='javascript'>CheckUser(\"%s\");</script>",filePath);
+                            printf("</body></html>");
                 #endif
                             //Reboot_tiaozhuan("upload","index.html");
 				//[TODO]factory default
 				//system("cfg -x");
 				//sleep(1);
 		
-				sprintf(cmdd,"sleep 1 && sysupgrade %s &",filePath);
-				system(cmdd);
+				//sprintf(cmdd,"sleep 1 && sysupgrade %s &",filePath);
+				//system(cmdd);
 			}else //error firmware file
 			{	
 				 printf("Content-Type:text/html\n\n");
