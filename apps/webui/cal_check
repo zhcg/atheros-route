@@ -51,3 +51,12 @@ if [ -f /etc/mac.bin ]; then
 	cfg -c
 fi
 #added by yhl 2013.12.20 above
+
+#add by mingyue for terminal backup
+MSG=`cfg -e | grep "TERMINAL_BKP" | awk -F "=" '{print $2}'`
+if [ "${MSG}" = "1" ]; then
+rm -r /var/terminal_dev_register > /dev/null 2>&1
+cp -r /configure_backup/terminal_dev_register  /var/
+cfg -a TERMINAL_BKP=0
+cfg -c
+fi
