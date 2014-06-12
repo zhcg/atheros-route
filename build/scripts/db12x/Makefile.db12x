@@ -693,7 +693,7 @@ modules_server:
 	cp -f modules_server $(INSTALL_ROOT)/bin;
 ifeq ($(BUILD_VERSION),S1)
 	cd ../apps/modules_server; \
-	cp -f dnat.sh $(INSTALL_ROOT)/bin;
+	#cp -f dnat.sh $(INSTALL_ROOT)/bin;
 endif
 ifeq ($(BUILD_VERSION),B6)
 	mkdir -p $(AS532HDEFIMAGEPATH)

@@ -39,8 +39,6 @@ insmod /lib/modules/2.6.31/si32178/ath_si32178.ko
 insmod /lib/modules/2.6.31/spi32178/ath_spi_si32178.ko
 insmod /lib/modules/2.6.31/passage/usb/usb_passage.ko
 
-/bin/dnat.sh &
-
 modules_server &
 
 getprinterip &
