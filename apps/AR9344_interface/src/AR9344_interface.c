@@ -396,14 +396,13 @@ int init_as532()
 		}
 		else if(detection_type == 2)
 		{
-			PRINT("as532 needs update\n");
+		//	PRINT("as532 needs update\n");
 			if(get_remote_532_image()!=0)
 				return -7;
 			if(check_md5(local_md5_buf) == 0)
 			{
-				sprintf(cmd,"%s%s%s","sysupgrade"," ",DOWNLOAD_AS532_FILE);
-				PRINT("cmd = %s\n",cmd);
-				system(cmd);
+				printf("UPDATE SYSTEM!!!\n");
+	
 			}
 		}
 	}
@@ -424,6 +423,75 @@ int load_config()
 	int minor = 0;
 	char *p;
 	char *end;
+
+	FILE *fp_apcfg;
+	fp_apcfg = fopen("/tmp/.apcfg", "r");
+	if(fp_apcfg < 0)
+	{
+		printf("/tmp/.apcfg is not found\n");
+		exit(-1);
+	}
+	else	
+	{
+		while(fgets(buf, 100, fp_apcfg) != NULL)
+                {
+                        if((p = strstr(buf, "SOFT_VERSION")) != 0)
+                        {
+                               
+                        	
+		//		p += strlen("SOFT_VERSION=");
+			//	end = p + strlen(buf);
+		//		end = strstr(p,"A");
+				//p += strlen("SOFT_VERSION=\"");
+			//	end = strstr(p,"\"");
+		/*		if(end == NULL)
+				{
+					printf("config file err.\nfile's first line must be CONF_VER=\"Vx.x.x\"\n");
+			        	fclose(fp_apcfg);
+					exit(-1);
+				}
+		*/		printf("p = %s\n", p);
+				sscanf(buf, "SOFT_VERSION=%s", conf_ver);
+				p = strstr(conf_ver,"V");
+				if(p == NULL)
+				{
+					p = strstr(conf_ver,"v");
+					if(p == NULL)
+					{
+						printf("config file err.\nfile's first line must be CONF_VER=\"Vx.x.x\"\n");
+			        		fclose(fp_apcfg);
+						exit(-1);
+					}
+				}
+				as532_conf_version[0] = p[1]-48;
+				as532_conf_version[1] = p[3]-48;
+				//PRINT("strlen(p) = %d\n",strlen(p));
+				if(strlen(p) == 6)
+				{
+					as532_conf_version[2] = 0x0;
+					as532_conf_version[3] = p[5]-48;
+					minor = as532_conf_version[3];
+				}
+				else if(strlen(p) == 7)
+				{
+					tmp_buf[0] = p[5];
+					tmp_buf[1] = p[6];
+					tmp_buf[2] = '\0';
+					minor = atoi(tmp_buf);
+					as532_conf_version[2] = minor >> 8;
+					as532_conf_version[3] = minor&0xff;
+				}
+				PRINT("local as532 conf = %d.%d.%d\n",as532_conf_version[0],as532_conf_version[1],minor);
+		
+			 }
+                }
+     		fclose(fp_apcfg);
+	}
+	
+
+	
+
+
 	int fd = open("/etc/AR9344.conf",O_RDWR);
 	if(fd < 0)
 	{
@@ -433,6 +501,7 @@ int load_config()
 	ret = read(fd,buf,sizeof(buf));
 	if(ret > 0)
 	{
+/*
 		p = strstr(buf,"CONF_VER=\"");
 		if(p == NULL)
 		{
@@ -480,7 +549,19 @@ int load_config()
 			as532_conf_version[3] = minor&0xff;
 		}
 		PRINT("local as532 conf = %d.%d.%d\n",as532_conf_version[0],as532_conf_version[1],minor);
+*/	
+		int num = 0;
+		for(num; num < ret; num++)
+		{
+			printf("%c", buf[num]);
+
+		}
+		printf("\n");
 		
+
+
+		printf("ret = %d\n", ret);
+	
 		p = strstr(buf,"REMOTE_SERVER_IP=\"");
 		if(p == NULL)
 		{
