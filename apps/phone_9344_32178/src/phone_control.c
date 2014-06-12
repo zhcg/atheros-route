@@ -621,9 +621,10 @@ int do_cmd_talkback(dev_status_t* dev,char *sendbuf)
 	int id;
 	char client_ip[16]={0};
 	char flag;
-	char id_buf[3]={0};
+	char id_buf[4]={0};
 	memcpy(id_buf,&cli_req_buf[phone_control.cli_req_buf_rp].arg[0],3);
 	//解析转子机命令得到id和ip
+	ComFunPrintfBuffer(id_buf,3);
 	id = atoi(id_buf);
 	memcpy(client_ip,&cli_req_buf[phone_control.cli_req_buf_rp].arg[3],cli_req_buf[phone_control.cli_req_buf_rp].arglen-3);//10.10.10.103 //172.16.0.1
 	client_ip[cli_req_buf[phone_control.cli_req_buf_rp].arglen]='\0';
@@ -1081,9 +1082,10 @@ int do_cmd_switch(dev_status_t* dev,char *sendbuf)
 		int id;
 		char client_ip[16]={0};
 		char flag;
-		char id_buf[3]={0};
+		char id_buf[4]={0};
 		memcpy(id_buf,&cli_req_buf[phone_control.cli_req_buf_rp].arg[0],3);
 		//解析转子机命令得到id和ip
+		ComFunPrintfBuffer(id_buf,3);
 		id = atoi(id_buf);
 		memcpy(client_ip,&cli_req_buf[phone_control.cli_req_buf_rp].arg[3],cli_req_buf[phone_control.cli_req_buf_rp].arglen-3);//10.10.10.103 //172.16.0.1
 		client_ip[cli_req_buf[phone_control.cli_req_buf_rp].arglen]='\0';
@@ -1145,8 +1147,9 @@ int do_cmd_req_switch(dev_status_t * dev, char * sendbuf)
 			int i,id;
 			char client_ip[16]={0};
 			char flag;
-			char id_buf[3]={0};
+			char id_buf[4]={0};
 			memcpy(id_buf,&cli_req_buf[phone_control.cli_req_buf_rp].arg[0],3);
+			ComFunPrintfBuffer(id_buf,3);
 			id = atoi(id_buf);
 			memcpy(client_ip,&cli_req_buf[phone_control.cli_req_buf_rp].arg[3],cli_req_buf[phone_control.cli_req_buf_rp].arglen-3);//10.10.10.103 //172.16.0.1
 			client_ip[cli_req_buf[phone_control.cli_req_buf_rp].arglen]='\0';
@@ -1211,8 +1214,9 @@ int do_cmd_req_talk(dev_status_t * dev, char * sendbuf)
         int i,id;
         char client_ip[16]={0};
         char flag;
-		char id_buf[3]={0};
+		char id_buf[4]={0};
 		memcpy(id_buf,&cli_req_buf[phone_control.cli_req_buf_rp].arg[0],3);
+		ComFunPrintfBuffer(id_buf,3);
 		id = atoi(id_buf);
         memcpy(client_ip,&cli_req_buf[phone_control.cli_req_buf_rp].arg[3],cli_req_buf[phone_control.cli_req_buf_rp].arglen-3);//10.10.10.103 //172.16.0.1
         client_ip[cli_req_buf[phone_control.cli_req_buf_rp].arglen]='\0';
@@ -1266,8 +1270,9 @@ int do_cmd_ret_ptb(dev_status_t * dev, char * sendbuf)
 	int i,id;
 	char client_ip[16]={0};
 	char flag;
-	char id_buf[3]={0};
+	char id_buf[4]={0};
 	memcpy(id_buf,&cli_req_buf[phone_control.cli_req_buf_rp].arg[0],3);
+	ComFunPrintfBuffer(id_buf,3);
 	id = atoi(id_buf);
 	memcpy(client_ip,&cli_req_buf[phone_control.cli_req_buf_rp].arg[3],cli_req_buf[phone_control.cli_req_buf_rp].arglen-3);//10.10.10.103 //172.16.0.1
 	client_ip[cli_req_buf[phone_control.cli_req_buf_rp].arglen]='\0';
@@ -2442,7 +2447,7 @@ void* tcp_loop_recv(void* argv)
 							netWrite(phone_control_fd[0],sendbuf, 7);
 							break;
 						}
-					//	PRINT("%s\n",msg);
+						//PRINT("%s\n",msg);
 						pbuf=msg;
 again:
 						if(getoutcmd(pbuf,ret,&devlist[i])==-1)
