@@ -8,6 +8,7 @@
 <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript" src="/style/load.js"></script>
+<script language="JavaScript" type="text/javascript" src="/style/upload.js"></script>
 <script language="JavaScript" type="text/javascript" src="/style/ota.js"></script>
 <script type="text/javascript">
 function getCookie()
@@ -65,6 +66,11 @@ function waitgifshow()
 	window.parent.Demo3(_("FUPLOAD"));
 	window.parent.beginshow(1500);
 }
+function waitgifshow2()
+{
+	Butterlate.setTextDomain("other");
+	window.parent.Demo(_("OTADOWNLOAD"));
+}
 
 function upgradef()
 { 
@@ -111,6 +117,11 @@ function init()
 		alert(_("err bin big"));
 	}
 } 
+function upgradeota()
+{
+	waitgifshow2();
+	check(2);
+}
 </script>
 </head>
 
@@ -160,7 +171,7 @@ function init()
 </td>
 </tr>
 </table>
-<table  border="0" cellpadding="0" cellspacing="0" id="tt2" style="display:none" ><tr><td>
+<table  border="0" cellpadding="0" cellspacing="0" id="tt2" ><tr><td>
 <h2 id="otades"></h2>
 <table width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
 <tr>
@@ -168,8 +179,8 @@ function init()
 </tr>
 <tr>
   <td colspan="2">
-	<input id="otacheck" class="handaer_input" onclick="check(1)" type="button" name="otacheck" ><span id="cres"></span>
-	<input id="otaupload"  style="display:none" class="handaer_input" onclick="check(2)" type="button" name="otaupload">
+	<input id="otacheck" class="handaer_input" onclick="check(1)" type="button" name="otacheck" ><span id="cres"></span></br>
+	<input id="otaupload"  style="display:none" class="handaer_input" onclick="upgradeota()" type="button" name="otaupload">
   </td>
 </tr>
 </table>

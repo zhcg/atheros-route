@@ -14,4 +14,6 @@
 	<message msgid="login but" msgstr="Login" />
 	<message msgid="login default" msgstr="Please Input Password" />
 	<message msgid="login dp" msgstr="Default password:admin" />
+	<message msgid="OTADOWNLOAD" msgstr="Loading new version software,please wait...... " />
+	
 </po>

@@ -14,5 +14,6 @@
 	<message msgid="login but" msgstr="登录" />
 	<message msgid="login default" msgstr="请输入密码" />
 	<message msgid="login dp" msgstr="默认密码:admin" />
+	<message msgid="OTADOWNLOAD" msgstr="正在下载最新版本，请稍等...... " />
 	
 </po>

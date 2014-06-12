@@ -73,7 +73,19 @@ function initTranslation()
 		e = document.getElementById("n11111111_r7_c5");
 		e.src = "/images/22222222_r7_c5.png";
 		e = document.getElementById("n11111111_r8_c1");
-		e.src = "/images/22222222_r8_c1.png";}
+
+		
+		var RS = document.getElementById("RADIO_STATUS").value;
+
+		if(RS=="3")
+		{
+			e.src = "/images/22222222_r8_c1.png";
+		}
+		else
+		{
+			e.src = "/images/22222222_r8_c1_home.png";	
+		}
+	}
 	else
 	{
 		e = document.getElementById("n11111111_r1_c1");
@@ -85,9 +97,18 @@ function initTranslation()
 		e = document.getElementById("n11111111_r7_c5");
 		e.src = "/images/11111111_r7_c5.png";
 		e = document.getElementById("n11111111_r8_c1");
-		e.src = "/images/11111111_r8_c1.png";
+		var RS = document.getElementById("RADIO_STATUS").value;
+
+		if(RS=="3")
+		{
+			e.src = "/images/11111111_r8_c1.png";
+		}
+		else
+		{
+			e.src = "/images/11111111_r8_c1_home.png";	
+		}
 	}
-	
+
 	var n = document.getElementById("n11111111_r6_c6");
 	var nv = document.getElementById("neistatus").value;
 	var nv2 = document.getElementById("neistatus2").value;

@@ -216,7 +216,9 @@
 	<message msgid="admw otatitle" msgstr="在线升级" />
 	<message msgid="admw otacheck" msgstr="检查新版本" />
 	<message msgid="admw otaupload" msgstr="升级" />
-	
+	<message msgid="admw newversion" msgstr="检查到新版本" />
+	<message msgid="admw nonewversion" msgstr="当前已经是最新版本" />
+
 	
 	<message msgid="admw channelchoose" msgstr="信道" />
 	<message msgid="admw channelauto" msgstr="自动" />

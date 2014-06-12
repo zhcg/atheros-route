@@ -1,9 +1,9 @@
-var xmlHttp;
+var xmlHttpota;
 
 function check(num)
 {
-	xmlHttp=GetXmlHttpObject();
-	if (xmlHttp==null)
+	xmlHttpota=GetXmlHttpObject();
+	if (xmlHttpota==null)
 	{
 		alert ("Browser does not support HTTP Request");
 		Return;
@@ -12,31 +12,54 @@ function check(num)
 	if(num == 1)
 	{
 		url=url+"?q=check";	
-		xmlHttp.onreadystatechange=stateChanged1;
+		xmlHttpota.onreadystatechange=stateChanged1;
+		widget_hide("otaupload");
 	}
 	else if(num == 2)
 	{
 		url=url+"?q=up";
-		xmlHttp.onreadystatechange=stateChanged2;
+		xmlHttpota.onreadystatechange=stateChanged2;
 	}
 	
 	url=url+"&sid="+Math.random();
-	xmlHttp.open("GET",url,true);
-	xmlHttp.send(null);
+	xmlHttpota.open("GET",url,true);
+	xmlHttpota.send(null);
 }
 function stateChanged1()
 {
-	if (xmlHttp.readyState==4 || xmlHttp.readyState=="complete")
+	if (xmlHttpota.readyState==4 || xmlHttpota.readyState=="complete")
 	{
-
+		var result = xmlHttpota.responseText;
+		//alert(zidong);
+		if(result.indexOf("NEW SYSTEM!!!") > 0  )
+		{
+			trans_inner("cres","admw newversion");
+			widget_display("otaupload");
+		}
+		else
+		{
+			trans_inner("cres","admw nonewversion");
+			widget_hide("otaupload");
+		}
+	
 	}
 }
 function stateChanged2()
 {
-	if (xmlHttp.readyState==4 || xmlHttp.readyState=="complete")
+	if (xmlHttpota.readyState==4 || xmlHttpota.readyState=="complete")
 	{
-
+		var result = xmlHttpota.responseText;
+		if(result.indexOf("UPDATE SYSTEM!!!") > 0  )
+		{
+			waitgifshow();
+			window.parent.ttzhuan(document.getElementById("IPA").value);
+			CheckUser("/tmp/AR9344.bin");
+		}
+		else
+		{
+			window.parent.DialogHide();
+		}
 	}
 }
 function GetXmlHttpObject()
-{var xmlHttp=null;try{xmlHttp=new XMLHttpRequest();}catch (e){try{xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");}	catch (e){xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");}}return xmlHttp;}
+{var xmlHttpota=null;try{xmlHttpota=new XMLHttpRequest();}catch (e){try{xmlHttpota=new ActiveXObject("Msxml2.XMLHTTP");}	catch (e){xmlHttpota=new ActiveXObject("Microsoft.XMLHTTP");}}return xmlHttpota;}
