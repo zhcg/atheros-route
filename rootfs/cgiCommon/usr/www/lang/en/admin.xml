@@ -221,6 +221,7 @@
 	<message msgid="admw otaupload" msgstr="Upgrade" />
 	<message msgid="admw newversion" msgstr="Higher version software is found" />
 	<message msgid="admw nonewversion" msgstr="No higher version software" />
+	<message msgid="admw downloaderr" msgstr="New software download error" />
 	
 	<message msgid="factory reset" msgstr="Restore factory settings will be lost the existing configuration, are you sure you want to continue?" />
 	<message msgid="admw factitle" msgstr="Restore Factory" />

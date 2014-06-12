@@ -31,7 +31,12 @@ function stateChanged1()
 	{
 		var result = xmlHttpota.responseText;
 		//alert(zidong);
-		if(result.indexOf("NEW SYSTEM!!!") > 0  )
+		if(result.indexOf("NO NEW SYSTEM!!!") > 0  )
+		{
+			trans_inner("cres","admw nonewversion");
+			widget_hide("otaupload");
+		}
+		else if(result.indexOf("NEW SYSTEM!!!") > 0  )
 		{
 			trans_inner("cres","admw newversion");
 			widget_display("otaupload");
@@ -41,7 +46,6 @@ function stateChanged1()
 			trans_inner("cres","admw nonewversion");
 			widget_hide("otaupload");
 		}
-	
 	}
 }
 function stateChanged2()
@@ -57,6 +61,8 @@ function stateChanged2()
 		}
 		else
 		{
+			Butterlate.setTextDomain("admin");
+			trans_inner("cres","admw downloaderr");
 			window.parent.DialogHide();
 		}
 	}
