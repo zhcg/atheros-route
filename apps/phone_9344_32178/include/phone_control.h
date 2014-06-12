@@ -181,7 +181,7 @@ int UpPacketDis(unsigned char *ppacket,int bytes);
 unsigned char *PacketSearchHead(void);
 int UpPacketRcv(unsigned char *des_packet_buffer,int *packet_size);
 int netWrite(int fd,const void *buffer,int length);
-int destroy_client(dev_status_t *dev);
+int destroy_client(dev_status_t *dev,int broadcast_flag);
 int match_cmd(char *buf,int len);
 int getoutcmd(char *buf,int ret,dev_status_t* dev);
 void clean_who_is_online();

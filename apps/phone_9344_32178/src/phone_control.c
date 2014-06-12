@@ -208,7 +208,7 @@ int sqlite3_interface(char *tb_name,char *data_name, char *data_value,char *wher
 }
 #endif
 //销毁连接
-int destroy_client(dev_status_t *dev)
+int destroy_client(dev_status_t *dev,int broadcast_flag)
 {
 	PRINT("%s\n",__FUNCTION__);
 	if(dev->client_fd == -1)
@@ -327,7 +327,8 @@ int destroy_client(dev_status_t *dev)
 	dev->registered = 0;
 	dev->dying = 0;
 	memset(dev->client_ip,0,sizeof(dev->client_ip));
-	generate_up_msg();
+	if(broadcast_flag == 1)
+		generate_up_msg();
 
 	return 0;
 }
@@ -942,7 +943,7 @@ UNREGISTERED:
 		netWrite(dev->client_fd,"HEADR0010REGFAIL000\r\n",21);
 #endif
 		memset(insidebuf,0,10);
-		sprintf(insidebuf,"%s","INSIDE");
+		sprintf(insidebuf,"%s","inside");
 		insidebuf[6]=i+1;
 		netWrite(phone_control_fd[0],insidebuf, 7);
 		return -1;
@@ -2623,7 +2624,10 @@ int parse_msg_inside(char *msg)
 	if(num>= 1 && num <=CLIENT_NUM)
 	{
 		PRINT("dev %d will be destroyed\n",num-1);
-		destroy_client(&devlist[num-1]);
+		if(msg[0] == 'I')
+			destroy_client(&devlist[num-1],1);
+		else if(msg[0] == 'i')
+			destroy_client(&devlist[num-1],0);
 	}
 	return 0;
 }
@@ -2888,7 +2892,7 @@ void* handle_down_msg(void* argv)
 
 int generate_up_msg()
 {
-	//PRINT("%s\n",__FUNCTION__);
+	PRINT("%s\n",__FUNCTION__);
 	char sendbuf[BUFFER_SIZE_2K]={0};
 	char tmpbuf1[BUFFER_SIZE_2K]={0};
 	char tmpbuf2[BUFFER_SIZE_2K]={0};
@@ -3144,7 +3148,8 @@ void* phone_link_manage(void* argv)
 					//PRINT("inside msg len=%d\n",len);
 					for(i=0;i<len/7;i++)
 					{
-						if(strncmp(msg+7*i,"INSIDE",6))
+						//INSIDE表示注册状态，inside表示未注册状态
+						if(strncmp(msg+7*i,"INSIDE",6) && strncmp(msg+7*i,"inside",6))
 						{
 							PRINT("inside msg error\n");
 							break;
