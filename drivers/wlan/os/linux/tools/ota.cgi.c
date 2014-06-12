@@ -86,14 +86,15 @@ int main()
 
     if(strcmp(name,"check")==0)
     {
-        //sprintf(cmdd,"wget -P /tmp http://192.168.4.177/ota.xml");
-        //system(cmdd);
-        
+        Execute_cmd("AR9344_interface 1", rspBuff1);
+        printf("%s",rspBuff1);
+        fprintf(errOut,"check:%s!!!!!  %d \n",rspBuff1,strlen(rspBuff1));
     }
     if(strcmp(name,"up")==0)
     {
-        //sprintf(cmdd,"sleep 1 && sysupgrade %s &",name);
-        //system(cmdd);
+        Execute_cmd("AR9344_interface 2", rspBuff1);
+        printf("%s",rspBuff1);
+        fprintf(errOut,"check:%s!!!!!  %d \n",rspBuff1,strlen(rspBuff1));
     }
     return 1;
 }
