@@ -1051,6 +1051,7 @@ int load_config()
 			close(fd);
 			exit(-1);
 		}
+		memset(conf_ver,0,sizeof(conf_ver));
 		memcpy(conf_ver,p,end-p);
 		//HBD_F2B_AS532_V4.0.1
 		//				012345
@@ -1100,6 +1101,7 @@ int load_config()
 			close(fd);
 			exit(-1);
 		}
+		memset(remote_ip_buf,0,sizeof(remote_ip_buf));
 		memcpy(remote_ip_buf,p,end-p);
 		
 		p = strstr(buf,"REMOTE_SERVER_PORT=\"");
@@ -1117,6 +1119,7 @@ int load_config()
 			close(fd);
 			exit(-1);
 		}
+		memset(remote_port_buf,0,sizeof(remote_port_buf));
 		memcpy(remote_port_buf,p,end-p);
 		close(fd);
 		printf("conf=%s\n",conf_ver);
