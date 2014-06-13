@@ -3,6 +3,7 @@
 #include "stdlib.h"
 #include "dirent.h"
 #include <assert.h>
+#include <unistd.h>
 #include "cgiMain.h"
 
 static FILE *errOut;
@@ -127,9 +128,12 @@ main()
 
 	write_systemLog("upload setting begin"); 
 
-    system("rm -r /configure_backup/terminal_dev_register >/dev/null 2>&1 &");
-    system("cp -r /var/terminal_dev_register /configure_backup/ >/dev/null 2>&1 &");
-	system("cfg -a TERMINAL_BKP=1; cfg -c &");
+    if( (access( "/var/terminal_dev_register", 0 )) != -1 )
+    {
+        system("rm -r /configure_backup/terminal_dev_register >/dev/null 2>&1 &");
+        system("cp -r /var/terminal_dev_register /configure_backup/ >/dev/null 2>&1 &");
+    }
+    system("cfg -a TERMINAL_BKP=1; cfg -c &");
 	
 	reqMethod=getenv("REQUEST_METHOD");
 	len=atoii(getenv("CONTENT_LENGTH"));

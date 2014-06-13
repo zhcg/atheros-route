@@ -55,8 +55,10 @@ fi
 #add by mingyue for terminal backup
 MSG=`cfg -e | grep "TERMINAL_BKP" | awk -F "=" '{print $2}'`
 if [ "${MSG}" = "1" ]; then
-rm -r /var/terminal_dev_register > /dev/null 2>&1
-cp -r /configure_backup/terminal_dev_register  /var/ > /dev/null 2>&1
-cfg -a TERMINAL_BKP=0
-cfg -c
+    if [ -d /configure_backup/terminal_dev_register ]; then
+        rm -r /var/terminal_dev_register > /dev/null 2>&1
+        cp -r /configure_backup/terminal_dev_register  /var/ > /dev/null 2>&1
+    fi
+    cfg -a TERMINAL_BKP=0
+    cfg -c
 fi
