@@ -25,7 +25,7 @@ str=$(grep -i "\<$1\>" $BACKUP_LIST)
 if [ "$str" = "" ];then
         echo "the backup is not exist"
 		echo  "$1 $BACKUP_DATE" >> $BACKUP_LIST
-		dd if=/dev/caldata of=$BACKUP_DIR/$BACKUP_DATE.bin
+		dd if=/dev/nvram of=$BACKUP_DIR/$BACKUP_DATE.bin
 		cp /configure_backup/.staAcl $BACKUP_DIR/$BACKUP_DATE.staAcl
 		cp /configure_backup/.staMac $BACKUP_DIR/$BACKUP_DATE.staMac
 		cp /configure_backup/ip_mac.conf $BACKUP_DIR/$BACKUP_DATE.ip_mac.conf

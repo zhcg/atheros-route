@@ -3673,7 +3673,9 @@ void use_backup(void)
 	}
 	
 	//fprintf(errOut,"\n%s  %d bakupName is %s the size is %d\n",__func__,__LINE__, bakupName, strlen(bakupName));
-	sprintf(cmdd,"dd if=/configure_backup/backup/%s.bin of=/dev/caldata   > /dev/null 2>&1", bakupName);
+ #if 1
+ //restore nvram 
+	sprintf(cmdd,"dd if=/configure_backup/backup/%s.bin of=/dev/nvram   > /dev/null 2>&1", bakupName);
 	i = 5;
 	while(i--)
 	{
@@ -3681,6 +3683,7 @@ void use_backup(void)
 		system(cmdd);
 	}
 
+#endif
 	
 	if((fp = fopen("/configure_backup/backup/backup_list.conf", "r")) != NULL)
 	{
@@ -3705,7 +3708,7 @@ void use_backup(void)
 				//fprintf(errOut,"bakupName [%s] \n", bakupName);
 				sprintf(extBuff, "%s=%s", bakname, bakupName);
 				
-				if((fp2 = fopen("/dev/caldata", "at")) != NULL)
+				if((fp2 = fopen("/dev/nvram", "at")) != NULL)
 				{
 					len = fwrite("\r\n", 2, 1, fp2);
 					len = fwrite(extBuff, strlen(extBuff), 1, fp2);
@@ -4955,7 +4958,6 @@ static void  Result_tiaozhuan(char* res,char * gopage)
 {
     char temp[256]={0};
 	
-    //viqjeee
 	system("dd if=/dev/nvram of=/configure_backup/nvram.bin > /dev/null 2>&1");
 	
     printf("HTTP/1.0 200 OK\r\n");
@@ -5176,7 +5178,7 @@ int main(int argc,char **argv)
         }
         else if(!strncmp(argv[1],"-b",2))
         {
-        //    CFG_set_by_name("WIRELESS_ADVSET","WIRELESS_ADVSET");
+        //viqjeee
             char    *vval;
             int i=0, j=0;
             int err_flag =0;
@@ -5188,7 +5190,7 @@ int main(int argc,char **argv)
                 {"AP_SSID_2","AP_SSID_4","PSK_KEY_2","PSK_KEY_4" },  
                 {"ADD_MAC","ADD_IP","ADD_STATUS"  }
             };
-			write_systemLog("WIRELESS_ADVSET begin"); 
+			write_systemLog("terminal  cfg -b  begin"); 
 
 
             if(argc < 3)
@@ -5497,7 +5499,7 @@ int main(int argc,char **argv)
             default:
                  break;
             }
-			write_systemLog("WIRELESS_ADVSET end"); 
+			write_systemLog("terminal  cfg -b end"); 
 
             if(err_flag)
             {
@@ -7899,6 +7901,7 @@ exit(1);
    *************************************/
     if(strcmp(CFG_get_by_name("WIRELESS_ADVSET",valBuff),"WIRELESS_ADVSET") == 0 ) 
     {		 
+    //viqjeee
         fprintf(errOut,"\n%s  %d WIRELESS_ADVSET \n",__func__,__LINE__);
             
 		char pChar[128];
@@ -8671,7 +8674,6 @@ exit(1);
     	printf("\r\n");
     	printf("\r\n");
         //system("dd if=/dev/caldata of=/etc/cal.bin   > /dev/null 2>&1");
-        //viqjeee
 	    system("dd if=/dev/nvram of=/configure_backup/nvram.bin > /dev/null 2>&1");
         if(translateFile(Page) < 0)
         {
