@@ -64,7 +64,8 @@ void backup_file(void)
 		
 		write_systemLog("cfgdownload setting begin"); 
 
-		system("dd if=/dev/caldata of=/tmp/cal.bin  > /dev/null 2>&1");
+//viqjeee
+		system("dd if=/dev/nvram of=/tmp/cal.bin  > /dev/null 2>&1");
 
         backup_file();
 

@@ -369,7 +369,7 @@ error:
 
                 restore_file(filePath);
 
-				sprintf(cmdd,"dd if=%s of=/dev/caldata bs=1024 count=64  > /dev/null 2>&1",filePath);
+				sprintf(cmdd,"dd if=%s of=/dev/nvram bs=1024 count=64  > /dev/null 2>&1",filePath);
 				i = 5;
 				while(i--)
 				{
