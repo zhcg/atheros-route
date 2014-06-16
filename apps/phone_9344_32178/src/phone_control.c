@@ -2376,7 +2376,7 @@ void* tcp_loop_recv(void* argv)
 	char msg[BUFFER_SIZE_2K]={0};
 	char *pbuf=msg;
 	char sendbuf[SENDBUF]={0};
-	char length_more[3]={0};
+	//char length_more[4]={0};
 	int optval;
 	int optlen = sizeof(int);
 
@@ -2460,8 +2460,8 @@ again:
 						if(!strncmp(pbuf+9+tmp_len,"HEADS",5))
 						{
 							//PRINT("recv more msg\n");
-							memcpy(length_more, pbuf+tmp_len+15, 3);
-							int len_more = atoi(length_more);
+							//memcpy(length_more, pbuf+tmp_len+15, 3);
+							//int len_more = atoi(length_more);
 							pbuf = pbuf+9+tmp_len;
 							ret = ret-tmp_len-9;
 							//PRINT("ret=%d\n",ret);

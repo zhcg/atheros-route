@@ -131,10 +131,14 @@ int startaudio(dev_status_t* devp,int flag)
 			
 			speex_echo_ctl(st, SPEEX_ECHO_SET_SAMPLING_RATE, &sampleRate);
 			speex_preprocess_ctl(den, SPEEX_PREPROCESS_SET_ECHO_STATE, st);
-			//int noiseSuppress = -40;
-			//speex_preprocess_ctl(den, SPEEX_PREPROCESS_SET_ECHO_SUPPRESS, &noiseSuppress);			
-			//noiseSuppress = -10;
-			//speex_preprocess_ctl(den, SPEEX_PREPROCESS_SET_ECHO_SUPPRESS_ACTIVE, &noiseSuppress);			
+			//i = 1;
+			//speex_preprocess_ctl(den, SPEEX_PREPROCESS_SET_DENOISE, &i);
+			int noiseSuppress = -30;//-30
+			speex_preprocess_ctl(den, SPEEX_PREPROCESS_SET_NOISE_SUPPRESS, &noiseSuppress);
+			noiseSuppress = -70;//-55//-70
+			speex_preprocess_ctl(den, SPEEX_PREPROCESS_SET_ECHO_SUPPRESS, &noiseSuppress);			
+			noiseSuppress = -30;//-40//-30
+			speex_preprocess_ctl(den, SPEEX_PREPROCESS_SET_ECHO_SUPPRESS_ACTIVE, &noiseSuppress);			
 			i = 1;
 			speex_preprocess_ctl(den, SPEEX_PREPROCESS_SET_DEREVERB, &i);
 			//i = 1;
@@ -820,9 +824,9 @@ START_WRITE:
 				print_loop = 0;
 			}
 #ifdef SAVE_FILE
-			usleep(2* 1000);
+			usleep(10* 1000);
 #else
-			usleep(2* 1000);
+			usleep(10* 1000);
 #endif
 		}
 
@@ -966,11 +970,39 @@ void* AudioEchoThreadCallBack(void* argv)
 				valid_bytes = AUDIO_WRITE_BYTE_SIZE*2;
 			if((valid_bytes >= AUDIO_WRITE_BYTE_SIZE*2) || (phone_audio.echo_stream_wp < phone_audio.echo_stream_rp))
 			{
-				readp = (short*)&echo_stream_buffer[phone_audio.echo_stream_rp];
+#if 0
+				total_data = 0;
+				readp = (short*)&echo_stream_buffer[phone_audio.echo_stream_rp+AUDIO_WRITE_BYTE_SIZE];
 				for(i=0;i<valid_bytes/4;i++)
 				{
-					*readp++ >>= 1;
+					//*readp++ >>= 1;
+					total_data += abs(*readp);
+					readp++;
 				}
+				//PRINT("valid_bytes = %d\n",valid_bytes);
+				//PRINT("total_data = %d\n",total_data);
+				total_data /= (valid_bytes/4);
+				loop_times ++;
+				if(loop_times >=  750)
+				{
+					//PRINT("total_data = %d\n",total_data);
+					all_total_data += total_data;
+				//	loop_times = 0;
+				//	PRINT("reset\n");
+				//	speex_echo_state_reset(st);
+				}
+				if(loop_times >=  800)
+				{
+					PRINT("all_total_data = %d\n",all_total_data);
+					if(all_total_data <= 10000)
+					{
+						PRINT("reset\n");
+						speex_echo_state_reset(st);
+					}
+					loop_times = 0;
+					all_total_data = 0;
+				}
+#endif
 				if(st == NULL || den == NULL)
 				{
 					PRINT("speex init err\n");
@@ -983,7 +1015,7 @@ void* AudioEchoThreadCallBack(void* argv)
 				out_bufp = (short*)out_buf;
 				for(i=0;i<valid_bytes/4;i++)
 				{
-					*out_bufp++ <<= 1;
+					*out_bufp++ >>= 1;
 				}
 
 				//memcpy(out_buf,&echo_stream_buffer[phone_audio.echo_stream_rp],valid_bytes/2);						
@@ -1010,7 +1042,7 @@ void* AudioEchoThreadCallBack(void* argv)
 					phone_audio.echo_stream_rp = 0;
 
 			}
-			usleep(2*1000);
+			usleep(5*1000);
 		}
 		PRINT("audio echo thread entry idle...\n");
 		phone_audio.audio_echo_thread_exit_flag = 1;
