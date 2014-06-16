@@ -3,6 +3,11 @@
 #include "our_md5.h"
 #include "as532_interface.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
 int as532_fd = -1;
 int remote_server_fd = -1;
 const char hex_to_asc_table[16] = {0x30,0x31,0x32,0x33,0x34,0x35,0x36,0x37,
@@ -89,9 +94,48 @@ int create_socket_client()
 	return 0;
 }
 
+char *Execute_cmd(char *cmd,char *buffer)
+{
+    FILE            *f;
+    char            *retBuff = buffer;
+    char            cmdLine[1024];
+
+    /*^M
+    ** Provide he command string to popen
+    */
+
+    f = popen(cmd, "r");
+
+    if(f)
+    {
+        /*
+        ** Read each line.
+        */
+
+        while(1)
+        {
+            *buffer = 0;
+            fgets(buffer,120,f);
+            if(strlen(buffer) == 0)
+            {
+                break;
+            }
+      //      strcat(buffer,"<br>");
+            buffer += strlen(buffer);
+        }
+
+        pclose(f);
+    }
+
+    return(retBuff);
+}
+
+
 char *generate_get_remote_msg(char *remote_type)
 {
-    char *text;
+	char baseid[64];
+	char buff[64];
+	char *text;
 	json_t *entry, *label, *value, *array;
 	setlocale (LC_ALL, "");//设为系统默认地域信息
 
@@ -114,11 +158,21 @@ char *generate_get_remote_msg(char *remote_type)
 	json_insert_child(label, value);
 	json_insert_child(entry, label);
 
+
+	memset(baseid, 0, sizeof(baseid));
+	memset(buff, 0, sizeof(buff));
+	Execute_cmd("fw_printenv SN", buff);	
+	sscanf(buff, "SN=%s", baseid);	
+
+
 	// insert the second label-value pair
 	label = json_new_string("baseId");
-	value = json_new_string("0000000000000000000000000000001010");
+	value = json_new_string(baseid);
+//	value = json_new_string("0000000000000000000000000000001010");
 	json_insert_child(label, value);
 	json_insert_child(entry, label);
+
+
 
 	label = json_new_string("userType");
 	value = json_new_string("1");
