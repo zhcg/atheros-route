@@ -98,6 +98,8 @@
 	<message msgid="admw RMd" msgstr="WDS Settings" />  
 	<message msgid="admw RMd1" msgstr="Network Band:2.4GHz" />  
 	<message msgid="admw RMd2" msgstr="Network Band:5GHz" />  
+	<message msgid="admw wisp" msgstr="WISP" /> 
+	<message msgid="admw wispswitch" msgstr="WISP switch" /> 
 	
 	<message msgid="admw R_uname" msgstr="WiFi Name(SSID)" />  
 	<message msgid="admw R_pword" msgstr="Password" />  
@@ -120,7 +122,7 @@
 	<message msgid="admw modedes1" msgstr="The parameters needed in the opening of the network, the network operators to provide" />  
 
 	<message msgid="admw wifides" msgstr="Please set the HBD router WiFi account and password. Your computer, PAD, intelligent mobile phone will use the following network." />  
-	<message msgid="admw wirelessdes" msgstr="Please select the WiFi to connect. Note: After WDS, please use the static IP connected login Web." />  
+	<message msgid="admw wirelessdes" msgstr="Please select the WiFi to connect" />  
 	<message msgid="admw parentdes" msgstr="As a parent, you can control child's Internet time and visiting the website through the page settings" />  
 
 	<message msgid="admw PPMAC" msgstr="The MAC address of parent PC" />

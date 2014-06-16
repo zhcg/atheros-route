@@ -34,6 +34,7 @@
 	<message msgid="advmenu treeapp_wifi_basic" msgstr="Basic Settings" />
 	<message msgid="advmenu treeapp_wifi_adv" msgstr="Advanced Settings" />
 	<message msgid="advmenu treeapp_wifi_wds" msgstr="WDS Settings" />
+	<message msgid="advmenu treeapp_wifi_wisp" msgstr="WISP" />
 
 	<message msgid="advmenu treeapp_safe" msgstr="Safety Management" />
 	<message msgid="advmenu treeapp_safe_ipmac" msgstr="ARP Binding" />

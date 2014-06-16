@@ -48,6 +48,8 @@
 	<message msgid="wan cs" msgstr="连接状态" />
 	<message msgid="wan cstatus" msgstr="未知" />
 	
+	<message msgid="wisp connection type" msgstr="接入方式" />
+	
 	<message msgid="sysinfo ppptimeout" msgstr="PPPoE连接超时" />
 	<message msgid="sysinfo pppusererr" msgstr="PPPoE登录用户名不存在" />
 	<message msgid="sysinfo ppppwderr" msgstr="PPPoE登录密码错误" />

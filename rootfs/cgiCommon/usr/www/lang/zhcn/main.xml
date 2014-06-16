@@ -33,7 +33,8 @@
 	<message msgid="advmenu treeapp_wifi_basic" msgstr="无线基本设置" />
 	<message msgid="advmenu treeapp_wifi_adv" msgstr="无线高级设置" />
 	<message msgid="advmenu treeapp_wifi_wds" msgstr="无线中继" />
-
+	<message msgid="advmenu treeapp_wifi_wisp" msgstr="无线WAN" />
+	
 	<message msgid="advmenu treeapp_safe" msgstr="安全管理" />
 	<message msgid="advmenu treeapp_safe_ipmac" msgstr="ARP绑定" />
 	<message msgid="advmenu treeapp_safe_port" msgstr="端口映射" />

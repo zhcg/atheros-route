@@ -34,8 +34,8 @@
 	<message msgid="wan title" msgstr="WAN Settings" />
 	<message msgid="wan introduction" msgstr="You may choose different connection type that suitable for your environment. Besides, you may also configure parameters according to the selected connection type." />
 	<message msgid="wan connection type" msgstr="WAN Connection Type:" />
-	<message msgid="wan connection type static" msgstr="Manual settings (static IP)" />
-	<message msgid="wan connection type dhcp" msgstr="Automatic acquisition (dynamic IP)" />
+	<message msgid="wan connection type static" msgstr="Manual Settings (static IP)" />
+	<message msgid="wan connection type dhcp" msgstr="Automatic Acquisition (dynamic IP)" />
 	<message msgid="wan connection type pppoe" msgstr="PPPoE (ADSL)" />
 	<message msgid="wan connection type l2tp" msgstr="L2TP" />
 	<message msgid="wan connection type pptp" msgstr="PPTP" />
@@ -46,7 +46,10 @@
 	<message msgid="wan protocol opmode timing" msgstr="Timing" />
 	<message msgid="wan cs" msgstr="Connect status" />
 	<message msgid="wan cstatus" msgstr="Unknown" />
-	<message msgid="sysinfo ppptimeout" msgstr="PPPoE Connecting timed out" />
+	
+	<message msgid="wisp connection type" msgstr="Connection Type:" />
+	
+	<message msgid="sysinfo ppptimeout" msgstr="PPPoE connecting timed out" />
 	<message msgid="sysinfo pppusererr" msgstr="PPPoE user name not exist" />
 	<message msgid="sysinfo ppppwderr" msgstr="PPPoE password error" />
 	<message msgid="sysinfo ok" msgstr="Access to the Internet" />
