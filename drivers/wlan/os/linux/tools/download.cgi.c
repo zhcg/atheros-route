@@ -38,7 +38,7 @@ void backup_file(void)
 		stat(backup_file_list[i], &sb); //取文件的大小
         memset(cmd,0,255);
         sprintf(cmd,"echo \"%8d\" | dd of=/tmp/cal.bin bs=1 count=8 seek=%d > /dev/null 2>&1", sb.st_size, addr);
-        printf("%s\n", cmd);
+     //   printf("%s\n", cmd);
         system(cmd);
         addr += 8;
 
