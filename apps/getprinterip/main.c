@@ -5,6 +5,7 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <errno.h>
+#include <fcntl.h>
 
 #define CONTROL_PORT	9998
 #define UDHCPD_FILE  "/var/run/udhcpd.leases"
@@ -74,6 +75,100 @@ int netWrite(int fd,const void *buffer,int length)
 	return (0);
 }
 
+int do_cmd_get_9344_sn()
+{
+	system("fw_printenv SN > /tmp/.sn_tmp");
+	char buf[128]={0};
+	char sn[32]={0};
+	char sendbuf[128]={0};
+	int fd = open("/tmp/.sn_tmp",O_RDWR);
+	if(fd < 0)
+	{
+		printf("open err\n");
+		return -1;
+	}
+	if(read(fd,buf,sizeof(buf))>0)
+	{
+		if(strstr(buf,"SN=")==NULL)
+		{
+			close(fd);
+			return -1;
+		}
+		printf("buf = %s\n",buf);
+		sscanf(buf,"SN=%s",sn);
+		printf("sn = %s\n",sn);
+		sprintf(sendbuf,"GET_SN%03d%s",strlen(sn),sn);
+		netWrite(clientfd,sendbuf,strlen(sendbuf));
+	}
+	else
+		netWrite(clientfd,"GET_SN000",strlen("GET_SN000"));
+	close(fd);
+	return 0;
+}
+
+int get_mac(char *out_mac,char *dev)
+{
+	int i;
+	char cmd[32]={0};
+	char buf[128]={0};
+	sprintf(cmd,"get_mac %s  > /tmp/.mac_tmp",dev);
+	system(cmd);
+	int fd = open("/tmp/.mac_tmp",O_RDWR);
+	if(fd < 0)
+	{
+		printf("open err\n");
+		return -1;
+	}
+	if(read(fd,buf,sizeof(buf))>0)
+	{
+		memcpy(out_mac,buf,17);
+		for(i=0;i<17;i++)
+		{
+			if(out_mac[i] == 0)
+				out_mac[i] = ' ';
+		}
+	}
+	else
+	{
+		for(i=0;i<17;i++)
+		{
+			if(out_mac[i] == 0)
+				out_mac[i] = ' ';
+		}
+	}
+	close(fd);
+	return 0;
+}
+
+int do_cmd_get_9344_mac()
+{
+	char sendbuf[256]={0};
+	char sendbuf2[256]={0};
+	char mac[20]={0};
+	get_mac(mac,"eth0");
+	//printf("eth0 = %s\n",mac);
+	//sprintf(sendbuf,"%s%s","eth0",mac);
+	//memset(mac,0,sizeof(mac));
+	//get_mac(mac,"br0");
+	//printf("br0 = %s\n",mac);
+	//strcat(sendbuf,"br0");
+	//strcat(sendbuf,mac);
+	//memset(mac,0,sizeof(mac));
+	//get_mac(mac,"wifi0");
+	//printf("wifi0 = %s\n",mac);
+	//strcat(sendbuf,"wifi0");
+	//strcat(sendbuf,mac);
+	//memset(mac,0,sizeof(mac));
+	//get_mac(mac,"wifi1");
+	//printf("wifi1 = %s\n",mac);
+	//strcat(sendbuf,"wifi1");
+	//strcat(sendbuf,mac);
+	sprintf(sendbuf2,"%s%03d%s","GETMAC",strlen(mac),mac);
+	netWrite(clientfd,sendbuf2,strlen(sendbuf2));
+	
+	return 0;
+}
+
 int do_cmd_get_s1_ip()
 {
 	struct in_addr addr;
@@ -121,14 +216,40 @@ int do_cmd_get_s1_ip()
 	return -1;
 }
 
+int prase_msg(char *msg)
+{
+	if(!strncmp(msg,"GET_IP",6))
+	{
+		printf("GET_IP\n");
+		do_cmd_get_s1_ip();
+	}
+	else if(!strncmp(msg,"GET_SN",6))
+	{
+		printf("GET_SN\n");
+		do_cmd_get_9344_sn();
+	}
+	else if(!strncmp(msg,"GETMAC",6))
+	{
+		printf("GETMAC\n");
+		do_cmd_get_9344_mac();
+	}	
+	else
+		printf("undefine\n");
+	return 0;
+}
+
 int main(int argc,char **argv)
 {
 	struct sockaddr_in client;
 	socklen_t len = sizeof(client);
 	char *new_ip = NULL;
 	struct in_addr ia;
-
+	char recvbuf[512]={0};
 	create_server();
+	fd_set socket_fdset;
+	struct timeval tv;
+	int i,ret = 0;
+	memset(&tv, 0, sizeof(struct timeval));
 	for(;;)
 	{
 		clientfd = accept(sockfd, (struct sockaddr*)&client, &len);
@@ -142,9 +263,27 @@ int main(int argc,char **argv)
 		ia = client.sin_addr;
 		new_ip = inet_ntoa(ia);
 		printf("client_ip=%s\n",new_ip);
-		usleep(50*1000);
-		do_cmd_get_s1_ip();
-		usleep(100*1000);
+		memset(recvbuf,0,sizeof(recvbuf));
+		FD_ZERO(&socket_fdset);
+		FD_SET(clientfd, &socket_fdset);
+		tv.tv_sec =  5;
+		tv.tv_usec = 0;
+		switch(select(clientfd+ 1, &socket_fdset, NULL, NULL, &tv))
+		{
+			case -1:
+			case 0:
+				printf("time out\n");
+				break;
+			default:
+				ret = recv(clientfd,recvbuf,sizeof(recvbuf),0);
+				if(recv > 0)
+				{
+					printf("ret = %d\n",ret);
+					for(i=0;i<ret/6;i++)
+						prase_msg(recvbuf+i*6);
+				}
+				break;
+		}
 		close(clientfd);
 	}
 	return 0;
