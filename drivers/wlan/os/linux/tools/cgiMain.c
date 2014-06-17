@@ -6307,6 +6307,12 @@ int main(int argc,char **argv)
 		    Execute_cmd(pChar, rspBuff);
 		    CFG_set_by_name("SIPDNS2",valBuff);
         }
+        else
+        {
+		    sprintf(pChar,"echo nameserver 8.8.8.8 >> /etc/resolv.conf");
+		    Execute_cmd(pChar, rspBuff);
+		    CFG_set_by_name("SIPDNS2",valBuff);
+        }
 
         writeParametersWithSync();
 
