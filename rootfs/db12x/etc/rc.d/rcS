@@ -138,6 +138,8 @@ fi
 if [ "${SECDNS}" != "" ]
 then
 	echo "nameserver ${SECDNS}" >> /etc/resolv.conf
+else
+	echo "nameserver 8.8.8.8" >> /etc/resolv.conf
 fi
 ##
 ## dhcp

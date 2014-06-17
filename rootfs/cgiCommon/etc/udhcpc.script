@@ -95,9 +95,16 @@ else
 fi
 
 pridns=`echo $dns | awk -F' ' '{print $1}'`
+secdns=`echo $dns | awk -F' ' '{print $2}'`
 cfg -a PRIDNS=$pridns
+cfg -a SECDNS=$secdns
 cfg -c
 echo "nameserver ${pridns}" > /etc/resolv.conf
+if [ "${secdns}" != "" ]; then
+echo "nameserver ${secdns}" >> /etc/resolv.conf
+else
+echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+fi
 
 #wangyu add end
 

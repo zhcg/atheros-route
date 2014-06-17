@@ -8,7 +8,12 @@ echo "start `cfg -e | grep "DHCP_BIP" | awk -F'=' '{print $2}'| awk -F'"' '{prin
 echo "end `cfg -e | grep "DHCP_EIP" | awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`"  >> /etc/udhcpd.conf
 echo "opt lease  $TIME_DHCP_M2" >> /etc/udhcpd.conf
 echo "opt dns `cfg -e | grep "PRIDNS" | awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`"  >> /etc/udhcpd.conf
+secdns=`cfg -e | grep "SECDNS" | awk -F "=" '{print $2}' | awk -F'"' '{print $2}'`
+if [ "${secdns}" != "" ]; then
+echo "opt dns ${secdns}" >> /etc/udhcpd.conf
+else
 echo "opt dns 8.8.8.8" >> /etc/udhcpd.conf
+fi
 echo "opt router  `cfg -e | grep "AP_IPADDR" | awk -F'=' '{print $2}'| awk -F'"' '{print $2}'`" >> /etc/udhcpd.conf
 echo "opt subnet  `cfg -e | grep "AP_NETMASK" | awk -F'=' '{print $2}'| awk -F'"' '{print $2}'`" >> /etc/udhcpd.conf
 echo "static_lease `ifconfig br0 | grep HWaddr | awk '{print $5}'`  `cfg -e | grep "AP_IPADDR" | awk -F'=' '{print $2}'| awk -F'"' '{print $2}'`" >> /etc/udhcpd.conf
