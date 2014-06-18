@@ -31,6 +31,7 @@
 ul,li{margin:0;padding:0;list-style-type:none；text-indent:0}
  </style>
 <script type="text/javascript" src="/lang/b28n.js"></script>
+<script type="text/javascript" src="/style/wdsstatus.js"></script>
 <script language="JavaScript" type="text/javascript">
 var show = 0;
 var show2 = 0;
@@ -59,6 +60,10 @@ function initTranslation()
 
 	e = document.getElementById("Alreadc");
 	e.innerHTML = _("admw Alreadc");
+	
+	e = document.getElementById("w1s");
+	e.innerHTML = _("admw ws");
+	
 	e = document.getElementById("RMd");
 	e.innerHTML = _("admw RMd1");
 	e = document.getElementById("R_pword");
@@ -84,6 +89,8 @@ function initTranslation()
 	
 	e = document.getElementById("Alreadc2");
 	e.innerHTML = _("admw Alreadc");
+	e = document.getElementById("w2s");
+	e.innerHTML = _("admw ws");
 	e = document.getElementById("RMd2");
 	e.innerHTML = _("admw RMd2");
 	e = document.getElementById("R_pword2");
@@ -539,6 +546,7 @@ function switch_wds()
 		if(show == 1)
 		{
 			widget_display("dwsset2");
+			widget_display("w1status");
 		}
 		widget_display("dwsset3");
 		var ssss = document.getElementById("STA_SECMODE").value;
@@ -564,6 +572,7 @@ function switch_wds()
 	else
 	{
 		widget_hide("dwsset2");
+		widget_hide("w1status");
 		widget_hide("dwsset3");
 		widget_hide("tt2");
 	}
@@ -578,6 +587,7 @@ function switch_wds2()
 		if(show2 == 1)
 		{
 			widget_display("dwsset22");
+			widget_display("w2status");
 		}
 		widget_display("dwsset32");
 		var ssss=document.getElementById("STA_SECMODE_2").value;
@@ -601,6 +611,7 @@ function switch_wds2()
 	else
 	{
 		widget_hide("dwsset22");
+		widget_hide("w2status");
 		widget_hide("dwsset32");
 		widget_hide("tt22");
 	}
@@ -611,16 +622,29 @@ function switch_wds2()
 function initshow()
 {
 	if(show == 1)
+	{
 		widget_display("dwsset2")
+		widget_display("w1status")
+	}
 	else
+	{
 		widget_hide("dwsset2");
+		widget_hide("w1status");
+	}
 }
 function initshow2()
 {
 	if(show2 == 1)
+	{
 		widget_display("dwsset22");
+		widget_display("w2status");
+	
+	}
 	else
+	{
 		widget_hide("dwsset22");
+		widget_hide("w2status");
+	}
 }
 function checklistempty()
 {
@@ -645,14 +669,23 @@ function initValue()
 	Butterlate.setTextDomain("admin");
 	initTranslation();
 	if(document.wizard_form.WDSON_OFF[0].checked == true)
+	{
 		show = 1;
+		timer_2G = setInterval('wdsstatuscheck(1)',2000);
+	}
 	else
+	{	
 		show = 0;
-		
+	}	
 	if(document.wizard_form.WDSON_OFF_3[0].checked == true)
+	{
 		show2 = 1;
+		timer_5G = setInterval('wdsstatuscheck(2)',2000);
+	}
 	else
+	{
 		show2 = 0;	
+	}
 	initshow();
 	initshow2();
 	switch_wds2();
@@ -664,6 +697,7 @@ function initValue()
 	{
 		widget_hide("hide1");
 		widget_hide("dwsset2");
+		widget_hide("w1status");
 		widget_hide("dwsset3");
 		widget_hide("tt2");
 		widget_display("tishi1");
@@ -673,6 +707,7 @@ function initValue()
 	{
 		widget_hide("hide2");
 		widget_hide("dwsset22");
+		widget_hide("w2status");
 		widget_hide("dwsset32");
 		widget_hide("tt22");
 		widget_display("tishi2");
@@ -741,6 +776,10 @@ function help()
   <td class="head" id="Alreadc">当前已连接WiFi</td>
   <td><input id="now_1" maxlength=32 size=32 value="~~STA_SSID~" readonly></td>
 </tr>
+<tr id="w1status">
+  <td class="head" id="w1s">连接状态</td>
+  <td><span id="w1_status"></span></td>
+</tr>
 
 <tr id="dwsset3">
     <td class="head" id="Wlisttitle1"></td>
@@ -787,6 +826,10 @@ function help()
 <tr id="dwsset22">
   <td class="head" id="Alreadc2">当前已连接WiFi</td>
   <td><input id="now_2" maxlength=32 size=32 value="~~STA_SSID_2~" readonly></td>
+</tr>
+<tr id="w2status">
+  <td class="head" id="w2s">连接状态</td>
+  <td><span id="w2_status"></span></td>
 </tr>
 
 <tr id="dwsset32">

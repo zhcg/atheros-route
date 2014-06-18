@@ -331,7 +331,7 @@ int main()
 		
 		
     }
-    else
+    else if(strcmp(name,"5G")==0)
     {
         num=0;
 		ii = 0;
@@ -530,6 +530,20 @@ int main()
         }
         fclose(fp);
         }
+        else if(strcmp(name,"2GCHECK")==0)
+        {
+              char tmp[128];
+		Execute_cmd("cfg -e | grep \"WWAN_2G_FLAG=\" | awk -F \"=\" '{print $2}'",tmp);
+              printf("%s",tmp);
+              fprintf(errOut,"2GCHECK-----------%s\n",tmp);
+        }
+         else if(strcmp(name,"5GCHECK")==0)
+        {
+              char tmp[128];
+		Execute_cmd("cfg -e | grep \"WWAN_5G_FLAG=\" | awk -F \"=\" '{print $2}'",tmp);
+              printf("%s",tmp);
+              fprintf(errOut,"5GCHECK-----------%s\n",tmp);
+         }
 	write_systemLog("search wireless signal list  end"); 
     return 1;
 }

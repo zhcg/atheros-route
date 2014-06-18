@@ -123,7 +123,6 @@
 
 	<message msgid="admw wifides" msgstr="Please set the HBD router WiFi account and password. Your computer, PAD, intelligent mobile phone will use the following network." />  
 	<message msgid="admw wirelessdes" msgstr="Please select the WiFi to connect" />  
-	<message msgid="admw parentdes" msgstr="As a parent, you can control child's Internet time and visiting the website through the page settings" />  
 
 	<message msgid="admw PPMAC" msgstr="The MAC address of parent PC" />
 	<message msgid="admw MPMAC" msgstr="The MAC address of management PC" />
@@ -157,6 +156,12 @@
 	<message msgid="admw Wlisttitle3" msgstr="Drop-down list" />
 	<message msgid="admw Alreadc" msgstr="Current connected WiFi" />
 	<message msgid="admw ws" msgstr="Connection status" />
+
+	<message msgid="admw wds0" msgstr="Connecting......" />
+	<message msgid="admw wds1" msgstr="Connected" />
+	<message msgid="admw wds2" msgstr="Connected fail" />
+	<message msgid="admw wds3" msgstr="Connected timeout" />
+
 
 	<message msgid="admin open" msgstr="Open" />
 	<message msgid="admin jiami" msgstr="Security（Recommend）" />
