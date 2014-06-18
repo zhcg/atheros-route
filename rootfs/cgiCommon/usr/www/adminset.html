@@ -128,14 +128,17 @@ function initValue()
 function showpwd()
 {
     var pass = document.getElementById("pwd").value;
+    var pass2 = document.getElementById("pwd2").value;
 
 	if(document.getElementById("aaaa").checked == true)
 	{
 		document.getElementById("pwdinput").innerHTML='<input type="text" name="ADMPASS" id="pwd" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
+		document.getElementById("pwdinput2").innerHTML='<input type="text" name="ADMPASS2" id="pwd2" maxlength="32" size="32"  class="handaer_text_content" value="'+pass2+'" />';
 	}
 	else
 	{
 		document.getElementById("pwdinput").innerHTML='<input type="password" name="ADMPASS" id="pwd" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
+		document.getElementById("pwdinput2").innerHTML='<input type="password" name="ADMPASS2" id="pwd2" maxlength="32" size="32" class="handaer_text_content"  value="'+pass2+'" />';
 	}
 }
 
@@ -160,7 +163,7 @@ function showpwd()
   </tr>
   <tr>
     <td class="head" id="manAdmPasswd2"></td>
-    <td><input type="password" name="ADMPASS2" maxlength="12" size="32" value="~~ADMPASS2~" class="handaer_text_content"></td>
+    <td><span id="pwdinput2"><input type="password" id="pwd2" name="ADMPASS2" maxlength="12" size="32" value="~~ADMPASS2~" class="handaer_text_content"/></span></td>
   </tr>
  </table>
 <table id="table22" width="540" cellpadding="2" cellspacing="1"">
