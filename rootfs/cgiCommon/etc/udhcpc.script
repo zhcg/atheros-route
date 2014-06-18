@@ -1,12 +1,34 @@
 #!/bin/sh
 #wangyu add for udhcpc function
+ath_flag=`echo $interface | grep ath`
+flag_2g_wds=`cfg -e | grep WDSON_OFF= | awk -F'=' '{print $2}'`
+flag_5g_wds=`cfg -e | grep WDSON_OFF_3= | awk -F'=' '{print $2}'`
+
 if [ -z $ip ];then
-	cfg -a WAN_IPFLAG=none
-	cfg -r WAN_IPADDR2
-#	cfg -r AP_NETMASK2
-	cfg -r WAN_NETMASK2
-	cfg -r IPGW2
+	if [ $interface = "eth0" ];then
+		cfg -a WAN_IPFLAG=none
+		cfg -r WAN_IPADDR2
+	#	cfg -r AP_NETMASK2
+		cfg -r WAN_NETMASK2
+		cfg -r IPGW2
+	fi
 #	cfg -c
+	if [ ! -z $ath_flag ];then
+		if [ $flag_2g_wds = "on" -a $flag_5g_wds = "off" ];then
+			cfg -a WWAN_2G_FLAG=none
+		fi
+		if [ $flag_2g_wds = "off" -a $flag_5g_wds = "on" ];then
+			cfg -a WWAN_5G_FLAG=none
+		fi
+		if [ $flag_2g_wds = "on" -a $flag_5g_wds = "on" ];then
+			if [ $interface = "ath4" ];then
+				cfg -a WWAN_2G_FLAG=none
+			fi
+			if [ $interface = "ath5" ];then
+				cfg -a WWAN_5G_FLAG=none
+			fi
+		fi
+	fi
 	exit 1
 fi
 
@@ -32,12 +54,29 @@ if [ $interface = "eth0" ];then
 	fi
 fi
 
-ath_flag=`echo $interface | grep ath`
 if [ ! -z $ath_flag ];then
 	WWAN_ADDR=`echo $ip | awk 'BEGIN{OFS=FS="."}{print $1,$2,$3}'`
 	if [ ! -z ${WWAN_ADDR} ];then
 		echo ---------------------- $WWAN_ADDR
 		WAN_ADDR=`ifconfig  eth0 | grep 'inet addr:'|  cut -d: -f2 | awk '{ print $1}'|awk 'BEGIN{OFS=FS="."}{print $1,$2,$3}'`
+
+		if [ ${WWAN_ADDR} = ${WAN_ADDR} -o  ${WWAN_ADDR} = ${LAN_ADDR} ];then
+		if [ $flag_2g_wds = "on" -a $flag_5g_wds = "off" ];then
+			cfg -a WWAN_2G_FLAG=unnormal
+		fi
+		if [ $flag_2g_wds = "off" -a $flag_5g_wds = "on" ];then
+			cfg -a WWAN_5G_FLAG=unnormal
+		fi
+		if [ $flag_2g_wds = "on" -a $flag_5g_wds = "on" ];then
+			if [ $interface = "ath4" ];then
+				cfg -a WWAN_2G_FLAG=unnormal
+			fi
+			if [ $interface = "ath5" ];then
+				cfg -a WWAN_5G_FLAG=unnormal
+			fi
+		fi
+		fi
+		
 		if [ ${WWAN_ADDR} = ${LAN_ADDR} ];then
 			echo "the dhcp apply IP addr has same domain with br0"
 			exit 2
@@ -46,18 +85,39 @@ if [ ! -z $ath_flag ];then
 			echo "the dhcp apply IP addr has same domain with eth0"
 			exit 2
 		fi
+
 		if [ $interface = "ath5" ];then
 			WLAN_ADDR=`ifconfig  ath4 | grep 'inet addr:'|  cut -d: -f2 | awk '{ print $1}'|awk 'BEGIN{OFS=FS="."}{print $1,$2,$3}'`
 			if [ ${WWAN_ADDR} = ${WAN_ADDR} ];then
 				echo "the dhcp apply IP addr has same domain with ath4"
+				cfg -a WWAN_5G_FLAG=unnormal
 				exit 2
 			fi
 		fi
 	fi
 fi
 
-cfg -a WAN_IPFLAG=normal
-cfg -a WAN_IPADDR2=$ip
+if [ $interface = "eth0" ];then
+	cfg -a WAN_IPFLAG=normal
+	cfg -a WAN_IPADDR2=$ip
+fi
+
+if [ ! -z $ath_flag ];then
+	if [ $flag_2g_wds = "on" -a $flag_5g_wds = "off" ];then
+		cfg -a WWAN_2G_FLAG=normal
+	fi
+	if [ $flag_2g_wds = "off" -a $flag_5g_wds = "on" ];then
+		cfg -a WWAN_5G_FLAG=normal
+	fi
+	if [ $flag_2g_wds = "on" -a $flag_5g_wds = "on" ];then
+		if [ $interface = "ath4" ];then
+			cfg -a WWAN_2G_FLAG=normal
+		fi
+		if [ $interface = "ath5" ];then
+			cfg -a WWAN_5G_FLAG=normal
+		fi
+	fi
+fi
 #cfg -c
 
 #echo ip : $ip

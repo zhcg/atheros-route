@@ -7,19 +7,21 @@ DNS=8.8.8.8
 while true
 do
 #echo link up 2
-ping $BAIDU_IP test
-if [ $? -eq 0 ]; then
+#ping $BAIDU_IP test
+if ping -c 1 $BAIDU_IP 2>/dev/null |grep "ttl=[0-9]\+"
+then
 	#echo link up 3
-	ping $BAIDU test
+#	ping $BAIDU test
 	#echo link up 4
-	if [ $? -eq 0 ]; then
+	if ping -c 1 $BAIDU 2>/dev/null |grep "ttl=[0-9]\+"
+	then
 		echo "1">/usr/www/ping.xml
+		sleep 3
 	else
 		echo "0">/usr/www/ping.xml
 	fi
-	else
-		echo "0">/usr/www/ping.xml
-	fi
+else
+	echo "0">/usr/www/ping.xml
+fi
 #cfg -c
-sleep 3
 done

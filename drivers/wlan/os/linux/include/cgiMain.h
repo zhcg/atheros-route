@@ -28,9 +28,13 @@ void __write_systemLog(char *message)
 
 	system("echo ----------------  >>  /tmp/systemLog");
 	system("date  >>  /tmp/systemLog");
-	system("dmesg -c  >>  /tmp/systemLog");
 	fseek(f, 0, SEEK_END);
 	fwrite(message,strlen(message),1,f);
+
+	system("echo ****************  >>  /tmp/systemLog");
+	system("dmesg  >>  /tmp/systemLog");
+	system("echo ****************  >>  /tmp/systemLog");
+	system("echo ----------------  >>  /tmp/systemLog");
 
 	fclose(f);
 	system("echo   >>  /tmp/systemLog");
