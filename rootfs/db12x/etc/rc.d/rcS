@@ -166,7 +166,10 @@ fi
 #	cfg -a BR0_MAC=`ifconfig | grep br0 | awk -F ' ' '{print$5}'`
 #	cfg -c
 #fi
-
+if [ ! -f /configure_backup/pwd.xml ]; then
+	touch /configure_backup/pwd.xml
+	echo -n "admin" >> /configure_backup/pwd.xml
+fi
 
 /usr/bin/version_check &
 /bin/server &
