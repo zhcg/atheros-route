@@ -17,9 +17,10 @@
     wan_mode=`grep 'WAN_MODE' /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-5`
     ppp0=`route -n|grep ppp0|awk -F ' ' '{print$8}'|awk 'NR==1'`
     sta_addr=`wlanconfig ath0 list | grep ADDR |awk '{print $1}'|cut -c1-4`
-    eth1_state=`dmesg | grep -n 'entering'| tail -n 1 | awk -F ' ' '{print$5}'`
+    #eth1_state=`dmesg | grep -n 'entering'| tail -n 1 | awk -F ' ' '{print$5}'`
+     eth1_state=`ifconfig eth1 | grep BROADCAST | awk -F ' ' '{print $3}'`
    
-    #update tn
+    #update tn every loop
     hh=`date +%H`
     mm=`date +%M`
     ss=`date +%S` 
@@ -29,7 +30,7 @@
       tn=`expr $tn + $ss`
         
     #update ts,if ADDR
-    if [ "$sta_addr" = "ADDR" -o "$eth1_state" = "forwarding" ]; then
+    if [ "$sta_addr" = "ADDR" -o "$eth1_state" = "RUNNING" ]; then
       hh=`date +%H`
       mm=`date +%M`
       ss=`date +%S`
@@ -66,8 +67,9 @@
     #dem mode
     if [ "$wan_mode" = "pppoe" ] && [ "$pppoe_mode" = "demand" ]; then
        dem_t0=`grep 'PPPOE_DEMAND' /tmp/.apcfg | awk -F '=' '{ print $2 }'`
+       dem_t0=`expr $dem_t0 \* 60`
        dem_time=`expr $ts + $dem_t0`      
-       if [ "$sta_addr" = "ADDR" -o "$eth1_state" = "forwarding" ] && [ "$ppp0" != "ppp0" ]; then
+       if [ "$sta_addr" = "ADDR" -o "$eth1_state" = "RUNNING" ] && [ "$ppp0" != "ppp0" ]; then
           pppoe-start > /dev/null 2>&1
           sleep 7  
        elif [ $tn -lt $dem_time ] && [ "$ppp0" != "ppp0" ]; then
@@ -81,7 +83,8 @@
    
    #man mode
    if [ "$wan_mode" = "pppoe" ] && [ "$pppoe_mode" = "manual" ] && [ $man_flag -eq 1 ]; then
-      man_t0=`grep 'PPPOE_DEMAND' /tmp/.apcfg | awk -F '=' '{ print $2 }'`
+      man_t0=`grep 'PPPOE_MANUAL' /tmp/.apcfg | awk -F '=' '{ print $2 }'`
+      man_t0=`expr $man_t0 \* 60`
       man_time=`expr $ts + $man_t0`
       if [ $tn -lt $man_time ] && [ "$ppp0" != "ppp0" ]; then
         pppoe-start > /dev/null 2>&1
