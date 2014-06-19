@@ -7,7 +7,13 @@ DHCP_LEASES=$(($DHCP_END-$DHCP_BEGIN))
 echo "start `cfg -e | grep "DHCP_BIP" | awk -F'=' '{print $2}'| awk -F'"' '{print $2}'`" > /etc/udhcpd.conf
 echo "end `cfg -e | grep "DHCP_EIP" | awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`"  >> /etc/udhcpd.conf
 echo "opt lease  $TIME_DHCP_M2" >> /etc/udhcpd.conf
-echo "opt dns `cfg -e | grep "PRIDNS" | awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`"  >> /etc/udhcpd.conf
+#echo "opt dns `cfg -e | grep "PRIDNS" | awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`"  >> /etc/udhcpd.conf
+pridns=`cfg -e | grep "PRIDNS" | awk -F "=" '{print $2}' | awk -F'"' '{print $2}'`
+if [ "${pridns}" != "" ]; then
+echo "opt dns ${pridns}" >> /etc/udhcpd.conf
+else
+echo "opt dns 114.114.114.114" >> /etc/udhcpd.conf
+fi
 secdns=`cfg -e | grep "SECDNS" | awk -F "=" '{print $2}' | awk -F'"' '{print $2}'`
 if [ "${secdns}" != "" ]; then
 echo "opt dns ${secdns}" >> /etc/udhcpd.conf

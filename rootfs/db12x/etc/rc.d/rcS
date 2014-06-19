@@ -133,7 +133,7 @@ if [ "${PRIDNS}" != "" ]
 then
 	echo "nameserver ${PRIDNS}" > /etc/resolv.conf
 else
-	echo "nameserver 8.8.8.8" > /etc/resolv.conf
+	echo "nameserver 114.114.114.114" > /etc/resolv.conf
 fi
 if [ "${SECDNS}" != "" ]
 then
