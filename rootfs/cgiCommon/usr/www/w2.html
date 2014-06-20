@@ -138,7 +138,7 @@ function stateChanged()
 			//alert(xmlHttp.responseText);
 			var zidong = xmlHttp.responseText;
 			
-			if(zidong.indexOf("static") == 0 )
+			if(zidong.indexOf("static") >= 0 )
 			{
 				document.wizard_form.WAN_MODE[2].checked = true;
 				alert(_("admw auto_sip"));
@@ -146,7 +146,7 @@ function stateChanged()
 				connectionTypeSwitch();
 				butwork("false","true","true","false");
 			}
-			else if(zidong.indexOf("dhcp") == 0 )
+			else if(zidong.indexOf("dhcp") >= 0 )
 			{
 				document.wizard_form.WAN_MODE[1].checked = true;
 				alert(_("admw auto_dhcp"));
@@ -154,7 +154,7 @@ function stateChanged()
 				connectionTypeSwitch();
 				butwork("false","true","true","false");
 			}
-			else if(zidong.indexOf("pppoe") == 0 )
+			else if(zidong.indexOf("pppoe") >= 0 )
 			{
 				document.wizard_form.WAN_MODE[3].checked = true;
 				alert(_("admw auto_ppp"));
@@ -162,7 +162,7 @@ function stateChanged()
 				connectionTypeSwitch();
 				butwork("false","true","true","false");
 			}
-			else if(zidong.indexOf("l2tp") == 0 )
+			else if(zidong.indexOf("l2tp") >= 0 )
 			{
 				document.wizard_form.WAN_MODE[4].checked = true;
 				alert(_("admw auto_l2tp"));
@@ -170,7 +170,7 @@ function stateChanged()
 				connectionTypeSwitch();
 				butwork("false","true","true","false");
 			}
-			else if(zidong.indexOf("p2tp") == 0 )
+			else if(zidong.indexOf("p2tp") >= 0 )
 			{
 				document.wizard_form.WAN_MODE[5].checked = true;
 				alert(_("admw auto_p2tp"));

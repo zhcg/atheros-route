@@ -1,16 +1,20 @@
 #!/bin/sh
 
 BAIDU=www.baidu.com
-QQ=www.qq.com
-sleep 5
-ping_flag=`cat /usr/www/ping.xml`
-if [ "$ping_flag" -eq 1 ]; then
-        PING_BD=OK
+BAIDU_IP=202.108.22.5
+DNS=8.8.8.8
+
+#echo link up 2
+#ping $BAIDU_IP test
+if ping -c 1 $BAIDU_IP 2>/dev/null |grep "ttl=[0-9]\+"
+then
+	PING_BD=OK
 	PING_QQ=OK
 else
-        PING_BD=NO
+	PING_BD=NO
 	PING_QQ=NO
 fi
+
 
 if [ "$PING_QQ" = "NO" -a "$PING_BD" = "NO" ]; then
 	 cfg -a INTERNET_ON=off

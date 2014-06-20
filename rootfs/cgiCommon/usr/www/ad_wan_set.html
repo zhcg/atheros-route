@@ -962,31 +962,31 @@ function stateChanged()
 			window.parent.DialogHide();
 			//alert(xmlHttp.responseText);
 			var zidong = xmlHttp.responseText;
-			if(zidong.indexOf("static") == 0  )
+			if(zidong.indexOf("static") >= 0  )
 			{
 				alert(_("wan auto_sip"));
 				document.wanCfg.WAN_MODE.options.selectedIndex = 0;
 				connectionTypeSwitch();
 			}
-			else if(zidong.indexOf("dhcp") == 0 )
+			else if(zidong.indexOf("dhcp") >= 0 )
 			{
 				alert(_("wan auto_dhcp"));
 				document.wanCfg.WAN_MODE.options.selectedIndex = 1;
 				connectionTypeSwitch();
 			}
-			else if(zidong.indexOf("pppoe") == 0 )
+			else if(zidong.indexOf("pppoe") >= 0 )
 			{
 				alert(_("wan auto_ppp"));
 				document.wanCfg.WAN_MODE.options.selectedIndex = 2;
 				connectionTypeSwitch();
 			}
-			else if(zidong.indexOf("l2tp") == 0 )
+			else if(zidong.indexOf("l2tp") >= 0 )
 			{
 				alert(_("wan auto_l2tp"));
 				document.wanCfg.WAN_MODE.options.selectedIndex = 3;
 				connectionTypeSwitch();
 			}
-			else if(zidong.indexOf("p2tp") == 0 )
+			else if(zidong.indexOf("p2tp") >= 0 )
 			{
 				alert(_("wan auto_p2tp"));
 				document.wanCfg.WAN_MODE.options.selectedIndex = 4;
