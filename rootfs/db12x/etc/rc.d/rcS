@@ -118,17 +118,18 @@ echo 5 > /proc/sys/vm/dirty_background_ratio
 ## Check for Auto AP Start
 ##
 
-#if [ "${WLAN_ON_BOOT}" = "y" -a "${WIFION_OFF}" = "on" ]; then
-if [ "${WLAN_ON_BOOT}" = "y" ]; then
-    /etc/ath/apup
-fi
-
 
 ##
 ## nat settings 
 ##
 /etc/rc.d/rc.modules
 /etc/nat_vlan.sh
+
+#if [ "${WLAN_ON_BOOT}" = "y" -a "${WIFION_OFF}" = "on" ]; then
+if [ "${WLAN_ON_BOOT}" = "y" ]; then
+    /etc/ath/apup
+fi
+
 if [ "${PRIDNS}" != "" ]
 then
 	echo "nameserver ${PRIDNS}" > /etc/resolv.conf
