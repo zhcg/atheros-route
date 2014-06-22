@@ -98,23 +98,23 @@ function stateChanged()
 		{
 			var zidong = xmlHttp.responseText;
 			//alert(zidong);
-			if(zidong.indexOf("static") == 0  )
+			if(zidong.indexOf("static") >= 0  )
 			{
 				trans_inner("type1","sysinfo static");
 			}
-			else if(zidong.indexOf("dhcp") == 0 )
+			else if(zidong.indexOf("dhcp") >= 0 )
 			{
 				trans_inner("type1","sysinfo dhcp");
 			}
-			else if(zidong.indexOf("pppoe") == 0 )
+			else if(zidong.indexOf("pppoe") >= 0 )
 			{
 				trans_inner("type1","sysinfo pppoe");
 			}
-			else if(zidong.indexOf("l2tp") == 0 )
+			else if(zidong.indexOf("l2tp") >= 0 )
 			{
 				trans_inner("type1","sysinfo l2tp");
 			}
-			else if(zidong.indexOf("p2tp") == 0 )
+			else if(zidong.indexOf("p2tp") >= 0 )
 			{
 				trans_inner("type1","sysinfo pptp");
 			}
