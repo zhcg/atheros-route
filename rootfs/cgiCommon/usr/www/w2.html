@@ -150,9 +150,10 @@ function stateChanged()
 			{
 				document.wizard_form.WAN_MODE[1].checked = true;
 				alert(_("admw auto_dhcp"));
-				hideAllTables();
-				connectionTypeSwitch();
-				butwork("false","true","true","false");
+				//hideAllTables();
+				//connectionTypeSwitch();
+				//butwork("false","true","true","false");
+				change_step(1);
 			}
 			else if(zidong.indexOf("pppoe") >= 0 )
 			{
