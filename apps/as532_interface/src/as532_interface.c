@@ -677,6 +677,14 @@ int get_remote_532_ver_request()
 			if(recv_ret > 16)
 				return prase_532_ver_msg(recvbuf+16);
 		}
+		else
+		{
+			if(errno == EAGAIN)
+			{
+				continue;
+			}
+			break;
+		}
 	}while(1);
 	return -4;
 }
@@ -707,6 +715,14 @@ int get_remote_532_conf_request()
 			PRINT("length = %d\n",length);
 			if(recv_ret > 16)
 				return prase_532_conf_msg(recvbuf+16);
+		}
+		else
+		{
+			if(errno == EAGAIN)
+			{
+				continue;
+			}
+			break;
 		}
 	}while(1);
 	return -4;
