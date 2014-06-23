@@ -3,6 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script type="text/javascript" src="/lang/b28n.js"></script>
+<script type="text/javascript" src="/style/getversion.js"></script>
 <title></title>
 <style type="text/css">
 <!--
@@ -11,7 +12,7 @@ body {
 }
 #denglukuang {
 	margin: 200px auto 0;
-	height: 360px;
+	height: 370px;
 	width: 460px;
 	border:1px solid #ddd;
 	background:#fff;
@@ -56,6 +57,9 @@ body {
 	cursor:pointer;
 }
 .denglukuang_mr{ height:24px; line-height:24px; margin-top:32px; text-align:left; margin-left:52px; color:#999; font-size:12px;}
+.denglukuang_note{ height:24px; line-height:24px; margin-top:5px; text-align:left; margin-left:72px; margin-right:42px;color:red; font-size:15px;}
+
+.denglukuang_image { float: left; height: 70px; width: 70px; }
 -->
 </style>
 <script type="text/javascript">
@@ -124,12 +128,17 @@ function GetXmlHttpObject()
 }
 function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
 function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
+function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "";}}
+function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
+function widget_display(widgetID){document.getElementById(widgetID).style.visibility = "visible";document.getElementById(widgetID).style.display = style_display_on();}
+
 function initTranslation()
 {
 	trans_inner("title","login title");
 	trans_value("pwd1","login default");
 	trans_value("tijiao","login but");
 	trans_inner("dp","login dp");
+	trans_inner("note","login note");
 }
 function init()
 {
@@ -158,6 +167,7 @@ function keyLogin()
     <input name="tijiao" id="tijiao"  type="button"  onclick="CheckUser()"/>
   </div>
     <div class="denglukuang_mr" id="dp"></div>
+	<img style="display:none" id="denglukuang_img" class="denglukuang_image" src="/images/note.PNG"></img><div style="display:none" class="denglukuang_note" id="note">由于上次更新出错，系统已经进入到恢复系统状态，部分功能受限，请重新进行系统升级</div>
 </div>
 
 <script type="text/javascript">
@@ -179,6 +189,7 @@ pwd.onblur = function()
 	tx.style.display = "";
 	tx.value = _("login default");
 }
+getversion();
 </script>
 </body>
 </html>
