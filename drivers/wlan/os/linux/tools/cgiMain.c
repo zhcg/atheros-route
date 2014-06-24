@@ -5178,7 +5178,6 @@ int main(int argc,char **argv)
         }
         else if(!strncmp(argv[1],"-b",2))
         {
-        //viqjeee
             char    *vval;
             int i=0, j=0;
             int err_flag =0;
@@ -6673,29 +6672,32 @@ int main(int argc,char **argv)
 		
 		write_systemLog("WIRELESS basic setting begin"); 
 
-		//1.get old value from flash
-		Execute_cmd("cfg -e | grep \"WIFION_OFF=\" | awk -F \"=\" \'{print $2}\'",valBuff);
-		//TODO bug
-		Execute_cmd("cfg -e | grep \"AP_SSID=\" | awk -F \"AP_SSID=\" '{print $2}'",valBuff2);
-		Execute_cmd("cfg -s | grep \"PSK_KEY:\" | awk -F \"=\" \'{print $2}\'",valBuff4);
-		//Execute_cmd("cfg -e | grep \"AP_SECMODE=\" |  awk -F \"=\" \'{print $2}\'",valBuff5);;
-		//Execute_cmd("cfg -e | grep \"WIFION_OFF=\"",valBuff);
-		//Execute_cmd("cfg -e | grep \"AP_SSID=\"",valBuff2);
-		//Execute_cmd("iwconfig ath0 | grep \"ESSID\" | awk -F \"\"\" \'{print $2}\'",valBuff2);
-		Execute_cmd("cfg -e | grep \"AP_SECMODE=\"",valBuff5);
-		Execute_cmd("cfg -e | grep \"AP_PRIMARY_CH=\" | awk -F \"=\" \'{print $2}\'",valBuff7);
-		Execute_cmd("cfg -e | grep \"AP_HIDESSID=\" | awk -F \"=\" \'{print $2}\'",valBuff8);
-		Execute_cmd("cfg -e | grep \"AP_CHMODE=\" | awk -F \"=\" \'{print $2}\'",valBuff10);
+        if(strcmp(CFG_get_by_name("SIPW",valBuff),"SIPW") != 0 )
+        {
+            //1.get old value from flash
+            Execute_cmd("cfg -e | grep \"WIFION_OFF=\" | awk -F \"=\" \'{print $2}\'",valBuff);
+            //TODO bug
+            Execute_cmd("cfg -e | grep \"AP_SSID=\" | awk -F \"AP_SSID=\" '{print $2}'",valBuff2);
+            Execute_cmd("cfg -s | grep \"PSK_KEY:\" | awk -F \"=\" \'{print $2}\'",valBuff4);
+            //Execute_cmd("cfg -e | grep \"AP_SECMODE=\" |  awk -F \"=\" \'{print $2}\'",valBuff5);;
+            //Execute_cmd("cfg -e | grep \"WIFION_OFF=\"",valBuff);
+            //Execute_cmd("cfg -e | grep \"AP_SSID=\"",valBuff2);
+            //Execute_cmd("iwconfig ath0 | grep \"ESSID\" | awk -F \"\"\" \'{print $2}\'",valBuff2);
+            Execute_cmd("cfg -e | grep \"AP_SECMODE=\"",valBuff5);
+            Execute_cmd("cfg -e | grep \"AP_PRIMARY_CH=\" | awk -F \"=\" \'{print $2}\'",valBuff7);
+            Execute_cmd("cfg -e | grep \"AP_HIDESSID=\" | awk -F \"=\" \'{print $2}\'",valBuff8);
+            Execute_cmd("cfg -e | grep \"AP_CHMODE=\" | awk -F \"=\" \'{print $2}\'",valBuff10);
 
-		//get 5G's old value from flash
-		Execute_cmd("cfg -e | grep \"WIFION_OFF_3=\" | awk -F \"=\" \'{print $2}\'",valBuff_3);
-		Execute_cmd("cfg -e | grep \"AP_SSID_3=\" | awk -F \"AP_SSID_3=\" '{print $2}'",valBuff2_3);
-		Execute_cmd("cfg -s | grep \"PSK_KEY_3:\" | awk -F \"=\" \'{print $2}\'",valBuff4_3);
-		Execute_cmd("cfg -e | grep \"AP_SECMODE_3=\"",valBuff5_3);
-		Execute_cmd("cfg -e | grep \"AP_PRIMARY_CH_3=\" | awk -F \"=\" \'{print $2}\'",valBuff7_3);
-		Execute_cmd("cfg -e | grep \"AP_HIDESSID_3=\" | awk -F \"=\" \'{print $2}\'",valBuff8_3);
-		Execute_cmd("cfg -e | grep \"AP_CHMODE_3=\" | awk -F \"=\" \'{print $2}\'",valBuff10_3);
+            //get 5G's old value from flash
+            Execute_cmd("cfg -e | grep \"WIFION_OFF_3=\" | awk -F \"=\" \'{print $2}\'",valBuff_3);
+            Execute_cmd("cfg -e | grep \"AP_SSID_3=\" | awk -F \"AP_SSID_3=\" '{print $2}'",valBuff2_3);
+            Execute_cmd("cfg -s | grep \"PSK_KEY_3:\" | awk -F \"=\" \'{print $2}\'",valBuff4_3);
+            Execute_cmd("cfg -e | grep \"AP_SECMODE_3=\"",valBuff5_3);
+            Execute_cmd("cfg -e | grep \"AP_PRIMARY_CH_3=\" | awk -F \"=\" \'{print $2}\'",valBuff7_3);
+            Execute_cmd("cfg -e | grep \"AP_HIDESSID_3=\" | awk -F \"=\" \'{print $2}\'",valBuff8_3);
+            Execute_cmd("cfg -e | grep \"AP_CHMODE_3=\" | awk -F \"=\" \'{print $2}\'",valBuff10_3);
 		
+        }
 		//fprintf(errOut,"[luodp] WIFI: %s\n%s%s\n%s\n",valBuff,valBuff2,valBuff5,valBuff4);
 		//2.save new config to flash
            
@@ -7926,7 +7928,6 @@ exit(1);
    *************************************/
     if(strcmp(CFG_get_by_name("WIRELESS_ADVSET",valBuff),"WIRELESS_ADVSET") == 0 ) 
     {		 
-    //viqjeee
         fprintf(errOut,"\n%s  %d WIRELESS_ADVSET \n",__func__,__LINE__);
             
 		char pChar[128];
