@@ -674,8 +674,6 @@ as532_interface:
 	mkdir -p $(AS532HDEFIMAGEPATH); \
 	cp -r $(B6LAS532HDEFIMAGE) $(AS532HDEFIMAGEPATH);
 
-iperf:
-	cd  ../apps/iperf-2.0.5b1; make clean; make
 	
 OTA_Base:
 	@echo making OTA_Base application
