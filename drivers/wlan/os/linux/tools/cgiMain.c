@@ -6776,7 +6776,7 @@ int main(int argc,char **argv)
 			//Execute_cmd("apup > /dev/null 2>&1", rspBuff);
 			Execute_cmd("ifconfig ath0 up > /dev/null 2>&1", rspBuff);
 			Execute_cmd("echo enable > /dev/wifiled", rspBuff);
-			flag=3;
+			flag=5;
 		}
 		if(strcmp(valBuff3,"off") == 0) 
 		{
@@ -7049,6 +7049,7 @@ int main(int argc,char **argv)
 		{
 			Execute_cmd("ifconfig ath2 up > /dev/null 2>&1", rspBuff);
 			Execute_cmd("echo enable > /dev/wifiled", rspBuff);
+			flag=5;
 		}
 		if((strstr(valBuff_3,valBuff3) == 0) && (strcmp(valBuff3,"off") == 0) )
 		{
