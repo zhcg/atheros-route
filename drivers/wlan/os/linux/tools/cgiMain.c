@@ -6672,7 +6672,7 @@ int main(int argc,char **argv)
 		
 		write_systemLog("WIRELESS basic setting begin"); 
 
-        if(strcmp(CFG_get_by_name("SIPW",valBuff),"SIPW") != 0 )
+        if(strcmp(CFG_get_by_name("WIRELESS",valBuff),"WIRELESS") == 0 )
         {
             //1.get old value from flash
             Execute_cmd("cfg -e | grep \"WIFION_OFF=\" | awk -F \"=\" \'{print $2}\'",valBuff);
