@@ -19,9 +19,11 @@ then
 		sleep 3
 	else
 		echo "0">/usr/www/ping.xml
+		sleep 3
 	fi
 else
 	echo "0">/usr/www/ping.xml
+	sleep 3
 fi
 #cfg -c
 done
