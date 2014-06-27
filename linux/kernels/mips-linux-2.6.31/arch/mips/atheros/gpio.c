@@ -377,6 +377,9 @@ irqreturn_t jumpstart_irq(int cpl, void *dev_id)
 			 */
 			disable_irq(ATH_GPIO_IRQn(JUMPSTART_GPIO));
 			wake_up(&ath_fr_wq);
+			printk("\n 9344 DEBUG start**************************************************\n");
+            printk("9344 DEBUG: The process is \"%s\" (pid %i)\n", current->comm,current->pid);
+			printk("\n 9344 DEBUG end **************************************************\n");
 			printk("\nath: factory configuration restored..\n");
 			local_irq_enable();
 			return IRQ_HANDLED;
