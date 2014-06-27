@@ -44,10 +44,19 @@ int dtmf_ret = 0;
 int total_dtmf_ret = 0;
 unsigned char dtmf_buf[6000]={0};	
 
-//#define SAVE_FILE
-static FILE* read_file;
-static FILE* write_file;
-static FILE* out_file;
+#ifdef SAVE_FILE
+FILE* read_file;
+char read_file_buf[1024*1024*2];
+int global_read_buf_pos = 0;
+int global_write_buf_pos = 0;
+char write_file_buf[1024*1024*2];
+#endif
+#ifdef SAVE_OUT_DATE
+char global_out_buf[1024*1024*2];
+int global_out_buf_pos;
+FILE* write_file;
+FILE* out_file;
+#endif
 //SpeexPreprocessState *filter_st;
 SpeexEchoState *st = NULL;
 SpeexPreprocessState *den = NULL;
@@ -118,37 +127,30 @@ int startaudio(dev_status_t* devp,int flag)
 			{		
 				speex_preprocess_state_destroy(den);
 			}
+			if(dn != NULL)	
+			{		
+				speex_preprocess_state_destroy(dn);
+			}
 			st = speex_echo_state_init(NN, TAIL);
-			den = speex_preprocess_state_init(NN, sampleRate);
-			
-			//dn = speex_preprocess_state_init(NN, sampleRate);
-			//i = 1;
-			//speex_preprocess_ctl(dn, SPEEX_PREPROCESS_SET_AGC, &i);
-			//i = 1;
-			//speex_preprocess_ctl(dn, SPEEX_PREPROCESS_SET_DEREVERB, &i);
-			//i = 8000;
-			//speex_preprocess_ctl(dn, SPEEX_PREPROCESS_SET_AGC_LEVEL, &i);
-			
+			den = speex_preprocess_state_init(NN, sampleRate);			
+			dn = speex_preprocess_state_init(NN, sampleRate);
+
 			speex_echo_ctl(st, SPEEX_ECHO_SET_SAMPLING_RATE, &sampleRate);
 			speex_preprocess_ctl(den, SPEEX_PREPROCESS_SET_ECHO_STATE, st);
-			//i = 1;
-			//speex_preprocess_ctl(den, SPEEX_PREPROCESS_SET_DENOISE, &i);
-			int noiseSuppress = -30;//-30
-			speex_preprocess_ctl(den, SPEEX_PREPROCESS_SET_NOISE_SUPPRESS, &noiseSuppress);
-			noiseSuppress = -70;//-55//-70
+			int noiseSuppress = -90;//70
 			speex_preprocess_ctl(den, SPEEX_PREPROCESS_SET_ECHO_SUPPRESS, &noiseSuppress);			
-			noiseSuppress = -30;//-40//-30
+			noiseSuppress = -40;//40
 			speex_preprocess_ctl(den, SPEEX_PREPROCESS_SET_ECHO_SUPPRESS_ACTIVE, &noiseSuppress);			
+			noiseSuppress = -90;//90
+			speex_preprocess_ctl(den, SPEEX_PREPROCESS_SET_NOISE_SUPPRESS, &noiseSuppress);			
 			i = 1;
-			speex_preprocess_ctl(den, SPEEX_PREPROCESS_SET_DEREVERB, &i);
-			//i = 1;
-			//speex_preprocess_ctl(den, SPEEX_PREPROCESS_SET_DENOISE, &i);
-			//noiseSuppress = -5;
-			//speex_preprocess_ctl(den, SPEEX_PREPROCESS_SET_NOISE_SUPPRESS, &noiseSuppress);
+			speex_preprocess_ctl(dn, SPEEX_PREPROCESS_SET_DENOISE, &i);
 #ifdef SAVE_FILE
-			read_file = fopen("./read_from_pcm.wav", "w"); //for read sound
-			write_file = fopen("./write_to_pcm.wav", "w"); //for read sound
-			out_file = fopen("./out.wav", "w"); //for read sound
+			read_file = fopen("./record_file.pcm", "w"); //for read sound
+			write_file = fopen("./play_file.pcm", "w"); //for read sound
+#endif
+#ifdef SAVE_OUT_DATE
+			out_file = fopen("./out.pcm", "w"); //for read sound
 #endif
 			//usleep(200*1000);
 		}
@@ -267,13 +269,8 @@ void stopaudio(dev_status_t* devp,int flag,int reconnect_flag)
 		//关闭声卡
 		if(reconnect_flag == 0 && flag == PSTN)
 		{
-#ifdef SAVE_FILE
-			fclose(read_file);
-			fclose(out_file);
-			fclose(write_file);
-#endif
 			PRINT("speex release\n");
-			//usleep(200*1000);
+			usleep(50*1000);
 			if(st != NULL)
 			{
 				speex_echo_state_destroy(st);
@@ -284,13 +281,18 @@ void stopaudio(dev_status_t* devp,int flag,int reconnect_flag)
 				speex_preprocess_state_destroy(den);
 				den = NULL;
 			}
-			//speex_preprocess_state_destroy(dn);
+			if(dn != NULL)			
+			{
+				speex_preprocess_state_destroy(dn);
+				dn = NULL;
+			}
 		}
 		ioctl(phone_audio.phone_audio_pcmfd,SLIC_RELEASE,0);
 		total_dtmf_ret = 0;
 
 	}
 	PRINT("stop audio success\n");
+
 }
 //初始化音频通道
 int init_audio(void)
@@ -599,7 +601,7 @@ int UlawDecodeEncrypt(unsigned char *pout,int offset1,unsigned char *pin,int off
 
 void* AudioIncomingThreadCallBack(void* argv)
 {
-	unsigned char audioincoming_buf[BUFFER_SIZE_2K] = {0};
+	unsigned char audioincoming_buf[AUDIO_READ_BYTE_SIZE*2] = {0};
 	int read_ret;
 
 	phone_audio.audio_read_write_thread_flag = 0;
@@ -624,15 +626,18 @@ void* AudioIncomingThreadCallBack(void* argv)
 				phone_audio.phone_audio_pcmfd = pcm_fd;
 				break;
 			}
-			else
+			else if(read_ret > 0)
+			//else
 			{
-				Fsk_AddData((signed short *)audioincoming_buf,read_ret/2);
+				//PRINT("read_ret = %d\n",read_ret);
+				if(Fsk_AddData((signed short *)audioincoming_buf,read_ret/2) == 0)
+					PRINT("Fsk_AddData err\n");
 
 				if(phone_control.get_fsk == 0)
 				{
 					if(DtmfDo((signed short *)audioincoming_buf,read_ret/2) == 2)
 					{
-						PRINT("get dtmf num...\n");
+						//PRINT("get dtmf num...\n");
 						phone_audio.get_code = 1;
 						//if(phone_control.ring_count == 0)  //没有响铃，则认为号码无效
 						//{
@@ -644,7 +649,12 @@ void* AudioIncomingThreadCallBack(void* argv)
 					}
 				}
 			}
-			usleep(15*1000);
+			else
+			{
+				usleep(10*1000);
+				continue;
+			}
+			usleep(50*1000);
 		}
 		PRINT("audio incoming thread entry idle...\n");
 		while(phone_audio.audio_incoming_thread_flag == 0)
@@ -791,12 +801,18 @@ START_WRITE:
 			}
 			else if(read_ret == AUDIO_READ_BYTE_SIZE)		
 			{
-#ifdef SAVE_FILE	
-				if(phone_control.start_dial == 0)
+				readp = (short *)(read_buf+AUDIO_READ_BYTE_SIZE);
+				for(i=0;i<read_ret/2;i++)
 				{
-					//fwrite(read_buf, 1, AUDIO_WRITE_BYTE_SIZE , read_file);
-					fwrite(out_buf, 1, AUDIO_WRITE_BYTE_SIZE , out_file);
+					//*readp++ >>= 1;
+					*readp++ /= 3;
 				}
+#ifdef SAVE_FILE	
+					memcpy(read_file_buf+global_read_buf_pos,read_buf,AUDIO_READ_BYTE_SIZE);
+					global_read_buf_pos += AUDIO_READ_BYTE_SIZE;
+					memcpy(write_file_buf+global_write_buf_pos,read_buf+AUDIO_READ_BYTE_SIZE,AUDIO_READ_BYTE_SIZE);
+					global_write_buf_pos += AUDIO_READ_BYTE_SIZE;
+					
 #endif
 				//获取output buffer的剩余空间
 				free_bytes = AUDIO_STREAM_BUFFER_SIZE - phone_audio.echo_stream_wp;
@@ -815,6 +831,11 @@ START_WRITE:
 				if(phone_audio.echo_stream_wp >= AUDIO_STREAM_BUFFER_SIZE)
 					phone_audio.echo_stream_wp = 0;
 			}
+			else if(read_ret == 0)
+			{
+				usleep(10* 1000);
+				continue;
+			}
 			print_loop++;
 			if(print_loop > 1500)//5秒打印一次
 			{
@@ -824,9 +845,9 @@ START_WRITE:
 				print_loop = 0;
 			}
 #ifdef SAVE_FILE
-			usleep(10* 1000);
+			usleep(5* 1000);
 #else
-			usleep(10* 1000);
+			usleep(60* 1000);
 #endif
 		}
 
@@ -943,7 +964,8 @@ void* AudioEchoThreadCallBack(void* argv)
 	short *out_bufp;
 	int valid_bytes = 0;
 	int free_bytes = 0;
-	int i = 0;
+	int ret,i = 0;
+	int echo_cancellation = 0;
 	while(1)
 	{
 		phone_audio.echo_stream_wp = 0;
@@ -951,6 +973,7 @@ void* AudioEchoThreadCallBack(void* argv)
 		phone_audio.audio_echo_thread_exit_flag = 0;
 		valid_bytes = 0;
 		free_bytes = 0;
+		echo_cancellation = 0;
 		while(phone_audio.audio_echo_thread_flag == 1)
 		{
 			//读取位置已经到缓冲尾部，则从头开始
@@ -970,69 +993,58 @@ void* AudioEchoThreadCallBack(void* argv)
 				valid_bytes = AUDIO_WRITE_BYTE_SIZE*2;
 			if((valid_bytes >= AUDIO_WRITE_BYTE_SIZE*2) || (phone_audio.echo_stream_wp < phone_audio.echo_stream_rp))
 			{
-#if 0
-				total_data = 0;
-				readp = (short*)&echo_stream_buffer[phone_audio.echo_stream_rp+AUDIO_WRITE_BYTE_SIZE];
-				for(i=0;i<valid_bytes/4;i++)
-				{
-					//*readp++ >>= 1;
-					total_data += abs(*readp);
-					readp++;
-				}
-				//PRINT("valid_bytes = %d\n",valid_bytes);
-				//PRINT("total_data = %d\n",total_data);
-				total_data /= (valid_bytes/4);
-				loop_times ++;
-				if(loop_times >=  750)
-				{
-					//PRINT("total_data = %d\n",total_data);
-					all_total_data += total_data;
-				//	loop_times = 0;
-				//	PRINT("reset\n");
-				//	speex_echo_state_reset(st);
-				}
-				if(loop_times >=  800)
-				{
-					PRINT("all_total_data = %d\n",all_total_data);
-					if(all_total_data <= 10000)
-					{
-						PRINT("reset\n");
-						speex_echo_state_reset(st);
-					}
-					loop_times = 0;
-					all_total_data = 0;
-				}
-#endif
-				if(st == NULL || den == NULL)
+				//if(phone_control.dial_over == 1)
+				//{
+					//readp = (short*)&echo_stream_buffer[phone_audio.echo_stream_rp];
+					//for(i=0;i<valid_bytes/4;i++)
+					//{
+						//*readp++ <<= 1;
+					//}
+				//}
+				if(st == NULL || den == NULL || dn == NULL)
 				{
 					PRINT("speex init err\n");
 					phone_audio.audio_echo_thread_flag = 0;
 					break;
 				}
-				speex_echo_cancellation(st,(spx_int16_t*)&echo_stream_buffer[phone_audio.echo_stream_rp], (spx_int16_t*)(&echo_stream_buffer[phone_audio.echo_stream_rp+AUDIO_WRITE_BYTE_SIZE]), (spx_int16_t*)out_buf);
-				speex_preprocess_run(den, (spx_int16_t*)out_buf);
-				//memcpy(out_buf,(spx_int16_t*)&echo_stream_buffer[phone_audio.echo_stream_rp],AUDIO_WRITE_BYTE_SIZE);
-				out_bufp = (short*)out_buf;
-				for(i=0;i<valid_bytes/4;i++)
+				
+				if(phone_control.dial_over == 1)
 				{
-					*out_bufp++ >>= 1;
+					if(echo_cancellation <= 10)
+						echo_cancellation ++;
 				}
-
-				//memcpy(out_buf,&echo_stream_buffer[phone_audio.echo_stream_rp],valid_bytes/2);						
+				if(echo_cancellation >= 10)
+				{
+					if(echo_cancellation == 10)
+						PRINT("start aec\n");
+					speex_echo_cancellation(st,(spx_int16_t*)&echo_stream_buffer[phone_audio.echo_stream_rp], (spx_int16_t*)(&echo_stream_buffer[phone_audio.echo_stream_rp+AUDIO_WRITE_BYTE_SIZE]), (spx_int16_t*)out_buf);
+					speex_preprocess_run(den, (spx_int16_t*)out_buf);
+				}
+				else
+					memcpy(out_buf,&echo_stream_buffer[phone_audio.echo_stream_rp],AUDIO_WRITE_BYTE_SIZE);
+				//readp = (short*)&echo_stream_buffer[phone_audio.echo_stream_rp+AUDIO_WRITE_BYTE_SIZE];
+				//for(i=0;i<valid_bytes/4;i++)
+				//{
+					//*readp++ >>= 1;
+				//}			
+				speex_preprocess_run(dn, (spx_int16_t*)out_buf);			
 			
-				//PRINT("phone_audio.echo_stream_rp = %d\n",phone_audio.echo_stream_rp);
-				//PRINT("phone_audio.echo_stream_wp = %d\n",phone_audio.echo_stream_wp);
+				out_bufp = (short*)out_buf;
+#ifdef SAVE_OUT_DATE
+				memcpy(global_out_buf+global_out_buf_pos,out_buf,AUDIO_WRITE_BYTE_SIZE);
+				global_out_buf_pos += AUDIO_WRITE_BYTE_SIZE;
+#endif
 				//获取output buffer的剩余空间
 				free_bytes = AUDIO_STREAM_BUFFER_SIZE - phone_audio.output_stream_wp;
 				if(free_bytes < AUDIO_WRITE_BYTE_SIZE)
 				{
-					memcpy((void *)(&output_stream_buffer[phone_audio.output_stream_wp]),(void *)(out_buf),free_bytes);
-					memcpy((void *)(output_stream_buffer),(void *)(&out_buf[free_bytes]),AUDIO_WRITE_BYTE_SIZE - free_bytes);
+					memcpy((void *)(&output_stream_buffer[phone_audio.output_stream_wp]),(void *)(out_bufp),free_bytes);
+					memcpy((void *)(output_stream_buffer),(void *)(&out_bufp[free_bytes]),AUDIO_WRITE_BYTE_SIZE - free_bytes);
 					phone_audio.echo_stream_rp = (AUDIO_WRITE_BYTE_SIZE - free_bytes);					
 				}
 				else
 				{
-					memcpy((void *)(&output_stream_buffer[phone_audio.output_stream_wp]),(void *)(out_buf),AUDIO_WRITE_BYTE_SIZE);					
+					memcpy((void *)(&output_stream_buffer[phone_audio.output_stream_wp]),(void *)(out_bufp),AUDIO_WRITE_BYTE_SIZE);					
 					phone_audio.echo_stream_rp += valid_bytes;					
 				}
 				phone_audio.output_stream_wp += AUDIO_WRITE_BYTE_SIZE;
@@ -1042,7 +1054,12 @@ void* AudioEchoThreadCallBack(void* argv)
 					phone_audio.echo_stream_rp = 0;
 
 			}
-			usleep(5*1000);
+			else
+			{
+				usleep(5*1000);
+				continue;
+			}
+			usleep(20*1000);
 		}
 		PRINT("audio echo thread entry idle...\n");
 		phone_audio.audio_echo_thread_exit_flag = 1;

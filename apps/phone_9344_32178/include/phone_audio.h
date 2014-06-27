@@ -5,6 +5,9 @@
 #include "common.h"
 #include "si32178.h"
 
+//#define SAVE_OUT_DATE
+//#define SAVE_FILE
+
 #define SET_WRITE_TYPE      _IOW('N', 0x26, int)
 #define SLIC_INIT			_IOW('N', 0x27, int)
 #define SLIC_RELEASE		_IOW('N', 0x28, int)

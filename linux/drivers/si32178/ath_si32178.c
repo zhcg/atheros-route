@@ -490,7 +490,7 @@ int ath_slic_open(struct inode *inode, struct file *filp)
 	}
 #endif
 //	opened = (sc->ropened | sc->popened);
-	current_read_buf = kmalloc(1600,GFP_KERNEL);
+	current_read_buf = kmalloc(3200,GFP_KERNEL);
 	if(current_read_buf == NULL)
 	{
 		return -1;
@@ -602,11 +602,12 @@ ssize_t ath_slic_read(struct file * filp, char __user * buf,
 		return 0;
 	}	
 	postion_w = space_valid(pl_dmabuf->play_tail, postion_r);
-//	for(i = 0;i < 8;i++)
-//		postion_w = prev_tail(postion_w);
-//	for(i = 0;i < 3;i++)
-//		postion_w = next_tail(postion_w);
-	
+
+	//for(i = 0;i < 4;i++)
+		//postion_w = prev_tail(postion_w);
+	for(i = 0;i < 2;i++)
+		postion_w = next_tail(postion_w);
+
 	pdes_buffer = (unsigned char *)(&current_read_buf[count]);	
 	for(i=0;i<blocks;i++)
 	{

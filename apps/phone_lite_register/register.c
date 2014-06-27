@@ -51,7 +51,7 @@ int sqlite3_select(char *tb_name,char *data_name, char *data_value,char *where_n
         PRINT("para is NULL!\n");
         return -1;
     }
-    if (sqlite3_open("/var/db/terminal_base_db", &db) != 0)
+    if (sqlite3_open("/var/terminal_dev_register/db/terminal_base_db", &db) != 0)
     {
         PRINT("%s\n",sqlite3_errmsg(db));
         return -2;
@@ -113,7 +113,7 @@ int sqlite3_insert(int columns_count,char *tb_name, char (*columns_name)[30], ch
         return -2;
     }
     
-    if (sqlite3_open("/var/db/terminal_base_db", &db) != 0)
+    if (sqlite3_open("/var/terminal_dev_register/db/terminal_base_db", &db) != 0)
     {
         PRINT("open err %s\n", sqlite3_errmsg(db));
         return -3;
@@ -171,7 +171,7 @@ int sqlite3_delete_row(unsigned char columns_count,char *tb_name, char (*columns
         return -2;
     }
     
-    if (sqlite3_open("/var/db/terminal_base_db", &db) != 0)
+    if (sqlite3_open("/var/terminal_dev_register/db/terminal_base_db", &db) != 0)
     {
         PRINT("open err%s\n", sqlite3_errmsg(db));
         return -3;
@@ -220,7 +220,7 @@ int sqlite3_update(char *tb_name,unsigned char columns_count, char (*columns_nam
         return -2;
     }
     
-    if (sqlite3_open("/var/db/terminal_base_db", &db) != 0)
+    if (sqlite3_open("/var/terminal_dev_register/db/terminal_base_db", &db) != 0)
     {
         PRINT("open err%s\n", sqlite3_errmsg(db));
         return -3;

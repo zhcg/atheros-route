@@ -647,8 +647,8 @@ phone_lite_register:
 	$(STRIP) sqlite-mips-linux/lib/libsqlite3.so.0.8.6; \
 	cp -f phone_lite_register $(INSTALL_ROOT)/bin; \
 	cp -af sqlite-mips-linux/lib/libsqlite3.so.0.8.6 $(INSTALL_ROOT)/lib; \
-	mkdir -p $(INSTALL_ROOT)/var/db/; \
-	cp -af terminal_base_db $(INSTALL_ROOT)/var/db/; \
+	mkdir -p $(INSTALL_ROOT)/var/terminal_dev_register/db/; \
+	cp -af terminal_base_db $(INSTALL_ROOT)/var/terminal_dev_register/db/; \
 
 AR9344_interface:
 	@echo making AR9344_interface application

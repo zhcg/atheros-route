@@ -162,11 +162,7 @@ int sqlite3_interface(char *tb_name,char *data_name, char *data_value,char *wher
         PRINT("para is NULL!\n");
         return -1;
     }
-#ifndef B6L
     if (sqlite3_open("/var/terminal_dev_register/db/terminal_base_db", &db) != 0)
-#else
-    if (sqlite3_open("/var/db/terminal_base_db", &db) != 0)
-#endif	
     {
         PRINT("%s\n",sqlite3_errmsg(db));
         return -1;
@@ -559,6 +555,21 @@ ONHOOK_SUCCESS:
 		onhook_limit = 0;
 		dev->attach=0;
 		dev->audio_reconnect=0;
+#ifdef SAVE_OUT_DATE
+		fwrite(global_out_buf, 1, global_out_buf_pos , out_file);
+		global_out_buf_pos = 0;
+		fclose(out_file);
+		//PRINT("save out file success\n");
+#endif
+#ifdef SAVE_FILE
+		fwrite(read_file_buf, 1, global_read_buf_pos , read_file);
+		fwrite(write_file_buf, 1, global_write_buf_pos , write_file);
+		global_read_buf_pos = 0;
+		global_write_buf_pos = 0;
+		fclose(read_file);
+		fclose(write_file);
+		PRINT("save file success\n");
+#endif
 
 		start_read_incoming();
 		if(phone_control.vloop > 3 || phone_control.vloop < -3)
@@ -1733,7 +1744,7 @@ int init_control()
 
 	phone_audio.init_audio();
 
-	if(si32178_init(0,0,5,2,10,1,1,0)==-1)
+	if(si32178_init(0,0,0,0,10,1,1,0)==-1)
 	{
 		PRINT("si32178 init fail\n");
 		exit(-1);
@@ -2297,7 +2308,8 @@ void *loop_check_ring(void * argv)
 				if(phone_control.get_fsk == 1)
 				{
 					PRINT("num_len = %d\n",strlen(fskmsg.num));
-					if(fskmsg.isgood == TRUE)
+					//zb 14-06-27
+					//if(fskmsg.isgood == TRUE)
 					{
 						memcpy(incoming_num,fskmsg.num,strlen(fskmsg.num));
 					}
