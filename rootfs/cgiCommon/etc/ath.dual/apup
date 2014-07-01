@@ -298,10 +298,11 @@ if [ "${AP_STARTMODE}" = "repeater" -o "${AP_STARTMODE}" = "repeater-ind" ]; the
 fi
 
 if [ "${AP_STARTMODE}" = "repeater_wisp" ]; then
-        APMODE="ap-wds"
-	STAMODE="sta-wds"
-    rm -rf /tmp/.apcfg
+        APMODE="ap-wds-ind"
+	STAMODE="sta-wds-ind"
+	rm -rf /tmp/.apcfg
 
+	ifconfig eth0 down
     VAP_NUM=0
     makeVAP ${APMODE} "$AP_SSID" $AP_RADIO_ID:$AP_RFPARAM $BEACON_INT
     if [ $? != 0 ]; then

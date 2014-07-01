@@ -36,13 +36,15 @@ fi
 
 . /etc/ath/apcfg
 
-APMODE="ap-wds"
-STAMODE="sta-wds"
+/etc/rc.d/rc.bridge
+
+APMODE="ap-wds-ind"
+STAMODE="sta-wds-ind"
 
 #work_flag=`cfg -e | grep  AP_STARTMODE= | awk -F'=' '{print $2}'`
-#if [ "${work_flag}" = "repeater" ];then
-#	ifconfig eth0 down
-#fi
+if [ "${work_flag}" = "repeater" ];then
+	ifconfig eth0 down
+fi
 
 if [ $number_pci = 1 ]; then
 	VAP_NUM=3
@@ -106,8 +108,7 @@ if [ "${wds_flag}" = "on" ];then
 			sleep 2
 		fi
 		nat_wwan.sh ath$VAP_NUM
-		sleep 5
-		udhcpc -b -i ath$VAP_NUM -h HBD-Router -s /etc/udhcpc.script
+		VAP_NUM_2=$VAP_NUM
 		VAP_NUM=$(($VAP_NUM+1))
 	fi
 fi
@@ -127,8 +128,26 @@ if [ $number_pci = 1 ]; then
 				wpa_supplicant `cat /tmp/sta_conf_filename` &				
 			fi
 			nat_wwan.sh ath$VAP_NUM
-			sleep 5
-			udhcpc -b -i ath$VAP_NUM -h HBD-Router -s /etc/udhcpc.script
+		fi
+	fi
+fi
+
+if [ "${wds_flag}" = "on" ];then
+	if [ "s$STA_SSID" != "s" ];then
+		sleep 30
+		udhcpc -b -i ath$VAP_NUM_2 -h HBD-Router -s /etc/udhcpc.script
+	fi
+fi
+
+if [ $number_pci = 1 ]; then
+	if [ "${wds_flag_2}" = "on" ];then	
+		if [ "s$STA_SSID_2" != "s" ];then
+			if [ "${wds_flag}" = "on" ];then
+				sleep 3
+			else
+				sleep 30
+			fi
+				udhcpc -b -i ath$VAP_NUM -h HBD-Router -s /etc/udhcpc.script
 		fi
 	fi
 fi
