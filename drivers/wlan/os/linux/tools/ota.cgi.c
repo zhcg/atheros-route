@@ -1,47 +1,106 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <stdio.h>  
+#include <stdlib.h>  
+#include <sys/types.h>  
+#include <sys/stat.h>  
+#include <fcntl.h>  
+#include <string.h>  
+#include <unistd.h>  
+#include <errno.h> 
 
+#define pipein "/tmp/USER_DETECTION_STATUS"
+#define pipeout "/tmp/VERSION_STATUS"
+
+#define READMODE (O_RDONLY)  
+#define WRITEMODE (O_WRONLY)  
 
 char* getcgidata(FILE* fp, char* requestmethod);
 static FILE *errOut;
 
-
-char *Execute_cmd(char *cmd,char *buffer)
+int timing(int fd ,int secs)
 {
-    FILE            *f;
-    char            *retBuff = buffer;
-    char            cmdLine[1024];
+        fd_set rdfds;
+        struct timeval tv;
+        int ret;
+        FD_ZERO(&rdfds);
+        FD_SET(fd, &rdfds);
+        tv.tv_sec = secs;
+        tv.tv_usec = 0;
+        ret = select(fd+1, &rdfds, NULL, NULL, &tv);
+        FD_ZERO(&rdfds);
+        return ret;
 
-    /*
-    ** Provide he command string to popen
-    */
-
-    f = popen(cmd, "r");
-
-    if(f)
-    {
-        /*
-        ** Read each line.
-        */
-
-        while(1)
-        {
-            *buffer = 0;
-            fgets(buffer,120,f);
-            if(strlen(buffer) == 0)
-            {
-                break;
-            }
-            strcat(buffer,"<br>");
-            buffer += strlen(buffer);
-        }
-
-        pclose(f);
-    }
-
-    return(retBuff);
 }
+int pipi_set(int type)
+{  
+    char buf[1024];  
+    int fd;  
+    int readnum;  
+    int nwrite;
+    int seconds=0;
+    if ((fd = open(pipein, WRITEMODE)) < 0) 
+    {  
+            fprintf(errOut,"open pipein fail!\n");  
+            exit(1);  
+    }  
+    /*向管道文件中写入数据，在这里要用strlen，如果用sizeof，则只是4 个字节的指针长度*/  
+    if(type == 1)
+    {
+        if (nwrite = write(fd,"1",2 ) < 0) 
+        {  
+            if (errno == EAGAIN) 
+            {  
+                  fprintf(errOut,"1The FIFO has not been read yet.Please try later\n");  
+            }  
+        } 
+        seconds = 5;
+    }
+    else
+    {
+        if (nwrite = write(fd,"2",2 ) < 0) 
+        {  
+            if (errno == EAGAIN) 
+            {  
+                  fprintf(errOut,"2The FIFO has not been read yet.Please try later\n");  
+            }  
+        }
+        seconds = 60;
+    }
+ 
+    close(fd);
+
+    /*打开有名管道，并设置非阻塞标志*/  
+    if ((fd = open(pipeout, READMODE)) < 0) 
+    {  
+            fprintf(errOut,"open pipeout fail!\n");  
+            exit(1);  
+    }  
+
+    {
+        int timing_return = timing(fd ,seconds);
+        if(timing_return == 0)
+        {
+            fprintf(errOut,"timeout!\n");  
+        }
+        else if(timing_return < 0)
+        {
+             fprintf(errOut,"select error !!!!\n");
+        }
+        else
+        {
+                bzero(buf, sizeof(buf));  
+                readnum = read(fd, buf, sizeof(buf));
+    /*如果读到数据则打印出来，如果没有数据，则忽略*/  
+                if (readnum != 0) 
+                {  
+                    buf[readnum] = '\0';  
+                    printf("%s", buf); 
+                    fprintf(errOut,"output %s \n",buf);  
+                }
+        }
+    }
+    close(fd);  
+    return 0;  
+}  
 
 int main()
    {
@@ -86,15 +145,17 @@ int main()
 
     if(strcmp(name,"check")==0)
     {
-        Execute_cmd("AR9344_interface 1", rspBuff1);
-        printf("%s",rspBuff1);
-        fprintf(errOut,"check:%s!!!!!  %d \n",rspBuff1,strlen(rspBuff1));
+        //Execute_cmd("AR9344_interface 1", rspBuff1);
+        //printf("%s",rspBuff1);
+       // fprintf(errOut,"check:%s!!!!!  %d \n",rspBuff1,strlen(rspBuff1));
+        pipi_set(1);
     }
     if(strcmp(name,"up")==0)
     {
-        Execute_cmd("AR9344_interface 2", rspBuff1);
-        printf("%s",rspBuff1);
-        fprintf(errOut,"check:%s!!!!!  %d \n",rspBuff1,strlen(rspBuff1));
+        //Execute_cmd("AR9344_interface 2", rspBuff1);
+       // printf("%s",rspBuff1);
+       // fprintf(errOut,"check:%s!!!!!  %d \n",rspBuff1,strlen(rspBuff1));
+        pipi_set(2);
     }
     return 1;
 }

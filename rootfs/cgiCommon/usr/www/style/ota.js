@@ -31,12 +31,12 @@ function stateChanged1()
 	{
 		var result = xmlHttpota.responseText;
 		//alert(zidong);
-		if(result.indexOf("NO NEW SYSTEM!!!") > 0  )
+		if(result.indexOf("NO NEW SYSTEM!!!") >= 0  )
 		{
 			trans_inner("cres","admw nonewversion");
 			widget_hide("otaupload");
 		}
-		else if(result.indexOf("NEW SYSTEM!!!") > 0  )
+		else if(result.indexOf("NEW SYSTEM!!!") >= 0  )
 		{
 			trans_inner("cres","admw newversion");
 			widget_display("otaupload");
@@ -53,7 +53,7 @@ function stateChanged2()
 	if (xmlHttpota.readyState==4 || xmlHttpota.readyState=="complete")
 	{
 		var result = xmlHttpota.responseText;
-		if(result.indexOf("UPDATE SYSTEM!!!") > 0  )
+		if(result.indexOf("UPDATE SYSTEM!!!") >= 0  )
 		{
 			waitgifshow();
 			window.parent.ttzhuan(document.getElementById("IPA").value);
