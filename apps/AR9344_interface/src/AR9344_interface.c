@@ -8,6 +8,8 @@
 #include <string.h>
 
 
+int Fd_READ;
+int Fd_WRITE;
 int as532_fd = -1;
 int remote_server_fd = -1;
 const char hex_to_asc_table[16] = {0x30,0x31,0x32,0x33,0x34,0x35,0x36,0x37,
@@ -197,6 +199,8 @@ char *generate_get_remote_msg(char *remote_type)
 
 int prase_532_conf_msg(char *msg)
 {
+	char local_md5_buf[BUF_LEN_64]={0};
+	char cmd[BUF_LEN_256]={0};
 	char *msgp;
 	char *end;
 	char ver_buf[32]={0};
@@ -299,6 +303,30 @@ int prase_532_conf_msg(char *msg)
 	memset(remote_as532_conf_md5,0,sizeof(remote_as532_conf_md5));
 	memcpy(remote_as532_conf_md5,msgp,end-msgp);
 	PRINT("remote_as532_conf_md5 = %s\n",remote_as532_conf_md5);
+	
+	for(i=0;i<strlen(msg);i++)
+		printf("%c",msg[i]);
+	printf("\n");
+	if(detection_type == -1)
+	{
+		if((strstr(msg, ISFORCEUPDATE)) != 0)
+		{
+			if(get_remote_532_image()!=0)
+                		return -7;
+             	  	if(check_md5(local_md5_buf) == 0)
+               		{
+                		printf("UPDATE SYSTEM!!!\n");
+				sprintf(cmd,"%s%s%s","sysupgrade"," ",DOWNLOAD_AS532_FILE);
+				PRINT("cmd = %s\n",cmd);
+				system(cmd);
+               		}		
+		}
+		else
+		{
+
+		}
+	}
+
 	return 0;	
 }
 
@@ -445,25 +473,38 @@ int init_as532()
 	{
 		if(detection_type == 1)
 		{
+			detection_type = -1;
 			printf("NEW SYSTEM!!!\n");
+			write(Fd_WRITE, "NEW SYSTEM!!!", sizeof("NEW SYSTEM!!!"));
 			return 0;
 		}
 		else if(detection_type == 2)
 		{
+			detection_type = -1;
 		//	PRINT("as532 needs update\n");
 			if(get_remote_532_image()!=0)
 				return -7;
 			if(check_md5(local_md5_buf) == 0)
 			{
 				printf("UPDATE SYSTEM!!!\n");
+				write(Fd_WRITE, "UPDATE SYSTEM!!!", sizeof("UPDATE SYSTEM!!!"));
 	
 			}
 		}
 	}
 	else
 	{
-		printf("NO NEW SYSTEM!!!\n");
-		return -1;
+		if(detection_type != -1)
+		{
+			printf("NO NEW SYSTEM!!!\n");
+			write(Fd_WRITE, "NO NEW SYSTEM!!!", sizeof("NO NEW SYSTEM!!!"));
+			return -1;
+		}
+		else
+		{
+			return -1;
+
+		}
 	}
 
 	return -9;
@@ -705,30 +746,82 @@ int is_b6l()
 	return -1;
 }
 
+
+int timing(int fd)
+{
+	fd_set rdfds;
+	struct timeval tv;
+	int ret;
+	FD_ZERO(&rdfds);
+	FD_SET(fd, &rdfds);
+	tv.tv_sec = 60*30;
+	tv.tv_usec = 0;
+	ret = select(fd+1, &rdfds, NULL, NULL, &tv);
+	FD_ZERO(&rdfds);
+	return ret;
+
+}
+
+
+
 int main(int argc,char **argv)
 {
-	
-	if(*argv[1] == 49)
+	int timing_return;
+	char buf[4];
+	char order[48];
+	memset(order, 0, 48);
+	sprintf(order, "rm %s", USER_DETECTION_STATUS);
+	system(order);
+	memset(order, 0, 48);
+	sprintf(order, "rm %s", VERSION_STATUS);
+	system(order);
+	mkfifo(USER_DETECTION_STATUS, 0666);	
+	mkfifo(VERSION_STATUS, 0666);	
+	Fd_READ = open(USER_DETECTION_STATUS, O_RDWR);
+	if(Fd_READ < 0)
 	{
-		detection_type = 1;
+		printf("%s is not open!!!\n", USER_DETECTION_STATUS);
+		exit(1);
 	}
-	else if(*argv[1] == 50)
+	Fd_WRITE = open(VERSION_STATUS, O_RDWR);
+	if(Fd_WRITE < 0)
 	{
-		detection_type = 2;
+		printf("%s is not open!!!\n", VERSION_STATUS);
+		exit(1);
 	}
-	else
-	{
-		detection_type = -1;
-	}
-	
-	if(testendian()==0)
-	{
-		printf("This is not A20\n");
-//		is_b6l();
-	}
+
 	load_config();
-	init_as532();
-	
-//	close(as532_fd);
-	return 0;
+	while(1)
+	{
+		timing_return = timing(Fd_READ);
+		if(timing_return == 0)
+		{
+			detection_type = -1;
+			init_as532();
+		}
+		else if(timing_return < 0)
+		{
+			printf("select error !!!!\n");
+		}
+		else
+		{
+			memset(buf, 0, 4);
+			read(Fd_READ, buf, 4);
+			if(strstr(buf, "1") != 0)
+			{
+				detection_type = 1;
+			}
+			else if(strstr(buf, "2") != 0)
+			{
+				detection_type = 2;
+			}
+			else
+			{
+				continue;
+			}
+			init_as532();
+		}		
+	}
+//		close(as532_fd);
+		return 0;
 }

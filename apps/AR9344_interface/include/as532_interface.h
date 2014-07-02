@@ -29,5 +29,8 @@
 #define DOWNLOAD_AS532_FILE "/tmp/AR9344.bin"
 #define DOWNLOAD_AS532_TEMP_CONF_FILE	"/etc/AR9344_tmp.conf"
 #define DOWNLOAD_AS532_CONF_FILE	"/etc/AR9344.conf"
+#define ISFORCEUPDATE "\"isForceUpdate\":\"1\""
 
+#define USER_DETECTION_STATUS "/tmp/USER_DETECTION_STATUS"
+#define VERSION_STATUS	"/tmp/VERSION_STATUS"
 #endif
