@@ -1019,6 +1019,7 @@ void* AudioEchoThreadCallBack(void* argv)
 						PRINT("start aec\n");
 					speex_echo_cancellation(st,(spx_int16_t*)&echo_stream_buffer[phone_audio.echo_stream_rp], (spx_int16_t*)(&echo_stream_buffer[phone_audio.echo_stream_rp+AUDIO_WRITE_BYTE_SIZE]), (spx_int16_t*)out_buf);
 					speex_preprocess_run(den, (spx_int16_t*)out_buf);
+					speex_preprocess_run(dn, (spx_int16_t*)out_buf);			
 				}
 				else
 					memcpy(out_buf,&echo_stream_buffer[phone_audio.echo_stream_rp],AUDIO_WRITE_BYTE_SIZE);
@@ -1027,7 +1028,6 @@ void* AudioEchoThreadCallBack(void* argv)
 				//{
 					//*readp++ >>= 1;
 				//}			
-				speex_preprocess_run(dn, (spx_int16_t*)out_buf);			
 			
 				out_bufp = (short*)out_buf;
 #ifdef SAVE_OUT_DATE

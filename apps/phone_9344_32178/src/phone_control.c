@@ -406,7 +406,6 @@ OFFHOOK:
 				break;
 			}
 		}
-
 		phone_control.global_phone_is_using = 1;
 		if(dev->isswtiching == 0)
 		{
@@ -2298,7 +2297,6 @@ void *loop_check_ring(void * argv)
 			{
 				PRINT("phone_control.ring_count = %d\n",phone_control.ring_count);
 				//产生Incoming
-				PRINT("Incoming.....\n");
 				phone_control.ring_count += 120;
 				memset(incoming_num,0,SENDBUF);
 				if(phone_audio.get_code == 1)
@@ -2318,10 +2316,14 @@ void *loop_check_ring(void * argv)
 				phone_audio.get_code = 0;
 				phone_control.get_fsk = 0;
 				//PRINT("num: %s\n",incoming_num);
-				generate_incoming_msg(packet_buffer,incoming_num,strlen(incoming_num));
-				//stop_read_incoming();
-				memcpy((unsigned char*)(&handle_up_msg_buffer[phone_control.handle_up_msg_wp_pos]),packet_buffer,strlen(incoming_num)+12);
-				phone_control.handle_up_msg_wp_pos += (strlen(incoming_num)+12);
+				if(strlen(incoming_num) != 1)
+				{
+					PRINT("Incoming.....\n");
+					generate_incoming_msg(packet_buffer,incoming_num,strlen(incoming_num));
+					//stop_read_incoming();
+					memcpy((unsigned char*)(&handle_up_msg_buffer[phone_control.handle_up_msg_wp_pos]),packet_buffer,strlen(incoming_num)+12);
+					phone_control.handle_up_msg_wp_pos += (strlen(incoming_num)+12);
+				}
 			}
 			if( (phone_control.ring_count > 120) && ((phone_control.ring_count % 20) == 0) && (phone_control.ring_neg_count > 0))
 			{
