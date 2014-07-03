@@ -34,7 +34,7 @@ ifconfig ath2 down;ifconfig ath2 up
 ifconfig ath3 down;ifconfig ath3 up
 fi
 
-. /etc/ath/apcfg
+#. /etc/ath/apcfg
 
 /etc/rc.d/rc.bridge
 
@@ -42,7 +42,7 @@ APMODE="ap-wds-ind"
 STAMODE="sta-wds-ind"
 
 #work_flag=`cfg -e | grep  AP_STARTMODE= | awk -F'=' '{print $2}'`
-if [ "${work_flag}" = "repeater" ];then
+if [ "${work_flag}" = "repeater_wisp" ];then
 	ifconfig eth0 down
 fi
 
