@@ -36,8 +36,6 @@ fi
 
 #. /etc/ath/apcfg
 
-/etc/rc.d/rc.bridge
-
 APMODE="ap-wds-ind"
 STAMODE="sta-wds-ind"
 
