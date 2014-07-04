@@ -43,6 +43,7 @@ unsigned char audio_tb_recvbuf[BUFFER_SIZE_2K*5];
 int dtmf_ret = 0;
 int total_dtmf_ret = 0;
 unsigned char dtmf_buf[6000]={0};	
+pthread_mutex_t speex_mutex;
 
 #ifdef SAVE_FILE
 FILE* read_file;
@@ -271,6 +272,7 @@ void stopaudio(dev_status_t* devp,int flag,int reconnect_flag)
 		{
 			PRINT("speex release\n");
 			usleep(50*1000);
+			pthread_mutex_lock(&speex_mutex);
 			if(st != NULL)
 			{
 				speex_echo_state_destroy(st);
@@ -286,6 +288,7 @@ void stopaudio(dev_status_t* devp,int flag,int reconnect_flag)
 				speex_preprocess_state_destroy(dn);
 				dn = NULL;
 			}
+			pthread_mutex_unlock(&speex_mutex);
 		}
 		ioctl(phone_audio.phone_audio_pcmfd,SLIC_RELEASE,0);
 		total_dtmf_ret = 0;
@@ -357,6 +360,7 @@ int init_audio(void)
 
 		phone_audio.phone_audio_pcmfd = pcm_fd;
 	}
+    pthread_mutex_init(&speex_mutex, NULL);
 	return 0;
 }
 
@@ -1013,13 +1017,16 @@ void* AudioEchoThreadCallBack(void* argv)
 					if(echo_cancellation <= 10)
 						echo_cancellation ++;
 				}
-				if(echo_cancellation >= 10)
+				if(echo_cancellation >= 10 && total_dtmf_ret <= 16000 )
+				//if(echo_cancellation < 0/* && total_dtmf_ret <= 16000 */)
 				{
 					if(echo_cancellation == 10)
 						PRINT("start aec\n");
+					pthread_mutex_lock(&speex_mutex);
 					speex_echo_cancellation(st,(spx_int16_t*)&echo_stream_buffer[phone_audio.echo_stream_rp], (spx_int16_t*)(&echo_stream_buffer[phone_audio.echo_stream_rp+AUDIO_WRITE_BYTE_SIZE]), (spx_int16_t*)out_buf);
 					speex_preprocess_run(den, (spx_int16_t*)out_buf);
 					speex_preprocess_run(dn, (spx_int16_t*)out_buf);			
+					pthread_mutex_unlock(&speex_mutex);
 				}
 				else
 					memcpy(out_buf,&echo_stream_buffer[phone_audio.echo_stream_rp],AUDIO_WRITE_BYTE_SIZE);
@@ -1353,9 +1360,9 @@ void* AudioRecvThreadCallBack(void* argv)
 					PRINT("dtmf over!!!!\n");
 					phone_audio.dtmf_over = 1;
 					dtmf_recv_times = 0;
-					phone_audio.input_stream_wp = phone_audio.input_stream_rp = 0;
-					ioctl(phone_audio.phone_audio_pcmfd,SLIC_RELEASE,0);
-					ioctl(phone_audio.phone_audio_pcmfd,SLIC_INIT,0);
+					//phone_audio.input_stream_wp = phone_audio.input_stream_rp = 0;
+					//ioctl(phone_audio.phone_audio_pcmfd,SLIC_RELEASE,0);
+					//ioctl(phone_audio.phone_audio_pcmfd,SLIC_INIT,0);
 					//continue;
 				}
 				else
