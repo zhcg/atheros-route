@@ -117,10 +117,10 @@ function showpxb()
 	document.getElementById("demshow").style.width=pxi.toString()+"%";
 	document.getElementById("devval").innerHTML=pxi.toString()+"%";
 	pxi++;
-	if(pxi==91)
+	if(pxi==101)
 	{
 		clearInterval(timer1);
-		pxi=90;
+		pxi=100;
 	}
 	
 }
@@ -143,7 +143,7 @@ function showpxe()
 }
 function endshow()
 {
-	pxi=90;
+	pxi=100;
 	timer2=setInterval('showpxe()',1000);
 }
 function deleteCookie(name)

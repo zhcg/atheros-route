@@ -10,7 +10,7 @@ function  reboothandleStateChange()
 		{
 			clearTimeout(timeID);
 			window.parent.endshow();
-			setTimeout(function(){window.top.location.href=destnation;},10000);
+			setTimeout(function(){window.top.location.href=destnation;},2000);
 		}
 	}
 }

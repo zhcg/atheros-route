@@ -4,9 +4,9 @@
 	<message msgid="R_SUCCESS" msgstr="设置成功" />
 	<message msgid="R_FAIL" msgstr="设置失败" />
 	<message msgid="REBOOT" msgstr="正在重新启动，请稍等......" />
-	<message msgid="CFGBACK" msgstr="配置导入结束，正在重新启动，请稍等，若页面长时间不跳转，请进行手动连接" />
+	<message msgid="CFGBACK" msgstr="配置导入结束，正在重新启动，若页面长时间不跳转，请检查网络连接并进行手动连接" />
 	<message msgid="UPLOAD" msgstr="固件升级结束，正在重新启动，请稍等......" />
-	<message msgid="FACTORY" msgstr="正在恢复出厂设置，稍后重新启动，若页面长时间不跳转，请进行手动连接" />
+	<message msgid="FACTORY" msgstr="恢复出厂设置结束，正在重新启动，若页面长时间不跳转，请检查网络连接并进行手动连接" />
 	<message msgid="settingwaiting" msgstr="正在配置,请您稍等......" />
 	<message msgid="FUPLOAD" msgstr="固件升级中，稍后会重新启动，请稍等......" />
 	<message msgid="loginfail" msgstr="密码错误" />
