@@ -7,18 +7,32 @@
       hh=`expr $hh \* 3600`
       mm=`expr $mm \* 60`
       ts=`expr $hh + $mm`
-      ts=`expr $ts + $ss`
+      ts=`expr $ts + $ss`   
       
   man_flag=1
+  #pppoe-stop > /dev/null 2>&1
+  #  sleep 2
+  #pppoe-start > /dev/null 2>&1
+  #  sleep 7
       
   while [ true ] ; do
-    sleep 1
+    sleep 1 
     pppoe_mode=`grep 'PPPOE_MODE' /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-6`
     wan_mode=`grep 'WAN_MODE' /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-5`
     ppp0=`route -n|grep ppp0|awk -F ' ' '{print$8}'|awk 'NR==1'`
     sta_addr=`wlanconfig ath0 list | grep ADDR |awk '{print $1}'|cut -c1-4`
     #eth1_state=`dmesg | grep -n 'entering'| tail -n 1 | awk -F ' ' '{print$5}'`
-     eth1_state=`ifconfig eth1 | grep BROADCAST | awk -F ' ' '{print $3}'`
+    #eth1_state=`ifconfig eth1 | grep BROADCAST | awk -F ' ' '{print $3}'` 
+     eth1_port3=$((`ethreg -i eth1 -p 3 0x11 | awk -F '=' '{print$2}'| cut -c8`>>2))
+     eth1_port2=$((`ethreg -i eth1 -p 2 0x11 | awk -F '=' '{print$2}'| cut -c8`>>2))
+     
+     if [ "$eth1_port3" = "1" -o "$eth1_port2" = "1" ]; then
+       #lan is running
+       eth1_state=RUNNING
+     else
+       #lan is bad
+       eth1_state=BAD
+     fi
    
     #update tn every loop
     hh=`date +%H`
@@ -40,6 +54,11 @@
       ts=`expr $ts + $ss`
     fi
     
+    #auto mode
+    if [ "$wan_mode" = "pppoe" ] && [ "$pppoe_mode" = "auto" ]; then
+       pppoe-start > /dev/null 2>&1
+         sleep 7
+    fi
     #tim mode
     if [ "$wan_mode" = "pppoe" ] && [ "$pppoe_mode" = "timing" ]; then
        tim_bh=`grep 'PPPOE_TIMING_BH' /tmp/.apcfg | awk -F '=' '{ print $2 }'`
