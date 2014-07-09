@@ -4,6 +4,10 @@
 #include "phone_control.h"
 #include "common.h"
 #include "si32178.h"
+#include "speex/speex_echo.h"
+#include "speex/speex_preprocess.h"
+#include "signal_processing_library.h"
+#include "echo_control_mobile.h"
 
 //#define SAVE_OUT_DATE
 //#define SAVE_FILE
@@ -13,6 +17,13 @@
 #define SLIC_RELEASE		_IOW('N', 0x28, int)
 #define PSTN 				1
 #define TALKBACK 			0
+
+typedef struct {
+  unsigned short y[4];
+  unsigned short x[2];
+  const unsigned short* ba;
+} HighPassFilterState;  
+
 struct class_phone_audio
 {
 	int (*init_audio)(void);
@@ -47,6 +58,12 @@ struct class_phone_audio
 	int dtmf_over; //dtmf发送结束
 	char start_dtmf;
 	char key[8];
+	SpeexEchoState *st;
+	SpeexPreprocessState *den;
+	SpeexPreprocessState *dn;
+	pthread_mutex_t aec_mutex;
+	HighPassFilterState hpf;
+	void *aecmInst;
 };
 
 int init_audio(void);

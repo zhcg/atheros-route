@@ -31,6 +31,7 @@
 #include <signal.h>
 #include <regex.h>
 #include <sys/wait.h>
+#include <assert.h>
 
 #define REGISTER
 
@@ -66,12 +67,13 @@
 #define PRINT(format, ...)
 #endif
 
-//#if PRINT_INFO==1
-//#define PRINT(format, ...) printf("[%s][%s][-%d-] "format"",system_time(),__FUNCTION__,__LINE__,##__VA_ARGS__)
-//#else
-//#define PRINT(format, ...)
-//#endif
-
+/*
+#if PRINT_INFO==1
+#define PRINT(format, ...) printf("[%s][%s][-%d-] "format"",system_time(),__FUNCTION__,__LINE__,##__VA_ARGS__)
+#else
+#define PRINT(format, ...)
+#endif
+*/
 
 #define MAX(A,B) ((A)>(B))?(A):(B)
 #ifdef B6
@@ -89,7 +91,6 @@
 #define DELAY						20000
 #define CODE_MAX					32635	
 #define AUDIO_SEND_PACKET_SIZE		1600
-//#define AUDIO_READ_BYTE_SIZE		256
 #define AUDIO_READ_BYTE_SIZE		1280//512//448
 #define AUDIO_WRITE_BYTE_SIZE		AUDIO_READ_BYTE_SIZE
 #define AUDIO_STREAM_BUFFER_SIZE	AUDIO_READ_BYTE_SIZE*300
@@ -99,6 +100,9 @@
 //speex
 #define NN 							(AUDIO_READ_BYTE_SIZE / 2)
 #define TAIL						1600
+//aecm
+#define FRAME_DOTS 80
+#define FRAME_BYTES (FRAME_DOTS*2)
 
 #endif
 

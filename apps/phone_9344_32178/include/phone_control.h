@@ -209,7 +209,7 @@ int do_cmd_set_sn(dev_status_t * dev, char * sendbuf);
 int do_cmd_set_mac(dev_status_t * dev, char * sendbuf);
 #endif
 int do_cmd_req_enc(dev_status_t * dev, char * sendbuf);
-int parse_msg(cli_request_t *cli);
+int parse_msg(cli_request_t* cli,char *sendbuf);
 void *phone_control_loop_accept(void *argv);
 int ComFunChangeHexBufferToAsc(unsigned char *hexbuf,int hexlen,char *ascstr);
 void ComFunPrintfBuffer(unsigned char *pbuffer,unsigned char len);

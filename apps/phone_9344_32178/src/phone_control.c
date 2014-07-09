@@ -1487,9 +1487,8 @@ int do_cmd_req_enc(dev_status_t * dev, char * sendbuf)
 }
 
 //消息处理
-int parse_msg(cli_request_t* cli)
+int parse_msg(cli_request_t* cli,char *sendbuf)
 {
-	char sendbuf[SENDBUF]={0};
 	int i;
 	if(cli->dev->client_fd < 0)
 		return 0;
@@ -2354,7 +2353,7 @@ int getoutcmd(char *buf,int ret,dev_status_t* dev)
 	{
 		PRINT("msg error\n");
 		memset(&cli_req_buf[phone_control.cli_req_buf_wp],0,sizeof(cli_request_t));
-		return -1;;
+		return -1;
 	}
 
 	//devlist[i].id= pbuf[5];
@@ -2374,6 +2373,12 @@ int getoutcmd(char *buf,int ret,dev_status_t* dev)
 
 	cli_req_buf[phone_control.cli_req_buf_wp].cmd = getCmdtypeFromString(cmd);
 
+	if(cli_req_buf[phone_control.cli_req_buf_wp].arglen > sizeof(cli_req_buf[phone_control.cli_req_buf_wp].arg))
+	{	
+		PRINT("msg length err\n");
+		memset(&cli_req_buf[phone_control.cli_req_buf_wp],0,sizeof(cli_request_t));
+		return -1;
+	}
 	memcpy(cli_req_buf[phone_control.cli_req_buf_wp].arg, pbuf+19, cli_req_buf[phone_control.cli_req_buf_wp].arglen);
 	cli_req_buf[phone_control.cli_req_buf_wp].dev = dev;
 	phone_control.cli_req_buf_wp++;
@@ -2402,7 +2407,6 @@ void* tcp_loop_recv(void* argv)
 	while(1)
 	{
 		int maxfd = -1;
-		int tmp_ret = 0;
 		FD_ZERO(&socket_fdset);
 		for(i=0; i<CLIENT_NUM ; i++)
 		{
@@ -2432,7 +2436,7 @@ void* tcp_loop_recv(void* argv)
 						//PRINT("optval = %d\n",optval);
 						if(optval == 0)
 						{
-							ret=recv(devlist[i].client_fd,msg+tmp_ret,BUFFER_SIZE_2K,0);
+							ret=recv(devlist[i].client_fd,msg,BUFFER_SIZE_2K,0);
 							//PRINT("ret = %d\n",ret);						
 						}
 						else
@@ -2447,9 +2451,9 @@ void* tcp_loop_recv(void* argv)
 							sprintf(sendbuf,"%s","INSIDE");
 							sendbuf[6]=i+1;
 							netWrite(phone_control_fd[0],sendbuf, 7);
-							break;
+							continue;
 						}
-						if(ret==0)
+						else if(ret==0)
 						{
 							//PRINT("dying = %d\n",devlist[i].dying);
 							//PRINT("%s\n",devlist[i].client_ip);
@@ -2459,14 +2463,14 @@ void* tcp_loop_recv(void* argv)
 							sprintf(sendbuf,"%s","INSIDE");
 							sendbuf[6]=i+1;
 							netWrite(phone_control_fd[0],sendbuf, 7);
-							break;
+							continue;
 						}
-						//PRINT("%s\n",msg);
+						PRINT("%s\n",msg);
 						pbuf=msg;
 again:
 						if(getoutcmd(pbuf,ret,&devlist[i])==-1)
 						{
-							break;
+							continue;
 						}
 
 						//parse_msg(&devlist[i]);
@@ -2481,9 +2485,7 @@ again:
 							//PRINT("ret=%d\n",ret);
 							if(ret<19)
 							{
-								//PRINT("no msg\n");
-								tmp_ret=ret;
-								memcpy(msg,pbuf,ret);
+								continue;
 							}
 							goto again;
 						}
@@ -2853,7 +2855,8 @@ void check_audio_reconnect()
 				{
 					if(devlist[i].client_fd == -1)
 						continue;
-					if(devlist[i].client_fd == phone_control.who_is_online.client_fd)
+					//if(devlist[i].client_fd == phone_control.who_is_online.client_fd)
+					if(!strcmp(phone_control.who_is_online.client_ip,devlist[i].client_ip))
 					{
 						do_cmd_onhook(&devlist[i]);
 						break;
@@ -2892,6 +2895,7 @@ void check_dev_tick(int signo)
 void* handle_down_msg(void* argv)
 {
 	PRINT("%s thread start.......\n",__FUNCTION__);
+	char sendbuf[SENDBUF]={0};
 	while(1)
 	{
 		if(phone_control.cli_req_buf_rp == phone_control.cli_req_buf_wp)
@@ -2899,7 +2903,8 @@ void* handle_down_msg(void* argv)
 			usleep(20*1000);
 			continue;
 		}
-		parse_msg(&cli_req_buf[phone_control.cli_req_buf_rp]);
+		memset(sendbuf,0,sizeof(sendbuf));
+		parse_msg(&cli_req_buf[phone_control.cli_req_buf_rp],sendbuf);
 		phone_control.cli_req_buf_rp++;
 		if(phone_control.cli_req_buf_rp>=CLI_REQ_MAX_NUM)
 			phone_control.cli_req_buf_rp = 0;

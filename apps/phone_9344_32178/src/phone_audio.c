@@ -2,8 +2,6 @@
 #include "common.h"
 //#include "phone_action.h"
 #include "fsk_external.h"
-#include "speex/speex_echo.h"
-#include "speex/speex_preprocess.h"
 
 struct class_phone_audio phone_audio =
 {
@@ -31,6 +29,10 @@ struct class_phone_audio phone_audio =
 	.get_code_timeout=0,
 	.get_code_timeout_times=0,
 	.start_dtmf=0,
+	.st = NULL,
+	.dn = NULL,
+	.den = NULL,
+	.aecmInst = NULL,
 };
 
 unsigned char input_stream_buffer[AUDIO_STREAM_BUFFER_SIZE];
@@ -43,8 +45,6 @@ unsigned char audio_tb_recvbuf[BUFFER_SIZE_2K*5];
 int dtmf_ret = 0;
 int total_dtmf_ret = 0;
 unsigned char dtmf_buf[6000]={0};	
-pthread_mutex_t speex_mutex;
-
 #ifdef SAVE_FILE
 FILE* read_file;
 char read_file_buf[1024*1024*2];
@@ -58,11 +58,148 @@ int global_out_buf_pos;
 FILE* write_file;
 FILE* out_file;
 #endif
-//SpeexPreprocessState *filter_st;
-SpeexEchoState *st = NULL;
-SpeexPreprocessState *den = NULL;
-SpeexPreprocessState *dn = NULL ;
+
 int sampleRate = 8000;
+const signed short kFilterCoefficients8kHz[5] =
+    {3798, -7596, 3798, 7807, -3733};
+
+const signed short kFilterCoefficients[5] =
+    {4012, -8024, 4012, 8002, -3913};
+    
+int HighPassFilter_Initialize(HighPassFilterState* hpf, int sample_rate) {
+	assert(hpf != NULL);
+
+	if (sample_rate == 8000) {
+		hpf->ba = kFilterCoefficients8kHz;
+	} else {
+		hpf->ba = kFilterCoefficients;
+	}
+
+	WebRtcSpl_MemSetW16(hpf->x, 0, 2);
+	WebRtcSpl_MemSetW16(hpf->y, 0, 4);
+	PRINT("HighPassFilter_Initialize OK\r\n");		
+
+  return 0;
+}
+
+int HighPassFilter_Process(HighPassFilterState* hpf, signed short* data, int length) {
+	assert(hpf != NULL);
+
+	int i;
+	signed int tmp_int32 = 0;
+	signed short* y = hpf->y;
+	signed short* x = hpf->x;
+	const signed short* ba = hpf->ba;
+
+	for (i = 0; i < length; i++) 
+	{
+		//  y[i] = b[0] * x[i] + b[1] * x[i-1] + b[2] * x[i-2]
+		//         + -a[1] * y[i-1] + -a[2] * y[i-2];
+
+		tmp_int32 = WEBRTC_SPL_MUL_16_16(y[1], ba[3]); // -a[1] * y[i-1] (low part)
+		tmp_int32 += WEBRTC_SPL_MUL_16_16(y[3], ba[4]); // -a[2] * y[i-2] (low part)
+		tmp_int32 = (tmp_int32 >> 15);
+		tmp_int32 += WEBRTC_SPL_MUL_16_16(y[0], ba[3]); // -a[1] * y[i-1] (high part)
+		tmp_int32 += WEBRTC_SPL_MUL_16_16(y[2], ba[4]); // -a[2] * y[i-2] (high part)
+		tmp_int32 = (tmp_int32 << 1);
+
+		tmp_int32 += WEBRTC_SPL_MUL_16_16(data[i], ba[0]); // b[0]*x[0]
+		tmp_int32 += WEBRTC_SPL_MUL_16_16(x[0], ba[1]);    // b[1]*x[i-1]
+		tmp_int32 += WEBRTC_SPL_MUL_16_16(x[1], ba[2]);    // b[2]*x[i-2]
+
+		// Update state (input part)
+		x[1] = x[0];
+		x[0] = data[i];
+
+		// Update state (filtered part)
+		y[2] = y[0];
+		y[3] = y[1];
+		y[0] = (signed short)(tmp_int32 >> 13);
+		y[1] = (signed short)((tmp_int32 - WEBRTC_SPL_LSHIFT_W32((signed int)(y[0]), 13)) << 2);
+
+		// Rounding in Q12, i.e. add 2^11
+		tmp_int32 += 2048;
+
+		// Saturate (to 2^27) so that the HP filtered signal does not overflow
+		tmp_int32 = WEBRTC_SPL_SAT((signed int)(134217727), tmp_int32, (signed int)(-134217728));
+
+		// Convert back to Q0 and use rounding
+		data[i] = (signed short)WEBRTC_SPL_RSHIFT_W32(tmp_int32, 12);
+
+	}
+
+	return 0;
+}
+int AudioAecmInit(void)
+{
+	int ret = 0;
+	if (ret = WebRtcAecm_Create(&phone_audio.aecmInst) < 0) 
+	{
+		PRINT("WebRtcAecm_Create failed,return=%d\r\n",ret);
+		return -1;
+	}
+	if (ret = WebRtcAecm_Init(phone_audio.aecmInst, sampleRate) < 0) 
+	{
+		PRINT("WebRtcAecm_Init failed,return=%d\r\n",ret);
+		WebRtcAecm_Free(phone_audio.aecmInst);
+		return -2;
+	}	
+	AecmConfig aecm_config;
+	aecm_config.cngMode = 0;
+	aecm_config.echoMode = 0;
+	WebRtcAecm_set_config(phone_audio.aecmInst,aecm_config);
+	PRINT("AudioAecmInit OK\r\n");		
+	return 0;
+}
+
+int AudioDo(void *precord,int of1,void *pplayback,int of2,int bytes)
+{
+	signed short *pprecord,*ppplayback;
+	int dots;
+	int i = 0;
+	int rtn  = 0;
+	unsigned char  is_saturated = 0;
+	unsigned char *pp;
+	
+	if(bytes <=0 || bytes%FRAME_BYTES != 0)
+		return -7;
+	dots = bytes / 2;
+	pp = (unsigned char *)(precord);
+	pp += of1;
+	pprecord = (signed short *)(pp);
+	
+	pp = (unsigned char *)(pplayback);
+	pp += of2;
+	ppplayback = (signed short *)(pp);	
+	do
+	{
+		if(phone_audio.audio_echo_thread_flag == 0)
+			break;
+		if (WebRtcAecm_BufferFarend(phone_audio.aecmInst, ppplayback, FRAME_DOTS)!=0)
+		{
+			printf("WebRtcAecm_BufferFarend() failed.\n");
+			rtn = -3;
+			break;
+		}
+		if (WebRtcAecm_Process(phone_audio.aecmInst, pprecord, NULL, 
+					pprecord, FRAME_DOTS,0)!=0)
+		{
+			printf("WebRtcAecm_Process() failed.\n");
+			rtn = -4;
+			break;
+		}
+		i += FRAME_DOTS;
+		pprecord += FRAME_DOTS;
+		ppplayback += FRAME_DOTS;
+		dots -= FRAME_DOTS;
+	}while(dots > 0);  
+	return rtn;                          
+}
+
+int AudioHpfInit(void)
+{
+	return HighPassFilter_Initialize(&phone_audio.hpf,sampleRate);
+}
 
 //开始检测来电
 void start_read_incoming()
@@ -119,33 +256,34 @@ int startaudio(dev_status_t* devp,int flag)
 
 				phone_audio.phone_audio_pcmfd = pcm_fd;
 			}
-			//SpeexFilerInit(8000,400);
-			if(st != NULL)
+			if(phone_audio.st != NULL)
 			{
-				speex_echo_state_destroy(st);
+				speex_echo_state_destroy(phone_audio.st);
 			}
-			if(den != NULL)	
+			if(phone_audio.den != NULL)	
 			{		
-				speex_preprocess_state_destroy(den);
+				speex_preprocess_state_destroy(phone_audio.den);
 			}
-			if(dn != NULL)	
+			if(phone_audio.dn != NULL)	
 			{		
-				speex_preprocess_state_destroy(dn);
+				speex_preprocess_state_destroy(phone_audio.dn);
 			}
-			st = speex_echo_state_init(NN, TAIL);
-			den = speex_preprocess_state_init(NN, sampleRate);			
-			dn = speex_preprocess_state_init(NN, sampleRate);
-
-			speex_echo_ctl(st, SPEEX_ECHO_SET_SAMPLING_RATE, &sampleRate);
-			speex_preprocess_ctl(den, SPEEX_PREPROCESS_SET_ECHO_STATE, st);
+			phone_audio.st = speex_echo_state_init(NN, TAIL);
+			phone_audio.den = speex_preprocess_state_init(NN, sampleRate);			
+			phone_audio.dn = speex_preprocess_state_init(NN, sampleRate);
+			AudioHpfInit();
+			if(AudioAecmInit()!=0)
+				return -2;
+			speex_echo_ctl(phone_audio.st, SPEEX_ECHO_SET_SAMPLING_RATE, &sampleRate);
+			speex_preprocess_ctl(phone_audio.den, SPEEX_PREPROCESS_SET_ECHO_STATE, phone_audio.st);
 			int noiseSuppress = -90;//70
-			speex_preprocess_ctl(den, SPEEX_PREPROCESS_SET_ECHO_SUPPRESS, &noiseSuppress);			
+			speex_preprocess_ctl(phone_audio.den, SPEEX_PREPROCESS_SET_ECHO_SUPPRESS, &noiseSuppress);			
 			noiseSuppress = -40;//40
-			speex_preprocess_ctl(den, SPEEX_PREPROCESS_SET_ECHO_SUPPRESS_ACTIVE, &noiseSuppress);			
+			speex_preprocess_ctl(phone_audio.den, SPEEX_PREPROCESS_SET_ECHO_SUPPRESS_ACTIVE, &noiseSuppress);			
 			noiseSuppress = -90;//90
-			speex_preprocess_ctl(den, SPEEX_PREPROCESS_SET_NOISE_SUPPRESS, &noiseSuppress);			
+			speex_preprocess_ctl(phone_audio.den, SPEEX_PREPROCESS_SET_NOISE_SUPPRESS, &noiseSuppress);			
 			i = 1;
-			speex_preprocess_ctl(dn, SPEEX_PREPROCESS_SET_DENOISE, &i);
+			speex_preprocess_ctl(phone_audio.dn, SPEEX_PREPROCESS_SET_DENOISE, &i);
 #ifdef SAVE_FILE
 			read_file = fopen("./record_file.pcm", "w"); //for read sound
 			write_file = fopen("./play_file.pcm", "w"); //for read sound
@@ -271,24 +409,29 @@ void stopaudio(dev_status_t* devp,int flag,int reconnect_flag)
 		if(reconnect_flag == 0 && flag == PSTN)
 		{
 			PRINT("speex release\n");
-			usleep(50*1000);
-			pthread_mutex_lock(&speex_mutex);
-			if(st != NULL)
+			usleep(100*1000);
+			pthread_mutex_lock(&phone_audio.aec_mutex);
+			if(phone_audio.st != NULL)
 			{
-				speex_echo_state_destroy(st);
-				st = NULL;
+				speex_echo_state_destroy(phone_audio.st);
+				phone_audio.st = NULL;
 			}
-			if(den != NULL)			
+			if(phone_audio.den != NULL)			
 			{
-				speex_preprocess_state_destroy(den);
-				den = NULL;
+				speex_preprocess_state_destroy(phone_audio.den);
+				phone_audio.den = NULL;
 			}
-			if(dn != NULL)			
+			if(phone_audio.dn != NULL)			
 			{
-				speex_preprocess_state_destroy(dn);
-				dn = NULL;
+				speex_preprocess_state_destroy(phone_audio.dn);
+				phone_audio.dn = NULL;
 			}
-			pthread_mutex_unlock(&speex_mutex);
+			if(phone_audio.aecmInst != NULL)
+			{
+				WebRtcAecm_Free(phone_audio.aecmInst);
+				phone_audio.aecmInst = NULL;
+			}
+			pthread_mutex_unlock(&phone_audio.aec_mutex);
 		}
 		ioctl(phone_audio.phone_audio_pcmfd,SLIC_RELEASE,0);
 		total_dtmf_ret = 0;
@@ -360,7 +503,7 @@ int init_audio(void)
 
 		phone_audio.phone_audio_pcmfd = pcm_fd;
 	}
-    pthread_mutex_init(&speex_mutex, NULL);
+    pthread_mutex_init(&phone_audio.aec_mutex, NULL);
 	return 0;
 }
 
@@ -760,7 +903,20 @@ START_WRITE:
 						//打印信息
 						PRINT("%d;received data is more,so discard some one\r\n",valid_bytes);
 						phone_audio.input_stream_rp += (valid_bytes / AUDIO_WRITE_BYTE_SIZE - 1) * AUDIO_WRITE_BYTE_SIZE;
+						if(phone_audio.input_stream_rp > AUDIO_STREAM_BUFFER_SIZE)
+							phone_audio.input_stream_rp = 0;
 						total_write_bytes += (valid_bytes / AUDIO_WRITE_BYTE_SIZE - 1) * AUDIO_WRITE_BYTE_SIZE;;
+					}
+					else if(valid_bytes > ((AUDIO_PACKET_LIMIT-3) * AUDIO_WRITE_BYTE_SIZE))//2*1280
+					{
+						PRINT("LIMIT:%d\n",valid_bytes);
+						phone_audio.input_stream_rp += (AUDIO_WRITE_BYTE_SIZE/10);
+						if(phone_audio.input_stream_rp > AUDIO_STREAM_BUFFER_SIZE)
+							phone_audio.input_stream_rp = 0;
+						phone_audio.input_stream_wp -= (AUDIO_WRITE_BYTE_SIZE/10);
+						if(phone_audio.input_stream_wp < 0)
+							phone_audio.input_stream_wp = 0;
+						total_write_bytes += (AUDIO_WRITE_BYTE_SIZE/10);
 					}
 				}
 				if(valid_bytes > AUDIO_WRITE_BYTE_SIZE)
@@ -773,13 +929,8 @@ START_WRITE:
 					PRINT("error,when write data to sound card,error code is %d\n",write_ret);
 					break;
 				}
-				if(phone_control.start_dial == 1 || total_dtmf_ret > 0)
-				{
-					//PRINT("*******\n");
-					//PRINT("valid_bytes = %d\n",valid_bytes);
-					//PRINT("write_ret = %d\n",write_ret);
-					//PRINT("*******\n");
-				}
+
+				//PRINT("write_ret = %d\n",write_ret);
 				phone_audio.input_stream_rp += write_ret;
 				total_write_bytes += write_ret;
 				if(phone_audio.input_stream_rp >= pcm_ret && phone_audio.input_stream_rp > 0 && phone_control.start_dial == 1)
@@ -1005,28 +1156,30 @@ void* AudioEchoThreadCallBack(void* argv)
 						//*readp++ <<= 1;
 					//}
 				//}
-				if(st == NULL || den == NULL || dn == NULL)
+				if(phone_audio.st == NULL || phone_audio.den == NULL || phone_audio.dn == NULL)
 				{
 					PRINT("speex init err\n");
 					phone_audio.audio_echo_thread_flag = 0;
 					break;
 				}
 				
-				if(phone_control.dial_over == 1)
+				//if(phone_control.dial_over == 1)
+				//{
+					//if(echo_cancellation <= 5)
+						//echo_cancellation ++;
+				//}
+				//if(echo_cancellation >= 0 && total_dtmf_ret <= 16000 )
+				if(phone_control.dial_over == 1 && total_dtmf_ret <= 16000)
 				{
-					if(echo_cancellation <= 10)
-						echo_cancellation ++;
-				}
-				if(echo_cancellation >= 10 && total_dtmf_ret <= 16000 )
-				//if(echo_cancellation < 0/* && total_dtmf_ret <= 16000 */)
-				{
-					if(echo_cancellation == 10)
-						PRINT("start aec\n");
-					pthread_mutex_lock(&speex_mutex);
-					speex_echo_cancellation(st,(spx_int16_t*)&echo_stream_buffer[phone_audio.echo_stream_rp], (spx_int16_t*)(&echo_stream_buffer[phone_audio.echo_stream_rp+AUDIO_WRITE_BYTE_SIZE]), (spx_int16_t*)out_buf);
-					speex_preprocess_run(den, (spx_int16_t*)out_buf);
-					speex_preprocess_run(dn, (spx_int16_t*)out_buf);			
-					pthread_mutex_unlock(&speex_mutex);
+					//if(echo_cancellation == 0)
+						//PRINT("start aec\n");
+					pthread_mutex_lock(&phone_audio.aec_mutex);
+					HighPassFilter_Process(&phone_audio.hpf,(signed short *)out_buf,valid_bytes/4);
+					speex_echo_cancellation(phone_audio.st,(spx_int16_t*)&echo_stream_buffer[phone_audio.echo_stream_rp], (spx_int16_t*)(&echo_stream_buffer[phone_audio.echo_stream_rp+AUDIO_WRITE_BYTE_SIZE]), (spx_int16_t*)out_buf);
+					speex_preprocess_run(phone_audio.den, (spx_int16_t*)out_buf);
+					//speex_preprocess_run(phone_audio.dn, (spx_int16_t*)out_buf);
+					AudioDo(out_buf,0,&echo_stream_buffer[phone_audio.echo_stream_rp+AUDIO_WRITE_BYTE_SIZE],0,valid_bytes/2);
+					pthread_mutex_unlock(&phone_audio.aec_mutex);
 				}
 				else
 					memcpy(out_buf,&echo_stream_buffer[phone_audio.echo_stream_rp],AUDIO_WRITE_BYTE_SIZE);
@@ -1066,7 +1219,7 @@ void* AudioEchoThreadCallBack(void* argv)
 				usleep(5*1000);
 				continue;
 			}
-			usleep(20*1000);
+			usleep(5*1000);
 		}
 		PRINT("audio echo thread entry idle...\n");
 		phone_audio.audio_echo_thread_exit_flag = 1;
@@ -1269,7 +1422,6 @@ void* AudioRecvThreadCallBack(void* argv)
 	int first_recv_tb = 0;
 	int recv_flag = 0;
 	int tmp_len = 0;
-	int dtmf_recv_times = 0;
 	int tmp = 0;
 	dev_status_t* devp;
 	unsigned char tmp_buf[2000];
@@ -1284,7 +1436,6 @@ void* AudioRecvThreadCallBack(void* argv)
 		phone_audio.audio_recv_thread_exit_flag = 0;
 		first_recv_tb = 0;
 		recv_flag = 0;
-		dtmf_recv_times = 0;
 		tmp_len = 0;
 		tmp = 0;
 		for(i=0;i<CLIENT_NUM;i++)
@@ -1300,7 +1451,7 @@ void* AudioRecvThreadCallBack(void* argv)
 		{
 			if(phone_audio.start_dtmf != 0)
 			{
-				PRINT("start_dtmf = %c\n",phone_audio.start_dtmf);
+				PRINT("dtmf = %c\n",phone_audio.start_dtmf);
 				dtmf_ret = GenerateCodePcmData(&phone_audio.start_dtmf,1,dtmf_buf,Big_Endian);
 				//total_dtmf_ret += dtmf_ret;
 				if(total_dtmf_ret <= dtmf_ret)
@@ -1333,33 +1484,26 @@ void* AudioRecvThreadCallBack(void* argv)
 			if(total_dtmf_ret > 0) //双音多频丢数据
 			{
 				//PRINT("dtmfing....\n");
-				recv_ret = recv(devp->audio_client_fd,tmp_buf,1600,MSG_DONTWAIT);
+				recv_ret = recv(devp->audio_client_fd,tmp_buf,AUDIO_SEND_PACKET_SIZE,MSG_DONTWAIT);
 				if(recv_ret < 1)//或者小于0。则表示socket异常，此处需要同时处理其他线程的错误
 				{
 					getsockopt(devp->audio_client_fd,SOL_SOCKET,SO_ERROR,&optval, &optlen);
 					if(errno == EAGAIN && optval == 0)
 					{
-						usleep(15*1000);
+						usleep(10*1000);
 						continue;
 					}
 					total_dtmf_ret = 0;
-					dtmf_recv_times = 0;
 					goto RECV_ERROR;
 				}
 				usleep(10*1000);
 				//PRINT("total_dtmf_ret = %d\n",total_dtmf_ret);
 				total_dtmf_ret -= (recv_ret*2);
-				dtmf_recv_times ++;
-				if(dtmf_recv_times == 2)
-				{
-					ioctl(phone_audio.phone_audio_pcmfd,SET_WRITE_TYPE,0);
-				}
 				if(total_dtmf_ret <= 0)
 				{
 					total_dtmf_ret = 0;
 					PRINT("dtmf over!!!!\n");
 					phone_audio.dtmf_over = 1;
-					dtmf_recv_times = 0;
 					//phone_audio.input_stream_wp = phone_audio.input_stream_rp = 0;
 					//ioctl(phone_audio.phone_audio_pcmfd,SLIC_RELEASE,0);
 					//ioctl(phone_audio.phone_audio_pcmfd,SLIC_INIT,0);
@@ -1370,31 +1514,31 @@ void* AudioRecvThreadCallBack(void* argv)
 			}
 			while(phone_audio.start_recv)
 			{
-				recv_ret = recv(devp->audio_client_fd,tmp_buf,1600,MSG_DONTWAIT);
+				recv_ret = recv(devp->audio_client_fd,tmp_buf,AUDIO_SEND_PACKET_SIZE,MSG_DONTWAIT);
 				if(recv_ret < 1)//或者小于0。则表示socket异常，此处需要同时处理其他线程的错误
 				{
 					getsockopt(devp->audio_client_fd,SOL_SOCKET,SO_ERROR,&optval, &optlen);
 					if(errno == EAGAIN && optval == 0)
 					{
-						usleep(15*1000);
-						continue;
+						goto RECV_CONTINUE;
 					}
 					goto RECV_ERROR;
 				}
+RECV_CONTINUE:
 				usleep(10*1000);
 				if(!phone_control.start_dial)
 				{
-					for(i=0;i<(50);i++)
+					for(i=0;i<(200);i++)
 					{
 						if(phone_audio.audio_recv_thread_flag ==0)
 							break;
-						recv_ret = recv(devp->audio_client_fd,tmp_buf,1600,MSG_DONTWAIT);
+						recv_ret = recv(devp->audio_client_fd,tmp_buf,AUDIO_SEND_PACKET_SIZE,MSG_DONTWAIT);
 						if(recv_ret < 1)//或者小于0。则表示socket异常，此处需要同时处理其他线程的错误
 						{
 							getsockopt(devp->audio_client_fd,SOL_SOCKET,SO_ERROR,&optval, &optlen);
 							if(errno == EAGAIN && optval == 0)
 							{
-								usleep(15*1000);
+								usleep(10*1000);
 								continue;
 							}
 							goto RECV_ERROR;
@@ -1402,7 +1546,6 @@ void* AudioRecvThreadCallBack(void* argv)
 						usleep(10*1000);
 					}
 					PRINT("start recv.....\n");
-					phone_control.dial_over = 1;
 					recv_ret = 0;
 					break;
 				}
@@ -1412,6 +1555,7 @@ void* AudioRecvThreadCallBack(void* argv)
 				//ioctl(phone_audio.phone_audio_pcmfd,SET_WRITE_TYPE,1);
 				recv_flag = 1;
 			}
+			phone_control.dial_over = 1;
 			phone_audio.start_recv = 0;
 			//获取input buffer的剩余空间
 			if(phone_audio.input_stream_wp >= AUDIO_STREAM_BUFFER_SIZE)
