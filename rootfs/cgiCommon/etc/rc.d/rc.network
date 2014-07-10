@@ -6,7 +6,7 @@
 ##
 #########################################################################
 
-. /etc/ath/apcfg
+. /etc/ath/apcfg simple
 
 ##
 # Enable the loopback interface

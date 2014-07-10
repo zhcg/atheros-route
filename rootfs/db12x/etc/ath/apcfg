@@ -18,6 +18,12 @@ cfg -s | grep PSK_KEY_4 | awk -F':' '{print "export " $1$2}' >> /tmp/vars.$$
 . /tmp/vars.$$
 rm /tmp/vars.$$
 
+if [ "$1" = "simple" ]
+then
+return
+fi
+
+
 ##
 ## Set Network configuration
 ##

@@ -7,7 +7,7 @@
 ## ETH1 is the LAN port
 ######################################################################
 
-. /etc/ath/apcfg
+. /etc/ath/apcfg simple
 
 brctl addbr br0
 if [ "${WAN_MODE}" = "bridged" ]; then
