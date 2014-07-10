@@ -786,24 +786,24 @@ function CheckWanValue()
 			document.wizard_form.PPPOE_USER.select();
 			return false;
 		}
-		if(!Checkhanzi(document.wizard_form.PPPOE_USER.value))
-		{
-			alert(_("err user"));
-			document.wizard_form.PPPOE_USER.select();
-			return false;
-		}
+		//if(!Checkhanzi(document.wizard_form.PPPOE_USER.value))
+		//{
+		//	alert(_("err user"));
+		//	document.wizard_form.PPPOE_USER.select();
+		//	return false;
+		//}
 		if (document.wizard_form.PPPOE_PWD.value.length == 0)
 		{
 			alert(_("err pwd empty"));
 			document.wizard_form.PPPOE_PWD.select();
 			return false;
 		}
-		if (!Checkhanzi(document.wizard_form.PPPOE_PWD.value))
-		{
-			alert(_("err pwd"));
-			document.wizard_form.PPPOE_PWD.select();
-			return false;
-		}
+		//if (!Checkhanzi(document.wizard_form.PPPOE_PWD.value))
+		//{
+		//	alert(_("err pwd"));
+		//	document.wizard_form.PPPOE_PWD.select();
+		//	return false;
+		//}
 
 		if (pppoecdb != "1")
 		{

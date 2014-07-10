@@ -264,8 +264,8 @@ function initTranslation()
 	trans_inner("t1_IP","addport t1_IP");
 	trans_inner("t1_Rule","addport t1_Rule");
 	trans_inner("t1_Status","addport t1_Status");
-	
 	trans_inner("t1_port","addport t1_port");
+	trans_inner("unchose","addport unchose");
 }
 
 function initValue()
@@ -387,7 +387,7 @@ function portchange()
 	<td class="head" id="t1_port">常用外部端口号</td>
 	<td>  
 		<select name="OTHER_PORT" onChange="portchange()">
-		<option>&nbsp; &nbsp;</option>
+		<option id="unchose">--Please select--</option>
 		<option>DNS</option>
 		<option>FTP</option>
 		<option>GOPHER</option>

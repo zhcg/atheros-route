@@ -62,6 +62,7 @@
 	<message msgid="addport t1_Rule" msgstr="协议" /> 
 	<message msgid="addport t1_Status" msgstr="状态" /> 
 	<message msgid="addport t1_port" msgstr="常用外部端口" /> 
+	<message msgid="addport unchose" msgstr="--请选择--" /> 
 	
 	<message msgid="err MAC wuxiao" msgstr="MAC地址不合法" />
 	<message msgid="err MAC empty" msgstr="MAC地址不能为空" />

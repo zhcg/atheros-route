@@ -61,6 +61,7 @@
 	<message msgid="addport t1_Rule" msgstr="Protocol" /> 
 	<message msgid="addport t1_Status" msgstr="Status" /> 
 	<message msgid="addport t1_port" msgstr="Commonly used external port" /> 
+	<message msgid="addport unchose" msgstr="--Please select--" /> 
 	
 	<message msgid="err MAC wuxiao" msgstr="MAC address is illegal" />
 	<message msgid="err MAC empty" msgstr="MAC is empty " />
