@@ -33,7 +33,7 @@
 #include <sys/wait.h>
 #include <assert.h>
 
-#define REGISTER
+//#define REGISTER
 
 #define Big_Endian	1
 #define Little_Endian	0

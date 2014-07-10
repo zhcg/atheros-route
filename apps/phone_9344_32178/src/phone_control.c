@@ -670,7 +670,7 @@ int do_cmd_talkback(dev_status_t* dev,char *sendbuf)
 	devlist[id].talkbacked = 1;
 	dev->talkbacking = 1;
 	phone_control.global_talkback = 1;
-             memset(sendbuf,0,SENDBUF);
+	memset(sendbuf,0,SENDBUF);
 	snprintf(sendbuf, 23,"HEADR0011INUSING0011\r\n");
 	netWrite(dev->client_fd, sendbuf, strlen(sendbuf));
 	return 0;
@@ -854,32 +854,34 @@ int do_cmd_heartbeat(dev_status_t *dev,char *buf)
 	if(dev->tick_time == 0)
 	{
 		char dev_mac[20]={0};
+		char coming_mac[20]={0};
 		char register_state[4]={0};
 		char pad_mac[20]={0};
 		char insidebuf[10]={0};
 		char device_name[30]={0};
+		memcpy(comming_mac,buf,16);
 		//去除mac后的空格
-		for(i=0;i<strlen(buf);i++)
+		for(i=0;i<strlen(comming_mac);i++)
 		{
-			if(buf[i]==' ')
-				buf[i] = '\0';
+			if(comming_mac[i]==' ')
+				comming_mac[i] = '\0';
 		}
 		PRINT("first heartbeat!\n");
 		
-		if(strlen(buf) != 12)
+		if(strlen(comming_mac) != 12)
 			goto UNREGISTERED;
 		
 		//转换mac为大写
-		strtobig(buf,strlen(buf));
-		strcpy(dev->dev_mac,buf);
-		sqlite3_interface("terminal_register_tb","device_mac",buf,"device_mac",dev_mac);
-		PRINT("comming_mac=%s\n",buf);
+		strtobig(comming_mac,strlen(comming_mac));
+		strcpy(dev->dev_mac,comming_mac);
+		sqlite3_interface("terminal_register_tb","device_mac",comming_mac,"device_mac",dev_mac);
+		PRINT("comming_mac=%s\n",comming_mac);
 		PRINT("dev_mac=%s\n",dev_mac);
 		strtobig(dev_mac,strlen(dev_mac));
-		if(!strncmp(dev_mac,buf,strlen(buf)))
+		if(!strncmp(dev_mac,comming_mac,strlen(comming_mac)))
 		{
 			PRINT("dev is registered!\n");
-			sqlite3_interface("terminal_register_tb","device_name",buf,"device_mac",device_name);
+			sqlite3_interface("terminal_register_tb","device_name",comming_mac,"device_mac",device_name);
 			memset(dev->dev_name,' ',16);
 			memcpy(dev->dev_name,device_name,16);
 			for(i=0;i<16;i++)
@@ -904,13 +906,13 @@ int do_cmd_heartbeat(dev_status_t *dev,char *buf)
 #ifndef B6L		
 		sqlite3_interface("terminal_base_tb","register_state","0","register_state",register_state);
 		//PRINT("register_state = %s\n",register_state);
-		sqlite3_interface("terminal_base_tb","pad_mac",buf,"pad_mac",pad_mac);
+		sqlite3_interface("terminal_base_tb","pad_mac",comming_mac,"pad_mac",pad_mac);
 		strtobig(pad_mac,strlen(pad_mac));
-//		PRINT("buf=%s\n",buf);
+//		PRINT("comming_mac=%s\n",comming_mac);
 		PRINT("pad_mac = %s\n",pad_mac);
-		//PRINT("%d\n",strcmp(pad_mac,buf));
+		//PRINT("%d\n",strcmp(pad_mac,comming_mac));
 		//PRINT("%d\n",strcmp(register_state,"0"));
-		if(!strncmp(pad_mac,buf,strlen(buf)) && !strcmp(register_state,"0"))
+		if(!strncmp(pad_mac,comming_mac,strlen(comming_mac)) && !strcmp(register_state,"0"))
 		{
 			PRINT("pad is registered!\n");
 			memset(dev->dev_name,' ',16);
@@ -969,7 +971,7 @@ REGISTERED:
 }
 #else
 
-int do_cmd_heartbeat(dev_status_t *dev)
+int do_cmd_heartbeat(dev_status_t *dev,char *buf)
 {
 	int i,j,count =0;
 
@@ -1486,6 +1488,13 @@ int do_cmd_req_enc(dev_status_t * dev, char * sendbuf)
 	return 0;
 }
 
+int do_cmd_get_ver(dev_status_t * dev, char * sendbuf)
+{
+	sprintf(sendbuf,"HEADR0%03dGET_VER%03d%s",strlen(phone_control.version)+10,strlen(phone_control.version),phone_control.version);
+	netWrite(dev->client_fd,sendbuf,strlen(sendbuf));
+	return 0;
+}
+
 //消息处理
 int parse_msg(cli_request_t* cli,char *sendbuf)
 {
@@ -1500,7 +1509,7 @@ int parse_msg(cli_request_t* cli,char *sendbuf)
 #ifdef REGISTER
 			do_cmd_heartbeat(cli->dev,cli->arg);
 #else
-			do_cmd_heartbeat(cli->dev);
+			do_cmd_heartbeat(cli->dev,cli->arg);
 #endif
 			break;
 		}
@@ -1605,6 +1614,12 @@ int parse_msg(cli_request_t* cli,char *sendbuf)
 			do_cmd_req_enc(cli->dev,sendbuf);
 			break;
 		}
+		case GET_VER:
+		{
+			PRINT("GET_VER from %s\n",cli->dev->client_ip);
+			do_cmd_get_ver(cli->dev,sendbuf);
+			break;
+		}
 		case DEFAULT:
 		{
 			PRINT("other cmd\n");
@@ -1694,6 +1709,10 @@ int getCmdtypeFromString(char *cmd_str)
 	{
 		cmdtype = REQ_ENC;
 	}
+	else if (strncmp(cmd_str, "GET_VER", 7) == 0)
+	{
+		cmdtype = GET_VER;
+	}
 	else
 	{
 		PRINT("command undefined\n");
@@ -1701,6 +1720,39 @@ int getCmdtypeFromString(char *cmd_str)
 	}
 
 	return cmdtype;
+}
+
+int get_version()
+{
+	char buf[BUFFER_SIZE_1K]={0};
+	char *p = NULL;
+	int i,ret = 0;
+	system("cfg -e | grep \"SOFT_VERSION=\" > /tmp/phone_control_version");
+	int fd = open("/tmp/phone_control_version",O_RDONLY);
+	if(fd < 0)
+	{
+		PRINT("get version err\n");
+		return -1;
+	}
+	ret = read(fd,buf,BUFFER_SIZE_1K);
+	if(ret > 0)
+	{
+		memset(phone_control.version,0,sizeof(phone_control.version));
+		p = strstr(buf, "SOFT_VERSION");
+		if(p != NULL)
+		{
+			sscanf(p,"SOFT_VERSION=\"%s",phone_control.version);
+			for(i=0;i<strlen(phone_control.version);i++)
+			{
+				if(phone_control.version[i] == '"')
+					phone_control.version[i] = '\0';
+			}
+			PRINT("version:%s\n",phone_control.version);
+		}
+	}
+	close(fd);
+	system("rm -rf /tmp/phone_control_version");
+	return 0;
 }
 
 int init_control()
@@ -1802,6 +1854,8 @@ int init_control()
 		PRINT("open %s success\n",LED_NAME);
 	}	
 #endif
+
+	get_version();
 	return 0;
 }
 
@@ -2611,7 +2665,8 @@ void *phone_control_loop_accept(void* arg)
 									}
 								}
 								memset(devlist[i].dev_name,' ',16);
-								sprintf(devlist[i].dev_name,"%s%d","子机",i+1);
+								memcpy(devlist[i].dev_name,devlist[i].client_ip,strlen(devlist[i].client_ip));
+								//sprintf(devlist[i].dev_name,"%s%d","子机",i+1);
 								for(j=0;j<16;j++)
 								{
 									if(devlist[i].dev_name[j] == '\0')

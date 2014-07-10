@@ -75,7 +75,7 @@ enum PstnCommand {
 #endif
 	//
 	REQ_ENC,
-	
+	GET_VER,
 };
 typedef enum PstnCommand PstnCmdEnum;
 
@@ -167,6 +167,7 @@ struct class_phone_control
 	char vloop; //电话线插入检测
 	int dial_over;
 	int offhook_kill_talkback;
+	char version[64];
 };
 
 void print_devlist();
@@ -190,7 +191,7 @@ int strtosmall(unsigned char *data,unsigned int len);
 #ifdef REGISTER
 int do_cmd_heartbeat(dev_status_t *dev,char *buf);
 #else
-int do_cmd_heartbeat(dev_status_t *dev);
+int do_cmd_heartbeat(dev_status_t *dev,char *buf);
 #endif
 int do_cmd_offhook(dev_status_t *dev);
 int do_cmd_onhook(dev_status_t *dev);
@@ -213,6 +214,7 @@ int parse_msg(cli_request_t* cli,char *sendbuf);
 void *phone_control_loop_accept(void *argv);
 int ComFunChangeHexBufferToAsc(unsigned char *hexbuf,int hexlen,char *ascstr);
 void ComFunPrintfBuffer(unsigned char *pbuffer,unsigned char len);
+int get_version();
 int init_control(void);
 void *handle_up_msg(void * argv);
 void *loop_check_ring(void* argv);
