@@ -4694,11 +4694,18 @@ void set_wireless_wan(void)
 		char wdsonoff_flag5g_new[128];	
 		char sta_secmode[128];
 		char sta_secmode_5g[128];
+		char ap_chmode[128];
+		char ap_chmode_5g[128];
 		char wifionoff_flag[128];
 		int flag=0;
 		char wds2gturn_flag[128],wds5gturn_flag[128];
 		char wds2g_bak[128],wds5g_bak[128];
 		char order[128];
+
+		int fd;
+		
+		fd = open("/etc/inittab", O_RDWR);
+		flock(fd, LOCK_EX);
 
 		write_systemLog("set_wireless_wan WISP begin");	
 
@@ -4783,11 +4790,42 @@ void set_wireless_wan(void)
 				CFG_set_by_name("STA_SECMODE","None");
 			}
 			CFG_get_by_name("WDS_CHAN",channel);
-			CFG_get_by_name("AP_PRIMARY_CH",channel_buf);
-//			fprintf(errOut,"[luodp] -----------  wds %s\n",channel_buf);
-			CFG_set_by_name("AP_PRIMARY_CH_BACK",channel_buf);
 			
+			if(strncmp(wdsonoff_flag,"off",3) == 0){
+				CFG_get_by_name("AP_PRIMARY_CH",channel_buf);
+	//			fprintf(errOut,"[luodp] -----------  wds %s\n",channel_buf);
+				CFG_set_by_name("AP_PRIMARY_CH_BACK",channel_buf);
+			}			
 			CFG_set_by_name("AP_PRIMARY_CH",channel);
+			CFG_get_by_name("AP_CHMODE",ap_chmode);
+
+			Execute_cmd("ifconfig ath0 down;ifconfig ath1 down", rspBuff);
+			Execute_cmd("iwconfig ath0 channel 0;iwconfig ath1 channel 0", rspBuff);
+
+
+			if(atoi(channel)>=10)
+			{
+				if(strstr(ap_chmode, "11NGHT40PLUS"))
+				{
+					Execute_cmd("iwpriv ath0 mode 11NGHT40MINUS", rspBuff);
+					Execute_cmd("iwpriv ath1 mode 11NGHT40MINUS", rspBuff);
+					CFG_set_by_name("AP_CHMODE","11NGHT40MINUS");
+				}
+			}
+			else
+			{
+				if(strstr(ap_chmode, "11NGHT40MINUS"))
+				{
+					Execute_cmd("iwpriv ath0 mode 11NGHT40PLUS", rspBuff);
+					Execute_cmd("iwpriv ath1 mode 11NGHT40PLUS", rspBuff);
+					CFG_set_by_name("AP_CHMODE","11NGHT40PLUS");
+				}
+			}
+	
+			sprintf(order,"iwconfig ath0 channel %s;iwconfig ath1 channel %s",channel,channel);
+			Execute_cmd(order, rspBuff);
+			Execute_cmd("ifconfig ath0 up;ifconfig ath1 up", rspBuff);
+			
 			}
 
 		
@@ -4816,10 +4854,44 @@ void set_wireless_wan(void)
 				CFG_set_by_name("STA_SECMODE_2","None");
 			}
 			CFG_get_by_name("WDS_CHAN_2",channel_5g);
-			CFG_get_by_name("AP_PRIMARY_CH_3",channel_buf_5g);
-//			fprintf(errOut,"[luodp] -----------  wds channel_buf_5g %s\n",channel_buf_5g);
-			CFG_set_by_name("AP_PRIMARY_CH_BACK_3",channel_buf_5g);
+			
+			if(strncmp(wdsonoff5g_flag,"off",3) == 0){
+				CFG_get_by_name("AP_PRIMARY_CH_3",channel_buf_5g);
+	//			fprintf(errOut,"[luodp] -----------  wds channel_buf_5g %s\n",channel_buf_5g);
+				CFG_set_by_name("AP_PRIMARY_CH_BACK_3",channel_buf_5g);
+			}
 			CFG_set_by_name("AP_PRIMARY_CH_3",channel_5g);
+
+			CFG_get_by_name("AP_CHMODE_3",ap_chmode_5g);
+
+			Execute_cmd("ifconfig ath2 down;ifconfig ath3 down", rspBuff);
+			Execute_cmd("iwconfig ath2 channel 0;iwconfig ath3 channel 0", rspBuff);
+
+
+			if((atoi(channel_5g) == 165))
+			{
+				Execute_cmd("iwpriv ath2 mode 11A > /dev/null 2>&1", rspBuff);
+				Execute_cmd("iwpriv ath3 mode 11A > /dev/null 2>&1", rspBuff);
+				CFG_set_by_name("AP_CHMODE_3","11A");
+			}
+			else if( (atoi(channel_5g) == 149) || (atoi(channel_5g) == 157) )
+			{
+				Execute_cmd("iwpriv ath2 mode 11NAHT40PLUS > /dev/null 2>&1", rspBuff);
+				Execute_cmd("iwpriv ath3 mode 11NAHT40PLUS > /dev/null 2>&1", rspBuff);
+				CFG_set_by_name("AP_CHMODE_3","11NAHT40PLUS");
+			}
+			else if((atoi(channel_5g) == 161) || (atoi(channel_5g) == 153))
+			{
+				Execute_cmd("iwpriv ath2 mode 11NAHT40MINUS > /dev/null 2>&1", rspBuff);
+				Execute_cmd("iwpriv ath3 mode 11NAHT40MINUS > /dev/null 2>&1", rspBuff);
+				CFG_set_by_name("AP_CHMODE_3","11NAHT40MINUS");
+			}
+
+	
+			sprintf(order,"iwconfig ath2 channel %s;iwconfig ath3 channel %s",channel,channel);
+			Execute_cmd(order, rspBuff);
+			Execute_cmd("ifconfig ath2 up;ifconfig ath3 up", rspBuff);
+			
 			}
 			//4.save new config to flash 
 			writeParametersWithSync();
@@ -4827,12 +4899,34 @@ void set_wireless_wan(void)
 			//writeParameters("/tmp/.apcfg","w+",0);
 		}
 		//5.do settings
-		
+#if 0		
 		if(strncmp(wdsonoff_flag_new,"off",3) == 0)
 		{
 			CFG_get_by_name("AP_PRIMARY_CH_BACK",channel_buf);
 //			fprintf(errOut,"[luodp] -----------  wds %s\n",channel_buf);
 			CFG_set_by_name("AP_PRIMARY_CH",channel_buf);
+
+			Execute_cmd("ifconfig ath0 down;ifconfig ath1 down", rspBuff);
+			Execute_cmd("iwconfig ath0 channel 0;iwconfig ath1 channel 0", rspBuff);
+		
+		
+			if(atoi(channel_buf)>=10)
+			{
+					Execute_cmd("iwpriv ath0 mode 11NGHT40MINUS", rspBuff);
+					Execute_cmd("iwpriv ath1 mode 11NGHT40MINUS", rspBuff);
+					CFG_set_by_name("AP_CHMODE","11NGHT40MINUS");
+			}
+			else
+			{
+					Execute_cmd("iwpriv ath0 mode 11NGHT40PLUS", rspBuff);
+					Execute_cmd("iwpriv ath1 mode 11NGHT40PLUS", rspBuff);
+					CFG_set_by_name("AP_CHMODE","11NGHT40PLUS");
+			}
+			
+			sprintf(order,"iwconfig ath0 channel %s;iwconfig ath1 channel %s",channel_buf,channel_buf);
+			Execute_cmd(order, rspBuff);
+			Execute_cmd("ifconfig ath0 up;ifconfig ath1 up", rspBuff);
+
 		}
 
 		
@@ -4841,7 +4935,37 @@ void set_wireless_wan(void)
 			CFG_get_by_name("AP_PRIMARY_CH_BACK_3",channel_buf_5g);
 //			fprintf(errOut,"[luodp] -----------  wds channel_buf_5g %s\n",channel_buf_5g);
 			CFG_set_by_name("AP_PRIMARY_CH_3",channel_buf_5g);
+
+			Execute_cmd("ifconfig ath2 down;ifconfig ath3 down", rspBuff);
+			Execute_cmd("iwconfig ath2 channel 0;iwconfig ath3 channel 0", rspBuff);
+			
+			
+			if((atoi(channel_buf_5g) == 165))
+			{
+				Execute_cmd("iwpriv ath2 mode 11A > /dev/null 2>&1", rspBuff);
+				Execute_cmd("iwpriv ath3 mode 11A > /dev/null 2>&1", rspBuff);
+				CFG_set_by_name("AP_CHMODE_3","11A");
+			}
+			else if( (atoi(channel_buf_5g) == 149) || (atoi(channel_buf_5g) == 157) )
+			{
+				Execute_cmd("iwpriv ath2 mode 11NAHT40PLUS > /dev/null 2>&1", rspBuff);
+				Execute_cmd("iwpriv ath3 mode 11NAHT40PLUS > /dev/null 2>&1", rspBuff);
+				CFG_set_by_name("AP_CHMODE_3","11NAHT40PLUS");
+			}
+			else if((atoi(channel_buf_5g) == 161) || (atoi(channel_buf_5g) == 153))
+			{
+				Execute_cmd("iwpriv ath2 mode 11NAHT40MINUS > /dev/null 2>&1", rspBuff);
+				Execute_cmd("iwpriv ath3 mode 11NAHT40MINUS > /dev/null 2>&1", rspBuff);
+				CFG_set_by_name("AP_CHMODE_3","11NAHT40MINUS");
+			}
+		
+			
+			sprintf(order,"iwconfig ath2 channel %s;iwconfig ath3 channel %s",channel,channel);
+			Execute_cmd(order, rspBuff);
+			Execute_cmd("ifconfig ath2 up;ifconfig ath3 up", rspBuff);
+
 		}
+		#endif
 			writeParametersWithSync();
 			//writeParameters(NVRAM,"w+", NVRAM_OFFSET);
 			//writeParameters("/tmp/.apcfg","w+",0);
@@ -4859,26 +4983,73 @@ void set_wireless_wan(void)
 //				Execute_cmd("apup > /dev/null 2>&1", rspBuff);
 				sprintf(order,"repeatVAP_WISP %s %s > /dev/null 2>&1",wds2gturn_flag,wds5gturn_flag);
 				Execute_cmd(order, rspBuff);
-//				Execute_cmd("repeatVAP > /dev/null 2>&1", rspBuff);
-
-				//kill udhcpd
-				//[TODO]if dhcp no exist ,then up
-				//Execute_cmd("ps | grep udhcpd",rspBuff);
-				//if(strstr(rspBuff,"udhcpd")==0)
-				//{
-					//Execute_cmd("killall udhcpd > /dev/null 2>&1",rspBuff);
-					//Execute_cmd("/usr/sbin/udhcpd /etc/udhcpd.conf > /dev/null 2>&1",rspBuff);
-					//[TODO] wired device re-assign
-				//}
-				//fprintf(errOut,"[luodp] wds open\n");
-
-				//reboot hostapd
-				//Execute_cmd("killall hostapd > /dev/null 2>&1",rspBuff);
-				//Execute_cmd("hostapd -B /tmp/secath0 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
-				//Execute_cmd("hostapd -B /tmp/secath1 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
-				//Execute_cmd("hostapd -B /tmp/secath2 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
-				//Execute_cmd("hostapd -B /tmp/secath3 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
 			}
+		if((strncmp(wdsonoff_flag_new,"off",3) == 0)&&(strncmp(wdsonoff_flag,"on",2) == 0))
+		{
+			CFG_get_by_name("AP_PRIMARY_CH_BACK",channel_buf);
+//			fprintf(errOut,"[luodp] -----------  wds %s\n",channel_buf);
+			CFG_set_by_name("AP_PRIMARY_CH",channel_buf);
+
+			Execute_cmd("ifconfig ath0 down;ifconfig ath1 down", rspBuff);
+			Execute_cmd("iwconfig ath0 channel 0;iwconfig ath1 channel 0", rspBuff);
+			
+			
+			if(atoi(channel_buf)>=10)
+			{
+					Execute_cmd("iwpriv ath0 mode 11NGHT40MINUS", rspBuff);
+					Execute_cmd("iwpriv ath1 mode 11NGHT40MINUS", rspBuff);
+					CFG_set_by_name("AP_CHMODE","11NGHT40MINUS");
+			}
+			else
+			{
+					Execute_cmd("iwpriv ath0 mode 11NGHT40PLUS", rspBuff);
+					Execute_cmd("iwpriv ath1 mode 11NGHT40PLUS", rspBuff);
+					CFG_set_by_name("AP_CHMODE","11NGHT40PLUS");
+			}
+			
+			sprintf(order,"iwconfig ath0 channel %s;iwconfig ath1 channel %s",channel_buf,channel_buf);
+			Execute_cmd(order, rspBuff);
+			Execute_cmd("ifconfig ath0 up;ifconfig ath1 up", rspBuff);
+
+		}
+
+		
+			if((strncmp(wdsonoff_flag5g_new,"off",3) == 0)&&(strncmp(wdsonoff5g_flag,"on",2) == 0))
+			{
+				CFG_get_by_name("AP_PRIMARY_CH_BACK_3",channel_buf_5g);
+	//			fprintf(errOut,"[luodp] -----------  wds channel_buf_5g %s\n",channel_buf_5g);
+				CFG_set_by_name("AP_PRIMARY_CH_3",channel_buf_5g);
+
+				Execute_cmd("ifconfig ath2 down;ifconfig ath3 down", rspBuff);
+				Execute_cmd("iwconfig ath2 channel 0;iwconfig ath3 channel 0", rspBuff);
+				
+				
+				if((atoi(channel_buf_5g) == 165))
+				{
+					Execute_cmd("iwpriv ath2 mode 11A > /dev/null 2>&1", rspBuff);
+					Execute_cmd("iwpriv ath3 mode 11A > /dev/null 2>&1", rspBuff);
+					CFG_set_by_name("AP_CHMODE_3","11A");
+				}
+				else if( (atoi(channel_buf_5g) == 149) || (atoi(channel_buf_5g) == 157) )
+				{
+					Execute_cmd("iwpriv ath2 mode 11NAHT40PLUS > /dev/null 2>&1", rspBuff);
+					Execute_cmd("iwpriv ath3 mode 11NAHT40PLUS > /dev/null 2>&1", rspBuff);
+					CFG_set_by_name("AP_CHMODE_3","11NAHT40PLUS");
+				}
+				else if((atoi(channel_buf_5g) == 161) || (atoi(channel_buf_5g) == 153))
+				{
+					Execute_cmd("iwpriv ath2 mode 11NAHT40MINUS > /dev/null 2>&1", rspBuff);
+					Execute_cmd("iwpriv ath3 mode 11NAHT40MINUS > /dev/null 2>&1", rspBuff);
+					CFG_set_by_name("AP_CHMODE_3","11NAHT40MINUS");
+				}
+			
+			
+				sprintf(order,"iwconfig ath2 channel %s;iwconfig ath3 channel %s",channel,channel);
+				Execute_cmd(order, rspBuff);
+				Execute_cmd("ifconfig ath2 up;ifconfig ath3 up", rspBuff);
+
+			}
+			writeParametersWithSync();
 		}		
 		if((flag==1)||(flag==3)) //off->on and on->on 
 		{

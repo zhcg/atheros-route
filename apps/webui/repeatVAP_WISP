@@ -34,14 +34,44 @@ ifconfig ath2 down;ifconfig ath2 up
 ifconfig ath3 down;ifconfig ath3 up
 fi
 
-#. /etc/ath/apcfg
+. /etc/ath/apcfg
 
 APMODE="ap-wds-ind"
 STAMODE="sta-wds-ind"
 
-#work_flag=`cfg -e | grep  AP_STARTMODE= | awk -F'=' '{print $2}'`
+work_flag=`cfg -e | grep  AP_STARTMODE= | awk -F'=' '{print $2}'`
 if [ "${work_flag}" = "repeater_wisp" ];then
 	ifconfig eth0 down
+else
+	if [ "${WAN_MODE}" != "bridged" ]; then
+		if [ "${WAN_MODE}" = "dhcp" ]; then
+			##
+			## Run the DHCP client on this interface
+			##
+
+			udhcpc -b -i eth0 -h HBD-Router -s /etc/udhcpc.script
+		elif [ "${WAN_MODE}" = "static" ]; then
+			##
+			## Static IP address
+			##
+
+			ifconfig eth0 $WAN_IPADDR netmask $WAN_NETMASK up
+			if [ "${IPGW}" != "" ]
+			then
+				route add default gw ${IPGW}
+			fi
+
+		elif [ "${WAN_MODE}" = "pppoe" ]; then
+			##
+			## pppoe
+			##
+
+			pppoe-start
+			cfg -a PRIDNS=`awk -F' ' 'BEGIN{i=0;}{i++; if(i==1) {print $2}}' /etc/resolv.conf`
+			cfg -a SECDNS=`awk -F' ' 'BEGIN{i=0;}{i++; if(i==2) {print $2}}' /etc/resolv.conf`
+			cfg -c
+		fi
+	fi
 fi
 
 if [ $number_pci = 1 ]; then

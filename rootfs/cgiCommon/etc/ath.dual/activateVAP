@@ -312,7 +312,11 @@ else
                 echo -e "\t\tconfig /tmp/sup${APNAME}" >> /tmp/stalist$RADIO
                 echo -e "\t}" >> /tmp/stalist$RADIO
            else
-                echo -e "-c/tmp/sup${APNAME} -i${APNAME} -bbr0" > /tmp/sta_conf_filename
+		if [ "${wds_flag}" -eq "1" ];then
+                	echo -e "-c/tmp/sup${APNAME} -i${APNAME}" > /tmp/sta_conf_filename
+		else
+                	echo -e "-c/tmp/sup${APNAME} -i${APNAME} -bbr0" > /tmp/sta_conf_filename
+		fi
            fi
         fi
     fi
