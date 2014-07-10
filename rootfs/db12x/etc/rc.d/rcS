@@ -80,7 +80,7 @@ fi
 
 /usr/bin/cal_check 
 ifconfig $WAN_IF up
-ifconfig $LAN_IF up
+#ifconfig $LAN_IF up
 /etc/rc.d/rc.network
 /etc/rc.d/rc.bridge
 . /etc/ath/apcfg
@@ -153,6 +153,7 @@ else
 fi
 #if [ "${WDSON_OFF}" != "on" -a "${DHCPON_OFF}" != "off" ]; then
 	/usr/sbin/udhcpd /etc/udhcpd.conf
+ifconfig $LAN_IF up
 #fi
 if [ -f /etc/arp_ip_mac_on.conf ]; then
 	/usr/sbin/arp -f /etc/arp_ip_mac_on.conf
