@@ -77,7 +77,7 @@
 
 #define MAX(A,B) ((A)>(B))?(A):(B)
 #ifdef B6
-#define CLIENT_NUM 5	//实际设备数目限制为4
+#define CLIENT_NUM 21	//实际设备数目限制为20
 #else
 #define CLIENT_NUM 21	//实际设备数目限制为20
 #endif

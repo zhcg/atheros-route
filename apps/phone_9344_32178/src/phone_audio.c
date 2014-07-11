@@ -959,7 +959,6 @@ START_WRITE:
 				readp = (short *)(read_buf+AUDIO_READ_BYTE_SIZE);
 				for(i=0;i<read_ret/2;i++)
 				{
-					//*readp++ >>= 1;
 					*readp++ /= 3;
 				}
 #ifdef SAVE_FILE	
