@@ -5,65 +5,11 @@
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
+<script language="JavaScript" type="text/javascript" src="/style/basic.js"></script>
 <script language="JavaScript" type="text/javascript">
-function getCookie()
-{ 
-	var strCookie=document.cookie; 
-	var arrCookie=strCookie.split("; "); 
-	for(var i=0;i<arrCookie.length;i++)
-	{ 
-		var arr=arrCookie[i].split("="); 
-		if(arr[0]=="userName")
-		{
-			//alert("已经登录");
-			return true;
-		}
-	} 
-	//alert("未登录");
-	return false; 
-}
-if(getCookie())
-{
-	
-}
-else
-{
-	window.top.location.href="../login.html";	
-}
-function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "table-row";}}
-function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
-function widget_display(widgetID){document.getElementById(widgetID).style.visibility = "visible";document.getElementById(widgetID).style.display = style_display_on();}
+if(getCookie()){}
+else{window.top.location.href="../login.html";}
 
-function widget_enable(widgetID){document.getElementById(widgetID).disabled = false;}
-function widget_disable(widgetID){document.getElementById(widgetID).disabled = true;}
-
-function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
-function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
-
-function button_commit(buttonID){document.getElementById(buttonID).click();}
-
-function checkValuerange(value,min,max)
-{
-	var i = parseInt(value);
-	if (isNaN(i))
-	{
-		return false;
-	}
-	else if (i > max || i < min)
-	{
-		return false;
-	}
-	return true;
-}
-function isNum(str)
-{
-	for (var i=0; i<str.length; i++) {
-		if ((str.charAt(i) >= '0' && str.charAt(i) <= '9'))
-			continue;
-		return false;
-	}
-	return true;
-}
 function CheckValue()
 {
 	if(document.getElementById("WIFION_OFF").value=="on")

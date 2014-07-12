@@ -10,7 +10,7 @@
 	<message msgid="settingwaiting" msgstr="正在配置,请您稍等......" />
 
 	<message msgid="man ntp title" msgstr="时间设置" />
-	<message msgid="man ntp des" msgstr="配置时间服务器相关选项" />
+	<message msgid="man ntp des" msgstr="手动或者自动设置系统时间" />
 	<message msgid="man ntp setting" msgstr="时间设置" />
 	<message msgid="man ntp timezone" msgstr="时区" />
 	<message msgid="man ntp mid island" msgstr="(GMT-11:00) 中途岛、萨摩亚" />
@@ -55,24 +55,25 @@
 	<message msgid="man ntp fiji" msgstr="(GMT+12:00) 斐济" />
 	<message msgid="man ntp newzealand" msgstr="(GMT+12:00) 新西兰" />
 
-	<message msgid="man ntp server1" msgstr="网络时间服务器1" />  
-	<message msgid="man ntp server2" msgstr="网络时间服务器2" />
+	<message msgid="man ntp server1" msgstr="首选网络时间服务器" />  
+	<message msgid="man ntp server2" msgstr="备选网络时间服务器" />
 	<message msgid="man ntp tzs" msgstr="连接状态" />
 	<message msgid="man ntp current time" msgstr="当前时间" />
 	<message msgid="man ntp sync with host" msgstr="主机同步" />
-	<message msgid="man ntpswitch" msgstr="NTP启用" />
+	<message msgid="man ntpswitch" msgstr="自动同步网络时间服务器" />
+	<message msgid="ntp waring" msgstr="注意：关闭路由器电源后，系统时间信息会丢失，只有启动自动同步网络时间服务器功能，您下次开机连上Internet后，路由器才会自动进行对时操作，否则需要您手动进行时间设置。时间设置准确后，其他功能（如访问控制）中的时间限定才能生效。" />
 
 	<message msgid="man ntp err1" msgstr="请您指定网络时间服务器" />
 	<message msgid="man ntp servererror" msgstr="网络时间服务器地址错误,请填写正确格式的IP或者域名" />
 	
-	<message msgid="man cfgdes" msgstr="配置文件导出，导入以及本机备份还原" />
-	<message msgid="man export" msgstr="导出" />
+	<message msgid="man cfgdes" msgstr="配置文件导出，导入以及系统内部备份恢复" />
+	<message msgid="man export" msgstr="导出本地配置" />
 	<message msgid="man exporttitle" msgstr="配置管理" />
 	<message msgid="man exportdes" msgstr="导出系统配置文件并保存至本地" />
 	<message msgid="man selsectfile" msgstr="请您选择配置文件" />
 	<message msgid="man inportdes" msgstr="导入本地配置文件并进行系统配置" /> 
-	<message msgid="man inport" msgstr="导入" />
-	<message msgid="man localsave" msgstr="备份" />
+	<message msgid="man inport" msgstr="导入本地配置" />
+	<message msgid="man localsave" msgstr="内部备份" />
 	<message msgid="man cfg backup" msgstr="您确定要使用此配置文件?" />
 	<message msgid="err cfg empty" msgstr="请选择需要导入的配置文件" />
 	<message msgid="err cfg format" msgstr="配置文件不合法" />
@@ -86,15 +87,15 @@
 	<message msgid="err cfg big" msgstr="配置文件大小不能超过1M" />	
 	
 	<message msgid="cfg care1" msgstr="注意：" />	
-	<message msgid="cfg care2" msgstr="1.配置文件大小不能超过1M。导入配置文件后，设备中原有用户配置将丢失。如果您载入的配置文件有误，可能会导致设备无法被管理。" />	
-	<message msgid="cfg care3" msgstr="2.载入配置文件的过程不能关闭HBD路由器的电源，否则将导致路由器损坏而无法使用。载入过程约20秒，HBD路由将会自动重启。" />	
+	<message msgid="cfg care2" msgstr="1.配置文件大小不能超过1M。导入配置文件后，设备中原有用户配置将丢失。如果您导入的配置文件有误，可能会导致设备无法使用。" />	
+	<message msgid="cfg care3" msgstr="2.导入配置文件的过程不能关闭HBD路由器的电源，否则将导致路由器损坏而无法使用。导入过程约20秒，导入完成之后HBD路由将会自动重启。" />	
 	
 	
 	<message msgid="man reboottitle" msgstr="系统重启" />
 	<message msgid="man rebootdes" msgstr="重启HBD路由器" />
 	<message msgid="man reboot" msgstr="重启HBD路由器" />
 
-	<message msgid="man basesavedes" msgstr="HBD路由器备份与恢复" />
+	<message msgid="man basesavedes" msgstr="系统内部备份与恢复" />
 	<message msgid="man basesavetitle" msgstr="HBD路由器备份" />
 	<message msgid="man basesavetitle2" msgstr="HBD路由器恢复" />
 	<message msgid="man date" msgstr="日期" />

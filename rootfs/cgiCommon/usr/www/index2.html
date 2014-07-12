@@ -10,6 +10,7 @@
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all"/>
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css"/>
 <script type="text/javascript" src="/lang/b28n.js"></script>
+<script language="JavaScript" type="text/javascript" src="/style/basic.js"></script>
 <script type="text/javascript" src="/style/BarMenu.js"></script>
 <script language="JavaScript" type="text/javascript" src="/style/load.js"></script>
 <style type="text/css">
@@ -44,31 +45,9 @@ h1 {font-size: 24px;}
 
 .bar-menu .box3{ font-size: 14px;padding-left:20px;height:40px; line-height:40px; color:#D0D0D0; border-bottom:1px solid #d0d0d0;font-weight:800;}
 </style>
-<script language="JavaScript" type="text/javascript">function getCookie()
-{ 
-	var strCookie=document.cookie; 
-	var arrCookie=strCookie.split("; "); 
-	for(var i=0;i<arrCookie.length;i++)
-	{ 
-		var arr=arrCookie[i].split("="); 
-		if(arr[0]=="userName")
-		{
-			//alert("已经登录");
-			return true;
-		}
-	} 
-	//alert("未登录");
-	return false; 
-}
-if(getCookie())
-{
-	
-}
-else
-{
-	window.top.location.href="login.html";	
-}
-function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
+<script language="JavaScript" type="text/javascript">if(getCookie()){}
+else{window.top.location.href="../login.html";}
+
 function initLanguage()
 {
 	var cook="no";

@@ -5,43 +5,10 @@
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
+<script language="JavaScript" type="text/javascript" src="/style/basic.js"></script>
 <script language="JavaScript" type="text/javascript">
-function getCookie()
-{ 
-	var strCookie=document.cookie; 
-	var arrCookie=strCookie.split("; "); 
-	for(var i=0;i<arrCookie.length;i++)
-	{ 
-		var arr=arrCookie[i].split("="); 
-		if(arr[0]=="userName")
-		{
-			//alert("已经登录");
-			return true;
-		}
-	} 
-	//alert("未登录");
-	return false; 
-}
-if(getCookie())
-{
-	
-}
-else
-{
-	window.top.location.href="../login.html";	
-}
-function button_commit(buttonID){document.getElementById(buttonID).click();}
-function checkInjection(str)
-{
-	var len = str.length;
-	for (var i=0; i<str.length; i++) {
-		if ( str.charAt(i) == '\r' || str.charAt(i) == '\n'){
-				return false;
-		}else
-	        continue;
-	}
-    return true;
-}
+if(getCookie()){}
+else{window.top.location.href="../login.html";}
 
 function refresh_all()
 {	
@@ -50,16 +17,6 @@ function refresh_all()
 function update()
 { 
 	self.setTimeout("refresh_all()", 3);
-}
-
-
-function Checkformat(val)
-{
-	var usern = /^[a-zA-Z0-9_]{1,}$/;
-	if (!val.match(usern)) 
-		return false;
-	else
-		return true;
 }
 
 function AdmFormCheck()

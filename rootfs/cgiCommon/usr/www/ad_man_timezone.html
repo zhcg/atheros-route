@@ -4,41 +4,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
-<script type="text/javascript" src="/lang/b28n.js"></script>
+<script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
+<script language="JavaScript" type="text/javascript" src="/style/basic.js"></script>
 <script>
-function getCookie()
-{ 
-	var strCookie=document.cookie; 
-	var arrCookie=strCookie.split("; "); 
-	for(var i=0;i<arrCookie.length;i++)
-	{ 
-		var arr=arrCookie[i].split("="); 
-		if(arr[0]=="userName")
-		{
-			//alert("已经登录");
-			return true;
-		}
-	} 
-	//alert("未登录");
-	return false; 
-}
-if(getCookie())
-{
-	
-}
-else
-{
-	window.top.location.href="../login.html";	
-}
-function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "table-row";}}
-function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
-function widget_display(widgetID){document.getElementById(widgetID).style.visibility = "visible";document.getElementById(widgetID).style.display = style_display_on();}
-function widget_enable(widgetID){document.getElementById(widgetID).disabled = false;}
-function widget_disable(widgetID){document.getElementById(widgetID).disabled = true;}
-
-function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
-function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
-function button_commit(buttonID){document.getElementById(buttonID).click();}
+if(getCookie()){}
+else{window.top.location.href="../login.html";}
 
 function initTranslation()
 {
@@ -100,6 +70,7 @@ function initTranslation()
 	trans_value("manNTPApply","man apply");
 	trans_value("manNTPCancel","man cancel");
 	trans_inner("help_r","help");	
+	trans_inner("waring","ntp waring");
 	 
 }
 function init()
@@ -362,6 +333,13 @@ function help()
 </tr>
 
 </tbody></table>
+<table width="100%" cellpadding="0" cellspacing="0"   style="border-top: 0px;" class="handaer_text">
+<tr>
+  <td>
+	<span id="waring"  style="color:#ff3c00"></span><br>
+  </td>
+</tr>
+</table>
 
 <table width="100%" cellpadding="2" cellspacing="1">
   <tr align="center">

@@ -4,40 +4,11 @@
 <LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<script type="text/javascript" src="/lang/b28n.js"></script>
+<script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
+<script language="JavaScript" type="text/javascript" src="/style/basic.js"></script>
 <script>
-function getCookie()
-{ 
-	var strCookie=document.cookie; 
-	var arrCookie=strCookie.split("; "); 
-	for(var i=0;i<arrCookie.length;i++)
-	{ 
-		var arr=arrCookie[i].split("="); 
-		if(arr[0]=="userName")
-		{
-			//alert("已经登录");
-			return true;
-		}
-	} 
-	//alert("未登录");
-	return false; 
-}
-if(getCookie())
-{
-	
-}
-else
-{
-	window.top.location.href="../login.html";	
-}
-function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
-function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
-function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "table-row";}}
-function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
-function widget_display(widgetID){document.getElementById(widgetID).style.visibility = "visible";document.getElementById(widgetID).style.display = style_display_on();}
-function widget_disable(widgetID){document.getElementById(widgetID).disabled = true;}
-function button_commit(buttonID){document.getElementById(buttonID).click();}
-
+if(getCookie()){}
+else{window.top.location.href="../login.html";}
 function initTranslation()
 {
 	trans_inner("title","man exporttitle");
@@ -66,6 +37,7 @@ function initTranslation()
 	trans_inner("care1","cfg care1");
 	trans_inner("care2","cfg care2");
 	trans_inner("care3","cfg care3");
+	trans_inner("help_r","help");	
 }
 function init()
 {
@@ -237,14 +209,21 @@ function listdel(value)
 	{   
 		alert(_("err cfg big"));
 	}
-}    
+}  
+function help()
+{
+	if (_("toplanguage")=="e")
+		window.location.href='../help/ad_man_cfgsave_help_e.html';
+	else
+		window.location.href='../help/ad_man_cfgsave_help_z.html';
+}  
 </script> 
 </head>
 
 <body onload="init();" oncontextmenu="window.event.returnValue=false" >
 <div class="handaer_main">
 <table  border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
-<h1 id="title"></h1>
+<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="title"></h1>
 <h2 id="des"></h2>
 <table id="t1" width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
 <form method="post" name="ExportSettings" action="/cgi-bin/download.cgi">

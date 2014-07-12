@@ -6,73 +6,18 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript" src="/style/load.js"></script>
+<script language="JavaScript" type="text/javascript" src="/style/basic.js"></script>
 <script language="JavaScript" type="text/javascript">
-function getCookie()
-{ 
-	var strCookie=document.cookie; 
-	var arrCookie=strCookie.split("; "); 
-	for(var i=0;i<arrCookie.length;i++)
-	{ 
-		var arr=arrCookie[i].split("="); 
-		if(arr[0]=="userName")
-		{
-			//alert("已经登录");
-			return true;
-		}
-	} 
-	//alert("未登录");
-	return false; 
-}
-if(getCookie())
-{
-	
-}
-else
-{
-	window.top.location.href="../login.html";	
-}
+if(getCookie()){}
+else{window.top.location.href="../login.html";}
 var step_num;
-function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "table-row";}}
-function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
-function widget_display(widgetID){document.getElementById(widgetID).style.visibility = "visible";document.getElementById(widgetID).style.display = style_display_on();}
 
-function widget_enable(widgetID){document.getElementById(widgetID).disabled = false;}
-function widget_disable(widgetID){document.getElementById(widgetID).disabled = true;}
-
-function trans_inner(widgetID,xmlname){var e = document.getElementById(widgetID);e.innerHTML = _(xmlname);}
-function trans_value(widgetID,xmlname){var e = document.getElementById(widgetID);e.value = _(xmlname);}
-
-function button_commit(buttonID){document.getElementById(buttonID).click();}
-
-function showpwd(spanID,passName,passID,checkboxID)
-{
-    var pass = document.getElementById(passID).value;
-	if(document.getElementById(checkboxID).checked == true)
-	{
-		document.getElementById(spanID).innerHTML='<input type="text" name='+passName+' id='+passID+' maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
-	}
-	else
-	{
-		document.getElementById(spanID).innerHTML='<input type="password" name='+passName+' id='+passID+' maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
-	}
-}
 function initclickfun()
 {
 	document.getElementById("cccc").onclick = function(){showpwd("pwdinput","PSK_KEY","pwd","cccc");}; 
 	document.getElementById("cccc2").onclick = function(){showpwd("pwdinput2","PSK_KEY_3","pwd2","cccc2");}; 
 }
 
-function checkInjection(str)
-{
-	var len = str.length;
-	for (var i=0; i<str.length; i++) {
-		if ( str.charAt(i) == '\r' || str.charAt(i) == '\n'){
-				return false;
-		}else
-	        continue;
-	}
-    return true;
-}
 
 function disableWirelessSettings()
 {
@@ -103,14 +48,7 @@ function switch_security_mode2()
 	}
 	window.parent.iFrameHeight();
 }
-function Checkformat(val)
-{
-	var usern = /^[a-zA-Z0-9_]{1,}$/;
-	if (!val.match(usern)) 
-		return false;
-	else
-		return true;
-}
+
 function CheckWirelessValue()
 {
 	if(document.wizard_form.WIFION_OFF[0].checked == true)

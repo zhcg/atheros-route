@@ -30,7 +30,8 @@
 
 ul,li{margin:0;padding:0;list-style-type:none；text-indent:0}
  </style>
-<script type="text/javascript" src="/lang/b28n.js"></script>
+<script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
+<script language="JavaScript" type="text/javascript" src="/style/basic.js"></script>
 <script type="text/javascript" src="/style/wdsstatus.js"></script>
 <script language="JavaScript" type="text/javascript">
 var show = 0;
@@ -42,11 +43,6 @@ var showlist2 = 0;
 
 var cho1 = 0;
 var cho2 = 0;
-function button_commit(buttonID){document.getElementById(buttonID).click();}
-function style_display_on(){if (window.ActiveXObject){return "inline-block";}else if (window.XMLHttpRequest){return "";}}
-function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
-function widget_display(widgetID){document.getElementById(widgetID).style.visibility = "visible";document.getElementById(widgetID).style.display = style_display_on();}
-
 
 function initTranslation()
 {
@@ -120,18 +116,6 @@ function initTranslation()
 	e.value = _("admw bAPPLY");
 
 }
-function checkInjection(str)
-{
-	var len = str.length;
-	for (var i=0; i<str.length; i++) {
-		if ( str.charAt(i) == '\r' || str.charAt(i) == '\n'){
-				return false;
-		}else
-	        continue;
-	}
-    return true;
-}
-
 function CheckWirelessValue()
 {
 	if(document.wizard_form.WDSON_OFF[0].checked == true)

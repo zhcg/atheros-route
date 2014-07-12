@@ -9,7 +9,7 @@
 	<message msgid="settingwaiting" msgstr="Setting,Please Wait......" />
 
 	<message msgid="man ntp title" msgstr="Time settings" />
-	<message msgid="man ntp des" msgstr="Options related configuration time server" />
+	<message msgid="man ntp des" msgstr="Manually or automatically set the system time" />
 	<message msgid="man ntp setting" msgstr="Time Settings" />
 	<message msgid="man ntp timezone" msgstr="Time Zone" />
 	<message msgid="man ntp mid island" msgstr="(GMT-11:00) Midway Island, Samoa" />
@@ -54,24 +54,25 @@
 	<message msgid="man ntp fiji" msgstr="(GMT+12:00) Fiji" />
 	<message msgid="man ntp newzealand" msgstr="(GMT+12:00) New Zealand" />
 
-	<message msgid="man ntp server1" msgstr="NTP Server1" />
-	<message msgid="man ntp server2" msgstr="NTP Server2" />
+	<message msgid="man ntp server1" msgstr="First choice of NTP server" />
+	<message msgid="man ntp server2" msgstr="Alternative NTP Server" />
 	<message msgid="man ntp tzs" msgstr="Connection status" />
 	<message msgid="man ntp current time" msgstr="Current Time" />
 	<message msgid="man ntp sync with host" msgstr="Sync with host" />
-	<message msgid="man ntpswitch" msgstr="NTP switch" />
-
+	<message msgid="man ntpswitch" msgstr="NTP Automatic synchronization" />
+	<message msgid="ntp waring" msgstr="Note: close the router to power, the system time information will be lost, only to start the automatic synchronization network time server function, the next time you boot connected to the Internet, the router will automatically time operation, or require you to manually set up time. Time setting accuracy, other functions (such as access control) in the time limit to take effect." />
+	
 	<message msgid="man ntp err1" msgstr="Please specify a NTP Server." />
 	<message msgid="man ntp servererror" msgstr="Network time server address is wrong, please fill in the correct format IP or domain name" />
 	
-	<message msgid="man cfgdes" msgstr="The configuration file export, import and the machine backup and restore" />
-	<message msgid="man export" msgstr="Export" />
+	<message msgid="man cfgdes" msgstr="The configuration file export, import and system backup and recovery" />
+	<message msgid="man export" msgstr="Export configuration" />
 	<message msgid="man exporttitle" msgstr="Configure management" />
 	<message msgid="man exportdes" msgstr="The system configuration files are saved to the local." />
 	<message msgid="man selsectfile" msgstr="Select the configuration file" />
 	<message msgid="man inportdes" msgstr="To make local system configuration file work in the BASE" /> 
-	<message msgid="man inport" msgstr="Inport" />
-	<message msgid="man localsave" msgstr="Backup" />
+	<message msgid="man inport" msgstr="Inport configuration" />
+	<message msgid="man localsave" msgstr="Internal backup" />
 	<message msgid="man cfg backup" msgstr="Are you sure you want to use this profile?" />
 	<message msgid="err cfg empty" msgstr="Please select the need to import the configuration file" />
 	<message msgid="err cfg format" msgstr="Configuration file is illegal" />
@@ -87,8 +88,8 @@
 	
 
 	<message msgid="cfg care1" msgstr="Note:" />	
-	<message msgid="cfg care2" msgstr="1.The configuration file should less than 1M.Import configuration files, equipment in the user configuration will be lost. If you load the configuration file is wrong, may cause the equipment cannot be managed." />	
-	<message msgid="cfg care3" msgstr="2.Load the configuration file does not turn off the power of the HBD router, otherwise it will cause damage to the router and can not be used. In the process of about 20 seconds, the HBD will automatically restart the routing." />	
+	<message msgid="cfg care2" msgstr="1.The configuration file should less than 1M.Import configuration files, equipment in the user configuration will be lost. If you load the configuration file is wrong, may cause the equipment cannot work." />	
+	<message msgid="cfg care3" msgstr="2.Import configuration file process cannot be shut off the power supply of the HBD router, otherwise it will cause damage to the router and can not be used. The import process about 20 seconds, the import after the completion of HBD routing will automatically restart." />	
 
 	
 	<message msgid="man reboottitle" msgstr="System restart" />

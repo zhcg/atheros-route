@@ -5,59 +5,13 @@
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
+<script language="JavaScript" type="text/javascript" src="/style/basic.js"></script>
 <script language="JavaScript" type="text/javascript">
-function getCookie()
-{ 
-	var strCookie=document.cookie; 
-	var arrCookie=strCookie.split("; "); 
-	for(var i=0;i<arrCookie.length;i++)
-	{ 
-		var arr=arrCookie[i].split("="); 
-		if(arr[0]=="userName")
-		{
-			//alert("已经登录");
-			return true;
-		}
-	} 
-	//alert("未登录");
-	return false; 
-}
-if(getCookie())
-{
-	
-}
-else
-{
-	window.top.location.href="../login.html";	
-}
-function button_commit(buttonID){document.getElementById(buttonID).click();}
-function widget_hide(widgetID){document.getElementById(widgetID).style.visibility = "hidden";document.getElementById(widgetID).style.display = "none";}
+
+if(getCookie()){}
+else{window.top.location.href="../login.html";}
 
 var step_num;
-function style_display_on()
-{
-	if (window.ActiveXObject)
-	{ // IE
-		return "block";
-	}
-	else if (window.XMLHttpRequest)
-	{ // Mozilla, Safari,...
-		return "table-row";
-	}
-}
-
-function checkInjection(str)
-{
-	var len = str.length;
-	for (var i=0; i<str.length; i++) {
-		if ( str.charAt(i) == '\r' || str.charAt(i) == '\n'){
-				return false;
-		}else
-	        continue;
-	}
-    return true;
-}
-
 
 function disableWirelessSettings()
 {
@@ -95,14 +49,7 @@ function switch_security_mode2()
 	}
 	window.parent.iFrameHeight();
 }
-function Checkformat(val)
-{
-	var usern = /^[a-zA-Z0-9_]{1,}$/;
-	if (!val.match(usern)) 
-		return false;
-	else
-		return true;
-}
+
 function CheckWirelessValue()
 {
 	if(document.wizard_form.WIFION_OFF[0].checked == true)
