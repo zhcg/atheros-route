@@ -8404,7 +8404,7 @@ exit(1);
                 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
                 printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
                 printf("</head><body>");
-                sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err Ruleexist\"));window.location.href=\"ad_parentc_accept\";</script>");
+                sprintf(tempu2,"<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err Ruleexist\"));window.location.href=\"ad_safe_port\";</script>");
                 printf(tempu2);
                 printf("</body></html>");
                 exit(1);
