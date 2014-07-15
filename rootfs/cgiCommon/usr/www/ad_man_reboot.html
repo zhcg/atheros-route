@@ -16,6 +16,7 @@ function initTranslation()
 	trans_inner("r_title","man reboottitle");
 	trans_inner("des","man rebootdes");
 	trans_value("defaultset","man reboot");
+	trans_inner("help_r","help");	
 }
 function init()
 {
@@ -32,14 +33,20 @@ function factoryset()
 	}	
 
 }
-
+function help()
+{
+	if (_("toplanguage")=="e")
+		window.location.href='../help/ad_man_reboot_help_e.html';
+	else
+		window.location.href='../help/ad_man_reboot_help_z.html';
+}
 </script>
 </head>
 
 <body onload="init()"  oncontextmenu="window.event.returnValue=false" >
 <div class="handaer_main">
 <table  width="100%" border="0" cellpadding="0" cellspacing="0" id="tt2"><tr><td>
-</a></div><h1 id="title"></h1>
+<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="title"></h1>
 <p></p>
 <form method="post" name="wizard_form">  
 <h2 id="des"></h2>  

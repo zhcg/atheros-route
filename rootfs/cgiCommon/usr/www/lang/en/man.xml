@@ -103,8 +103,9 @@
 	<message msgid="man modify" msgstr="Delete" />
 
 	<message msgid="log title" msgstr="System Log" />
-	<message msgid="log des" msgstr="Export LOG file" />
-	<message msgid="log t1des" msgstr="Export LOG file" />
+	<message msgid="log des" msgstr="Display system log" />
+	<message msgid="log t1des" msgstr="Display system log" />
+	<message msgid="log exportlog"	msgstr="Display log" />
 	
 	<message msgid="log t2des" msgstr="Tcpdump" />
 	<message msgid="log begin" msgstr="Begin" />

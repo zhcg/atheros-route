@@ -213,10 +213,10 @@
 	<message msgid="admw securitydes" msgstr="Modify the router Web management page login password" />
 
 	<message msgid="admw uploadtitle" msgstr="Firmware upgrade" />
-	<message msgid="admw uploaddes" msgstr="Choose to upgrade using image files, do an in place upgrade" />
-	<message msgid="admw uploadfirware" msgstr="Firmware upgrade" />
+	<message msgid="admw uploaddes" msgstr="By upgrading the router software, you will gain new function" />
+	<message msgid="admw uploadfirware" msgstr="Local upgrade" />
 	<message msgid="admw up_selsectfile" msgstr="Please selest image file" />
-	<message msgid="admw Upload" msgstr="Upgrade" />
+	<message msgid="admw Upload" msgstr="Local upgrade" />
 	<message msgid="err file empty" msgstr="Please choose the image file " />
 	<message msgid="upgrade success" msgstr="Upgrade success " />
 	<message msgid="admw channelchoose" msgstr="Channel" />
@@ -224,7 +224,7 @@
 
 	<message msgid="admw otades" msgstr="Online upgrade(OTA)" />
 	<message msgid="admw otatitle" msgstr="Online upgrade" />
-	<message msgid="admw otacheck" msgstr="Version Check" />
+	<message msgid="admw otacheck" msgstr="Updates check" />
 	<message msgid="admw otaupload" msgstr="Upgrade" />
 	<message msgid="admw newversion" msgstr="Higher version software is found" />
 	<message msgid="admw nonewversion" msgstr="No higher version software" />
@@ -250,7 +250,9 @@
 	<message msgid="err file format" msgstr="Upgrade package and system hardware does not match, please select the correct upgrade package  " />
 	<message msgid="err file upload" msgstr="Firmware upload fail " />
 	<message msgid="admw chfile" msgstr="Choose file" />	
-	<message msgid="admw waring" msgstr="Note: the file should less than 15M,the upgrade process is completely automatic, please don't turn off the power, otherwise it will result in BASE damage and can not be used, the upgrade process about 80 seconds, when the upgrade is complete, the BASE will automatically restart." />	
+	<message msgid="admw waring" msgstr="Note: the file should less than 8M,the upgrade process is completely automatic, please don't turn off the power, otherwise it will result in BASE damage and can not be used, the upgrade process about 80 seconds, when the upgrade is complete, the BASE will automatically restart." />	
+	<message msgid="admw waring2" msgstr="Note: Please ensure that the HBD router can be connected to the Internet" />	
+
 	<message msgid="admw sysupgrade" msgstr="Confirm the firmware upgrade?" />
 	<message msgid="err dhcp null" msgstr="Unable to get WAN IP through automatic acquisition,please check that the  automatic acquisition server provider?" />
 	<message msgid="err dhcp ip" msgstr="The WAN IP and Route IP are in the same subnet, please set the Route IP in Advanced Settings - Network Settings - Gateway Settings" />

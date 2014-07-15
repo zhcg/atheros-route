@@ -104,8 +104,9 @@
 	<message msgid="man delete" msgstr="删除" />
 	
 	<message msgid="log title" msgstr="系统日志" />
-	<message msgid="log des" msgstr="导出LOG文件" />
-	<message msgid="log t1des" msgstr="导出LOG文件" />
+	<message msgid="log des" msgstr=" 显示系统日志" />
+	<message msgid="log t1des" msgstr=" 显示系统日志" />
+	<message msgid="log exportlog"	msgstr="显示日志" />
 	
 	<message msgid="log t2des" msgstr="抓包" />
 	<message msgid="log begin" msgstr="开始抓包" />

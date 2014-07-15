@@ -4,9 +4,9 @@ var destnation;
 var timeID;
 function  reboothandleStateChange()
 {
-	if(xmlHttp.readyState==4)
+	if(xmlHttp.readyState==4 || xmlHttp.readyState=="complete")
 	{
-		if(xmlHttp.status==200)
+		//if(xmlHttp.status==200)
 		{
 			clearTimeout(timeID);
 			window.parent.endshow();
@@ -36,37 +36,37 @@ function wait(type)
 	if(type == "reboot")
 	{
 		window.parent.Demo3(_("REBOOT"));
-		window.parent.beginshow(800);
+		window.parent.beginshow(1000);
 		destnation = "http://"+location.hostname;
 		desIPreboot = location.hostname;
-		setTimeout(function(){rebootRequest();},35000);
+		setTimeout(function(){rebootRequest();},100000);
 	}
 	else if(type == "upload")
 	{
 		window.parent.Demo3(_("UPLOAD"));
 		window.parent.beginshow(2000);
 		destnation = "http://"+desIPreboot+"/cgi-bin/"+"crupload";
-		setTimeout(function(){rebootRequest();},35000);
+		setTimeout(function(){rebootRequest();},200000);
 	}
 	else if(type == "cfgback")
 	{
 		window.parent.Demo3(_("CFGBACK"));
-		window.parent.beginshow(800);
+		window.parent.beginshow(1000);
 		destnation = "http://"+desIPreboot;
-		setTimeout(function(){rebootRequest();},40000);
+		setTimeout(function(){rebootRequest();},100000);
 	}
 	else if(type == "factory")
 	{
 		window.parent.Demo3(_("FACTORY"));
-		window.parent.beginshow(800);
+		window.parent.beginshow(1000);
 		desIPreboot="10.10.10.254";
 		destnation = "http://"+desIPreboot+"/cgi-bin/"+"crfact";
-		setTimeout(function(){rebootRequest();},35000);
+		setTimeout(function(){rebootRequest();},100000);
 	}
 	else
 	{
 		destnation = "http://"+desIPreboot;
-		setTimeout(function(){rebootRequest();},35000);
+		setTimeout(function(){rebootRequest();},100000);
 	}
 }
 

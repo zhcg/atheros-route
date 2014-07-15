@@ -211,16 +211,16 @@
 	<message msgid="admw securitydes" msgstr="修改Web管理页面的登录密码" />
 
 	<message msgid="admw uploadtitle" msgstr="固件升级" />
-	<message msgid="admw uploaddes" msgstr="选择升级用镜像文件，进行本地升级" />
-	<message msgid="admw uploadfirware" msgstr="固件升级" />
+	<message msgid="admw uploaddes" msgstr="通过升级本路由器的软件，您将获得新的功能" />
+	<message msgid="admw uploadfirware" msgstr="本地升级" />
 	<message msgid="admw up_selsectfile" msgstr="请您选择文件" />
-	<message msgid="admw Upload" msgstr="升级" />
+	<message msgid="admw Upload" msgstr="本地升级" />
 	<message msgid="err file empty" msgstr="请您选择升级文件" />
 	<message msgid="upgrade success" msgstr="升级成功" />
 	
 	<message msgid="admw otades" msgstr="在线升级(OTA)" />
 	<message msgid="admw otatitle" msgstr="在线升级" />
-	<message msgid="admw otacheck" msgstr="检查新版本" />
+	<message msgid="admw otacheck" msgstr="检查更新" />
 	<message msgid="admw otaupload" msgstr="升级" />
 	<message msgid="admw newversion" msgstr="检查到新版本" />
 	<message msgid="admw nonewversion" msgstr="当前已经是最新版本" />
@@ -251,7 +251,8 @@
 	<message msgid="err file format" msgstr="升级包与系统硬件不匹配，请您选择正确的升级包" />
 	<message msgid="err file upload" msgstr="文件上传失败" />
 	<message msgid="admw chfile" msgstr="选择文件" />
-	<message msgid="admw waring" msgstr="注意:升级文件不得超过15M,升级过程完全自动,请您不要关闭电源,否则将导致HBD路由器损坏而无法使用,升级过程约80秒,当升级结束后,HBD路由器将自动重新启动" />	
+	<message msgid="admw waring" msgstr="注意:升级文件不得超过8M,升级过程完全自动,请您不要关闭电源,否则将导致HBD路由器损坏而无法使用,升级过程约80秒,当升级结束后,HBD路由器将自动重新启动" />	
+	<message msgid="admw waring2" msgstr="注意: 请确保HBD路由器可以正常连接到互联网" />	
 	<message msgid="admw sysupgrade" msgstr="确认进行固件升级?" />
 	<message msgid="err dhcp null" msgstr="无法自动获取到WAN口IP,请您检查是否为自动获取方式连接" />
 	<message msgid="err dhcp ip" msgstr="DHCP获取到WAN口IP跟当前路由器在同一个网段,请您在高级设置-内网设置-网关设置里面修改路由器的网段" />
