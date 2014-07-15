@@ -500,10 +500,18 @@ int prase_532_ver_msg(char *msg)
 	msgp = strstr(msg,AS532_VER_NUM);
 	if(msgp == NULL)
 	{
-		PRINT("no ver\n");
-		return -2;
+		msgp = strstr(msg,AS532_VER_NUM_NOV);
+		if(msgp == NULL)
+		{
+			PRINT("no ver\n");
+			return -2;
+		}
+		msgp = msgp + strlen(AS532_VER_NUM_NOV);
 	}
-	msgp = msgp + strlen(AS532_VER_NUM);
+	else
+	{
+		msgp = msgp + strlen(AS532_VER_NUM);
+	}
 	end = strstr(msgp,"\"");
 	if(end == NULL)
 	{
@@ -512,18 +520,39 @@ int prase_532_ver_msg(char *msg)
 	}
 	memcpy(ver_buf,msgp,end-msgp);
 	
-	remote_as532_version[0] = ver_buf[0]-48;
-	remote_as532_version[1] = ver_buf[2]-48;
 	if(strlen(ver_buf) == 5)
 	{
+		remote_as532_version[0] = ver_buf[0]-48;
+		remote_as532_version[1] = ver_buf[2]-48;
 		remote_as532_version[2] = 0x0;
 		remote_as532_version[3] = ver_buf[4]-48;
 		minor = remote_as532_version[3];
 	}
 	else if(strlen(ver_buf) == 6)
 	{
+		remote_as532_version[0] = ver_buf[0]-48;
+		remote_as532_version[1] = ver_buf[2]-48;
 		tmp_buf[0] = ver_buf[4];
 		tmp_buf[1] = ver_buf[5];
+		tmp_buf[2] = '\0';
+		minor = atoi(tmp_buf);
+		remote_as532_version[2] = minor >> 8;
+		remote_as532_version[3] = minor&0xff;
+	}
+	else if(strlen(ver_buf) == 3)
+	{
+		remote_as532_version[0] = as532_version[0];
+		remote_as532_version[1] = ver_buf[0]-48;
+		remote_as532_version[2] = 0x0;
+		remote_as532_version[3] = ver_buf[2]-48;
+		minor = remote_as532_version[3];
+	}
+	else if(strlen(ver_buf) == 4)
+	{
+		remote_as532_version[0] = as532_version[0];
+		remote_as532_version[1] = ver_buf[0]-48;
+		tmp_buf[0] = ver_buf[2];
+		tmp_buf[1] = ver_buf[3];
 		tmp_buf[2] = '\0';
 		minor = atoi(tmp_buf);
 		remote_as532_version[2] = minor >> 8;
@@ -583,10 +612,18 @@ int prase_532_conf_msg(char *msg)
 	msgp = strstr(msg,AS532_VER_NUM);
 	if(msgp == NULL)
 	{
-		PRINT("no ver\n");
-		return -2;
+		msgp = strstr(msg,AS532_VER_NUM_NOV);
+		if(msgp == NULL)
+		{
+			PRINT("no ver\n");
+			return -2;
+		}
+		msgp = msgp + strlen(AS532_VER_NUM_NOV);
 	}
-	msgp = msgp + strlen(AS532_VER_NUM);
+	else
+	{
+		msgp = msgp + strlen(AS532_VER_NUM);
+	}
 	end = strstr(msgp,"\"");
 	if(end == NULL)
 	{
@@ -595,18 +632,39 @@ int prase_532_conf_msg(char *msg)
 	}
 	memcpy(ver_buf,msgp,end-msgp);
 	
-	remote_as532_version[0] = ver_buf[0]-48;
-	remote_as532_version[1] = ver_buf[2]-48;
 	if(strlen(ver_buf) == 5)
 	{
+		remote_as532_version[0] = ver_buf[0]-48;
+		remote_as532_version[1] = ver_buf[2]-48;
 		remote_as532_version[2] = 0x0;
 		remote_as532_version[3] = ver_buf[4]-48;
 		minor = remote_as532_version[3];
 	}
 	else if(strlen(ver_buf) == 6)
 	{
+		remote_as532_version[0] = ver_buf[0]-48;
+		remote_as532_version[1] = ver_buf[2]-48;
 		tmp_buf[0] = ver_buf[4];
 		tmp_buf[1] = ver_buf[5];
+		tmp_buf[2] = '\0';
+		minor = atoi(tmp_buf);
+		remote_as532_version[2] = minor >> 8;
+		remote_as532_version[3] = minor&0xff;
+	}
+	else if(strlen(ver_buf) == 3)
+	{
+		remote_as532_version[0] = as532_conf_version[0];
+		remote_as532_version[1] = ver_buf[0]-48;
+		remote_as532_version[2] = 0x0;
+		remote_as532_version[3] = ver_buf[2]-48;
+		minor = remote_as532_version[3];
+	}
+	else if(strlen(ver_buf) == 4)
+	{
+		remote_as532_version[0] = as532_conf_version[0];
+		remote_as532_version[1] = ver_buf[0]-48;
+		tmp_buf[0] = ver_buf[2];
+		tmp_buf[1] = ver_buf[3];
 		tmp_buf[2] = '\0';
 		minor = atoi(tmp_buf);
 		remote_as532_version[2] = minor >> 8;

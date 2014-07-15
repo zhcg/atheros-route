@@ -23,6 +23,7 @@
 #define B6L_AS532_PACKET_NAME	"HBD_B6L_AS532"
 #define A20_AS532_PACKET_NAME	"HBD_F2B_S1AS532"
 #define AS532_VER_NUM		"\"versionNum\":\"V"
+#define AS532_VER_NUM_NOV		"\"versionNum\":\""
 #define AS532_VER_PATH		"\"versionPath\":\""
 #define AS532_CONF_MD5		"\"checkCode\":\""
 #define WGET				"/bin/wget"
