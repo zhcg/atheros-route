@@ -36,10 +36,10 @@ function wait(type)
 	if(type == "reboot")
 	{
 		window.parent.Demo3(_("REBOOT"));
-		window.parent.beginshow(1000);
+		window.parent.beginshow(900);
 		destnation = "http://"+location.hostname;
 		desIPreboot = location.hostname;
-		setTimeout(function(){rebootRequest();},100000);
+		setTimeout(function(){rebootRequest();},90000);
 	}
 	else if(type == "upload")
 	{
