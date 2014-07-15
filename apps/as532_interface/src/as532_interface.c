@@ -860,13 +860,13 @@ int set_default()
 
 int check_ver()
 {
-	int ret = memcmp((void *)remote_as532_version, (void *)as532_version, sizeof(as532_version)/2);
-	if(ret != 0)
-	{
-		PRINT("ver err\n");
-		return -1;
-	}
-	ret = memcmp((void *)remote_as532_version, (void *)as532_version, sizeof(as532_version));
+	//int ret = memcmp((void *)remote_as532_version, (void *)as532_version, sizeof(as532_version)/2);
+	//if(ret != 0)
+	//{
+		//PRINT("ver err\n");
+		//return -1;
+	//}
+	int ret = memcmp((void *)remote_as532_version, (void *)as532_version, sizeof(as532_version));
 	if(ret <= 0)
 	{
 		PRINT("as532 is newest\n");
@@ -877,13 +877,13 @@ int check_ver()
 
 int check_conf_ver()
 {
-	int ret = memcmp((void *)remote_as532_version, (void *)as532_version, sizeof(as532_version)/2);
-	if(ret != 0)
-	{
-		PRINT("ver err\n");
-		return -1;
-	}
-	ret = memcmp((void *)remote_as532_version, (void *)as532_version, sizeof(as532_version));
+	//int ret = memcmp((void *)remote_as532_version, (void *)as532_version, sizeof(as532_version)/2);
+	//if(ret != 0)
+	//{
+		//PRINT("ver err\n");
+		//return -1;
+	//}
+	int ret = memcmp((void *)remote_as532_version, (void *)as532_version, sizeof(as532_version));
 	if(ret <= 0)
 	{
 		PRINT("as532conf is newest\n");
