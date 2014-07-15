@@ -64,6 +64,7 @@ insmod /lib/modules/2.6.31/net/athrs_gmac.ko
 export WAN_IF=eth0
 export LAN_IF=eth1
 
+. /etc/ath/apcfg
 
 #yuhaolei for mac default display
 MACTYPE_FLAG=`cfg -e | grep "MACTYPE" | awk -F "=" '{print $2}'`
@@ -83,7 +84,6 @@ ifconfig $WAN_IF up
 #ifconfig $LAN_IF up
 /etc/rc.d/rc.network
 /etc/rc.d/rc.bridge
-. /etc/ath/apcfg
 /usr/sbin/set_ntpserver > /dev/null 2>&1
 
 
