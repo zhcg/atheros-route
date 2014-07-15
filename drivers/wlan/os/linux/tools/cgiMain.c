@@ -6857,7 +6857,6 @@ int main(int argc,char **argv)
             Execute_cmd("cfg -e | grep \"AP_SECMODE=\"",valBuff5);
             Execute_cmd("cfg -e | grep \"AP_PRIMARY_CH=\" | awk -F \"=\" \'{print $2}\'",valBuff7);
             Execute_cmd("cfg -e | grep \"AP_HIDESSID=\" | awk -F \"=\" \'{print $2}\'",valBuff8);
-            Execute_cmd("cfg -e | grep \"AP_CHMODE=\" | awk -F \"=\" \'{print $2}\'",valBuff10);
 
             //get 5G's old value from flash
             Execute_cmd("cfg -e | grep \"WIFION_OFF_3=\" | awk -F \"=\" \'{print $2}\'",valBuff_3);
@@ -6866,9 +6865,10 @@ int main(int argc,char **argv)
             Execute_cmd("cfg -e | grep \"AP_SECMODE_3=\"",valBuff5_3);
             Execute_cmd("cfg -e | grep \"AP_PRIMARY_CH_3=\" | awk -F \"=\" \'{print $2}\'",valBuff7_3);
             Execute_cmd("cfg -e | grep \"AP_HIDESSID_3=\" | awk -F \"=\" \'{print $2}\'",valBuff8_3);
-            Execute_cmd("cfg -e | grep \"AP_CHMODE_3=\" | awk -F \"=\" \'{print $2}\'",valBuff10_3);
 		
         }
+            Execute_cmd("cfg -e | grep \"AP_CHMODE=\" | awk -F \"=\" \'{print $2}\'",valBuff10);
+            Execute_cmd("cfg -e | grep \"AP_CHMODE_3=\" | awk -F \"=\" \'{print $2}\'",valBuff10_3);
 		//fprintf(errOut,"[luodp] WIFI: %s\n%s%s\n%s\n",valBuff,valBuff2,valBuff5,valBuff4);
 		//2.save new config to flash
            
