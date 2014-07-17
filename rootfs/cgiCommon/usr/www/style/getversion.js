@@ -20,7 +20,7 @@ function getversioncb()
 	{
 		var result = httpversion.responseText;
 		//alert(zidong);
-		if((result.indexOf("V1.0.0") >= 0)||(result.indexOf("V8.0.0") >= 0))
+		if((result.indexOf("V1.0.") >= 0)||(result.indexOf("V8.0.") >= 0))
 		{
 			widget_display("denglukuang_img");
 			widget_display("note");
