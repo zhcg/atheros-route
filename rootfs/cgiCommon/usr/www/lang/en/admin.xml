@@ -121,7 +121,7 @@
 	<message msgid="admw modedes" msgstr="Please select the HBD router WAN connection type." />  
 	<message msgid="admw modedes1" msgstr="The parameters needed in the opening of the network, the network operators to provide" />  
 
-	<message msgid="admw wifides" msgstr="Please set the HBD router WiFi account and password. Your computer, PAD, intelligent mobile phone will use the following network." />  
+	<message msgid="admw wifides" msgstr="Please set the HBD router basic parameters. Your computer, PAD, intelligent mobile phone will use the following network." />  
 	<message msgid="admw wirelessdes" msgstr="Please select the WiFi to connect" />  
 
 	<message msgid="admw PPMAC" msgstr="The MAC address of parent PC" />

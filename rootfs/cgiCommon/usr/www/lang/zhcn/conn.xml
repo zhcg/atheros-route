@@ -34,15 +34,15 @@
 	<message msgid="clist sig" msgstr="信号强度" />  
 
 	<message msgid="conm title" msgstr="无线接入管理" />  
-	<message msgid="conm des" msgstr="管理当前已经接入的无线设备" />  
+	<message msgid="conm des" msgstr="管理无线设备接入权限" />  
 	<message msgid="conm t1_title" msgstr="无线接入管理" />  
 	<message msgid="conm t1_switch" msgstr="无线接入开关" />  
 	<message msgid="conm ts1" msgstr="(启用并应用后，方可进行条目添加和设置) " />  
 	
-	<message msgid="conw title" msgstr="远程Web管理" />  
-	<message msgid="conw des" msgstr="管理设备远程登录Web权限" />  
-	<message msgid="conw t1_title" msgstr="远程Web管理" />  
-	<message msgid="conw t1_switch" msgstr="远程登录" />  
+	<message msgid="conw title" msgstr="远端路由管理" />  
+	<message msgid="conw des" msgstr="管理外网访问路由管理权限" />  
+	<message msgid="conw t1_title" msgstr="远端路由管理" />  
+	<message msgid="conw t1_switch" msgstr="远端路由管理" />  
 
 	<message msgid="conm ADDMRULE" msgstr="添加" />  
 

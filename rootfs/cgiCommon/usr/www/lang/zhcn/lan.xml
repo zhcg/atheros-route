@@ -17,7 +17,7 @@
 	<message msgid="settingwaiting" msgstr="正在配置,请您稍等......" />
 	
 	<message msgid="dhcp title" msgstr="DHCP服务器" />
-	<message msgid="dhcp des" msgstr="设置DHCP服务。HBD路由器的DHCP服务器能自动配置局域网中各计算机的TCP/IP协议" />
+	<message msgid="dhcp des" msgstr="设置DHCP服务。HBD路由器的DHCP服务器能自动配置局域网中各设备的TCP/IP协议" />
 	<message msgid="dhcp t1_title" msgstr="DHCP服务器" />
 	<message msgid="dhcp t1_GWIP" msgstr="网关IP" />
 	<message msgid="dhcp t1_DHCPON_OFF" msgstr="DHCP服务器" />
@@ -25,7 +25,7 @@
 	<message msgid="dhcp t1_TIME" msgstr="租用时间" />
 	<message msgid="dhcp t1_hour" msgstr="小时" />
 	<message msgid="dhcp t1_min" msgstr="分钟" />
-	<message msgid="dhcp t1_defaut" msgstr="（1-2880分钟,缺省值120分钟,只支持整数分钟）" />
+	<message msgid="dhcp t1_defaut" msgstr="（60-2880分钟,缺省值120分钟,只支持整数分钟）" />
 
 	<message msgid="dhcp t2_title" msgstr="静态地址分配" />
 	<message msgid="dhcp t2_Mac" msgstr="MAC地址" />
@@ -50,7 +50,7 @@
 	<message msgid="dhcpadd t1_Status" msgstr="状态" />
 
 	<message msgid="gw title" msgstr="网关设置" />
-	<message msgid="gw des" msgstr="配置网关选项" />
+	<message msgid="gw des" msgstr="配置网关的基本参数" />
 	<message msgid="gw t1_title" msgstr="网关设置" />
 	<message msgid="gw t1_MAC" msgstr="MAC地址" />
 	<message msgid="gw t1_IP" msgstr="IP地址" />

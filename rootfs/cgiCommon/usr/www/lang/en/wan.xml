@@ -39,6 +39,7 @@
 	<message msgid="wan connection type pppoe" msgstr="PPPoE (ADSL)" />
 	<message msgid="wan connection type l2tp" msgstr="L2TP" />
 	<message msgid="wan connection type pptp" msgstr="PPTP" />
+	<message msgid="wan connection type disable" msgstr="Disable" />
 	<message msgid="wan protocol opmode" msgstr="Operation Mode" />
 	<message msgid="wan protocol opmode keepalive" msgstr="Keep Alive" />
 	<message msgid="wan protocol opmode ondemand" msgstr="On Demand" />
@@ -73,6 +74,7 @@
 	<message msgid="ODM" msgstr="On demand Mode: Idle Time " />
 	<message msgid="minutes" msgstr="minutes" />
 	<message msgid="seconds" msgstr="seconds" />
+	<message msgid="PPPOE_time" msgstr="Note: need time synchronization firstly in the System Management - > Time Setting" />
 
 	<message msgid="macc title" msgstr="Clone MAC address" />
 	<message msgid="macc des" msgstr="Set the BASE to the WAN MAC address (Note: only the LAN device can use this function)" />

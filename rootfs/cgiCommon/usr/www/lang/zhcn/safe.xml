@@ -22,22 +22,22 @@
 	<message msgid="settingwaiting" msgstr="正在配置,请您稍等......" />
 	
 	<message msgid="ipmac title" msgstr="ARP绑定" />    
-	<message msgid="ipmac des" msgstr="显示当前系统ARP映射表,并且可以显示和修改ARP静态绑定设置" />    
+	<message msgid="ipmac des" msgstr="管理主机MAC地址和IP地址的匹配规则" />    
 	<message msgid="ipmac t0_title" msgstr="系统ARP映射表" /> 
 	<message msgid="ipmac t1_title" msgstr="ARP静态绑定" /> 
 
 	<message msgid="addIPMAC Stye" msgstr="绑定" />    
 	<message msgid="addIPMAC Snotstye" msgstr="未绑定" />    
 
-	<message msgid="addIPMAC title" msgstr="添加IP/MAC绑定" />    
-	<message msgid="addIPMAC des" msgstr="添加IP/MAC绑定条目" />    
-	<message msgid="addIPMAC t1_title" msgstr="添加IP/MAC绑定" />    
+	<message msgid="addIPMAC title" msgstr="添加ARP静态绑定" />    
+	<message msgid="addIPMAC des" msgstr="添加ARP静态绑定条目" />    
+	<message msgid="addIPMAC t1_title" msgstr="添加ARP静态绑定" />    
 	<message msgid="addIPMAC t1_MAC" msgstr="MAC地址" />    
 	<message msgid="addIPMAC t1_IP" msgstr="IP地址" />    
 	<message msgid="addIPMAC t1_Tye" msgstr="绑定" /> 
 
 	<message msgid="port title" msgstr="端口映射" /> 
-	<message msgid="port des" msgstr="虚拟服务器定义了广域网外部端口和局域网网络服务器之间的映射关系，所有对该广域网服务器端口的访问都将会被重新定位给通过IP地址指定的局域网网络服务器" /> 
+	<message msgid="port des" msgstr="管理外网访问内网服务的端口映射关系" /> 
 
 	<message msgid="port t1_title" msgstr="端口映射" />
 	

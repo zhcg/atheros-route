@@ -17,7 +17,7 @@
 	<message msgid="settingwaiting" msgstr="Setting,Please Wait......" />
 	
 	<message msgid="dhcp title" msgstr="DHCP Server" />
-	<message msgid="dhcp des" msgstr="Set the DHCP service. Router DHCP server can automatically configure the computer LAN TCP/IP protocol" />
+	<message msgid="dhcp des" msgstr="Set the DHCP service. Router DHCP server can automatically configure the devices LAN TCP/IP protocol" />
 	<message msgid="dhcp t1_title" msgstr="DHCP" />
 	<message msgid="dhcp t1_GWIP" msgstr="Gateway IP" />
 	<message msgid="dhcp t1_DHCPON_OFF" msgstr="DHCP Server" />
@@ -25,7 +25,7 @@
 	<message msgid="dhcp t1_TIME" msgstr="Time" />
 	<message msgid="dhcp t1_hour" msgstr="Hour" />
 	<message msgid="dhcp t1_min" msgstr="Minutes" />
-	<message msgid="dhcp t1_defaut" msgstr="(1-2880 minutes, the default value is 120 minutes, integer only)" />
+	<message msgid="dhcp t1_defaut" msgstr="(60-2880 minutes, the default value is 120 minutes, integer only)" />
 
 	<message msgid="dhcp t2_title" msgstr="Static address allocation" />
 	<message msgid="dhcp t2_Mac" msgstr="MAC Address" />
@@ -50,7 +50,7 @@
 	<message msgid="dhcpadd t1_Status" msgstr="Status" />
 
 	<message msgid="gw title" msgstr="Gateway Settings" />
-	<message msgid="gw des" msgstr="The gateway configuration option" />
+	<message msgid="gw des" msgstr="Configure basic parameter" />
 	<message msgid="gw t1_title" msgstr="Gateway Settings" />
 	<message msgid="gw t1_MAC" msgstr="MAC Address" />
 	<message msgid="gw t1_IP" msgstr="IP Address" />

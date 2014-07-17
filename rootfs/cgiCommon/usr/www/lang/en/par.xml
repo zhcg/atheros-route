@@ -37,7 +37,7 @@
 	<message msgid="pa delit1" msgstr="Are you sure to delete " />  	
 	<message msgid="pa delit2" msgstr=" management rule?" />  	
 	<message msgid="paradd title" msgstr="Access control" />  
-	<message msgid="paradd des" msgstr="Add access management items, did not join the list of PC network can't access" />  
+	<message msgid="paradd des" msgstr="Add access management items" />  
 	<message msgid="paradd t1_title" msgstr="Add access control entries" />  
 	<message msgid="paradd t1_MAC" msgstr="MAC Address" />  
 	<message msgid="paradd t1_NetL" msgstr="Website or keyword" />  

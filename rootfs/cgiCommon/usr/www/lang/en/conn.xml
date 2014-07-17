@@ -34,15 +34,15 @@
 	<message msgid="clist sig" msgstr="Signal strength" />  
 
 	<message msgid="conm title" msgstr="Wireless Access" />  
-	<message msgid="conm des" msgstr="Management of accessed wireless devices " />  
+	<message msgid="conm des" msgstr="Management of wireless equipment access permissions" />  
 	<message msgid="conm t1_title" msgstr="Wireless Access" />  
 	<message msgid="conm t1_switch" msgstr="Wireless access switch" />  
 	<message msgid="conm ts1" msgstr="(Add and modify should be after Enable and Apply) " />  
 
-	<message msgid="conw title" msgstr="Remote Web management" />  
-	<message msgid="conw des" msgstr="Management of equipment remote Web login" />  
-	<message msgid="conw t1_title" msgstr="Remote Web management" />  
-	<message msgid="conw t1_switch" msgstr="Remote Login" />
+	<message msgid="conw title" msgstr="Remote routing management" />  
+	<message msgid="conw des" msgstr="Management of external access routing management authority" />  
+	<message msgid="conw t1_title" msgstr="Remote routing management" />  
+	<message msgid="conw t1_switch" msgstr="Remote routing management" />
 	
 	<message msgid="conm ADDMRULE" msgstr="Add" />  
 	

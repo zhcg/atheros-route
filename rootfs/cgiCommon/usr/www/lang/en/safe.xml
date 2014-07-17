@@ -22,22 +22,22 @@
 	<message msgid="settingwaiting" msgstr="Setting,Please Wait......" />
 	
 	<message msgid="ipmac title" msgstr="ARP Binding" />    
-	<message msgid="ipmac des" msgstr="Display the current system ARP mapping table, and you can display and modify the ARP static bindings settings" /> 
+	<message msgid="ipmac des" msgstr="The matching rule management host MAC address and IP address" /> 
 	<message msgid="ipmac t0_title" msgstr="System ARP mapping table" />   
 	<message msgid="ipmac t1_title" msgstr="ARP Static Binding" />    
 
 	<message msgid="addIPMAC Stye" msgstr="Binding" />    
 	<message msgid="addIPMAC Snotstye" msgstr="Unbound" />    
 
-	<message msgid="addIPMAC title" msgstr="Add IP/MAC binding" />    
-	<message msgid="addIPMAC des" msgstr="Add the IP/MAC binding entries" />    
-	<message msgid="addIPMAC t1_title" msgstr="Add IP/MAC binding" />    
+	<message msgid="addIPMAC title" msgstr="Add ARP static binding" />    
+	<message msgid="addIPMAC des" msgstr="Add ARP static bindingentries" />    
+	<message msgid="addIPMAC t1_title" msgstr="Add ARP static binding" />    
 	<message msgid="addIPMAC t1_MAC" msgstr="MAC Address" />    
 	<message msgid="addIPMAC t1_IP" msgstr="IP Address" />    
 	<message msgid="addIPMAC t1_Tye" msgstr="Binding" />    
 	
 		<message msgid="port title" msgstr="Port Mapping" /> 
-	<message msgid="port des" msgstr="The virtual server defines the mapping between a wide area network external port and LAN network server, all access to the wide area network server port will be relocated to the network server IP address specified" /> 
+	<message msgid="port des" msgstr="Port mapping relationship management of external access network services" /> 
 
 	<message msgid="port t1_title" msgstr="Port Mapping" />
 	

@@ -82,7 +82,7 @@ function CheckValue()
 			document.WORKFORM.DHCP_TIME.select();
 			return false;
 		}
-		if (checkValuerange(document.WORKFORM.DHCP_TIME.value,1,2880)==false)
+		if (checkValuerange(document.WORKFORM.DHCP_TIME.value,60,2880)==false)
 		{
 			alert(_("err range"));
 			document.WORKFORM.DHCP_TIME.select();

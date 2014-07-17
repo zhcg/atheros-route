@@ -39,7 +39,8 @@
 	<message msgid="wan connection type dhcp" msgstr="自动获取(动态IP)" />
 	<message msgid="wan connection type pppoe" msgstr="PPPoE(ADSL)" />
 	<message msgid="wan connection type l2tp" msgstr="L2TP" />
-	<message msgid="wan connection type pptp" msgstr="PPTP" />
+	<message msgid="wan connection type l2tp" msgstr="L2TP" />
+	<message msgid="wan connection type disable" msgstr="禁用" />
 	<message msgid="wan protocol opmode" msgstr="工作模式" />
 	<message msgid="wan protocol opmode keepalive" msgstr="自动连接" />
 	<message msgid="wan protocol opmode ondemand" msgstr="按需连接" />
@@ -73,6 +74,7 @@
 	<message msgid="PPPOE_TIMING" msgstr="定时连接 ：定时连接时段" />    
 	<message msgid="minutes" msgstr="分钟" />
 	<message msgid="seconds" msgstr="秒" />
+	<message msgid="PPPOE_time" msgstr="注意：需要先在系统管理->时间设置中进行时间同步" />
 
 	<message msgid="macc title" msgstr="MAC地址克隆" />
 	<message msgid="macc des" msgstr="设置HBD路由器的WAN口MAC地址（  注意：只有局域网中的终端可以使用本功能）" />
