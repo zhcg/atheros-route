@@ -58,6 +58,9 @@ int global_out_buf_pos;
 FILE* write_file;
 FILE* out_file;
 #endif
+#ifdef SAVE_INCOMING_FILE
+FILE* incoming_file;
+#endif
 
 int sampleRate = 8000;
 const signed short kFilterCoefficients8kHz[5] =
@@ -504,6 +507,9 @@ int init_audio(void)
 		phone_audio.phone_audio_pcmfd = pcm_fd;
 	}
     pthread_mutex_init(&phone_audio.aec_mutex, NULL);
+#ifdef SAVE_INCOMING_FILE
+	incoming_file = fopen("./incoming_date.pcm", "w"); //for read sound
+#endif
 	return 0;
 }
 
@@ -776,6 +782,9 @@ void* AudioIncomingThreadCallBack(void* argv)
 			else if(read_ret > 0)
 			//else
 			{
+#ifdef SAVE_INCOMING_FILE
+				fwrite(audioincoming_buf, 1, read_ret , incoming_file);
+#endif
 				//PRINT("read_ret = %d\n",read_ret);
 				if(Fsk_AddData((signed short *)audioincoming_buf,read_ret/2) == 0)
 					PRINT("Fsk_AddData err\n");
@@ -801,7 +810,11 @@ void* AudioIncomingThreadCallBack(void* argv)
 				usleep(10*1000);
 				continue;
 			}
+#ifdef SAVE_INCOMING_FILE
+			usleep(30*1000);
+#else
 			usleep(50*1000);
+#endif
 		}
 		PRINT("audio incoming thread entry idle...\n");
 		while(phone_audio.audio_incoming_thread_flag == 0)

@@ -521,7 +521,8 @@ int do_cmd_onhook(dev_status_t *dev)
 				}
 			}
 			phone_control.global_incoming = 0;
-			usleep(400*1000);
+			//usleep(400*1000);
+			usleep(800*1000);
 		}
 		else
 			stopaudio(dev,PSTN,0);		
