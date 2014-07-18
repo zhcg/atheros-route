@@ -13,9 +13,9 @@
 <table width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
 
 <tr>
-  <td class="head" >WAN Settings</td>
+  <td class="head" >WAN Connection mode</td>
   <td>
-  <span> Please select the appropriate connection type based on the way the Internet your Internet Service Provider (ISP) to offer. For example, if you can get automatically assigned by the DHCP server IP address from the ISP, select "Dynamic IP"; If you have a fixed IP address provided by your ISP , select "Static IP"; If you access the Internet for ADSL virtual dialing mode , select "PPPoE"
+  <span> Please select the appropriate connection mode based on the way the Internet your Internet Service Provider (ISP) to offer. For example, if you can get automatically assigned by the DHCP server IP address from the ISP, select "Dynamic IP"; If you have a fixed IP address provided by your ISP , select "Static IP"; If you access the Internet for ADSL virtual dialing mode , select "PPPoE"
   </span>
   </tr>
   <tr>
@@ -23,7 +23,7 @@
 </tr>  
 <td class="head"> Automatic detection</td>
   <td>
-  <span>If you do not know what the WAN port connection type you should choose, please click on the button to see the automatic detection of access provided by the ISP . Test results for reference only , please consult your ISP</span>
+  <span>If you do not know what the WAN port connection mode you should choose, please click on the button to see the automatic detection of access provided by the ISP . Test results for reference only , please consult your ISP</span>
   </td>
   <tr>
 <td class="title" colspan="2" >Static IP</td>
@@ -31,19 +31,19 @@
 <tr>
   <td class="head">IP address</td>
   <td>
-  <span>The ISP's DHCP server dynamically obtain an IP address</span>
+  <span>The IP address of router to the WAN that the ISP gives to you. if you do not know, ask ISP about</span>
   </td>
   </tr>
   <tr>
   <td class="head">Subnet Mask</td>
   <td>
-  <span>The DHCP server dynamically from the ISP to get the subnet mask</span>
+  <span>The router subnet mask of the WAN that ISP gives to you , generally 255.255.255.0</span>
 </td>
 </tr>
 <tr>
    <td class="head">Default Gateway</td>
   <td>
-  <span>The ISP's DHCP server dynamically get the gateway</span>
+  <span>The gateway that the ISP Provide your . if you do not know, ask ISP about</span>
 </td>
 </tr>
 <tr>
@@ -55,7 +55,7 @@
 <tr>
 <td class="head">Secondary DNS server</td>
   <td>
-  <span>Secondary DNS server from the ISP's DHCP server dynamically get, or you can set up your own DNS server backup manually here</span>
+  <span>Option, if the ISP provides you with two DNS servers, you can get another DNS server IP address here</span>
 </td>
 </tr>
 <tr>
@@ -64,7 +64,7 @@
 <tr>
 <td class="head">Dynamic IP</td>
   <td>
-  <span> Internet access through Modem, ISDN, ADSL, cable, residential broadband, equipment every time the Internet assigned IP address is not the same, this is a dynamic IP address acquisition</span>
+  <span>Internet access through Modem, ISDN, ADSL, cable broadband, equipment every time the Internet assigned IP address is not the same, this is the dynamic IP address acquisition mode</span>
 </td> 
 </tr> 
 
@@ -84,16 +84,25 @@
   <span>Fill ISP ADSL Internet access you specify a password , it is unclear to ask the ISP</span>
 </td>
 </tr>
+
+<tr>
+<td class="head">Redial period</td>
+  <td>
+  <span>If the automatic disconnection waiting time T is not equal to 0, then no detected within minutes of continuous T network access when traffic is automatically disconnected from the network , protecting your online resources. This setting is only "on-demand connection" and " manual connection " effect</span>
+</td>
+</tr>
+
 <tr>
   <td class="head">Operating Mode</td>
   <td>
+
   <span>Keep Alive：  If you choose to connect automatically at boot automatically after the connection to operate. During use , if due to external reasons , the network is disconnected , then every so often ( 10 seconds ) attempts to connect until the connection so far</span><br>
   
   <span>on Demand： If you select Connect on Demand , then there is a network access request from the LAN to automatically connect operation</span><br>
 <span>Manual： ADSL dial-up connection after boot performed manually by the user</span><br>
 
-<span>Redial period： If the automatic disconnection waiting time T is not equal to 0, then no detected within minutes of continuous T network access when traffic is automatically disconnected from the network , protecting your online resources. This setting is only "on-demand connection" and " manual connection " effect</span><br>
-<span>Timing：If you select a timed connection in the " connection time" specified start time to connect automatically operate automatically disconnected at the designated end time</span>
+
+<span>Timing：If you select a timed connection in the " connection time" specified start time to connect automatically operate automatically disconnected at the designated end time.Note: only when you come to the "system management" menu "time" is the time, "timing connecting" function to take effect</span>
  </span>
 </td>
 </tr>

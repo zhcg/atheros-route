@@ -13,11 +13,17 @@
 <table width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
 <tr>
   <td class="title" colspan="2" >ARP静态绑定</td>
-</tr>  
+</tr> 
+</table>
+<table width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
+<tr>
+<td class="title2" colspan="2" >通过系统ARP映射表来观察网络中主机的MAC地址和IP地址的映射关系，可以使用ARP静态绑定设置来管理主机间的访问以防止ARP欺骗</td>
+</tr>
+
 <tr>
   <td class="head">MAC地址</td>
   <td>
-  <span>网络中被控制的计算机的MAC地址</span>
+  <span>网络中被控制的主机的MAC地址</span>
   </td>
   </tr>
 <tr>
@@ -48,10 +54,10 @@
 <tr>
   <td class="head">举例说明</td>
   <td>
-  <span> 如果您希望限制局域网中MAC地址为00-11-22-33-44-55的计算机其IP地址为10.10.10.199，而局域网中的其它计算机都不能以10.10.10.199的IP地址存在，这时您需要指定如下的ARP绑定表:<br> 
+  <span> 如果您希望限制局域网中MAC地址为00:01:22:33:44:55的主机其IP地址为10.10.10.199，而局域网中的其它主机都不能以10.10.10.199的IP地址存在，这时您需要指定如下的ARP静态绑定表:<br> 
 首先点击“添加”;<br>
 然后，按照以下数据添加新的静态绑定条目; <br>
-MAC地址：00-11-22-33-44-55；IP地址：10.10.10.199；绑定：绑定</span>
+MAC地址：00:01:22:33:44:55；IP地址：10.10.10.199；绑定：绑定</span>
   </td>
   </tr>
 

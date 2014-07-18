@@ -13,11 +13,17 @@
 <table width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
 <tr>
   <td class="title" colspan="2" >ARP Static Binding</td>
-</tr>  
+</tr> 
+</table>
+<table width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
+<tr>
+<td class="title2" colspan="2" >Mapping by ARP mapping table to observe the network host's MAC address and IP address, you can use ARP static binding settings to manage inter host access to prevent ARP spoofing</td>
+</tr>
+ 
 <tr>
   <td class="head">MAC Address</td>
   <td>
-  <span>the network is controlled by the MAC address of the computer</span>
+  <span>the network is controlled by the MAC address of the host</span>
   </td>
   </tr>
 <tr>
@@ -47,10 +53,10 @@
 <tr>
   <td class="head">For example</td>
   <td>
-  <span> If you want to limit the LAN MAC address of 00-11-22-33-44-55 computer whose IP address is 10.10.10.199, and the other computers in the LAN can not exist in the IP address 10.10.10.199, then you need to specify the ARP binding table below:<br> 
+  <span> If you want to limit the LAN MAC address of 00:01:22:33:44:55 host whose IP address is 10.10.10.199, and the other hosts in the LAN can not exist in the IP address 10.10.10.199, then you need to specify the ARP static binding table below:<br> 
 First click "Add";<br>
 Then, follow the following data to add new static binding entries; <br>
-MAC address :00-11-22-33-44-55; IP address: 10.10.10.199; binding: Binding</span>
+MAC address :00:01:22:33:44:55; IP address: 10.10.10.199; binding: Binding</span>
   </td>
   </tr>
 

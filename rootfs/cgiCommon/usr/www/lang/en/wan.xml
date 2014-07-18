@@ -32,7 +32,7 @@
 	<message msgid="wan optionXX" msgstr="(optional)" />	
 
 	<message msgid="wan title" msgstr="WAN Settings" />
-	<message msgid="wan introduction" msgstr="You may choose different connection type that suitable for your environment. Besides, you may also configure parameters according to the selected connection type." />
+	<message msgid="wan introduction" msgstr="The basic network parameter configuration of HBD router WAN port" />
 	<message msgid="wan connection type" msgstr="WAN Connection Type:" />
 	<message msgid="wan connection type static" msgstr="Manual Settings (static IP)" />
 	<message msgid="wan connection type dhcp" msgstr="Automatic Acquisition (dynamic IP)" />
@@ -77,7 +77,7 @@
 	<message msgid="PPPOE_time" msgstr="Note: need time synchronization firstly in the System Management - > Time Setting" />
 
 	<message msgid="macc title" msgstr="Clone MAC address" />
-	<message msgid="macc des" msgstr="Set the BASE to the WAN MAC address (Note: only the LAN device can use this function)" />
+	<message msgid="macc des" msgstr="Set the BASE to the WAN MAC address (Note: only the LAN device can get the MAC)" />
 	<message msgid="macc t1_title" msgstr="Clone MAC address" />
 	<message msgid="macc t1_MACS" msgstr="Select the MAC address source" />
 	<message msgid="macc mactype0" msgstr="Use the default MAC address" />

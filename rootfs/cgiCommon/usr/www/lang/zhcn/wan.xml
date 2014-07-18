@@ -33,7 +33,7 @@
 	<message msgid="wan optionXX" msgstr="(可选)" />	
 
 	<message msgid="wan title" msgstr="WAN口设置" />
-	<message msgid="wan introduction" msgstr="请您选择HBD路由器WAN口的连接方式。所需参数在开通网络时，由网络运营商（中国电信、中国联通、中国移动等）提供" />
+	<message msgid="wan introduction" msgstr="配置HBD路由器WAN口的基本网络参数" />
 	<message msgid="wan connection type" msgstr="WAN口连接方式:" />
 	<message msgid="wan connection type static" msgstr="手动设置(静态IP)" />
 	<message msgid="wan connection type dhcp" msgstr="自动获取(动态IP)" />
@@ -77,7 +77,7 @@
 	<message msgid="PPPOE_time" msgstr="注意：需要先在系统管理->时间设置中进行时间同步" />
 
 	<message msgid="macc title" msgstr="MAC地址克隆" />
-	<message msgid="macc des" msgstr="设置HBD路由器的WAN口MAC地址（  注意：只有局域网中的终端可以使用本功能）" />
+	<message msgid="macc des" msgstr="设置HBD路由器的WAN口MAC地址（  注意：只有局域网中的终端才可以获取其MAC功能）" />
 	<message msgid="macc t1_title" msgstr="MAC地址克隆" />
 
 	<message msgid="macc t1_MACS" msgstr="选择MAC地址来源" />
