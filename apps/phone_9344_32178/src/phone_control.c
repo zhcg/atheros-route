@@ -522,7 +522,7 @@ int do_cmd_onhook(dev_status_t *dev)
 			}
 			phone_control.global_incoming = 0;
 			//usleep(400*1000);
-			usleep(800*1000);
+			usleep(1000*1000);
 		}
 		else
 			stopaudio(dev,PSTN,0);		
@@ -2247,6 +2247,19 @@ void led_control(char type)
 }
 #endif
 
+int check_incoming_num(char *incoming_num,int len)
+{
+	int i;
+	if(len == 0)
+		return 0;
+	for(i=0;i<len;i++)
+	{
+		if(incoming_num[i] != '#' && incoming_num[i] != '*' && incoming_num[i] != '+' && (incoming_num[i] > '9' || incoming_num[i] < '0'))
+			return -1;
+	}
+	return 0;
+}
+
 void *loop_check_ring(void * argv)
 {
 	PRINT("%s thread start.......\n",__FUNCTION__);
@@ -2374,6 +2387,8 @@ void *loop_check_ring(void * argv)
 				if(strlen(incoming_num) != 1)
 				{
 					PRINT("Incoming.....\n");
+					if(check_incoming_num(incoming_num,strlen(incoming_num)) != 0)
+						memset(incoming_num,0,SENDBUF);
 					generate_incoming_msg(packet_buffer,incoming_num,strlen(incoming_num));
 					//stop_read_incoming();
 					memcpy((unsigned char*)(&handle_up_msg_buffer[phone_control.handle_up_msg_wp_pos]),packet_buffer,strlen(incoming_num)+12);
