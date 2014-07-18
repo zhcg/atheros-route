@@ -73,7 +73,6 @@ int offhook()
 //拨号
 int dialup(char *num,int num_len)
 {
-	usleep(200*1000);//等待音频线程初始化结束
 	if(num_len>40)
 		num_len = 40;
 	phone_audio.input_stream_rp = 0;

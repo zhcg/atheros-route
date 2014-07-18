@@ -1013,18 +1013,19 @@ int do_cmd_heartbeat(dev_status_t *dev,char *buf)
 int do_cmd_dialup(dev_status_t* dev)
 {
 	int i,j,count=0;
-	if(phone_control.offhook_kill_talkback == 1)
-	{
-		PRINT("delay dialup\n");
-		usleep(500*1000);
-		phone_control.offhook_kill_talkback = 0;
-	}
 #ifdef REGISTER
 	if(dev->dev_is_using && dev->registered)
 #else
 	if(dev->dev_is_using)
 #endif
 	{
+		if(phone_control.offhook_kill_talkback == 1)
+		{
+			PRINT("delay dialup\n");
+			usleep(500*1000);
+			phone_control.offhook_kill_talkback = 0;
+		}
+		usleep(1200*1000);//等待音频线程初始化结束
 		for(i=0;i<CLIENT_NUM;i++)
 		{
 			if(devlist[i].dev_is_using == 1)
