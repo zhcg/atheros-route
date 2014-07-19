@@ -418,6 +418,7 @@ OFFHOOK:
 		phone_control.start_dial = 1;
 		phone_control.dial_over = 0;
 
+		startaudio(dev,0);
 		if(dev->isswtiching == 0)
 		{
 START_OFFHOOK:
@@ -440,7 +441,6 @@ START_OFFHOOK:
 OFFHOOK_SUCCESS:
 			offhook_limit = 0;
 		}
-		startaudio(dev,0);
 		
 		dev->attach=1;
 		memcpy(&phone_control.who_is_online,dev,sizeof(dev_status_t));
