@@ -335,7 +335,7 @@ void write_leases(void)
 	time_t curr = time(0);
 	unsigned long tmp_time;
 	int ret;
-	int open;
+	int open = 0;
 	struct dhcpOfferedAddr access_lease;
 	struct dhcpOfferedAddr access_lease2;
 
@@ -398,6 +398,7 @@ void write_leases(void)
         }
 		fclose(fpp);
 		fclose(fp);
+        fp=NULL;
 	}
 	fpp = fopen(UDHCPD_FILE, "r");    /*  /var/run/udhcpd.leases   */
     while(fread(&access_lease, sizeof access_lease, 1, fpp) == 1)
@@ -429,7 +430,12 @@ void write_leases(void)
 			fwrite(&access_lease2, sizeof(access_lease2), 1, fp);
 		}
 		fclose(fp);
+        fp=NULL;
 		open =  1;
+    }
+    if(fp != NULL) //add by mingyue
+    {
+        fclose(fp);
     }
 	fclose(fpp);
 	LOG(LOG_INFO, "write OK");

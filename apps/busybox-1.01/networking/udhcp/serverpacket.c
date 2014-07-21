@@ -134,6 +134,7 @@ int sendOffer(struct dhcpMessage *oldpacket)
 	system("cfg -e | grep AP_IPADDR= | awk -F '=' '{print $2}' > /tmp/GateWay");
 	fp = fopen("/tmp/GateWay", "r");
 	fgets(gateway_ip, 30, fp);
+    fclose(fp);
 
 	init_packet(&packet, oldpacket, DHCPOFFER);
 
@@ -312,6 +313,9 @@ void add_staMac()
 			open =  1;
 	    }
 	}
+    else  // add by mingyue
+        if(open != 1)
+            fclose(fp);
 	fclose(flist);
 
 	/*for 5G*/

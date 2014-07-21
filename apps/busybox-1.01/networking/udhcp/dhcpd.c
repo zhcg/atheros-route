@@ -279,6 +279,7 @@ int main(int argc, char *argv[])
 			system("cfg -e | grep AP_IPADDR= | awk -F '=' '{print $2}' > /tmp/GateWay");
 			fp = fopen("/tmp/GateWay", "r");
 			fgets(gateway_ip, 30, fp);
+            fclose(fp);
 
 			requested = get_option(&packet, DHCP_REQUESTED_IP);
 			server_id = get_option(&packet, DHCP_SERVER_ID);
