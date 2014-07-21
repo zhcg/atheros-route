@@ -182,7 +182,7 @@
 #	define ATH_F_ADDR		0x9f050000
 // lf_bak
 #	define ATH_F_BAK_FILE		db12x${bc}-jffs2_bak
-#	define ATH_F_BAK_LEN		0x570000
+#	define ATH_F_BAK_LEN		0x520000
 #	define ATH_F_BAK_ADDR		0x9f870000
 // lk
 #	define ATH_K_FILE		vmlinux${bc}.lzma.uImage
