@@ -56,6 +56,7 @@
 	<message msgid="sysinfo ok" msgstr="Access to the Internet" />
 	<message msgid="sysinfo fail" msgstr="Unable to access the Internet" />	
 	<message msgid="sysinfo cing" msgstr="Connecting......" />	
+	<message msgid="sysinfo timeout" msgstr="The current time is not in Time Period" />
 
 	<message msgid="PPPOE_TIMING" msgstr="Timing ：Timing Period" />
 

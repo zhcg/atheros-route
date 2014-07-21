@@ -247,7 +247,25 @@ function pptpOPModeSwitch()
 		document.wanCfg.pptpRedialPeriod.disabled = false;
 }
 
+function timingcheck()
+{
+	var bh = parseInt(document.wanCfg.PPPOE_TIMING_BH.value);
+	var bm = parseInt(document.wanCfg.PPPOE_TIMING_BM.value);
+	var eh = parseInt(document.wanCfg.PPPOE_TIMING_EH.value);
+	var em = parseInt(document.wanCfg.PPPOE_TIMING_EM.value);
 
+	var btime = bh*60+bm;	
+	var etime = eh*60+em;
+
+	//alert("btime:"+btime+"-etime:"+etime);
+
+	if(btime >= etime)
+	{
+		return false;
+	}
+	
+	return true;
+}
 function CheckValue()
 {
 	if (document.wanCfg.WAN_MODE.selectedIndex == 0) //STATIC
@@ -353,7 +371,7 @@ function CheckValue()
 		}
 		else if (document.wanCfg.PPPOE_MODE.selectedIndex == 3)
 		{
-			if (checktimerange(document.wanCfg.PPPOE_TIMING_BH.value,0,24)==false)
+			if (checktimerange(document.wanCfg.PPPOE_TIMING_BH.value,0,23)==false)
 			{
 				alert(_("err stiming"));
 				document.wanCfg.PPPOE_TIMING_BH.select();
@@ -365,7 +383,7 @@ function CheckValue()
 				document.wanCfg.PPPOE_TIMING_BM.select();
 				return false;
 			}
-			if (checktimerange(document.wanCfg.PPPOE_TIMING_EH.value,0,24)==false)
+			if (checktimerange(document.wanCfg.PPPOE_TIMING_EH.value,0,23)==false)
 			{
 				alert(_("err stiming"));
 				document.wanCfg.PPPOE_TIMING_EH.select();
@@ -377,11 +395,18 @@ function CheckValue()
 				document.wanCfg.PPPOE_TIMING_EM.select();
 				return false;
 			}
+			if (timingcheck() == false)
+			{
+				alert(_("err stiming"));
+				document.wanCfg.PPPOE_TIMING_BH.select();
+				return false;
+			}
+
 		}
 		disableall();
 		enablePPPOE();
 		setwaitgifshow();
-		window.parent.pppoe_tiaozhuan2();
+		//window.parent.pppoe_tiaozhuan2();
 		button_commit('PPP');
 	}
 	else if (document.wanCfg.WAN_MODE.selectedIndex == 3) //L2TP
@@ -549,6 +574,7 @@ function initTranslation()
 	trans_inner("PPPOE_ODM","ODM");
 	trans_inner("PPPOE_TIMING","PPPOE_TIMING");
 	trans_inner("PPPOE_minutes","minutes");
+	trans_inner("PPPOE_time","PPPOE_time");
 	trans_inner("L2TP_KAM","KAM");
 	trans_inner("L2TP_seconds","seconds");
 	trans_inner("PPtP_KAM","KAM");
@@ -566,13 +592,53 @@ function initTranslation()
 var xmlreq2;
 var desIPreboot2;	
 function createxmlreq2(){if(window.ActiveXObject){xmlreq2=new ActiveXObject("Microsoft.XMLHTTP");}else if(window.XMLHttpRequest){xmlreq2=new XMLHttpRequest();}}
+function timecheck()
+{
+	var bh = parseInt(document.wanCfg.PPPOE_TIMING_BH.value);
+	var bm = parseInt(document.wanCfg.PPPOE_TIMING_BM.value);
+	var eh = parseInt(document.wanCfg.PPPOE_TIMING_EH.value);
+	var em = parseInt(document.wanCfg.PPPOE_TIMING_EM.value);
+	
+	var myDate = new Date();
+	var ch = myDate.getHours();
+	var cm = myDate.getMinutes();
+	
+	var btime = bh*60+bm;	
+	var etime = eh*60+em;
+	var ctime = ch*60+cm;
+	
+	//alert("btime:"+btime+"-etime:"+etime+"-ctime"+ctime);
+	if(btime < etime)
+	{
+		if((ctime>etime)||(ctime<btime))
+			return false;
+	}
+	else if(btime == etime)
+	{
+		return false;
+	}
+	else
+	{
+		if((ctime > etime)&&(ctime < btime))
+			return false;
+	}
+	
+	return true;
+}
 function PPPoERequest()
 {
-	createxmlreq2();
-	xmlreq2.onreadystatechange=handleState2;
-	desIPreboot2 = location.hostname;
-	xmlreq2.open("GET","http://"+desIPreboot2+"/pppoe_status.xml?now=" + new Date().getTime(),true);
-	xmlreq2.send(null);
+	if(timecheck() == false)
+	{
+		document.getElementById("cstatus").innerHTML=_("sysinfo timeout");
+	}
+	else
+	{
+		createxmlreq2();
+		xmlreq2.onreadystatechange=handleState2;
+		desIPreboot2 = location.hostname;
+		xmlreq2.open("GET","http://"+desIPreboot2+"/pppoe_status.xml?now=" + new Date().getTime(),true);
+		xmlreq2.send(null);
+	}
 }
 function handleState2() 
 {
@@ -885,7 +951,9 @@ function help()
 	<input type="text" id="PPPOE_TIMING_BH" name="PPPOE_TIMING_BH" class="handaer_text_small_content" maxlength="2" size="2" value="~~PPPOE_TIMING_BH~"/>:
 	<input type="text" id="PPPOE_TIMING_BM" name="PPPOE_TIMING_BM" class="handaer_text_small_content" maxlength="2" size="2" value="~~PPPOE_TIMING_BM~"/>-
 	<input type="text" id="PPPOE_TIMING_EH" name="PPPOE_TIMING_EH" class="handaer_text_small_content" maxlength="2" size="2" value="~~PPPOE_TIMING_EH~"/>:
-	<input type="text" id="PPPOE_TIMING_EM" name="PPPOE_TIMING_EM" class="handaer_text_small_content" maxlength="2" size="2" value="~~PPPOE_TIMING_EM~"/></span>
+	<input type="text" id="PPPOE_TIMING_EM" name="PPPOE_TIMING_EM" class="handaer_text_small_content" maxlength="2" size="2" value="~~PPPOE_TIMING_EM~"/>
+	<span id="PPPOE_time"></span></br>
+	</span>
 </td>
 </tr>
 </table>

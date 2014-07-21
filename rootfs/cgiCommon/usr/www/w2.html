@@ -206,7 +206,7 @@ function change_step(offset)
 		else if (document.wizard_form.WAN_MODE[3].checked == true) 
 		{
 			waitgifshow();
-			window.parent.pppoe_tiaozhuan();
+			//window.parent.pppoe_tiaozhuan();
 			button_commit('PPP');
 		}
 		else if (document.wizard_form.WAN_MODE[4].checked == true) 
@@ -591,7 +591,7 @@ function CheckWanValue()
 			}
 			else if (document.wizard_form.PPPOE_MODE.selectedIndex == 3)
 			{
-				if (checktimerange(document.wizard_form.PPPOE_TIMING_BH.value,0,24)==false)
+				if (checktimerange(document.wizard_form.PPPOE_TIMING_BH.value,0,23)==false)
 				{
 					alert(_("err stiming"));
 					document.wizard_form.PPPOE_TIMING_BH.select();
@@ -603,7 +603,7 @@ function CheckWanValue()
 					document.wizard_form.PPPOE_TIMING_BM.select();
 					return false;
 				}
-				if (checktimerange(document.wizard_form.PPPOE_TIMING_EH.value,0,24)==false)
+				if (checktimerange(document.wizard_form.PPPOE_TIMING_EH.value,0,23)==false)
 				{
 					alert(_("err stiming"));
 					document.wizard_form.PPPOE_TIMING_EH.select();
