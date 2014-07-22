@@ -98,8 +98,8 @@
 	<message msgid="admw RMd" msgstr="WDS Settings" />  
 	<message msgid="admw RMd1" msgstr="Network Band:2.4GHz" />  
 	<message msgid="admw RMd2" msgstr="Network Band:5GHz" />  
-	<message msgid="admw wisp" msgstr="WISP" /> 
-	<message msgid="admw wispswitch" msgstr="WISP switch" /> 
+	<message msgid="admw wisp" msgstr="WDS Settings" /> 
+	<message msgid="admw wispswitch" msgstr="WDS switch" /> 
 	
 	<message msgid="admw R_uname" msgstr="WiFi Name(SSID)" />  
 	<message msgid="admw R_pword" msgstr="Password" />  

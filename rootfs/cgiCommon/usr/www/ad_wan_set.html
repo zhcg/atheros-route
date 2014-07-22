@@ -70,7 +70,7 @@ function enablePPPOE()
 	widget_enable("ppppass");
 	widget_enable("PPPOE_MODE");
 	
-	if (document.wanCfg.PPPOE_MODE.selectedIndex == 1) 
+	if (document.wanCfg.PPPOE_MODE.selectedIndex == 1)
 	{
 		widget_enable("PPPOE_DEMAND");		
 	}
@@ -149,9 +149,9 @@ function connectionTypeSwitch()
 	}
 	else if (document.wanCfg.WAN_MODE.options.selectedIndex == 3) 
 	{
-		widget_display("l2tp_table");
-		l2tpModeSwitch();
-		l2tpOPModeSwitch();
+		//widget_display("l2tp_table");
+		//l2tpModeSwitch();
+		//l2tpOPModeSwitch();
 	}
 	else if (document.wanCfg.WAN_MODE.options.selectedIndex == 4) 
 	{
@@ -411,6 +411,10 @@ function CheckValue()
 	}
 	else if (document.wanCfg.WAN_MODE.selectedIndex == 3) //L2TP
 	{ 
+		disableall();
+		setwaitgifshow();
+		button_commit('WAN_DISABLE');
+		/*
 		if (document.wanCfg.l2tpMode.selectedIndex == 0) 
 		{
 			if (!checkIpAddr(document.wanCfg.l2tpIp, 1))
@@ -430,7 +434,7 @@ function CheckValue()
 				return false;
 			}
 		}
-		/*
+		
 		else if (document.wanCfg.l2tpOPMode.options.selectedIndex == 1)
 		{
 			if (document.wanCfg.l2tpIdleTime.value == "")
@@ -441,11 +445,12 @@ function CheckValue()
 				return false;
 			}
 		}
-		*/
+		
 		disableall();
 		enableL2TP();
 		setwaitgifshow();
 		button_commit('L2TP');
+		*/
 	}
 	else if (document.wanCfg.WAN_MODE.selectedIndex == 4) //PPTP
 	{ 
@@ -501,6 +506,8 @@ function initTranslation()
 	trans_inner("wConnTypeStatic","wan connection type static");
 	trans_inner("wConnTypeDhcp","wan connection type dhcp");
 	trans_inner("wConnTypePppoe","wan connection type pppoe");
+	trans_inner("wConnTypeDisable","wan connection type disable");
+	
 	//trans_inner("wConnTypeL2tp");
 	//e.innerHTML = _("wan connection type l2tp");
 	//trans_inner("wConnTypePptp");
@@ -687,11 +694,17 @@ function getresultPPPoE()
 		PPPoERequest();
 	}
 }
+function disablechange()
+{
+	if((document.getElementById("WDSOF").value=="on")||(document.getElementById("WDSOF2").value=="on"))
+		widget_disable("WAN_MODE");
+}
 function initValue()
 {
 	Butterlate.setTextDomain("wan");
 	initTranslation();
 	connectionTypeSwitch();	
+	disablechange();
 	getresultPPPoE();
 }
 function pppshowpwd()
@@ -871,6 +884,7 @@ function help()
       <option ~sWAN_MODE:static~ value="static" id="wConnTypeStatic">Static Mode (fixed IP)</option>
       <option ~sWAN_MODE:dhcp~ value="dhcp" id="wConnTypeDhcp">DHCP (Auto Config)</option>
       <option ~sWAN_MODE:pppoe~ value="pppoe" id="wConnTypePppoe">PPPOE (ADSL)</option>
+      <option ~sWAN_MODE:disable~ value="disable" id="wConnTypeDisable">Disable</option>
       <!--option ~sWAN_MODE:l2tp~ value="l2tp" id="wConnTypeL2tp">L2TP</option>
       <option ~sWAN_MODE:pptp~ value="pptp" id="wConnTypePptp">PPTP</option-->
     </select>
@@ -1081,8 +1095,11 @@ function help()
     <input type="submit" name="SIP" id="SIP" style="display:none" value="SIP">
     <input type="submit" name="PPP" id="PPP" style="display:none" value="PPP">
     <input type="submit" name="L2TP" id="L2TP" style="display:none" value="L2TP">
-    <input type="submit" name="P2TP" id="P2TP" style="display:none" value="P2TP">
+    <input type="submit" name="L2TP" id="L2TP" style="display:none" value="L2TP">
+    <input type="submit" name="WAN_DISABLE" id="WAN_DISABLE" style="display:none" value="WAN_DISABLE">
 	<input type="text" style="display:none" name="AP_locatIP" id="AP_locatIP" size="20" maxlength="32" value="~~AP_IPADDR~">		
+	<input type="text" style="display:none" name="WDSOF" id="WDSOF" size="20" maxlength="32" value="~~WDSON_OFF~">		
+	<input type="text" style="display:none" name="WDSOF2" id="WDSOF2" size="20" maxlength="32" value="~~WDSON_OFF_3~">		
   </td>
 </tr>
 </table>

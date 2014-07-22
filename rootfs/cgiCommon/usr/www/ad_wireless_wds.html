@@ -30,9 +30,8 @@
 
 ul,li{margin:0;padding:0;list-style-type:none；text-indent:0}
  </style>
-<script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
+<script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript" src="/style/basic.js"></script>
-<script type="text/javascript" src="/style/wdsstatus.js"></script>
 <script language="JavaScript" type="text/javascript">
 var show = 0;
 var show2 = 0;
@@ -46,20 +45,16 @@ var cho2 = 0;
 
 function initTranslation()
 {
-	
+	Butterlate.setTextDomain("admin");
 	var e = document.getElementById("qsettitle");
-	e.innerHTML = _("admw w4ttitle");
+	e.innerHTML = _("admw wisp");
 	e = document.getElementById("wirelessdes");
 	e.innerHTML = _("admw wirelessdes");
 	e = document.getElementById("A_title");
-	e.innerHTML = _("admw w4ttitle");
+	e.innerHTML = _("admw wisp");
 
 	e = document.getElementById("Alreadc");
 	e.innerHTML = _("admw Alreadc");
-	
-	e = document.getElementById("w1s");
-	e.innerHTML = _("admw ws");
-	
 	e = document.getElementById("RMd");
 	e.innerHTML = _("admw RMd1");
 	e = document.getElementById("R_pword");
@@ -71,7 +66,7 @@ function initTranslation()
 	e = document.getElementById("Wlisttitle1");
 	e.innerHTML = _("admw Wlisttitle1");
 	e = document.getElementById("wdsswitch");
-	e.innerHTML = _("admw wdsswitch");	
+	e.innerHTML = _("admw wispswitch");	
 	e = document.getElementById("onbutton");
 	e.innerHTML = _("admw onbutton");	
 	e = document.getElementById("offbutton");
@@ -85,8 +80,6 @@ function initTranslation()
 	
 	e = document.getElementById("Alreadc2");
 	e.innerHTML = _("admw Alreadc");
-	e = document.getElementById("w2s");
-	e.innerHTML = _("admw ws");
 	e = document.getElementById("RMd2");
 	e.innerHTML = _("admw RMd2");
 	e = document.getElementById("R_pword2");
@@ -98,7 +91,7 @@ function initTranslation()
 	e = document.getElementById("Wlisttitle12");
 	e.innerHTML = _("admw Wlisttitle1");
 	e = document.getElementById("wdsswitch2");
-	e.innerHTML = _("admw wdsswitch");	
+	e.innerHTML = _("admw wispswitch");	
 	e = document.getElementById("onbutton2");
 	e.innerHTML = _("admw onbutton");	
 	e = document.getElementById("offbutton2");
@@ -116,8 +109,11 @@ function initTranslation()
 	e.value = _("admw bAPPLY");
 
 }
+
 function CheckWirelessValue()
 {
+	Butterlate.setTextDomain("admin");
+
 	if(document.wizard_form.WDSON_OFF[0].checked == true)
 	{
 		if(document.getElementById("now_1").value == "")
@@ -160,6 +156,10 @@ function CheckWirelessValue()
 					}   
 				}
 			}
+			if(CheckValue()==false)
+			{
+				return false;
+			}
 		}
 	}
 	else
@@ -169,6 +169,7 @@ function CheckWirelessValue()
 		document.getElementById("pwd").disabled = true;	
 		document.getElementById("WDS_CHAN").disabled = true;	 
 		document.getElementById("STA_SECMODE").disabled = true;	 
+		disableall();
 	}
 
 	if(document.wizard_form.WDSON_OFF_3[0].checked == true)
@@ -212,7 +213,10 @@ function CheckWirelessValue()
 					}   
 				}
 			}
-			
+			if(CheckValue_5G()==false)
+			{
+				return false;
+			}
 		}
 	}
 	else
@@ -221,7 +225,8 @@ function CheckWirelessValue()
 		document.getElementById("ROOTAP_MAC_2").disabled = true;	
 		document.getElementById("pwd2").disabled = true;	
 		document.getElementById("WDS_CHAN_2").disabled = true;	 
-		document.getElementById("STA_SECMODE_2").disabled = true;	 
+		document.getElementById("STA_SECMODE_2").disabled = true;	
+		disableall_5G();		
 	}
 
 	document.getElementById("WIFION_OFF").disabled = true;	 
@@ -357,6 +362,8 @@ function liinit()
 			getEle("options").style.display = "none";
 			showlist1 ++;
 			cho1 = 1;
+			widget_display("typetable_2G");
+			connectionTypeSwitch();	
 		}
 		lis[i].onmouseover = function(){this.style.backgroundColor = "#DEDEDE";}
 		lis[i].onmouseout = function(){this.style.backgroundColor = "transparent";}
@@ -396,6 +403,8 @@ function liinit2()
 			getEle("options2").style.display = "none";
 			showlist2 ++;
 			cho2 = 1;
+			widget_display("typetable_5G");
+			connectionTypeSwitch_5G();	
 		}
 		lis[i].onmouseover = function(){this.style.backgroundColor = "#DEDEDE";}
 		lis[i].onmouseout = function(){this.style.backgroundColor = "transparent";}
@@ -530,7 +539,6 @@ function switch_wds()
 		if(show == 1)
 		{
 			widget_display("dwsset2");
-			widget_display("w1status");
 		}
 		widget_display("dwsset3");
 		var ssss = document.getElementById("STA_SECMODE").value;
@@ -556,7 +564,6 @@ function switch_wds()
 	else
 	{
 		widget_hide("dwsset2");
-		widget_hide("w1status");
 		widget_hide("dwsset3");
 		widget_hide("tt2");
 	}
@@ -571,7 +578,6 @@ function switch_wds2()
 		if(show2 == 1)
 		{
 			widget_display("dwsset22");
-			widget_display("w2status");
 		}
 		widget_display("dwsset32");
 		var ssss=document.getElementById("STA_SECMODE_2").value;
@@ -595,7 +601,6 @@ function switch_wds2()
 	else
 	{
 		widget_hide("dwsset22");
-		widget_hide("w2status");
 		widget_hide("dwsset32");
 		widget_hide("tt22");
 	}
@@ -606,29 +611,16 @@ function switch_wds2()
 function initshow()
 {
 	if(show == 1)
-	{
 		widget_display("dwsset2")
-		widget_display("w1status")
-	}
 	else
-	{
 		widget_hide("dwsset2");
-		widget_hide("w1status");
-	}
 }
 function initshow2()
 {
 	if(show2 == 1)
-	{
 		widget_display("dwsset22");
-		widget_display("w2status");
-	
-	}
 	else
-	{
 		widget_hide("dwsset22");
-		widget_hide("w2status");
-	}
 }
 function checklistempty()
 {
@@ -650,26 +642,16 @@ function checklistempty()
 }
 function initValue()
 {
-	Butterlate.setTextDomain("admin");
 	initTranslation();
 	if(document.wizard_form.WDSON_OFF[0].checked == true)
-	{
 		show = 1;
-		timer_2G = setInterval('wdsstatuscheck(1)',2000);
-	}
 	else
-	{	
 		show = 0;
-	}	
+		
 	if(document.wizard_form.WDSON_OFF_3[0].checked == true)
-	{
 		show2 = 1;
-		timer_5G = setInterval('wdsstatuscheck(2)',2000);
-	}
 	else
-	{
 		show2 = 0;	
-	}
 	initshow();
 	initshow2();
 	switch_wds2();
@@ -681,7 +663,6 @@ function initValue()
 	{
 		widget_hide("hide1");
 		widget_hide("dwsset2");
-		widget_hide("w1status");
 		widget_hide("dwsset3");
 		widget_hide("tt2");
 		widget_display("tishi1");
@@ -691,7 +672,6 @@ function initValue()
 	{
 		widget_hide("hide2");
 		widget_hide("dwsset22");
-		widget_hide("w2status");
 		widget_hide("dwsset32");
 		widget_hide("tt22");
 		widget_display("tishi2");
@@ -702,6 +682,11 @@ function initValue()
 	}
 	WIFI_HS();
 	checklistempty();
+	Butterlate.setTextDomain("wan");
+	initTranslationwan();
+	initTranslationwan_5G();
+	hidealltable();
+	hidealltable_5G();
 }
 
 function WIFI_HS()
@@ -716,7 +701,679 @@ function WIFI_HS()
 		widget_hide("div_Router");
 	}
 }
+//------------------------------------------------------------------------------------wisp
+function disableall()
+{
+	widget_disable("WISP_IPADDR_2G");
+	widget_disable("WISP_NETMASK_2G");
+	widget_disable("WISP_GW_2G");
+	widget_disable("WISP_PRIDNS_2G");
+	widget_disable("WISP_SECDNS_2G");
 
+	widget_disable("WISP_PPPOE_USER_2G");
+	widget_disable("WISP_PPPOE_PWD_2G");
+
+	widget_disable("WISP_PPPOE_MODE_2G");
+
+	widget_disable("WISP_PPPOE_DEMAND_2G");
+	widget_disable("WISP_PPPOE_MANUAL_2G");
+
+	widget_disable("WISP_PPPOE_TIMING_BH_2G");
+	widget_disable("WISP_PPPOE_TIMING_BM_2G");
+	widget_disable("WISP_PPPOE_TIMING_EH_2G");
+	widget_disable("WISP_PPPOE_TIMING_EM_2G");
+
+	widget_disable("AP_locatIP");
+}
+function enableSTATICIP()
+{
+	widget_enable("WISP_IPADDR_2G");
+	widget_enable("WISP_NETMASK_2G");
+	widget_enable("WISP_GW_2G");
+	widget_enable("WISP_PRIDNS_2G");
+	widget_enable("WISP_SECDNS_2G");
+}
+function enableDHCP()
+{
+}
+function enablePPPOE()
+{
+	widget_enable("WISP_PPPOE_USER_2G");
+	widget_enable("WISP_PPPOE_PWD_2G");
+	widget_enable("WISP_PPPOE_MODE_2G");
+	
+	if (document.wizard_form.WISP_PPPOE_MODE_2G.selectedIndex == 1) 
+	{
+		widget_enable("WISP_PPPOE_DEMAND_2G");		
+	}
+	else if (document.wizard_form.WISP_PPPOE_MODE_2G.selectedIndex == 2)
+	{
+		widget_enable("WISP_PPPOE_MANUAL_2G");	
+	}
+	else if (document.wizard_form.WISP_PPPOE_MODE_2G.selectedIndex == 3)
+	{
+		widget_enable("WISP_PPPOE_TIMING_BH_2G");
+		widget_enable("WISP_PPPOE_TIMING_BM_2G");
+		widget_enable("WISP_PPPOE_TIMING_EH_2G");
+		widget_enable("WISP_PPPOE_TIMING_EM_2G");
+	}
+}
+
+function hidealltable()
+{
+	widget_hide("static_table_2G");
+	widget_hide("dhcp_table_2G_2G");
+	widget_hide("pppoe_table_2G");
+	widget_hide("typetable_2G");
+}
+
+function connectionTypeSwitch()
+{
+	widget_hide("static_table_2G");
+	widget_hide("dhcp_table_2G_2G");
+	widget_hide("pppoe_table_2G");
+
+	if (document.wizard_form.WISP_MODE_2G.options.selectedIndex == 0)
+	{
+		widget_display("static_table_2G");
+	}
+	else if (document.wizard_form.WISP_MODE_2G.options.selectedIndex == 1)
+	{
+		widget_display("dhcp_table_2G_2G");
+	}
+	else if (document.wizard_form.WISP_MODE_2G.options.selectedIndex == 2) 
+	{
+		widget_display("pppoe_table_2G");
+		pppoeOPModeSwitch();
+	}
+
+	else 
+	{
+		widget_display("static_table_2G");
+	}
+	window.parent.iFrameHeight();
+}
+
+function pppoeOPModeSwitch()
+{
+	document.wizard_form.WISP_PPPOE_DEMAND_2G.disabled = true;
+	document.wizard_form.WISP_PPPOE_MANUAL_2G.disabled = true;
+	
+	document.wizard_form.WISP_PPPOE_TIMING_BH_2G.disabled = true;
+	document.wizard_form.WISP_PPPOE_TIMING_BM_2G.disabled = true;
+	document.wizard_form.WISP_PPPOE_TIMING_EH_2G.disabled = true;
+	document.wizard_form.WISP_PPPOE_TIMING_EM_2G.disabled = true;
+	widget_hide("hideall");	
+	widget_hide("hide1_2G");	
+	widget_hide("hide2_2G");	
+	widget_hide("hide3_2G");	
+	if (document.wizard_form.WISP_PPPOE_MODE_2G.selectedIndex == 1) 
+	{
+		widget_display("hideall");	
+		widget_display("hide1_2G");	
+		document.wizard_form.WISP_PPPOE_DEMAND_2G.disabled = false;
+	}
+	else if (document.wizard_form.WISP_PPPOE_MODE_2G.selectedIndex == 2)
+	{
+		widget_display("hideall");	
+		widget_display("hide2_2G");	
+		document.wizard_form.WISP_PPPOE_MANUAL_2G.disabled = false;
+	}
+	else if (document.wizard_form.WISP_PPPOE_MODE_2G.selectedIndex == 3)
+	{
+		widget_display("hideall");	
+		widget_display("hide3_2G");	
+		document.wizard_form.WISP_PPPOE_TIMING_BH_2G.disabled = false;
+		document.wizard_form.WISP_PPPOE_TIMING_BM_2G.disabled = false;
+		document.wizard_form.WISP_PPPOE_TIMING_EH_2G.disabled = false;
+		document.wizard_form.WISP_PPPOE_TIMING_EM_2G.disabled = false;
+	}
+	window.parent.iFrameHeight();	
+}
+
+function CheckValue()
+{
+	Butterlate.setTextDomain("wan");
+	if (document.wizard_form.WISP_MODE_2G.selectedIndex == 0) //STATIC
+	{      
+		if (!checkIpAddr(document.wizard_form.WISP_IPADDR_2G, 1))
+			return false;
+		{
+			var myString1=document.wizard_form.WISP_IPADDR_2G.value;
+			var myString2=document.wizard_form.AP_locatIP.value;
+			var a = myString1.lastIndexOf(".");
+			var b = myString2.lastIndexOf(".");
+
+			var s, ss;
+	
+			s = myString1.substr(0, a);
+			ss = myString2.substr(0, b); 
+			if(s == ss)
+			{
+				alert(_("err IP error"));
+				return false;
+			}
+			
+		}
+		if (!checkIpAddr(document.wizard_form.WISP_NETMASK_2G, 2))
+			return false;
+
+		if (!checkIpAddr(document.wizard_form.WISP_GW_2G, 3))
+			return false;
+			
+		if (!checkIpAddr(document.wizard_form.WISP_PRIDNS_2G, 4))
+			return false;
+		if (document.wizard_form.WISP_SECDNS_2G.value != "")
+			if (!checkIpAddr(document.wizard_form.WISP_SECDNS_2G, 4))
+				return false;
+		disableall();
+		enableSTATICIP();
+	}
+	else if (document.wizard_form.WISP_MODE_2G.selectedIndex == 1) //DHCP
+	{ 
+		disableall();
+	}
+	else if (document.wizard_form.WISP_MODE_2G.selectedIndex == 2) //PPPOE
+	{ 
+		if (document.wizard_form.WISP_PPPOE_USER_2G.value.length == 0)
+		{
+			alert(_("err user empty"));
+			document.wizard_form.WISP_PPPOE_USER_2G.select();
+			return false;
+		}
+		if(!Checkhanzi(document.wizard_form.WISP_PPPOE_USER_2G.value))
+		{
+			alert(_("err user"));
+			document.wizard_form.WISP_PPPOE_USER_2G.select();
+			return false;
+		}
+		
+		if (document.wizard_form.WISP_PPPOE_PWD_2G.value.length == 0)
+		{
+			alert(_("err pwd empty"));
+			document.wizard_form.WISP_PPPOE_PWD_2G.select();
+			return false;
+		}
+		if (!Checkhanzi(document.wizard_form.WISP_PPPOE_PWD_2G.value))
+		{
+			alert(_("err pwd"));
+			document.wizard_form.WISP_PPPOE_PWD_2G.select();
+			return false;
+		}
+
+		if (document.wizard_form.WISP_PPPOE_MODE_2G.selectedIndex == 1)
+		{
+			if (document.wizard_form.WISP_PPPOE_DEMAND_2G.value == "")
+			{
+				alert(_("err sRP"));
+				document.wizard_form.WISP_PPPOE_DEMAND_2G.select();
+				return false;
+			}				
+			if (!isNum(document.wizard_form.WISP_PPPOE_DEMAND_2G.value))
+			{
+				alert(_("err stiming"));
+				document.wizard_form.WISP_PPPOE_DEMAND_2G.select();
+				return false;
+			}
+		}
+		else if (document.wizard_form.WISP_PPPOE_MODE_2G.selectedIndex == 2)
+		{
+			if (document.wizard_form.WISP_PPPOE_MANUAL_2G.value == "")
+			{
+				alert(_("err sIT"));
+				document.wizard_form.WISP_PPPOE_MANUAL_2G.select();
+				return false;
+			}
+			if (!isNum(document.wizard_form.WISP_PPPOE_MANUAL_2G.value))
+			{
+				alert(_("err stiming"));
+				document.wizard_form.WISP_PPPOE_MANUAL_2G.select();
+				return false;
+			}
+		}
+		else if (document.wizard_form.WISP_PPPOE_MODE_2G.selectedIndex == 3)
+		{
+			if (checktimerange(document.wizard_form.WISP_PPPOE_TIMING_BH_2G.value,0,24)==false)
+			{
+				alert(_("err stiming"));
+				document.wizard_form.WISP_PPPOE_TIMING_BH_2G.select();
+				return false;
+			}
+			if (checktimerange(document.wizard_form.WISP_PPPOE_TIMING_BM_2G.value,0,59)==false)
+			{
+				alert(_("err stiming"));
+				document.wizard_form.WISP_PPPOE_TIMING_BM_2G.select();
+				return false;
+			}
+			if (checktimerange(document.wizard_form.WISP_PPPOE_TIMING_EH_2G.value,0,24)==false)
+			{
+				alert(_("err stiming"));
+				document.wizard_form.WISP_PPPOE_TIMING_EH_2G.select();
+				return false;
+			}
+			if (checktimerange(document.wizard_form.WISP_PPPOE_TIMING_EM_2G.value,0,59)==false)
+			{
+				alert(_("err stiming"));
+				document.wizard_form.WISP_PPPOE_TIMING_EM_2G.select();
+				return false;
+			}
+		}
+		disableall();
+		enablePPPOE();
+		//window.parent.pppoe_tiaozhuan2();
+	}
+	else
+		return false;
+	return true;
+}
+ 
+function initTranslationwan()
+{
+	trans_inner("wConnectionType","wisp connection type");
+	trans_inner("wConnTypeStatic","wan connection type static");
+	trans_inner("wConnTypeDhcp","wan connection type dhcp");
+	trans_inner("wConnTypePppoe","wan connection type pppoe");
+	trans_inner("wStaticIp","inet ip");
+	trans_inner("wStaticNetmask","inet netmask");
+	trans_inner("wStaticGateway","inet gateway");
+	trans_inner("wStaticPriDns","inet pri dns");
+	trans_inner("wStaticSecDns","inet sec dns");
+	trans_inner("optionXX","wan optionXX");
+	trans_inner("wDhcpHost","inet hostname");
+	trans_inner("wPppoeUser","inet user");
+	trans_inner("wPppoePassword","inet password");
+	trans_inner("wPppoeOPMode","wan protocol opmode");
+	trans_inner("wPppoeKeepAlive","wan protocol opmode keepalive");
+	trans_inner("wPppoeOnDemand","wan protocol opmode ondemand");
+	trans_inner("wPppoeManual","wan protocol opmode manual");
+	trans_inner("wPppoeTiming","wan protocol opmode timing");
+	trans_inner("PPPOE_KAM","KAM");
+	trans_inner("PPPOE_seconds","minutes");
+	trans_inner("PPPOE_ODM","ODM");
+	trans_inner("PPPOE_TIMING","PPPOE_TIMING");
+	trans_inner("PPPOE_minutes","minutes");
+}
+function pppshowpwd()
+{
+   var pass = document.getElementById("WISP_PPPOE_PWD_2G").value;
+   
+	if(document.getElementById("aaaa").checked == true)
+	{
+		document.getElementById("ppppwdinput").innerHTML='<input type="text" name="WISP_PPPOE_PWD_2G" id="WISP_PPPOE_PWD_2G" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
+	}
+	else
+	{
+		document.getElementById("ppppwdinput").innerHTML='<input type="password" name="WISP_PPPOE_PWD_2G" id="WISP_PPPOE_PWD_2G" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
+	}
+}
+ 
+function workoutgw()
+{
+	var myString=document.getElementById("WISP_IPADDR_2G").value;	
+	//ip地址
+	var exp=/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
+	var reg = myString.match(exp);
+	if(reg==null)
+	{
+		//document.getElementById("WISP_GW_2G").value = "";
+	}
+	else
+	{
+		if(document.getElementById("WISP_GW_2G").value=="")
+		{
+			var a = myString.lastIndexOf(".");
+			var s;
+			s = myString.substr(0, a); // 获取子字符串。
+			document.getElementById("WISP_GW_2G").value = s+".1";
+		}
+		if(document.getElementById("WISP_NETMASK_2G").value=="")
+		{
+			document.getElementById("WISP_NETMASK_2G").value = "255.255.255.0";
+		}
+		if(document.getElementById("WISP_PRIDNS_2G").value=="")
+		{
+			document.getElementById("WISP_PRIDNS_2G").value = "8.8.8.8";
+		}
+
+	}
+}
+//----------------------------------------------------------5G
+function disableall_5G()
+{
+	widget_disable("WISP_IPADDR_5G");
+	widget_disable("WISP_NETMASK_5G");
+	widget_disable("WISP_GW_5G");
+	widget_disable("WISP_PRIDNS_5G");
+	widget_disable("WISP_SECDNS_5G");
+
+	widget_disable("WISP_PPPOE_USER_5G");
+	widget_disable("WISP_PPPOE_PWD_5G");
+
+	widget_disable("WISP_PPPOE_MODE_5G");
+
+	widget_disable("WISP_PPPOE_DEMAND_5G");
+	widget_disable("WISP_PPPOE_MANUAL_5G");
+
+	widget_disable("WISP_PPPOE_TIMING_BH_5G");
+	widget_disable("WISP_PPPOE_TIMING_BM_5G");
+	widget_disable("WISP_PPPOE_TIMING_EH_5G");
+	widget_disable("WISP_PPPOE_TIMING_EM_5G");
+
+	widget_disable("AP_locatIP");
+}
+function enableSTATICIP_5G()
+{
+	widget_enable("WISP_IPADDR_5G");
+	widget_enable("WISP_NETMASK_5G");
+	widget_enable("WISP_GW_5G");
+	widget_enable("WISP_PRIDNS_5G");
+	widget_enable("WISP_SECDNS_5G");
+}
+function enableDHCP_5G()
+{
+}
+function enablePPPOE_5G()
+{
+	widget_enable("WISP_PPPOE_USER_5G");
+	widget_enable("WISP_PPPOE_PWD_5G");
+	widget_enable("WISP_PPPOE_MODE_5G");
+	
+	if (document.wizard_form.WISP_PPPOE_MODE_5G.selectedIndex == 1) 
+	{
+		widget_enable("WISP_PPPOE_DEMAND_5G");		
+	}
+	else if (document.wizard_form.WISP_PPPOE_MODE_5G.selectedIndex == 2)
+	{
+		widget_enable("WISP_PPPOE_MANUAL_5G");	
+	}
+	else if (document.wizard_form.WISP_PPPOE_MODE_5G.selectedIndex == 3)
+	{
+		widget_enable("WISP_PPPOE_TIMING_BH_5G");
+		widget_enable("WISP_PPPOE_TIMING_BM_5G");
+		widget_enable("WISP_PPPOE_TIMING_EH_5G");
+		widget_enable("WISP_PPPOE_TIMING_EM_5G");
+	}
+}
+
+function hidealltable_5G()
+{
+	widget_hide("static_table_5G");
+	widget_hide("dhcp_table_5G");
+	widget_hide("pppoe_table_5G");
+	widget_hide("typetable_5G");
+}
+
+function connectionTypeSwitch_5G()
+{
+	widget_hide("static_table_5G");
+	widget_hide("dhcp_table_5G");
+	widget_hide("pppoe_table_5G");
+
+	if (document.wizard_form.WISP_MODE_5G.options.selectedIndex == 0)
+	{
+		widget_display("static_table_5G");
+	}
+	else if (document.wizard_form.WISP_MODE_5G.options.selectedIndex == 1)
+	{
+		widget_display("dhcp_table_5G");
+	}
+	else if (document.wizard_form.WISP_MODE_5G.options.selectedIndex == 2) 
+	{
+		widget_display("pppoe_table_5G");
+		pppoeOPModeSwitch_5G();
+	}
+
+	else 
+	{
+		widget_display("static_table_5G");
+	}
+	window.parent.iFrameHeight();
+}
+
+function pppoeOPModeSwitch_5G()
+{
+	document.wizard_form.WISP_PPPOE_DEMAND_5G.disabled = true;
+	document.wizard_form.WISP_PPPOE_MANUAL_5G.disabled = true;
+	
+	document.wizard_form.WISP_PPPOE_TIMING_BH_5G.disabled = true;
+	document.wizard_form.WISP_PPPOE_TIMING_BM_5G.disabled = true;
+	document.wizard_form.WISP_PPPOE_TIMING_EH_5G.disabled = true;
+	document.wizard_form.WISP_PPPOE_TIMING_EM_5G.disabled = true;
+	widget_hide("hideall_5G");	
+	widget_hide("hide1_5G");	
+	widget_hide("hide2_5G");	
+	widget_hide("hide3_5G");	
+	if (document.wizard_form.WISP_PPPOE_MODE_5G.selectedIndex == 1) 
+	{
+		widget_display("hideall_5G");	
+		widget_display("hide1_5G");	
+		document.wizard_form.WISP_PPPOE_DEMAND_5G.disabled = false;
+	}
+	else if (document.wizard_form.WISP_PPPOE_MODE_5G.selectedIndex == 2)
+	{
+		widget_display("hideall_5G");	
+		widget_display("hide2_5G");	
+		document.wizard_form.WISP_PPPOE_MANUAL_5G.disabled = false;
+	}
+	else if (document.wizard_form.WISP_PPPOE_MODE_5G.selectedIndex == 3)
+	{
+		widget_display("hideall_5G");	
+		widget_display("hide3_5G");	
+		document.wizard_form.WISP_PPPOE_TIMING_BH_5G.disabled = false;
+		document.wizard_form.WISP_PPPOE_TIMING_BM_5G.disabled = false;
+		document.wizard_form.WISP_PPPOE_TIMING_EH_5G.disabled = false;
+		document.wizard_form.WISP_PPPOE_TIMING_EM_5G.disabled = false;
+	}
+	window.parent.iFrameHeight();	
+}
+function CheckValue_5G()
+{
+	Butterlate.setTextDomain("wan");
+	if (document.wizard_form.WISP_MODE_5G.selectedIndex == 0) //STATIC
+	{      
+		if (!checkIpAddr(document.wizard_form.WISP_IPADDR_5G, 1))
+			return false;
+		{
+			var myString1=document.wizard_form.WISP_IPADDR_5G.value;
+			var myString2=document.wizard_form.AP_locatIP.value;
+			var a = myString1.lastIndexOf(".");
+			var b = myString2.lastIndexOf(".");
+
+			var s, ss;
+	
+			s = myString1.substr(0, a);
+			ss = myString2.substr(0, b); 
+			if(s == ss)
+			{
+				alert(_("err IP error"));
+				return false;
+			}
+			
+		}
+		if (!checkIpAddr(document.wizard_form.WISP_NETMASK_5G, 2))
+			return false;
+
+		if (!checkIpAddr(document.wizard_form.WISP_GW_5G, 3))
+			return false;
+			
+		if (!checkIpAddr(document.wizard_form.WISP_PRIDNS_5G, 4))
+			return false;
+		if (document.wizard_form.WISP_SECDNS_5G.value != "")
+			if (!checkIpAddr(document.wizard_form.WISP_SECDNS_5G, 4))
+				return false;
+		disableall_5G();
+		enableSTATICIP_5G();
+	}
+	else if (document.wizard_form.WISP_MODE_5G.selectedIndex == 1) //DHCP
+	{ 
+		disableall_5G();
+	}
+	else if (document.wizard_form.WISP_MODE_5G.selectedIndex == 2) //PPPOE
+	{ 
+		if (document.wizard_form.WISP_PPPOE_USER_5G.value.length == 0)
+		{
+			alert(_("err user empty"));
+			document.wizard_form.WISP_PPPOE_USER_5G.select();
+			return false;
+		}
+		if(!Checkhanzi(document.wizard_form.WISP_PPPOE_USER_5G.value))
+		{
+			alert(_("err user"));
+			document.wizard_form.WISP_PPPOE_USER_5G.select();
+			return false;
+		}
+		
+		if (document.wizard_form.WISP_PPPOE_PWD_5G.value.length == 0)
+		{
+			alert(_("err pwd empty"));
+			document.wizard_form.WISP_PPPOE_PWD_5G.select();
+			return false;
+		}
+		if (!Checkhanzi(document.wizard_form.WISP_PPPOE_PWD_5G.value))
+		{
+			alert(_("err pwd"));
+			document.wizard_form.WISP_PPPOE_PWD_5G.select();
+			return false;
+		}
+
+		if (document.wizard_form.WISP_PPPOE_MODE_5G.selectedIndex == 1)
+		{
+			if (document.wizard_form.WISP_PPPOE_DEMAND_5G.value == "")
+			{
+				alert(_("err sRP"));
+				document.wizard_form.WISP_PPPOE_DEMAND_5G.select();
+				return false;
+			}				
+			if (!isNum(document.wizard_form.WISP_PPPOE_DEMAND_5G.value))
+			{
+				alert(_("err stiming"));
+				document.wizard_form.WISP_PPPOE_DEMAND_5G.select();
+				return false;
+			}
+		}
+		else if (document.wizard_form.WISP_PPPOE_MODE_5G.selectedIndex == 2)
+		{
+			if (document.wizard_form.WISP_PPPOE_MANUAL_5G.value == "")
+			{
+				alert(_("err sIT"));
+				document.wizard_form.WISP_PPPOE_MANUAL_5G.select();
+				return false;
+			}
+			if (!isNum(document.wizard_form.WISP_PPPOE_MANUAL_5G.value))
+			{
+				alert(_("err stiming"));
+				document.wizard_form.WISP_PPPOE_MANUAL_5G.select();
+				return false;
+			}
+		}
+		else if (document.wizard_form.WISP_PPPOE_MODE_5G.selectedIndex == 3)
+		{
+			if (checktimerange(document.wizard_form.WISP_PPPOE_TIMING_BH_5G.value,0,24)==false)
+			{
+				alert(_("err stiming"));
+				document.wizard_form.WISP_PPPOE_TIMING_BH_5G.select();
+				return false;
+			}
+			if (checktimerange(document.wizard_form.WISP_PPPOE_TIMING_BM_5G.value,0,59)==false)
+			{
+				alert(_("err stiming"));
+				document.wizard_form.WISP_PPPOE_TIMING_BM_5G.select();
+				return false;
+			}
+			if (checktimerange(document.wizard_form.WISP_PPPOE_TIMING_EH_5G.value,0,24)==false)
+			{
+				alert(_("err stiming"));
+				document.wizard_form.WISP_PPPOE_TIMING_EH_5G.select();
+				return false;
+			}
+			if (checktimerange(document.wizard_form.WISP_PPPOE_TIMING_EM_5G.value,0,59)==false)
+			{
+				alert(_("err stiming"));
+				document.wizard_form.WISP_PPPOE_TIMING_EM_5G.select();
+				return false;
+			}
+		}
+		disableall_5G();
+		enablePPPOE_5G();
+		//window.parent.pppoe_tiaozhuan2();
+	}
+	else
+		return false;
+	return true;
+}
+ 
+function initTranslationwan_5G()
+{
+	trans_inner("wConnectionType_5G","wisp connection type");
+	trans_inner("wConnTypeStatic_5G","wan connection type static");
+	trans_inner("wConnTypeDhcp_5G","wan connection type dhcp");
+	trans_inner("wConnTypePppoe_5G","wan connection type pppoe");
+	trans_inner("wStaticIp_5G","inet ip");
+	trans_inner("wStaticNetmask_5G","inet netmask");
+	trans_inner("wStaticGateway_5G","inet gateway");
+	trans_inner("wStaticPriDns_5G","inet pri dns");
+	trans_inner("wStaticSecDns_5G","inet sec dns");
+	trans_inner("optionXX_5G","wan optionXX");
+	trans_inner("wDhcpHost_5G","inet hostname");
+	trans_inner("wPppoeUser_5G","inet user");
+	trans_inner("wPppoePassword_5G","inet password");
+	trans_inner("wPppoeOPMode_5G","wan protocol opmode");
+	trans_inner("wPppoeKeepAlive_5G","wan protocol opmode keepalive");
+	trans_inner("wPppoeOnDemand_5G","wan protocol opmode ondemand");
+	trans_inner("wPppoeManual_5G","wan protocol opmode manual");
+	trans_inner("wPppoeTiming_5G","wan protocol opmode timing");
+	trans_inner("PPPOE_KAM_5G","KAM");
+	trans_inner("PPPOE_seconds_5G","minutes");
+	trans_inner("PPPOE_ODM_5G","ODM");
+	trans_inner("PPPOE_TIMING_5G","PPPOE_TIMING");
+	trans_inner("PPPOE_minutes_5G","minutes");
+}
+function pppshowpwd_5G()
+{
+   var pass = document.getElementById("WISP_PPPOE_PWD_5G").value;
+   
+	if(document.getElementById("aaaa_5G").checked == true)
+	{
+		document.getElementById("ppppwdinput_5G").innerHTML='<input type="text" name="WISP_PPPOE_PWD_5G" id="WISP_PPPOE_PWD_5G" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
+	}
+	else
+	{
+		document.getElementById("ppppwdinput_5G").innerHTML='<input type="password" name="WISP_PPPOE_PWD_5G" id="WISP_PPPOE_PWD_5G" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
+	}
+}
+ 
+ function workoutgw_5G()
+{
+	var myString=document.getElementById("WISP_IPADDR_5G").value;	
+	//ip地址
+	var exp=/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
+	var reg = myString.match(exp);
+	if(reg==null)
+	{
+		//document.getElementById("WISP_GW_5G").value = "";
+	}
+	else
+	{
+		if(document.getElementById("WISP_GW_5G").value=="")
+		{
+			var a = myString.lastIndexOf(".");
+			var s;
+			s = myString.substr(0, a); // 获取子字符串。
+			document.getElementById("WISP_GW_5G").value = s+".1";
+		}
+		if(document.getElementById("WISP_NETMASK_5G").value=="")
+		{
+			document.getElementById("WISP_NETMASK_5G").value = "255.255.255.0";
+		}
+		if(document.getElementById("WISP_PRIDNS_5G").value=="")
+		{
+			document.getElementById("WISP_PRIDNS_5G").value = "8.8.8.8";
+		}
+
+	}
+}
+
+//------------------------------------------------------------------
 function help()
 {
 	if (_("toplanguage")=="e")
@@ -757,16 +1414,12 @@ function help()
 	</td>
 </tr>
 <tr id="dwsset2">
-  <td class="head" id="Alreadc">当前已连接WiFi</td>
+  <td class="head_s" id="Alreadc">当前已连接WiFi</td>
   <td><input id="now_1" maxlength=32 size=32 value="~~STA_SSID~" readonly></td>
-</tr>
-<tr id="w1status">
-  <td class="head" id="w1s">连接状态</td>
-  <td><span id="w1_status"></span></td>
 </tr>
 
 <tr id="dwsset3">
-    <td class="head" id="Wlisttitle1"></td>
+    <td class="head_s" id="Wlisttitle1"></td>
     <td>
 	<div id="replace">
 		<div id="current"></div>
@@ -779,17 +1432,103 @@ function help()
     
  
 <tr style="display:none" id="tt2">
-  <td class="head" id="R_pword"></td>
+  <td class="head_s" id="R_pword"></td>
   <td><span id="pwdinput"><input type="password" id="pwd" name="STA_PSK_KEY" maxlength="32" size="32" class="handaer_text_content" value="~~STA_PSK_KEY~" /></span>&nbsp;<input type="checkbox" id="cccc" onClick="showpwd()"/>&nbsp;<label for="cccc" id="showp"></label></td>
 </tr>
 
 <tr style="display:none" id="tishi1">
   <td class="title2" colspan="2" id="offwifides"></td>
 </tr>
-
 </table>
 
 
+<table id="typetable_2G" width="100%" cellpadding="0" cellspacing="0" class="handaer_text">
+<tr>
+  <td class="head_s" id="wConnectionType"></td>
+  <td>
+    <select id="WISP_MODE_2G" name="WISP_MODE_2G" size="1" onChange="connectionTypeSwitch()">
+      <option ~sWISP_MODE_2G:static~ value="static" id="wConnTypeStatic">Static Mode (fixed IP)</option>
+      <option ~sWISP_MODE_2G:dhcp~ value="dhcp" id="wConnTypeDhcp">DHCP (Auto Config)</option>
+      <option ~sWISP_MODE_2G:pppoe~ value="pppoe" id="wConnTypePppoe">PPPOE (ADSL)</option>
+    </select>
+</td>
+</tr>
+</table>
+
+<!-- ================= STATIC Mode ================= -->
+<table id="static_table_2G" width="100%" cellpadding="0" cellspacing="0" class="handaer_text">
+<!--tr>
+  <td class="title" colspan="2" id="wStaticMode">Static Mode</td>
+</tr-->
+<tr>
+  <td class="head_s" id="wStaticIp">IP Address</td>
+  <td><input name="WISP_IPADDR_2G" id="WISP_IPADDR_2G"  class="handaer_text_content" maxlength=15 value="~~WISP_IPADDR_2G~"  onblur="workoutgw()"></td>
+</tr>
+<tr>
+  <td class="head_s" id="wStaticNetmask">Subnet Mask</td>
+  <td><input name="WISP_NETMASK_2G" id="WISP_NETMASK_2G"  class="handaer_text_content" maxlength=15 value="~~WISP_NETMASK_2G~">
+  </td>
+</tr>
+<tr>
+  <td class="head_s" id="wStaticGateway">Default Gateway</td>
+  <td><input name="WISP_GW_2G" id="WISP_GW_2G"  class="handaer_text_content" maxlength=15 value="~~WISP_GW_2G~"></td>
+</tr>
+<tr>
+  <td class="head_s" id="wStaticPriDns">Primary DNS Server</td>
+  <td><input name="WISP_PRIDNS_2G" id="WISP_PRIDNS_2G"  class="handaer_text_content" maxlength=15 value="~~WISP_PRIDNS_2G~"></td>
+</tr>
+<tr>
+  <td class="head_s" id="wStaticSecDns">Secondary DNS Server</td>
+  <td><input id="WISP_SECDNS_2G" name="WISP_SECDNS_2G"  class="handaer_text_content" maxlength=15 value="~~WISP_SECDNS_2G~"/><span style="height:30px; line-height:30px; padding:5px;" id="optionXX"></span></td>
+</tr>
+</table>
+
+<!-- ================= DHCP Mode ================= -->
+<table id="dhcp_table_2G_2G" width="100%" cellpadding="0" cellspacing="0" class="handaer_text">
+
+<tr id="dhcpname">
+  <td class="head_s"><div id="wDhcpHost">Host Name</div></td>
+  <td>HBD-Router</td>
+</tr>
+</table>
+
+<!-- ================= PPPOE Mode ================= -->
+<table id="pppoe_table_2G" width="100%" cellpadding="0" cellspacing="0" class="handaer_text">
+
+<tr>
+  <td class="head_s" id="wPppoeUser">User Name</td>
+  <td><input id="WISP_PPPOE_USER_2G" name="WISP_PPPOE_USER_2G"  style="ime-mode:disabled" class="handaer_text_content" maxlength=32 size=32 value="~~WISP_PPPOE_USER_2G~"></td>
+</tr>
+<tr>
+  <td class="head_s" id="wPppoePassword">Password</td>
+  <td><span id="ppppwdinput"><input type="password" id="WISP_PPPOE_PWD_2G" name="WISP_PPPOE_PWD_2G" class="handaer_text_content" maxlength="32" size="32" value="~~WISP_PPPOE_PWD_2G~"/></span>&nbsp;<input type="checkbox" id="aaaa" onClick="pppshowpwd()"/>&nbsp;<label for="aaaa" id="pppshowp"></label></td>
+</tr>
+
+<tr>
+  <td class="head_s" rowspan="2" id="wPppoeOPMode">Operation Mode</td>
+  <td>
+     <select id="WISP_PPPOE_MODE_2G" name="WISP_PPPOE_MODE_2G" size="1" onChange="pppoeOPModeSwitch()">
+      <option ~sWISP_PPPOE_MODE_2G:auto~ value="auto" id="wPppoeKeepAlive"></option>
+      <option ~sWISP_PPPOE_MODE_2G:demand~ value="demand" id="wPppoeOnDemand"></option>
+      <option ~sWISP_PPPOE_MODE_2G:manual~ value="manual" id="wPppoeManual"></option>
+      <option ~sWISP_PPPOE_MODE_2G:timing~ value="timing" id="wPppoeTiming"></option>
+    </select>
+  </td>
+</tr>
+<tr id="hideall">
+<td>
+	<span id="hide1_2G"><span id="PPPOE_KAM"></span><input type="text" style="ime-mode:disabled" id="WISP_PPPOE_DEMAND_2G" name="WISP_PPPOE_DEMAND_2G" class="handaer_text_small_content" maxlength="5" size="3" value="~~WISP_PPPOE_DEMAND_2G~"/><span id="PPPOE_seconds"></span></br></span>
+  	<span id="hide2_2G"><span id="PPPOE_ODM"></span><input type="text" style="ime-mode:disabled" id="WISP_PPPOE_MANUAL_2G" name="WISP_PPPOE_MANUAL_2G" class="handaer_text_small_content" maxlength="3" size="2" value="~~WISP_PPPOE_MANUAL_2G~"/><span id="PPPOE_minutes"></span></br></span>
+	<span id="hide3_2G"><span id="PPPOE_TIMING"></span>
+	<input type="text" id="WISP_PPPOE_TIMING_BH_2G" name="WISP_PPPOE_TIMING_BH_2G" class="handaer_text_small_content" maxlength="2" size="2" value="~~WISP_PPPOE_TIMING_BH_2G~"/>:
+	<input type="text" id="WISP_PPPOE_TIMING_BM_2G" name="WISP_PPPOE_TIMING_BM_2G" class="handaer_text_small_content" maxlength="2" size="2" value="~~WISP_PPPOE_TIMING_BM_2G~"/>-
+	<input type="text" id="WISP_PPPOE_TIMING_EH_2G" name="WISP_PPPOE_TIMING_EH_2G" class="handaer_text_small_content" maxlength="2" size="2" value="~~WISP_PPPOE_TIMING_EH_2G~"/>:
+	<input type="text" id="WISP_PPPOE_TIMING_EM_2G" name="WISP_PPPOE_TIMING_EM_2G" class="handaer_text_small_content" maxlength="2" size="2" value="~~WISP_PPPOE_TIMING_EM_2G~"/></span>
+</td>
+</tr>
+</table>
+
+<h1></h1>
 
 <!----------------------------5GHz--------------------------->
 <table id="div_Router2" width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
@@ -808,16 +1547,12 @@ function help()
 	</td>
 </tr>
 <tr id="dwsset22">
-  <td class="head" id="Alreadc2">当前已连接WiFi</td>
+  <td class="head_s" id="Alreadc2">当前已连接WiFi</td>
   <td><input id="now_2" maxlength=32 size=32 value="~~STA_SSID_2~" readonly></td>
-</tr>
-<tr id="w2status">
-  <td class="head" id="w2s">连接状态</td>
-  <td><span id="w2_status"></span></td>
 </tr>
 
 <tr id="dwsset32">
-    <td class="head" id="Wlisttitle12"></td>
+    <td class="head_s" id="Wlisttitle12"></td>
     <td>
 		<div id="replace2">
 		<div id="current2"></div>
@@ -829,15 +1564,100 @@ function help()
     
  
 <tr style="display:none" id="tt22">
-  <td class="head" id="R_pword2"></td>
+  <td class="head_s" id="R_pword2"></td>
   <td><span id="pwdinput2"><input type="password" id="pwd2" name="STA_PSK_KEY_2" maxlength="32" size="32" class="handaer_text_content" value="~~STA_PSK_KEY_2~" /></span>&nbsp;<input type="checkbox" id="cccc2" onClick="showpwd2()"/>&nbsp;<label for="cccc2" id="showp2"></label></td>
 </tr>
 
 <tr style="display:none" id="tishi2">
   <td class="title2" colspan="2" id="offwifides2"></td>
 </tr>
-
 </table>
+<table id="typetable_5G" width="100%" cellpadding="0" cellspacing="0" class="handaer_text">
+<tr>
+  <td class="head_s" id="wConnectionType_5G"></td>
+  <td>
+    <select id="WISP_MODE_5G" name="WISP_MODE_5G" size="1" onChange="connectionTypeSwitch_5G()">
+      <option ~sWISP_MODE_5G:static~ value="static" id="wConnTypeStatic_5G">Static Mode (fixed IP)</option>
+      <option ~sWISP_MODE_5G:dhcp~ value="dhcp" id="wConnTypeDhcp_5G">DHCP (Auto Config)</option>
+      <option ~sWISP_MODE_5G:pppoe~ value="pppoe" id="wConnTypePppoe_5G">PPPOE (ADSL)</option>
+    </select>
+</td>
+</tr>
+</table>
+
+<!-- ================= STATIC Mode ================= -->
+<table id="static_table_5G" width="100%" cellpadding="0" cellspacing="0" class="handaer_text">
+<!--tr>
+  <td class="title" colspan="2" id="wStaticMode_5G">Static Mode</td>
+</tr-->
+<tr>
+  <td class="head_s" id="wStaticIp_5G">IP Address</td>
+  <td><input name="WISP_IPADDR_5G" id="WISP_IPADDR_5G"  class="handaer_text_content" maxlength=15 value="~~WISP_IPADDR_5G~"  onblur="workoutgw_5G()"></td>
+</tr>
+<tr>
+  <td class="head_s" id="wStaticNetmask_5G">Subnet Mask</td>
+  <td><input name="WISP_NETMASK_5G" id="WISP_NETMASK_5G"  class="handaer_text_content" maxlength=15 value="~~WISP_NETMASK_5G~">
+  </td>
+</tr>
+<tr>
+  <td class="head_s" id="wStaticGateway_5G">Default Gateway</td>
+  <td><input name="WISP_GW_5G" id="WISP_GW_5G"  class="handaer_text_content" maxlength=15 value="~~WISP_GW_5G~"></td>
+</tr>
+<tr>
+  <td class="head_s" id="wStaticPriDns_5G">Primary DNS Server</td>
+  <td><input name="WISP_PRIDNS_5G" id="WISP_PRIDNS_5G"  class="handaer_text_content" maxlength=15 value="~~WISP_PRIDNS_5G~"></td>
+</tr>
+<tr>
+  <td class="head_s" id="wStaticSecDns_5G">Secondary DNS Server</td>
+  <td><input id="WISP_SECDNS_5G" name="WISP_SECDNS_5G"  class="handaer_text_content" maxlength=15 value="~~WISP_SECDNS_5G~"/><span style="height:30px; line-height:30px; padding:5px;" id="optionXX_5G"></span></td>
+</tr>
+</table>
+
+<!-- ================= DHCP Mode ================= -->
+<table id="dhcp_table_5G" width="100%" cellpadding="0" cellspacing="0" class="handaer_text">
+
+<tr id="dhcpname_5G">
+  <td class="head_s"><div id="wDhcpHost_5G">Host Name</div></td>
+  <td>HBD-Router</td>
+</tr>
+</table>
+
+<!-- ================= PPPOE Mode ================= -->
+<table id="pppoe_table_5G" width="100%" cellpadding="0" cellspacing="0" class="handaer_text">
+
+<tr>
+  <td class="head_s" id="wPppoeUser_5G">User Name</td>
+  <td><input id="WISP_PPPOE_USER_5G" name="WISP_PPPOE_USER_5G"  style="ime-mode:disabled" class="handaer_text_content" maxlength=32 size=32 value="~~WISP_PPPOE_USER_5G~"></td>
+</tr>
+<tr>
+  <td class="head_s" id="wPppoePassword_5G">Password</td>
+  <td><span id="ppppwdinput_5G"><input type="password" id="WISP_PPPOE_PWD_5G" name="WISP_PPPOE_PWD_5G" class="handaer_text_content" maxlength="32" size="32" value="~~WISP_PPPOE_PWD_5G~"/></span>&nbsp;<input type="checkbox" id="aaaa_5G" onClick="pppshowpwd_5G()"/>&nbsp;<label for="aaaa_5G" id="pppshowp"></label></td>
+</tr>
+
+<tr>
+  <td class="head_s" rowspan="2" id="wPppoeOPMode_5G">Operation Mode</td>
+  <td>
+     <select id="WISP_PPPOE_MODE_5G" name="WISP_PPPOE_MODE_5G" size="1" onChange="pppoeOPModeSwitch_5G()">
+      <option ~sWISP_PPPOE_MODE_5G:auto~ value="auto" id="wPppoeKeepAlive_5G"></option>
+      <option ~sWISP_PPPOE_MODE_5G:demand~ value="demand" id="wPppoeOnDemand_5G"></option>
+      <option ~sWISP_PPPOE_MODE_5G:manual~ value="manual" id="wPppoeManual_5G"></option>
+      <option ~sWISP_PPPOE_MODE_5G:timing~ value="timing" id="wPppoeTiming_5G"></option>
+    </select>
+  </td>
+</tr>
+<tr id="hideall_5G">
+<td>
+	<span id="hide1_5G"><span id="PPPOE_KAM_5G"></span><input type="text" style="ime-mode:disabled" id="WISP_PPPOE_DEMAND_5G" name="WISP_PPPOE_DEMAND_5G" class="handaer_text_small_content" maxlength="5" size="3" value="~~WISP_PPPOE_DEMAND_5G~"/><span id="PPPOE_seconds_5G"></span></br></span>
+  	<span id="hide2_5G"><span id="PPPOE_ODM_5G"></span><input type="text" style="ime-mode:disabled" id="WISP_PPPOE_MANUAL_5G" name="WISP_PPPOE_MANUAL_5G" class="handaer_text_small_content" maxlength="3" size="2" value="~~WISP_PPPOE_MANUAL_5G~"/><span id="PPPOE_minutes_5G"></span></br></span>
+	<span id="hide3_5G"><span id="PPPOE_TIMING_5G"></span>
+	<input type="text" id="WISP_PPPOE_TIMING_BH_5G" name="WISP_PPPOE_TIMING_BH_5G" class="handaer_text_small_content" maxlength="2" size="2" value="~~WISP_PPPOE_TIMING_BH_5G~"/>:
+	<input type="text" id="WISP_PPPOE_TIMING_BM_5G" name="WISP_PPPOE_TIMING_BM_5G" class="handaer_text_small_content" maxlength="2" size="2" value="~~WISP_PPPOE_TIMING_BM_5G~"/>-
+	<input type="text" id="WISP_PPPOE_TIMING_EH_5G" name="WISP_PPPOE_TIMING_EH_5G" class="handaer_text_small_content" maxlength="2" size="2" value="~~WISP_PPPOE_TIMING_EH_5G~"/>:
+	<input type="text" id="WISP_PPPOE_TIMING_EM_5G" name="WISP_PPPOE_TIMING_EM_5G" class="handaer_text_small_content" maxlength="2" size="2" value="~~WISP_PPPOE_TIMING_EM_5G~"/></span>
+</td>
+</tr>
+</table>
+
 
 <table cellpadding="2" cellspacing="1" id="buttontable">
 <tr align="center">
@@ -857,6 +1677,7 @@ function help()
 	<input type="text" style="display:none" name="WIFION_OFF" id="WIFION_OFF" size="20" maxlength="32" value="~~WIFION_OFF~">	
 	<input type="text" style="display:none" name="WIFION_OFF_3" id="WIFION_OFF_3" size="20" maxlength="32" value="~~WIFION_OFF_3~">	
 	<input type="text" style="display:none" name="RADIO_STATUS" id="RADIO_STATUS" size="20" maxlength="32" value="~~RADIO_STATUS~">
+	<input type="text" style="display:none" name="AP_locatIP" id="AP_locatIP" size="20" maxlength="32" value="~~AP_IPADDR~">	
 </div>
 </td></tr></table></div>
 </body>

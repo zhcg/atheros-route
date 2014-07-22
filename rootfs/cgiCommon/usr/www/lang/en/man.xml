@@ -110,7 +110,7 @@
 	<message msgid="log t2des" msgstr="Tcpdump" />
 	<message msgid="log begin" msgstr="Begin" />
 	<message msgid="log end" msgstr="End" />
-
+	<message msgid="log export" msgstr="Export" />
 
 	<message msgid="man use" msgstr="USE" />
 	<message msgid="man delete" msgstr="DELETE" />

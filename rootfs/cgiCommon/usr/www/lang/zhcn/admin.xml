@@ -97,8 +97,8 @@
 	<message msgid="admw RMd" msgstr="无线中继" />  
 	<message msgid="admw RMd1" msgstr="网络频段:2.4GHz" /> 
 	<message msgid="admw RMd2" msgstr="网络频段:5GHz" /> 
-	<message msgid="admw wisp" msgstr="无线WAN" /> 
-	<message msgid="admw wispswitch" msgstr="无线WAN开关" /> 
+	<message msgid="admw wisp" msgstr="无线中继" /> 
+	<message msgid="admw wispswitch" msgstr="无线中继开关" /> 
 
 	<message msgid="admw R_uname" msgstr="网络名称（SSID）" />  
 	<message msgid="admw R_pword" msgstr="密码" />  
