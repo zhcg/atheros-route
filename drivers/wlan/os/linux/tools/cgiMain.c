@@ -2584,6 +2584,8 @@ void writeParameters(char *name,char *mode,unsigned long offset)
                 continue;
             if( !strcmp(config.Param[i].Name,"PPP") )
                 continue;
+            if( !strcmp(config.Param[i].Name,"WAN_DISABLE") )
+                continue;
             if( !strcmp(config.Param[i].Name,"L2TP") )
                 continue;
             if( !strcmp(config.Param[i].Name,"P2TP") )
@@ -4612,8 +4614,9 @@ int set_ntp_server( void)
             writeParametersWithSync();
             //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
             //writeParameters("/tmp/.apcfg","w+",0);
+	Execute_cmd("killall set_ntpserver > /dev/null 2>&1",rspBuff);
 	Execute_cmd("killall ntpclient > /dev/null 2>&1",rspBuff);
-	Execute_cmd("/usr/sbin/set_ntpserver > /tmp/ntpserver.log 2>&1",rspBuff);
+	Execute_cmd("/usr/sbin/set_ntpserver > /tmp/ntpserver.log 2>&1 &",rspBuff);
 #if 1
 	FILE *fileBuf2=NULL;
 	if ((fileBuf2= fopen("/tmp/ntpserver.log", "r")) == NULL)
@@ -4701,8 +4704,9 @@ void set_wireless_wan(void)
 		char wds2gturn_flag[128],wds5gturn_flag[128];
 		char wds2g_bak[128],wds5g_bak[128];
 		char order[128];
-
+		char wan_mode_backup[128];
 		int fd;
+
 		
 		fd = open("/etc/inittab", O_RDWR);
 		flock(fd, LOCK_EX);
@@ -4729,6 +4733,9 @@ void set_wireless_wan(void)
 		{
 //			CFG_set_by_name("AP_STARTMODE","repeater");
 			CFG_set_by_name("AP_STARTMODE","repeater_wisp");
+			CFG_get_by_name("WAN_MODE",wan_mode_backup);
+			CFG_set_by_name("WAN_MODE_BACK",wan_mode_backup);
+			CFG_set_by_name("WAN_MODE","disable");
 //			CFG_set_by_name("DHCPON_OFF","off");
 			flag=1;
 		}
@@ -4739,6 +4746,8 @@ void set_wireless_wan(void)
 			if((strncmp(wdsonoff_flag,"on",2) == 0)||(strncmp(wdsonoff5g_flag,"on",2) == 0))
 				CFG_set_by_name("AP_STARTMODE","dual");
 //			CFG_set_by_name("DHCPON_OFF","on");
+			CFG_get_by_name("WAN_MODE_BACK",wan_mode_backup);
+			CFG_set_by_name("WAN_MODE",wan_mode_backup);
 			flag=2;
 		}
 		sscanf(wdsonoff_flag, "%s\n<br>", wds2g_bak);
@@ -5116,6 +5125,11 @@ void set_wireless_wan(void)
 			}
 		}
 	#endif
+
+	
+	flock(fd, LOCK_UN);
+	close(fd);
+
 	write_systemLog("set_wireless_wan WISP end"); 
 
 	/*Execute_cmd("iwpriv ath1 wds 1", rspBuff);
@@ -6240,6 +6254,40 @@ int main(int argc,char **argv)
     ** Now, look for the update and/or commit strings to send to either
     ** the temp file or the flash file
     */
+    //wan mode disable
+    if(strcmp(CFG_get_by_name("WAN_DISABLE",valBuff),"WAN_DISABLE") == 0 )
+    {
+		fprintf(errOut,"\n%s  %d WAN_DISABLE \n",__func__,__LINE__);
+	
+		char pChar[128];
+		char valBuff2[128];	
+		int flag=0;
+
+		write_systemLog("wan mode set disable begin");	
+		
+		//CFG_set_by_name("AP_STARTMODE","standard");
+		//1.destory old mode pid
+		Execute_cmd("cfg -e | grep \"WAN_MODE=\"",valBuff);
+		//fprintf(errOut,"[luodp] WAN_MODE: %s\n",valBuff);
+		if(strstr(valBuff,"pppoe") != 0)
+		{
+			//kill pppoe
+			Execute_cmd("pppoe-stop > /dev/null 2>&1", rspBuff);
+		}
+		if(strstr(valBuff,"dhcp") != 0)
+		{
+			//kill udhcpc
+			//Execute_cmd("ps aux | grep udhcpc | awk \'{print $1}\' | xargs kill -9  > /dev/null 2>&1", rspBuff);
+			Execute_cmd("killall udhcpc > /dev/null 2>&1", rspBuff);
+		}
+		//3.do new config pid
+		system("ifconfig eth0 down > /dev/null 2>&1");
+
+        writeParametersWithSync();
+		write_systemLog("wan mode set disable  end");	
+
+		gohome =1;
+    }
 	//wan mode dhcp
      if((strcmp(CFG_get_by_name("DHCP",valBuff),"DHCP") == 0 )|| (strcmp(CFG_get_by_name("DHCPW",valBuff),"DHCPW")== 0 ))
      {
@@ -6247,6 +6295,7 @@ int main(int argc,char **argv)
 		int flag=0;
 		//if dhcp fail ,WAN_MODE rollback to last value
 		char tmp[128],*tmp2;
+		char wan_modebuf[128];
 		//static  char     rspBuff2[65536];
 		write_systemLog("wan mode setting begin");	
 		
@@ -6254,6 +6303,18 @@ int main(int argc,char **argv)
 		{
 			flag=1;
 		}
+
+		if(flag!=1)
+		{
+			CFG_get_by_name("AP_STARTMODE",wan_modebuf);
+			if(strstr(wan_modebuf,"repeater_wisp"))
+			{
+				fprintf(errOut,"please set off the repeater mode first\n");
+				exit(1);
+			}
+		}
+
+
 		
 		system("ifconfig eth0 0.0.0.0 up");   //wangyu add for the wan mode change from static to dhcp           
 
@@ -6403,6 +6464,7 @@ int main(int argc,char **argv)
 	
 		char pChar[128];
 		char valBuff2[128];	
+		char wan_modebuf[128];	
 		int flag=0;
 
 		write_systemLog("wan mode static ip begin");	
@@ -6411,7 +6473,18 @@ int main(int argc,char **argv)
 		{
 			flag=1;
 		}
+
 		
+		if(flag!=1)
+		{
+			CFG_get_by_name("AP_STARTMODE",wan_modebuf);
+			if(strstr(wan_modebuf,"repeater_wisp"))
+			{
+				fprintf(errOut,"please set off the repeater mode first\n");
+				exit(1);
+			}
+		}
+
 		//CFG_set_by_name("AP_STARTMODE","standard");
 		//1.destory old mode pid
 		Execute_cmd("cfg -e | grep \"WAN_MODE=\"",valBuff);
@@ -7448,6 +7521,7 @@ int main(int argc,char **argv)
 			char cmdstr[128];
 			char route_gw[20];
 			char pppoe_dns[20];
+			char wan_modebuf[128];
 			
 			memset(pppoe_mode,'\0',10);
 			memset(three_thread_buf,'\0',128);
@@ -7468,7 +7542,19 @@ int main(int argc,char **argv)
 			if (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 ) 
 			{ 
 						flag=1; 
-			}			 
+			}	
+
+
+			if(flag!=1)
+			{
+				CFG_get_by_name("AP_STARTMODE",wan_modebuf);
+				if(strstr(wan_modebuf,"repeater_wisp"))
+				{
+					fprintf(errOut,"please set off the repeater mode first\n");
+					exit(1);
+				}
+			}
+
 			CFG_get_by_name("PPPOE_MODE",pppoe_mode);
 			fprintf(errOut,"user select pppoe_mode:%s\n",pppoe_mode);
 			if(flag!=1)

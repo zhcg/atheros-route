@@ -13,7 +13,9 @@
 ##
 
 cfg -e > /tmp/vars.$$
+cfg -s | grep PSK_KEY | awk -F':' '{print "export " $1$2}' >> /tmp/vars.$$
 cfg -s | grep PSK_KEY_2 | awk -F':' '{print "export " $1$2}' >> /tmp/vars.$$
+cfg -s | grep PSK_KEY_3 | awk -F':' '{print "export " $1$2}' >> /tmp/vars.$$
 cfg -s | grep PSK_KEY_4 | awk -F':' '{print "export " $1$2}' >> /tmp/vars.$$
 . /tmp/vars.$$
 rm /tmp/vars.$$
@@ -61,8 +63,8 @@ cfg -a TIME_ZONE=${TIME_ZONE:="CST_008"}
 cfg -a NTPON_OFF=${NTPON_OFF:="on"}
 cfg -a WEBCONON_OFF=${WEBCONON_OFF:="off"}
 #cfg -a NTPServerIP1=${NTPServerIP1:="202.120.2.101"}
-cfg -a NTPServerIP1=${NTPServerIP1:="time.windows.com"}
-cfg -a NTPServerIP2=${NTPServerIP2:="210.72.145.44"}
+cfg -a NTPServerIP1=${NTPServerIP1:="198.123.30.132"}
+cfg -a NTPServerIP2=${NTPServerIP2:="202.112.31.197"}
 #
 # Indicate if you want the WLAN to be activated on boot up.
 #
@@ -235,25 +237,31 @@ cfg -a AP_MODE_8=${AP_MODE_8:="ap"}
 ##
 export MAX_VAPS_PER_RADIO=8
 
-cfg -a AP_SECMODE=${AP_SECMODE:="None"}
+cfg -a AP_SECMODE=${AP_SECMODE:="WPA"}
 cfg -a AP_SECMODE_2=${AP_SECMODE_2:="WPA"}
-cfg -a AP_SECMODE_3=${AP_SECMODE_3:="None"}
+cfg -a AP_SECMODE_3=${AP_SECMODE_3:="WPA"}
 cfg -a AP_SECMODE_4=${AP_SECMODE_4:="WPA"}
 cfg -a AP_SECMODE_5=${AP_SECMODE_5:="None"}
 cfg -a AP_SECMODE_6=${AP_SECMODE_6:="None"}
 cfg -a AP_SECMODE_7=${AP_SECMODE_7:="None"}
 cfg -a AP_SECMODE_8=${AP_SECMODE_8:="None"}
 
+cfg -a PSK_KEY=${PSK_KEY:="12345678"}
 cfg -a PSK_KEY_2=${PSK_KEY_2:="12345678"}
+cfg -a PSK_KEY_3=${PSK_KEY_3:="12345678"}
 cfg -a PSK_KEY_4=${PSK_KEY_4:="12345678"}
 
-cfg -a AP_WPA_2=3
-cfg -a AP_WPA_4=3
+cfg -a AP_WPA=${AP_WPA:="3"}
+cfg -a AP_WPA_2=${AP_WPA_2:="3"}
+cfg -a AP_WPA_3=${AP_WPA_3:="3"}
+cfg -a AP_WPA_4=${AP_WPA_4:="3"}
 
+cfg -a AP_CYPHER=${AP_CYPHER:="CCMP"}
 #cfg -a AP_CYPHER_2="TKIP CCMP"
-cfg -a AP_CYPHER_2="CCMP"
+cfg -a AP_CYPHER_2=${AP_CYPHER_2:="CCMP"}
+cfg -a AP_CYPHER_3=${AP_CYPHER_3:="CCMP"}
 #cfg -a AP_CYPHER_4="TKIP CCMP"
-cfg -a AP_CYPHER_4="CCMP"
+cfg -a AP_CYPHER_4=${AP_CYPHER_4:="CCMP"}
 
 ##
 ## Set default secfile to PSK, only valid in WPA mode
