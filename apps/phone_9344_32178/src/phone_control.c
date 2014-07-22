@@ -1025,7 +1025,7 @@ int do_cmd_dialup(dev_status_t* dev)
 			usleep(500*1000);
 			phone_control.offhook_kill_talkback = 0;
 		}
-		usleep(1200*1000);//等待音频线程初始化结束
+		usleep(1000*1000);//等待音频线程初始化结束
 		for(i=0;i<CLIENT_NUM;i++)
 		{
 			if(devlist[i].dev_is_using == 1)
@@ -1497,6 +1497,16 @@ int do_cmd_get_ver(dev_status_t * dev, char * sendbuf)
 	return 0;
 }
 
+int do_cmd_def_name(dev_status_t *dev, char *buf)
+{
+	if(buf == NULL)
+		return -1;
+	int len = strlen(buf);
+	memset(dev->dev_name,0,sizeof(dev->dev_name));
+	memcpy(dev->dev_name,buf,((len > (sizeof(dev->dev_name)-1))?(sizeof(dev->dev_name)-1):len));
+	return 0;
+}
+
 //消息处理
 int parse_msg(cli_request_t* cli,char *sendbuf)
 {
@@ -1622,6 +1632,12 @@ int parse_msg(cli_request_t* cli,char *sendbuf)
 			do_cmd_get_ver(cli->dev,sendbuf);
 			break;
 		}
+		case DEF_NAME:
+		{
+			PRINT("DEF_NAME from %s\n",cli->dev->client_ip);
+			do_cmd_def_name(cli->dev,cli->arg);
+			break;
+		}
 		case DEFAULT:
 		{
 			PRINT("other cmd\n");
@@ -1714,6 +1730,10 @@ int getCmdtypeFromString(char *cmd_str)
 	else if (strncmp(cmd_str, "GET_VER", 7) == 0)
 	{
 		cmdtype = GET_VER;
+	}
+	else if (strncmp(cmd_str, "DEFNAME", 7) == 0)
+	{
+		cmdtype = DEF_NAME;
 	}
 	else
 	{

@@ -42,6 +42,7 @@ unsigned char audio_sendbuf[BUFFER_SIZE_2K];
 unsigned char audio_recvbuf[BUFFER_SIZE_2K*5];
 unsigned char audio_tb_sendbuf[BUFFER_SIZE_2K];
 unsigned char audio_tb_recvbuf[BUFFER_SIZE_2K*5];
+unsigned char tmp_recv_buf[BUFFER_SIZE_2K];
 int dtmf_ret = 0;
 int total_dtmf_ret = 0;
 unsigned char dtmf_buf[6000]={0};	
@@ -1126,7 +1127,7 @@ TBED_SEND_ERROR:
 
 void* AudioEchoThreadCallBack(void* argv)
 {
-	short * out_buf[AUDIO_WRITE_BYTE_SIZE*2]= {0};
+	short *out_buf[AUDIO_WRITE_BYTE_SIZE*2]= {0};
 	short *readp;
 	short *out_bufp;
 	int valid_bytes = 0;
@@ -1186,15 +1187,18 @@ void* AudioEchoThreadCallBack(void* argv)
 					//if(echo_cancellation == 0)
 						//PRINT("start aec\n");
 					pthread_mutex_lock(&phone_audio.aec_mutex);
-					HighPassFilter_Process(&phone_audio.hpf,(signed short *)out_buf,valid_bytes/4);
+					HighPassFilter_Process(&phone_audio.hpf,(signed short *)&echo_stream_buffer[phone_audio.echo_stream_rp],valid_bytes/4);
 					speex_echo_cancellation(phone_audio.st,(spx_int16_t*)&echo_stream_buffer[phone_audio.echo_stream_rp], (spx_int16_t*)(&echo_stream_buffer[phone_audio.echo_stream_rp+AUDIO_WRITE_BYTE_SIZE]), (spx_int16_t*)out_buf);
 					speex_preprocess_run(phone_audio.den, (spx_int16_t*)out_buf);
 					//speex_preprocess_run(phone_audio.dn, (spx_int16_t*)out_buf);
 					AudioDo(out_buf,0,&echo_stream_buffer[phone_audio.echo_stream_rp+AUDIO_WRITE_BYTE_SIZE],0,valid_bytes/2);
+					//HighPassFilter_Process(&phone_audio.hpf,(signed short *)out_buf,valid_bytes/4);
 					pthread_mutex_unlock(&phone_audio.aec_mutex);
 				}
 				else
+				{
 					memcpy(out_buf,&echo_stream_buffer[phone_audio.echo_stream_rp],AUDIO_WRITE_BYTE_SIZE);
+				}
 				//readp = (short*)&echo_stream_buffer[phone_audio.echo_stream_rp+AUDIO_WRITE_BYTE_SIZE];
 				//for(i=0;i<valid_bytes/4;i++)
 				//{
@@ -1257,7 +1261,7 @@ void* AudioSendThreadCallBack(void* argv)
 	unsigned int total_send_bytes = 0;
 	int i = 0;
 	dev_status_t* devp;
-	int count = 0;
+	int first_send = 0;
 	
 	phone_audio.audio_send_thread_flag = 0;
 	phone_audio.audio_talkback_send_thread_flag = 0;
@@ -1268,6 +1272,7 @@ void* AudioSendThreadCallBack(void* argv)
 		print_loop = 0;
 		total_send_bytes = 0;
 		phone_audio.audio_send_thread_exit_flag = 0;
+		first_send = 0;
 		//打印线程创建信息
 		for(i=0;i<CLIENT_NUM;i++)
 		{
@@ -1319,6 +1324,11 @@ void* AudioSendThreadCallBack(void* argv)
 				{
 					goto SEND_ERR;
 				}
+				first_send++;
+				if(first_send <= 5)
+				{
+					memset(audio_sendbuf,0,sizeof(audio_sendbuf));
+				}
 				send_ret = send(devp->audio_client_fd,audio_sendbuf,valid_bytes/2,MSG_DONTWAIT);
 				if(send_ret < 1)//或者小于0。则表示socket异常。发送线程中有错不处理其他，只需要处理自身就行
 				{
@@ -1339,9 +1349,6 @@ SEND_ERR:
 				else
 				{
 					//PRINT("send_ret = %d\n",send_ret);
-					//if(send_ret != 400)
-						//count++;
-					//PRINT("count = %d\n",count);
 					phone_audio.output_stream_rp += send_ret*2;
 					total_send_bytes += send_ret*2;
 					if(phone_audio.output_stream_rp >= AUDIO_STREAM_BUFFER_SIZE)
@@ -1436,7 +1443,6 @@ void* AudioRecvThreadCallBack(void* argv)
 	int tmp_len = 0;
 	int tmp = 0;
 	dev_status_t* devp;
-	unsigned char tmp_buf[2000];
 	phone_audio.audio_recv_thread_flag = 0;
 	phone_audio.audio_talkback_recv_thread_flag = 0;
 	while(1)
@@ -1496,7 +1502,7 @@ void* AudioRecvThreadCallBack(void* argv)
 			if(total_dtmf_ret > 0) //双音多频丢数据
 			{
 				//PRINT("dtmfing....\n");
-				recv_ret = recv(devp->audio_client_fd,tmp_buf,AUDIO_SEND_PACKET_SIZE,MSG_DONTWAIT);
+				recv_ret = recv(devp->audio_client_fd,tmp_recv_buf,AUDIO_SEND_PACKET_SIZE,MSG_DONTWAIT);
 				if(recv_ret < 1)//或者小于0。则表示socket异常，此处需要同时处理其他线程的错误
 				{
 					getsockopt(devp->audio_client_fd,SOL_SOCKET,SO_ERROR,&optval, &optlen);
@@ -1526,7 +1532,7 @@ void* AudioRecvThreadCallBack(void* argv)
 			}
 			while(phone_audio.start_recv)
 			{
-				recv_ret = recv(devp->audio_client_fd,tmp_buf,AUDIO_SEND_PACKET_SIZE,MSG_DONTWAIT);
+				recv_ret = recv(devp->audio_client_fd,tmp_recv_buf,AUDIO_SEND_PACKET_SIZE,MSG_DONTWAIT);
 				if(recv_ret < 1)//或者小于0。则表示socket异常，此处需要同时处理其他线程的错误
 				{
 					getsockopt(devp->audio_client_fd,SOL_SOCKET,SO_ERROR,&optval, &optlen);
@@ -1544,7 +1550,7 @@ RECV_CONTINUE:
 					{
 						if(phone_audio.audio_recv_thread_flag ==0)
 							break;
-						recv_ret = recv(devp->audio_client_fd,tmp_buf,AUDIO_SEND_PACKET_SIZE,MSG_DONTWAIT);
+						recv_ret = recv(devp->audio_client_fd,tmp_recv_buf,AUDIO_SEND_PACKET_SIZE,MSG_DONTWAIT);
 						if(recv_ret < 1)//或者小于0。则表示socket异常，此处需要同时处理其他线程的错误
 						{
 							getsockopt(devp->audio_client_fd,SOL_SOCKET,SO_ERROR,&optval, &optlen);

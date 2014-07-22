@@ -76,6 +76,7 @@ enum PstnCommand {
 	//
 	REQ_ENC,
 	GET_VER,
+	DEF_NAME,
 };
 typedef enum PstnCommand PstnCmdEnum;
 
