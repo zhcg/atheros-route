@@ -103,7 +103,7 @@ function checkIpAddr(field, ismask) {
         return false
     }
     if (ismask == 1) {
-        if ((!checkRange(field.value, 1, 0, 255)) || (!checkRange(field.value, 2, 0, 255)) || (!checkRange(field.value, 3, 0, 255)) || (!checkRange(field.value, 4, 1, 254))) {
+        if ((!checkRange(field.value, 1, 1, 247)) || (!checkRange(field.value, 2, 0, 255)) || (!checkRange(field.value, 3, 0, 255)) || (!checkRange(field.value, 4, 1, 254))) {
             alert(_("err IP format"));
             field.value = field.defaultValue;
             field.focus();
@@ -117,14 +117,14 @@ function checkIpAddr(field, ismask) {
             return false
         }
     } else if (ismask == 3) {
-        if ((!checkRange(field.value, 1, 0, 255)) || (!checkRange(field.value, 2, 0, 255)) || (!checkRange(field.value, 3, 0, 255)) || (!checkRange(field.value, 4, 1, 254))) {
+        if ((!checkRange(field.value, 1, 1, 247)) || (!checkRange(field.value, 2, 0, 255)) || (!checkRange(field.value, 3, 0, 255)) || (!checkRange(field.value, 4, 1, 254))) {
             alert(_("err gw format"));
             field.value = field.defaultValue;
             field.focus();
             return false
         }
     } else if (ismask == 4) {
-        if ((!checkRange(field.value, 1, 0, 255)) || (!checkRange(field.value, 2, 0, 255)) || (!checkRange(field.value, 3, 0, 255)) || (!checkRange(field.value, 4, 1, 254))) {
+        if ((!checkRange(field.value, 1, 1, 247)) || (!checkRange(field.value, 2, 0, 255)) || (!checkRange(field.value, 3, 0, 255)) || (!checkRange(field.value, 4, 1, 254))) {
             alert(_("err DNS format"));
             field.value = field.defaultValue;
             field.focus();
