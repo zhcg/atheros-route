@@ -855,7 +855,7 @@ int do_cmd_heartbeat(dev_status_t *dev,char *buf)
 	if(dev->tick_time == 0)
 	{
 		char dev_mac[20]={0};
-		char coming_mac[20]={0};
+		char comming_mac[20]={0};
 		char register_state[4]={0};
 		char pad_mac[20]={0};
 		char insidebuf[10]={0};
