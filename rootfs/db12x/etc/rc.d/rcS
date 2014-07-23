@@ -84,7 +84,6 @@ ifconfig $WAN_IF up
 #ifconfig $LAN_IF up
 /etc/rc.d/rc.network
 /etc/rc.d/rc.bridge
-/usr/sbin/set_ntpserver > /dev/null 2>&1
 
 
 #
@@ -176,6 +175,7 @@ fi
 /usr/bin/version_check &
 /bin/server &
 /bin/net_test &
+/usr/sbin/set_ntpserver &
 /usr/sbin/httpd -h /usr/www/
 #/usr/sbin/threethread &
 /usr/sbin/ppy &
