@@ -178,6 +178,17 @@ function valueinit()
 			}
 	
 		}
+		else if(wtype == "disable")
+		{
+			if(document.getElementById("s6_wds").value == "repeater_wisp")
+			{
+				widget_hide("ip_line");
+			}
+			else
+			{
+				document.getElementById("ss5").innerHTML=_("sysinfo unset");
+			}
+		}
 
 	}
 	if(wtype == "dhcp")	
@@ -238,6 +249,10 @@ function valueinit()
 	{
 		document.getElementById("ss6").innerHTML=_("sysinfo pptp");
 	}
+	else if(wtype == "disable")
+	{
+		document.getElementById("ss6").innerHTML=_("sysinfo wds");
+	}
 	else
 		document.getElementById("ss6").innerHTML="";
 
@@ -263,6 +278,17 @@ function valueinit()
 			else
 			{
 				document.getElementById("ss7").innerHTML=document.getElementById("s7b").value;			
+			}
+		}
+		else if(wtype == "disable")
+		{
+			if(document.getElementById("s6_wds").value == "repeater_wisp")
+			{
+				widget_hide("gw_line");
+			}
+			else
+			{
+				document.getElementById("ss7").innerHTML=_("sysinfo unset");
 			}
 		}
 
@@ -348,9 +374,15 @@ function WIFI_HS()
 </tr>
 <tr>
   <td class="head" id="t2_ctpye">接入方式</td>
-  <td><span id="ss6" name="ss6"></span><input size="32" style="display:none" maxlength="64" name="s6" id="s6" value="~~WAN_MODE~" type="text" readonly></td>
+  <td><span id="ss6" name="ss6"></span>
+  <input size="32" style="display:none" maxlength="64" name="s6" id="s6" value="~~WAN_MODE~" type="text" readonly>
+  <input size="32" style="display:none" maxlength="64" name="s6_wds" id="s6_wds" value="~~AP_STARTMODE~" type="text" readonly>
+  
+  
+  </td>
+  
 </tr>
-<tr>
+<tr id="ip_line">
   <td class="head" id="t2_ip">IP地址</td>
   <td><span id="ss5" name="ss5"></span>
   <input size="32" style="display:none" maxlength="64" name="s5a" id="s5a" value="~~WAN_IPADDR~" type="text" readonly>
@@ -362,7 +394,7 @@ function WIFI_HS()
   </td>
 </tr>
 
-<tr>
+<tr id="gw_line">
   <td class="head" id="t2_gw">网关</td>
   <td><span id="ss7" name="ss7"></span>
   <input size="32" style="display:none" maxlength="64" name="s7a" id="s7a" value="~~IPGW~" type="text" readonly>

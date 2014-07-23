@@ -94,6 +94,7 @@
 	<message msgid="sysinfo jiami" msgstr="Security" />
 	<message msgid="sysinfo open" msgstr="Open" />  
 	<message msgid="sysinfo unset" msgstr="Unset" /> 
+	<message msgid="sysinfo wds" msgstr="WDS" />
 
 	<message msgid="sysinfo dhcp" msgstr="DHCP" />
 	<message msgid="sysinfo static" msgstr="Static IP" />
