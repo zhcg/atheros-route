@@ -1127,7 +1127,7 @@ TBED_SEND_ERROR:
 
 void* AudioEchoThreadCallBack(void* argv)
 {
-	short *out_buf[AUDIO_WRITE_BYTE_SIZE*2]= {0};
+	short out_buf[AUDIO_WRITE_BYTE_SIZE*2]= {0};
 	short *readp;
 	short *out_bufp;
 	int valid_bytes = 0;
