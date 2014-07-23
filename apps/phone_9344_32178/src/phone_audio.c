@@ -1187,12 +1187,12 @@ void* AudioEchoThreadCallBack(void* argv)
 					//if(echo_cancellation == 0)
 						//PRINT("start aec\n");
 					pthread_mutex_lock(&phone_audio.aec_mutex);
-					HighPassFilter_Process(&phone_audio.hpf,(signed short *)&echo_stream_buffer[phone_audio.echo_stream_rp],valid_bytes/4);
+					//HighPassFilter_Process(&phone_audio.hpf,(signed short *)&echo_stream_buffer[phone_audio.echo_stream_rp],valid_bytes/4);
 					speex_echo_cancellation(phone_audio.st,(spx_int16_t*)&echo_stream_buffer[phone_audio.echo_stream_rp], (spx_int16_t*)(&echo_stream_buffer[phone_audio.echo_stream_rp+AUDIO_WRITE_BYTE_SIZE]), (spx_int16_t*)out_buf);
 					speex_preprocess_run(phone_audio.den, (spx_int16_t*)out_buf);
 					//speex_preprocess_run(phone_audio.dn, (spx_int16_t*)out_buf);
 					AudioDo(out_buf,0,&echo_stream_buffer[phone_audio.echo_stream_rp+AUDIO_WRITE_BYTE_SIZE],0,valid_bytes/2);
-					//HighPassFilter_Process(&phone_audio.hpf,(signed short *)out_buf,valid_bytes/4);
+					HighPassFilter_Process(&phone_audio.hpf,(signed short *)out_buf,valid_bytes/4);
 					pthread_mutex_unlock(&phone_audio.aec_mutex);
 				}
 				else
