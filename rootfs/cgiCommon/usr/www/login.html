@@ -59,10 +59,14 @@ body {
 }
 .denglukuang_mr{ height:24px; line-height:24px; margin-top:32px; text-align:left; margin-left:52px; color:#999; font-size:12px;}
 
-#forgetm { height:24px; line-height:24px; margin-top:-24px; text-align:right; margin-right:52px; color:#999; font-size:12px;}
+#forgetm { height:24px; line-height:24px; margin-top:-24px; text-align:right; margin-right:52px; color:#999; font-size:12px; cursor:pointer;}
 .denglukuang_note{ height:24px; line-height:24px; margin-top:5px; text-align:left; margin-left:72px; margin-right:42px;color:red; font-size:15px;}
 
 .denglukuang_image { float: left; height: 70px; width: 70px; }
+
+#tishikuang { height: 100px; width: 200px; border:1px solid #ddd; background:#fff;  margin-top: -150px; margin-right: auto; margin-bottom: auto; margin-left: 800px; }
+
+#tishic { margin: 20px; font-size: 12px; line-height: 24px; }
 -->
 </style>
 <script type="text/javascript">
@@ -137,13 +141,28 @@ function initTranslation()
 	trans_value("tijiao","login but");
 	trans_inner("dp","login dp");
 	trans_inner("note","login note");
+	trans_inner("forgetm","login forgetm");
+	trans_inner("tishic","login tishic");
 }
 function init()
 {
 	Butterlate.setTextDomain("other");
 	initTranslation();
 }
-
+var showon=0;
+function fac_note()
+{
+	if(showon==0)
+	{
+		widget_display("tishikuang");
+		showon = 1;
+	}
+	else
+	{
+		widget_hide("tishikuang");
+		showon = 0;
+	}
+}
 function keyLogin()
 {
   if (event.keyCode==13)   //回车键的键值为13
@@ -155,7 +174,7 @@ function keyLogin()
 
 <body oncontextmenu="window.event.returnValue=false" onload="init()" onkeydown="keyLogin();">
 <div id="denglukuang">
-  <div class="denglukuang_title"><strong>HBD</strong>&nbsp;<span id="title">路由器登录</span></div>
+<div class="denglukuang_title"><strong>HBD</strong>&nbsp;<span id="title">路由器登录</span></div>
   <div id="pwddiv">
 
     <input name="pwd1" id="pwd1"  size="32" maxlength="20"  value="" />
@@ -164,10 +183,13 @@ function keyLogin()
     <br/>
     <input name="tijiao" id="tijiao"  type="button"  onclick="CheckUser()"/>
   </div>
-    <div class="denglukuang_mr" id="dp"></div><div style="display:none" id="forgetm">忘记密码<div>
+    <div class="denglukuang_mr" id="dp"></div><div style="display:none"  id="forgetm" onclick="fac_note()">忘记密码</div>
 	<img style="display:none" id="denglukuang_img" class="denglukuang_image" src="/images/note.PNG"></img><div style="display:none" class="denglukuang_note" id="note">由于上次更新出错，系统已经进入到恢复系统状态，部分功能受限，请重新进行系统升级</div>
 </div>
-
+<div id="tishikuang" style="display:none" >
+<div id="tishic">
+</div>
+</div>
 <script type="text/javascript">
 var tx = document.getElementById("pwd1"), pwd = document.getElementById("pwd2");
 tx.onfocus = function()

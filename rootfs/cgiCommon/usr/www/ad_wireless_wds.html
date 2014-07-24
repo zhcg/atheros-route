@@ -773,11 +773,11 @@ function connectionTypeSwitch()
 	widget_hide("dhcp_table_2G_2G");
 	widget_hide("pppoe_table_2G");
 
-	if (document.wizard_form.WISP_MODE_2G.options.selectedIndex == 0)
+	if (document.wizard_form.WISP_MODE_2G.options.selectedIndex == 1)
 	{
 		widget_display("static_table_2G");
 	}
-	else if (document.wizard_form.WISP_MODE_2G.options.selectedIndex == 1)
+	else if (document.wizard_form.WISP_MODE_2G.options.selectedIndex == 0)
 	{
 		widget_display("dhcp_table_2G_2G");
 	}
@@ -834,7 +834,7 @@ function pppoeOPModeSwitch()
 function CheckValue()
 {
 	Butterlate.setTextDomain("wan");
-	if (document.wizard_form.WISP_MODE_2G.selectedIndex == 0) //STATIC
+	if (document.wizard_form.WISP_MODE_2G.selectedIndex == 1) //STATIC
 	{      
 		if (!checkIpAddr(document.wizard_form.WISP_IPADDR_2G, 1))
 			return false;
@@ -869,7 +869,7 @@ function CheckValue()
 		disableall();
 		enableSTATICIP();
 	}
-	else if (document.wizard_form.WISP_MODE_2G.selectedIndex == 1) //DHCP
+	else if (document.wizard_form.WISP_MODE_2G.selectedIndex == 0) //DHCP
 	{ 
 		disableall();
 	}
@@ -1109,11 +1109,11 @@ function connectionTypeSwitch_5G()
 	widget_hide("dhcp_table_5G");
 	widget_hide("pppoe_table_5G");
 
-	if (document.wizard_form.WISP_MODE_5G.options.selectedIndex == 0)
+	if (document.wizard_form.WISP_MODE_5G.options.selectedIndex == 1)
 	{
 		widget_display("static_table_5G");
 	}
-	else if (document.wizard_form.WISP_MODE_5G.options.selectedIndex == 1)
+	else if (document.wizard_form.WISP_MODE_5G.options.selectedIndex == 0)
 	{
 		widget_display("dhcp_table_5G");
 	}
@@ -1169,7 +1169,7 @@ function pppoeOPModeSwitch_5G()
 function CheckValue_5G()
 {
 	Butterlate.setTextDomain("wan");
-	if (document.wizard_form.WISP_MODE_5G.selectedIndex == 0) //STATIC
+	if (document.wizard_form.WISP_MODE_5G.selectedIndex == 1) //STATIC
 	{      
 		if (!checkIpAddr(document.wizard_form.WISP_IPADDR_5G, 1))
 			return false;
@@ -1204,7 +1204,7 @@ function CheckValue_5G()
 		disableall_5G();
 		enableSTATICIP_5G();
 	}
-	else if (document.wizard_form.WISP_MODE_5G.selectedIndex == 1) //DHCP
+	else if (document.wizard_form.WISP_MODE_5G.selectedIndex == 0) //DHCP
 	{ 
 		disableall_5G();
 	}
@@ -1577,9 +1577,9 @@ function help()
   <td class="head_s" id="wConnectionType_5G"></td>
   <td>
     <select id="WISP_MODE_5G" name="WISP_MODE_5G" size="1" onChange="connectionTypeSwitch_5G()">
-      <option ~sWISP_MODE_5G:static~ value="static" id="wConnTypeStatic_5G">Static Mode (fixed IP)</option>
-      <option ~sWISP_MODE_5G:dhcp~ value="dhcp" id="wConnTypeDhcp_5G">DHCP (Auto Config)</option>
-      <option ~sWISP_MODE_5G:pppoe~ value="pppoe" id="wConnTypePppoe_5G">PPPOE (ADSL)</option>
+		<option ~sWISP_MODE_5G:dhcp~ value="dhcp" id="wConnTypeDhcp_5G">DHCP (Auto Config)</option>
+		<option ~sWISP_MODE_5G:static~ value="static" id="wConnTypeStatic_5G">Static Mode (fixed IP)</option>
+		<option ~sWISP_MODE_5G:pppoe~ value="pppoe" id="wConnTypePppoe_5G">PPPOE (ADSL)</option>
     </select>
 </td>
 </tr>
