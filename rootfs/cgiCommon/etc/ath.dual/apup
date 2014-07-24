@@ -298,7 +298,7 @@ if [ "${AP_STARTMODE}" = "repeater" -o "${AP_STARTMODE}" = "repeater-ind" ]; the
 fi
 
 if [ "${AP_STARTMODE}" = "repeater_wisp" ]; then
-        APMODE="ap-wds-ind"
+        APMODE="ap-wds"
 	STAMODE="sta-wds-ind"
 	rm -rf /tmp/.apcfg
 

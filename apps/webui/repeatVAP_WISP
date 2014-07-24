@@ -34,7 +34,7 @@ ifconfig ath2 down;ifconfig ath2 up
 ifconfig ath3 down;ifconfig ath3 up
 fi
 
-. /etc/ath/apcfg simple
+. /etc/ath/apcfg
 
 APMODE="ap-wds-ind"
 STAMODE="sta-wds-ind"
