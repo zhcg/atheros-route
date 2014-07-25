@@ -48,6 +48,7 @@
 	<message msgid="wan protocol opmode timing" msgstr="定时连接" />
 	<message msgid="wan cs" msgstr="连接状态" />
 	<message msgid="wan cstatus" msgstr="未知" />
+	<message msgid="wan disable_note" msgstr=" 无线中继已经开启，WAN口已禁用" />
 	
 	<message msgid="wisp connection type" msgstr="接入方式" />
 	

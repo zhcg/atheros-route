@@ -540,6 +540,8 @@ function initTranslation()
 	trans_inner("cs","wan cs");
 	trans_inner("cstatus","wan cstatus");
 
+	trans_inner("disable_note","wan disable_note");	
+	
 	trans_inner("wL2tpMode","wan l2tp mode");
 	trans_inner("wL2tpServer","inet server");
 	trans_inner("wL2tpUser","inet user");
@@ -697,7 +699,13 @@ function getresultPPPoE()
 function disablechange()
 {
 	if((document.getElementById("WDSOF").value=="on")||(document.getElementById("WDSOF2").value=="on"))
+	{
 		widget_disable("WAN_MODE");
+		widget_display("disable_table");
+		widget_hide("buttontable");
+		widget_hide("autocheck");
+		
+	}
 }
 function initValue()
 {
@@ -977,6 +985,13 @@ function help()
   <td><span id="cstatus">未知</span></td>
 </tr>
 </table>
+<!-- ================= Disable Mode ================= -->
+<table id="disable_table" style="display:none"  width="100%" cellpadding="0" cellspacing="0" class="handaer_text">
+<tr>
+  <td class="title" colspan="2" id="disable_note"></td>
+</tr>
+</table>
+
 <!-- ================= L2TP Mode ================= -->
 <table id="l2tp_table" width="100%" cellpadding="0" cellspacing="0" class="handaer_text">
 <tr>
