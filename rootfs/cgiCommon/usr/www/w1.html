@@ -26,46 +26,38 @@ function butwork(zhi1,zhi2,zhi3,zhi4)
 {
 	if(zhi1 == "false")
 	{
-		document.getElementById("bBACK").style.visibility = "visible";
-		document.getElementById("bBACK").style.display = style_display_on();
+		widget_display("bBACK");
 	}
 	else
 	{
-		document.getElementById("bBACK").style.visibility = "hidden";
-		document.getElementById("bBACK").style.display = "none";
+		widget_hide("bBACK");
 	}
 	
 	if(zhi2 == "false")
 	{
-		document.getElementById("bNEXT").style.visibility = "visible";
-		document.getElementById("bNEXT").style.display = style_display_on();
+		widget_display("bNEXT");
 	}
 	else
 	{
-		document.getElementById("bNEXT").style.visibility = "hidden";
-		document.getElementById("bNEXT").style.display = "none";
+		widget_hide("bNEXT");
 	}
 
-		if(zhi3 == "false")
+	if(zhi3 == "false")
 	{
-		document.getElementById("bCANCEL").style.visibility = "visible";
-		document.getElementById("bCANCEL").style.display = style_display_on();
+		widget_display("bCANCEL");
 	}
 	else
 	{
-		document.getElementById("bCANCEL").style.visibility = "hidden";
-		document.getElementById("bCANCEL").style.display = "none";
+		widget_hide("bCANCEL");
 	}
 
-		if(zhi4 == "false")
+	if(zhi4 == "false")
 	{
-		document.getElementById("bAPPLY").style.visibility = "visible";
-		document.getElementById("bAPPLY").style.display = style_display_on();
+		widget_display("bAPPLY");
 	}
 	else
 	{
-		document.getElementById("bAPPLY").style.visibility = "hidden";
-		document.getElementById("bAPPLY").style.display = "none";
+		widget_hide("bAPPLY");
 	}
 
 }
@@ -140,10 +132,8 @@ function stateChanged()
 			else
 			{
 				alert(_("admw auto_fail"));
-				document.getElementById("div_wan_title").style.visibility = "visible";
-				document.getElementById("div_wan_title").style.display = style_display_on();
-				document.getElementById("div_wan_opmode").style.visibility = "visible";
-				document.getElementById("div_wan_opmode").style.display = style_display_on();
+				widget_display("div_wan_title");
+				widget_display("div_wan_opmode");
 				butwork("true","false","true","true");
 				change_step(0);
 			}
@@ -181,10 +171,8 @@ function change_step(offset)
 	if (step_num == 0)
 	{
 		hideAllTables();
-		document.getElementById("div_wan_title").style.visibility = "visible";
-		document.getElementById("div_wan_title").style.display = style_display_on();
-		document.getElementById("div_wan_opmode").style.visibility = "visible";
-		document.getElementById("div_wan_opmode").style.display = style_display_on();
+		widget_display("div_wan_title");
+		widget_display("div_wan_opmode");
 		butwork("true","false","true","true");		
 	}
 	else if (step_num == 1)
@@ -192,8 +180,6 @@ function change_step(offset)
 
 		if (document.wizard_form.WAN_MODE[0].checked == true) 
 		{
-			//document.getElementById("buttontable").style.visibility = "hidden";
-			//document.getElementById("buttontable").style.display = "none";	
 			window.parent.Demo(_("admw waiting"));
 			wan_check();
 
@@ -215,14 +201,10 @@ function change_step(offset)
 	else if (step_num == 2)
 	{
 		hideAllTables();
-		document.getElementById("div_wireless_title").style.visibility = "visible";
-		document.getElementById("div_wireless_title").style.display = style_display_on();
-		document.getElementById("div_wireless").style.visibility = "visible";
-		document.getElementById("div_wireless").style.display = style_display_on();
-		document.getElementById("div_wireless1").style.visibility = "visible";
-		document.getElementById("div_wireless1").style.display = style_display_on();
-		document.getElementById("div_wireless2").style.visibility = "visible";
-		document.getElementById("div_wireless2").style.display = style_display_on();
+		widget_display("div_wireless_title");
+		widget_display("div_wireless");
+		widget_display("div_wireless1");
+		widget_display("div_wireless2");
 		document.wizard_form.AP_SSID.disabled = false;
 		document.wizard_form.AP_SSID_3.disabled = false;
 		switch_security_mode();
@@ -267,12 +249,11 @@ function change_step(offset)
 		{
 			alert("typeerror");
 		}
-		document.getElementById("buttontable").style.visibility = "hidden";
-		document.getElementById("buttontable").style.display = "none";	
+		widget_hide("buttontable");	
 	}
 	else
 	{
-		window.location.href="w1?INDEX=00";
+		window.location.href="w1";
 	}
 	window.parent.iFrameHeight();
 	return true;
@@ -280,41 +261,28 @@ function change_step(offset)
 
 function hideAllTables()
 {
-	document.getElementById("div_wan_title").style.visibility = "hidden";
-	document.getElementById("div_wan_title").style.display = "none";
-	document.getElementById("div_wan_opmode").style.visibility = "hidden";
-	document.getElementById("div_wan_opmode").style.display = "none";
+	widget_hide("div_wan_title");
+	widget_hide("div_wan_opmode");
 	hideWanOption();
-	document.getElementById("div_wireless_title").style.visibility = "hidden";
-	document.getElementById("div_wireless_title").style.display = "none";
-	document.getElementById("div_wireless").style.visibility = "hidden";
-	document.getElementById("div_wireless").style.display = "none";
-	document.getElementById("div_wireless1").style.visibility = "hidden";
-	document.getElementById("div_wireless1").style.display = "none";
-	document.getElementById("div_wireless2").style.visibility = "hidden";
-	document.getElementById("div_wireless2").style.display = "none";
+	widget_hide("div_wireless_title");
+	widget_hide("div_wireless");
+	widget_hide("div_wireless1");
+	widget_hide("div_wireless2");
 }
 
 function hideWanOption()
 {
-	document.getElementById("STIP_title").style.visibility = "hidden";
-	document.getElementById("STIP_title").style.display = "none";
+	widget_hide("STIP_title");
 	
-	document.getElementById("div_wan_static").style.visibility = "hidden";
-	document.getElementById("div_wan_static").style.display = "none";
+	widget_hide("div_wan_static");
 
 
-	document.getElementById("PPP_title").style.visibility = "hidden";
-	document.getElementById("PPP_title").style.display = "none";
-	document.getElementById("div_wan_pppoe").style.visibility = "hidden";
-	document.getElementById("div_wan_pppoe").style.display = "none";
+	widget_hide("PPP_title");
+	widget_hide("div_wan_pppoe");
 
-	document.getElementById("div_wan_l2tp").style.visibility = "hidden";
-	document.getElementById("div_wan_l2tp").style.display = "none";
-	document.getElementById("div_wan_pptp").style.visibility = "hidden";
-	document.getElementById("div_wan_pptp").style.display = "none";
-	document.getElementById("div_wan_3G").style.visibility = "hidden";
-	document.getElementById("div_wan_3G").style.display = "none";
+	widget_hide("div_wan_l2tp");
+	widget_hide("div_wan_pptp");
+	widget_hide("div_wan_3G");
 }
 
 function disableWanSettings()
@@ -366,11 +334,10 @@ function disableWirelessSettings()
 function connectionTypeSwitch()
 {
 	hideWanOption();
-	if (document.wizard_form.WAN_MODE[2].checked == true) {
-		document.getElementById("STIP_title").style.visibility = "visible";
-		document.getElementById("STIP_title").style.display = style_display_on();
-		document.getElementById("div_wan_static").style.visibility = "visible";
-		document.getElementById("div_wan_static").style.display = style_display_on();
+	if (document.wizard_form.WAN_MODE[2].checked == true) 
+	{
+		widget_display("STIP_title");
+		widget_display("div_wan_static");
 
 		document.wizard_form.WAN_IPADDR.disabled = false;
 		document.wizard_form.WAN_NETMASK.disabled = false;
@@ -381,17 +348,14 @@ function connectionTypeSwitch()
 	else if (document.wizard_form.WAN_MODE[3].checked == true) 
 	{
 	
-		document.getElementById("PPP_title").style.visibility = "visible";
-		document.getElementById("PPP_title").style.display = style_display_on();
-		document.getElementById("div_wan_pppoe").style.visibility = "visible";
-		document.getElementById("div_wan_pppoe").style.display = style_display_on();
+		widget_display("PPP_title");
+		widget_display("div_wan_pppoe");
 		document.wizard_form.PPPOE_USER.disabled = false;
 		document.wizard_form.PPPOE_PWD.disabled = false;
 
 		if (pppoecdb == "1")
 		{
-			document.getElementById("div_pppoe_opmode").style.visibility = "hidden";
-			document.getElementById("div_pppoe_opmode").style.display = "none";
+			widget_hide("div_pppoe_opmode");
 		}
 		else 
 		{
@@ -399,9 +363,9 @@ function connectionTypeSwitch()
 		}
 		//pppoeOPModeSwitch();
 	}
-	else if (document.wizard_form.WAN_MODE[4].checked == true) {
-		document.getElementById("div_wan_l2tp").style.visibility = "visible";
-		document.getElementById("div_wan_l2tp").style.display = style_display_on();
+	else if (document.wizard_form.WAN_MODE[4].checked == true) 
+	{
+		widget_display("div_wan_l2tp");
 		document.wizard_form.l2tpServer.disabled = false;
 		document.wizard_form.l2tpUser.disabled = false;
 		document.wizard_form.l2tpPass.disabled = false;
@@ -412,9 +376,9 @@ function connectionTypeSwitch()
 		document.wizard_form.l2tpOPMode.disabled = false;
 		l2tpOPModeSwitch();
 	}
-	else if (document.wizard_form.WAN_MODE[5].checked == true) {
-		document.getElementById("div_wan_pptp").style.visibility = "visible";
-		document.getElementById("div_wan_pptp").style.display = style_display_on();
+	else if (document.wizard_form.WAN_MODE[5].checked == true) 
+	{
+		widget_display("div_wan_pptp");
 		document.wizard_form.pptpServer.disabled = false;
 		document.wizard_form.pptpUser.disabled = false;
 		document.wizard_form.pptpPass.disabled = false;
@@ -425,9 +389,9 @@ function connectionTypeSwitch()
 		document.wizard_form.pptpOPMode.disabled = false;
 		pptpOPModeSwitch();
 	}
-	else if (document.wizard_form.WAN_MODE[6].checked == true) {
-		document.getElementById("div_wan_3G").style.visibility = "visible";
-		document.getElementById("div_wan_3G").style.display = style_display_on();
+	else if (document.wizard_form.WAN_MODE[6].checked == true) 
+	{
+		widget_display("div_wan_3G");
 		document.wizard_form.Dev3G.disabled = false;
 	}
 }
@@ -436,13 +400,11 @@ function switch_security_mode()
 {
 	if(document.wizard_form.WIFION_OFF[0].checked == true)
 	{
-		document.getElementById("div_security_key").style.visibility = "visible";
-		document.getElementById("div_security_key").style.display = style_display_on();
+		widget_display("div_security_key");
 		document.wizard_form.PSK_KEY.disabled = false;
 		if (document.wizard_form.AP_SECMODE.selectedIndex != 0)
 		{
-			document.getElementById("div_security_key").style.visibility = "hidden";
-			document.getElementById("div_security_key").style.display = "none";
+			widget_hide("div_security_key");
 			document.wizard_form.PSK_KEY.disabled = true;
 		}
 	}
@@ -453,13 +415,11 @@ function switch_security_mode2()
 {
 	if(document.wizard_form.WIFION_OFF_3[0].checked == true)
 	{
-		document.getElementById("div_security_key2").style.visibility = "visible";
-		document.getElementById("div_security_key2").style.display = style_display_on();
+		widget_display("div_security_key2");
 		document.wizard_form.PSK_KEY_3.disabled = false;
 		if (document.wizard_form.AP_SECMODE_3.selectedIndex != 0)
 		{
-			document.getElementById("div_security_key2").style.visibility = "hidden";
-			document.getElementById("div_security_key2").style.display = "none";
+			widget_hide("div_security_key2");
 			document.wizard_form.PSK_KEY_3.disabled = true;
 		}
 	}
@@ -468,41 +428,33 @@ function switch_security_mode2()
 
 function l2tpModeSwitch()
 {
-	if (document.wizard_form.l2tpMode.selectedIndex == 0) {
-		document.getElementById("div_l2tpIp").style.visibility = "visible";
-		document.getElementById("div_l2tpIp").style.display = style_display_on();
-		document.getElementById("div_l2tpNetmask").style.visibility = "visible";
-		document.getElementById("div_l2tpNetmask").style.display = style_display_on();
-		document.getElementById("div_l2tpGateway").style.visibility = "visible";
-		document.getElementById("div_l2tpGateway").style.display = style_display_on();
+	if (document.wizard_form.l2tpMode.selectedIndex == 0) 
+	{
+		widget_display("div_l2tpIp");
+		widget_display("div_l2tpNetmask");
+		widget_display("div_l2tpGateway");
 	}
-	else {
-		document.getElementById("div_l2tpIp").style.visibility = "hidden";
-		document.getElementById("div_l2tpIp").style.display = "none";
-		document.getElementById("div_l2tpNetmask").style.visibility = "hidden";
-		document.getElementById("div_l2tpNetmask").style.display = "none";
-		document.getElementById("div_l2tpGateway").style.visibility = "hidden";
-		document.getElementById("div_l2tpGateway").style.display = "none";
+	else 
+	{
+		widget_hide("div_l2tpIp");
+		widget_hide("div_l2tpNetmask");
+		widget_hide("div_l2tpGateway");
 	}
 }
 
 function pptpModeSwitch()
 {
-	if (document.wizard_form.pptpMode.selectedIndex == 0) {
-		document.getElementById("div_pptpIp").style.visibility = "visible";
-		document.getElementById("div_pptpIp").style.display = style_display_on();
-		document.getElementById("div_pptpNetmask").style.visibility = "visible";
-		document.getElementById("div_pptpNetmask").style.display = style_display_on();
-		document.getElementById("div_pptpGateway").style.visibility = "visible";
-		document.getElementById("div_pptpGateway").style.display = style_display_on();
+	if (document.wizard_form.pptpMode.selectedIndex == 0) 
+	{
+		widget_display("div_pptpIp");
+		widget_display("div_pptpNetmask");
+		widget_display("div_pptpGateway");
 	}
-	else {
-		document.getElementById("div_pptpIp").style.visibility = "hidden";
-		document.getElementById("div_pptpIp").style.display = "none";
-		document.getElementById("div_pptpNetmask").style.visibility = "hidden";
-		document.getElementById("div_pptpNetmask").style.display = "none";
-		document.getElementById("div_pptpGateway").style.visibility = "hidden";
-		document.getElementById("div_pptpGateway").style.display = "none";
+	else 
+	{
+		widget_hide("div_pptpIp");
+		widget_hide("div_pptpNetmask");
+		widget_hide("div_pptpGateway");
 	}
 }
 
@@ -523,8 +475,7 @@ function pppoeOPModeSwitch()
 	
 	if (pppoecdb == "1")
 	{
-		document.getElementById("div_pppoe_opmode_setting").style.visibility = "hidden";
-		document.getElementById("div_pppoe_opmode_setting").style.display = "none";
+		widget_hide("div_pppoe_opmode_setting");
 	}
 	else
 	{
@@ -1265,29 +1216,8 @@ function initValue()
 	if(ifwdson2=="on")
 		document.wizard_form.AP_PRIMARY_CH_3.disabled = true;
 
-	/*if((document.getElementById("INDEX").value == "13") || (document.getElementById("INDEX").value == 13))
-	{
-		document.getElementById("INDEX").value = "99";
-		document.wizard_form.intType[0].checked = true;
-		
-		var linestatus=document.wizard_form.LINEIN_OUT.value;
-		if(linestatus == "in")
-		{
-			linework = 1;
-			change_step(1);
-		}
-		else
-		{
-			setTimeout(function(){window.parent.DialogHide();alert(_("err lineout"));},100);
-			butwork("true","false","true","true");
-		}
-		return true;
-		
-	}*/
-	document.getElementById("div_wan_title").style.visibility = "visible";
-	document.getElementById("div_wan_title").style.display = style_display_on();
-	document.getElementById("div_wan_opmode").style.visibility = "visible";
-	document.getElementById("div_wan_opmode").style.display = style_display_on();
+	widget_display("div_wan_title");
+	widget_display("div_wan_opmode");
 
 	butwork("true","false","true","true");
 }
@@ -1296,26 +1226,18 @@ function others()
 {
 	if(showothers == 0)
 	{
-		document.getElementById("l2tptr1").style.visibility = "visible";
-		document.getElementById("l2tptr1").style.display = style_display_on();
-		document.getElementById("l2tptr2").style.visibility = "visible";
-		document.getElementById("l2tptr2").style.display = style_display_on();
-		document.getElementById("pptptr1").style.visibility = "visible";
-		document.getElementById("pptptr1").style.display = style_display_on();
-		document.getElementById("pptptr2").style.visibility = "visible";
-		document.getElementById("pptptr2").style.display = style_display_on();
+		widget_display("l2tptr1");
+		widget_display("l2tptr2");
+		widget_display("pptptr1");
+		widget_display("pptptr2");
 		showothers = 1;
 	}
 	else
 	{
-		document.getElementById("l2tptr1").style.visibility = "hidden";
-		document.getElementById("l2tptr1").style.display = "none";
-		document.getElementById("l2tptr2").style.visibility = "hidden";
-		document.getElementById("l2tptr2").style.display = "none";
-		document.getElementById("pptptr1").style.visibility = "hidden";
-		document.getElementById("pptptr1").style.display = "none";
-		document.getElementById("pptptr2").style.visibility = "hidden";
-		document.getElementById("pptptr2").style.display = "none";
+		widget_hide("l2tptr1");
+		widget_hide("l2tptr2");
+		widget_hide("pptptr1");
+		widget_hide("pptptr2");
 		showothers = 0;
 	}
 }
@@ -1323,19 +1245,15 @@ function advance()
 {
 	if(showoadv == 0)
 	{
-		document.getElementById("div_pppoe_opmode").style.visibility = "visible";
-		document.getElementById("div_pppoe_opmode").style.display = style_display_on();
-		document.getElementById("div_pppoe_opmode_setting").style.visibility = "visible";
-		document.getElementById("div_pppoe_opmode_setting").style.display = style_display_on();
+		widget_display("div_pppoe_opmode");
+		widget_display("div_pppoe_opmode_setting");
 		showoadv = 1;
 		pppoeOPModeSwitch();
 	}
 	else
 	{
-		document.getElementById("div_pppoe_opmode").style.visibility = "hidden";
-		document.getElementById("div_pppoe_opmode").style.display = "none";
-		document.getElementById("div_pppoe_opmode_setting").style.visibility = "hidden";
-		document.getElementById("div_pppoe_opmode_setting").style.display = "none";
+		widget_display("div_pppoe_opmode");
+		widget_display("div_pppoe_opmode_setting");
 		showoadv = 0;
 	}
 }
@@ -1411,52 +1329,38 @@ function switch_wifi()
 {
 	if(document.wizard_form.WIFION_OFF[0].checked == true)
 	{
-		document.getElementById("div_security_key").style.visibility = "visible";
-		document.getElementById("div_security_key").style.display = style_display_on();
-		document.getElementById("tt1").style.visibility = "visible";
-		document.getElementById("tt1").style.display = style_display_on();
-		document.getElementById("channel").style.visibility = "visible";
-		document.getElementById("channel").style.display = style_display_on();
+		widget_display("div_security_key");
+		widget_display("tt1");
+		widget_display("channel");
 	}
 	else
 	{
-		document.getElementById("div_security_key").style.visibility = "hidden";
-		document.getElementById("div_security_key").style.display = "none";
-		document.getElementById("tt1").style.visibility = "hidden";
-		document.getElementById("tt1").style.display = "none";
-		document.getElementById("channel").style.visibility = "hidden";
-		document.getElementById("channel").style.display = "none";
+		widget_hide("div_security_key");
+		widget_hide("tt1");
+		widget_hide("channel");
 	}
-	//window.parent.iFrameHeight();
 	switch_security_mode();
 }
 function switch_wifi2()
 {
 	if(document.wizard_form.WIFION_OFF_3[0].checked == true)
 	{
-		document.getElementById("div_security_key2").style.visibility = "visible";
-		document.getElementById("div_security_key2").style.display = style_display_on();
-		document.getElementById("tt12").style.visibility = "visible";
-		document.getElementById("tt12").style.display = style_display_on();
-		document.getElementById("channel2").style.visibility = "visible";
-		document.getElementById("channel2").style.display = style_display_on();
+		widget_display("div_security_key2");
+		widget_display("tt12");
+		widget_display("channel2");
 	}
 	else
 	{
-		document.getElementById("div_security_key2").style.visibility = "hidden";
-		document.getElementById("div_security_key2").style.display = "none";
-		document.getElementById("tt12").style.visibility = "hidden";
-		document.getElementById("tt12").style.display = "none";
-		document.getElementById("channel2").style.visibility = "hidden";
-		document.getElementById("channel2").style.display = "none";
+		widget_hide("div_security_key2");
+		widget_hide("tt12");
+		widget_hide("channel2");
 	}
 	//window.parent.iFrameHeight();
 	switch_security_mode2();
 }
 function waitgifshow()
 {
-	document.getElementById("buttontable").style.visibility = "hidden";
-	document.getElementById("buttontable").style.display = "none";
+	widget_hide("buttontable");
 	window.parent.Demo(_("admw settingwaiting"));
 }
 
