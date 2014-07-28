@@ -39,8 +39,10 @@ fi
 APMODE="ap-wds-ind"
 STAMODE="sta-wds-ind"
 
-work_flag=`cfg -e | grep  AP_STARTMODE= | awk -F'=' '{print $2}'`
-if [ "${work_flag}" = "repeater_wisp" ];then
+#work_flag=`cfg -e | grep  AP_STARTMODE= | awk -F'=' '{print $2}'`
+#work_flag2=`cfg -e | grep  AP_STARTMODE= | awk -F'"' '{print $2}'`
+if [ "${AP_STARTMODE}" = "repeater_wisp" ];then
+#	echo repeater_wisp--------------------
 	ifconfig eth0 down
 else
 	if [ "${WAN_MODE}" != "bridged" ]; then
@@ -145,9 +147,7 @@ if [ $number_pci = 1 ]; then
 	if [ "${wds_flag_2}" = "on" ];then	
 		if [ "s$STA_SSID_2" != "s" ];then
 			pid_5g_sta=`ps | grep "udhcpc -b -i ath${VAP_NUM}" | awk -F' ' '{print $1}'"`
-			#echo ---------------- $pid_5g_sta
 			if [ ! -z "${pid_5g_sta}" ];then
-			#	echo "--------------there are task"
 				kill -9 $pid_5g_sta
 			fi
 			rm -fr /tmp/sta_conf_filename
@@ -163,7 +163,17 @@ fi
 if [ "${wds_flag}" = "on" ];then
 	if [ "s$STA_SSID" != "s" ];then
 		sleep 30
-		udhcpc -b -i ath$VAP_NUM_2 -h HBD-Router -s /etc/udhcpc.script
+		wisp_flag=`cfg -e | grep WISP_MODE_2G | awk -F'=' '{print $2}'`
+                if [ "${wisp_flag}" = "dhcp" ];then
+                        udhcpc -b -i ath$VAP_NUM_2 -h HBD-Router -s /etc/udhcpc.script
+                elif [ "${wisp_flag}" = "static" ]; then
+                        ifconfig ath$VAP_NUM_2 $WISP_IPADDR_2G netmask $WISP_NETMASK_2G up
+                        if [ "${WISP_GW_2G}" != "" ]
+                        then
+                                route add default gw ${WISP_GW_2G}
+                        fi
+                fi
+#		udhcpc -b -i ath$VAP_NUM_2 -h HBD-Router -s /etc/udhcpc.script
 	fi
 fi
 
@@ -175,7 +185,17 @@ if [ $number_pci = 1 ]; then
 			else
 				sleep 30
 			fi
-				udhcpc -b -i ath$VAP_NUM -h HBD-Router -s /etc/udhcpc.script
+	                wisp_flag=`cfg -e | grep WISP_MODE_5G | awk -F'=' '{print $2}'`
+	                if [ "${wisp_flag}" = "dhcp" ];then
+	                        udhcpc -b -i ath$VAP_NUM -h HBD-Router -s /etc/udhcpc.script
+	                elif [ "${wisp_flag}" = "static" ]; then
+	                        ifconfig ath$VAP_NUM $WISP_IPADDR_5G netmask $WISP_NETMASK_5G up
+	                        if [ "${WISP_GW_5G}" != "" ]
+	                        then
+	                                route add default gw ${WISP_GW_5G}
+	                        fi
+	                fi
+#				udhcpc -b -i ath$VAP_NUM -h HBD-Router -s /etc/udhcpc.script
 		fi
 	fi
 fi

@@ -77,18 +77,18 @@ if [ ! -z $ath_flag ];then
 		fi
 		fi
 		
-		if [ ${WWAN_ADDR} = ${LAN_ADDR} ];then
+		if [ "${WWAN_ADDR}" = "${LAN_ADDR}" ];then
 			echo "the dhcp apply IP addr has same domain with br0"
 			exit 2
 		fi
-		if [ ${WWAN_ADDR} = ${WAN_ADDR} ];then
+		if [ "${WWAN_ADDR}" = "${WAN_ADDR}" ];then
 			echo "the dhcp apply IP addr has same domain with eth0"
 			exit 2
 		fi
 
 		if [ $interface = "ath5" ];then
 			WLAN_ADDR=`ifconfig  ath4 | grep 'inet addr:'|  cut -d: -f2 | awk '{ print $1}'|awk 'BEGIN{OFS=FS="."}{print $1,$2,$3}'`
-			if [ ${WWAN_ADDR} = ${WAN_ADDR} ];then
+			if [ "${WWAN_ADDR}" = "${WLAN_ADDR}" ];then
 				echo "the dhcp apply IP addr has same domain with ath4"
 				cfg -a WWAN_5G_FLAG=unnormal
 				exit 2

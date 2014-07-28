@@ -386,7 +386,16 @@ if [ "${AP_STARTMODE}" = "repeater_wisp" ]; then
 			sleep 2
         fi
 		nat_wwan.sh ath$VAP_NUM
-		udhcpc -b -i ath$VAP_NUM -h HBD-Router -s /etc/udhcpc.script
+		wisp_flag=`cfg -e | grep WISP_MODE_2G | awk -F'=' '{print $2}'`
+		if [ "${wisp_flag}" = "dhcp" ];then
+			udhcpc -b -i ath$VAP_NUM -h HBD-Router -s /etc/udhcpc.script
+		elif [ "${wisp_flag}" = "static" ]; then
+        		ifconfig ath$VAP_NUM $WISP_IPADDR_2G netmask $WISP_NETMASK_2G up
+                	if [ "${WISP_GW_2G}" != "" ]
+                	then
+                	        route add default gw ${WISP_GW_2G}
+                	fi
+		fi
 		VAP_NUM=$(($VAP_NUM+1))
     fi
 	fi
@@ -399,8 +408,17 @@ if [ "${AP_STARTMODE}" = "repeater_wisp" ]; then
             wpa_supplicant `cat /tmp/sta_conf_filename` &
         fi
 		nat_wwan.sh ath$VAP_NUM
-		udhcpc -b -i ath$VAP_NUM -h HBD-Router -s /etc/udhcpc.script
-    fi
+		wisp_flag=`cfg -e | grep WISP_MODE_5G | awk -F'=' '{print $2}'`
+		if [ "${wisp_flag}" = "dhcp" ];then
+			udhcpc -b -i ath$VAP_NUM -h HBD-Router -s /etc/udhcpc.script
+		elif [ "${wisp_flag}" = "static" ]; then
+        		ifconfig ath$VAP_NUM $WISP_IPADDR_5G netmask $WISP_NETMASK_5G up
+                	if [ "${WISP_GW_5G}" != "" ]
+                	then
+                	        route add default gw ${WISP_GW_5G}
+                	fi
+		fi
+	fi
 	fi
 
 fi
