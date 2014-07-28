@@ -514,7 +514,7 @@ int init_audio(void)
 	return 0;
 }
 
-int UlawEncode(unsigned char *pout,int offset1,unsigned char *pin,int offset2,int mSampleCount)
+int UlawEncode(unsigned char *pout,unsigned char *pin,int mSampleCount)
 {
 	signed short *pcm;
 	unsigned char *ppout;
@@ -525,8 +525,8 @@ int UlawEncode(unsigned char *pout,int offset1,unsigned char *pin,int offset2,in
 	int mantissa;
 	int sign;
 
-	ppout = pout + offset1;
-	ppin = pin + offset2;
+	ppout = pout;
+	ppin = pin;
 	pcm = (signed short *)(ppin);
 	for(i = 0;i < mSampleCount;i++)
 	{
@@ -547,7 +547,7 @@ int UlawEncode(unsigned char *pout,int offset1,unsigned char *pin,int offset2,in
 	return mSampleCount;
 }
 
-int UlawDecode(unsigned char *pout,int offset1,unsigned char *pin,int offset2,int inbytes)
+int UlawDecode(unsigned char *pout,unsigned char *pin,int inbytes)
 {
 	signed short *pcm;
 	unsigned char *ppout;
@@ -556,9 +556,9 @@ int UlawDecode(unsigned char *pout,int offset1,unsigned char *pin,int offset2,in
 	int exponent;
 	int data;
 	int i;
-	ppout = pout +offset1;
+	ppout = pout;
 	pcm = (signed short *)(ppout);
-	ppin = pin + offset2;
+	ppin = pin;
 	for(i = 0;i < inbytes;i++)
 	{
 		pin[i] ^= 0xD5;
@@ -609,7 +609,7 @@ int Decrypt(unsigned char *data,int len)
 	}
 }
 
-int UlawEncodeEncrypt(unsigned char *pout,int offset1,unsigned char *pin,int offset2,int mSampleCount)
+int UlawEncodeEncrypt(unsigned char *pout,unsigned char *pin,int mSampleCount)
 {
 	signed short *pcm;
 	unsigned char *ppout;
@@ -620,8 +620,8 @@ int UlawEncodeEncrypt(unsigned char *pout,int offset1,unsigned char *pin,int off
 	int mantissa;
 	int sign;	
 	
-	ppout = pout + offset1;
-	ppin = pin + offset2;
+	ppout = pout;
+	ppin = pin;
 	pcm = (signed short *)(ppin);
 	for(i = 0;i < mSampleCount;i++)
 	{
@@ -640,11 +640,11 @@ int UlawEncodeEncrypt(unsigned char *pout,int offset1,unsigned char *pin,int off
 		ppout[i] ^= 0xD5;
 	}
 	
-	Encrypt(pout,mSampleCount*2);
+	Encrypt(pout,mSampleCount);
 	
 	return mSampleCount;
 }
-int UlawEncodeDesEncrypt(unsigned char *pout,int offset1,unsigned char *pin,int offset2,int mSampleCount)
+int UlawEncodeDesEncrypt(unsigned char *pout,unsigned char *pin,int mSampleCount)
 {
 	signed short *pcm;
 	unsigned char *ppout;
@@ -656,8 +656,8 @@ int UlawEncodeDesEncrypt(unsigned char *pout,int offset1,unsigned char *pin,int 
 	int sign;	
 	unsigned char pout_tmp[AUDIO_SEND_PACKET_SIZE]={0};
 	
-	ppout = pout_tmp + offset1;
-	ppin = pin + offset2;
+	ppout = pout_tmp;
+	ppin = pin;
 	pcm = (signed short *)(ppin);
 	for(i = 0;i < mSampleCount;i++)
 	{
@@ -681,7 +681,7 @@ int UlawEncodeDesEncrypt(unsigned char *pout,int offset1,unsigned char *pin,int 
 	return mSampleCount;
 }
 
-int UlawDecodeDesEncrypt(unsigned char *pout,int offset1,unsigned char *pin,int offset2,int inbytes)
+int UlawDecodeDesEncrypt(unsigned char *pout,unsigned char *pin,int inbytes)
 {
 	signed short *pcm;
 	unsigned char *ppout;
@@ -694,9 +694,9 @@ int UlawDecodeDesEncrypt(unsigned char *pout,int offset1,unsigned char *pin,int 
 	
 	DesEcb(pin,inbytes,pin_tmp,phone_audio.key,1);
 	
-	ppout = pout +offset1;
+	ppout = pout;
 	pcm = (signed short *)(ppout);
-	ppin = pin_tmp + offset2;
+	ppin = pin_tmp;
 	for(i = 0;i < inbytes;i++)
 	{
 		pin_tmp[i] ^= 0xD5;
@@ -718,7 +718,7 @@ int UlawDecodeDesEncrypt(unsigned char *pout,int offset1,unsigned char *pin,int 
 	return inbytes;
 }
 
-int UlawDecodeEncrypt(unsigned char *pout,int offset1,unsigned char *pin,int offset2,int inbytes)
+int UlawDecodeEncrypt(unsigned char *pout,unsigned char *pin,int inbytes)
 {
 	signed short *pcm;
 	unsigned char *ppout;
@@ -728,11 +728,11 @@ int UlawDecodeEncrypt(unsigned char *pout,int offset1,unsigned char *pin,int off
 	int data;
 	int i;
 	
-	Decrypt(pin,inbytes*2);
+	Decrypt(pin,inbytes);
 	
-	ppout = pout +offset1;
+	ppout = pout;
 	pcm = (signed short *)(ppout);
-	ppin = pin + offset2;
+	ppin = pin;
 	for(i = 0;i < inbytes;i++)
 	{
 		pin[i] ^= 0xD5;
@@ -1198,6 +1198,11 @@ void* AudioEchoThreadCallBack(void* argv)
 				else
 				{
 					memcpy(out_buf,&echo_stream_buffer[phone_audio.echo_stream_rp],AUDIO_WRITE_BYTE_SIZE);
+					readp = (short*)out_buf;
+					for(i=0;i<valid_bytes/4;i++)
+					{
+						*readp++ >>= 2;
+					}	
 				}
 				//readp = (short*)&echo_stream_buffer[phone_audio.echo_stream_rp+AUDIO_WRITE_BYTE_SIZE];
 				//for(i=0;i<valid_bytes/4;i++)
@@ -1306,19 +1311,19 @@ void* AudioSendThreadCallBack(void* argv)
 			{
 				if(devp->encrypt_enable == 1)
 					//编码
-					UlawEncodeEncrypt(audio_sendbuf,0,&output_stream_buffer[phone_audio.output_stream_rp],0,valid_bytes/2);
+					UlawEncodeEncrypt(audio_sendbuf,&output_stream_buffer[phone_audio.output_stream_rp],valid_bytes/2);
 				else if(devp->desencrypt_enable == 1)
 				{
 					if(valid_bytes < AUDIO_SEND_PACKET_SIZE)
 						valid_bytes = valid_bytes - (valid_bytes%8);				
 					//PRINT("valid_bytes = %d\n",valid_bytes);
 					//编码
-					UlawEncodeDesEncrypt(audio_sendbuf,0,&output_stream_buffer[phone_audio.output_stream_rp],0,valid_bytes/2);
+					UlawEncodeDesEncrypt(audio_sendbuf,&output_stream_buffer[phone_audio.output_stream_rp],valid_bytes/2);
 				}
 				else
 				{
 					//编码
-					UlawEncode(audio_sendbuf,0,&output_stream_buffer[phone_audio.output_stream_rp],0,valid_bytes/2);
+					UlawEncode(audio_sendbuf,&output_stream_buffer[phone_audio.output_stream_rp],valid_bytes/2);
 				}
 				if(devp->audio_client_fd < 0)
 				{
@@ -1626,17 +1631,17 @@ RECV_ERROR:
 			{
 				if(devp->encrypt_enable == 1)
 					//解码
-					UlawDecodeEncrypt(&input_stream_buffer[phone_audio.input_stream_wp],0,audio_recvbuf,0,recv_ret);
+					UlawDecodeEncrypt(&input_stream_buffer[phone_audio.input_stream_wp],audio_recvbuf,recv_ret);
 				else if(devp->desencrypt_enable == 1)
 				{
 					tmp_len = (recv_ret%8);
 					recv_ret = recv_ret -tmp_len ;
 					//解码
-					UlawDecodeDesEncrypt(&input_stream_buffer[phone_audio.input_stream_wp],0,audio_recvbuf,0,recv_ret);
+					UlawDecodeDesEncrypt(&input_stream_buffer[phone_audio.input_stream_wp],audio_recvbuf,recv_ret);
 				}
 				else
 					//解码
-					UlawDecode(&input_stream_buffer[phone_audio.input_stream_wp],0,audio_recvbuf,0,recv_ret);
+					UlawDecode(&input_stream_buffer[phone_audio.input_stream_wp],audio_recvbuf,recv_ret);
 				phone_audio.input_stream_wp += recv_ret*2;
 				total_recv_bytes += recv_ret*2;
 				if(phone_audio.input_stream_wp >= AUDIO_STREAM_BUFFER_SIZE)
