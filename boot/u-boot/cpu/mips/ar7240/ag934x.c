@@ -699,6 +699,18 @@ int ag7240_enet_initialize(bd_t * bis)
     ar7240_reg_rmw_clear(AR7240_RESET, mask);
     udelay(100);
     
+    //turn off wifiled
+    ar7240_reg_rmw_clear(AR7240_GPIO_OE, 0x1<<13);
+    ar7240_reg_rmw_clear(AR7240_GPIO_BASE + 0x38, 0xff00<<0);
+    ar7240_reg_rmw_set(AR7240_GPIO_OUT, 0x1<<13);
+
+    //turn off phoneled
+    ar7240_reg_rmw_clear(AR7240_GPIO_OE, 0x1<<3);
+    ar7240_reg_rmw_clear(AR7240_GPIO_OE, 0x1<<4);
+    ar7240_reg_rmw_clear(AR7240_GPIO_BASE + 0x2C, 0xff000000<<0);
+    ar7240_reg_rmw_clear(AR7240_GPIO_BASE + 0x30, 0xff<<0);
+    ar7240_reg_rmw_set(AR7240_GPIO_OUT, 0x1<<3);
+    ar7240_reg_rmw_set(AR7240_GPIO_OUT, 0x1<<4);
     
     for (i = 0;i < CFG_AG7240_NMACS;i++) {
         eth_register(dev[i]);
