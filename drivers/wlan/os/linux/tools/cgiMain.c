@@ -2584,7 +2584,9 @@ void writeParameters(char *name,char *mode,unsigned long offset)
                 continue;
             if( !strcmp(config.Param[i].Name,"PPP") )
                 continue;
-            if( !strcmp(config.Param[i].Name,"WAN_DISABLE") )
+            if( !strcmp(config.Param[i].Name,"DISABLE_WAN") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"DISABLEW_WAN") )
                 continue;
             if( !strcmp(config.Param[i].Name,"L2TP") )
                 continue;
@@ -2593,6 +2595,8 @@ void writeParameters(char *name,char *mode,unsigned long offset)
             if( !strcmp(config.Param[i].Name,"WIRRE") )
                 continue;
             if( !strcmp(config.Param[i].Name,"WIRRE_WAN") )
+                continue;
+            if( !strcmp(config.Param[i].Name,"WWIRRE_WAN") )
                 continue;
             if( !strcmp(config.Param[i].Name,"WIRELESS") )
                 continue;
@@ -4733,10 +4737,13 @@ void set_wireless_wan(void)
 		{
 //			CFG_set_by_name("AP_STARTMODE","repeater");
 			CFG_set_by_name("AP_STARTMODE","repeater_wisp");
-			CFG_get_by_name("WAN_MODE",wan_mode_backup);
-			CFG_set_by_name("WAN_MODE_BACK",wan_mode_backup);
-			CFG_set_by_name("WAN_MODE","disable");
-//			CFG_set_by_name("DHCPON_OFF","off");
+			if((strncmp(wdsonoff_flag,"off",2) == 0)&&(strncmp(wdsonoff5g_flag,"off",2) == 0))	
+			{
+				CFG_get_by_name("WAN_MODE",wan_mode_backup);
+				CFG_set_by_name("WAN_MODE_BACK",wan_mode_backup);
+				CFG_set_by_name("WAN_MODE","disable");
+	//			CFG_set_by_name("DHCPON_OFF","off");
+			}
 			flag=1;
 		}
 		//off
@@ -6255,9 +6262,9 @@ int main(int argc,char **argv)
     ** the temp file or the flash file
     */
     //wan mode disable
-    if(strcmp(CFG_get_by_name("WAN_DISABLE",valBuff),"WAN_DISABLE") == 0 )
+    if((strcmp(CFG_get_by_name("DISABLE_WAN",valBuff),"DISABLE_WAN") == 0 )||(strcmp(CFG_get_by_name("DISABLEW_WAN",valBuff),"DISABLEW_WAN") == 0 ))
     {
-		fprintf(errOut,"\n%s  %d WAN_DISABLE \n",__func__,__LINE__);
+		fprintf(errOut,"\n%s  %d DISABLE_WAN \n",__func__,__LINE__);
 	
 		char pChar[128];
 		char valBuff2[128];	
@@ -6314,6 +6321,17 @@ int main(int argc,char **argv)
 			}
 		}
 
+		if(flag = 1)
+		{
+			CFG_get_by_name("AP_STARTMODE",wan_modebuf);
+			if(strstr(wan_modebuf,"repeater_wisp"))
+			{
+				CFG_set_by_name("AP_STARTMODE","dual");
+				CFG_set_by_name("WDSON_OFF","off");
+				CFG_set_by_name("WDSON_OFF_3","off");
+				Execute_cmd("repeatVAP_WISP on on > /dev/null 2>&1", rspBuff);
+			}
+		}
 
 		
 		system("ifconfig eth0 0.0.0.0 up");   //wangyu add for the wan mode change from static to dhcp           
@@ -6482,6 +6500,18 @@ int main(int argc,char **argv)
 			{
 				fprintf(errOut,"please set off the repeater mode first\n");
 				exit(1);
+			}
+		}
+
+		if(flag = 1)
+		{
+			CFG_get_by_name("AP_STARTMODE",wan_modebuf);
+			if(strstr(wan_modebuf,"repeater_wisp"))
+			{
+				CFG_set_by_name("AP_STARTMODE","dual");
+				CFG_set_by_name("WDSON_OFF","off");
+				CFG_set_by_name("WDSON_OFF_3","off");
+				Execute_cmd("repeatVAP_WISP on on > /dev/null 2>&1", rspBuff);
 			}
 		}
 
@@ -6879,7 +6909,7 @@ int main(int argc,char **argv)
 		write_systemLog("wds setting end"); 
     }
 	//WIRRE_WAN 
-	if(strcmp(CFG_get_by_name("WIRRE_WAN",valBuff),"WIRRE_WAN") == 0 ) 
+	if((strcmp(CFG_get_by_name("WIRRE_WAN",valBuff),"WIRRE_WAN") == 0 )||(strcmp(CFG_get_by_name("WWIRRE_WAN",valBuff),"WWIRRE_WAN") == 0 ))
 	{
 		fprintf(errOut,"\n%s  %d WIRRE_WAN \n",__func__,__LINE__);
 
@@ -6888,7 +6918,10 @@ int main(int argc,char **argv)
 	}
 
 	//wifi settings
-     if((strcmp(CFG_get_by_name("WIRELESS",valBuff),"WIRELESS") == 0 ) || (strcmp(CFG_get_by_name("DHCPW",valBuff),"DHCPW") == 0 ) || (strcmp(CFG_get_by_name("SIPW",valBuff),"SIPW") == 0 ) || (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 ) || (strcmp(CFG_get_by_name("L2TPW",valBuff),"L2TPW") == 0 ) || (strcmp(CFG_get_by_name("P2TPW",valBuff),"P2TPW") == 0 ) )
+     if((strcmp(CFG_get_by_name("WIRELESS",valBuff),"WIRELESS") == 0 ) || (strcmp(CFG_get_by_name("DHCPW",valBuff),"DHCPW") == 0 ) \
+	 	|| (strcmp(CFG_get_by_name("SIPW",valBuff),"SIPW") == 0 ) || (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 ) \
+	 	|| (strcmp(CFG_get_by_name("L2TPW",valBuff),"L2TPW") == 0 ) || (strcmp(CFG_get_by_name("P2TPW",valBuff),"P2TPW") == 0 )\
+	 	||(strcmp(CFG_get_by_name("DISABLEW_WAN",valBuff),"DISABLEW_WAN") == 0 ))
     {
 		fprintf(errOut,"\n%s  %d WIRELESS \n",__func__,__LINE__);
 	
@@ -7552,6 +7585,18 @@ int main(int argc,char **argv)
 				{
 					fprintf(errOut,"please set off the repeater mode first\n");
 					exit(1);
+				}
+			}
+			
+			if(flag = 1)
+			{
+				CFG_get_by_name("AP_STARTMODE",wan_modebuf);
+				if(strstr(wan_modebuf,"repeater_wisp"))
+				{
+					CFG_set_by_name("AP_STARTMODE","dual");
+					CFG_set_by_name("WDSON_OFF","off");
+					CFG_set_by_name("WDSON_OFF_3","off");
+					Execute_cmd("repeatVAP_WISP on on > /dev/null 2>&1", rspBuff);
 				}
 			}
 
