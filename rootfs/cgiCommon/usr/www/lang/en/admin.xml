@@ -25,7 +25,7 @@
 
 	<message msgid="admw DISABLE_a" msgstr="Disable" />
 	<message msgid="admw DISABLEdisc" msgstr="Disable WAN settings" />
-	<message msgid="admw wdsonmsg" msgstr="WDS is on,so WAN is disabled" />
+	<message msgid="admw wdsonmsg" msgstr="WDS is on,so WAN is disabled,if you want set WAN,please into Settings wizard,or you can get into Advanced Settings->Wireless Settings-> WDS Settings ,turning off WDS switch ,and then set WAN settings" />
 
 
 	<message msgid="admw L2TPc" msgstr="L2TP Client" />

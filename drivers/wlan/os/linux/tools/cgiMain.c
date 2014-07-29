@@ -9018,7 +9018,7 @@ exit(1);
     }
     else if( gohome == 1)//w1 w2 w3 w4 wwai
     {
-        if((strcmp(argv[0],"w1")==0)||(strcmp(argv[0],"w2")==0)||(strcmp(argv[0],"w3")==0)||(strcmp(argv[0],"w4")==0)||(strcmp(argv[0],"wwai")==0))
+        if((strcmp(argv[0],"w1")==0)||(strcmp(argv[0],"w2")==0)||(strcmp(argv[0],"w3")==0)||(strcmp(argv[0],"w4")==0)||(strcmp(argv[0],"wwai")==0)||(strcmp(argv[0],"w1_wds")==0))
         {
             Result_tiaozhuan("yes","map");            
         }

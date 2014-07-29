@@ -25,7 +25,7 @@
 	
 	<message msgid="admw DISABLE_a" msgstr="禁用" />
 	<message msgid="admw DISABLEdisc" msgstr="禁用WAN口" />
-	<message msgid="admw wdsonmsg" msgstr="WDS已经开启，WAN处于禁用状态" />
+	<message msgid="admw wdsonmsg" msgstr="无线中继已经开启，WAN处于禁用状态，如果需要配置WAN口，请进入设置向导配置有线连接，或者进入高级设置->无线设置->无线中继中关闭无线中继，再进行WAN口配置" />
 	
 	<message msgid="admw L2TPc" msgstr="L2TP客户端" />
 	<message msgid="admw PPTPc" msgstr="PPTP客户端" />
