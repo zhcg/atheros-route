@@ -77,9 +77,13 @@ int main()
     // 是我们不要的，故省略掉，不拷贝
     for ( i = 7 + strlen(name), j = 0; i < (int)strlen(input); i++ )
     {
+        if ( input[i] == '&' )
+        {
+            pass[j] = '\0';
+            break;
+        } 
         pass[j++] = input[i];
     }
-    pass[j] = '\0';
 
     fprintf(errOut,"Your Username is %s<br>Your Password is %s<br> \n", name, pass);
     //printf("Your Username is %s<br>Your Password is %s<br> \n", name, pass);
