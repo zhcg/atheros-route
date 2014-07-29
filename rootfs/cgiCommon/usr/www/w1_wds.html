@@ -32,7 +32,6 @@ ul,li{margin:0;padding:0;list-style-type:none；text-indent:0}
  </style>
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript" src="/style/basic.js"></script>
-<script language="JavaScript" type="text/javascript" src="/style/wdsstatus.js"></script>
 <script language="JavaScript" type="text/javascript">
 var show = 0;
 var show2 = 0;
@@ -48,7 +47,7 @@ function initTranslation()
 {
 	Butterlate.setTextDomain("admin");
 	var e = document.getElementById("qsettitle");
-	e.innerHTML = _("admw wisp");
+	e.innerHTML = _("admw w1title");
 	e = document.getElementById("wirelessdes");
 	e.innerHTML = _("admw wirelessdes");
 	e = document.getElementById("A_title");
@@ -56,8 +55,6 @@ function initTranslation()
 
 	e = document.getElementById("Alreadc");
 	e.innerHTML = _("admw Alreadc");
-	e = document.getElementById("w1s");
-	e.innerHTML = _("admw ws");
 	e = document.getElementById("RMd");
 	e.innerHTML = _("admw RMd1");
 	e = document.getElementById("R_pword");
@@ -83,8 +80,6 @@ function initTranslation()
 	
 	e = document.getElementById("Alreadc2");
 	e.innerHTML = _("admw Alreadc");
-	e = document.getElementById("w2s");
-	e.innerHTML = _("admw ws");
 	e = document.getElementById("RMd2");
 	e.innerHTML = _("admw RMd2");
 	e = document.getElementById("R_pword2");
@@ -106,10 +101,9 @@ function initTranslation()
 	e.innerHTML = _("admw offwifides");
 	e = document.getElementById("offwifides2");
 	e.innerHTML = _("admw offwifides");
-	e = document.getElementById("help_r");
-	e.innerHTML = _("help");
+
 	e = document.getElementById("bCANCEL");
-	e.value = _("admw bCANCEL");
+	e.value = _("admw bBACK");
 	e = document.getElementById("bAPPLY");
 	e.value = _("admw bAPPLY");
 
@@ -237,7 +231,7 @@ function CheckWirelessValue()
 	document.getElementById("WIFION_OFF").disabled = true;	 
 	document.getElementById("WIFION_OFF_3").disabled = true;	 
 	waitgifshow();
-	button_commit('WIRRE_WAN');
+	button_commit('WWIRRE_WAN');
 	return true;
 }
 function reloadd()
@@ -544,7 +538,6 @@ function switch_wds()
 		if(show == 1)
 		{
 			widget_display("dwsset2");
-			widget_display("w1status");
 		}
 		widget_display("dwsset3");
 		var ssss = document.getElementById("STA_SECMODE").value;
@@ -570,7 +563,6 @@ function switch_wds()
 	else
 	{
 		widget_hide("dwsset2");
-		widget_hide("w1status");
 		widget_hide("dwsset3");
 		widget_hide("tt2");
 	}
@@ -585,7 +577,6 @@ function switch_wds2()
 		if(show2 == 1)
 		{
 			widget_display("dwsset22");
-			widget_display("w2status");
 		}
 		widget_display("dwsset32");
 		var ssss=document.getElementById("STA_SECMODE_2").value;
@@ -609,7 +600,6 @@ function switch_wds2()
 	else
 	{
 		widget_hide("dwsset22");
-		widget_hide("w2status");
 		widget_hide("dwsset32");
 		widget_hide("tt22");
 	}
@@ -620,28 +610,16 @@ function switch_wds2()
 function initshow()
 {
 	if(show == 1)
-	{
 		widget_display("dwsset2")
-		widget_display("w1status")
-	}
 	else
-	{
 		widget_hide("dwsset2");
-		widget_hide("w1status");
-	}
 }
 function initshow2()
 {
 	if(show2 == 1)
-	{
 		widget_display("dwsset22");
-		widget_display("w2status");
-	}
 	else
-	{
 		widget_hide("dwsset22");
-		widget_hide("w2status");
-	}
 }
 function checklistempty()
 {
@@ -665,18 +643,12 @@ function initValue()
 {
 	initTranslation();
 	if(document.wizard_form.WDSON_OFF[0].checked == true)
-	{
 		show = 1;
-		timer_2G = setInterval('wdsstatuscheck(1)',2000);
-	}
 	else
 		show = 0;
 		
 	if(document.wizard_form.WDSON_OFF_3[0].checked == true)
-	{
 		show2 = 1;
-		timer_5G = setInterval('wdsstatuscheck(2)',2000);
-	}
 	else
 		show2 = 0;	
 	initshow();
@@ -690,7 +662,6 @@ function initValue()
 	{
 		widget_hide("hide1");
 		widget_hide("dwsset2");
-		widget_hide("w1status");
 		widget_hide("dwsset3");
 		widget_hide("tt2");
 		widget_display("tishi1");
@@ -1401,14 +1372,6 @@ function pppshowpwd_5G()
 	}
 }
 
-//------------------------------------------------------------------
-function help()
-{
-	if (_("toplanguage")=="e")
-		window.location.href='../help/ad_wireless_wds_help_e.html';
-	else
-		window.location.href='../help/ad_wireless_wds_help_z.html';
-}
 </script>
 
 </head>
@@ -1416,7 +1379,7 @@ function help()
 <body onLoad="initValue()" oncontextmenu="window.event.returnValue=false" >
 <div class="handaer_main">
 <table  width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td>
-<div style="float:right; line-height:30px;"><a href="javascript:void(0)" style="font-size:14px;"id="help_r" onClick="help()"></a></div><h1 id="qsettitle"></h1>
+<h1 id="qsettitle"></h1>
 <p></p>
 <form method="post" name="wizard_form">
 <!-- ============= Wizard Home Page ============= -->
@@ -1444,10 +1407,6 @@ function help()
 <tr id="dwsset2">
   <td class="head_s" id="Alreadc">当前已连接WiFi</td>
   <td><input id="now_1" maxlength=32 size=32 value="~~STA_SSID~" readonly></td>
-</tr>
-<tr id="w1status">
-  <td class="head" id="w1s">连接状态</td>
-  <td><span id="w1_status"></span></td>
 </tr>
 
 <tr id="dwsset3">
@@ -1582,10 +1541,6 @@ function help()
   <td class="head_s" id="Alreadc2">当前已连接WiFi</td>
   <td><input id="now_2" maxlength=32 size=32 value="~~STA_SSID_2~" readonly></td>
 </tr>
-<tr id="w2status">
-  <td class="head" id="w2s">连接状态</td>
-  <td><span id="w2_status"></span></td>
-</tr>
 
 <tr id="dwsset32">
     <td class="head_s" id="Wlisttitle12"></td>
@@ -1698,9 +1653,9 @@ function help()
 <table cellpadding="2" cellspacing="1" id="buttontable">
 <tr align="center">
   <td>
-    <input type="button" name="cancel_motion" id="bCANCEL" class="handaer_input" value="Cancel" onClick="reloadd();">
+    <input type="button" name="cancel_motion" id="bCANCEL" class="handaer_input" value="Cancel" onClick="window.location.href='w1';">
     <input type="button" name="apply_motion" id="bAPPLY" class="handaer_input" value="Apply" onClick="CheckWirelessValue();">
-	<input type="submit" name="WIRRE_WAN" id="WIRRE_WAN" style="display:none" value="WIRRE_WAN">
+	<input type="submit" name="WWIRRE_WAN" id="WWIRRE_WAN" style="display:none" value="WWIRRE_WAN">
 	<input type="text" style="display:none" name="WDS_CHAN" id="WDS_CHAN" size="20" maxlength="32" value="~~WDS_CHAN~">	
 	<input type="text" style="display:none" name="STA_SECMODE" id="STA_SECMODE" size="20" maxlength="32" value="~~STA_SECMODE~">	
 	<input type="text" style="display:none" name="WDS_CHAN_2" id="WDS_CHAN_2" size="20" maxlength="32" value="~~WDS_CHAN_2~">	

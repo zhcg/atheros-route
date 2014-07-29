@@ -17,6 +17,9 @@ function initTranslation()
 	trans_inner("t1des","log t1des");
 	trans_value("setmanExpSetExport","log exportlog");
 
+	trans_inner("t1_port","log t1_port");
+	trans_inner("unchose","log unchose");
+
 	trans_inner("t2des","log t2des");
 	trans_value("begin","log begin");
 	trans_value("end","log end");
@@ -28,6 +31,7 @@ function init()
 	initTranslation();
 	widget_hide("end");
 	widget_hide("dumpExport");
+	portchange();
 }
 
 
@@ -102,7 +106,7 @@ function check(val)
 		xmlHttp.onreadystatechange=stateChanged2;
 	}
 
-	url=url+"&sid="+Math.random();
+	url=url+"&sid="+portvalue+"&time="+Math.random();
 	xmlHttp.open("GET",url,true);
 	xmlHttp.send(null);
 }
@@ -124,7 +128,55 @@ function stateChanged2()
 }
 function GetXmlHttpObject()
 {var xmlHttp=null;try{xmlHttp=new XMLHttpRequest();}catch (e){try{xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");}	catch (e){xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");}}return xmlHttp;}
- 
+var portvalue;
+function portchange()
+{
+	if(document.WORKFORM.OTHER_PORT.selectedIndex==0)
+	{
+		portvalue="0";
+	}
+	if(document.WORKFORM.OTHER_PORT.selectedIndex==1)
+	{
+		portvalue="53";
+	}
+	if(document.WORKFORM.OTHER_PORT.selectedIndex==2)
+	{
+		portvalue="21";
+	}
+	if(document.WORKFORM.OTHER_PORT.selectedIndex==3)
+	{
+		portvalue="70";
+	}
+	if(document.WORKFORM.OTHER_PORT.selectedIndex==4)
+	{
+		portvalue="80";
+	}
+	if(document.WORKFORM.OTHER_PORT.selectedIndex==5)
+	{
+		portvalue="119";
+	}
+	if(document.WORKFORM.OTHER_PORT.selectedIndex==6)
+	{
+		portvalue="110";
+	}
+	if(document.WORKFORM.OTHER_PORT.selectedIndex==7)
+	{
+		portvalue="1723";
+	}
+	if(document.WORKFORM.OTHER_PORT.selectedIndex==8)
+	{
+		portvalue="25";
+	}
+	if(document.WORKFORM.OTHER_PORT.selectedIndex==9)
+	{
+		portvalue="1080";
+	}
+	if(document.WORKFORM.OTHER_PORT.selectedIndex==10)
+	{
+		portvalue="23";
+	}
+}
+
 </script> 
 </head>
 
@@ -146,10 +198,29 @@ function GetXmlHttpObject()
 
 <h2></h2>
 <table id="t2" width="100%" cellpadding="0" cellspacing="0"  class="handaer_text">
-
+<FORM method="POST" name="WORKFORM">
 <tr> 
 	<td class="title" colspan="2" id="t2des"></td>
 </tr>
+<tr>
+	<td class="head" id="t1_port">端口号</td>
+	<td>  
+		<select name="OTHER_PORT" onChange="portchange()">
+		<option id="unchose">--Please select--</option>
+		<option>DNS(53)</option>
+		<option>FTP(21)</option>
+		<option>GOPHER(70)</option>
+		<option>HTTP(80)</option>
+		<option>NNTP(119)</option>
+		<option>POP3(110)</option>
+		<option>PPTP(1723)</option>
+		<option>SMTP(25)</option>
+		<option>SOCK(1080)</option>
+		<option>TELNET(23)</option>
+		</select>
+	</td>
+</tr>
+</form>
 <tr>
 	<td>
 	<input type="button" name="begin" id="begin" class="handaer_input" onclick="check(1);"></input>

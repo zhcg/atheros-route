@@ -11,7 +11,7 @@
 if(getCookie()){}
 else{window.top.location.href="../login.html";}
 
-Butterlate.setTextDomain("admin");
+
 var showothers;
 var showoadv0;
 var step_num;
@@ -80,7 +80,6 @@ function stateChanged()
 		if(xmlHttp.status==200)
 		{
 			window.parent.DialogHide();
-			//alert(xmlHttp.responseText);
 			var zidong = xmlHttp.responseText;
 			
 			if(zidong.indexOf("static") >= 0 )
@@ -95,9 +94,6 @@ function stateChanged()
 			{
 				document.wizard_form.WAN_MODE[1].checked = true;
 				alert(_("admw auto_dhcp"));
-				//hideAllTables();
-				//connectionTypeSwitch();
-				//butwork("false","true","true","false");
 				change_step(1);
 			}
 			else if(zidong.indexOf("pppoe") >= 0 )
@@ -110,7 +106,7 @@ function stateChanged()
 			}
 			else if(zidong.indexOf("l2tp") >= 0 )
 			{
-				document.wizard_form.WAN_MODE[4].checked = true;
+				document.wizard_form.WAN_MODE[5].checked = true;
 				alert(_("admw auto_l2tp"));
 				hideAllTables();
 				connectionTypeSwitch();
@@ -118,7 +114,7 @@ function stateChanged()
 			}
 			else if(zidong.indexOf("p2tp") >= 0 )
 			{
-				document.wizard_form.WAN_MODE[5].checked = true;
+				document.wizard_form.WAN_MODE[6].checked = true;
 				alert(_("admw auto_p2tp"));
 				hideAllTables();
 				connectionTypeSwitch();
@@ -170,6 +166,11 @@ function change_step(offset)
 			waitgifshow();
 			button_commit('DHCP');
 		}
+		else if (document.wizard_form.WAN_MODE[4].checked == true) 
+		{
+			waitgifshow();
+			button_commit('DISABLE_WAN');
+		}
 		else
 		{
 			hideAllTables();
@@ -198,9 +199,14 @@ function change_step(offset)
 		else if (document.wizard_form.WAN_MODE[4].checked == true) 
 		{
 			waitgifshow();
-			button_commit('L2TP');
+			button_commit('DISABLE_WAN');
 		}
 		else if (document.wizard_form.WAN_MODE[5].checked == true) 
+		{
+			waitgifshow();
+			button_commit('L2TP');
+		}
+	else if (document.wizard_form.WAN_MODE[6].checked == true) 
 		{
 			waitgifshow();
 			button_commit('P2TP');
@@ -272,6 +278,10 @@ function disableWanSettings()
 	document.wizard_form.pptpOPMode.disabled = true;
 	document.wizard_form.pptpRedialPeriod.disabled = true;
 	document.wizard_form.Dev3G.disabled = true;
+	
+	document.wizard_form.AP_locatIP.disabled = true; 	 	
+	document.wizard_form.WDSOF.disabled = true; 	
+	document.wizard_form.WDSOF2.disabled = true;
 }
 
 function connectionTypeSwitch()
@@ -303,7 +313,7 @@ function connectionTypeSwitch()
 		}
 		//pppoeOPModeSwitch();
 	}
-	else if (document.wizard_form.WAN_MODE[4].checked == true) 
+	else if (document.wizard_form.WAN_MODE[5].checked == true) 
 	{
 		widget_display("div_wan_l2tp");
 		document.wizard_form.l2tpServer.disabled = false;
@@ -316,7 +326,7 @@ function connectionTypeSwitch()
 		document.wizard_form.l2tpOPMode.disabled = false;
 		l2tpOPModeSwitch();
 	}
-	else if (document.wizard_form.WAN_MODE[5].checked == true) 
+	else if (document.wizard_form.WAN_MODE[6].checked == true) 
 	{
 		widget_display("div_wan_pptp");
 		document.wizard_form.pptpServer.disabled = false;
@@ -329,7 +339,7 @@ function connectionTypeSwitch()
 		document.wizard_form.pptpOPMode.disabled = false;
 		pptpOPModeSwitch();
 	}
-	else if (document.wizard_form.WAN_MODE[6].checked == true) 
+	else if (document.wizard_form.WAN_MODE[7].checked == true) 
 	{
 		widget_display("div_wan_3G");
 		document.wizard_form.Dev3G.disabled = false;
@@ -729,6 +739,15 @@ function initTranslation()
 	e.innerHTML = _("admw PPPOE");
 	e = document.getElementById("PPPOEdisc");
 	e.innerHTML = _("admw PPPOEdisc");
+	
+	e = document.getElementById("DISABLE_a");
+	e.innerHTML = _("admw DISABLE_a");
+	e = document.getElementById("DISABLEdisc");
+	e.innerHTML = _("admw DISABLEdisc");
+	e = document.getElementById("wdsonmsg");
+	e.innerHTML = _("admw wdsonmsg");
+	
+	
 	e = document.getElementById("L2TPc");
 	e.innerHTML = _("admw L2TPc");
 	e = document.getElementById("PPTPc");
@@ -866,10 +885,19 @@ function initTranslation()
 
 	
 }
+function disablechange()
+{
+	if((document.getElementById("WDSOF").value=="on")||(document.getElementById("WDSOF2").value=="on"))
+	{
+		widget_hide("div_wan_opmode");
+		widget_display("div_wan_disable");
+		widget_hide("buttontable");
+	}
+}
 function initValue()
 {
+	Butterlate.setTextDomain("admin");
 	initTranslation();
-
 	hideAllTables();
 	disableWanSettings();
 	step_num = 0;
@@ -878,6 +906,7 @@ function initValue()
 	widget_display("div_wan_opmode");
 	widget_display("modedes");
 	butwork("true","false","true","true");
+	disablechange();
 }
 
 function others() 
@@ -1030,7 +1059,8 @@ function workoutgw()
 <tr>
   <td><div style="margin-left: 43px;" id="SMdisc"></div></td>
 </tr>
-  <td>
+<tr>
+ <td>
   <input style="font-size: 12pt; color: #000000" id="wrad_4" type="radio" name="WAN_MODE" ~cWAN_MODE:pppoe~ value="pppoe">
   <label style="font-size: 12pt; font-weight: bold; margin-left: 20px; color: #000000" for="wrad_4" id="PPPOE" onclick=""></label>
   </td>
@@ -1038,6 +1068,18 @@ function workoutgw()
 <tr>
   <td><div style="margin-left: 43px;" id="PPPOEdisc"></div></td>
 </tr>
+
+<tr>
+ <td>
+  <input style="font-size: 12pt; color: #000000" id="wrad_8" type="radio" name="WAN_MODE" ~cWAN_MODE:disable~ value="disable">
+  <label style="font-size: 12pt; font-weight: bold; margin-left: 20px; color: #000000" for="wrad_8" id="DISABLE_a" onclick=""></label>
+  </td>
+</tr>
+<tr >
+  <td><div style="margin-left: 43px;" id="DISABLEdisc"></div></td>
+</tr>
+
+
 <tr style="display:none">
   <td><input id="otherbutton" type="button" value="其他" class="handaer_small_button" onClick="others()" /></td>
 </tr>
@@ -1069,7 +1111,12 @@ function workoutgw()
    <td><div style="margin-left: 43px;">3G Client</div></td>
 </tr>
 </table>
-
+<!-- ================= disable Mode ================= -->
+<table id="div_wan_disable" style="display:none" width="100%" border="0" cellpadding="2" cellspacing="1">
+  <td>
+	<span id="wdsonmsg" style="font-size: 12pt; color: #000000"></span>
+  </td>
+</table>
 <!-- ================= STATIC Mode ================= -->
 <h2 id="STIP_title"></h2>
 <table id="div_wan_static" width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
@@ -1303,10 +1350,13 @@ function workoutgw()
     <input type="submit" name="DHCP" id="DHCP" style="display:none" value="DHCP">
     <input type="submit" name="SIP" id="SIP" style="display:none" value="SIP">
     <input type="submit" name="PPP" id="PPP" style="display:none" value="PPP">
+    <input type="submit" name="DISABLE_WAN" id="DISABLE_WAN" style="display:none" value="DISABLE_WAN">
     <input type="submit" name="L2TP" id="L2TP" style="display:none" value="L2TP">
     <input type="submit" name="P2TP" id="P2TP" style="display:none" value="P2TP">
 	
 	<input type="text" style="display:none" name="AP_locatIP" id="AP_locatIP" size="20" maxlength="32" value="~~AP_IPADDR~">	
+	<input type="text" style="display:none" name="WDSOF" id="WDSOF" size="20" maxlength="32" value="~~WDSON_OFF~">		
+	<input type="text" style="display:none" name="WDSOF2" id="WDSOF2" size="20" maxlength="32" value="~~WDSON_OFF_3~">	
 
   </td>
 </tr>

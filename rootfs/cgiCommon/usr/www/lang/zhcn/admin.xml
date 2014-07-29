@@ -9,6 +9,12 @@
 	<message msgid="help" msgstr="帮助" />
 	<message msgid="toplanguage" msgstr="z" />
 	
+	<message msgid="admw div_int_title" msgstr="请选择HBD路由器互联网接入方式" />  
+	<message msgid="admw int_1des" msgstr="有线连接" />  
+	<message msgid="admw int_1disc" msgstr="通过设置WAN口联网方式进行有线连接" />  
+	<message msgid="admw int_2des" msgstr="无线连接" />  
+	<message msgid="admw int_2disc" msgstr="通过无线中继进行无线连接" />  
+	
 	<message msgid="admw div_wan_title" msgstr="请您选择HBD路由器WAN口的连接方式。所需参数在开通网络时，由网络运营商（中国电信、中国联通、中国移动等）提供" />
 	<message msgid="admw DHCP" msgstr="自动获取(动态IP)" />  
 	<message msgid="admw DHCPdisc" msgstr="网络运营商没有提供任何参数，HBD路由器将自动从网络运营商获取IP地址" />
@@ -16,6 +22,11 @@
 	<message msgid="admw SMdisc" msgstr="网络运营商提供固定的IP地址、子网掩码、网关、DNS服务器" />
 	<message msgid="admw PPPOE" msgstr="PPPoE(ADSL)" />
 	<message msgid="admw PPPOEdisc" msgstr="网络运营商提供上网账户名和密码" />
+	
+	<message msgid="admw DISABLE_a" msgstr="禁用" />
+	<message msgid="admw DISABLEdisc" msgstr="禁用WAN口" />
+	<message msgid="admw wdsonmsg" msgstr="WDS已经开启，WAN处于禁用状态" />
+	
 	<message msgid="admw L2TPc" msgstr="L2TP客户端" />
 	<message msgid="admw PPTPc" msgstr="PPTP客户端" />
 

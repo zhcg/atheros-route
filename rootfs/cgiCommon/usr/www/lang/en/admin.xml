@@ -9,6 +9,12 @@
 	<message msgid="help" msgstr="Help" />
 	<message msgid="toplanguage" msgstr="e" />
 
+	<message msgid="admw div_int_title" msgstr="Select the HBD router Internet access way" />  
+	<message msgid="admw int_1des" msgstr="Wired connection" />  
+	<message msgid="admw int_1disc" msgstr="Wired connection through a Wired relay" />  
+	<message msgid="admw int_2des" msgstr="Wireless connection" />  
+	<message msgid="admw int_2disc" msgstr="Wireless connection through a wireless relay" />  
+
 	<message msgid="admw div_wan_title" msgstr="Please select the HBD router WAN port connection." />
 	<message msgid="admw DHCP" msgstr="Automatic acquisition (dynamic IP)" />  
 	<message msgid="admw DHCPdisc" msgstr="Broadband service providers do not provide any parameter,BASE will get IP from Broadband service providers" />
@@ -16,6 +22,12 @@
 	<message msgid="admw SMdisc" msgstr="Broadband service providers provide the fixed IP address, subnet mask, gateway, DNS server" />
 	<message msgid="admw PPPOE" msgstr="PPPoE (ADSL)" />
 	<message msgid="admw PPPOEdisc" msgstr="Broadband service providers provide username and password" />
+
+	<message msgid="admw DISABLE_a" msgstr="Disable" />
+	<message msgid="admw DISABLEdisc" msgstr="Disable WAN settings" />
+	<message msgid="admw wdsonmsg" msgstr="WDS is on,so WAN is disabled" />
+
+
 	<message msgid="admw L2TPc" msgstr="L2TP Client" />
 	<message msgid="admw PPTPc" msgstr="PPTP Client" />
 	
