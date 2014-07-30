@@ -1015,7 +1015,7 @@ START_WRITE:
 #ifdef SAVE_FILE
 			usleep(5* 1000);
 #else
-			usleep(60* 1000);
+			usleep(40* 1000);
 #endif
 		}
 
