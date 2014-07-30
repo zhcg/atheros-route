@@ -108,7 +108,7 @@
 	<message msgid="log t1des" msgstr=" 显示系统日志" />
 	<message msgid="log exportlog"	msgstr="显示日志" />
 	
-	<message msgid="log t1_port" msgstr="端口号" />
+	<message msgid="log t1_port" msgstr="端口" />
 	<message msgid="log unchose" msgstr="全部端口" />
 
 	<message msgid="log t2des" msgstr="抓包" />

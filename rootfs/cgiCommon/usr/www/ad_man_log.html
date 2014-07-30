@@ -6,6 +6,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript" src="/style/basic.js"></script>
+<script language="JavaScript" type="text/javascript" src="/style/getwk.js"></script>
 <script>
 if(getCookie()){}
 else{window.top.location.href="../login.html";}
@@ -31,6 +32,7 @@ function init()
 	initTranslation();
 	widget_hide("end");
 	widget_hide("dumpExport");
+	portinit();
 	portchange();
 }
 
@@ -129,52 +131,47 @@ function stateChanged2()
 function GetXmlHttpObject()
 {var xmlHttp=null;try{xmlHttp=new XMLHttpRequest();}catch (e){try{xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");}	catch (e){xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");}}return xmlHttp;}
 var portvalue;
+function portinit()
+{
+	var ajaxstruct = new ajaxget();
+	ajaxstruct.seturl("/cgi-bin/tcpdump.cgi?q=get&sid=abc&time="+Math.random());
+	//alert(ajaxstruct.gettext);
+	var mySelect = document.getElementById("OTHER_PORT");
+
+	if(ajaxstruct.gettext.indexOf("lo")!=-1)
+	{
+		var opp = new Option("lo","lo");
+		mySelect.add(opp);
+	}			
+	for(var x1=0;x1<10; x1++)
+	{
+		if(ajaxstruct.gettext.indexOf('eth'+x1.toString())!=-1)
+		{
+			var opp = new Option('eth'+x1.toString(),'eth'+x1.toString());
+			mySelect.add(opp);
+		}				
+	}
+	for(var x2=0;x2<10; x2++)
+	{
+		if(ajaxstruct.gettext.indexOf('ath'+x2.toString())!=-1)
+		{
+			var opp = new Option('ath'+x2.toString(),'ath'+x2.toString());
+			mySelect.add(opp);
+		}				
+	}
+	for(var x3=0;x3<10; x3++)
+	{
+		if(ajaxstruct.gettext.indexOf('wifi'+x3.toString())!=-1)
+		{
+			var opp = new Option('wifi'+x3.toString(),'wifi'+x3.toString());
+			mySelect.add(opp);
+		}				
+	}
+
+}
 function portchange()
 {
-	if(document.WORKFORM.OTHER_PORT.selectedIndex==0)
-	{
-		portvalue="0";
-	}
-	if(document.WORKFORM.OTHER_PORT.selectedIndex==1)
-	{
-		portvalue="53";
-	}
-	if(document.WORKFORM.OTHER_PORT.selectedIndex==2)
-	{
-		portvalue="21";
-	}
-	if(document.WORKFORM.OTHER_PORT.selectedIndex==3)
-	{
-		portvalue="70";
-	}
-	if(document.WORKFORM.OTHER_PORT.selectedIndex==4)
-	{
-		portvalue="80";
-	}
-	if(document.WORKFORM.OTHER_PORT.selectedIndex==5)
-	{
-		portvalue="119";
-	}
-	if(document.WORKFORM.OTHER_PORT.selectedIndex==6)
-	{
-		portvalue="110";
-	}
-	if(document.WORKFORM.OTHER_PORT.selectedIndex==7)
-	{
-		portvalue="1723";
-	}
-	if(document.WORKFORM.OTHER_PORT.selectedIndex==8)
-	{
-		portvalue="25";
-	}
-	if(document.WORKFORM.OTHER_PORT.selectedIndex==9)
-	{
-		portvalue="1080";
-	}
-	if(document.WORKFORM.OTHER_PORT.selectedIndex==10)
-	{
-		portvalue="23";
-	}
+	portvalue=document.getElementById("OTHER_PORT").value;
 }
 
 </script> 
@@ -203,20 +200,10 @@ function portchange()
 	<td class="title" colspan="2" id="t2des"></td>
 </tr>
 <tr>
-	<td class="head" id="t1_port">端口号</td>
+	<td class="head" id="t1_port">端口</td>
 	<td>  
-		<select name="OTHER_PORT" onChange="portchange()">
-		<option id="unchose">--Please select--</option>
-		<option>DNS(53)</option>
-		<option>FTP(21)</option>
-		<option>GOPHER(70)</option>
-		<option>HTTP(80)</option>
-		<option>NNTP(119)</option>
-		<option>POP3(110)</option>
-		<option>PPTP(1723)</option>
-		<option>SMTP(25)</option>
-		<option>SOCK(1080)</option>
-		<option>TELNET(23)</option>
+		<select name="OTHER_PORT" id="OTHER_PORT" onChange="portchange()">
+		<option id="unchose" value="all">--Please select--</option>
 		</select>
 	</td>
 </tr>

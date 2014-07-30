@@ -51,8 +51,9 @@ int main()
     char pass[64];
     int i = 0;
     int j = 0;
-        char rspBuff1[65536];
-
+    char rspBuff1[65536];
+    char cmd[512];
+    
     req_method = getenv("REQUEST_METHOD");
     input = getcgidata(stdin, req_method);
     errOut = fopen("/dev/ttyS0","w");
@@ -90,7 +91,16 @@ int main()
     if(strcmp(name,"begin")==0)
     {
         //Execute_cmd("net_check", rspBuff1);
-        system("tcpdumps -w /tmp/tcpdump.cap &");sleep(2);//bash  avoid let syntax error
+            if(strcmp(pass,"all")==0)
+            {
+                    system("tcpdumps -w /tmp/tcpdump.cap &");
+            }
+            else    
+            {
+ 	            sprintf(cmd, "tcpdumps -i %s -w /tmp/tcpdump.cap &", pass);
+                   system(cmd);
+            }
+            sleep(2);//bash  avoid let syntax error
        // printf("%s",rspBuff1);
        // fprintf(errOut,"WAN:%s!!!!!  %d \n",rspBuff1,strlen(rspBuff1));
     }
@@ -98,6 +108,28 @@ int main()
     {
        // Execute_cmd("ping -c 3 www.baidu.com", rspBuff1);
        Execute_cmd("killall tcpdumps", rspBuff1);
+       // printf("%s",rspBuff1);
+       // fprintf(errOut,"BD:%s!!!!!  %d \n",rspBuff1,strlen(rspBuff1));
+    } 
+    else if(strcmp(name,"get")==0)
+    {
+       // Execute_cmd("ping -c 3 www.baidu.com", rspBuff1);
+       Execute_cmd("cat /proc/net/dev | awk '{print substr($0,0,7)}'|awk 'NR==3, NR==20{print}'", rspBuff1);
+
+        char *tp; /*临时工作变量，用于工作空间的指针。*/
+        int  i=0 , j=0 ;
+        tp = calloc(strlen(rspBuff1)+1 ,sizeof(char)) ;
+        while(i<strlen(rspBuff1))
+             if((rspBuff1[i] != '\n')&&(rspBuff1[i] != '\r')&&(rspBuff1[i] != ' '))
+                   tp[j++]=rspBuff1[i++] ;
+             else
+                   i++ ; /*忽略换行符*/
+        tp[j]='\0' ;
+        printf("%s",tp) ;
+        free(tp);
+
+
+       
        // printf("%s",rspBuff1);
        // fprintf(errOut,"BD:%s!!!!!  %d \n",rspBuff1,strlen(rspBuff1));
     } 

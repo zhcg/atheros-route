@@ -107,7 +107,7 @@
 	<message msgid="log t1des" msgstr="Display system log" />
 	<message msgid="log exportlog"	msgstr="Display log" />
 	
-	<message msgid="log t1_port" msgstr="Port number" />
+	<message msgid="log t1_port" msgstr="Port" />
 	<message msgid="log unchose" msgstr="All port" />
 	<message msgid="log t2des" msgstr="Tcpdump" />
 	<message msgid="log begin" msgstr="Begin" />
