@@ -4904,7 +4904,7 @@ void set_wireless_wan(void)
 			}
 
 	
-			sprintf(order,"iwconfig ath2 channel %s;iwconfig ath3 channel %s",channel,channel);
+			sprintf(order,"iwconfig ath2 channel %s;iwconfig ath3 channel %s",channel_5g,channel_5g);
 			Execute_cmd(order, rspBuff);
 			Execute_cmd("ifconfig ath2 up;ifconfig ath3 up", rspBuff);
 			
@@ -6920,7 +6920,7 @@ int main(int argc,char **argv)
 	//wifi settings
      if((strcmp(CFG_get_by_name("WIRELESS",valBuff),"WIRELESS") == 0 ) || (strcmp(CFG_get_by_name("DHCPW",valBuff),"DHCPW") == 0 ) \
 	 	|| (strcmp(CFG_get_by_name("SIPW",valBuff),"SIPW") == 0 ) || (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 ) \
-	 	|| (strcmp(CFG_get_by_name("L2TPW",valBuff),"L2TPW") == 0 ) || (strcmp(CFG_get_by_name("P2TPW",valBuff),"P2TPW") == 0 )\
+	 	|| (strcmp(CFG_get_by_name("L2TPW",valBuff),"L2TPW") == 0 ) || (strcmp(CFG_get_by_name("P2TPW",valBuff),"P2TPW") == 0 ) \
 	 	||(strcmp(CFG_get_by_name("DISABLEW_WAN",valBuff),"DISABLEW_WAN") == 0 ))
     {
 		fprintf(errOut,"\n%s  %d WIRELESS \n",__func__,__LINE__);
