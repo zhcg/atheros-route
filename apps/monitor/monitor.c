@@ -349,7 +349,6 @@ static int get_base_state(char *buf, int *buf_len)
 		return -6;
 	}
     memset(buf_tmp, 0, strlen(buf_tmp));
-#ifdef BASE_A20    
     // 进程信息
     while (1)
     {
@@ -394,17 +393,14 @@ static int get_base_state(char *buf, int *buf_len)
 			php = 1;
 		}
     }
-#endif
     fclose(fp);
     
-#ifdef BASE_A20       
     if ((res = get_port_info(&tomcat,&php)) < 0)
     {
         PRINT("get_port_info failed!\n");
         tomcat = -1;
         php = -1;
     }
-#endif
     int flash_size = 0;
     // flash 使用情况
     if ((res = get_flash_occupy_info(&flash_size)) < 0)
@@ -414,13 +410,8 @@ static int get_base_state(char *buf, int *buf_len)
     }
     //PRINT("tomcat = %d\n",tomcat);
     //PRINT("php = %d\n",php);
-#ifdef BASE_A20       
     sprintf(buf,"{id:%s,dev_type:1,cpu:%d,memory:%d,hd:%d,tomcat:%d,php:%d}",
 		sip_msg.base_sn,100-cpu_info.idle,100-(mem_info.free*100)/(mem_info.used+mem_info.free+mem_info.shrd+mem_info.buff+mem_info.cached),flash_size,(tomcat >= 2)?1:0,(php >= 2)?1:0);
-#elif defined(BASE_9344)
-    sprintf(buf,"{id:%s,dev_type:1,cpu:%d,memory:%d,hd:%d}",
-		sip_msg.base_sn,100-cpu_info.idle,100-(mem_info.free*100)/(mem_info.used+mem_info.free+mem_info.shrd+mem_info.buff+mem_info.cached),flash_size);
-#endif
     PRINT("strlen(buf) = %d\n", strlen(buf));
 	*buf_len = strlen(buf);
     //buf[0] = 0x02;
@@ -598,6 +589,11 @@ static int get_base_state(char *buf, int *buf_len)
 	if(!strcmp(register_state,"0"))
 	{
 		sqlite3_interface("terminal_base_tb","pad_sn","0","register_state",pad_sn);
+	}
+	if(strlen(pad_sn) == 0)
+	{
+		memset(pad_sn,0,sizeof(pad_sn));
+		memcpy(pad_sn,"0",strlen("0"));
 	}
     sprintf(buf,"{id:%s,dev_type:1,cpu:%d,memory:%d,hd:%d,pad_sn:%s}",
 		sip_msg.base_sn,cpu_out,100-(mem_info.free*100)/(mem_info.total),flash_size,pad_sn);
