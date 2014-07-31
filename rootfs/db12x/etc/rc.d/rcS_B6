@@ -60,7 +60,10 @@ sleep 7
 modules_server &
 
 phone_control &
-check_phone_status phone_control modules_server &
+
+monitor &
+
+check_phone_status phone_control modules_server monitor &
 
 
 
