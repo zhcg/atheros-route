@@ -57,6 +57,7 @@ struct class_phone_audio
 	int get_code_timeout; //获取号码等待ring信号
 	int get_code_timeout_times;
 	int dtmf_over; //dtmf发送结束
+	int dialup;
 	char start_dtmf;
 	char key[8];
 	SpeexEchoState *st;

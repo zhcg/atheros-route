@@ -29,6 +29,7 @@ struct class_phone_audio phone_audio =
 	.get_code_timeout=0,
 	.get_code_timeout_times=0,
 	.start_dtmf=0,
+	.dialup=0,
 	.st = NULL,
 	.dn = NULL,
 	.den = NULL,
@@ -1202,7 +1203,9 @@ void* AudioEchoThreadCallBack(void* argv)
 					for(i=0;i<valid_bytes/4;i++)
 					{
 						*readp++ >>= 2;
-					}	
+					}
+					if(phone_audio.dialup == 0)
+						memset(out_buf,0,sizeof(out_buf));
 				}
 				//readp = (short*)&echo_stream_buffer[phone_audio.echo_stream_rp+AUDIO_WRITE_BYTE_SIZE];
 				//for(i=0;i<valid_bytes/4;i++)

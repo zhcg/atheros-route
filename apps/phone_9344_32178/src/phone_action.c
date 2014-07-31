@@ -58,6 +58,7 @@ int onhook()
 	{
 		//此处在摘机时也会调用
 		phone_audio.start_recv = 1;
+		phone_audio.dialup = 0;
 		PRINT("onhook success\n");
 	}
 }
@@ -83,7 +84,7 @@ int dialup(char *num,int num_len)
 	phone_audio.input_stream_wp += pcm_ret;
 	if(phone_audio.input_stream_wp >= AUDIO_STREAM_BUFFER_SIZE)
 		phone_audio.input_stream_wp = 0;
-		
+	phone_audio.dialup = 1;
 	return 0;
 }
 

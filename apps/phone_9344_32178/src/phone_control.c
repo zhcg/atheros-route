@@ -1134,6 +1134,7 @@ int do_cmd_switch(dev_status_t* dev,char *sendbuf)
 	    netWrite(devlist[id].client_fd, sendbuf, strlen(sendbuf));
 		devlist[id].isswtiching = 1;
 		phone_control.global_phone_is_using = 0;
+		phone_audio.dialup = 1;
 		dev->dev_is_using = 0;
 		dev->attach=0;
 		dev->audio_reconnect=0;
@@ -1990,6 +1991,7 @@ void Incomingcall(unsigned char *ppacket,int bytes,int flag)
 		}
 	}
 	phone_control.ringon_flag=1;
+	phone_audio.dialup = 1;
 }
 //挂机确认成功
 void OnhookRes(unsigned char *ppacket,int bytes)
