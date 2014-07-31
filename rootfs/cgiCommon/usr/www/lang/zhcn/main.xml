@@ -101,6 +101,7 @@
 	<message msgid="sysinfo pptp" msgstr="PPTP" />
 	<message msgid="sysinfo un" msgstr="未知" />
 	<message msgid="sysinfo wds" msgstr="中继" />
+	<message msgid="sysinfo disable" msgstr="禁用" />
 	
 	<message msgid="sysinfo keepalive" msgstr="自动连接" />
 	<message msgid="sysinfo ondemand" msgstr="按需连接" />

@@ -251,7 +251,15 @@ function valueinit()
 	}
 	else if(wtype == "disable")
 	{
-		document.getElementById("ss6").innerHTML=_("sysinfo wds");
+		if(document.getElementById("s6_wds").value == "repeater_wisp")
+		{
+			document.getElementById("ss6").innerHTML=_("sysinfo wds");
+		}
+		else
+		{
+			document.getElementById("ss6").innerHTML=_("sysinfo disable");
+		}
+
 	}
 	else
 		document.getElementById("ss6").innerHTML="";
