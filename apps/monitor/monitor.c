@@ -46,6 +46,9 @@ struct sip_info sip_i;
 int init_success = 0;
 int new_sip_info = 0;
 unsigned char base_sn[34] = {0};
+int cpu_warning_times = 0;
+int mem_warning_times = 0;
+int hd_warning_times = 0;
 
 static int set_buf(char *buf,int len)
 {
@@ -268,6 +271,7 @@ static int get_base_state(char *buf, int *buf_len)
     int tomcat = 0;
     int php = 0;
 	int ret = 0;
+	int mem_ret = 0;
     struct stat file_stat;
     char * file_name = "/var/log/.base_state";
     FILE *fp = NULL;
@@ -312,6 +316,23 @@ static int get_base_state(char *buf, int *buf_len)
         &mem_info.cached, mem_info.cached_key);
     memset(buf_tmp, 0, strlen(buf_tmp));
     PRINT("mem_info.used_key = %s\n",mem_info.used_key);
+    mem_ret = 100-(mem_info.free*100)/(mem_info.used+mem_info.free+mem_info.shrd+mem_info.buff+mem_info.cached);
+    if(mem_ret > MEM_WARING_THRESHOLD)
+    {
+		PRINT("mem warning\n");
+		mem_warning_times++;
+		PRINT("mem_warning_times = %d\n",mem_warning_times);
+	}
+	else
+	{
+		mem_warning_times = 0;
+	}
+	if(mem_warning_times >= WARNING_TIMES)
+	{
+		ret = 1;
+		mem_warning_times = 0;
+	}
+
     // cpu信息
     if(fgets(buf_tmp, sizeof(buf_tmp), fp) == NULL)
 	{
@@ -326,10 +347,21 @@ static int get_base_state(char *buf, int *buf_len)
     memset(buf_tmp, 0, strlen(buf_tmp));
     PRINT("idle = %d\n",cpu_info.idle);
     PRINT("user = %d\n",cpu_info.user);
-    if((cpu_info.user+cpu_info.system) > WARING_THRESHOLD)
-		ret = 1;
+    if((cpu_info.user+cpu_info.system) > CPU_WARING_THRESHOLD)
+    {
+		PRINT("cpu warning\n");
+		cpu_warning_times++;
+		PRINT("cpu_warning_times = %d\n",cpu_warning_times);
+	}
 	else
-		ret = 0;
+	{
+		cpu_warning_times = 0;
+	}
+	if(cpu_warning_times >= WARNING_TIMES)
+	{
+		ret = 1;
+		cpu_warning_times = 0;
+	}
     // load average 信息
     if(fgets(buf_tmp, sizeof(buf_tmp), fp) == NULL)
 	{
@@ -411,7 +443,7 @@ static int get_base_state(char *buf, int *buf_len)
     //PRINT("tomcat = %d\n",tomcat);
     //PRINT("php = %d\n",php);
     sprintf(buf,"{id:%s,dev_type:1,cpu:%d,memory:%d,hd:%d,tomcat:%d,php:%d}",
-		sip_msg.base_sn,100-cpu_info.idle,100-(mem_info.free*100)/(mem_info.used+mem_info.free+mem_info.shrd+mem_info.buff+mem_info.cached),flash_size,(tomcat >= 2)?1:0,(php >= 2)?1:0);
+		sip_msg.base_sn,100-cpu_info.idle,mem_ret,flash_size,(tomcat >= 2)?1:0,(php >= 2)?1:0);
     PRINT("strlen(buf) = %d\n", strlen(buf));
 	*buf_len = strlen(buf);
     //buf[0] = 0x02;
@@ -483,6 +515,7 @@ static int get_base_state(char *buf, int *buf_len)
     int res = 0;
     int fd = 0;
 	int ret = 0;
+	int mem_ret = 0;
 	int cpu_out = 0;
 	char register_state[4]={0};
 	char pad_sn[34]={0};
@@ -552,7 +585,22 @@ static int get_base_state(char *buf, int *buf_len)
     sscanf(buf_tmp, "%s %u", mem_info.name, &mem_info.free);
     memset(buf_tmp, 0, strlen(buf_tmp));
 	fclose(fp);
-	
+    mem_ret = 100-(mem_info.free*100)/(mem_info.total);	
+    if(mem_ret > MEM_WARING_THRESHOLD)
+    {
+		PRINT("mem warning\n");
+		mem_warning_times++;
+		PRINT("mem_warning_times = %d\n",mem_warning_times);
+	}
+	else
+	{
+		mem_warning_times = 0;
+	}
+	if(mem_warning_times >= WARNING_TIMES)
+	{
+		ret = 1;
+		mem_warning_times = 0;
+	}
 
     sleep(2);
     // cpu信息2
@@ -574,10 +622,21 @@ static int get_base_state(char *buf, int *buf_len)
 	fclose(fp);  
 	  
 	cpu_out = cal_cpuinfo(&cpu_info,&cpu_info2);
-    if((cpu_out) > WARING_THRESHOLD)
-		ret = 1;
+    if(cpu_out > CPU_WARING_THRESHOLD)
+    {
+		PRINT("cpu warning\n");
+		cpu_warning_times++;
+		PRINT("cpu_warning_times = %d\n",cpu_warning_times);
+	}
 	else
-		ret = 0;
+	{
+		cpu_warning_times = 0;
+	}
+	if(cpu_warning_times >= WARNING_TIMES)
+	{
+		ret = 1;
+		cpu_warning_times = 0;
+	}
     int flash_size = 0;
     // flash 使用情况
     if ((res = get_flash_occupy_info(&flash_size)) < 0)
@@ -596,7 +655,7 @@ static int get_base_state(char *buf, int *buf_len)
 		memcpy(pad_sn,"0",strlen("0"));
 	}
     sprintf(buf,"{id:%s,dev_type:1,cpu:%d,memory:%d,hd:%d,pad_sn:%s}",
-		sip_msg.base_sn,cpu_out,100-(mem_info.free*100)/(mem_info.total),flash_size,pad_sn);
+		sip_msg.base_sn,cpu_out,mem_ret,flash_size,pad_sn);
     PRINT("strlen(buf) = %d\n", strlen(buf));
 	*buf_len = strlen(buf);
     //buf[0] = 0x02;
@@ -1171,7 +1230,7 @@ static void * base_state_msg_manage(void* para)
 			}
 			if(res == 1)
 			{
-				PRINT("CPU is busy\n");
+				PRINT("System is busy,send warning msg\n");
 				snprintf(send_buf, sizeof(send_buf),
 					"v=0\r\n"
 					"o=%s\r\n"
@@ -1187,7 +1246,7 @@ static void * base_state_msg_manage(void* para)
 				}
 				else
 				{
-					PRINT("send waring base_state msg successful!\n");    
+					PRINT("send warning base_state msg successful!\n");    
 				}
 				pthread_mutex_unlock(&send_mutex);
 			}

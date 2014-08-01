@@ -3,17 +3,20 @@
 
 #pragma pack (1)
 //#define SIP_PORT 5060
-#define INIT_PORT 9999
-#define INIT_SERVER_IP "210.14.156.93"
+#define INIT_PORT 				9999
+#define INIT_SERVER_IP 			"210.14.156.93"
 //#define INIT_SERVER_IP		"192.168.1.168"
-#define STATUS_DELAY 	 	1800
-#define OPTION_DELAY	 	60
-#define WARING_THRESHOLD	70
-#define PRINT(format, ...)  printf("[%s][%s][-%d-] "format"",__FILE__,__FUNCTION__,__LINE__,##__VA_ARGS__)
-#define TOMCAT 				"/opt/jdk1.7.0_45/bin/java"
-#define PHP					"/opt/httpd/bin/httpd"
-#define SUCCESS 			0x1001
-#define FAIL 				0x1002
+#define STATUS_DELAY 	 		1800
+#define OPTION_DELAY	 		60
+#define CPU_WARING_THRESHOLD	70
+#define MEM_WARING_THRESHOLD	80
+#define HD_WARING_THRESHOLD		90
+#define WARNING_TIMES			100
+#define PRINT(format, ...)  	printf("[%s][%s][-%d-] "format"",__FILE__,__FUNCTION__,__LINE__,##__VA_ARGS__)
+#define TOMCAT 					"/opt/jdk1.7.0_45/bin/java"
+#define PHP						"/opt/httpd/bin/httpd"
+#define SUCCESS 				0x1001
+#define FAIL 					0x1002
 
 enum ERR_NUM 
 { 
