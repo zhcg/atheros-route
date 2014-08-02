@@ -40,5 +40,8 @@ fi
 	if [ -f "$BACKUP_DIR/$BACKUP_DATE.parc" ]; then
         cp -rf $BACKUP_DIR/$BACKUP_DATE.parc /configure_backup/ath/iptables/parc
 	fi
+	if [ -f "$BACKUP_DIR/$BACKUP_DATE.pwd.xml" ]; then
+        cp -rf $BACKUP_DIR/$BACKUP_DATE.pwd.xml /configure_backup/pwd.xml
+	fi
 
 echo "use_backup done"

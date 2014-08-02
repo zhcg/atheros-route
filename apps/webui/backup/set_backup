@@ -33,6 +33,7 @@ if [ "$str" = "" ];then
 		cp /configure_backup/arp_ip_mac.conf $BACKUP_DIR/$BACKUP_DATE.arp_ip_mac.conf
 		cp /configure_backup/ath/iptables/portmap $BACKUP_DIR/$BACKUP_DATE.portmap
 		cp /configure_backup/ath/iptables/parc $BACKUP_DIR/$BACKUP_DATE.parc
+		cp /configure_backup/pwd.xml $BACKUP_DIR/$BACKUP_DATE.pwd.xml
 else
         echo "the backup is exist"
         exit 1
