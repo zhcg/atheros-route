@@ -1,0 +1,98 @@
+###################################################################################
+##  apcfg
+##
+##  Configuration file for Atheros AP.
+##  This file will "predefine" default configuration data for the AP.  This
+##  will first read all configuration data from flash (cfg -e), then fill in any
+##  defaults that are missing.  Thus the defaults will appear on the web pages
+##  even if the configuration store has been cleared.
+##
+###################################################################################
+##
+## Get the current settings from flash/cache area
+##
+
+cfg -e > /tmp/vars.$$
+cfg -s | grep PSK_KEY | awk -F':' '{print "export " $1$2}' >> /tmp/vars.$$
+cfg -s | grep PSK_KEY_2 | awk -F':' '{print "export " $1$2}' >> /tmp/vars.$$
+cfg -s | grep PSK_KEY_3 | awk -F':' '{print "export " $1$2}' >> /tmp/vars.$$
+cfg -s | grep PSK_KEY_4 | awk -F':' '{print "export " $1$2}' >> /tmp/vars.$$
+. /tmp/vars.$$
+rm /tmp/vars.$$
+
+##
+## Set Network configuration
+##
+## AP_IPADDR  = IP address of the bridge
+## WAN_IPADDR = Fixed IP address of the WAN, if it's not bridged
+## WAN_MODE   = bridged for attached to bridged, Get address if dhcp, fixed address
+##              if static
+##
+###################################################################################
+#
+# Indicate if you want the WLAN to be activated on boot up.
+#
+
+
+#
+# AP Start Mode
+# This can be overridded by environmental variables
+# Modes can be
+#    standard := standard single AP start mode
+#      rootap := WDS root AP for WDS modes
+#    repeater := WDS repeater station
+#      client := WDS "virtual wire" client
+#       multi := Multiple BSSID with all encryption types
+#      stafwd := Station mode with address forwarding enabled
+#
+#
+
+export NUMRADIO_AHB=1
+
+
+##
+## Channel Configuration Section
+##
+##
+## Set default security modes
+##
+export MAX_VAPS_PER_RADIO=8
+##
+## Export the variables again to catch the defaults
+##
+
+cfg -e > /tmp/vars.$$
+. /tmp/vars.$$
+rm /tmp/vars.$$
+
+##
+## Set the proper radio parameter values depending on the
+## interface selected.  These are exported vice included
+## in cache. These should really be in apup vice here,
+## but this works OK.
+##
+
+for i in $my_vaps;
+do
+    if [ "${i}" = "''" ]; then
+        i=""
+fi
+    ITER_RADIO_ID="AP_RADIO_ID$i"
+    ITER_RFPARAM="AP_RFPARAM$i"
+    eval ITER_RADIO_ID=\$$ITER_RADIO_ID
+    if [ "${ITER_RADIO_ID}" = "1" ]; then
+        export $ITER_RFPARAM=RF:$AP_PRIMARY_CH_3:$AP_CHMODE_3
+	else
+        export $ITER_RFPARAM=RF:$AP_PRIMARY_CH:$AP_CHMODE
+	fi
+done
+
+#####################################################################################
+## The following parameters are board specific, and should not be modified
+#####################################################################################
+
+export ATH_use_eeprom=0
+# SET it to 1 if no "A" band support 
+# export AP_NO_A_BAND=1
+
+
