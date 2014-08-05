@@ -856,7 +856,7 @@ function CheckWirelessValue()
 				document.wizard_form.PSK_KEY.select();
 				return false;
 			}
-			if ((keyvalue.length < 8)||( keyvalue.length > 12))
+			if ((keyvalue.length < 8)||( keyvalue.length > 63))
 			{
 				alert(_("err keylen"));
 				document.wizard_form.PSK_KEY.select();
@@ -918,7 +918,7 @@ function CheckWirelessValue()
 				document.wizard_form.PSK_KEY_3.select();
 				return false;
 			}
-			if ((keyvalue2.length < 8)||( keyvalue2.length > 12))
+			if ((keyvalue2.length < 8)||( keyvalue2.length > 63))
 			{
 				alert(_("err keylen"));
 				document.wizard_form.PSK_KEY_3.select();
@@ -1243,11 +1243,11 @@ function pppshowpwd()
  
  	if(document.getElementById("eeee").checked == true)
  	{
-   		document.getElementById("pwdinput").innerHTML='<input type="text" id="pwd" name="PSK_KEY" maxlength="64" size="28" class="handaer_text_content"  value="'+pass+'" />';
+   		document.getElementById("pwdinput").innerHTML='<input type="text" id="pwd" name="PSK_KEY" maxlength="63" size="28" class="handaer_text_content"  value="'+pass+'" />';
   	}
 	else
 	{
-   		document.getElementById("pwdinput").innerHTML='<input type="password" id="pwd" name="PSK_KEY" maxlength="64" size="28"  class="handaer_text_content" value="'+pass+'" />';
+   		document.getElementById("pwdinput").innerHTML='<input type="password" id="pwd" name="PSK_KEY" maxlength="63" size="28"  class="handaer_text_content" value="'+pass+'" />';
    	}
 }
  function showpwd2()
@@ -1257,11 +1257,11 @@ function pppshowpwd()
  
  	if(document.getElementById("eeee2").checked == true)
  	{
-   		document.getElementById("pwdinput2").innerHTML='<input type="text" id="pwd2" name="PSK_KEY_3" maxlength="64" size="28" class="handaer_text_content"  value="'+pass+'" />';
+   		document.getElementById("pwdinput2").innerHTML='<input type="text" id="pwd2" name="PSK_KEY_3" maxlength="63" size="28" class="handaer_text_content"  value="'+pass+'" />';
   	}
 	else
 	{
-   		document.getElementById("pwdinput2").innerHTML='<input type="password" id="pwd2" name="PSK_KEY_3" maxlength="64" size="28"  class="handaer_text_content" value="'+pass+'" />';
+   		document.getElementById("pwdinput2").innerHTML='<input type="password" id="pwd2" name="PSK_KEY_3" maxlength="63" size="28"  class="handaer_text_content" value="'+pass+'" />';
    	}
 }
  
@@ -1736,7 +1736,7 @@ function WIFI_HS()
 </tr>
 <tr id="div_security_key">
 	<td class="head" id="wkey"></td>
-	<td><span id="pwdinput"><input type="password" id="pwd" name="PSK_KEY" maxlength="64" size="28"  class="handaer_text_content"  value="~~PSK_KEY~"/></span>&nbsp;<input type="checkbox" id="eeee" onClick="showpwd()" />&nbsp;<label for="eeee" id="showp"></label>&nbsp;<span id="passwordrequest"></span></td>
+	<td><span id="pwdinput"><input type="password" id="pwd" name="PSK_KEY" maxlength="63" size="28"  class="handaer_text_content"  value="~~PSK_KEY~"/></span>&nbsp;<input type="checkbox" id="eeee" onClick="showpwd()" />&nbsp;<label for="eeee" id="showp"></label>&nbsp;<span id="passwordrequest"></span></td>
 </tr>
 </table>
 
@@ -1777,7 +1777,7 @@ function WIFI_HS()
 </tr>
 <tr id="div_security_key2">
 	<td class="head" id="wkey2"></td>
-	<td><span id="pwdinput2"><input type="password" id="pwd2" name="PSK_KEY_3" maxlength="64" size="28"  class="handaer_text_content"  value="~~PSK_KEY_3~"/></span>&nbsp;<input type="checkbox" id="eeee2" onClick="showpwd2()" />&nbsp;<label for="eeee2" id="showp2"></label>&nbsp;<span id="passwordrequest2"></span></td>
+	<td><span id="pwdinput2"><input type="password" id="pwd2" name="PSK_KEY_3" maxlength="63" size="28"  class="handaer_text_content"  value="~~PSK_KEY_3~"/></span>&nbsp;<input type="checkbox" id="eeee2" onClick="showpwd2()" />&nbsp;<label for="eeee2" id="showp2"></label>&nbsp;<span id="passwordrequest2"></span></td>
 </tr>
 </table>
 

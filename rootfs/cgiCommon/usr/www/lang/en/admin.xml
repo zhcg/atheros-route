@@ -189,7 +189,7 @@
 	<message msgid="admw settingmanual" msgstr="Setting,Please Wait......If the page does not jump , please manually" />
 
 	<message msgid="admw ssidrequest" msgstr="  (1-24 letters, numbers, or underscore)" />
-	<message msgid="admw passwordrequest" msgstr="  (8-12 letters, numbers or underscore)" />
+	<message msgid="admw passwordrequest" msgstr="  (8-63 letters, numbers or underscore)" />
 	<message msgid="admw passwordrequest1" msgstr="  (5-12 letters, numbers or underscore)" />
 
 	<message msgid="err lineout" msgstr="The line is out " />
@@ -215,7 +215,7 @@
 
 	<message msgid="err IP error" msgstr="WAN IP and local IP cannot be located in the same network, please reset" />
 
-	<message msgid="err keylen" msgstr="Please input at least 8 and less than 12 character of key " />
+	<message msgid="err keylen" msgstr="Please input at least 8 and less than 63 character of key " />
 	<message msgid="err keychar" msgstr="Invalid characters in Pass Phrase." />
 	<message msgid="admw internet" msgstr="Internet" />
 	<message msgid="admw wai" msgstr="Internet settings" />

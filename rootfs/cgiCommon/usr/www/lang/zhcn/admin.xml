@@ -184,7 +184,7 @@
 	<message msgid="admw settingmanual" msgstr="正在配置,请您稍等......若页面长时间未跳转，请手动连接" />
 
 	<message msgid="admw ssidrequest" msgstr="  (1-24位字母、数字或下划线)" />
-	<message msgid="admw passwordrequest" msgstr="  (8-12位字母、数字或下划线)" />
+	<message msgid="admw passwordrequest" msgstr="  (8-63位字母、数字或下划线)" />
 	<message msgid="admw passwordrequest1" msgstr="  (5-12位字母、数字或下划线)" />
 
 	<message msgid="err lineout" msgstr="请您将网线插入WAN口" />
@@ -211,7 +211,7 @@
 	<message msgid="err IPmormat" msgstr="IP地址不合法" />
 	<message msgid="err Maskmormat" msgstr="掩码不合法" />
 
-	<message msgid="err keylen" msgstr="密码长度必须是8-12位" />
+	<message msgid="err keylen" msgstr="密码长度必须是8-63位" />
 	<message msgid="err keychar" msgstr="密码中存在无效字符" />
 	<message msgid="err IP error" msgstr="WAN口IP与本地IP不能位于相同网段，请您重新设置" />
 
