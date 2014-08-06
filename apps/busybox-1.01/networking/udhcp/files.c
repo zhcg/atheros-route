@@ -379,6 +379,7 @@ void write_leases(void)
 		}
 	}
 	fclose(fp);
+    fp=NULL;
 
 	if (server_config.notify_file) {
 		sprintf(buf, "%s %s", server_config.notify_file, server_config.lease_file);
