@@ -131,6 +131,7 @@ static int check_ip(uint32_t addr)
 	temp.s_addr = addr;
 	fp = fopen("/tmp/GateWay", "r");
 	fgets(gateway_ip, 30, fp);
+	fclose(fp);
 	LOG(LOG_INFO, " the gateway is [%s];the send ip is %[s] \n", gateway_ip, inet_ntoa(temp));
 	if(strstr(gateway_ip, inet_ntoa(temp)))
 	{LOG(LOG_INFO, "22222 the gateway is [%s];the send ip is %[s] \n", gateway_ip, inet_ntoa(temp));
