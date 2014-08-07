@@ -67,6 +67,8 @@
 	
 	<message msgid="man cfgdes" msgstr="The configuration file export, import and system backup and recovery" />
 	<message msgid="man export" msgstr="Export configuration" />
+	<message msgid="man cannotd" msgstr="Detection of the current equipment browser may not support the export, please change to PC for download" />
+	<message msgid="man cannotd2" msgstr="Detection of the current equipment browser may not support the export, please change to PC for the function of this page " />
 	<message msgid="man exporttitle" msgstr="Configure management" />
 	<message msgid="man exportdes" msgstr="The system configuration files are saved to the local." />
 	<message msgid="man selsectfile" msgstr="Select the configuration file" />

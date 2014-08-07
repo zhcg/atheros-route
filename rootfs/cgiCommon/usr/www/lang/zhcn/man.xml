@@ -68,6 +68,8 @@
 	
 	<message msgid="man cfgdes" msgstr="配置文件导出，导入以及系统内部备份恢复" />
 	<message msgid="man export" msgstr="导出本地配置" />
+	<message msgid="man cannotd" msgstr="检测到当前设备浏览器可能不支持导出，请更换至PC进行导出操作" />
+	<message msgid="man cannotd2" msgstr="检测到当前设备浏览器可能不支持导出，请更换至PC进行本页操作" />
 	<message msgid="man exporttitle" msgstr="配置管理" />
 	<message msgid="man exportdes" msgstr="导出系统配置文件并保存至本地" />
 	<message msgid="man selsectfile" msgstr="请您选择配置文件" />

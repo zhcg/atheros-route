@@ -25,6 +25,23 @@ function initTranslation()
 	trans_value("begin","log begin");
 	trans_value("end","log end");
 	trans_value("dumpExport","log export");
+	trans_inner("cannotd","man cannotd2");
+}
+function Candownload()
+{
+	var info = navigator.userAgent.toLowerCase();
+	//alert(info);
+	if(info.indexOf("android")!=-1) 
+	{  
+		if((info.indexOf("chrome")!=-1)||(info.indexOf("firefox")!=-1))
+		{  
+			return true;  
+		}
+		else
+			return false;		
+	}
+	else
+		return true;
 }
 function init()
 {
@@ -34,6 +51,10 @@ function init()
 	widget_hide("dumpExport");
 	portinit();
 	portchange();
+	if(Candownload()==false)
+	{
+		widget_display("waring");
+	}
 }
 
 
@@ -219,6 +240,13 @@ function portchange()
 </tr>
 
 </table>
+<table width="100%" id="waring" style="display:none"  cellpadding="0" cellspacing="0"   style="border-top: 0px;" class="handaer_text">
+<tr>
+  <td>
+	<span id="cannotd"  style="color:#ff3c00"></span>
+  </td>
+</tr>
+<table>
 </td></tr></table>
 </div>
 

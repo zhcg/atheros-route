@@ -16,7 +16,8 @@ function initTranslation()
 	
 	trans_inner("t1des","man exportdes");
 	trans_value("setmanExpSetExport","man export");
-	
+	trans_inner("cannotd","man cannotd");
+
 	trans_value("localsave","man localsave");
 	trans_inner("selsectfile","man selsectfile");
 	trans_inner("t2des","man inportdes");
@@ -39,11 +40,31 @@ function initTranslation()
 	trans_inner("care3","cfg care3");
 	trans_inner("help_r","help");	
 }
+function Candownload()
+{
+	var info = navigator.userAgent.toLowerCase();
+	//alert(info);
+	if(info.indexOf("android")!=-1) 
+	{  
+		if((info.indexOf("chrome")!=-1)||(info.indexOf("firefox")!=-1))
+		{  
+			return true;  
+		}
+		else
+			return false;		
+	}
+	else
+		return true;
+}
 function init()
 {
 	Butterlate.setTextDomain("man");
 	initTranslation();
 	initmodifybutton();
+	if(Candownload()==false)
+	{
+		widget_display("waring");
+	}
 }
 function initmodifybutton()
 {
@@ -232,6 +253,9 @@ function help()
 </tr>
 <tr>
 	<td> <input value="Export" id="setmanExpSetExport" name="Export" class="handaer_input" type="submit"/></td>
+</tr>
+<tr id="waring" style="display:none" >
+	<td><span id="cannotd" style="color:#ff3c00"></span></td>
 </tr>
 </form>
 </table>

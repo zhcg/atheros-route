@@ -72,12 +72,13 @@ function initTranslation()
 	{
 		if(xmlreq.readyState==4){if(xmlreq.status==200)
 		{
-				if ((xmlreq.responseText=="1")||(xmlreq.responseText==1))
+				if (xmlreq.responseText.indexOf("1") != -1)
 					document.getElementById("ss3").innerHTML=_("sysinfo ok");
 				else
 					document.getElementById("ss3").innerHTML=_("sysinfo fail");
 		}}
 	}
+	
 	var xmlreq2;
 	var desIPreboot2;	
 	function createxmlreq2(){if(window.ActiveXObject){xmlreq2=new ActiveXObject("Microsoft.XMLHTTP");}else if(window.XMLHttpRequest){xmlreq2=new XMLHttpRequest();}}
@@ -117,6 +118,33 @@ function initTranslation()
 				}
 				else
 				{
+					var requestss;
+					var po=window.location.protocol+"//"+window.location.host+"/ping.xml?now=" + new Date().getTime(); 
+					try { requestss = new XMLHttpRequest(); } 
+					catch(e1) 
+					{
+						try { requestss = new ActiveXObject("Msxml2.XMLHTTP"); } 
+						catch(e2) 
+						{
+							try { requestss = new ActiveXObject("Microsoft.XMLHTTP"); } 
+							catch(e3) { return; }
+						}
+					};
+					requestss.open("GET",po,false); 
+					requestss.send(null);
+					if(requestss.status==200) 
+					{ 
+						var pos = requestss.responseText;
+						if(pos.indexOf("1") != -1)
+						{
+							document.getElementById("ss3").innerHTML=_("sysinfo ok");
+							document.getElementById("ss5").innerHTML=document.getElementById("s5e").value +"/"+document.getElementById("s5f").value;	
+							document.getElementById("ss7").innerHTML=document.getElementById("s7c").value;	
+							return;
+						}
+						else
+							document.getElementById("ss3").innerHTML=_("sysinfo fail");	
+					}
 					document.getElementById("ss3").innerHTML=_("sysinfo fail");	
 				}
 
