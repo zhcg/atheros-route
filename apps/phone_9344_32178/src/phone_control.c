@@ -1512,6 +1512,10 @@ int do_cmd_def_name(dev_status_t *dev, char *buf)
 	int len = strlen(buf);
 	memset(dev->dev_name,0,sizeof(dev->dev_name));
 	memcpy(dev->dev_name,buf,((len > (sizeof(dev->dev_name)-1))?(sizeof(dev->dev_name)-1):len));
+	if(dev->tick_time > 1)
+	{
+		generate_up_msg();
+	}
 	return 0;
 }
 
