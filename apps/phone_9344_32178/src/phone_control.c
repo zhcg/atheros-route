@@ -308,12 +308,13 @@ int destroy_client(dev_status_t *dev,int broadcast_flag)
 	}
 	if(dev->isswtiching)
 	{
-		dev->isswtiching = 0;
-		onhook();
-		if(!set_onhook_monitor())
-			PRINT("set_onhook_monitor success\n");
+		do_cmd_onhook(dev);
+		//dev->isswtiching = 0;
+		//onhook();
+		//if(!set_onhook_monitor())
+			//PRINT("set_onhook_monitor success\n");
 		//开始检测incoming
-		start_read_incoming();
+		//start_read_incoming();
 	}
 	close(dev->audio_client_fd);
 	memset(dev, 0, sizeof(dev_status_t));
@@ -417,8 +418,14 @@ OFFHOOK:
 		dev->dev_is_using = 1;
 		phone_control.start_dial = 1;
 		phone_control.dial_over = 0;
-
-		startaudio(dev,0);
+		
+		if(dev->isswtiching == 0)
+			if(phone_control.global_incoming == 1)
+				startaudio(dev,PCM_RESET,CALLED);
+			else
+				startaudio(dev,PCM_RESET,CALL);
+		else
+			startaudio(dev,PCM_NO_RESET,SWITCH);
 		if(dev->isswtiching == 0)
 		{
 START_OFFHOOK:
@@ -719,7 +726,7 @@ int do_cmd_talkbackoffhook(dev_status_t* dev,char *sendbuf)
 			netWrite(devlist[i].client_fd, sendbuf, strlen(sendbuf));
 		}
 	}
-	startaudio(dev,0);
+	startaudio(dev,PCM_RESET,OTHER);
 	dev->talkback_answer = 1;
 	return 0;
 TALKBACKOFFHOOK_ERR:
@@ -1139,7 +1146,7 @@ int do_cmd_switch(dev_status_t* dev,char *sendbuf)
 		dev->attach=0;
 		dev->audio_reconnect=0;
 		clean_who_is_online();
-		stopaudio(dev,PSTN,0);
+		stopaudio(dev,PSTN,1);
 		memset(sendbuf,0,SENDBUF);
 		snprintf(sendbuf, 23,"HEADR0011SON_RET0011\r\n");
 		netWrite(dev->client_fd, sendbuf, strlen(sendbuf));
@@ -2820,11 +2827,13 @@ void send_sw_ringon()
 				{
 					if(devlist[i].isswtiching == 1)
 					{
-						onhook();
-						if(!set_onhook_monitor())
-							PRINT("set_onhook_monitor success\n");
+						do_cmd_onhook(&devlist[i]);
+						
+						//onhook();
+						//if(!set_onhook_monitor())
+							//PRINT("set_onhook_monitor success\n");
 						//开始检测incoming
-						start_read_incoming();
+						//start_read_incoming();
 
 					}
 					//响铃超时
@@ -3193,7 +3202,7 @@ void* phone_check_tick(void* argv)
 				devlist[i].destroy_count = 0;
 				devlist[i].old_tick_time = devlist[i].tick_time;
 			}
-			if(devlist[i].destroy_count >= (TICK_INTERVAL+5))
+			if(devlist[i].destroy_count >= (TICK_INTERVAL+10))
 			{
 				PRINT("no tick!!!\n");
 				devlist[i].dying = 1;

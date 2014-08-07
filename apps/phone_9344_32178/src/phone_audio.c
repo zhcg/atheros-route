@@ -30,6 +30,8 @@ struct class_phone_audio phone_audio =
 	.get_code_timeout_times=0,
 	.start_dtmf=0,
 	.dialup=0,
+	.startaudio_mode=0,
+	.time_to_reset=0,
 	.st = NULL,
 	.dn = NULL,
 	.den = NULL,
@@ -151,7 +153,7 @@ int AudioAecmInit(void)
 	}	
 	AecmConfig aecm_config;
 	aecm_config.cngMode = 0;
-	aecm_config.echoMode = 0;
+	aecm_config.echoMode = 4;
 	WebRtcAecm_set_config(phone_audio.aecmInst,aecm_config);
 	PRINT("AudioAecmInit OK\r\n");		
 	return 0;
@@ -219,17 +221,23 @@ void stop_read_incoming()
 }
 
 //开启音频流
-int startaudio(dev_status_t* devp,int flag)
+int startaudio(dev_status_t* devp,int flag,int action_mode)
 {
 	PRINT("%s\n",__FUNCTION__);
 	char *bufp = devp->dev_mac;
 	char tmp[3]={0};
+	int i,ret,count=0;
 
 	if(devp->audio_client_fd < 0)
 	{
 		return -1;
 	}
-	int i,ret,count=0;
+	if(action_mode == CALL)
+		phone_audio.time_to_reset = 175;
+	else if(action_mode == CALLED || action_mode == SWITCH || action_mode == RECONNECT || action_mode == OTHER)
+		phone_audio.time_to_reset = 60;
+	else 
+		phone_audio.time_to_reset = 0;
 	for(i=0;i<CLIENT_NUM;i++)
 	{
 		if(devlist[i].dev_is_using == 1)
@@ -238,7 +246,7 @@ int startaudio(dev_status_t* devp,int flag)
 	if(count==1)
 	{
 		PRINT("PSTN....\n");	
-		if(flag == 0)
+		if(flag == PCM_RESET)
 		{
 			//ioctl(phone_audio.phone_audio_pcmfd,SLIC_INIT,0);
 			if(phone_audio.phone_audio_pcmfd != -1)
@@ -754,6 +762,22 @@ int UlawDecodeEncrypt(unsigned char *pout,unsigned char *pin,int inbytes)
 	return inbytes;
 }
 
+int aecm_reset()
+{
+	int ret = 0;
+	if (ret = WebRtcAecm_Init(phone_audio.aecmInst, sampleRate) < 0) 
+	{
+		PRINT("WebRtcAecm_Init failed,return=%d\r\n",ret);
+		WebRtcAecm_Free(phone_audio.aecmInst);
+		return -1;
+	}	
+	AecmConfig aecm_config;
+	aecm_config.cngMode = 0;
+	aecm_config.echoMode = 0;
+	WebRtcAecm_set_config(phone_audio.aecmInst,aecm_config);
+	return 0;
+}
+
 void* AudioIncomingThreadCallBack(void* argv)
 {
 	unsigned char audioincoming_buf[AUDIO_READ_BYTE_SIZE*2] = {0};
@@ -1162,31 +1186,27 @@ void* AudioEchoThreadCallBack(void* argv)
 				valid_bytes = AUDIO_WRITE_BYTE_SIZE*2;
 			if((valid_bytes >= AUDIO_WRITE_BYTE_SIZE*2) || (phone_audio.echo_stream_wp < phone_audio.echo_stream_rp))
 			{
-				//if(phone_control.dial_over == 1)
-				//{
-					//readp = (short*)&echo_stream_buffer[phone_audio.echo_stream_rp];
-					//for(i=0;i<valid_bytes/4;i++)
-					//{
-						//*readp++ <<= 1;
-					//}
-				//}
+				//PRINT("echo_cancellation = %d\n",echo_cancellation);
+				if(echo_cancellation >= phone_audio.time_to_reset)
+				{
+					PRINT("reset aecm !!\n");
+					if(aecm_reset() != 0)
+					{
+						phone_audio.audio_echo_thread_flag = 0;
+						break;
+					}
+					echo_cancellation = -1;
+				}
+				else if(echo_cancellation >= 0)
+					echo_cancellation ++;			
 				if(phone_audio.st == NULL || phone_audio.den == NULL || phone_audio.dn == NULL)
 				{
 					PRINT("speex init err\n");
 					phone_audio.audio_echo_thread_flag = 0;
 					break;
 				}
-				
-				//if(phone_control.dial_over == 1)
-				//{
-					//if(echo_cancellation <= 5)
-						//echo_cancellation ++;
-				//}
-				//if(echo_cancellation >= 0 && total_dtmf_ret <= 16000 )
 				if(phone_control.dial_over == 1 && total_dtmf_ret <= 16000)
 				{
-					//if(echo_cancellation == 0)
-						//PRINT("start aec\n");
 					pthread_mutex_lock(&phone_audio.aec_mutex);
 					//HighPassFilter_Process(&phone_audio.hpf,(signed short *)&echo_stream_buffer[phone_audio.echo_stream_rp],valid_bytes/4);
 					speex_echo_cancellation(phone_audio.st,(spx_int16_t*)&echo_stream_buffer[phone_audio.echo_stream_rp], (spx_int16_t*)(&echo_stream_buffer[phone_audio.echo_stream_rp+AUDIO_WRITE_BYTE_SIZE]), (spx_int16_t*)out_buf);
@@ -1783,7 +1803,7 @@ void* audio_loop_accept(void* argv)
 								if(!strcmp(phone_control.who_is_online.client_ip,devlist[i].client_ip) && phone_control.who_is_online.attach == 1)
 								{
 									PRINT("audio reconnect\n");
-									startaudio(&devlist[i],1);
+									startaudio(&devlist[i],PCM_NO_RESET,RECONNECT);
 									phone_audio.audio_reconnect_flag=0;
 									if(phone_control.start_dial == 1)
 									{

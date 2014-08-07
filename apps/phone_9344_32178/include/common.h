@@ -45,7 +45,7 @@
 #endif
 
 #define PCMNAME "/dev/slic"
-#define TICK_INTERVAL 50
+#define TICK_INTERVAL 100//50
 
 #ifdef B6
 #define PASSAGE_NAME "/dev/phonepassage"

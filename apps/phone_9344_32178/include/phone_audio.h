@@ -16,8 +16,18 @@
 #define SET_WRITE_TYPE      _IOW('N', 0x26, int)
 #define SLIC_INIT			_IOW('N', 0x27, int)
 #define SLIC_RELEASE		_IOW('N', 0x28, int)
+
 #define PSTN 				1
 #define TALKBACK 			0
+
+#define PCM_RESET			0
+#define PCM_NO_RESET		1
+
+#define CALL				1
+#define CALLED				0
+#define SWITCH				0
+#define RECONNECT			0
+#define OTHER				0
 
 typedef struct {
   unsigned short y[4];
@@ -59,6 +69,8 @@ struct class_phone_audio
 	int dtmf_over; //dtmf发送结束
 	int dialup;
 	char start_dtmf;
+	int startaudio_mode;
+	int time_to_reset;
 	char key[8];
 	SpeexEchoState *st;
 	SpeexPreprocessState *den;
@@ -71,7 +83,7 @@ struct class_phone_audio
 int init_audio(void);
 void start_read_incoming();
 void stop_read_incoming();
-int startaudio(dev_status_t* devp,int flag);
+int startaudio(dev_status_t* devp,int flag,int action_mode);
 void stopaudio(dev_status_t* devp,int flag,int reconnect_flag);
 void* audio_loop_accept(void *argv);
 int Encrypt(unsigned char *data,int len);
