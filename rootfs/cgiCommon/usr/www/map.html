@@ -229,7 +229,7 @@ function initValue()
 			{
 				//alert(xmlreq.responseText);
 				w = document.getElementById("n11111111_r6_c2");
-				if ((xmlreq.responseText=="1")||(xmlreq.responseText==1))
+				if (xmlreq.responseText.indexOf("1") != -1)
 				{
 					w.src = "/images/11111111_r6_c2.png";//wai
 					clearTimeout(timeID);
