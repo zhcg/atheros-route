@@ -498,11 +498,11 @@ eXosip_event_wait (int tv_s, int tv_ms)
         char buf[500];
         int c = jpipe_read (eXosip.j_socketctl_event, buf, 499);
       }
-
+/*
     eXosip_lock ();
     eXosip_retransmit_lost200ok ();
     eXosip_unlock ();
-
+*/
     FD_ZERO (&fdset);
 #if defined (WIN32) || defined (_WIN32_WCE)
     FD_SET ((unsigned int) jpipe_get_read_descr (eXosip.j_socketctl_event),
