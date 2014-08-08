@@ -3206,7 +3206,7 @@ void* phone_check_tick(void* argv)
 				devlist[i].destroy_count = 0;
 				devlist[i].old_tick_time = devlist[i].tick_time;
 			}
-			if(devlist[i].destroy_count >= (TICK_INTERVAL+10))
+			if(devlist[i].destroy_count >= (TICK_INTERVAL+30))
 			{
 				PRINT("no tick!!!\n");
 				devlist[i].dying = 1;
