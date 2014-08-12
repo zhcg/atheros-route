@@ -178,6 +178,8 @@ int version(struct UKey *pUKey, unsigned char *pUsbData, int *pUsbDataLen)
 	}
     PRINT("Sending SCSI Read Command success.\n");
 	DELAY;
+	if(rd_temp[0] != 0xa5 || rd_temp[1] != 0x5a)
+		return -1;
     len=(unsigned short int)(( rd_temp[5]<<8)+rd_temp[6]);
     len=len+8;
     PRINT("rd_temp[5] = %x\n", rd_temp[5]);
@@ -263,6 +265,8 @@ int sn(struct UKey *pUKey, unsigned char *pUsbData, int *pUsbDataLen)
 	}
     PRINT("Sending SCSI Read Command success.\n");
 	DELAY;
+	if(rd_temp[0] != 0xa5 || rd_temp[1] != 0x5a)
+		return -1;
     len=(unsigned short int)((rd_temp[5]<<8)+rd_temp[6]);
     len=len+8;
     PRINT("rd_temp[5] = %x\n", rd_temp[5]);
@@ -351,6 +355,8 @@ int version_detail(struct UKey *pUKey, unsigned char *pUsbData, int *pUsbDataLen
 	}
     PRINT("Sending SCSI Read Command success.\n");
 	DELAY;
+	if(rd_temp[0] != 0xa5 || rd_temp[1] != 0x5a)
+		return -1;
     len=(unsigned short int)((rd_temp[5]<<8)+rd_temp[6]);
     len=len+8;
     PRINT("rd_temp[5] = %x\n", rd_temp[5]);
@@ -445,6 +451,8 @@ int reboot_enter_boot(struct UKey *pUKey)
 	}
     PRINT("Sending SCSI Read Command success.\n");
 	DELAY;
+	if(rd_temp[0] != 0xa5 || rd_temp[1] != 0x5a)
+		return -1;
      len=(unsigned short int)((rd_temp[5]<<8)+rd_temp[6]);
      len=len+8;
          PRINT("rd_temp[5] = %x\n", rd_temp[5]);
