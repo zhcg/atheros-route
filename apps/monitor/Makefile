@@ -1,5 +1,5 @@
 BASE_TYPE = 
-BIN = monitor
+BIN = monitor_base
 
 ifneq ($(strip $(TOOLPREFIX)),)
 CROSS:=$(TOOLPREFIX)

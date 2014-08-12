@@ -61,9 +61,9 @@ modules_server &
 
 phone_control &
 
-monitor &
+monitor_base &
 
-check_phone_status phone_control modules_server monitor &
+check_phone_status phone_control modules_server monitor_base &
 
 
 
