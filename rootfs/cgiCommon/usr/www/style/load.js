@@ -151,4 +151,17 @@ function deleteCookie(name)
 	var date=new Date(); 
 	date.setTime(date.getTime()-10000); 
 	document.cookie=name+"=v; expires="+date.toGMTString(); 
-} 
+}
+var warning_tID = 0;
+function warningBegin(note)
+{
+	warning_tID = setTimeout(function()
+	{
+		DialogHide();
+		Demo(note);
+	},15000);
+}
+function warningEnd()
+{
+	clearInterval(warning_tID);
+}

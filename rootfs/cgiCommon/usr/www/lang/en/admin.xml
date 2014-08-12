@@ -187,6 +187,7 @@
 	<message msgid="admw settingwaiting" msgstr="Setting,Please Wait......" />
 	<message msgid="admw uploadwaiting" msgstr="Upgrading,Please Wait......" />
 	<message msgid="admw settingmanual" msgstr="Setting,Please Wait......If the page does not jump , please manually" />
+	<message msgid="admw wifiout" msgstr="Setting completed, please check the WIFI and refresh the page" />
 
 	<message msgid="admw ssidrequest" msgstr="  (1-24 letters, numbers, or underscore)" />
 	<message msgid="admw passwordrequest" msgstr="  (8-63 letters, numbers or underscore)" />

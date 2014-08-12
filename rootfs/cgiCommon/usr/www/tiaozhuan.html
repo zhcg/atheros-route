@@ -11,20 +11,21 @@
 <input type="text" style="display:none" name="PAGE" id="PAGE" size="20" maxlength="32" value="~~PAGE~"/>
 
 <script type="text/javascript">
-Butterlate.setTextDomain("other");
-var a = document.getElementById("RESULT").value;
-var b = document.getElementById("PAGE").value;
-if(a == "yes")
-{
-	window.parent.Demo2(_("R_SUCCESS"));
-}
-else
-{
-	window.parent.Demo2(_("R_FAIL"));
-}
-var hbd;
-hbd = b+"?"+b+"=yes";
-setTimeout(function(){window.parent.DialogHide();if(b=="map"){window.parent.showpwd1();}window.location.href=hbd;},1000);
+	Butterlate.setTextDomain("other");
+	var a = document.getElementById("RESULT").value;
+	var b = document.getElementById("PAGE").value;
+	if(a == "yes")
+	{
+		window.parent.Demo2(_("R_SUCCESS"));
+	}
+	else
+	{
+		window.parent.Demo2(_("R_FAIL"));
+	}
+	window.parent.warningEnd();
+	var hbd;
+	hbd = b+"?"+b+"=yes";
+	setTimeout(function(){window.parent.DialogHide();if(b=="map"){window.parent.showpwd1();}window.location.href=hbd;},1000);
 </script>
 
 </body>
