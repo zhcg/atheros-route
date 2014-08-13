@@ -50,6 +50,20 @@ int cpu_warning_times = 0;
 int mem_warning_times = 0;
 int hd_warning_times = 0;
 
+struct timeval print_tv;	
+char print_time_buf_tmp[64] = {0};
+char print_time_buf[256] = {0};	
+
+char *system_time()
+{
+	memset(print_time_buf, 0, sizeof(print_time_buf));
+	memset(&print_tv, 0, sizeof(print_tv));
+	
+	gettimeofday(&print_tv, NULL);
+	strftime(print_time_buf_tmp, sizeof(print_time_buf_tmp), "%T:", localtime(&print_tv.tv_sec));    
+	sprintf(print_time_buf, "%s%03d", print_time_buf_tmp, print_tv.tv_usec/1000);
+	return print_time_buf;
+}
 static int set_buf(char *buf,int len)
 {
 	int i;
@@ -602,7 +616,7 @@ static int get_base_state(char *buf, int *buf_len)
 		mem_warning_times = 0;
 	}
 
-    sleep(2);
+    sleep(1);
     // cpu信息2
 	if ((fp = fopen("/proc/stat", "r")) == NULL)
     {
@@ -1163,43 +1177,54 @@ static int send_message(char *buf,int buf_len)
 static void * base_heartbeat_msg_manage(void* para)
 {
 	int res = 0;    
-    //struct timeval tv;
-    //memset(&tv, 0, sizeof(struct timeval));
+	unsigned long tick_total = 0;
+	unsigned long diff = 0;
+	struct timeval old_tv;	
+	struct timeval new_tv;	
+    memset(&old_tv, 0, sizeof(struct timeval));
+    memset(&new_tv, 0, sizeof(struct timeval));
     
     char heartbeat_buf[256] = {0};
     char send_buf[4096] = {0};
-    
+	gettimeofday(&new_tv,NULL);
+    tick_total = (OPTION_DELAY*1000*1000);
     while (1)
     {
-        // 心跳
-        //gettimeofday(&tv, NULL);
+		memcpy(&old_tv,&new_tv,sizeof(old_tv));
+		gettimeofday(&new_tv,NULL);
+		diff = 1000000 * (new_tv.tv_sec-old_tv.tv_sec)+ new_tv.tv_usec-old_tv.tv_usec;
+		//PRINT("diff = %ld\n",diff);
+		tick_total += diff;
         
-        sprintf(heartbeat_buf,"{id:%s,dev_type:1,ip:%s}", sip_msg.base_sn,sip_msg.localip);            
-        
-        snprintf(send_buf, sizeof(send_buf),
-            "v=0\r\n"
-            "o=%s\r\n"
-            "s=conversation\r\n"
-            "i=2\r\n"
-            "c=%s\r\n",sip_msg.base_sn, heartbeat_buf);
-            
-        pthread_mutex_lock(&send_mutex);
-        // 发送
-        if ((res = send_message(send_buf,strlen(send_buf))) < 0)
-        {
-            PRINT("send_message failed!\n");
-        }
-        else
-        {
-            PRINT("send heartbeat msg successful!\n");    
-        }
-        pthread_mutex_unlock(&send_mutex);
-        
-        memset(heartbeat_buf, 0, sizeof(heartbeat_buf));
-        //memset(&tv, 0, sizeof(struct timeval));
-        memset(send_buf, 0, sizeof(send_buf));
-        
-        sleep(OPTION_DELAY);
+		if(tick_total >= (OPTION_DELAY*1000*1000))
+		{
+			tick_total = 0;
+			sprintf(heartbeat_buf,"{id:%s,dev_type:1,ip:%s}", sip_msg.base_sn,sip_msg.localip);            
+			
+			snprintf(send_buf, sizeof(send_buf),
+				"v=0\r\n"
+				"o=%s\r\n"
+				"s=conversation\r\n"
+				"i=2\r\n"
+				"c=%s\r\n",sip_msg.base_sn, heartbeat_buf);
+				
+			pthread_mutex_lock(&send_mutex);
+			// 发送
+			if ((res = send_message(send_buf,strlen(send_buf))) < 0)
+			{
+				PRINT("send_message failed!\n");
+			}
+			else
+			{
+				PRINT("send heartbeat msg successful!\n");    
+			}
+			pthread_mutex_unlock(&send_mutex);
+			
+			memset(heartbeat_buf, 0, sizeof(heartbeat_buf));
+			//memset(&tv, 0, sizeof(struct timeval));
+			memset(send_buf, 0, sizeof(send_buf));
+		}
+		usleep(200*1000);
     }
     return (void *)res;
 
@@ -1213,20 +1238,35 @@ static void * base_state_msg_manage(void* para)
 	int msg_len = 0;
 	int tmp_len = 0;
 	int counts = 0;
+	unsigned long tick_total = 0;
+	unsigned long tick_send_total = 0;
+	unsigned long diff = 0;
+	struct timeval old_tv;	
+	struct timeval new_tv;	
+	memset(&old_tv,0,sizeof(old_tv));
+	memset(&new_tv,0,sizeof(new_tv));
+	gettimeofday(&new_tv,NULL);
+	tick_total = (3*1000*1000);
+	tick_send_total = (STATUS_DELAY*1000*1000);
     while (1)
     {
-#ifdef BASE_9344
-		if(counts%1 == 0)
-#elif defined(BASE_A20)
-		if(counts%3 == 0)
-#endif
+		memcpy(&old_tv,&new_tv,sizeof(old_tv));
+		gettimeofday(&new_tv,NULL);
+		diff = 1000000 * (new_tv.tv_sec-old_tv.tv_sec)+ new_tv.tv_usec-old_tv.tv_usec;
+		//PRINT("diff = %ld\n",diff);
+		tick_total += diff;
+		tick_send_total += diff;
+		if(tick_total >= (3*1000*1000))
 		{
+			PRINT("tick_total = %ld\n",tick_total);
+			tick_total = 0;
 			memset(base_state_buf, 0, sizeof(base_state_buf));
 			// base状态监控信息
 			if ((res = get_base_state(base_state_buf, &msg_len)) < 0)
 			{
 				PRINT("get_base_state failed!\n");
-				goto NEXT;
+				usleep(200*1000);
+				continue;
 			}
 			if(res == 1)
 			{
@@ -1251,8 +1291,11 @@ static void * base_state_msg_manage(void* para)
 				pthread_mutex_unlock(&send_mutex);
 			}
 		}
-		if(counts%(STATUS_DELAY) == 0)
+		
+		if(tick_send_total >= (STATUS_DELAY*1000*1000))
 		{
+			PRINT("tick_send_total = %ld\n",tick_send_total);
+			tick_send_total = 0;
 			snprintf(send_buf, sizeof(send_buf),
 				"v=0\r\n"
 				"o=%s\r\n"
@@ -1273,13 +1316,8 @@ static void * base_state_msg_manage(void* para)
 			pthread_mutex_unlock(&send_mutex);
 		}
         memset(send_buf, 0, sizeof(send_buf));
-NEXT:    
-#ifdef BASE_9344
-		counts+=3;
-#elif defined(BASE_A20)
-		counts++;
-#endif
-		sleep(1);
+NEXT:
+		usleep(200*1000);
     }    
     return (void *)res;
 }
