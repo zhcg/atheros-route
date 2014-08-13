@@ -1194,6 +1194,8 @@ static void * base_heartbeat_msg_manage(void* para)
 		gettimeofday(&new_tv,NULL);
 		diff = 1000000 * (new_tv.tv_sec-old_tv.tv_sec)+ new_tv.tv_usec-old_tv.tv_usec;
 		//PRINT("diff = %ld\n",diff);
+		if(diff < 0)
+			diff = 0;
 		tick_total += diff;
         
 		if(tick_total >= (OPTION_DELAY*1000*1000))
@@ -1254,6 +1256,8 @@ static void * base_state_msg_manage(void* para)
 		gettimeofday(&new_tv,NULL);
 		diff = 1000000 * (new_tv.tv_sec-old_tv.tv_sec)+ new_tv.tv_usec-old_tv.tv_usec;
 		//PRINT("diff = %ld\n",diff);
+		if(diff < 0)
+			diff = 0;
 		tick_total += diff;
 		tick_send_total += diff;
 		if(tick_total >= (3*1000*1000))
