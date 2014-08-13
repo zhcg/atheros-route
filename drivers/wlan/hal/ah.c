@@ -242,6 +242,8 @@ ath_hal_attach(u_int16_t devid, HAL_ADAPTER_HANDLE osdev, HAL_SOFTC sc,
     struct hal_reg_parm *hal_conf_parm, HAL_STATUS *error)
 {
     struct ath_hal *ah=AH_NULL;
+//	printk("%s: ------------ the device id is 0x%04x--------\n",
+//		   __func__, devid);
 
     switch (devid) {
 #ifdef AH_SUPPORT_AR5212
@@ -280,12 +282,12 @@ ath_hal_attach(u_int16_t devid, HAL_ADAPTER_HANDLE osdev, HAL_SOFTC sc,
     case AR9300_DEVID_AR9380_PCIE:
     case AR9300_DEVID_AR9340:
     case AR9300_DEVID_AR9485_PCIE:
-    case AR9300_DEVID_AR9580_PCIE:
-#ifdef AR9300_EMULATION
+    case AR9300_DEVID_AR9580_PCIE:		
+//#ifdef AR9300_EMULATION
     case AR9300_DEVID_EMU_PCIE:
-#endif
         ah = ar9300Attach(devid, osdev, sc, st, sh, bustype, amem_handle,
                           hal_conf_parm, error);
+//#endif
         break;
 #endif
     default:

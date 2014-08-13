@@ -366,7 +366,7 @@ CONFIG_DUMPLEASES=y
 #
 # Process Utilities
 #
-# CONFIG_FREE is not set
+CONFIG_FREE=y
 CONFIG_KILL=y
 CONFIG_KILLALL=y
 # CONFIG_PIDOF is not set
