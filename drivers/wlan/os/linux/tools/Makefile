@@ -227,7 +227,8 @@ upload.cgi: upload.cgi.c
 	cp upgrade.cgi $(INSTALL_ROOT)/usr/www/cgi-bin
 	${CC} -o ota.cgi ${CFLAGS} ${LDFLAGS} ota.cgi.c
 	cp ota.cgi $(INSTALL_ROOT)/usr/www/cgi-bin
-
+	${CC} -o ping.cgi ${CFLAGS} ${LDFLAGS} ping.cgi.c
+	cp ping.cgi $(INSTALL_ROOT)/usr/www/cgi-bin
 athdebug: athdebug.c
 	${CC} -o athdebug ${CFLAGS} ${LDFLAGS} athdebug.c
 wlanconfig: wlanconfig.c

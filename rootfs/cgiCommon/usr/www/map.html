@@ -7,6 +7,7 @@
 <style type="text/css">td img {display: block;}</style>
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript" src="/style/basic.js"></script>
+<script language="JavaScript" type="text/javascript" src="/style/netcheck.js"></script>
 <script language="JavaScript" type="text/javascript">
 if(getCookie()){}
 else{window.top.location.href="../login.html";}
@@ -191,76 +192,30 @@ function initValue()
 	<input type="text" style="display:none" name="IPA" id="IPA" size="20" maxlength="32" value="~~AP_IPADDR~">
 	<input type="text" style="display:none" name="RADIO_STATUS" id="RADIO_STATUS" size="20" maxlength="32" value="~~RADIO_STATUS~">
 	<script language="JavaScript">
-
-	var xmlreq;
-	var timeID;
-	var desIPreboot;	
-	var w;	
-	var last = 0;
-	function createxmlreq()
+	var w = document.getElementById("n11111111_r6_c2");
+	var begin = 0;
+	pingstart();
+	setInterval('pingstart()',60000);
+	function refreshping()
 	{
-		//alert("1");
-		if(window.ActiveXObject)
+		if(begin == 1)
+			return;
+		begein = 1;	
+		var result = new getpingresult();
+		var tempr;
+		tempr = result.result;
+		//alert(result.result);
+		if(tempr!=="")
 		{
-			xmlreq=new ActiveXObject("Microsoft.XMLHTTP");
-		}
-		else if(window.XMLHttpRequest)
-		{
-			xmlreq=new XMLHttpRequest();
-		}
-	}
-
-	function rebootRequest()
-	{
-		clearTimeout(timeID);
-		timeID = setTimeout(function(){rebootRequest();},3000);
-		createxmlreq();
-		xmlreq.onreadystatechange=handleState;
-		desIPreboot = location.hostname;//document.getElementById("IPA").value;
-		//xmlreq.open("GET","ping.xml?now=" + new Date().getTime(),true);
-		xmlreq.open("GET","http://"+desIPreboot+"/ping.xml?now=" + new Date().getTime(),true);
-		xmlreq.send(null);
-	}
-	function handleState()
-	{
-		if(xmlreq.readyState==4)
-		{
-			if(xmlreq.status==200)
-			{
-				//alert(xmlreq.responseText);
-				w = document.getElementById("n11111111_r6_c2");
-				if (xmlreq.responseText.indexOf("1") != -1)
-				{
-					w.src = "/images/11111111_r6_c2.png";//wai
-					clearTimeout(timeID);
-					timeID = setTimeout(function(){rebootRequest();},3000);
-				}
-				else
-				{
-					if(last == 0)
-					{
-						last ++;
-					}
-					else
-					{
-						w.src = "/images/11111111_r8_c2111.png";
-						last = 0;
-					}
-					clearTimeout(timeID);
-					timeID = setTimeout(function(){rebootRequest();},3000);
-				}
-			}
+			if(tempr.indexOf("1") != -1)
+				w.src = "/images/11111111_r6_c2.png";//wai
 			else
-			{
-				//alert("3"+xmlreq.status);
-			}
+				w.src = "/images/11111111_r8_c2111.png";
 		}
-		else
-		{
-			//alert("2"+xmlreq.readyState);
-		}
+		begin = 0;
 	}
-	rebootRequest();
+	refreshping();
+	setInterval('refreshping()',3000);
 	</script>
 </body>
 </html>
