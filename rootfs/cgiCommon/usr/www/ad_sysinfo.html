@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript" src="/style/basic.js"></script>
+<script language="JavaScript" type="text/javascript" src="/style/netcheck.js"></script>
 <script>
 if(getCookie()){}
 else{window.top.location.href="../login.html";}
@@ -46,123 +47,105 @@ function initTranslation()
 
 }
 	var wtype;
-	
-	var xmlreq;
-	var desIPreboot;	
-	function createxmlreq()	{if(window.ActiveXObject){xmlreq=new ActiveXObject("Microsoft.XMLHTTP");}else if(window.XMLHttpRequest){xmlreq=new XMLHttpRequest();}}
-	function rebootRequest()
+	function PPPoERequest()
 	{
+		var pppoestatus = new getPPPoEresult();
+		var pstatus = pppoestatus.result;
+		//alert(pstatus);
+		if(pstatus.indexOf("Authentication success") != -1 )
+		{
+			document.getElementById("ss3").innerHTML=_("sysinfo ok");
+			document.getElementById("ss5").innerHTML=document.getElementById("s5e").value +"/"+document.getElementById("s5f").value;	
+			document.getElementById("ss7").innerHTML=document.getElementById("s7c").value;		
+		}
+		else//不可以上网
+		{
+			if(pstatus.indexOf("LCP: timeout") != -1 )
+			{
+				document.getElementById("ss3").innerHTML=_("sysinfo fail")+"("+_("sysinfo ppptimeout")+")";	//连接超时
+			}
+			else if(pstatus.indexOf("Remote message: 24") != -1 )
+			{
+				document.getElementById("ss3").innerHTML=_("sysinfo fail")+"("+_("sysinfo pppusererr")+")";	//用户名错误
+			}
+			else if(pstatus.indexOf("Remote message: 29") != -1 )
+			{
+				document.getElementById("ss3").innerHTML=_("sysinfo fail")+"("+_("sysinfo ppppwderr")+")";	//密码错误
+			}
+			else
+			{
+				var result = new getpingresult();
+				var tempr;
+				tempr = result.result;
+				//alert(result.result);
+				if(tempr!=="")
+				{
+					if(tempr.indexOf("1") != -1)
+					{	
+						document.getElementById("ss3").innerHTML=_("sysinfo ok");
+						document.getElementById("ss5").innerHTML=document.getElementById("s5e").value +"/"+document.getElementById("s5f").value;	
+						document.getElementById("ss7").innerHTML=document.getElementById("s7c").value;
+						return;						
+					}
+					else
+					{
+						document.getElementById("ss3").innerHTML=_("sysinfo fail");
+					}
+				}
+				document.getElementById("ss3").innerHTML=_("sysinfo fail");	
+			}
+			document.getElementById("ss5").innerHTML=_("sysinfo unset");	
+			document.getElementById("ss7").innerHTML=_("sysinfo unset");				
+		}
+	}
+	
+	var begin = 0;	
+	function refreshping()
+	{
+		if(begin == 1)
+			return;
+		begein = 1;	
+		var result = new getpingresult();
+		var tempr;
+		tempr = result.result;
+		//alert(result.result);
+		if(tempr!=="")
+		{
+			if(tempr.indexOf("1") != -1)
+				document.getElementById("ss3").innerHTML=_("sysinfo ok");
+			else
+				document.getElementById("ss3").innerHTML=_("sysinfo fail");
+		}
+		begin = 0;
+	}
+	
+	function init()
+	{
+		Butterlate.setTextDomain("main");
+		initTranslation();
+		valueinit();
+		WIFI_HS();
+		pingstart();
+		setInterval('pingstart()',60000);
+		
 		if((document.getElementById("s142").value == "on")||(document.getElementById("s14").value == "on"))
 		{
-		
+			refreshping();
+			setInterval('refreshping()',3000);	
 		}
 		else
 		{
 			if(wtype == "pppoe")
-				return;		
+			{
+			
+			}
+			else
+			{
+				refreshping();
+				setInterval('refreshping()',3000);
+			}
 		}
-
-		createxmlreq();
-		xmlreq.onreadystatechange=handleState;
-		desIPreboot = location.hostname;
-		xmlreq.open("GET","http://"+desIPreboot+"/ping.xml?now=" + new Date().getTime(),true);
-		xmlreq.send(null);
 	}
-	function handleState()
-	{
-		if(xmlreq.readyState==4){if(xmlreq.status==200)
-		{
-				if (xmlreq.responseText.indexOf("1") != -1)
-					document.getElementById("ss3").innerHTML=_("sysinfo ok");
-				else
-					document.getElementById("ss3").innerHTML=_("sysinfo fail");
-		}}
-	}
-	
-	var xmlreq2;
-	var desIPreboot2;	
-	function createxmlreq2(){if(window.ActiveXObject){xmlreq2=new ActiveXObject("Microsoft.XMLHTTP");}else if(window.XMLHttpRequest){xmlreq2=new XMLHttpRequest();}}
-	function PPPoERequest()
-	{
-		createxmlreq2();
-		xmlreq2.onreadystatechange=handleState2;
-		desIPreboot2 = location.hostname;
-		xmlreq2.open("GET","http://"+desIPreboot2+"/pppoe_status.xml?now=" + new Date().getTime(),true);
-		xmlreq2.send(null);
-	}
-	function handleState2()
-	{
-		if(xmlreq2.readyState==4){if(xmlreq2.status==200)
-		{
-			var pstatus = xmlreq2.responseText;
-			//alert(pstatus);
-			if(pstatus.indexOf("Authentication success") != -1 )
-			{
-				document.getElementById("ss3").innerHTML=_("sysinfo ok");
-				document.getElementById("ss5").innerHTML=document.getElementById("s5e").value +"/"+document.getElementById("s5f").value;	
-				document.getElementById("ss7").innerHTML=document.getElementById("s7c").value;		
-			}
-			else//不可以上网
-			{
-				if(pstatus.indexOf("LCP: timeout") != -1 )
-				{
-					document.getElementById("ss3").innerHTML=_("sysinfo fail")+"("+_("sysinfo ppptimeout")+")";	//连接超时
-				}
-				else if(pstatus.indexOf("Remote message: 24") != -1 )
-				{
-					document.getElementById("ss3").innerHTML=_("sysinfo fail")+"("+_("sysinfo pppusererr")+")";	//用户名错误
-				}
-				else if(pstatus.indexOf("Remote message: 29") != -1 )
-				{
-					document.getElementById("ss3").innerHTML=_("sysinfo fail")+"("+_("sysinfo ppppwderr")+")";	//密码错误
-				}
-				else
-				{
-					var requestss;
-					var po=window.location.protocol+"//"+window.location.host+"/ping.xml?now=" + new Date().getTime(); 
-					try { requestss = new XMLHttpRequest(); } 
-					catch(e1) 
-					{
-						try { requestss = new ActiveXObject("Msxml2.XMLHTTP"); } 
-						catch(e2) 
-						{
-							try { requestss = new ActiveXObject("Microsoft.XMLHTTP"); } 
-							catch(e3) { return; }
-						}
-					};
-					requestss.open("GET",po,false); 
-					requestss.send(null);
-					if(requestss.status==200) 
-					{ 
-						var pos = requestss.responseText;
-						if(pos.indexOf("1") != -1)
-						{
-							document.getElementById("ss3").innerHTML=_("sysinfo ok");
-							document.getElementById("ss5").innerHTML=document.getElementById("s5e").value +"/"+document.getElementById("s5f").value;	
-							document.getElementById("ss7").innerHTML=document.getElementById("s7c").value;	
-							return;
-						}
-						else
-							document.getElementById("ss3").innerHTML=_("sysinfo fail");	
-					}
-					document.getElementById("ss3").innerHTML=_("sysinfo fail");	
-				}
-
-				document.getElementById("ss5").innerHTML=_("sysinfo unset");	
-				document.getElementById("ss7").innerHTML=_("sysinfo unset");				
-			}
-		}}
-	}
-
-function init()
-{
-	Butterlate.setTextDomain("main");
-	initTranslation();
-
-	valueinit();
-	WIFI_HS();
-	rebootRequest();
-}
 //上网状态	INTERNET_ON	on提供为可上网，off提示为不可以上网	
 //无线状态	WIFION_OFF	on提示为开启off提示为未开启	
 //安全类型	AP_SECMODE	WPA提示为加密None提示为公开	
