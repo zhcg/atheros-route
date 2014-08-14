@@ -3,6 +3,8 @@
 BAIDU=www.baidu.com
 BAIDU_IP=202.108.22.5
 DNS=8.8.8.8
+COUNT=0
+
 
 while true
 do
@@ -24,6 +26,11 @@ then
 else
 	echo "0">/usr/www/ping.xml
 	sleep 3
+fi
+COUNT=`expr $COUNT + 1`
+#echo $COUNT
+if [ "$COUNT" -eq 20 ];then
+	exit 1
 fi
 #cfg -c
 done

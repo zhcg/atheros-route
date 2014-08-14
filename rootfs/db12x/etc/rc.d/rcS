@@ -174,7 +174,7 @@ fi
 
 /usr/bin/version_check &
 /bin/server &
-/bin/net_test &
+#/bin/net_test &
 /usr/sbin/set_ntpserver &
 /usr/sbin/httpd -h /usr/www/
 #/usr/sbin/threethread &
