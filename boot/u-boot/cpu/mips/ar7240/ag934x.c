@@ -705,6 +705,7 @@ int ag7240_enet_initialize(bd_t * bis)
     ar7240_reg_rmw_set(AR7240_GPIO_OUT, 0x1<<13);
 
     //turn off phoneled
+    ar7240_reg_rmw_set(AR7240_GPIO_BASE + 0x6c, 0x1<<1);
     ar7240_reg_rmw_clear(AR7240_GPIO_OE, 0x1<<3);
     ar7240_reg_rmw_clear(AR7240_GPIO_OE, 0x1<<4);
     ar7240_reg_rmw_clear(AR7240_GPIO_BASE + 0x2C, 0xff000000<<0);
