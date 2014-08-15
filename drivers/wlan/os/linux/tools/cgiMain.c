@@ -7709,12 +7709,12 @@ int main(int argc,char **argv)
 			
 
 //add by mingyue
-			Execute_cmd("awk -F' ' 'BEGIN{i=0;}{i++; if(i==1) {print $2}}' /etc/resolv.conf", pppoe_dns);
+			Execute_cmd("awk -F' ' 'BEGIN{i=0;}{i++; if(i==1) {print $2}}' /etc/resolv.conf 2> /dev/null", pppoe_dns);
 			CFG_set_by_name("PRIDNS",pppoe_dns);
 
 
             memset(pppoe_dns,0,20);
-			Execute_cmd("awk -F' ' 'BEGIN{i=0;}{i++; if(i==2) {print $2}}' /etc/resolv.conf", pppoe_dns);
+			Execute_cmd("awk -F' ' 'BEGIN{i=0;}{i++; if(i==2) {print $2}}' /etc/resolv.conf 2> /dev/null", pppoe_dns);
 			CFG_set_by_name("SECDNS",pppoe_dns);
             writeParametersWithSync();
 
