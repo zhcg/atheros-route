@@ -6321,7 +6321,7 @@ int main(int argc,char **argv)
 			}
 		}
 
-		if(flag = 1)
+		if(flag == 1)
 		{
 			CFG_get_by_name("AP_STARTMODE",wan_modebuf);
 			if(strstr(wan_modebuf,"repeater_wisp"))
@@ -6503,7 +6503,7 @@ int main(int argc,char **argv)
 			}
 		}
 
-		if(flag = 1)
+		if(flag == 1)
 		{
 			CFG_get_by_name("AP_STARTMODE",wan_modebuf);
 			if(strstr(wan_modebuf,"repeater_wisp"))
@@ -7588,7 +7588,7 @@ int main(int argc,char **argv)
 				}
 			}
 			
-			if(flag = 1)
+			if(flag == 1)
 			{
 				CFG_get_by_name("AP_STARTMODE",wan_modebuf);
 				if(strstr(wan_modebuf,"repeater_wisp"))
