@@ -244,4 +244,6 @@ extern struct class_phone_control phone_control;
 extern struct class_phone_audio phone_audio;
 extern dev_status_t devlist[CLIENT_NUM];
 extern unsigned char output_stream_buffer[AUDIO_STREAM_BUFFER_SIZE];
+extern int Fsk_CID[100];
+extern int Fsk_CID_Len;
 #endif

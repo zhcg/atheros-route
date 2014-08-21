@@ -2293,6 +2293,65 @@ int check_incoming_num(char *incoming_num,int len)
 	return 0;
 }
 
+int get_incoming_num(char *incoming_num)
+{
+	/*
+	unsigned char* datep = NULL;
+	struct __fsk_num f_num;
+	unsigned char date[64] = {0};
+	int i,j;
+	int len = 0;
+	memset(&f_num,0,sizeof(f_num));
+	for(i=0,j=0;i<Fsk_CID_Len;i+=2,j++)
+	{
+		date[j] = (unsigned char)(Fsk_CID[i] & 0xff)+ (unsigned char)((Fsk_CID[i+1] & 0xff) << 4);
+		printf("0x%02X ", date[j]);
+	}
+	printf("\n");
+	if(date[0] == (unsigned char)DOUBLE)
+	{
+		f_num.type = (unsigned char)DOUBLE;
+	}
+	else if(date[0] == (unsigned char)SINGLE)
+	{
+		f_num.type = (unsigned char)SINGLE;
+	}
+	else
+		f_num.type = (unsigned char)OTHER_CODE;
+	switch(f_num.type)
+	{
+		case DOUBLE:
+			datep = date+date[3]+4;
+			if(*datep != (unsigned char)0x02)
+				return -1;
+			len = *(datep+1);
+			printf("len = %d\n",len);
+			memcpy(incoming_num,datep+2,len);
+			break;
+		case SINGLE:
+			datep = date;
+			len = (*(datep+1)-8);
+			printf("len = %d\n",len);
+			memcpy(incoming_num,datep+10,len);
+			break;
+		default:
+			break;
+	}
+	* */
+	int i;
+	if(Fsk_CID_Len >= SENDBUF)
+		Fsk_CID_Len = SENDBUF-1;
+	for(i=0;i<Fsk_CID_Len;i++)
+	{
+		incoming_num[i] = (unsigned char)(Fsk_CID[i] & 0xff);
+		printf("0x%02X ", incoming_num[i]);
+		incoming_num[i] += '0';
+	}
+	printf("\n");
+	printf("incoming_num ?= %s\n",incoming_num);
+	return 0;
+}
+
 void *loop_check_ring(void * argv)
 {
 	PRINT("%s thread start.......\n",__FUNCTION__);
@@ -2406,12 +2465,13 @@ void *loop_check_ring(void * argv)
 				}
 				if(phone_control.get_fsk == 1)
 				{
-					PRINT("num_len = %d\n",strlen(fskmsg.num));
+					get_incoming_num(incoming_num);
+					//PRINT("num_len = %d\n",strlen(fskmsg.num));
 					//zb 14-06-27
 					//if(fskmsg.isgood == TRUE)
-					{
-						memcpy(incoming_num,fskmsg.num,strlen(fskmsg.num));
-					}
+					//{
+						//memcpy(incoming_num,fskmsg.num,strlen(fskmsg.num));
+					//}
 					//Fsk_FinishFskData();
 				}
 				phone_audio.get_code = 0;

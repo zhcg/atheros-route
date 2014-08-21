@@ -66,6 +66,12 @@ FILE* out_file;
 FILE* incoming_file;
 #endif
 
+static int compare_times = 30;//15;//默认比较数字半双工倍乘值
+static int compare_times_min = 40;//低音抑制参数
+//static int compare_times_max = 25;
+static int last_do_flag = 0;
+static int extra_do_filter_count=2;
+
 int sampleRate = 8000;
 const signed short kFilterCoefficients8kHz[5] =
     {3798, -7596, 3798, 7807, -3733};
@@ -153,7 +159,7 @@ int AudioAecmInit(void)
 	}	
 	AecmConfig aecm_config;
 	aecm_config.cngMode = 0;
-	aecm_config.echoMode = 4;
+	aecm_config.echoMode = 0;
 	WebRtcAecm_set_config(phone_audio.aecmInst,aecm_config);
 	PRINT("AudioAecmInit OK\r\n");		
 	return 0;
@@ -1150,6 +1156,74 @@ TBED_SEND_ERROR:
 	PRINT("AudioReadWriteThreadCallBack exit....\n");
 }
 
+int AudioDriverReadFilterDo(char *pplay_pos, char *precord_pos, int len)
+{
+	int i;
+	signed short *psh_start;
+	unsigned int play_energy = 0;
+	unsigned int record_energy = 0;
+	int short_count;
+	int total_len = 0;
+	if(len % 640 != 0)
+		return -1;
+	while(len > 0)
+	{
+		play_energy = 0;
+		record_energy = 0;
+	//	short_count = SLIC_BUF_SIZE/2;
+		short_count = 640/2;
+		psh_start = (signed short *)(pplay_pos+total_len);
+		for(i = 0;i < short_count;i++)
+		{
+			play_energy += abs(psh_start[i]);			
+		}
+		
+		play_energy /= short_count;
+		
+		play_energy *= 3;
+		if(play_energy < 260)
+			play_energy *= compare_times_min;
+	//	else if(play_energy > 4000)
+	//		play_energy *= compare_times_max;
+		else
+			play_energy *= compare_times;
+		play_energy /= 100;
+		
+		psh_start = (signed short *)(precord_pos+total_len);
+		for(i = 0;i < short_count;i++)
+		{
+			record_energy += abs(psh_start[i]);			
+		}
+
+		record_energy /= short_count;
+		total_len += 640;
+		len -= 640;
+		//PRINT("len = %d\n",len);
+		//PRINT("play_energy = %d\n",play_energy);
+		//PRINT("record_energy = %d\n",record_energy);
+		if(play_energy >= record_energy)
+		{
+			for(i = 0;i < short_count;i++)
+			{
+				psh_start[i] = 0x00;
+			}
+			//PRINT("zero\n");
+			last_do_flag = extra_do_filter_count;
+			continue;
+		}
+		if(last_do_flag > 0)
+		{
+			for(i = 0;i < short_count;i++)
+			{
+				psh_start[i] = 0x00;
+			}
+			//PRINT("zero\n");
+			last_do_flag--;
+		}
+	}
+	return 0;
+}
+
 void* AudioEchoThreadCallBack(void* argv)
 {
 	short out_buf[AUDIO_WRITE_BYTE_SIZE*2]= {0};
@@ -1189,13 +1263,7 @@ void* AudioEchoThreadCallBack(void* argv)
 				//PRINT("echo_cancellation = %d\n",echo_cancellation);
 				if(echo_cancellation >= phone_audio.time_to_reset)
 				{
-					PRINT("reset aecm !!\n");
-					if(aecm_reset() != 0)
-					{
-						phone_audio.audio_echo_thread_flag = 0;
-						break;
-					}
-					echo_cancellation = -1;
+					;
 				}
 				else if(echo_cancellation >= 0)
 					echo_cancellation ++;			
@@ -1215,6 +1283,16 @@ void* AudioEchoThreadCallBack(void* argv)
 					AudioDo(out_buf,0,&echo_stream_buffer[phone_audio.echo_stream_rp+AUDIO_WRITE_BYTE_SIZE],0,valid_bytes/2);
 					HighPassFilter_Process(&phone_audio.hpf,(signed short *)out_buf,valid_bytes/4);
 					pthread_mutex_unlock(&phone_audio.aec_mutex);
+					if(echo_cancellation >= phone_audio.time_to_reset)
+					{
+						;
+					}
+					else
+					{
+						//AudioDriverReadFilterDo(&echo_stream_buffer[phone_audio.echo_stream_rp+AUDIO_WRITE_BYTE_SIZE], &echo_stream_buffer[phone_audio.echo_stream_rp], AUDIO_WRITE_BYTE_SIZE);			
+						AudioDriverReadFilterDo(&echo_stream_buffer[phone_audio.echo_stream_rp+AUDIO_WRITE_BYTE_SIZE], out_buf, AUDIO_WRITE_BYTE_SIZE);			
+						//memcpy(out_buf,&echo_stream_buffer[phone_audio.echo_stream_rp],AUDIO_WRITE_BYTE_SIZE);
+					}
 				}
 				else
 				{

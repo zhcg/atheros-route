@@ -21,8 +21,18 @@ static Fsk_Message_T g_fsk_bak_msg = {0};
 static BOOLEAN g_finish_flag = FALSE;
 static Fsk_Msg_Buffer_T g_fsk_msg_hex = {0};
 
+static int Fsk_lim[1000];
+int Fsk_CID[100];
+int Fsk_CID_Len;
+static int Fsk_n = 0;
+static int Lim_ready = 0;
+static int Lim_c = 0;
+static int lim_fsk_ready = 0;
 
+static int fix =0;
 
+extern FILE* fsk_file;
+unsigned char audioincoming_buf[2048] = {0};
 /*****************************************************************************/
 //  Description : initial parse FSK
 //  Global resource dependence : g_fsk_buff
@@ -53,10 +63,88 @@ void Fsk_InitParse(void)
 }
 
 /*****************************************************************************/
+
+/*****************************************************************************/
+void	fsk_parse(int fsk_bool[512], int j)
+{
+	int i, n=0;
+	int fsk_call[100];
+
+	Fsk_n = 0;
+
+	for(i = 0; i < j-9; i++)
+	{
+		if(fsk_bool[i] == 0 && fsk_bool[i+9] == 1)
+		{
+			fsk_call[n] = (fsk_bool[i+1]) + (fsk_bool[i+2]<<1) + (fsk_bool[i+3]<<2) + (fsk_bool[i+4]<<3);
+			n++;
+
+			fsk_call[n] = fsk_bool[i+5] + (fsk_bool[i+6]<<1) + (fsk_bool[i+7]<<2) + (fsk_bool[i+8]<<3);
+			n++;
+
+			i = i+9;
+		}
+		else if(fsk_bool[i] == 0 && fsk_bool[i+8] == 1)
+		{
+			fsk_call[n] = (fsk_bool[i+1]) + (fsk_bool[i+2]<<1) + (fsk_bool[i+3]<<2) + (fsk_bool[i+4]<<3);
+			n++;
+
+			fsk_call[n] = fsk_bool[i+5] + (fsk_bool[i+6]<<1) + (fsk_bool[i+7]<<2);
+			n++;
+
+			i = i+8;
+		}
+		else if(fsk_bool[i] == 0 && n)
+		{
+			fsk_call[n] = (fsk_bool[i+1]) + (fsk_bool[i+2]<<1) + (fsk_bool[i+3]<<2) + (fsk_bool[i+4]<<3);
+			n++;
+
+			fsk_call[n] = fsk_bool[i+5] + (fsk_bool[i+6]<<1) + (fsk_bool[i+7]<<2) + (fsk_bool[i+8]<<3);
+			n++;
+
+			i = i+9;
+		}
+	}
+	printf("\nfsk_call data length = %d\n", n);
+
+	if(fsk_call[0] == 4 || fsk_call[1] == 0)
+	{
+		for(i=0; i < (fsk_call[2] + fsk_call[3]*16 - 8); i++)
+		{
+			Fsk_CID[i] = fsk_call[i*2 + 20];
+			printf("%d ", Fsk_CID[i]);
+		}
+		Fsk_CID_Len = (fsk_call[2] + fsk_call[3]*16 - 8);
+	}
+	else if(fsk_call[1] == 8 || fsk_call[24] == 2)
+	{
+		for(i=0; i < fsk_call[26]; i++)
+		{
+			Fsk_CID[i] = fsk_call[i*2 +28];	
+			printf("%d ", Fsk_CID[i]);
+		}
+		Fsk_CID_Len = fsk_call[26];
+	}
+	
+	printf("\n================================================================================================= \n");
+
+	if(n)
+	{
+		g_finish_flag = TRUE;
+		for(i = 0; i < n; i++)
+		{
+			printf("%d ", fsk_call[i]);
+		}
+		printf("\n================================================================================================ \n");
+	}
+
+}
+
+/*****************************************************************************/
 //  Description : add data into buffer and start parse fsk
 //  Global resource dependence : g_fsk_buff
 //  input: buffer--data buffer pointer
-//         count--data count
+//         count--data count    signed short  *    int
 //  output: none
 //  return: TRUE--success
 //          FALSE--failure
@@ -66,11 +154,211 @@ void Fsk_InitParse(void)
 /*****************************************************************************/
 BOOLEAN Fsk_AddData(short int *buff, int count)
 {
+	int  	i, pre=0, k=0, j=0, sum=0; 
+	int	c20=0, fail=0, n=0, fsk_start_sign=0, fsk_start_num = 0;
+	int 	fsk_bool[512];
+	int 	fsk_count[512];
+	int 	fsk[100];
+	int 	kk;
+
+
 	if ((NULL == buff) || FSK_BUFFER_MIN > count || count > (FSK_BUFFER_LENGTH - FSK_BUFFER_START))
 	{
 		return FALSE;
 	}
+	
+	for(i = 1; i < count-1; i++)
+	{
+		if( (buff[i]) > (buff[i-1]) && (buff[i]) > (buff[i+1]) )
+		{		
+			fsk_count[k++] = i-pre;
+			pre = i;
+		}
+		else if( (buff[i]) < (buff[i-1]) && (buff[i]) < (buff[i+1]) )
+		{		
+			fsk_count[k++] = i-pre;
+			pre = i;
+		}
+	}
+	fsk_count[k] = count - pre;	
 
+
+//join fsk_lim[]
+	for(i = 0; i <= k; i++)
+	{
+		if(fsk_count[i] > 2 && fsk_count[i] < 5)
+		{
+			Lim_c++;
+			if(Lim_c == 50)
+			{
+				Lim_ready = 1;
+				Fsk_n = 0;
+				printf("\n---start connecting data ------------------------------------------\n");
+			}
+/*			else if((Lim_c == 12) && Lim_ready == 2)
+			{
+				Lim_ready = 0;
+				lim_fsk_ready = 1;
+				printf("\n--- finished connect data------------------------------------------\n");
+			}
+*/
+		}
+		else if(fsk_count[i] > 4)
+		{		
+			if(Lim_ready ==2)
+			{
+//				printf("\n---error!--i = %d ----------------------value : %d ------////////////////////////////\n", i,fsk_count[i]);
+			}
+			Lim_c=0;
+			fail =1;
+		}
+		else if((i > 1) && (i<k-1))
+			Lim_c=0;
+
+		if(Lim_ready == 1)
+		{
+			if(Lim_c == 0)
+			{
+				Lim_ready = 2;
+				Fsk_lim[Fsk_n++] = fsk_count[i];
+				kk = i;
+			}
+		}
+		else if(Lim_ready == 2)
+		{
+			Fsk_lim[Fsk_n++] = fsk_count[i];
+			printf("%d-", fsk_count[i]);
+			
+			if(Fsk_n > 800)
+			{
+				Lim_ready = 0;
+				lim_fsk_ready = 1;
+				printf("\n----------- connecting data beyond top -------------------\n");
+			}
+		}
+	}	
+
+if(lim_fsk_ready)
+printf("\nk =  %d------------------------Fsk_n = %d--------------\n", k, Fsk_n);
+/*
+if(kk)											//code for saveing fsk
+{
+	k = 0;
+	for(i = 1; i < count-1; i++)
+	{
+		if( (buff[i]) > (buff[i-1]) && (buff[i]) > (buff[i+1]) )
+		{	
+			k++;	
+		}
+		else if( (buff[i]) < (buff[i-1]) && (buff[i]) < (buff[i+1]) )
+		{		
+			k++;
+		}
+
+		if(kk == k)
+		{
+			fwrite(buff+i-2, sizeof(short int), count-i+2, fsk_file);
+			fix = 1;	
+		}
+	}
+}
+else if(fix && !lim_fsk_ready)
+{	
+	fwrite(buff, sizeof(short int), count, fsk_file);
+}
+
+
+*/
+
+
+if(lim_fsk_ready)
+{
+	printf("\n--- connecting finished, start decoding,  number of data is  %d-----\n", Fsk_n);
+	for(i = 0; i < Fsk_n; i++)
+	{
+		if(Fsk_lim[i] > 4)
+		{
+			Fsk_lim[i] = 4;
+			Fsk_lim[i+1] = 3;		
+		}
+		if(Fsk_lim[i]==3 && Fsk_lim[i-1]<3 && Fsk_lim[i+1]<3)
+			Fsk_lim[i] = 2;		
+		if(Fsk_lim[i]==3 && Fsk_lim[i+1]==1)
+			Fsk_lim[i] = 2;		
+
+
+		if(Fsk_lim[i] < 3)       				// 2 1 2 2 2 1 2 ... 
+		{
+			sum = sum+1;
+			c20 = c20+Fsk_lim[i];
+			if(c20 >=20)					//2 1 2 2 2 2 1 22 2 1 2
+			{
+				c20 = 0;
+				i = i-1;
+			}
+
+			if((sum==3) && (fsk_bool[j-1]==1))		//pre  4 3 2 1 2 2 3
+			{
+				fsk_bool[j++] = 0;
+				sum = 0;
+			}
+			else if((sum==3) && (Fsk_lim[i+1] > 2))		//pre  4 3 2 1 2 2 3
+			{
+				fsk_bool[j++] = 0;
+				sum = 0;
+			}
+			else if(sum==4)					//2 2 1 2
+			{
+				fsk_bool[j++] = 0;		
+				sum = 0;
+			}
+			else if((sum >= 2) && (i==k-1))			//4 3 2 2 >|
+			{
+				fsk_bool[j++] = 0;		
+				c20 = 0;
+				sum = 0;
+			}
+			else if(Fsk_lim[i] + Fsk_lim[i+1] > 5) 		//2 4
+			{
+				fsk_bool[j++] = 1;		
+				i = i+1;				//jump 1 step
+				sum = 0;
+				c20 = 0;
+			}
+		}
+		else if(Fsk_lim[i] + Fsk_lim[i+1] > 5)			//4 2 or 3 3
+		{
+			fsk_bool[j++] = 1;		
+			i = i+1;					//jump 1 step
+			sum = 0;
+				c20 = 0;
+		}
+		else							//3 2  
+			sum = 0;
+	}
+	
+	Fsk_n = 0;
+}
+
+//	if(fail = 0) 
+//		for(i=0; k >= i; i++)
+//			printf("-%d", fsk_count[i]);
+
+if(lim_fsk_ready)
+{
+	lim_fsk_ready = 0;
+
+	for(i=0; j > i; i++)
+	{
+		printf("%d", fsk_bool[i]);
+	}
+
+	printf("\n finished decoding \n");
+
+	fsk_parse(fsk_bool, j);
+	printf("\n");
+}
+/*
 	memset(g_fsk_buff.buffer + FSK_BUFFER_START, 0, count * sizeof(short int));
 	memset(g_fsk_buff.bitbuf + FSK_BUFFER_START, 0, count * sizeof(char));
 	g_fsk_buff.count = count;
@@ -79,6 +367,7 @@ BOOLEAN Fsk_AddData(short int *buff, int count)
 	Fsk_SetFSKZeroBuffer(&g_fsk_buff);
 
 	Fsk_Process();
+*/
 	return TRUE;
 }
 
@@ -2833,8 +3122,8 @@ BOOLEAN Fsk_GetFskMsg(Fsk_Message_T *fskmsg)
 		return FALSE;
 	}
 
-	memcpy(fskmsg, &g_fsk_bak_msg, sizeof(Fsk_Message_T));
-	memset(&g_fsk_bak_msg, 0, sizeof(Fsk_Message_T));
+//	memcpy(fskmsg, &g_fsk_bak_msg, sizeof(Fsk_Message_T));
+//	memset(&g_fsk_bak_msg, 0, sizeof(Fsk_Message_T));
 	g_finish_flag = FALSE;
 	return TRUE;
 }
