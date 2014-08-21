@@ -7543,9 +7543,7 @@ int main(int argc,char **argv)
 		gohome =1;
     }
 
-///pppyhl
-	//wan mode pppoe
-	//pppoe and advanced options below ,added by yhl 
+	//wan mode pppoe  yhl
 	if((strcmp(CFG_get_by_name("PPP",valBuff),"PPP") == 0 ) || (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 ))
 	{	
 			char pppoe_mode[10];						
@@ -7555,6 +7553,12 @@ int main(int argc,char **argv)
 			char route_gw[20];
 			char pppoe_dns[20];
 			char wan_modebuf[128];
+			
+			//pure envionment 1
+			system("killall ppy > /dev/null 2>&1");sleep(1);
+			system("pppoe-stop > /dev/null 2>&1");sleep(1);
+			//system("pppoe-stop > /dev/null 2>&1");sleep(1);
+			//pure envionment
 			
 			memset(pppoe_mode,'\0',10);
 			memset(three_thread_buf,'\0',128);
@@ -7609,6 +7613,11 @@ int main(int argc,char **argv)
             //writeParameters(NVRAM,"w+", NVRAM_OFFSET);//save new config to flash 
             //writeParameters("/tmp/.apcfg","w+",0);
 			}
+			//pure envionment 2
+			//system("killall ppy > /dev/null 2>&1");sleep(1);
+			//system("pppoe-stop > /dev/null 2>&1");sleep(1);
+			//system("pppoe-stop > /dev/null 2>&1");sleep(1);
+			//pure envionment
 			if(!strncmp(pppoe_mode,"auto",4))
 			{  
 				char	usernameBuff[128];
@@ -7620,9 +7629,7 @@ int main(int argc,char **argv)
 				sprintf(cmdstr,"pppoe-setup %s %s > /dev/null 2>&1",usernameBuff,passBuff);
 				//fprintf(errOut,"auto pppoe-setup cmdstr-----%s\n",cmdstr);
 				system(cmdstr);
-	
-				system("pppoe-stop > /dev/null 2>&1");sleep(2);
-				system("pppoe-start > /dev/null 2>&1");sleep(5);
+
 			}
 			else if(!strncmp(pppoe_mode,"demand",6))
 			{  
@@ -7635,9 +7642,6 @@ int main(int argc,char **argv)
 				sprintf(cmdstr,"pppoe-setup %s %s > /dev/null 2>&1",usernameBuff,passBuff);
 				//fprintf(errOut,"demand pppoe-setup cmdstr-----%s\n",cmdstr);
 				system(cmdstr);
-	
-				//system("pppoe-stop > /dev/null 2>&1");sleep(2);
-				//system("pppoe-start > /dev/null 2>&1");sleep(5);
 			}//demand mode
 			else if(!strncmp(pppoe_mode,"manual",6))
 			{
@@ -7650,10 +7654,7 @@ int main(int argc,char **argv)
 				sprintf(cmdstr,"pppoe-setup %s %s > /dev/null 2>&1",usernameBuff,passBuff);
 				//fprintf(errOut,"manual pppoe-setup cmdstr-----%s\n",cmdstr);
 				system(cmdstr);   
-				
-				//system("pppoe-stop > /dev/null 2>&1");sleep(2);
-				//system("pppoe-start > /dev/null 2>&1");sleep(5);
-			}//manual mode		
+			}//manual mode			
 			else if(!strncmp(pppoe_mode,"timing",6))	
 			{ 
 				char	usernameBuff[128];
@@ -7665,9 +7666,6 @@ int main(int argc,char **argv)
 				sprintf(cmdstr,"pppoe-setup %s %s > /dev/null 2>&1",usernameBuff,passBuff);
 				//fprintf(errOut,"timing pppoe-setup cmdstr-----%s\n",cmdstr);
 				system(cmdstr);
-	
-				//system("pppoe-stop > /dev/null 2>&1");sleep(2);
-				//system("pppoe-start > /dev/null 2>&1");sleep(5);
 			}
 	
 			//for pppoe show yhlnew
@@ -7698,12 +7696,20 @@ int main(int argc,char **argv)
             //writeParameters("/tmp/.apcfg","w+",0);
 			}
 			gohome =1;
-			//kill old,run new ppy
-		    ////////system("killall ppy > /dev/null 2>&1");sleep(1);
-			//system("/usr/sbin/ppy & > /dev/null 2>&1");sleep(1);
-			////////system("/usr/sbin/ppy & > /dev/null 2>&1");
-			system("killall pppoe-ppy > /dev/null 2>&1");sleep(3);//ppy is in pppoe-ppy script
-			system("killall ppy > /dev/null 2>&1");sleep(3);
+
+			//pure envionment 6,first kill ppy,then kill old remanding pppoe process
+			//system("killall ppy > /dev/null 2>&1");sleep(1);
+			//system("pppoe-stop > /dev/null 2>&1");sleep(1);
+			//system("pppoe-stop > /dev/null 2>&1");sleep(1);
+			//system("pppoe-stop > /dev/null 2>&1");sleep(1);
+			//system("pppoe-stop > /dev/null 2>&1");sleep(1);
+			//system("pppoe-stop > /dev/null 2>&1");sleep(1);
+			//system("pppoe-stop > /dev/null 2>&1");sleep(1);
+			
+			//system("killall pppoe-start > /dev/null 2>&1");sleep(3);
+			//system("killall pppoe-connect > /dev/null 2>&1");sleep(3);
+			//system("kill -9 `ps | grep ppy | awk -F " " '{print $1}'` > /dev/null 2>&1");sleep(3);
+
 			system("ppy > /dev/null 2>&1 &");sleep(2);//bash  avoid let syntax error
 			//system("sleep 1 && reboot &");
 			
