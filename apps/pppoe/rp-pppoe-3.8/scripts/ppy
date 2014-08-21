@@ -11,7 +11,7 @@
       
   man_flag=1
   pppoe-stop > /dev/null 2>&1
-  kill -9 `ps | grep pppoe | awk -F " " '{print $1}'`
+  kill -9 `ps | grep pppoe | awk -F " " '{print $1}'` > /dev/null 2>&1
   
   #  sleep 2
   #pppoe-start > /dev/null 2>&1
