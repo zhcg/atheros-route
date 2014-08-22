@@ -300,12 +300,12 @@ void init()
 		client_list[i].client_fd = -1;
 	}
 	
-	sqlite3_select("terminal_base_tb","password",NULL,NULL,pwd);
+	sqlite3_select("terminal_pwd_tb","password",NULL,NULL,pwd);
 	PRINT("%s\n",pwd);
 	if(strlen(pwd) == 0)
 	{
 		PRINT("init password\n");
-		sqlite3_insert(1,"terminal_base_tb",&"password",&DEFAULT_PASSWORD);
+		sqlite3_insert(1,"terminal_pwd_tb",&"password",&DEFAULT_PASSWORD);
 	}
 		
 }
@@ -554,7 +554,7 @@ int registe_req(client_t *cli,unsigned char *packet)
 	print_str(namep,name_len);
 	print_str(macp,mac_len);
 	memcpy(comming_mac,macp,mac_len);
-	sqlite3_select("terminal_base_tb","password",NULL,NULL,pwd);
+	sqlite3_select("terminal_pwd_tb","password",NULL,NULL,pwd);
 	sqlite3_select("terminal_register_tb","device_mac",comming_mac,"device_mac",db_dev_mac);
 	if(strlen(pwd) != pwd_len || strncmp(pwdp,pwd,pwd_len)!=0)
 	{
@@ -686,7 +686,7 @@ int password_req(client_t *cli,unsigned char *packet)
 	memcpy(old_pwd,old_pwdp,old_pwd_len);
 	memcpy(new_pwd,new_pwdp,new_pwd_len);
 
-	sqlite3_select("terminal_base_tb","password",NULL,NULL,pwd);
+	sqlite3_select("terminal_pwd_tb","password",NULL,NULL,pwd);
 	if(strlen(pwd) != old_pwd_len || strncmp(pwd,old_pwd,old_pwd_len))
 	{
 		PRINT("password error\n");
@@ -696,7 +696,7 @@ int password_req(client_t *cli,unsigned char *packet)
 		goto OVER;
 	}
 	
-	if(sqlite3_update("terminal_base_tb",1,&"password",&new_pwd,"password",old_pwd) == 0)
+	if(sqlite3_update("terminal_pwd_tb",1,&"password",&new_pwd,"password",old_pwd) == 0)
 	{
 		PRINT("OK\n");
 		result[0] = OK;

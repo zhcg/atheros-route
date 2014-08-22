@@ -8,16 +8,19 @@ int remote_server_fd = -1;
 const char hex_to_asc_table[16] = {0x30,0x31,0x32,0x33,0x34,0x35,0x36,0x37,
 	0x38,0x39,0x41,0x42,0x43,0x44,0x45,0x46};
 unsigned char respond_buffer[BUFFER_SIZE_1K] = {0};
-unsigned char as532_version[4]={0};
-unsigned char as532_conf_version[4]={0};
+unsigned char as532_version[5]={0};
+unsigned char as532_conf_version[5]={0};
 unsigned char as532_sn[BUF_LEN_128]={0};
 unsigned char as532_version_description[BUF_LEN_128]={0};
-unsigned char remote_as532_version[4]={0};
+unsigned char remote_as532_version[5]={0};
 unsigned char remote_as532_path[BUF_LEN_256]={0};
 unsigned char remote_as532_conf_md5[BUF_LEN_64]={0};
 char remote_ip_buf[BUF_LEN_128]={0};
 char remote_port_buf[BUF_LEN_64]={0};
+char ota_ip_buf[BUF_LEN_128]={0};
+char ota_port_buf[BUF_LEN_64]={0};
 char conf_ver[BUF_LEN_64]={0};
+unsigned char base_sn[32];
 
 int ComFunChangeHexBufferToAsc(unsigned char *hexbuf,int hexlen,char *ascstr)
 {
@@ -205,7 +208,7 @@ int get_respond(unsigned char *prcv_buffer,int buf_size)
 	do
 	{
 		loops++;
-		if(loops > 40){
+		if(loops > 80){
 			PRINT("Error: get respond timeout \n");
 			return -1;
 		}
@@ -390,7 +393,7 @@ int jump_to_boot()
 	return -2;
 }
 
-int create_socket_client()
+int create_socket_client(char *ip,char *port)
 {
 	struct sockaddr_in cliaddr;
     struct timeval timeo = {0};   
@@ -404,19 +407,19 @@ int create_socket_client()
 	}
 	setsockopt(remote_server_fd, SOL_SOCKET, SO_SNDTIMEO, &timeo, len);
 	cliaddr.sin_family = AF_INET;
-	inet_pton(AF_INET,remote_ip_buf,&cliaddr.sin_addr);//服务器ip
-	cliaddr.sin_port = htons(atoi(remote_port_buf));//注意字节顺序
+	inet_pton(AF_INET,ip,&cliaddr.sin_addr);//服务器ip
+	cliaddr.sin_port = htons(atoi(port));//注意字节顺序
 	if(connect(remote_server_fd, (struct sockaddr*)&cliaddr, sizeof(cliaddr))<0)
 	{
 		if (errno == EINPROGRESS) 
 		{  
-			PRINT("connect ip:%s port:%d timeout.\n",remote_ip_buf,atoi(remote_port_buf));
+			PRINT("connect ip:%s port:%d timeout.\n",ip,atoi(port));
 			return -2;  
 		}         
-		PRINT("connect ip:%s port:%d err.\n",remote_ip_buf,atoi(remote_port_buf));
+		PRINT("connect ip:%s port:%d err.\n",ip,atoi(port));
 		return -3;
 	}
-	PRINT("connected ip:%s port:%d.\n",remote_ip_buf,atoi(remote_port_buf));
+	PRINT("connected ip:%s port:%d.\n",ip,atoi(port));
 	return 0;
 }
 
@@ -447,7 +450,7 @@ char *generate_get_remote_msg(char *remote_type)
 
 	// insert the second label-value pair
 	label = json_new_string("baseId");
-	value = json_new_string("0000000000000000000000000000001010");
+	value = json_new_string(base_sn);
 	json_insert_child(label, value);
 	json_insert_child(entry, label);
 
@@ -479,6 +482,8 @@ int prase_532_ver_msg(char *msg)
 	char tmp_buf[3]={0};
 	int minor = 0;
 	int i;
+	int nov = 0;
+	
 	for(i=0;i<strlen(msg);i++)
 		printf("%c",msg[i]);
 	printf("\n");
@@ -507,6 +512,7 @@ int prase_532_ver_msg(char *msg)
 			return -2;
 		}
 		msgp = msgp + strlen(AS532_VER_NUM_NOV);
+		nov = 1;
 	}
 	else
 	{
@@ -520,45 +526,25 @@ int prase_532_ver_msg(char *msg)
 	}
 	memcpy(ver_buf,msgp,end-msgp);
 	
-	if(strlen(ver_buf) == 5)
+	for(i=0;i<sizeof(ver_buf);i++)
 	{
-		remote_as532_version[0] = ver_buf[0]-48;
-		remote_as532_version[1] = ver_buf[2]-48;
-		remote_as532_version[2] = 0x0;
-		remote_as532_version[3] = ver_buf[4]-48;
-		minor = remote_as532_version[3];
+		if(ver_buf[i] == '.')
+			ver_buf[i] = ' ';
 	}
-	else if(strlen(ver_buf) == 6)
+	
+	if(nov == 0)
+		sscanf(ver_buf,"%x %x %x",&remote_as532_version[0],&remote_as532_version[1],&minor);
+	else if(nov == 1)
 	{
-		remote_as532_version[0] = ver_buf[0]-48;
-		remote_as532_version[1] = ver_buf[2]-48;
-		tmp_buf[0] = ver_buf[4];
-		tmp_buf[1] = ver_buf[5];
-		tmp_buf[2] = '\0';
-		minor = atoi(tmp_buf);
-		remote_as532_version[2] = minor >> 8;
-		remote_as532_version[3] = minor&0xff;
-	}
-	else if(strlen(ver_buf) == 3)
-	{
+		sscanf(ver_buf,"%x %x",&remote_as532_version[1],&minor);
 		remote_as532_version[0] = as532_version[0];
-		remote_as532_version[1] = ver_buf[0]-48;
-		remote_as532_version[2] = 0x0;
-		remote_as532_version[3] = ver_buf[2]-48;
-		minor = remote_as532_version[3];
 	}
-	else if(strlen(ver_buf) == 4)
-	{
-		remote_as532_version[0] = as532_version[0];
-		remote_as532_version[1] = ver_buf[0]-48;
-		tmp_buf[0] = ver_buf[2];
-		tmp_buf[1] = ver_buf[3];
-		tmp_buf[2] = '\0';
-		minor = atoi(tmp_buf);
-		remote_as532_version[2] = minor >> 8;
-		remote_as532_version[3] = minor&0xff;
-	}
-	PRINT("remote_as532 ver = %d.%d.%d\n",remote_as532_version[0],remote_as532_version[1],minor);
+	PRINT("minor = %d\n",minor);
+	//5678
+	remote_as532_version[2] = ((minor/1000)<<4)+(minor%1000)/100;
+	remote_as532_version[3] = (((minor%100)/10)<<4)+(minor%10);
+	PRINT("remote ver = 0x%X.0x%X.0x%X.0x%X\n",remote_as532_version[0],remote_as532_version[1],remote_as532_version[2],remote_as532_version[3]);
+	
 	msgp = strstr(msg,AS532_VER_PATH);
 	if(msgp == NULL)
 	{
@@ -588,6 +574,8 @@ int prase_532_conf_msg(char *msg)
 	char name[16]={0};
 	int minor = 0;
 	int i;
+	int nov = 0;
+	
 	for(i=0;i<strlen(msg);i++)
 		printf("%c",msg[i]);
 	printf("\n");
@@ -619,6 +607,7 @@ int prase_532_conf_msg(char *msg)
 			return -2;
 		}
 		msgp = msgp + strlen(AS532_VER_NUM_NOV);
+		nov = 1;
 	}
 	else
 	{
@@ -632,45 +621,25 @@ int prase_532_conf_msg(char *msg)
 	}
 	memcpy(ver_buf,msgp,end-msgp);
 	
-	if(strlen(ver_buf) == 5)
+	for(i=0;i<sizeof(ver_buf);i++)
 	{
-		remote_as532_version[0] = ver_buf[0]-48;
-		remote_as532_version[1] = ver_buf[2]-48;
-		remote_as532_version[2] = 0x0;
-		remote_as532_version[3] = ver_buf[4]-48;
-		minor = remote_as532_version[3];
+		if(ver_buf[i] == '.')
+			ver_buf[i] = ' ';
 	}
-	else if(strlen(ver_buf) == 6)
+	
+	if(nov == 0)
+		sscanf(ver_buf,"%x %x %x",&remote_as532_version[0],&remote_as532_version[1],&minor);
+	else if(nov == 1)
 	{
-		remote_as532_version[0] = ver_buf[0]-48;
-		remote_as532_version[1] = ver_buf[2]-48;
-		tmp_buf[0] = ver_buf[4];
-		tmp_buf[1] = ver_buf[5];
-		tmp_buf[2] = '\0';
-		minor = atoi(tmp_buf);
-		remote_as532_version[2] = minor >> 8;
-		remote_as532_version[3] = minor&0xff;
+		sscanf(ver_buf,"%x %x",&remote_as532_version[1],&minor);
+		remote_as532_version[0] = as532_version[0];
 	}
-	else if(strlen(ver_buf) == 3)
-	{
-		remote_as532_version[0] = as532_conf_version[0];
-		remote_as532_version[1] = ver_buf[0]-48;
-		remote_as532_version[2] = 0x0;
-		remote_as532_version[3] = ver_buf[2]-48;
-		minor = remote_as532_version[3];
-	}
-	else if(strlen(ver_buf) == 4)
-	{
-		remote_as532_version[0] = as532_conf_version[0];
-		remote_as532_version[1] = ver_buf[0]-48;
-		tmp_buf[0] = ver_buf[2];
-		tmp_buf[1] = ver_buf[3];
-		tmp_buf[2] = '\0';
-		minor = atoi(tmp_buf);
-		remote_as532_version[2] = minor >> 8;
-		remote_as532_version[3] = minor&0xff;
-	}
-	PRINT("remote_as532 ver = %d.%d.%d\n",remote_as532_version[0],remote_as532_version[1],minor);
+	PRINT("minor = %d\n",minor);
+	//5678
+	remote_as532_version[2] = ((minor/1000)<<4)+(minor%1000)/100;
+	remote_as532_version[3] = (((minor%100)/10)<<4)+(minor%10);
+	PRINT("remote ver = 0x%X.0x%X.0x%X.0x%X\n",remote_as532_version[0],remote_as532_version[1],remote_as532_version[2],remote_as532_version[3]);
+	
 	msgp = strstr(msg,AS532_VER_PATH);
 	if(msgp == NULL)
 	{
@@ -810,7 +779,7 @@ int get_remote_532_ver()
 	char *json_str;
 	char *send_str;
 	int ret = -1;
-	if(create_socket_client()==0)
+	if(create_socket_client(ota_ip_buf,ota_port_buf)==0)
 	{
 		json_str = generate_get_remote_msg(as532_version_description);
 		send_str = malloc(strlen(json_str)+32);
@@ -866,7 +835,7 @@ int check_ver()
 		//PRINT("ver err\n");
 		//return -1;
 	//}
-	int ret = memcmp((void *)remote_as532_version, (void *)as532_version, sizeof(as532_version));
+	int ret = memcmp((void *)remote_as532_version, (void *)as532_version, 4);
 	if(ret <= 0)
 	{
 		PRINT("as532 is newest\n");
@@ -883,7 +852,7 @@ int check_conf_ver()
 		//PRINT("ver err\n");
 		//return -1;
 	//}
-	int ret = memcmp((void *)remote_as532_version, (void *)as532_version, sizeof(as532_version));
+	int ret = memcmp((void *)remote_as532_version, (void *)as532_version, 4);
 	if(ret <= 0)
 	{
 		PRINT("as532conf is newest\n");
@@ -953,7 +922,7 @@ int get_remote_532_conf_ver()
 	char *json_str;
 	char *send_str;
 	int ret = -1;
-	if(create_socket_client()==0)
+	if(create_socket_client(ota_ip_buf,ota_port_buf)==0)
 	{
 		json_str = generate_get_remote_msg(conf_ver);;
 		send_str = malloc(strlen(json_str)+32);
@@ -1006,6 +975,89 @@ int check_md5(char *local_md5)
 	}
 }
 
+int get_ota_info()
+{
+	int recv_ret = -1;
+	int loops = 0;
+	int i;
+	char *request_msg = "0007\r\n\0";
+	char recvbuf[BUFFER_SIZE_2K] = {0};
+	if(create_socket_client(remote_ip_buf,remote_port_buf)==0)
+	{
+		write(remote_server_fd,request_msg,strlen(request_msg));
+		do
+		{
+			loops++;
+			usleep(50*1000);
+			if(loops >= 100)
+			{
+				close(remote_server_fd);
+				PRINT("get remote ver request timeout\n");
+				return -1;
+			}
+			recv_ret = recv(remote_server_fd,recvbuf,BUFFER_SIZE_2K,MSG_DONTWAIT);
+			if(recv_ret > 0 )
+			{
+				PRINT("recv_ret: %d\n",recv_ret);	
+				PRINT("recv: %s \n",recvbuf);		
+				if(recv_ret < 6)
+				{
+					close(remote_server_fd);
+					PRINT("msg length err\n");
+					return -2;
+				}
+				for(i = 0;i<recv_ret;i++)
+				{
+					if(recvbuf[i] == ':')
+						recvbuf[i] = ' ';
+				}
+				sscanf(recvbuf,"%s %s",ota_ip_buf,ota_port_buf);
+				close(remote_server_fd);
+				return 0;
+			}
+			else
+			{
+				if(errno == EAGAIN)
+				{
+					continue;
+				}
+				break;
+			}
+		}while(1);
+		close(remote_server_fd);
+		remote_server_fd = -1;
+	}
+	return -1;
+}
+
+int CheckLocalVersion()
+{
+	char local_ver[4];
+	char read_buf[16];
+	FILE *fd;
+	int ret;
+	
+	fd = fopen(B6L_DEFAULT_AS532_IMAGE, "rb");
+	ret = fread(read_buf, 1, sizeof(read_buf), fd);
+	fclose(fd);
+	
+	if(ret == sizeof(read_buf))
+	{
+		memcpy(local_ver, &read_buf[8], sizeof(local_ver));
+		if((local_ver[0] != as532_version[0])||(local_ver[1] != as532_version[1]))
+		{
+			//主版本不匹配
+			return 0;
+		}
+		ret = memcmp((void *)local_ver, (void *)as532_version, 4);
+		if(ret > 0)
+		{
+			PRINT("as532 need update to ImgVersion\n");
+			return 1;
+		}
+	}
+	return 0;
+}
 int init_as532()
 {
 	char local_md5_buf[BUF_LEN_64]={0};
@@ -1037,6 +1089,13 @@ int init_as532()
 			}
 		}
 	}
+	//比较本地镜像与532版本高低
+	ret = CheckLocalVersion();
+	if(ret > 0)
+	{
+		//需要升级532为本地镜像版本
+		set_default();
+	}
 	if(get_532_ver()!=0)
 		return -3;
 	if(get_532_ver_des()!=0)
@@ -1046,14 +1105,14 @@ int init_as532()
 		printf("This is A20\n");
 		usleep(90*1000*1000);
 	}
-	//if(get_532_sn()!=0)
-		//return -5;		
+	if(get_ota_info()!=0)
+		return -5;		
 	if(get_remote_532_conf_ver()==0)
 	{
-		ret = check_conf_ver();
-		if(ret == -1)
-			goto START;
-		if(ret == 0)
+//		ret = check_conf_ver();
+//		if(ret == -1)
+//			goto START;
+//		if(ret == 0)
 		{
 			if(get_remote_532_conf()!=0)
 				goto START;
@@ -1065,8 +1124,8 @@ int init_as532()
 START:
 	if(get_remote_532_ver()!=0)
 		return -5;
-	if(check_ver()!=0)
-		return -6;
+//	if(check_ver()!=0)
+//		return -6;
 	PRINT("as532 needs update\n");
 	if(get_remote_532_image()!=0)
 		return -7;
@@ -1097,14 +1156,16 @@ int load_config()
 	int ret = 0;
 	char buf[BUF_LEN_512]={0};
 	char tmp_buf[3]={0};
+	char tempbuf[64];
 	int minor = 0;
 	char *p;
 	char *end;
+	int i, len;
 	int fd = open("/etc/532.conf",O_RDWR);
 	if(fd < 0)
 	{
 		printf("532.conf is not found\n");
-		exit(-1);
+		return -1;
 	}
 	ret = read(fd,buf,sizeof(buf));
 	if(ret > 0)
@@ -1114,7 +1175,7 @@ int load_config()
 		{
 			printf("config file err.\nfile's first line must be CONF_VER=\"Vx.x.x\"\n");
 			close(fd);
-			exit(-1);
+			return -2;
 		}
 
 		p += strlen("CONF_VER=\"");
@@ -1123,49 +1184,47 @@ int load_config()
 		{
 			printf("config file err.\nfile's first line must be CONF_VER=\"Vx.x.x\"\n");
 			close(fd);
-			exit(-1);
+			return -2;
 		}
-		memset(conf_ver,0,sizeof(conf_ver));
 		memcpy(conf_ver,p,end-p);
+		conf_ver[end-p] = '\0';
 		//HBD_F2B_AS532_V4.0.1
 		//				012345
-		p = strstr(conf_ver,"V");
+		p = strstr(conf_ver,"_V");
 		if(p == NULL)
 		{
-			p = strstr(conf_ver,"v");
+			p = strstr(conf_ver,"_v");
 			if(p == NULL)
 			{
 				printf("config file err.\nfile's first line must be CONF_VER=\"Vx.x.x\"\n");
 				close(fd);
-				exit(-1);
+				return -2;
 			}
 		}
-		as532_conf_version[0] = p[1]-48;
-		as532_conf_version[1] = p[3]-48;
-		//PRINT("strlen(p) = %d\n",strlen(p));
-		if(strlen(p) == 6)
-		{
-			as532_conf_version[2] = 0x0;
-			as532_conf_version[3] = p[5]-48;
-			minor = as532_conf_version[3];
-		}
-		else if(strlen(p) == 7)
-		{
-			tmp_buf[0] = p[5];
-			tmp_buf[1] = p[6];
-			tmp_buf[2] = '\0';
-			minor = atoi(tmp_buf);
-			as532_conf_version[2] = minor >> 8;
-			as532_conf_version[3] = minor&0xff;
-		}
-		PRINT("local as532 conf = %d.%d.%d\n",as532_conf_version[0],as532_conf_version[1],minor);
+		//
+		p += 2;
+		strcpy(tempbuf, p);
 		
+		for(i=0; i<strlen(tempbuf); i++)
+		{
+			if(tempbuf[i] == '.')
+				tempbuf[i] = ' ';
+		}
+
+		sscanf(tempbuf,"%x %x %d",&as532_conf_version[0],&as532_conf_version[1],&minor);
+		PRINT("minor = %d\n",minor);
+		//5678
+		as532_conf_version[2] = ((minor/1000)<<4)+(minor%1000)/100;
+		as532_conf_version[3] = (((minor%100)/10)<<4)+(minor%10);
+		
+		PRINT("conf ver = 0x%X.0x%X.0x%X.0x%X\n",as532_conf_version[0],as532_conf_version[1],as532_conf_version[2],as532_conf_version[3]);	
+
 		p = strstr(buf,"REMOTE_SERVER_IP=\"");
 		if(p == NULL)
 		{
 			printf("config file err.\nfile's second line must be REMOTE_SERVER_IP=\"xxx.xxx.xxx.xxx\"\n");
 			close(fd);
-			exit(-1);
+			return -2;
 		}
 		p += strlen("REMOTE_SERVER_IP=\"");
 		end = strstr(p,"\"");
@@ -1173,17 +1232,17 @@ int load_config()
 		{
 			printf("config file err.\nfile's second line must be REMOTE_SERVER_IP=\"xxx.xxx.xxx.xxx\"\n");
 			close(fd);
-			exit(-1);
+			return -2;
 		}
-		memset(remote_ip_buf,0,sizeof(remote_ip_buf));
 		memcpy(remote_ip_buf,p,end-p);
+		remote_ip_buf[end-p] = '\0';
 		
 		p = strstr(buf,"REMOTE_SERVER_PORT=\"");
 		if(p == NULL)
 		{
 			printf("config file err.\nfile's third line must be REMOTE_SERVER_PORT=\"xxx\"\n");
 			close(fd);
-			exit(-1);
+			return -2;
 		}
 		p += strlen("REMOTE_SERVER_PORT=\"");
 		end = strstr(p,"\"");
@@ -1191,10 +1250,10 @@ int load_config()
 		{
 			printf("config file err.\nfile's third line must be REMOTE_SERVER_PORT=\"xxx\"\n");
 			close(fd);
-			exit(-1);
+			return -2;
 		}
-		memset(remote_port_buf,0,sizeof(remote_port_buf));
 		memcpy(remote_port_buf,p,end-p);
+		remote_port_buf[end-p] = '\0';
 		close(fd);
 		printf("conf=%s\n",conf_ver);
 		printf("port=%s\n",remote_port_buf);
@@ -1205,7 +1264,7 @@ int load_config()
 	PRINT("config file err.\nfile's first line must be CONF_VER=\"xxx\"\n");
 	PRINT("config file err.\nfile's second line must be REMOTE_SERVER_IP=\"xxx.xxx.xxx.xxx\"\n");
 	PRINT("config file err.\nfile's third line must be REMOTE_SERVER_PORT=\"xxx\"\n");
-	exit(-1);	
+	return -2;	
 }
 
 int is_b6l()
@@ -1246,6 +1305,36 @@ int is_b6l()
 	return -1;
 }
 
+int get_9344_sn()
+{
+	system("fw_printenv SN > /tmp/.sn_tmp");
+	char buf[128]={0};
+	int fd = open("/tmp/.sn_tmp",O_RDWR);
+	if(fd < 0)
+	{
+		printf("open err\n");
+		return -1;
+	}
+	if(read(fd,buf,sizeof(buf))>0)
+	{
+		if(strstr(buf,"SN=")==NULL)
+		{
+			close(fd);
+			return -1;
+		}
+		printf("buf = %s\n",buf);
+		sscanf(buf,"SN=%s",base_sn);
+		printf("base_sn = %s\n",base_sn);
+	}
+	else
+	{
+		close(fd);
+		return -1;
+	}
+	close(fd);
+	return 0;
+}
+
 int main(int argc,char **argv)
 {
 	if(testendian()==0)
@@ -1253,8 +1342,11 @@ int main(int argc,char **argv)
 		printf("This is not A20\n");
 		is_b6l();
 	}
+	if(get_9344_sn() != 0)
+		return -1;
 	clean_tmp_file();
-	load_config();
+	if(load_config() != 0)
+		return -2;
 	init_as532();
 	
 	close(as532_fd);
