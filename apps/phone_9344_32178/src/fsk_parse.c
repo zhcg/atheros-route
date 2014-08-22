@@ -19,6 +19,7 @@ static Fsk_Buffer_T g_fsk_buff = {0};
 static Fsk_Message_T g_fsk_msg = {0};
 static Fsk_Message_T g_fsk_bak_msg = {0};
 static BOOLEAN g_finish_flag = FALSE;
+static BOOLEAN zzl_g_finish_flag = FALSE;
 static Fsk_Msg_Buffer_T g_fsk_msg_hex = {0};
 
 static int Fsk_lim[1000];
@@ -130,7 +131,7 @@ void	fsk_parse(int fsk_bool[512], int j)
 
 	if(n)
 	{
-		g_finish_flag = TRUE;
+		zzl_g_finish_flag = TRUE;
 		for(i = 0; i < n; i++)
 		{
 			printf("%d ", fsk_call[i]);
@@ -358,7 +359,7 @@ if(lim_fsk_ready)
 	fsk_parse(fsk_bool, j);
 	printf("\n");
 }
-/*
+
 	memset(g_fsk_buff.buffer + FSK_BUFFER_START, 0, count * sizeof(short int));
 	memset(g_fsk_buff.bitbuf + FSK_BUFFER_START, 0, count * sizeof(char));
 	g_fsk_buff.count = count;
@@ -367,7 +368,7 @@ if(lim_fsk_ready)
 	Fsk_SetFSKZeroBuffer(&g_fsk_buff);
 
 	Fsk_Process();
-*/
+
 	return TRUE;
 }
 
@@ -3117,15 +3118,26 @@ void Fsk_Process(void)
 /*****************************************************************************/
 BOOLEAN Fsk_GetFskMsg(Fsk_Message_T *fskmsg)
 {
-	if (g_finish_flag == FALSE)
+	if (g_finish_flag == FALSE && zzl_g_finish_flag == FALSE)
 	{
 		return FALSE;
 	}
-
-//	memcpy(fskmsg, &g_fsk_bak_msg, sizeof(Fsk_Message_T));
-//	memset(&g_fsk_bak_msg, 0, sizeof(Fsk_Message_T));
-	g_finish_flag = FALSE;
-	return TRUE;
+	
+	if (g_finish_flag == TRUE)
+	{
+		//PRINT("mengfanyi\n");
+		memcpy(fskmsg, &g_fsk_bak_msg, sizeof(Fsk_Message_T));
+		memset(&g_fsk_bak_msg, 0, sizeof(Fsk_Message_T));
+		g_finish_flag = FALSE;
+		return 1;
+	}
+	if (zzl_g_finish_flag == TRUE)
+	{
+		//PRINT("zhangzhiliang\n");
+		zzl_g_finish_flag = FALSE;
+		return 2;
+	}
+	//return TRUE;
 }
 
 /*****************************************************************************/

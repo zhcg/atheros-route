@@ -156,7 +156,8 @@ struct class_phone_control
 	int cli_req_buf_wp;
 	int cli_req_buf_rp;
 	int last_cli_length;
-	int get_fsk; //获取fsk号码
+	int get_fsk_mfy; //获取fsk号码
+	int get_fsk_zzl; //获取fsk号码
 	int ring_neg_count;
 	int ring_pos_count;
 	int ring_count;

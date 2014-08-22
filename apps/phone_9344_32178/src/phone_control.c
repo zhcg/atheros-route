@@ -33,7 +33,8 @@ struct class_phone_control phone_control =
 	.cli_req_buf_wp=0,
 	.cli_req_buf_rp=0,
 	.last_cli_length=0,
-	.get_fsk = 0, //获取fsk号码
+	.get_fsk_mfy = 0, //获取fsk号码
+	.get_fsk_zzl = 0, //获取fsk号码
 	.ring_count = 0, //来电标志后计数
 	.ring_neg_count = 0,
 	.ring_pos_count = 0,
@@ -2348,7 +2349,7 @@ int get_incoming_num(char *incoming_num)
 		incoming_num[i] += '0';
 	}
 	printf("\n");
-	printf("incoming_num ?= %s\n",incoming_num);
+	printf("incoming_num1 ?= %s\n",incoming_num);
 	return 0;
 }
 
@@ -2357,7 +2358,9 @@ void *loop_check_ring(void * argv)
 	PRINT("%s thread start.......\n",__FUNCTION__);
 	unsigned char dtmf_buf[BUFFER_SIZE_1K*10]={0};
 	unsigned char incoming_num[SENDBUF]={0};
-	int read_ret = 0;
+	unsigned char incoming_num1[SENDBUF]={0};
+	unsigned char incoming_num2[SENDBUF]={0};
+	int ret,read_ret = 0;
 	int i,loop_count = 0;
 	unsigned char packet_buffer[40]={0xA5,0x5A,0x00,0x00,0x10,0xA5,0x5A,0x04};
 	unsigned char ringon_buffer[12]={0xA5,0x5A,0x00,0x07,0x10,0xA5,0x5A,0x03,0x00,0x03,0xE8};
@@ -2367,6 +2370,7 @@ void *loop_check_ring(void * argv)
 	int line = 0;
 	int line_in = 0;
 	int line_out = 0;
+	memset(&fskmsg,0,sizeof(fskmsg));
 	while(1)
 	{
 		getFXOstatus(&(phone_control.vloop),&iloop,&fdt);
@@ -2418,6 +2422,8 @@ void *loop_check_ring(void * argv)
 				if(phone_control.Status.ringDetectedNeg == 1)
 				{
 					phone_control.ring_neg_count ++;
+					if(phone_control.ring_neg_count == 1)
+						phone_control.ring_count = 0;
 					PRINT("phone_control.ring_neg_count = %d\n",phone_control.ring_neg_count);
 				}
 				
@@ -2434,13 +2440,19 @@ void *loop_check_ring(void * argv)
 						PRINT("phone_control.ring_count = %d\n",phone_control.ring_count);
 					}
 				}
-				memset(&fskmsg,0,sizeof(fskmsg));
-				if(Fsk_GetFskMsg(&fskmsg)==TRUE)
+				ret = Fsk_GetFskMsg(&fskmsg);
+				if(ret == 1)
 				{
-					PRINT("Get Fsk Num...\n");
-					phone_control.get_fsk = 1;
+					PRINT("Get Fsk mfy...\n");
+					phone_control.get_fsk_mfy = 1;
+					phone_control.ring_count = 110;
 				}
-
+				if(ret == 2)
+				{
+					PRINT("Get Fsk zzl...\n");
+					phone_control.get_fsk_zzl = 1;
+					phone_control.ring_count = 110;
+				}
 			}
 			else if(phone_control.Status.ringDetected == 0)
 			{
@@ -2453,30 +2465,47 @@ void *loop_check_ring(void * argv)
 				phone_control.ring_count = 0;
 				phone_control.ring_neg_count = 0;
 			}
-			if(((phone_audio.get_code == 1) && (phone_control.ring_neg_count > 1)) || ((phone_control.ring_count == 120) && (phone_control.ring_neg_count > 5)) || phone_control.get_fsk == 1)
+			if(((phone_audio.get_code == 1) && (phone_control.ring_neg_count > 1)) || ((phone_control.ring_count == 120) && (phone_control.ring_neg_count > 5)) || (phone_control.get_fsk_mfy == 1 && phone_control.get_fsk_zzl == 1))
 			{
 				PRINT("phone_control.ring_count = %d\n",phone_control.ring_count);
 				//产生Incoming
 				phone_control.ring_count += 120;
 				memset(incoming_num,0,SENDBUF);
+				memset(incoming_num1,0,SENDBUF);
+				memset(incoming_num2,0,SENDBUF);
 				if(phone_audio.get_code == 1)
 				{
 					DtmfGetCode(incoming_num);
 				}
-				if(phone_control.get_fsk == 1)
+				else
 				{
-					get_incoming_num(incoming_num);
+					if(phone_control.get_fsk_zzl == 1)
+						get_incoming_num(incoming_num1);
 					//PRINT("num_len = %d\n",strlen(fskmsg.num));
 					//zb 14-06-27
 					//if(fskmsg.isgood == TRUE)
 					//{
-						//memcpy(incoming_num,fskmsg.num,strlen(fskmsg.num));
+					if(phone_control.get_fsk_mfy == 1)
+						memcpy(incoming_num2,fskmsg.num,strlen(fskmsg.num));
 					//}
-					//Fsk_FinishFskData();
+					memset(&fskmsg,0,sizeof(fskmsg));
+					Fsk_FinishFskData();
+					PRINT("num_zzl: %s\n",incoming_num1);
+					PRINT("num_mfy: %s\n",incoming_num2);
+					if(check_incoming_num(incoming_num1,strlen(incoming_num1)) != 0)
+						memset(incoming_num1,0,SENDBUF);
+					if(check_incoming_num(incoming_num2,strlen(incoming_num2)) != 0)
+						memset(incoming_num2,0,SENDBUF);
+					if(strlen(incoming_num1) == 0)
+						memcpy(incoming_num,incoming_num2,strlen(incoming_num2));
+					else if(strlen(incoming_num2) == 0)
+						memcpy(incoming_num,incoming_num1,strlen(incoming_num1));
+					else
+						memcpy(incoming_num,incoming_num2,strlen(incoming_num2));
 				}
 				phone_audio.get_code = 0;
-				phone_control.get_fsk = 0;
-				//PRINT("num: %s\n",incoming_num);
+				phone_control.get_fsk_mfy = 0;
+				phone_control.get_fsk_zzl = 0;
 				if(strlen(incoming_num) != 1)
 				{
 					PRINT("Incoming.....\n");

@@ -821,7 +821,7 @@ void* AudioIncomingThreadCallBack(void* argv)
 				if(Fsk_AddData((signed short *)audioincoming_buf,read_ret/2) == 0)
 					PRINT("Fsk_AddData err\n");
 
-				if(phone_control.get_fsk == 0)
+				if(phone_control.get_fsk_mfy == 0 && phone_control.get_fsk_zzl == 0)
 				{
 					if(DtmfDo((signed short *)audioincoming_buf,read_ret/2) == 2)
 					{
