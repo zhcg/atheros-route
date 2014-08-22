@@ -2465,7 +2465,9 @@ void *loop_check_ring(void * argv)
 				phone_control.ring_count = 0;
 				phone_control.ring_neg_count = 0;
 			}
-			if(((phone_audio.get_code == 1) && (phone_control.ring_neg_count > 1)) || ((phone_control.ring_count == 120) && (phone_control.ring_neg_count > 5)) || (phone_control.get_fsk_mfy == 1 && phone_control.get_fsk_zzl == 1))
+			if(((phone_audio.get_code == 1) && (phone_control.ring_neg_count > 1)) || ((phone_control.ring_count == 120) && (phone_control.ring_neg_count > 5)) || 
+			(phone_control.get_fsk_mfy == 1 && phone_control.get_fsk_zzl == 1) || ((phone_control.ring_count == 120) && (phone_control.get_fsk_zzl == 1))
+			|| ((phone_control.ring_count == 120) && (phone_control.get_fsk_mfy == 1)))
 			{
 				PRINT("phone_control.ring_count = %d\n",phone_control.ring_count);
 				//产生Incoming
