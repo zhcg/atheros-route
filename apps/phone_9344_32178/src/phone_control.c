@@ -2494,16 +2494,19 @@ void *loop_check_ring(void * argv)
 					Fsk_FinishFskData();
 					PRINT("num_zzl: %s\n",incoming_num1);
 					PRINT("num_mfy: %s\n",incoming_num2);
-					if(check_incoming_num(incoming_num1,strlen(incoming_num1)) != 0)
-						memset(incoming_num1,0,SENDBUF);
-					if(check_incoming_num(incoming_num2,strlen(incoming_num2)) != 0)
-						memset(incoming_num2,0,SENDBUF);
-					if(strlen(incoming_num1) == 0)
-						memcpy(incoming_num,incoming_num2,strlen(incoming_num2));
-					else if(strlen(incoming_num2) == 0)
-						memcpy(incoming_num,incoming_num1,strlen(incoming_num1));
-					else
-						memcpy(incoming_num,incoming_num2,strlen(incoming_num2));
+					if(strlen(incoming_num1) != 1 || strlen(incoming_num2) != 1)
+					{
+						if(check_incoming_num(incoming_num1,strlen(incoming_num1)) != 0)
+							memset(incoming_num1,0,SENDBUF);
+						if(check_incoming_num(incoming_num2,strlen(incoming_num2)) != 0)
+							memset(incoming_num2,0,SENDBUF);
+						if(strlen(incoming_num1) == 0)
+							memcpy(incoming_num,incoming_num2,strlen(incoming_num2));
+						else if(strlen(incoming_num2) == 0)
+							memcpy(incoming_num,incoming_num1,strlen(incoming_num1));
+						else
+							memcpy(incoming_num,incoming_num2,strlen(incoming_num2));
+					}
 				}
 				phone_audio.get_code = 0;
 				phone_control.get_fsk_mfy = 0;
