@@ -399,6 +399,8 @@ void Detection_Version(char *recv_buf, int data_len)
 		case 0x13:	//9344
 			if((len = Get_Version_Num()) != -1)
 			{
+                memset(version_num, 0, 256);
+	            memcpy(version_num,"HBD_F2A_B6_V8.2.12_20140814_A",len);
 				send_len = Compose_Pack(0x02, 0x00, version_num, len, 0x13);
 				send(clientFd, ack_buf, send_len, 0);
 			}
