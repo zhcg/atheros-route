@@ -255,7 +255,7 @@ int destroy_client(dev_status_t *dev,int broadcast_flag)
 					netWrite(dev->client_fd,"HEADR0012REG_SUC002B6\r\n",23);
 #elif defined(B6L)	
 					netWrite(dev->client_fd,"HEADR0013REG_SUC003B6L\r\n",24);
-#elif defined(S1)
+#elif defined(S1) || defined(S1_F3A)
 					netWrite(dev->client_fd,"HEADR0012REG_SUC002S1\r\n",23);
 #else
 					netWrite(dev->client_fd,"HEADR0010REG_SUC000\r\n",21);
@@ -905,7 +905,7 @@ int do_cmd_heartbeat(dev_status_t *dev,char *buf)
 			netWrite(dev->client_fd,"HEADR0012REG_SUC002B6\r\n",23);
 #elif defined(B6L)	
 			netWrite(dev->client_fd,"HEADR0013REG_SUC003B6L\r\n",24);
-#elif defined(S1)
+#elif defined(S1) || defined(S1_F3A)
 			netWrite(dev->client_fd,"HEADR0012REG_SUC002S1\r\n",23);
 #else
 			netWrite(dev->client_fd,"HEADR0010REG_SUC000\r\n",21);
@@ -938,7 +938,7 @@ int do_cmd_heartbeat(dev_status_t *dev,char *buf)
 			netWrite(dev->client_fd,"HEADR0012REG_SUC002B6\r\n",23);
 #elif defined(B6L)	
 			netWrite(dev->client_fd,"HEADR0013REG_SUC003B6L\r\n",24);
-#elif defined(S1)
+#elif defined(S1) || defined(S1_F3A)
 			netWrite(dev->client_fd,"HEADR0012REG_SUC002S1\r\n",23);
 #else
 			netWrite(dev->client_fd,"HEADR0010REG_SUC000\r\n",21);
@@ -959,7 +959,7 @@ UNREGISTERED:
 		netWrite(dev->client_fd,"HEADR0012REGFAIL002B6\r\n",23);
 #elif defined(B6L)	
 		netWrite(dev->client_fd,"HEADR0013REGFAIL003B6L\r\n",24);
-#elif defined(S1)
+#elif defined(S1) || defined(S1_F3A)
 		netWrite(dev->client_fd,"HEADR0012REGFAIL002S1\r\n",23);
 #else
 		netWrite(dev->client_fd,"HEADR0010REGFAIL000\r\n",21);
@@ -991,7 +991,7 @@ int do_cmd_heartbeat(dev_status_t *dev,char *buf)
 		netWrite(dev->client_fd,"HEADR0012REG_SUC002B6\r\n",23);
 #elif defined(B6L)	
 		netWrite(dev->client_fd,"HEADR0013REG_SUC003B6L\r\n",24);
-#elif defined(S1)
+#elif defined(S1) || defined(S1_F3A)
 		netWrite(dev->client_fd,"HEADR0012REG_SUC002S1\r\n",23);
 #else
 		netWrite(dev->client_fd,"HEADR0010REG_SUC000\r\n",21);
@@ -1433,7 +1433,7 @@ int do_cmd_set_sn(dev_status_t * dev, char * sendbuf)
 }
 #endif
 
-#ifdef S1
+#if defined(S1) || defined(S1_F3A)
 int do_cmd_get_s1_ip(dev_status_t * dev, char * sendbuf)
 {
 	struct in_addr addr;
@@ -1625,7 +1625,7 @@ int parse_msg(cli_request_t* cli,char *sendbuf)
 			break;
 		}
 #endif
-#ifdef S1
+#if defined(S1) || defined(S1_F3A)
 		case GET_S1_IP:
 		{
 			PRINT("GET_S1_IP from %s\n",cli->dev->client_ip);
@@ -1730,7 +1730,7 @@ int getCmdtypeFromString(char *cmd_str)
 		cmdtype = SET_SN;
 	}
 #endif
-#ifdef S1
+#if defined(S1) || defined(S1_F3A)
 	else if (strncmp(cmd_str, "GETS1IP", 7) == 0)
 	{
 		cmdtype = GET_S1_IP;
@@ -3242,7 +3242,7 @@ int check_register_status()
 		netWrite(devlist[i].client_fd,"HEADR0012REGFAIL002B6\r\n",23);
 #elif defined(B6L)	
 		netWrite(devlist[i].client_fd,"HEADR0013REGFAIL003B6L\r\n",24);
-#elif defined(S1)
+#elif defined(S1) || defined(S1_F3A)
 		netWrite(devlist[i].client_fd,"HEADR0012REGFAIL002S1\r\n",23);
 #else
 		netWrite(devlist[i].client_fd,"HEADR0010REGFAIL000\r\n",21);

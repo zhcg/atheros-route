@@ -9,7 +9,11 @@
 
 #define CONTROL_PORT	9998
 #define UDHCPD_FILE  "/var/run/udhcpd.leases"
+#ifdef S1
 #define A20_NAME 	"HBD_F2B_A20"
+#elif defined(S1_F3A)
+#define A20_NAME 	"HBD_F3A_A20"
+#endif
 
 int sockfd = 0;
 int clientfd = 0;
@@ -169,6 +173,33 @@ int do_cmd_get_9344_mac()
 	return 0;
 }
 
+int do_cmd_get_9344_ver()
+{
+	FILE *fp;
+	fp = fopen("/tmp/.apcfg", "r");
+	char buffer[100];
+	char buf[64] = {0};
+	char sendbuf[64]={0};
+	if(fp != NULL)
+	{	
+		while(fgets(buffer, 100, fp) != NULL)
+		{
+			if(strstr(buffer, "SOFT_VERSION") != 0)
+			{
+				sscanf(buffer, "SOFT_VERSION=%s", buf);
+				printf("buf = %s\n",buf);
+				sprintf(sendbuf,"GETVER%03d%s",strlen(buf),buf);
+				netWrite(clientfd,sendbuf,strlen(sendbuf));
+				fclose(fp);
+				return 0;
+			}
+		}
+		fclose(fp);
+	}
+	netWrite(clientfd,"GETVER000",strlen("GETVER000"));
+	return -1;
+}
+
 int do_cmd_get_s1_ip()
 {
 	struct in_addr addr;
@@ -232,6 +263,11 @@ int prase_msg(char *msg)
 	{
 		printf("GETMAC\n");
 		do_cmd_get_9344_mac();
+	}	
+	else if(!strncmp(msg,"GETVER",6))
+	{
+		printf("GETVER\n");
+		do_cmd_get_9344_ver();
 	}	
 	else
 		printf("undefine\n");

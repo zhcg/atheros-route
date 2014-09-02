@@ -73,6 +73,9 @@ enum PstnCommand {
 #ifdef	S1
 	GET_S1_IP,
 #endif
+#ifdef	S1_F3A
+	GET_S1_IP,
+#endif
 	//
 	REQ_ENC,
 	GET_VER,

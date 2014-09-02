@@ -15,6 +15,8 @@ int main(int argc,char **argv)
 	PRINT("Version:B6L\n");
 #elif defined(S1)
 	PRINT("Version:S1\n");
+#elif defined(S1_F3A)
+	PRINT("Version:S1_F3A\n");
 #else
 	PRINT("Version:NULL\n");
 #endif

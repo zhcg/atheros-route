@@ -57,6 +57,10 @@
 #define UDHCPD_FILE  "/var/run/udhcpd.leases"
 #define A20_NAME 	"HBD_F2B_A20"
 #endif
+#ifdef S1_F3A
+#define UDHCPD_FILE  "/var/run/udhcpd.leases"
+#define A20_NAME 	"HBD_F3A_A20"
+#endif
 
 #define AUTHOR	"ZhangBo"
 #define PRINT_INFO 1

@@ -9,7 +9,7 @@ STRIP=$(CROSS)strip
 
 
 all:
-	$(CC) main.c -o $(BIN) 
+	$(CC) -D$(BUILD_VERSION) main.c -o $(BIN) 
 
 clean:
 	rm -rf $(BIN)

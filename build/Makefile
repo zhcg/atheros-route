@@ -82,10 +82,11 @@ endif
 #	cyj 2014-06-20
 ifndef BUILD_VERSION
 #export BUILD_VERSION=B6
-export BUILD_VERSION=B6_bak
+#export BUILD_VERSION=B6_bak
 #export BUILD_VERSION=B6L
-#export BUILD_VERSION=S1
+export BUILD_VERSION=S1
 #export BUILD_VERSION=S1_bak
+#export BUILD_VERSION=S1_F3A
 endif
 
 #
@@ -369,6 +370,10 @@ endif
 ifeq ($(BUILD_VERSION), S1)
 	cat $(INSTALL_ROOT)/etc/rc.d/rcS_S1 >> $(INSTALL_ROOT)/etc/rc.d/rcS
 	cat $(INSTALL_ROOT)/etc/ath/apcfg_S1 >> $(INSTALL_ROOT)/etc/ath/apcfg
+endif
+ifeq ($(BUILD_VERSION), S1_F3A)
+	cat $(INSTALL_ROOT)/etc/rc.d/rcS_S1_F3A >> $(INSTALL_ROOT)/etc/rc.d/rcS
+	cat $(INSTALL_ROOT)/etc/ath/apcfg_S1_F3A >> $(INSTALL_ROOT)/etc/ath/apcfg
 endif
 ifeq ($(BUILD_VERSION), S1_bak)
 	cat $(INSTALL_ROOT)/etc/rc.d/rcS_S1 >> $(INSTALL_ROOT)/etc/rc.d/rcS

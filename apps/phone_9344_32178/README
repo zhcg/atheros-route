@@ -1,1 +1,1 @@
-将B6、B6L、S1版本合并，通过工程build/Makefile设置编译
+将B6、B6L、S1、S1_F3A版本合并，通过工程build/Makefile设置编译
