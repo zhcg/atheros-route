@@ -314,6 +314,56 @@ int init_stm32()
 	return 0 ;
 }
 
+#ifdef B6
+int save_532_ver()
+{
+	int ret = -1;
+	char outbuf[64] = {0};
+	int len = 0;
+	int fd = open("/tmp/.as532",O_RDWR|O_CREAT|O_TRUNC,0644);
+	if(fd < 0)
+	{
+		PRINT("save as532 err\n");
+		return -1;
+	}
+	init_key(global_pukey);
+	if(version_detail(global_pukey,outbuf,&len) >= 0)
+		ret = 0;
+	else
+		ret = -1;
+	PRINT("len = %d\n",len);
+	if(ret == 0)
+		write(fd,outbuf,len);
+	else
+		write(fd,"null",strlen("null"));
+	close(fd);
+	return 0;
+}
+
+int save_stm32_ver()
+{
+	int ret = -1;
+	int fd = open("/tmp/.stm32",O_RDWR|O_CREAT|O_TRUNC,0644);
+	if(fd < 0)
+	{
+		PRINT("save stm32 err\n");
+		return -1;
+	}
+	if(global_uart_fd < 0)
+		ret = -1;
+	if(CmdGetVersionDes() == -1)
+		ret = -1;
+	else
+		ret = 0;
+	if(ret == 0)
+		write(fd,stm32_version_des,strlen(stm32_version_des));
+	else
+		write(fd,"null",strlen("null"));
+	close(fd);
+	return 0;
+}
+#endif
+
 void init_env(void)
 {
 	int sockfd,on,i,ret;
@@ -385,7 +435,10 @@ void init_env(void)
 			PRINT("Stm32 ---- Not Ok!%d\n",ret);
 #endif
 	}
-	
+#ifdef B6
+	save_532_ver();
+	save_stm32_ver();
+#endif
 	for(i=0;i<PASSAGE_NUM;i++)
 	{
 		passage_list[i].fd = open(passage_list[i].passage_name,O_RDWR);
@@ -546,6 +599,9 @@ int do_cmd_stm32_update(unsigned char *path,int test_flag)
 	}
 	else
 	{
+#ifdef B6
+		save_stm32_ver();
+#endif
 		PRINT("stm32 update success!\n");
 	}
 	stm32_updating = 0;
@@ -733,6 +789,9 @@ int as532_update(unsigned char *path,int test_flag)
 		//ret_err = -8;
 		//goto AS532_UPDATE_ERR;
 	//}
+#ifdef B6
+	save_532_ver();
+#endif
 	system("rm -rf /var/default_image/as532h/as532h_default_image_tmp");
 	as532_updating = 0;
 	return as532_updating;

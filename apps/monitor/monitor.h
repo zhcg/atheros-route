@@ -116,6 +116,9 @@ struct s_port_info
 struct msg_t
 {
     char base_sn[32];
+    char base_a20_version[64];
+    char base_9344_version[64];
+    char base_532_version[64];
     char user_name[64];
     char password[64];
     char proxy_ip[64];
@@ -174,21 +177,23 @@ struct sip_info
 
 typedef struct _AS532_KEY_DATA_STR
 {
-	unsigned char appName[32];
-	unsigned char vesselName[32];
-	unsigned char vesselId;
-	unsigned char appId;
-	unsigned char p1;
-	unsigned char p2;
-	unsigned char pubKey[514];
+    unsigned char appName[32];
+    unsigned char vesselName[32];
+    unsigned char vesselId;
+    unsigned char appId;
+    unsigned char p1; 
+    unsigned char p2; 
+    unsigned char pubKey[514];
 }AS532_KEY_DATA, *pAS532_KEY_DATA;
 
 typedef struct _F2B_INFO_DATA_STR
 {
-	unsigned char sn[20];
-	unsigned char mac[20];
-	unsigned char keyCount;
-	AS532_KEY_DATA keyData[4];
+    unsigned char baseSn[20];
+    unsigned char mac[20];
+    unsigned char baseVer[64];
+    unsigned char keySn[64];
+    unsigned char keyCount;
+    AS532_KEY_DATA keyData[4];
 }F2B_INFO_DATA, *pF2B_INFO_DATA;
 
 #endif

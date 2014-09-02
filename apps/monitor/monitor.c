@@ -49,7 +49,6 @@ unsigned char base_sn[34] = {0};
 int cpu_warning_times = 0;
 int mem_warning_times = 0;
 int hd_warning_times = 0;
-
 struct timeval print_tv;	
 char print_time_buf_tmp[64] = {0};
 char print_time_buf[256] = {0};	
@@ -64,6 +63,7 @@ char *system_time()
 	sprintf(print_time_buf, "%s%03d", print_time_buf_tmp, print_tv.tv_usec/1000);
 	return print_time_buf;
 }
+
 static int set_buf(char *buf,int len)
 {
 	int i;
@@ -454,10 +454,13 @@ static int get_base_state(char *buf, int *buf_len)
         PRINT("get_flash_occupy_info failed!\n");
         flash_size = 0;
     }
+	get_ver();
     //PRINT("tomcat = %d\n",tomcat);
     //PRINT("php = %d\n",php);
-    sprintf(buf,"{id:%s,dev_type:1,cpu:%d,memory:%d,hd:%d,tomcat:%d,php:%d}",
-		sip_msg.base_sn,100-cpu_info.idle,mem_ret,flash_size,(tomcat >= 2)?1:0,(php >= 2)?1:0);
+    sprintf(buf,"{id:%s,dev_type:1,cpu:%d,memory:%d,hd:%d,tomcat:%d,php:%d,a20_ver:%s,9344_ver:%s,as532_ver:%s}",
+		sip_msg.base_sn,100-cpu_info.idle,mem_ret,flash_size,(tomcat >= 2)?1:0,(php >= 2)?1:0,sip_msg.base_a20_version,sip_msg.base_9344_version,sip_msg.base_532_version);
+    //sprintf(buf,"{id:%s,dev_type:1,cpu:%d,memory:%d,hd:%d,tomcat:%d,php:%d}",
+		//sip_msg.base_sn,100-cpu_info.idle,mem_ret,flash_size,(tomcat >= 2)?1:0,(php >= 2)?1:0);
     PRINT("strlen(buf) = %d\n", strlen(buf));
 	*buf_len = strlen(buf);
     //buf[0] = 0x02;
@@ -668,8 +671,9 @@ static int get_base_state(char *buf, int *buf_len)
 		memset(pad_sn,0,sizeof(pad_sn));
 		memcpy(pad_sn,"0",strlen("0"));
 	}
-    sprintf(buf,"{id:%s,dev_type:1,cpu:%d,memory:%d,hd:%d,pad_sn:%s}",
-		sip_msg.base_sn,cpu_out,mem_ret,flash_size,pad_sn);
+	get_ver();
+    sprintf(buf,"{id:%s,dev_type:1,cpu:%d,memory:%d,hd:%d,pad_sn:%s,9344_ver:%s,stm32_ver:%s,532_ver:%s}",
+		sip_msg.base_sn,cpu_out,mem_ret,flash_size,pad_sn,sip_msg.base_9344_version,sip_msg.base_a20_version,sip_msg.base_532_version);
     PRINT("strlen(buf) = %d\n", strlen(buf));
 	*buf_len = strlen(buf);
     //buf[0] = 0x02;
@@ -1517,7 +1521,7 @@ int get_sn()
 	if(read(fd,&fid,sizeof(fid))==sizeof(fid))
 	{
 		memset(sip_msg.base_sn,0,sizeof(sip_msg.base_sn));
-		memcpy(sip_msg.base_sn,fid.sn,sizeof(fid.sn));
+		memcpy(sip_msg.base_sn,fid.baseSn,sizeof(fid.baseSn));
 		close(fd);
 		return 0;
 	}
@@ -1817,6 +1821,187 @@ int get_sip_info()
 	return -2;
 }
 
+#ifdef BASE_A20
+int get_a20_ver()
+{
+	int ret = 0;
+	char verbuf[128] = {0};
+	int fdv;
+	
+	fdv = open("/etc/version", O_RDONLY);
+	if(fdv < 0)
+	{
+		PRINT("version is not found\n");
+		strcpy(sip_msg.base_a20_version, "null");
+		return -1;
+	}
+	ret = read(fdv, verbuf, sizeof(verbuf));
+	if(ret <= 0)
+	{
+		PRINT("read version error\n");
+		strcpy(sip_msg.base_a20_version, "null");
+		close(fdv);
+		return -2;
+	}
+	memset(sip_msg.base_a20_version,0,sizeof(sip_msg.base_a20_version));
+	strcpy(sip_msg.base_a20_version, verbuf);
+	PRINT("strlen = %d\n",strlen(sip_msg.base_a20_version));
+	sip_msg.base_a20_version[strlen(sip_msg.base_a20_version)-1] = '\0';
+	close(fdv);
+	return 0;
+}
+#endif
+
+#ifdef BASE_A20
+int get_532_ver()
+{
+	int ret = 0;
+	char verbuf[128] = {0};
+	int fdv;
+	
+	fdv = open("/tmp/tmp_as532_ver_file", O_RDONLY);
+	if(fdv < 0)
+	{
+		PRINT("version is not found\n");
+		strcpy(sip_msg.base_532_version, "null");
+		return -1;
+	}
+	ret = read(fdv, verbuf, sizeof(verbuf));
+	if(ret <= 0)
+	{
+		PRINT("read version error\n");
+		strcpy(sip_msg.base_532_version, "null");
+		close(fdv);
+		return -2;
+	}
+	memset(sip_msg.base_532_version,0,sizeof(sip_msg.base_532_version));
+	strcpy(sip_msg.base_532_version, verbuf);
+	sip_msg.base_532_version[strlen(sip_msg.base_532_version)-1] = '\0';
+	close(fdv);
+	return 0;
+}
+#elif defined(BASE_9344)
+int get_532_ver()
+{
+	int ret = 0;
+	char verbuf[128] = {0};
+	int fdv;
+	
+	fdv = open("/tmp/.as532", O_RDONLY);
+	if(fdv < 0)
+	{
+		PRINT("version is not found\n");
+		strcpy(sip_msg.base_532_version, "null");
+		return -1;
+	}
+	ret = read(fdv, verbuf, sizeof(verbuf));
+	if(ret <= 0)
+	{
+		PRINT("read version error\n");
+		strcpy(sip_msg.base_532_version, "null");
+		close(fdv);
+		return -2;
+	}
+	memset(sip_msg.base_532_version,0,sizeof(sip_msg.base_532_version));
+	strcpy(sip_msg.base_532_version, verbuf);
+	close(fdv);
+	return 0;
+}
+#endif
+
+#ifdef BASE_9344
+int get_stm32_ver()
+{
+	int ret = 0;
+	char verbuf[128] = {0};
+	int fdv;
+	
+	fdv = open("/tmp/.stm32", O_RDONLY);
+	if(fdv < 0)
+	{
+		PRINT("version is not found\n");
+		strcpy(sip_msg.base_a20_version, "null");
+		return -1;
+	}
+	ret = read(fdv, verbuf, sizeof(verbuf));
+	if(ret <= 0)
+	{
+		PRINT("read version error\n");
+		strcpy(sip_msg.base_a20_version, "null");
+		close(fdv);
+		return -2;
+	}
+	memset(sip_msg.base_a20_version,0,sizeof(sip_msg.base_a20_version));
+	strcpy(sip_msg.base_a20_version, verbuf);
+	close(fdv);
+	return 0;
+}
+#endif
+
+#ifdef BASE_A20
+int get_9344_ver()
+{
+	int fd = open("/opt/.f2b_info.conf",O_RDONLY);
+	if(fd < 0)
+	{
+		PRINT("open f2b_info err\n");
+		strcpy(sip_msg.base_9344_version, "null");
+		return -1;
+	}
+	memset(&fid,0,sizeof(fid));
+	if(read(fd,&fid,sizeof(fid))==sizeof(fid))
+	{
+		memset(sip_msg.base_9344_version,0,sizeof(sip_msg.base_9344_version));
+		if(strlen(fid.baseVer) == 0)
+			strcpy(fid.baseVer, "null");
+		memcpy(sip_msg.base_9344_version,fid.baseVer,sizeof(fid.baseVer));
+		close(fd);
+		return 0;
+	}
+	strcpy(sip_msg.base_9344_version, "null");
+	close(fd);
+	return -1;
+}
+#elif defined(BASE_9344)
+int get_9344_ver()
+{
+	FILE *fp;
+	fp = fopen("/tmp/.apcfg", "r");
+	char buffer[100];
+	char buf[64] = {0};
+	if(fp != NULL)
+	{	
+		while(fgets(buffer, 100, fp) != NULL)
+		{
+			if(strstr(buffer, "SOFT_VERSION") != 0)
+			{
+				sscanf(buffer, "SOFT_VERSION=%s", buf);
+				printf("buf = %s\n",buf);
+				memset(sip_msg.base_9344_version,0,sizeof(sip_msg.base_9344_version));
+				strcpy(sip_msg.base_9344_version, buf);
+				fclose(fp);
+				return 0;
+			}
+		}
+		fclose(fp);
+	}
+	strcpy(sip_msg.base_9344_version, "null");
+	return -1;
+}
+#endif
+
+int get_ver()
+{
+	get_9344_ver();
+#ifdef BASE_A20
+	get_a20_ver();
+#elif defined(BASE_9344)
+	get_stm32_ver();
+#endif
+	get_532_ver();
+	return 0;
+}
+
 int system_init()
 {
 	int ret = 0;
@@ -1851,7 +2036,7 @@ int system_init()
 #ifdef BASE_A20
 static void *pthread_update(void *para)
 {
-	update("monitor","HBD_F2B_MONITOR_V1.0.1_20140618","HBD_F2B_MONITOR","1.0.1",60*60);
+	update("monitor_base","HBD_F2B_MONITOR_V1.0.1_20140618","HBD_F2B_MONITOR","1.0.1",60*60,0);
 }
 #endif
 
@@ -1863,7 +2048,7 @@ int main(int argc,char **argv)
 #ifdef BASE_A20
 	pthread_t pthread_update_id;
 #endif
-	int fd,init_flag = 0;
+	int ret,fd,init_flag = 0;
 #ifdef BASE_A20
 	pthread_create(&pthread_update_id, NULL, &pthread_update,NULL);
 #endif
@@ -1871,7 +2056,7 @@ int main(int argc,char **argv)
     pthread_mutex_init(&send_mutex, NULL);
 	while(1)
 	{
-		if(system_init() == 0)
+		if((ret = system_init()) == 0)
 		{
 			PRINT("system init success\n");
 			if(monitor_init() == 0)
@@ -1883,7 +2068,7 @@ int main(int argc,char **argv)
 		}
 		else
 		{
-			PRINT("system init err\n");
+			PRINT("system init err,%d\n",ret);
 			goto MAIN_NEXT;
 		}
 		if(sip_register()<0)

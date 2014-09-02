@@ -366,7 +366,7 @@ int version_detail(struct UKey *pUKey, unsigned char *pUsbData, int *pUsbDataLen
     {
 		PRINT("-------------\n");
         for(i =0; i<len; i++)
-        printf(" rd_temp[%d] = %x\n ",i, rd_temp[i] );
+        printf("%02x", rd_temp[i] );
         PRINT("-------------\n");  
  	
     }   
