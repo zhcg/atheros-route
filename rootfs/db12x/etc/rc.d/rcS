@@ -178,6 +178,10 @@ fi
 /usr/sbin/set_ntpserver &
 /usr/sbin/httpd -h /usr/www/
 #/usr/sbin/threethread &
+
+#yhl,for update args losing
+pppoe-setup `cfg -e | grep PPPOE_USER | awk -F "=" '{print$2}'` `cfg -e | grep PPPOE_PWD | awk -F "=" '{print$2}'`
+
 /usr/sbin/ppy &
 /usr/sbin/web_control &
 /bin/OTA_Base &
