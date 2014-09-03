@@ -256,6 +256,8 @@ cfg -a AP_WPA_2=${AP_WPA_2:="3"}
 cfg -a AP_WPA_3=${AP_WPA_3:="3"}
 cfg -a AP_WPA_4=${AP_WPA_4:="3"}
 
+cfg -a AP_WPA_GROUP_REKEY=${AP_WPA_GROUP_REKEY:="86400"}
+
 cfg -a AP_CYPHER=${AP_CYPHER:="CCMP"}
 #cfg -a AP_CYPHER_2="TKIP CCMP"
 cfg -a AP_CYPHER_2=${AP_CYPHER_2:="CCMP"}
