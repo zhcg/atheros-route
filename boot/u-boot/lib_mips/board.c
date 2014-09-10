@@ -370,7 +370,8 @@ int gpio_a20_rest()
 
 	
 	ar7240_reg_rmw_set(ATH_GPIO_OUT, 1<<20);
-	udelay(150*1000);
+//	udelay(150*1000);
+	udelay(2500*1000);
 	ar7240_reg_rmw_clear(ATH_GPIO_OUT, 1<<20);
 	printf("Gpio rest End\n");
 	return 0;
