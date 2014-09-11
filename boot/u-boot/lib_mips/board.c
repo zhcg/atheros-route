@@ -316,7 +316,7 @@ void board_init_f(ulong bootflag)
  *
  ************************************************************************
  */
-#if 1
+#if 0
 #include "ar934x_soc.h"
 
 
@@ -351,7 +351,7 @@ void board_init_f(ulong bootflag)
 #define	ATH_GPIO_OUT			GPIO_OE+0x08
 #define GPIO_OUT_FUNC5			GPIO_OE+0x40
 
-#endif
+
 
 int gpio_a20_rest()
 {
@@ -376,6 +376,7 @@ int gpio_a20_rest()
 	printf("Gpio rest End\n");
 	return 0;
 }
+#endif
 
 void board_init_r (gd_t *id, ulong dest_addr)
 {
@@ -519,7 +520,7 @@ void board_init_r (gd_t *id, ulong dest_addr)
 #endif
 
 	//add for a20 reset
-	gpio_a20_rest();
+//	gpio_a20_rest();
 
 	/* main_loop() can return to retry autoboot, if so just run it again. */
 	for (;;) {
