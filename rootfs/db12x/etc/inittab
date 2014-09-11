@@ -8,3 +8,4 @@
 ::respawn:/sbin/getty ttyS0 115200
 ::shutdown:/etc/ath/killVAP all
 ::shutdown:/bin/umount -a
+::shutdown:/bin/power_down_a20
