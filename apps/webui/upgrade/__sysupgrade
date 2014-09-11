@@ -62,6 +62,7 @@ cp -a /usr/sbin/chroot usr/sbin
 cp -a /usr/bin/[ usr/bin
 
 mv /tmp/9344version.img tmp
+cp -a /bin/power_down_a20 bin
 
 cp -a /lib/* lib
 cp -a /dev/* dev
@@ -71,6 +72,7 @@ BOOT_TYPE="flashboot"
 
 echo '::sysinit:/usr/bin/upgrade_stage2 '$BOOT_TYPE > etc/inittab
 echo '::restart:/sbin/init'>> etc/inittab
+echo '::shutdown:/bin/power_down_a20'>> /etc/inittab
 #
 # Change the root of FS to /tmp
 #
@@ -83,3 +85,4 @@ cp /oldroot/dev . -rf
 #echo 'Before sending HUP & SIGQUIT to init' >> /messages
 
 exec /usr/sbin/chroot . /bin/sh -c '/bin/kill -HUP 1; /bin/sleep 3; /bin/kill -SIGQUIT 1' <dev/console >dev/console 2>&1
+
