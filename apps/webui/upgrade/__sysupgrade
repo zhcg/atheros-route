@@ -34,6 +34,7 @@ cp -a /etc/fw_env.config etc
 
 cp -a /bin/echo bin
 cp -a /bin/cp bin
+cp -a /bin/cat bin
 cp -a /bin/sleep bin
 cp -a /bin/sync bin
 cp -a /bin/kill bin
@@ -50,6 +51,7 @@ cp -a /usr/bin/wc bin
 cp -a /usr/bin/expr bin
 cp -a /usr/bin/awk bin
 
+cp -a /bin/power_down_a20 bin
 cp -a /sbin/pivot_root sbin
 cp -a /sbin/reboot sbin
 cp -a /sbin/init sbin
@@ -62,7 +64,6 @@ cp -a /usr/sbin/chroot usr/sbin
 cp -a /usr/bin/[ usr/bin
 
 mv /tmp/9344version.img tmp
-cp -a /bin/power_down_a20 bin
 
 cp -a /lib/* lib
 cp -a /dev/* dev
@@ -72,7 +73,8 @@ BOOT_TYPE="flashboot"
 
 echo '::sysinit:/usr/bin/upgrade_stage2 '$BOOT_TYPE > etc/inittab
 echo '::restart:/sbin/init'>> etc/inittab
-echo '::shutdown:/bin/power_down_a20'>> /etc/inittab
+echo '::shutdown:/bin/power_down_a20'>> etc/inittab
+
 #
 # Change the root of FS to /tmp
 #
