@@ -30,6 +30,7 @@
 #include "options.h"
 #include "common.h"
 #include "static_leases.h"
+#include "files.h"
 
 #define OLD_STAFILE  "/var/run/.OldStaList"
 #define STA_LIST "/configure_backup/.STAlist"
@@ -398,6 +399,7 @@ int sendACK(struct dhcpMessage *oldpacket, uint32_t yiaddr)
 	hostname = (uint8_t *)get_option(oldpacket, DHCP_HOST_NAME);
 	add_lease(hostname, packet.chaddr, packet.yiaddr, lease_time_align);
 	add_staMac();
+    write_leases();
 	return 0;
 }
 
