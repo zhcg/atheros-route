@@ -95,6 +95,7 @@
 	<message msgid="err bip" msgstr="The starting address is not valid segment " />
 	<message msgid="err eip" msgstr="The end address is not in the legal network " />
 	<message msgid="err iprange" msgstr="The DHCP address range can't contain gateway IP" />
+	<message msgid="err dhcprange" msgstr="DHCP address range is illegal" />
 	<message msgid="err ip notin" msgstr="IP address must be in the DHCP address range" />
 	<message msgid="err IPMAC exist" msgstr="IP and MAC address band fail" />
 	<message msgid="err ipsame" msgstr="IP address can not be the same with the gateway IP" />

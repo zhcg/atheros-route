@@ -58,13 +58,12 @@ function CheckValue()
 				document.WORKFORM.DHCP_EIP.select();
 				return false;
 			}
-			//if((beginip_num<=gwip_num)&&(gwip_num<=endip_num))
-			//{
-			//	alert(_("err iprange"));
-			//	document.WORKFORM.DHCP_BIP.select();
-			//	return false;
-				
-			//}
+			if(document.WORKFORM.DHCP_BIP.value == document.WORKFORM.DHCP_EIP.value)
+			{
+				alert(_("err dhcprange"));
+				document.WORKFORM.DHCP_BIP.select();
+				return false;
+			}
 		}
 		
 		

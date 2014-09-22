@@ -94,6 +94,7 @@
 	<message msgid="err bip" msgstr="起始地址不在合法网段" />
 	<message msgid="err eip" msgstr="结束地址不在合法网段" />
 	<message msgid="err iprange" msgstr="DHCP地址范围不能包含网关IP在内" />
+	<message msgid="err dhcprange" msgstr="DHCP地址范围不合法" />
 	<message msgid="err ip notin" msgstr="IP地址必须在DHCP地址范围内" />
 	<message msgid="err IPMAC exist" msgstr="IP与MAC地址绑定失败" /> 
 	<message msgid="err ipsame" msgstr="IP地址不能与网关IP相同" />
