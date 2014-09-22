@@ -829,7 +829,7 @@ function CheckWirelessValue()
 {
 	if(document.wizard_form.WIFION_OFF[0].checked == true)
 	{
-		if (document.wizard_form.AP_SSID.value.length == 0)
+		/*if (document.wizard_form.AP_SSID.value.length == 0)
 		{
 			alert(_("err SSID empty"));
 			document.wizard_form.AP_SSID.select();
@@ -846,7 +846,13 @@ function CheckWirelessValue()
 			alert(_("err SSID"));
 			document.wizard_form.AP_SSID.select();
 			return false;
-		}
+		}*/
+		if(!CheckSSIDformat(document.wizard_form.AP_SSID.value))
+		{
+			alert(_("err SSIDformat"));
+			document.wizard_form.AP_SSID.select();
+			return false;
+		}	
 		if (document.wizard_form.AP_SECMODE.selectedIndex == 0)
 		{
 			var keyvalue = document.wizard_form.PSK_KEY.value;
@@ -891,7 +897,7 @@ function CheckWirelessValue()
 	
 	if(document.wizard_form.WIFION_OFF_3[0].checked == true)
 	{
-		if (document.wizard_form.AP_SSID_3.value.length == 0)
+		/*if (document.wizard_form.AP_SSID_3.value.length == 0)
 		{
 			alert(_("err SSID empty"));
 			document.wizard_form.AP_SSID_3.select();
@@ -908,7 +914,13 @@ function CheckWirelessValue()
 			alert(_("err SSID"));
 			document.wizard_form.AP_SSID_3.select();
 			return false;
-		}
+		}*/
+		if(!CheckSSIDformat(document.wizard_form.AP_SSID_3.value))
+		{
+			alert(_("err SSIDformat"));
+			document.wizard_form.AP_SSID_3.select();
+			return false;
+		}	
 		if (document.wizard_form.AP_SECMODE_3.selectedIndex == 0)
 		{
 			var keyvalue2 = document.wizard_form.PSK_KEY_3.value;

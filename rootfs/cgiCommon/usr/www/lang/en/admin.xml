@@ -189,7 +189,7 @@
 	<message msgid="admw settingmanual" msgstr="Setting,Please Wait......If the page does not jump , please manually" />
 	<message msgid="admw wifiout" msgstr="Setting completed, please check the WIFI and refresh the page" />
 
-	<message msgid="admw ssidrequest" msgstr="  (1-24 letters, numbers, or underscore)" />
+	<message msgid="admw ssidrequest" msgstr="  (1-24 letters,1 Chinese character is same as 3 English letters)" />
 	<message msgid="admw passwordrequest" msgstr="  (8-63 letters, numbers or underscore)" />
 	<message msgid="admw passwordrequest1" msgstr="  (5-12 letters, numbers or underscore)" />
 
@@ -281,6 +281,7 @@
 	<message msgid="err gw format" msgstr="Gateway address is illegal" />
 	<message msgid="err DNS format" msgstr="DNS address is illegal" />
 	<message msgid="err SSID" msgstr="SSID is illegal" />
+	<message msgid="err SSIDformat" msgstr="SSID should be 1-24 letters ,1 Chinese character is same as 3 English letters" />
 	
 	<message msgid="err Ruleexist" msgstr="This rule is already exist " />	
 	<message msgid="wan not connected" msgstr="Please check WAN line" />

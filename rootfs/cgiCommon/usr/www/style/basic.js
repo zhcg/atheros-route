@@ -223,6 +223,32 @@ function Checkformat(val) {
     if (!val.match(usern)) return false;
     else return true;
 }
+function CheckSSIDformat(szname)
+{
+	var c;
+	var l=0;
+	var ch = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@^-_.><,[]{}?/+=|\\'\":;~!#$%()` & ";
+	if(szname.length > 24)
+		return false;
+	for (var i = 0; i < szname.length; i++)
+	{
+		c = szname.charAt(i);
+		if (ch.indexOf(c) == -1)
+		{
+			l += 3;
+		}
+		else
+		{
+			l += 1;
+		}
+		if ( l > 24)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
 function ip2int(ip) {
     var num = 0;
     ip = ip.split(".");
