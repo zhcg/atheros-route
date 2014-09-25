@@ -1615,9 +1615,13 @@ int create_init_client()
 		if (errno == EINPROGRESS) 
 		{  
 			PRINT("connect ip:%s port:%d timeout.\n",INIT_SERVER_IP,INIT_PORT);
+			close(init_server_fd);
+			init_server_fd = -1;
 			return -2;  
 		}         
 		PRINT("connect ip:%s port:%d err.\n",INIT_SERVER_IP,INIT_PORT);
+		close(init_server_fd);
+		init_server_fd = -1;
 		return -3;
 	}
 	PRINT("connected ip:%s port:%d.\n",INIT_SERVER_IP,INIT_PORT);
