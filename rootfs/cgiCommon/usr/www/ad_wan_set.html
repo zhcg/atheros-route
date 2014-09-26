@@ -636,9 +636,20 @@ function timecheck()
 }
 function PPPoERequest()
 {
-	if(timecheck() == false)
+	if (document.wanCfg.PPPOE_MODE.selectedIndex == 3)
 	{
-		document.getElementById("cstatus").innerHTML=_("sysinfo timeout");
+		if(timecheck() == false)
+		{
+			document.getElementById("cstatus").innerHTML=_("sysinfo timeout");
+		}
+		else
+		{
+			createxmlreq2();
+			xmlreq2.onreadystatechange=handleState2;
+			desIPreboot2 = location.hostname;
+			xmlreq2.open("GET","http://"+desIPreboot2+"/pppoe_status.xml?now=" + new Date().getTime(),true);
+			xmlreq2.send(null);
+		}
 	}
 	else
 	{
