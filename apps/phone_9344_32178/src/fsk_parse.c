@@ -22,18 +22,23 @@ static BOOLEAN g_finish_flag = FALSE;
 static BOOLEAN zzl_g_finish_flag = FALSE;
 static Fsk_Msg_Buffer_T g_fsk_msg_hex = {0};
 
-static int Fsk_lim[1000];
-int Fsk_CID[100];
+static short int Pre_buff[4096];
+static int Fsk_lim[2000];
+int Fsk_CID[200];
 int Fsk_CID_Len;
 static int Fsk_n = 0;
 static int Lim_ready = 0;
+static int Lim_ready_buff = 0;
 static int Lim_c = 0;
 static int lim_fsk_ready = 0;
+static int Pre_fsk_sign = 0;
+static int Pre_buff_c = 0;
 
 static int fix =0;
+static int buff_fix =0;
 
 extern FILE* fsk_file;
-unsigned char audioincoming_buf[2048] = {0};
+//unsigned char audioincoming_buf[2048] = {0};
 /*****************************************************************************/
 //  Description : initial parse FSK
 //  Global resource dependence : g_fsk_buff
@@ -71,8 +76,6 @@ void	fsk_parse(int fsk_bool[512], int j)
 	int i, n=0;
 	int fsk_call[100];
 
-	Fsk_n = 0;
-
 	for(i = 0; i < j-9; i++)
 	{
 		if(fsk_bool[i] == 0 && fsk_bool[i+9] == 1)
@@ -85,39 +88,59 @@ void	fsk_parse(int fsk_bool[512], int j)
 
 			i = i+9;
 		}
+
 		else if(fsk_bool[i] == 0 && fsk_bool[i+8] == 1)
 		{
-			fsk_call[n] = (fsk_bool[i+1]) + (fsk_bool[i+2]<<1) + (fsk_bool[i+3]<<2) + (fsk_bool[i+4]<<3);
+			fsk_call[n] = (fsk_bool[i]) + (fsk_bool[i+1]<<1) + (fsk_bool[i+2]<<2) + (fsk_bool[i+3]<<3);
 			n++;
 
-			fsk_call[n] = fsk_bool[i+5] + (fsk_bool[i+6]<<1) + (fsk_bool[i+7]<<2);
+			fsk_call[n] = fsk_bool[i+4] + (fsk_bool[i+5]<<1) + (fsk_bool[i+6]<<2) + (fsk_bool[i+7]<<3);
 			n++;
 
 			i = i+8;
 		}
+
 		else if(fsk_bool[i] == 0 && n)
 		{
 			fsk_call[n] = (fsk_bool[i+1]) + (fsk_bool[i+2]<<1) + (fsk_bool[i+3]<<2) + (fsk_bool[i+4]<<3);
 			n++;
 
 			fsk_call[n] = fsk_bool[i+5] + (fsk_bool[i+6]<<1) + (fsk_bool[i+7]<<2) + (fsk_bool[i+8]<<3);
-			n++;
 
-			i = i+9;
+			if(3 == fsk_call[n] || 11 == fsk_call[n])
+			{
+				n++;
+				i = i+9;
+			}
+			else 
+				n--;
 		}
 	}
 	printf("\nfsk_call data length = %d\n", n);
 
 	if(fsk_call[0] == 4 || fsk_call[1] == 0)
 	{
+		if(fsk_call[3])
+			 fsk_call[3] = 1;
+
 		for(i=0; i < (fsk_call[2] + fsk_call[3]*16 - 8); i++)
 		{
 			Fsk_CID[i] = fsk_call[i*2 + 20];
 			printf("%d ", Fsk_CID[i]);
 		}
 		Fsk_CID_Len = (fsk_call[2] + fsk_call[3]*16 - 8);
+
 	}
-	else if(fsk_call[1] == 8 || fsk_call[24] == 2)
+	else if(fsk_call[1] == 8 &&  fsk_call[22] == 2)
+	{
+		for(i=0; i < fsk_call[24]; i++)
+		{
+			Fsk_CID[i] = fsk_call[i*2 +26];	
+			printf("%d ", Fsk_CID[i]);
+		}
+		Fsk_CID_Len = fsk_call[24];
+	}
+	else if(fsk_call[1] == 8 &&  fsk_call[24] == 2)
 	{
 		for(i=0; i < fsk_call[26]; i++)
 		{
@@ -156,210 +179,15 @@ void	fsk_parse(int fsk_bool[512], int j)
 BOOLEAN Fsk_AddData(short int *buff, int count)
 {
 	int  	i, pre=0, k=0, j=0, sum=0; 
-	int	c20=0, fail=0, n=0, fsk_start_sign=0, fsk_start_num = 0;
+	int	c20=0,  lock_num = 0;
 	int 	fsk_bool[512];
-	int 	fsk_count[512];
-	int 	fsk[100];
-	int 	kk;
-
+	int 	fsk_count[2048];
 
 	if ((NULL == buff) || FSK_BUFFER_MIN > count || count > (FSK_BUFFER_LENGTH - FSK_BUFFER_START))
 	{
 		return FALSE;
 	}
 	
-	for(i = 1; i < count-1; i++)
-	{
-		if( (buff[i]) > (buff[i-1]) && (buff[i]) > (buff[i+1]) )
-		{		
-			fsk_count[k++] = i-pre;
-			pre = i;
-		}
-		else if( (buff[i]) < (buff[i-1]) && (buff[i]) < (buff[i+1]) )
-		{		
-			fsk_count[k++] = i-pre;
-			pre = i;
-		}
-	}
-	fsk_count[k] = count - pre;	
-
-
-//join fsk_lim[]
-	for(i = 0; i <= k; i++)
-	{
-		if(fsk_count[i] > 2 && fsk_count[i] < 5)
-		{
-			Lim_c++;
-			if(Lim_c == 50)
-			{
-				Lim_ready = 1;
-				Fsk_n = 0;
-				printf("\n---start connecting data ------------------------------------------\n");
-			}
-/*			else if((Lim_c == 12) && Lim_ready == 2)
-			{
-				Lim_ready = 0;
-				lim_fsk_ready = 1;
-				printf("\n--- finished connect data------------------------------------------\n");
-			}
-*/
-		}
-		else if(fsk_count[i] > 4)
-		{		
-			if(Lim_ready ==2)
-			{
-//				printf("\n---error!--i = %d ----------------------value : %d ------////////////////////////////\n", i,fsk_count[i]);
-			}
-			Lim_c=0;
-			fail =1;
-		}
-		else if((i > 1) && (i<k-1))
-			Lim_c=0;
-
-		if(Lim_ready == 1)
-		{
-			if(Lim_c == 0)
-			{
-				Lim_ready = 2;
-				Fsk_lim[Fsk_n++] = fsk_count[i];
-				kk = i;
-			}
-		}
-		else if(Lim_ready == 2)
-		{
-			Fsk_lim[Fsk_n++] = fsk_count[i];
-			printf("%d-", fsk_count[i]);
-			
-			if(Fsk_n > 800)
-			{
-				Lim_ready = 0;
-				lim_fsk_ready = 1;
-				printf("\n----------- connecting data beyond top -------------------\n");
-			}
-		}
-	}	
-
-if(lim_fsk_ready)
-printf("\nk =  %d------------------------Fsk_n = %d--------------\n", k, Fsk_n);
-/*
-if(kk)											//code for saveing fsk
-{
-	k = 0;
-	for(i = 1; i < count-1; i++)
-	{
-		if( (buff[i]) > (buff[i-1]) && (buff[i]) > (buff[i+1]) )
-		{	
-			k++;	
-		}
-		else if( (buff[i]) < (buff[i-1]) && (buff[i]) < (buff[i+1]) )
-		{		
-			k++;
-		}
-
-		if(kk == k)
-		{
-			fwrite(buff+i-2, sizeof(short int), count-i+2, fsk_file);
-			fix = 1;	
-		}
-	}
-}
-else if(fix && !lim_fsk_ready)
-{	
-	fwrite(buff, sizeof(short int), count, fsk_file);
-}
-
-
-*/
-
-
-if(lim_fsk_ready)
-{
-	printf("\n--- connecting finished, start decoding,  number of data is  %d-----\n", Fsk_n);
-	for(i = 0; i < Fsk_n; i++)
-	{
-		if(Fsk_lim[i] > 4)
-		{
-			Fsk_lim[i] = 4;
-			Fsk_lim[i+1] = 3;		
-		}
-		if(Fsk_lim[i]==3 && Fsk_lim[i-1]<3 && Fsk_lim[i+1]<3)
-			Fsk_lim[i] = 2;		
-		if(Fsk_lim[i]==3 && Fsk_lim[i+1]==1)
-			Fsk_lim[i] = 2;		
-
-
-		if(Fsk_lim[i] < 3)       				// 2 1 2 2 2 1 2 ... 
-		{
-			sum = sum+1;
-			c20 = c20+Fsk_lim[i];
-			if(c20 >=20)					//2 1 2 2 2 2 1 22 2 1 2
-			{
-				c20 = 0;
-				i = i-1;
-			}
-
-			if((sum==3) && (fsk_bool[j-1]==1))		//pre  4 3 2 1 2 2 3
-			{
-				fsk_bool[j++] = 0;
-				sum = 0;
-			}
-			else if((sum==3) && (Fsk_lim[i+1] > 2))		//pre  4 3 2 1 2 2 3
-			{
-				fsk_bool[j++] = 0;
-				sum = 0;
-			}
-			else if(sum==4)					//2 2 1 2
-			{
-				fsk_bool[j++] = 0;		
-				sum = 0;
-			}
-			else if((sum >= 2) && (i==k-1))			//4 3 2 2 >|
-			{
-				fsk_bool[j++] = 0;		
-				c20 = 0;
-				sum = 0;
-			}
-			else if(Fsk_lim[i] + Fsk_lim[i+1] > 5) 		//2 4
-			{
-				fsk_bool[j++] = 1;		
-				i = i+1;				//jump 1 step
-				sum = 0;
-				c20 = 0;
-			}
-		}
-		else if(Fsk_lim[i] + Fsk_lim[i+1] > 5)			//4 2 or 3 3
-		{
-			fsk_bool[j++] = 1;		
-			i = i+1;					//jump 1 step
-			sum = 0;
-				c20 = 0;
-		}
-		else							//3 2  
-			sum = 0;
-	}
-	
-	Fsk_n = 0;
-}
-
-//	if(fail = 0) 
-//		for(i=0; k >= i; i++)
-//			printf("-%d", fsk_count[i]);
-
-if(lim_fsk_ready)
-{
-	lim_fsk_ready = 0;
-
-	for(i=0; j > i; i++)
-	{
-		printf("%d", fsk_bool[i]);
-	}
-
-	printf("\n finished decoding \n");
-
-	fsk_parse(fsk_bool, j);
-	printf("\n");
-}
-
 	memset(g_fsk_buff.buffer + FSK_BUFFER_START, 0, count * sizeof(short int));
 	memset(g_fsk_buff.bitbuf + FSK_BUFFER_START, 0, count * sizeof(char));
 	g_fsk_buff.count = count;
@@ -368,6 +196,222 @@ if(lim_fsk_ready)
 	Fsk_SetFSKZeroBuffer(&g_fsk_buff);
 
 	Fsk_Process();
+	
+	if(Pre_fsk_sign == 0 && Lim_ready_buff == 0)							// finding preamble ...
+	{
+		for(i = 1; i < count-1; i++)
+		{
+			if( (buff[i]) > (buff[i-1]) && (buff[i]) > (buff[i+1]) )
+			{		
+				if(i-pre > 2 && i-pre < 5)
+				{
+					Lim_c++;
+					if(Lim_c == 50)						// here it is!
+					{
+						Pre_fsk_sign = 1;
+						lock_num = i;
+						printf("\n---start connecting buffering -2-----------------------------------------\n");
+					}
+				}else Lim_c = 0;
+				pre = i;
+			}
+			else if( (buff[i]) < (buff[i-1]) && (buff[i]) < (buff[i+1]) )
+			{		
+				if(i-pre > 2 && i-pre < 5)
+				{
+					Lim_c++;
+					if(Lim_c == 50)						// here it is!
+					{
+						Pre_fsk_sign = 1;
+						lock_num = i;
+						printf("\n---start connecting buffering -1-----------------------------------------\n");
+					}
+				}else Lim_c = 0;
+				pre = i;
+			}
+		}
+
+		if(Pre_fsk_sign == 1)							// save this buff
+		{
+		//	memcpy(Pre_buff, 	buff, 	count);
+			for(i=0; i < count-lock_num; i++)
+			{
+				Pre_buff[i] = buff[i+lock_num];
+			}
+			Pre_buff_c = count-lock_num;
+		}
+	
+		return TRUE;
+
+    }
+    else if(Pre_fsk_sign == 1)							// connecting buffer...
+    {
+	//	memcpy(Pre_buff + Pre_buff_c, 	buff, 	count);
+		for(i=0; i < count; i++)
+		{
+			Pre_buff[Pre_buff_c + i] = buff[i];
+		}
+		Pre_buff_c += count;
+		printf("\n               Pre_buff_c                              -------------%d----------------------------\n", Pre_buff_c);
+
+		if(Pre_buff_c > 4000 - count)
+		{
+			Lim_ready_buff = 1;							// connecting finished
+		}
+		else 
+			return TRUE;
+	}// end of  if (Pre_fsk_sign == 1 && Pre_buff_c < count*4)
+
+
+	if(Lim_ready_buff && Pre_fsk_sign)
+	{
+		printf("\n             Lim_ready                             -----------------------------------------\n");
+		Lim_ready_buff = 0;
+		Pre_fsk_sign = 0;
+		pre = 0, Lim_c = 0;
+//part 0
+		for(i = 1; i <Pre_buff_c - 1 ; i++)
+		{
+			if( (Pre_buff[i]) > (Pre_buff[i-1]) && (Pre_buff[i]) > (Pre_buff[i+1]) )
+			{		
+				fsk_count[k++] = i-pre;
+				pre = i;
+			}
+			else if( (Pre_buff[i]) < (Pre_buff[i-1]) && (Pre_buff[i]) < (Pre_buff[i+1]) )
+			{		
+				fsk_count[k++] = i-pre;
+				pre = i;
+			}
+		}
+
+		Pre_buff_c = 0;
+
+		for(i = 0; i <= k; i++)
+		{
+//part 1
+			if((fsk_count[i] > 2 && fsk_count[i] < 5))
+			{
+				Lim_c++;
+				if(Lim_c == 50)
+				{
+					Lim_ready = 1;
+					printf("\n---start connecting data -------------111 111-----------------------------\n");
+				}
+			}
+			else
+			{		
+				Lim_c=0;
+			}
+// part 2
+			if(Lim_ready == 1)
+			{
+				if(Lim_c == 0)
+				{
+					Lim_ready = 2;
+					Fsk_lim[Fsk_n++] = fsk_count[i];
+					printf("\n---start connecting data -------------first point-----------------------------\n");
+				}
+			}
+			else if(Lim_ready == 2)
+			{
+				Fsk_lim[Fsk_n++] = fsk_count[i];
+		/*		printf("%d ", fsk_count[i]);
+				if(Fsk_n > 850)
+				{
+					Lim_ready = 0;
+					lim_fsk_ready = 1;
+					printf("\n----------- connecting data beyond top -------------------\n");
+				}
+		*/	}
+		}	//end of for ...
+
+					Lim_ready = 0;
+					lim_fsk_ready = 1;
+
+	}	//end of Lim_ready
+
+	if(lim_fsk_ready)
+    {
+		printf("\nk =  %d------------------------Fsk_n = %d--------------\n", k, Fsk_n);
+		for(i = 0; i < Fsk_n; i++)
+		{
+//part 1
+			if(Fsk_lim[i] > 4)
+			{
+				Fsk_lim[i] = 4;
+				Fsk_lim[i+1] = 3;		
+			}
+
+			if(Fsk_lim[i]==3 && Fsk_lim[i-1]<3 && Fsk_lim[i+1]<3)
+				Fsk_lim[i] = 2;		
+
+			if(Fsk_lim[i]>=3 && Fsk_lim[i+1]==1)
+				Fsk_lim[i] = 2;		
+
+//part 2
+			if(Fsk_lim[i] < 3)       				// 2 1 2 2 2 1 2 ... 
+			{
+				sum = sum+1;
+				c20 = c20+Fsk_lim[i];
+				if(c20 >=20)					//2 1 2 2 2 2 1 22 2 1 2
+				{
+					c20 = 0;
+					i = i-1;
+				}
+
+				if((sum==3) && (fsk_bool[j-1]==1))		//pre  4 3 2 1 2 2 3
+				{
+					fsk_bool[j++] = 0;
+					sum = 0;
+				}
+				else if((sum==3) && (Fsk_lim[i+1] > 2))		//pre  4 3 2 1 2 2 3
+				{
+					fsk_bool[j++] = 0;
+					sum = 0;
+				}
+				else if(sum==4)					//2 2 1 2
+				{
+					fsk_bool[j++] = 0;		
+					sum = 0;
+				}
+				else if((sum >= 2) && (i==k-1))			//4 3 2 2 >|
+				{
+					fsk_bool[j++] = 0;		
+					c20 = 0;
+					sum = 0;
+				}
+				else if(Fsk_lim[i] + Fsk_lim[i+1] > 5) 		//2 4
+				{
+					fsk_bool[j++] = 1;		
+					i = i+1;				//jump 1 step
+					sum = 0;
+					c20 = 0;
+				}
+			}
+			else if(Fsk_lim[i] + Fsk_lim[i+1] > 5)			//4 2 or 3 3
+			{	
+				fsk_bool[j++] = 1;		
+				i = i+1;					//jump 1 step
+				sum = 0;
+				c20 = 0;
+			}
+			else							//3 2  
+				sum = 0;
+		} //end of for Fsk_n
+//part 3	
+		Fsk_n = 0;
+
+		for(i=0; j > i; i++)
+		{
+			printf("%d", fsk_bool[i]);
+		}
+		printf("\n finished decoding \n");
+		fsk_parse(fsk_bool, j);						// call fsk_parse
+
+    }//end of lim_fsk_ready
+
+	lim_fsk_ready = 0;
+
 
 	return TRUE;
 }
