@@ -75,6 +75,7 @@ enum PstnCommand {
 #endif
 #ifdef	S1_F3A
 	GET_S1_IP,
+    USB_TEST,
 #endif
 	//
 	REQ_ENC,

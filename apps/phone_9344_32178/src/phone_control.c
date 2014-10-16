@@ -1433,6 +1433,32 @@ int do_cmd_set_sn(dev_status_t * dev, char * sendbuf)
 }
 #endif
 
+#if defined(S1_F3A)
+int do_cmd_usb_test(dev_status_t * dev, char * sendbuf)
+{
+	struct in_addr addr;
+	int ret;
+    int status;
+    struct   stat   buf;
+	char mac_buf[20]={0};
+	status = system("grep sd* /proc/partitions > /tmp/partitions");
+		PRINT("1111111%d !!!\n \n", status);
+    stat("/tmp/partitions", &buf);
+		PRINT("2222222%d !!!\n \n", buf.st_size);
+	if (buf.st_size > 30)
+	{
+		PRINT("usb test success !!!\n \n");
+		netWrite(dev->client_fd,"HEADR0010USBTEST000",strlen("HEADR0010USBTEST000"));
+		ret = 0;
+	} else {
+	    PRINT("usb test fail !!!\n");
+	    netWrite(dev->client_fd,"HEADR1010USBTEST000",strlen("HEADR1010USBTEST000"));
+	    ret = -1;
+    }
+    system("rm /tmp/partitions");
+    return ret;
+}
+#endif
 #if defined(S1) || defined(S1_F3A)
 int do_cmd_get_s1_ip(dev_status_t * dev, char * sendbuf)
 {
@@ -1466,10 +1492,10 @@ int do_cmd_get_s1_ip(dev_status_t * dev, char * sendbuf)
 			//sprintf(&mac_buf[j], "%02x:", lease.mac[i]);
 		//}
 
-		printf("hostname = %s\n",lease.hostname);
-		printf("strlen(hostname) = %d\n",strlen(lease.hostname));
+		PRINT("hostname = %s\n",lease.hostname);
+		PRINT("strlen(hostname) = %d\n",strlen(lease.hostname));
 		//printf("mac = %s\n",mac_buf);
-		printf("ip = %s\n",inet_ntoa(addr));
+		PRINT("ip = %s\n",inet_ntoa(addr));
 		//if(lease.hostname == NULL)
 			//strcpy(lease.hostname,A20_NAME);
 		if(!strcmp(lease.hostname,A20_NAME))
@@ -1632,6 +1658,14 @@ int parse_msg(cli_request_t* cli,char *sendbuf)
 			do_cmd_get_s1_ip(cli->dev,sendbuf);
 			break;
 		}
+#if defined(S1_F3A)
+		case USB_TEST:
+		{
+			PRINT("USB_TEST from %s\n",cli->dev->client_ip);
+			do_cmd_usb_test(cli->dev,sendbuf);
+			break;
+		}
+#endif
 #endif
 		case REQ_ENC:
 		{
@@ -1735,6 +1769,12 @@ int getCmdtypeFromString(char *cmd_str)
 	{
 		cmdtype = GET_S1_IP;
 	}
+#if defined(S1_F3A)
+	else if (strncmp(cmd_str, "USBTEST", 7) == 0)
+	{
+		cmdtype = USB_TEST;
+	}
+#endif
 #endif
 	else if (strncmp(cmd_str, "REQ_ENC", 7) == 0)
 	{
