@@ -261,3 +261,12 @@ function hzcheck(val) {
     if (!val.match(usern)) return false;
     else return true;
 }
+function del_front_zero(wid)
+{
+	var temp = wid.value.replace(/\b(0+)/gi,"");
+	
+	if(temp=="")
+		wid.value= "0"
+	else
+		wid.value = temp;
+}

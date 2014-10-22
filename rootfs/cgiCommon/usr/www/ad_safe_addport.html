@@ -13,6 +13,8 @@ else{window.top.location.href="../login.html";}
 
 function CheckValue()
 {
+	del_front_zero(document.WORKFORM.ADD_PORTOUT);
+	del_front_zero(document.WORKFORM.ADD_PORTIN);
 	if 	(checkValuerange(document.WORKFORM.ADD_PORTOUT.value,1,65534)==false)
 	{
 		alert(_("err oport"));

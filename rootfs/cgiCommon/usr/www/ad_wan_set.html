@@ -341,6 +341,7 @@ function CheckValue()
 
 		if (document.wanCfg.PPPOE_MODE.selectedIndex == 1)
 		{
+			del_front_zero(document.wanCfg.PPPOE_DEMAND);
 			if (document.wanCfg.PPPOE_DEMAND.value == "")
 			{
 				alert(_("err sRP"));
@@ -356,6 +357,7 @@ function CheckValue()
 		}
 		else if (document.wanCfg.PPPOE_MODE.selectedIndex == 2)
 		{
+			del_front_zero(document.wanCfg.PPPOE_MANUAL);
 			if (document.wanCfg.PPPOE_MANUAL.value == "")
 			{
 				alert(_("err sIT"));
@@ -371,6 +373,10 @@ function CheckValue()
 		}
 		else if (document.wanCfg.PPPOE_MODE.selectedIndex == 3)
 		{
+			del_front_zero(document.wanCfg.PPPOE_TIMING_BH);
+			del_front_zero(document.wanCfg.PPPOE_TIMING_BM);
+			del_front_zero(document.wanCfg.PPPOE_TIMING_EH);
+			del_front_zero(document.wanCfg.PPPOE_TIMING_EM);
 			if (checktimerange(document.wanCfg.PPPOE_TIMING_BH.value,0,23)==false)
 			{
 				alert(_("err stiming"));

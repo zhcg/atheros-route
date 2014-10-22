@@ -14,6 +14,8 @@ function CheckValue()
 {
 	if(document.getElementById("WIFION_OFF").value=="on")
 	{
+		del_front_zero(document.WORKFORM.BEACON_INT);
+		del_front_zero(document.WORKFORM.WIFI_ADV_RSTCTS);
 		if(document.WORKFORM.BEACON_INT.value=="")
 		{
 			alert(_("err ssidtime empty"));
@@ -62,6 +64,8 @@ function CheckValue()
 	}
 	if(document.getElementById("WIFION_OFF_3").value=="on")
 	{
+		del_front_zero(document.WORKFORM.BEACON_INT_3);
+		del_front_zero(document.WORKFORM.WIFI_ADV_RSTCTS_3);
 		if(document.WORKFORM.BEACON_INT_3.value=="")
 		{
 			alert(_("err ssidtime empty"));

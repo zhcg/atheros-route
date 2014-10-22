@@ -14,6 +14,7 @@ function CheckValue()
 {
 	if(document.WORKFORM.DHCPON_OFF[0].checked == true)
 	{
+		del_front_zero(document.WORKFORM.DHCP_TIME);
 		if (!checkIpAddr(document.WORKFORM.DHCP_BIP, 1))
 		{
 			document.WORKFORM.DHCP_BIP.select();
@@ -65,9 +66,6 @@ function CheckValue()
 				return false;
 			}
 		}
-		
-		
-		
 		if (document.WORKFORM.DHCP_TIME.value.length == 0)
 		{
 			alert(_("err time empty"));

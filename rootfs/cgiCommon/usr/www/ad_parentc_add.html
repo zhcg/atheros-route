@@ -14,6 +14,10 @@ var day_week="";
 
 function CheckValue()
 {
+	del_front_zero(document.WORKFORM.TIMING_BH);
+	del_front_zero(document.WORKFORM.TIMING_BM);
+	del_front_zero(document.WORKFORM.TIMING_EH);
+	del_front_zero(document.WORKFORM.TIMING_EM);
 	if (document.WORKFORM.ADD_MAC.value.length == 0)
 	{
 		alert(_("err MAC empty"));
