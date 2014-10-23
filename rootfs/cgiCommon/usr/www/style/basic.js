@@ -263,6 +263,8 @@ function hzcheck(val) {
 }
 function del_front_zero(wid)
 {
+	if(wid.value=="")
+		return;
 	var temp = wid.value.replace(/\b(0+)/gi,"");
 	
 	if(temp=="")
