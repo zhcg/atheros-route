@@ -20,7 +20,20 @@ char remote_port_buf[BUF_LEN_64]={0};
 char ota_ip_buf[BUF_LEN_128]={0};
 char ota_port_buf[BUF_LEN_64]={0};
 char conf_ver[BUF_LEN_64]={0};
+int get_9344_info_flag;
+F2B_INFO_DATA f2b_info;
 unsigned char base_sn[32];
+//#define PRINT_LOG_FILE
+#ifdef PRINT_LOG_FILE
+
+void writeLogToFile(char *str)
+{
+	FILE *fd;
+	fd = fopen("/tmp/getKeyError.log", "a+b");
+	fwrite(str, 1, strlen(str), fd);
+	fclose(fd);
+}
+#endif
 
 int ComFunChangeHexBufferToAsc(unsigned char *hexbuf,int hexlen,char *ascstr)
 {
@@ -62,7 +75,14 @@ unsigned char sumxor(const  unsigned char  *arr, int len)
 
 	return sum;
 }
-
+char BcdToHex(char inchar)
+{
+	if ((inchar>=0x30)&&(inchar<=0x39))
+	{
+		return inchar-0x30;
+	}
+	return 0;
+}
 //test CPU is littleEnd or Bigend; 
 //ret: 1 :Little Endian￡?0: BIG Endian
 int testendian() 
@@ -104,6 +124,7 @@ int send_request(unsigned char cmd,unsigned char order,unsigned char *param,int 
 		PRINT("malloc err\n");
 		return -2;
 	}
+	PRINT("len = %d\n",len);
 	buf[index++] = (unsigned char)AS532_HEAD1;
 	buf[index++] = (unsigned char)AS532_HEAD2;
 	buf[index++] = (CMD_HEAD>>0x08);
@@ -242,7 +263,51 @@ int get_respond(unsigned char *prcv_buffer,int buf_size)
 		}
 	}while(1);
 }
-
+int get_respond_long(unsigned char *prcv_buffer,int buf_size)
+{
+	PRINT("%s\n",__FUNCTION__);
+	int rcv_index;
+	int i,j;
+	int ret = 0;
+	int loops = 0;
+	rcv_index = 0;
+	do
+	{
+		loops++;
+		if(loops > 350){
+			PRINT("Error: get respond timeout \n");
+			return -1;
+		}
+		usleep(100 * 1000);
+		ret = read(as532_fd, (prcv_buffer + rcv_index), (buf_size - rcv_index));
+		if(ret > 0)
+		{
+			PRINT("read : ");
+			ComFunPrintfBuffer(prcv_buffer + rcv_index,ret);
+			rcv_index += ret;
+			//PRINT("ret = %d\n",ret);
+			if(rcv_index > 0)
+			{
+				i = PacketHeadSearch(prcv_buffer,0,rcv_index);
+				if(i > -1)
+				{
+					j = PacketRspGet(prcv_buffer,i,rcv_index);	
+					if(j > 1)
+					{
+						for(ret = 0;ret < j;ret++)
+						{
+							prcv_buffer[ret] = prcv_buffer[i + ret];
+						}
+						return j;
+					}
+					else if(j == -1)
+						//return j;
+						continue;
+				}
+			}
+		}
+	}while(1);
+}
 int get_532_ver()
 {
 	int ret = 0;
@@ -393,6 +458,492 @@ int jump_to_boot()
 	return -2;
 }
 
+int check_status()
+{
+	int ret = 0;
+	memset(respond_buffer,0,sizeof(respond_buffer));
+	char tail[4]={0x00,0xff,0x00,0x00};
+	if(send_request(CHECKSTATUS,0,NULL,sizeof(tail),tail)==0)
+	{
+		ret = get_respond(respond_buffer,sizeof(respond_buffer));
+		//解析响应
+		//a5 5a 03 00 00 00 04 33 31 30 35 xx
+		if(ret >= RSP_CMD_MIN_BYTES)
+		{
+			//判断响应
+			if(respond_buffer[2] != (char)CHECKSTATUS)
+			{
+				PRINT("%s command respond error \n", __FUNCTION__);
+				return -1;				
+			}	
+			switch(respond_buffer[7])
+			{
+//				case REQ_RSP_OK:
+//					PRINT("%s command execute OK! \n", __FUNCTION__);					
+//					break;
+				case 0x01://个人化态
+					return 1;
+				case 0x02://用户态
+					return 2;
+				default://异常
+					PRINT("%s flash is null, need init! \n", __FUNCTION__);
+					return 3;
+			}
+			return 0;
+		}
+	}
+	return 0;
+}
+int earse_flash()
+{
+	int ret = 0;
+	memset(respond_buffer,0,sizeof(respond_buffer));
+	char tail[4]={0x00,0xff,0x00,0x00};
+	if(send_request(0x09,0,NULL,sizeof(tail),tail)==0)
+	{
+		ret = get_respond_long(respond_buffer,sizeof(respond_buffer));
+		//解析响应
+		//a5 5a 03 00 00 00 04 33 31 30 35 xx
+		if(ret >= RSP_CMD_MIN_BYTES)
+		{
+			//判断响应
+			if(respond_buffer[2] != (char)0x09)
+			{
+				PRINT("%s command respond error \n", __FUNCTION__);
+				return -1;				
+			}	
+			switch(respond_buffer[4])
+			{
+				case REQ_RSP_OK:
+					PRINT("%s command execute OK! \n", __FUNCTION__);					
+					break;
+				default://异常
+					PRINT("%s command execute error! \n", __FUNCTION__);
+					return 3;
+			}
+			return 0;
+		}
+	}
+	return 0;
+}
+int individualKey()
+{
+	int ret = 0;
+	char tmp_buf[BUF_LEN_128]={0};
+	char erase_flash[4]		= {0xF5, 0x00, 0x00, 0x00};
+//	char input_pin[22]		= {0xF0, 0x00, 0x00, 0x00, 0x10, 0xc5, 0xf8, 0xf8, 0x91, 0x92, 0x69, 0x16, 0xf6, 0xe0, 0xa7, 0x9c, 0xe9, 0xd6, 0x55, 0x1c, 0x1e, 0x05};
+//	char input_sm1[166]		= {0xF3, 0x00, 0x00, 0x00, 0xA0, 0x21, 0xcf, 0x43, 0x48, 0x77, 0xa7, 0xed, 0x6c, 0x9a, 0xaa, 0xa8, 0xfc, 0x64, 0x46, 0x0f, 0x08, 0x33, 0xd0, 0x33, 0xe9, 0xb3, 0x1a, 0x15, 0x3e, 0xe0, 0x91, 0x15, 0x6e, 0xe4, 0xb9, 0xa1, 0xc3, 0x15, 0x26, 0x6b, 0x38, 0xfe, 0x9e, 0x37, 0x13, 0x68, 0x71, 0xc3, 0x65, 0xd9, 0x2a, 0x10, 0x6e, 0x50, 0x74, 0xdc, 0x54, 0x2f, 0x28, 0xc9, 0x8a, 0xa5, 0x59, 0xfa, 0xb8, 0xbf, 0x6b, 0x42, 0xb5, 0xc7, 0x50, 0x3f, 0x28, 0xaa, 0xb3, 0xfc, 0xfd, 0xc2, 0x7a, 0xaf, 0x5b, 0xb5, 0xd5, 0xa7, 0x89, 0xbf, 0x3d, 0x32, 0x0f, 0x72, 0xbe, 0x4d, 0x91, 0x56, 0x2e, 0xc8, 0x03, 0xb0, 0x51, 0xce, 0x6b, 0x88, 0x90, 0x46, 0x30, 0x8a, 0x0f, 0xfd, 0xe3, 0x09, 0x91, 0xbe, 0x72, 0x5a, 0x3a, 0xce, 0x73, 0xa7, 0xb0, 0x34, 0xdc, 0x7c, 0x73, 0xb5, 0x28, 0xa9, 0xa0, 0xcf, 0x0c, 0x2f, 0x7b, 0x47, 0x77, 0xb3, 0x04, 0x30, 0x5f, 0x4e, 0xb2, 0x1b, 0xe1, 0xd3, 0x5f, 0x92, 0xba, 0x07, 0x68, 0xdc, 0x09, 0xd1, 0xec, 0x08, 0x53, 0xf6, 0xd5, 0xee, 0xcf, 0x54, 0xa8, 0x6d, 0xf8, 0x48, 0x74, 0x41, 0xff, 0x05};
+	char end_input[4]		= {0xF6, 0x00, 0x00, 0x00};
+//	char log_in[23]			= {0x80, 0x18, 0x00, 0x00, 0x12, 0x00, 0x01, 0xc5, 0xf8, 0xf8, 0x91, 0x92, 0x69, 0x16, 0xf6, 0xe0, 0xa7, 0x9c, 0xe9, 0xd6, 0x55, 0x1c, 0x1e};
+	
+	//擦除FLASH区
+	if(send_request(KEYCMD,0,NULL,sizeof(erase_flash),erase_flash)==0)
+	{
+		memset(respond_buffer,0,sizeof(respond_buffer));
+		ret = get_respond_long(respond_buffer,sizeof(respond_buffer));
+		//解析响应
+		//a5 5a 06 00 00 00 04 00 00 90 00 xx
+		if(ret >= RSP_CMD_MIN_BYTES)
+		{
+			//判断响应
+			if(respond_buffer[2] != (char)KEYCMD)
+			{
+				PRINT("%s command erase_flash respond error \n", __FUNCTION__);
+				return -1;				
+			}	
+			switch(respond_buffer[4])
+			{
+				case REQ_RSP_OK:
+					PRINT("%s command erase_flash execute OK! \n", __FUNCTION__);
+					break;	
+				default:
+					PRINT("%s command erase_flash execute error! \n", __FUNCTION__);
+					return -1;
+			}
+		}
+		else
+		{
+			PRINT("%s command erase_flash get_respond execute error! \n", __FUNCTION__);
+			return -1;
+		}
+	}
+	//打开输入PIN
+/*	if(send_request(KEYCMD,0,NULL,sizeof(input_pin),input_pin)==0)
+	{
+		memset(respond_buffer,0,sizeof(respond_buffer));
+		ret = get_respond(respond_buffer,sizeof(respond_buffer));
+		//解析响应
+		//a5 5a 06 00 00 00 04 00 00 90 00 xx
+		if(ret >= RSP_CMD_MIN_BYTES)
+		{
+			//判断响应
+			if(respond_buffer[2] != (char)KEYCMD)
+			{
+				PRINT("%s command input_pin respond error \n", __FUNCTION__);
+				return -1;				
+			}	
+			switch(respond_buffer[4])
+			{
+				case REQ_RSP_OK:
+					PRINT("%s command input_pin execute OK! \n", __FUNCTION__);
+					break;	
+				default:
+					PRINT("%s command input_pin execute error! \n", __FUNCTION__);
+					return -1;
+			}
+		}
+		else
+		{
+			PRINT("%s command input_pin get_respond execute error! \n", __FUNCTION__);
+			return -1;
+		}
+	}
+	//导入SM1
+	if(send_request(KEYCMD,0,NULL,sizeof(input_sm1),input_sm1)==0)
+	{
+		memset(respond_buffer,0,sizeof(respond_buffer));
+		ret = get_respond_long(respond_buffer,sizeof(respond_buffer));
+		//解析响应
+		//a5 5a 06 00 00 00 04 00 00 90 00 xx
+		if(ret >= RSP_CMD_MIN_BYTES)
+		{
+			//判断响应
+			if(respond_buffer[2] != (char)KEYCMD)
+			{
+				PRINT("%s command input_sm1 respond error \n", __FUNCTION__);
+				return -1;				
+			}	
+			switch(respond_buffer[4])
+			{
+				case REQ_RSP_OK:
+					PRINT("%s command input_sm1 execute OK! \n", __FUNCTION__);
+					break;	
+				default:
+					PRINT("%s command input_sm1 execute error! \n", __FUNCTION__);
+					return -1;
+			}
+		}
+		else
+		{
+			PRINT("%s command input_sm1 get_respond execute error! \n", __FUNCTION__);
+			return -1;
+		}
+	}*/
+	//结束预个人化
+	if(send_request(KEYCMD,0,NULL,sizeof(end_input),end_input)==0)
+	{
+		memset(respond_buffer,0,sizeof(respond_buffer));
+		ret = get_respond_long(respond_buffer,sizeof(respond_buffer));
+		//解析响应
+		//a5 5a 06 00 00 00 04 00 00 90 00 xx
+		if(ret >= RSP_CMD_MIN_BYTES)
+		{
+			//判断响应
+			if(respond_buffer[2] != (char)KEYCMD)
+			{
+				PRINT("%s command end_input respond error \n", __FUNCTION__);
+				return -1;				
+			}	
+			switch(respond_buffer[4])
+			{
+				case REQ_RSP_OK:
+					PRINT("%s command end_input execute OK! \n", __FUNCTION__);
+					break;	
+				default:
+					PRINT("%s command end_input execute error! \n", __FUNCTION__);
+					return -1;
+			}
+		}
+		else
+		{
+			PRINT("%s command end_input get_respond execute error! \n", __FUNCTION__);
+			return -1;
+		}
+	}
+	//登陆
+/*	if(send_request(KEYCMD,0,NULL,sizeof(log_in),log_in)==0)
+	{
+		memset(respond_buffer,0,sizeof(respond_buffer));
+		ret = get_respond(respond_buffer,sizeof(respond_buffer));
+		//解析响应
+		//a5 5a 06 00 00 00 04 00 00 90 00 xx
+		if(ret >= RSP_CMD_MIN_BYTES)
+		{
+			//判断响应
+			if(respond_buffer[2] != (char)KEYCMD)
+			{
+				PRINT("%s command log_in respond error \n", __FUNCTION__);
+				return -1;				
+			}
+			switch(respond_buffer[4])
+			{
+				case REQ_RSP_OK:
+				case 0xA0:
+					PRINT("%s command log_in execute OK! \n", __FUNCTION__);
+					break;
+				default:
+					PRINT("%s command log_in execute error! \n", __FUNCTION__);
+					return -1;
+			}
+		}
+		else
+		{
+			PRINT("%s command log_in get_respond execute error! \n", __FUNCTION__);
+			return -1;
+		}
+	}*/
+	return 0;
+}
+
+int getPublicKey()
+{
+	int ret = 0;
+	char tmp_buf[BUF_LEN_128]={0};
+//	char input_pin[22]		= {0xF0, 0x00, 0x00, 0x00, 0x10, 0xc5, 0xf8, 0xf8, 0x91, 0x92, 0x69, 0x16, 0xf6, 0xe0, 0xa7, 0x9c, 0xe9, 0xd6, 0x55, 0x1c, 0x1e, 0x05};
+//	char input_sm1[165]		= {0xF3, 0x00, 0x00, 0x00, 0xA0, 0x21, 0xcf, 0x43, 0x48, 0x77, 0xa7, 0xed, 0x6c, 0x9a, 0xaa, 0xa8, 0xfc, 0x64, 0x46, 0x0f, 0x08, 0x33, 0xd0, 0x33, 0xe9, 0xb3, 0x1a, 0x15, 0x3e, 0xe0, 0x91, 0x15, 0x6e, 0xe4, 0xb9, 0xa1, 0xc3, 0x15, 0x26, 0x6b, 0x38, 0xfe, 0x9e, 0x37, 0x13, 0x68, 0x71, 0xc3, 0x65, 0xd9, 0x2a, 0x10, 0x6e, 0x50, 0x74, 0xdc, 0x54, 0x2f, 0x28, 0xc9, 0x8a, 0xa5, 0x59, 0xfa, 0xb8, 0xbf, 0x6b, 0x42, 0xb5, 0xc7, 0x50, 0x3f, 0x28, 0xaa, 0xb3, 0xfc, 0xfd, 0xc2, 0x7a, 0xaf, 0x5b, 0xb5, 0xd5, 0xa7, 0x89, 0xbf, 0x3d, 0x32, 0x0f, 0x72, 0xbe, 0x4d, 0x91, 0x56, 0x2e, 0xc8, 0x03, 0xb0, 0x51, 0xce, 0x6b, 0x88, 0x90, 0x46, 0x30, 0x8a, 0x0f, 0xfd, 0xe3, 0x09, 0x91, 0xbe, 0x72, 0x5a, 0x3a, 0xce, 0x73, 0xa7, 0xb0, 0x34, 0xdc, 0x7c, 0x73, 0xb5, 0x28, 0xa9, 0xa0, 0xcf, 0x0c, 0x2f, 0x7b, 0x47, 0x77, 0xb3, 0x04, 0x30, 0x5f, 0x4e, 0xb2, 0x1b, 0xe1, 0xd3, 0x5f, 0x92, 0xba, 0x07, 0x68, 0xdc, 0x09, 0xd1, 0xec, 0x08, 0x53, 0xf6, 0xd5, 0xee, 0xcf, 0x54, 0xa8, 0x6d, 0xf8, 0x48, 0x74, 0x41, 0xff, 0x05};
+//	char end_input[4]		= {0xF6, 0x00, 0x00, 0x00};
+//	char log_in[23]			= {0x80, 0x18, 0x00, 0x00, 0x12, 0x00, 0x01, 0xc5, 0xf8, 0xf8, 0x91, 0x92, 0x69, 0x16, 0xf6, 0xe0, 0xa7, 0x9c, 0xe9, 0xd6, 0x55, 0x1c, 0x1e};
+//	char log_in[13]			= {0x80, 0x18, 0x00, 0x00, 0x08, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38};
+//	char open_ven[14]   	= {0x80, 0x42, 0x00, 0x00, 0x08, 0x00, 0x00, 0x31, 0x31, 0x31, 0x31, 0x31, 0x31, 0x02};
+	char get_ven_key[10]  	= {0x80, 0x88, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x02, 0x0A};
+	char get_ven1_key[10] 	= {0x80, 0x88, 0x01, 0x00, 0x02, 0x00, 0x00, 0x00, 0x02, 0x0A};
+//	char close_ven[]		= {0x80, 0x44, 0x00, 0x00, 0x08, 0x00, 0x00, 0x31, 0x31, 0x31, 0x31, 0x31, 0x31, 0x02};
+	int recv_len;
+	pAS532_KEY_DATA pkeyData;
+	
+/*	ret = individualKey();
+	if(ret != 0)
+	{
+		PRINT("%s individualKey execute error! \n", __FUNCTION__);
+		return -1;
+	}*/
+	ret = check_status();
+	if(ret == 3)
+	{
+		//个人化
+		ret = individualKey();
+		if(ret < 0)
+		{
+			usleep(1000*1000);
+			individualKey();
+		}
+	}
+
+	//登陆
+/*	if(send_request(KEYCMD,0,NULL,sizeof(log_in),log_in)==0)
+	{
+		memset(respond_buffer,0,sizeof(respond_buffer));
+		ret = get_respond(respond_buffer,sizeof(respond_buffer));
+		//解析响应
+		//a5 5a 06 00 00 00 04 00 00 90 00 xx
+		if(ret >= RSP_CMD_MIN_BYTES)
+		{
+			//判断响应
+			if(respond_buffer[2] != (char)KEYCMD)
+			{
+				PRINT("%s command log_in respond error \n", __FUNCTION__);
+				return -1;				
+			}
+			switch(respond_buffer[4])
+			{
+				case REQ_RSP_OK:
+				case 0xA0:
+					PRINT("%s command log_in execute OK! \n", __FUNCTION__);
+					break;
+				case 0x21:
+					PRINT("LogIn Error 0x21, goto individualKey\n");
+					ret = individualKey();
+					if(ret == 0)
+					{
+						break;						
+					}
+					else
+					{
+						PRINT("%s individualKey execute error! \n", __FUNCTION__);
+						return -1;
+					}
+				default:
+					PRINT("%s command log_in execute error! \n", __FUNCTION__);
+					return -1;
+			}
+		}
+		else
+		{
+			PRINT("%s command log_in get_respond execute error! \n", __FUNCTION__);
+			return -1;
+		}
+	}
+	//打开容器
+	if(send_request(KEYCMD,0,NULL,sizeof(open_ven),open_ven)==0)
+	{
+		memset(respond_buffer,0,sizeof(respond_buffer));
+		ret = get_respond(respond_buffer,sizeof(respond_buffer));
+		//解析响应
+		//a5 5a 06 00 00 00 04 00 00 90 00 xx
+		if(ret >= RSP_CMD_MIN_BYTES)
+		{
+			//判断响应
+			if(respond_buffer[2] != (char)KEYCMD)
+			{
+				PRINT("%s command open_ven respond error \n", __FUNCTION__);
+				return -2;				
+			}	
+			switch(respond_buffer[4])
+			{
+				case REQ_RSP_OK:
+				case 0xA1:
+					PRINT("%s command open_ven execute OK! \n", __FUNCTION__);
+					break;	
+				default:
+					PRINT("%s command open_ven execute error! \n", __FUNCTION__);
+					return -2;
+			}
+		}
+		else
+		{
+			PRINT("%s command open_ven get_respond execute error! \n", __FUNCTION__);
+			return -2;
+		}
+	}*/
+	//获取 0x00 0x00 容器公钥
+	if(send_request(KEYCMD,0,NULL,sizeof(get_ven_key),get_ven_key)==0)
+	{
+		memset(respond_buffer,0,sizeof(respond_buffer));
+		ret = get_respond_long(respond_buffer,sizeof(respond_buffer));
+		//解析响应
+		//a5 5a 06 00 00 00 04 00 00 90 00 xx
+		if(ret >= RSP_CMD_MIN_BYTES)
+		{
+			//判断响应
+			if(respond_buffer[2] != (char)KEYCMD)
+			{
+				PRINT("%s command get_ven_key respond error \n", __FUNCTION__);
+				return -3;				
+			}	
+			switch(respond_buffer[4])
+			{
+				case REQ_RSP_OK:
+					recv_len = respond_buffer[5]*256+respond_buffer[6];
+					if(recv_len != 524)
+					{
+						PRINT("Get vessel 0 public Key len:%d\n", recv_len);
+						return -3;
+					}
+					pkeyData = &f2b_info.keyData[0];
+					memcpy(pkeyData->pubKey, &respond_buffer[15], 514);
+					strcpy(pkeyData->vesselName, "111111");
+					pkeyData->p1 = 0;
+					pkeyData->p2 = 0;
+					break;	
+				default:
+					PRINT("%s command get_ven_key execute error! \n", __FUNCTION__);
+					return -3;
+			}
+		}
+		else
+		{
+			PRINT("%s command get_ven_key get_respond execute error! \n", __FUNCTION__);
+			return -3;
+		}
+	}
+	//获取 0x01 0x00 容器公钥
+	if(send_request(KEYCMD,0,NULL,sizeof(get_ven1_key),get_ven1_key)==0)
+	{
+		memset(respond_buffer,0,sizeof(respond_buffer));
+		ret = get_respond_long(respond_buffer,sizeof(respond_buffer));
+		//解析响应
+		//a5 5a 06 00 00 00 04 01 00 90 00 xx
+		if(ret >= RSP_CMD_MIN_BYTES)
+		{
+			//判断响应
+			if(respond_buffer[2] != (char)KEYCMD)
+			{
+				PRINT("%s command get_ven1_key respond error \n", __FUNCTION__);
+				return -4;				
+			}	
+			switch(respond_buffer[4])
+			{
+				case REQ_RSP_OK:
+					recv_len = respond_buffer[5]*256+respond_buffer[6];
+					if(recv_len != 524)
+					{
+						PRINT("Get vessel 1 public Key len:%d\n", recv_len);
+						return -4;
+					}
+					pkeyData = &f2b_info.keyData[1];
+					memcpy(pkeyData->pubKey, &respond_buffer[15], 514);
+					strcpy(pkeyData->vesselName, "111111");
+					pkeyData->p1 = 1;
+					pkeyData->p2 = 0;
+					break;
+				default:
+					PRINT("%s command get_ven_key1 execute error! \n", __FUNCTION__);
+					return -4;
+			}
+		}
+		else
+		{
+			PRINT("%s command get_ven_key1 get_respond execute error! \n", __FUNCTION__);
+			return -4;
+		}
+	}
+	
+	//关闭容器
+/*	if(send_request(KEYCMD,0,NULL,sizeof(close_ven),close_ven)==0)
+	{
+		memset(respond_buffer,0,sizeof(respond_buffer));
+		ret = get_respond(respond_buffer,sizeof(respond_buffer));
+		//解析响应
+		//a5 5a 06 00 00 00 04 01 00 90 00 xx
+		if(ret >= RSP_CMD_MIN_BYTES)
+		{
+			//判断响应
+			if(respond_buffer[2] != (char)KEYCMD)
+			{
+				PRINT("%s command close_ven respond error \n", __FUNCTION__);
+				return -5;				
+			}	
+			switch(respond_buffer[4])
+			{
+				case REQ_RSP_OK:
+					PRINT("%s command close_ven execute OK! \n", __FUNCTION__);
+					break;	
+				default:
+					PRINT("%s command close_ven execute error! \n", __FUNCTION__);
+					break;
+			}
+		}
+		else
+		{
+			PRINT("%s command close_ven get_respond execute error! \n", __FUNCTION__);
+			return -5;
+		}
+	}*/
+	//
+	f2b_info.keyCount = 2;
+	return 0;
+}
+int saveF2bKeyInfoToFile(int flag)
+{
+	FILE *pf;
+	F2B_INFO_DATA temp_data;
+	
+	pf = fopen(F2B_INFO_FILE, "w+b");
+	if(pf < 0)
+	{
+		PRINT("fopen % error\n", F2B_INFO_FILE);
+		return -1;
+	}
+	memcpy(&temp_data, &f2b_info, sizeof(F2B_INFO_DATA));
+	if(flag == 1)
+	{
+		//只写SN MAC
+		memset(&temp_data.keySn, 0xFF, sizeof(F2B_INFO_DATA)-(sizeof(f2b_info.baseSn) + sizeof(f2b_info.mac)+sizeof(f2b_info.baseVer)));
+	}
+	fwrite(&temp_data, 1, sizeof(temp_data), pf);
+	fclose(pf);
+	return 0;
+}
 int create_socket_client(char *ip,char *port)
 {
 	struct sockaddr_in cliaddr;
@@ -414,9 +965,13 @@ int create_socket_client(char *ip,char *port)
 		if (errno == EINPROGRESS) 
 		{  
 			PRINT("connect ip:%s port:%d timeout.\n",ip,atoi(port));
+			close(remote_server_fd);
+			remote_server_fd = -1;
 			return -2;  
 		}         
 		PRINT("connect ip:%s port:%d err.\n",ip,atoi(port));
+		close(remote_server_fd);
+		remote_server_fd = -1;
 		return -3;
 	}
 	PRINT("connected ip:%s port:%d.\n",ip,atoi(port));
@@ -479,6 +1034,7 @@ int prase_532_ver_msg(char *msg)
 	char *msgp;
 	char *end;
 	char ver_buf[32]={0};
+	char name[32]={0};
 	char tmp_buf[3]={0};
 	int minor = 0;
 	int i;
@@ -487,16 +1043,21 @@ int prase_532_ver_msg(char *msg)
 	for(i=0;i<strlen(msg);i++)
 		printf("%c",msg[i]);
 	printf("\n");
-	if(testendian()==0)
+	msgp = strstr(as532_version_description,"_V");
+	if(msgp == NULL)
 	{
-		PRINT("%s\n",B6L_AS532_PACKET_NAME);
-		msgp = strstr(msg,B6L_AS532_PACKET_NAME);
+		msgp = strstr(as532_version_description,"_v");
+		if(msgp == NULL)
+		{
+			printf("as532_version_description err\n");
+			return -6;
+		}
 	}
-	if(testendian()==1)
-	{
-		PRINT("%s\n",A20_AS532_PACKET_NAME);
-		msgp = strstr(msg,A20_AS532_PACKET_NAME);
-	}
+	memcpy(name,as532_version_description,(unsigned char *)msgp-as532_version_description);
+	PRINT("%s\n",name);
+	
+	msgp = strstr(msg,name);
+
 	if(msgp == NULL)
 	{
 		PRINT("remote msg err\n");
@@ -1044,7 +1605,9 @@ int CheckLocalVersion()
 	if(ret == sizeof(read_buf))
 	{
 		memcpy(local_ver, &read_buf[8], sizeof(local_ver));
-		if((local_ver[0] != as532_version[0])||(local_ver[1] != as532_version[1]))
+//		if((local_ver[0] != as532_version[0])||(local_ver[1] != as532_version[1]))
+		//只比较主版本号码
+		if(local_ver[0] != as532_version[0])
 		{
 			//主版本不匹配
 			return 0;
@@ -1058,10 +1621,12 @@ int CheckLocalVersion()
 	}
 	return 0;
 }
+
 int init_as532()
 {
 	char local_md5_buf[BUF_LEN_64]={0};
 	int ret = 0;
+	int get_key=1;
 	if(testendian()==0)
 	{
 		as532_fd = open(B6L_UART_NAME,O_RDWR | O_NONBLOCK);
@@ -1100,13 +1665,67 @@ int init_as532()
 		return -3;
 	if(get_532_ver_des()!=0)
 		return -4;
-	if(testendian()==1)
+	if(get_532_sn()!=0)
+		return -5;
+	memcpy(f2b_info.keySn, as532_sn, 64);
+//	if(get_9344_info_flag == 1)
 	{
-		printf("This is A20\n");
-		usleep(90*1000*1000);
+		if((ret = getPublicKey()) != 0)
+		{
+#ifdef PRINT_LOG_FILE
+				char disp[64];
+				sprintf(disp, "getPublicKey 1 error:%d\n", ret);
+				writeLogToFile(disp);
+#endif
+			usleep(1000*1000);
+			if((ret=getPublicKey()) != 0)
+			{
+				PRINT("getPublicKey error\n");
+#ifdef PRINT_LOG_FILE
+				sprintf(disp, "getPublicKey 2 error:%d\n", ret);
+				writeLogToFile(disp);
+#endif
+				usleep(1000*1000);
+				if((ret=getPublicKey()) != 0)
+				{
+					PRINT("getPublicKey error\n");
+					get_key = 0;
+#ifdef PRINT_LOG_FILE
+					sprintf(disp, "getPublicKey 3 error:%d\n", ret);
+					writeLogToFile(disp);
+#endif
+				}
+			}
+		}
+		// else
+		// {
+			// if(saveF2bKeyInfoToFile(0) < 0)
+			// {
+				// usleep(100);
+				// saveF2bKeyInfoToFile(0);
+			// }
+		// }
 	}
-	if(get_ota_info()!=0)
-		return -5;		
+	if(get_key == 1)
+	{
+		if(saveF2bKeyInfoToFile(0) < 0)
+		{
+			usleep(1000*1000);
+			saveF2bKeyInfoToFile(0);
+		}
+	}
+//	if(testendian()==1)
+//	{
+//		printf("This is A20\n");
+//		usleep(150*1000*1000);
+//		system("/bin/ntpdate -a 28 -k /etc/ntp.keys 210.14.156.93 ");
+//	}
+	
+	return 0;
+	
+#if 0
+	if(get_ota_info() != 0)
+		return -10;
 	if(get_remote_532_conf_ver()==0)
 	{
 //		ret = check_conf_ver();
@@ -1118,7 +1737,12 @@ int init_as532()
 				goto START;
 			if(check_md5(local_md5_buf)!=0)
 				goto START;
-			load_config();
+			ret = load_config();
+			if(ret < 0)
+			{
+				usleep(10*1000);
+				load_config();
+			}
 		}
 	}
 START:
@@ -1149,6 +1773,7 @@ START:
 	}
 	system("rm -rf /tmp/AS532.bin");
 	return -9;
+#endif
 }
 
 int load_config()
@@ -1325,14 +1950,92 @@ int get_9344_sn()
 		printf("buf = %s\n",buf);
 		sscanf(buf,"SN=%s",base_sn);
 		printf("base_sn = %s\n",base_sn);
+		return 0;
 	}
 	else
 	{
 		close(fd);
 		return -1;
 	}
-	close(fd);
+}
+
+int open_as532fd()
+{
+	as532_fd = open(B6L_UART_NAME,O_RDWR | O_NONBLOCK);
+	if(as532_fd < 0)
+	{
+		PRINT("open uart err\n");
+		return -1;
+	}
+	PRINT("as532_fd = %d\n",as532_fd);
+	serialConfig(as532_fd,B115200);
+	PRINT("open uart success\n");
 	return 0;
+}
+
+int do_update_fun()
+{
+	char local_md5_buf[BUF_LEN_64]={0};
+	int ret = 0;
+	
+	if(get_ota_info() != 0)
+		return -1;
+	if(get_remote_532_conf_ver()==0)
+	{
+//		ret = check_conf_ver();
+//		if(ret == -1)
+//			goto START;
+//		if(ret == 0)
+		{
+			if(get_remote_532_conf()!=0)
+				goto START;
+			if(check_md5(local_md5_buf)!=0)
+				goto START;
+			ret = load_config();
+			if(ret < 0)
+			{
+				usleep(10*1000);
+				load_config();
+			}
+		}
+	}
+START:
+	if(get_remote_532_ver()!=0)
+		return -2;
+//	if(check_ver()!=0)
+//		return -6;
+	PRINT("as532 needs update\n");
+	if(get_remote_532_image()!=0)
+		return -3;
+	if(As532PacketCheck((const char *)DOWNLOAD_AS532_FILE,as532_version)==0)
+	{
+		if(open_as532fd() < 0)
+		{
+			usleep(50*1000);
+			if(open_as532fd() < 0)
+			{
+				return -4;
+			}
+		}
+		update_tmp_file();
+		jump_to_boot();
+		usleep(500*1000);
+		if(As532Update((const char *)DOWNLOAD_AS532_FILE,as532_version)==0)
+		{
+			clean_tmp_file();
+			usleep(1000*1000);
+			system("rm -rf /tmp/AS532.bin");
+			PRINT("update success\n");
+			usleep(2000*1000);
+			get_532_ver_des();
+			close(as532_fd);
+			return 0;
+		}
+		clean_tmp_file();
+		close(as532_fd);
+	}
+	system("rm -rf /tmp/AS532.bin");
+	return -5;
 }
 
 int main(int argc,char **argv)
@@ -1340,7 +2043,7 @@ int main(int argc,char **argv)
 	if(testendian()==0)
 	{
 		printf("This is not A20\n");
-		is_b6l();
+		//is_b6l();
 	}
 	if(get_9344_sn() != 0)
 		return -1;
@@ -1350,5 +2053,13 @@ int main(int argc,char **argv)
 	init_as532();
 	
 	close(as532_fd);
+	
+	while(1)
+	{
+		do_update_fun();
+		sleep(60*60);
+//		usleep(2*1000*1000);
+	}
+	
 	return 0;
 }
