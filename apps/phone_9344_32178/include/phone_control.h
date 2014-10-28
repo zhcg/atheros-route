@@ -81,6 +81,7 @@ enum PstnCommand {
 	REQ_ENC,
 	GET_VER,
 	DEF_NAME,
+	REQ_DIAL,
 };
 typedef enum PstnCommand PstnCmdEnum;
 
@@ -134,6 +135,7 @@ struct class_phone_control
 {
 	int phone_control_sockfd;
 	char telephone_num[64];
+	char incoming_num[64];
 	int telephone_num_len;
 	char dtmf;
 	int global_onhook_success; //挂机成功标志

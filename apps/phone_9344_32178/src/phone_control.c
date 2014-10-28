@@ -1546,6 +1546,22 @@ int do_cmd_def_name(dev_status_t *dev, char *buf)
 	return 0;
 }
 
+int do_cmd_req_dial(dev_status_t *dev, char *buf)
+{
+	char sendbuf[BUF_LEN_256] = {0};
+	if(phone_control.global_incoming == 1 && strcmp(buf,phone_control.incoming_num) == 0)
+	{
+		PRINT("req dial ok\n");
+		sprintf(sendbuf,"HEADR0011DIALSTA0011",strlen("HEADR0011DIALSTA0011"));
+		netWrite(dev->client_fd,sendbuf,strlen(sendbuf));
+		return 0;	
+	}
+	PRINT("req dial not ok\n");
+	sprintf(sendbuf,"HEADR0011DIALSTA0010",strlen("HEADR0011DIALSTA0010"));
+	netWrite(dev->client_fd,sendbuf,strlen(sendbuf));
+	return 0;
+}
+
 //消息处理
 int parse_msg(cli_request_t* cli,char *sendbuf)
 {
@@ -1685,6 +1701,12 @@ int parse_msg(cli_request_t* cli,char *sendbuf)
 			do_cmd_def_name(cli->dev,cli->arg);
 			break;
 		}
+		case REQ_DIAL:
+		{
+			PRINT("REQ_DIAL from %s\n",cli->dev->client_ip);
+			do_cmd_req_dial(cli->dev,cli->arg);
+			break;
+		}
 		case DEFAULT:
 		{
 			PRINT("other cmd\n");
@@ -1787,6 +1809,10 @@ int getCmdtypeFromString(char *cmd_str)
 	else if (strncmp(cmd_str, "DEFNAME", 7) == 0)
 	{
 		cmdtype = DEF_NAME;
+	}
+	else if (strncmp(cmd_str, "REQDIAL", 7) == 0)
+	{
+		cmdtype = REQ_DIAL;
 	}
 	else
 	{
@@ -1977,6 +2003,8 @@ void Incomingcall(unsigned char *ppacket,int bytes,int flag)
 		num_len=(int)ppacket[8];
 	}
 	phone_control.global_incoming = 1;
+	if(num_len >= 64)
+		num_len = 63;
 
 	//如果正在对讲，干掉！！
 	for(i=0;i<CLIENT_NUM;i++)
@@ -2013,7 +2041,8 @@ void Incomingcall(unsigned char *ppacket,int bytes,int flag)
 	}
 	phone_control.telephone_num[num_len]='\0';
 	PRINT("incoming num : %s\n",phone_control.telephone_num);
-	
+	memset(phone_control.incoming_num,0,sizeof(phone_control.incoming_num));
+	memcpy(phone_control.incoming_num,phone_control.telephone_num,num_len);
 #ifdef B6
 	//生产测试被叫
 	sendbuf[index++] = 0xA5;
