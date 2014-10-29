@@ -1138,6 +1138,8 @@ int do_cmd_switch(dev_status_t* dev,char *sendbuf)
 		memset(sendbuf,0,SENDBUF);
 		//主叫转子机得到号码
 		snprintf(sendbuf, 22+phone_control.telephone_num_len, "HEADR0%03dINCOMIN%03d%s\r\n",10+phone_control.telephone_num_len, phone_control.telephone_num_len, phone_control.telephone_num);
+		memset(phone_control.incoming_num,0,sizeof(phone_control.incoming_num));
+		memcpy(phone_control.incoming_num,phone_control.telephone_num,phone_control.telephone_num_len);
 		PRINT("%s\n",sendbuf);
 	    netWrite(devlist[id].client_fd, sendbuf, strlen(sendbuf));
 		devlist[id].isswtiching = 1;
@@ -1549,7 +1551,7 @@ int do_cmd_def_name(dev_status_t *dev, char *buf)
 int do_cmd_req_dial(dev_status_t *dev, char *buf)
 {
 	char sendbuf[BUF_LEN_256] = {0};
-	if(phone_control.global_incoming == 1 && strcmp(buf,phone_control.incoming_num) == 0)
+	if((phone_control.global_incoming == 1 || dev->isswtiching == 1) && strcmp(buf,phone_control.incoming_num) == 0)
 	{
 		PRINT("req dial ok\n");
 		sprintf(sendbuf,"HEADR0011DIALSTA0011",strlen("HEADR0011DIALSTA0011"));
