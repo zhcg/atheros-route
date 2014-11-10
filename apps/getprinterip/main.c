@@ -247,6 +247,14 @@ int do_cmd_get_s1_ip()
 	return -1;
 }
 
+int do_cmd_reboot()
+{
+	printf("reboot\n");
+	netWrite(clientfd,"REBOOT000",strlen("REBOOT000"));
+	system("reboot");
+	return 0;
+}
+
 int prase_msg(char *msg)
 {
 	if(!strncmp(msg,"GET_IP",6))
@@ -268,6 +276,11 @@ int prase_msg(char *msg)
 	{
 		printf("GETVER\n");
 		do_cmd_get_9344_ver();
+	}	
+	else if(!strncmp(msg,"REBOOT",6))
+	{
+		printf("REBOOT\n");
+		do_cmd_reboot();
 	}	
 	else
 		printf("undefine\n");
