@@ -1727,6 +1727,10 @@ char *processSpecial(char *paramStr, char *outBuff)
 						
 						if(ret == 6)  /*the mac is 0, so the sta is not exit*/
 							continue;
+
+                        //add by mingyue
+						if(lease.expires == 0)  /*the expires is 0, so the sta will not be shown*/
+							continue;
                     
                         outBuff += sprintf(outBuff,"<tr>");
                         outBuff += sprintf(outBuff,"<td>%d</td>",num);
