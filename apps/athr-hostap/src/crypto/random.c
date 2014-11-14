@@ -46,7 +46,7 @@
 #define POOL_TAP4 7
 #define POOL_TAP5 1
 #define EXTRACT_LEN 16
-#define MIN_READY_MARK 2
+#define MIN_READY_MARK 0
 
 static u32 pool[POOL_WORDS];
 static unsigned int input_rotate = 0;

@@ -14,6 +14,7 @@
 #include <sys/stat.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <net/if.h>
 
 #include <sys/time.h>
 #include <signal.h>
@@ -2042,6 +2043,171 @@ static void *pthread_update(void *para)
 {
 	update("monitor_base","HBD_F2B_MONITOR_V1.0.1_20140618","HBD_F2B_MONITOR","1.0.1",60*60,0);
 }
+
+int get_local_mac(unsigned char *mac_addr)  
+{  
+	int sock_mac;  
+	struct ifreq ifr_mac;  
+	//char mac_addr[30];     
+	  
+	sock_mac = socket( AF_INET, SOCK_STREAM, 0 );  
+	if( sock_mac == -1)  
+	{  
+		perror("create socket falise...mac/n");  
+		return -1;  
+	}  
+	  
+	memset(&ifr_mac,0,sizeof(ifr_mac));     
+	strncpy(ifr_mac.ifr_name, "eth0", sizeof(ifr_mac.ifr_name)-1);     
+  
+	if( (ioctl( sock_mac, SIOCGIFHWADDR, &ifr_mac)) < 0)  
+	{  
+		printf("mac ioctl error/n");  
+		close( sock_mac );  
+		return -2;  
+	}  
+	  
+	sprintf(mac_addr,"%02x:%02x:%02x:%02x:%02x:%02x",  
+			(unsigned char)ifr_mac.ifr_hwaddr.sa_data[0],  
+			(unsigned char)ifr_mac.ifr_hwaddr.sa_data[1],  
+			(unsigned char)ifr_mac.ifr_hwaddr.sa_data[2],  
+			(unsigned char)ifr_mac.ifr_hwaddr.sa_data[3],  
+			(unsigned char)ifr_mac.ifr_hwaddr.sa_data[4],  
+			(unsigned char)ifr_mac.ifr_hwaddr.sa_data[5]);  
+  
+	PRINT("a20 mac:%s \n",mac_addr);      
+	  
+	close( sock_mac );  
+	return 0;  
+}  
+
+int set_mac(unsigned char *mac)
+{
+	int read_ret,ret = 0;
+	int start = 0;
+    unsigned char readbuf[128]={0};
+    char *mallocp = NULL;
+
+    int fd_sd0 = open("/sys/bus/i2c/devices/3-0050/eeprom",O_RDWR);
+    if(fd_sd0 < 0)
+    {
+		PRINT("open e2prom err\n");
+		return -1;
+	}
+    lseek(fd_sd0, 0, SEEK_SET);
+    mallocp = malloc(2048);
+    if(mallocp == NULL)
+    {
+		close(fd_sd0);
+		return -1;
+	}
+	memset(mallocp,0xff,2048);
+    //mac[17] = '\n';
+    mac[17] = ' ';
+	read_ret = write(fd_sd0, mallocp, 2048);
+	if (read_ret == 2048)
+	{
+		PRINT("eeprom erase success\n");
+	}
+	free(mallocp);
+    lseek(fd_sd0, 0, SEEK_SET);
+	read_ret = write(fd_sd0, mac, 18);
+	if (read_ret == 18)
+	{
+		PRINT("eeprom write success\n");
+		close(fd_sd0);
+	}
+	else
+		close(fd_sd0);
+
+    fd_sd0 = open("/sys/bus/i2c/devices/3-0050/eeprom",O_RDWR);
+    if(fd_sd0 < 0)
+    {
+		PRINT("open e2prom err\n");
+		return -1;
+	}
+	lseek(fd_sd0, 0, SEEK_SET);
+	read_ret = read(fd_sd0, readbuf, 17);
+	if(!memcmp(mac, readbuf, 17))
+	{
+		PRINT("a20 mac set success \n" );
+	} 
+	else 
+	{
+		close(fd_sd0);
+		return -1;
+	}	
+	close(fd_sd0);
+	return 0;
+}
+
+int repair_macaddr()
+{
+	int i;
+	unsigned char mac_9344[20] = {0};
+	unsigned char mac_a20[20] = {0};
+	unsigned char temp[sizeof(unsigned int)] = {0};
+	unsigned char temp2[3] = {0};
+	unsigned int mac_int = 0;
+	int fd = open("/opt/.f2b_info.conf",O_RDONLY);
+	if(fd < 0)
+	{
+		PRINT("open f2b_info err\n");
+		return -1;
+	}
+	memset(&fid,0,sizeof(fid));
+	if(read(fd,&fid,sizeof(fid))==sizeof(fid))
+	{
+		memset(mac_9344,0,sizeof(mac_9344));
+		memcpy(mac_9344,fid.mac,sizeof(fid.mac));
+		close(fd);
+	}
+	else
+	{
+		close(fd);
+		return -1;
+	}
+	if(strlen(mac_9344) == 0)
+		return -1;
+	PRINT("9344 mac : %s\n",mac_9344);
+	if(get_local_mac(mac_a20) != 0)
+		return -1;
+	if(strcmp(mac_a20,"88:88:88:88:88:88") == 0)
+	{
+		PRINT("mac = 88...\n");
+		memset(mac_a20,0,sizeof(mac_a20));
+		memcpy(mac_a20,mac_9344,sizeof(mac_9344));
+		for(i=6;i<strlen(mac_a20);i+=3)
+		{
+			memcpy(temp2,&mac_a20[i],2);
+			temp[(i/3)-2] = (unsigned char)strtoul(temp2,NULL,16);
+		}
+		ComFunPrintfBuffer(temp,sizeof(unsigned int));
+		memcpy(&mac_int,temp,sizeof(unsigned int));
+		mac_int = ntohl(mac_int);
+		PRINT("mac_int = 0x%x\n",mac_int);
+		if(mac_int%2==0)
+		{
+			mac_int += 4;
+		}
+		else
+		{
+			mac_int += 1;
+		}
+		PRINT("mac_int = 0x%x\n",mac_int);
+		mac_int = htonl(mac_int);
+		memcpy(temp,&mac_int,sizeof(unsigned int));
+		sprintf(mac_a20+6,"%02x:%02x:%02x:%02x",  temp[0],temp[1],temp[2],temp[3]);
+		PRINT("new a20 mac: %s\n",mac_a20);
+		if(set_mac(mac_a20) != 0)
+		{
+			usleep(200*1000);
+			set_mac(mac_a20);
+		}
+	}
+	return 0;
+}
+
 #endif
 
 int main(int argc,char **argv)
@@ -2053,7 +2219,9 @@ int main(int argc,char **argv)
 	pthread_t pthread_update_id;
 #endif
 	int ret,fd,init_flag = 0;
+	int try_times = 0;
 #ifdef BASE_A20
+	repair_macaddr();
 	pthread_create(&pthread_update_id, NULL, &pthread_update,NULL);
 #endif
 	pthread_create(&pthread_get_respond_id, NULL, &pthread_get_respond,NULL);
@@ -2068,7 +2236,9 @@ int main(int argc,char **argv)
 				init_success = 1;
 			}
 			else
+			{
 				goto MAIN_NEXT;
+			}
 		}
 		else
 		{
@@ -2123,8 +2293,12 @@ int main(int argc,char **argv)
 			goto MAIN_NEXT;
 		}
 MAIN_NEXT:
+		try_times++;
 		init_success = 0;
-		sleep(STATUS_DELAY);
+		if(try_times < 5)
+			sleep(FAST_STATUS_DELAY);
+		else
+			sleep(STATUS_DELAY);
 	}
 	if(sip_msg.register_flag == 1)
 	{
