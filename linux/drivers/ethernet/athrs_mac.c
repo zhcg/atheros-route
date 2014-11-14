@@ -90,6 +90,10 @@ static char *mii_str[2][4] = {
 int ignore_packet_inspection = 0;
 int frame_sz = 0;	
 
+//yaomoon
+struct workqueue_struct *doint_wq;
+struct work_struct doint_work;
+
 static void athr_gmac_mii_setup(athr_gmac_t *mac);
 void set_packet_inspection_flag(int flag)
 {
@@ -945,6 +949,42 @@ athr_gmac_get_link_st(athr_gmac_t *mac, int *link, int *fdx, athr_phy_speed_t *s
   return 0;
 }
 
+//void send_sigusr2_to_udhcpc(void)
+void send_sigusr2_to_udhcpc(struct work_struct *work)
+{
+    char buf[100] = {0};
+    struct file *fp; 
+    mm_segment_t fs; 
+    loff_t pos; 
+    int buf_len = 0;
+
+    struct task_struct *p; 
+    pid_t vpid = 0;
+    struct pid *pid;
+
+    //printk("hello enter\n"); 
+    fp = filp_open("/tmp/udhcpc_pid", O_RDWR | O_CREAT, 0644); 
+    if (IS_ERR(fp)) { 
+        printk("create file error\n"); 
+        return -1; 
+    } 
+    fs = get_fs(); 
+    set_fs(KERNEL_DS); 
+    pos = 0; 
+    buf_len = vfs_read(fp, buf, sizeof(buf), &pos); 
+    filp_close(fp, NULL); 
+    set_fs(fs); 
+
+   if(buf_len > 0)
+   {
+        sscanf(buf,"%d",&vpid);
+       // printk("yaomoooooooooooooooooooooooon :get pid =%d\n", vpid);
+        pid=find_get_pid(vpid);
+        p=pid_task(pid, PIDTYPE_PID);
+
+        send_sig_info(SIGUSR1, SEND_SIG_FORCED,p);
+   }
+}
 
 /*
  * phy link state management
@@ -1079,6 +1119,10 @@ athr_gmac_check_link(void *arg,int phyUnit)
         if (!mac_has_flag(mac,WAN_QOS_SOFT_CLASS))
            athr_gmac_fast_reset(mac,NULL,0);
 
+	//yaomoon add
+	if(phyUnit == 4)
+         queue_work(doint_wq ,&doint_work);
+       //
        /* 
         * only Enable Tx and Rx  afeter configuring the mac speed.
         */
@@ -2424,6 +2468,9 @@ athr_gmac_init(void)
     athr_gmac_t      *mac;
     uint32_t mask = 0;
 
+    INIT_WORK(&doint_work, send_sigusr2_to_udhcpc);
+    doint_wq = create_workqueue("doint");
+
     /* 
     * tx_len_per_ds is the number of bytes per data transfer in word increments.
     * 
@@ -2645,6 +2692,9 @@ athr_gmac_cleanup(void)
 {
     int i;
 
+    flush_workqueue(doint_wq);
+    destroy_workqueue(doint_wq);
+    
 		athr_ssdk_cleanup();
 		
     for(i = 0; i < ATHR_GMAC_NMACS; i++)

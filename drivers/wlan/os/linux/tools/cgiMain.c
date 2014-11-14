@@ -6386,7 +6386,7 @@ int main(int argc,char **argv)
 		}
 		//3.do new config pid
 		//if(flag!=1)
-		Execute_cmd("udhcpc -b -i eth0 -h HBD-Router -s /etc/udhcpc.script > /dev/null 2>&1", rspBuff);
+		Execute_cmd("udhcpc -b -i eth0 -p /tmp/udhcpc_pid -h HBD-Router -s /etc/udhcpc.script > /dev/null 2>&1", rspBuff);
 		//4.check the ip address 
 		//unnormal ¡¢none¡¢normal
 		Execute_cmd("cfg -e | grep \"WAN_IPFLAG=\"",valBuff);
