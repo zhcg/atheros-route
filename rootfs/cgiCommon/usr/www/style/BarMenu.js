@@ -156,14 +156,14 @@ function BarMenu(id)
 		//alert(id);
 		if(id=="bar-menu2-0")
 		{
-			window.ifm.location.href="cgi-bin/ad_sysinfo?ad_sysinfo=yes";
+			window.ifm.location.href="cgi-bin/ad_sysinfo";
 		}
 		if(id=="bar-menu2-0-0")
 		{
 			this.hide2();
             this.show2("bar-menu2-0-0-0");
 			this.id_openbox2 = "bar-menu2-0-0-0";
-			window.ifm.location.href="cgi-bin/ad_wan_set?ad_wan_set=yes";
+			window.ifm.location.href="cgi-bin/ad_wan_set";
 		}
 
 		if(id=="bar-menu2-0-0-2")
@@ -171,47 +171,47 @@ function BarMenu(id)
 			this.hide2();
             this.show2("bar-menu2-0-0-2-0");
 			this.id_openbox2 = "bar-menu2-0-0-2-0";
-			window.ifm.location.href="cgi-bin/ad_local_dhcp?ad_local_dhcp=yes";
+			window.ifm.location.href="cgi-bin/ad_local_dhcp";
 		}
 		if(id=="bar-menu2-0-0-2-3")
 		{
 			this.hide2();
             this.show2("bar-menu2-0-0-2-3-0");
 			this.id_openbox2 = "bar-menu2-0-0-2-3-0";
-			window.ifm.location.href="cgi-bin/ad_wireless_basic?ad_wireless_basic=yes";
+			window.ifm.location.href="cgi-bin/ad_wireless_basic";
 		}
-		if(id=="bar-menu2-0-0-2-3-3")
+		if(id=="bar-menu2-0-0-2-3-4")
 		{
 			this.hide2();
-            this.show2("bar-menu2-0-0-2-3-3-0");
-			this.id_openbox2 = "bar-menu2-0-0-2-3-3-0";
-			window.ifm.location.href="cgi-bin/ad_con_list?ad_con_list=yes";
+            this.show2("bar-menu2-0-0-2-3-4-0");
+			this.id_openbox2 = "bar-menu2-0-0-2-3-4-0";
+			window.ifm.location.href="cgi-bin/ad_con_list";
 		}
-		if(id=="bar-menu2-0-0-2-3-3-2")
+		if(id=="bar-menu2-0-0-2-3-4-2")
 		{
 			this.hide2();
-            this.show2("bar-menu2-0-0-2-3-3-2-0");
-			this.id_openbox2 = "bar-menu2-0-0-2-3-3-2-0";
-			window.ifm.location.href="cgi-bin/ad_safe_IPMAC?ad_safe_IPMAC=yes";
+            this.show2("bar-menu2-0-0-2-3-4-2-0");
+			this.id_openbox2 = "bar-menu2-0-0-2-3-4-2-0";
+			window.ifm.location.href="cgi-bin/ad_safe_IPMAC";
 		}
-		if(id=="bar-menu2-0-0-2-3-3-2-2")
+		if(id=="bar-menu2-0-0-2-3-4-2-2")
 		{
 			this.hide2();
-            this.show2("bar-menu2-0-0-2-3-3-2-1-0");
-			this.id_openbox2 = "bar-menu2-0-0-2-3-3-2-1-0";
-			window.ifm.location.href="cgi-bin/ad_parentc_accept?ad_parentc_accept=yes";
+            this.show2("bar-menu2-0-0-2-3-4-2-1-0");
+			this.id_openbox2 = "bar-menu2-0-0-2-3-4-2-1-0";
+			window.ifm.location.href="cgi-bin/ad_parentc_accept";
 		}
-		if(id=="bar-menu2-0-0-2-3-3-2-2-2")
+		if(id=="bar-menu2-0-0-2-3-4-2-2-2")
 		{
 			this.hide2();
-            this.show2("bar-menu2-0-0-2-3-3-2-1-2-0");
-			this.id_openbox2 = "bar-menu2-0-0-2-3-3-2-1-2-0";
-			window.ifm.location.href="cgi-bin/ad_man_timezone?ad_man_timezone=yes";
+            this.show2("bar-menu2-0-0-2-3-4-2-1-2-0");
+			this.id_openbox2 = "bar-menu2-0-0-2-3-4-2-1-2-0";
+			window.ifm.location.href="cgi-bin/ad_man_timezone";
 		}
-		//if(id=="bar-menu2-0-0-2-3-3-2-2-2-5")添加了log到处，5变6
-		if(id=="bar-menu2-0-0-2-3-3-2-2-2-6")
+		//if(id=="bar-menu2-0-0-2-3-4-2-2-2-5")添加了log到处，5变6
+		if(id=="bar-menu2-0-0-2-3-4-2-2-2-6")
 		{
-			window.ifm.location.href="cgi-bin/ad_netcheck?INDEX=00";
+			window.ifm.location.href="cgi-bin/ad_netcheck";
 		}
     }
 	this.show = function(id)

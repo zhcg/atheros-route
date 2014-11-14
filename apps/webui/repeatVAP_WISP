@@ -82,34 +82,34 @@ else
 	VAP_NUM=1
 fi
 
-wds_flag=`cfg -e | grep  WDSON_OFF= | awk -F'=' '{print $2}'`
+wds_flag=`cfg -e | grep  WISPON_OFF= | awk -F'=' '{print $2}'`
 
 if [ "${wds_flag}" = "on" ];then
-	if [ "s$STA_SSID" != "s" ];then
-		makeVAP ${STAMODE} "$STA_SSID" $STA_RADIO_ID:$STA_RFPARAM
+	if [ "s$WISP_STA_SSID" != "s" ];then
+		makeVAP ${STAMODE} "$WISP_STA_SSID" $WISP_STA_RADIO_ID:$WISP_STA_RFPARAM
 	    	if [ $? != 0 ]; then
 	        	echo "Unable to create VAP!"
         		exit
 		fi
 		VAP_NUM=$(($VAP_NUM+1))
-		if [ "${STA_SECMODE}" != "WPA" -a "${ROOTAP_MAC}" != "" ]; then
-        		iwconfig ath$VAP_NUM ap $ROOTAP_MAC
+		if [ "${WISP_STA_SECMODE}" != "WPA" -a "${WISP_ROOTAP_MAC}" != "" ]; then
+        		iwconfig ath$VAP_NUM ap $WISP_ROOTAP_MAC
 		fi
 	fi
 fi
 	
 if [ $number_pci = 1 ]; then
-	wds_flag_2=`cfg -e | grep  WDSON_OFF_3= | awk -F'=' '{print $2}'`
+	wds_flag_2=`cfg -e | grep  WISPON_OFF_3= | awk -F'=' '{print $2}'`
 	if [ "${wds_flag_2}" = "on" ];then
-		if [ "s$STA_SSID_2" != "s" ];then
-			makeVAP ${STAMODE} "$STA_SSID_2" $STA_RADIO_ID_2:$STA_RFPARAM_3
+		if [ "s$WISP_STA_SSID_2" != "s" ];then
+			makeVAP ${STAMODE} "$WISP_STA_SSID_2" $WISP_STA_RADIO_ID_2:$WISP_STA_RFPARAM_3
 			if [ $? != 0 ]; then
 				echo "Unable to create VAP!"
 				exit
 			fi
 			VAP_NUM=$(($VAP_NUM+1))
-			if [ "${STA_SECMODE_2}" != "WPA" -a "${ROOTAP_MAC_2}" != "" ]; then
-				iwconfig ath$VAP_NUM ap $ROOTAP_MAC_2
+			if [ "${WISP_STA_SECMODE_2}" != "WPA" -a "${WISP_ROOTAP_MAC_2}" != "" ]; then
+				iwconfig ath$VAP_NUM ap $WISP_ROOTAP_MAC_2
 			fi
 		fi
 	fi
@@ -122,7 +122,7 @@ else
 fi
 
 if [ "${wds_flag}" = "on" ];then
-	if [ "s$STA_SSID" != "s" ];then
+	if [ "s$WISP_STA_SSID" != "s" ];then
 	#	echo "------------there are task"
 		pid_2g_sta=`ps | grep "udhcpc -b -i ath${VAP_NUM}" | awk -F' ' '{print $1}'`
 	#	echo ---------------- $pid_2g_sta
@@ -132,7 +132,7 @@ if [ "${wds_flag}" = "on" ];then
 	#		echo "------------there are task"
 			kill -9 $pid_2g_sta
 		fi
-	    activateVAP ath$VAP_NUM:$STA_RADIO_ID - $STA_SECMODE $STA_SECFILE $WPS_ENABLE
+	    activateVAP ath$VAP_NUM:$WISP_STA_RADIO_ID - $WISP_STA_SECMODE $WISP_STA_SECFILE $WISP_WPS_ENABLE
 		if [ -f /tmp/sta_conf_filename ];then
 		    wpa_supplicant `cat /tmp/sta_conf_filename` &
 			sleep 2
@@ -145,13 +145,13 @@ fi
 
 if [ $number_pci = 1 ]; then
 	if [ "${wds_flag_2}" = "on" ];then	
-		if [ "s$STA_SSID_2" != "s" ];then
+		if [ "s$WISP_STA_SSID_2" != "s" ];then
 			pid_5g_sta=`ps | grep "udhcpc -b -i ath${VAP_NUM}" | awk -F' ' '{print $1}'"`
 			if [ ! -z "${pid_5g_sta}" ];then
 				kill -9 $pid_5g_sta
 			fi
 			rm -fr /tmp/sta_conf_filename
-			activateVAP ath$VAP_NUM:$STA_RADIO_ID_2 - $STA_SECMODE_2 $STA_SECFILE_2 $WPS_ENABLE_2
+			activateVAP ath$VAP_NUM:$WISP_STA_RADIO_ID_2 - $WISP_STA_SECMODE_2 $WISP_STA_SECFILE_2 $WISP_WPS_ENABLE_2
 			if [ -f /tmp/sta_conf_filename ]; then
 				wpa_supplicant `cat /tmp/sta_conf_filename` &				
 			fi
@@ -161,7 +161,7 @@ if [ $number_pci = 1 ]; then
 fi
 
 if [ "${wds_flag}" = "on" ];then
-	if [ "s$STA_SSID" != "s" ];then
+	if [ "s$WISP_STA_SSID" != "s" ];then
 		sleep 30
 		wisp_flag=`cfg -e | grep WISP_MODE_2G | awk -F'=' '{print $2}'`
                 if [ "${wisp_flag}" = "dhcp" ];then
@@ -179,7 +179,7 @@ fi
 
 if [ $number_pci = 1 ]; then
 	if [ "${wds_flag_2}" = "on" ];then	
-		if [ "s$STA_SSID_2" != "s" ];then
+		if [ "s$WISP_STA_SSID_2" != "s" ];then
 			if [ "${wds_flag}" = "on" ];then
 				sleep 3
 			else

@@ -128,6 +128,7 @@ fi
 
 if [ $NUMRADIO = 1 ]; then
 	cfg -a WDSON_OFF_3=off
+	cfg -a WISPON_OFF_3=off
 	cfg -a WIFION_OFF_3=off
 	cfg -a RADIO_STATUS=1
 	cfg -c
@@ -223,35 +224,35 @@ if [ "${AP_STARTMODE}" = "repeater" -o "${AP_STARTMODE}" = "repeater-ind" ]; the
 		fi
 		VAP_NUM=$(($VAP_NUM+1))
 	fi
-	export STA_RFPARAM=RF:$AP_PRIMARY_CH:$AP_CHMODE
-	export STA_RFPARAM_3=RF:$AP_PRIMARY_CH_3:$AP_CHMODE_3
+	export WDS_STA_RFPARAM=RF:$AP_PRIMARY_CH:$AP_CHMODE
+	export WDS_STA_RFPARAM_3=RF:$AP_PRIMARY_CH_3:$AP_CHMODE_3
 	
 	wds_flag=`cfg -e | grep  WDSON_OFF= | awk -F'=' '{print $2}'`
 	if [ "${wds_flag}" = "on" ];then
-	if [ "s$STA_SSID" != "s" ];then
- 	   makeVAP ${STAMODE} "$STA_SSID" $STA_RADIO_ID:$STA_RFPARAM
+	if [ "s$WDS_STA_SSID" != "s" ];then
+ 	   makeVAP ${STAMODE} "$WDS_STA_SSID" $WDS_STA_RADIO_ID:$WDS_STA_RFPARAM
 	    if [ $? != 0 ]; then
 	        echo "Unable to create VAP!"
         	exit
 	    fi
 		VAP_NUM=$(($VAP_NUM+1))
-	    if [ "${STA_SECMODE}" != "WPA" -a "${ROOTAP_MAC}" != "" ]; then
-        	iwconfig ath$VAP_NUM ap $ROOTAP_MAC
+	    if [ "${WDS_STA_SECMODE}" != "WPA" -a "${WDS_ROOTAP_MAC}" != "" ]; then
+        	iwconfig ath$VAP_NUM ap $WDS_ROOTAP_MAC
 	    fi
 	fi
 	fi
 	
 	wds_flag_2=`cfg -e | grep  WDSON_OFF_3= | awk -F'=' '{print $2}'`
 	if [ "${wds_flag_2}" = "on" ];then
-	if [ "s$STA_SSID_2" != "s" ];then
- 	   makeVAP ${STAMODE} "$STA_SSID_2" $STA_RADIO_ID_2:$STA_RFPARAM_3
+	if [ "s$WDS_STA_SSID_2" != "s" ];then
+ 	   makeVAP ${STAMODE} "$WDS_STA_SSID_2" $WDS_STA_RADIO_ID_2:$WDS_STA_RFPARAM_3
 	    if [ $? != 0 ]; then
 	        echo "Unable to create VAP!"
         	exit
 	    fi
 		VAP_NUM=$(($VAP_NUM+1))
-	    if [ "${STA_SECMODE_2}" != "WPA" -a "${ROOTAP_MAC_2}" != "" ]; then
-        	iwconfig ath$VAP_NUM ap $ROOTAP_MAC_2
+	    if [ "${WDS_STA_SECMODE_2}" != "WPA" -a "${WDS_ROOTAP_MAC_2}" != "" ]; then
+        	iwconfig ath$VAP_NUM ap $WDS_ROOTAP_MAC_2
 	    fi
 	fi
 	fi
@@ -274,8 +275,8 @@ if [ "${AP_STARTMODE}" = "repeater" -o "${AP_STARTMODE}" = "repeater-ind" ]; the
 	fi
 	
 	if [ "${wds_flag}" = "on" ];then
-	if [ "s$STA_SSID" != "s" ];then
-        activateVAP ath$VAP_NUM:$STA_RADIO_ID br0 $STA_SECMODE $STA_SECFILE $WPS_ENABLE
+	if [ "s$WDS_STA_SSID" != "s" ];then
+        activateVAP ath$VAP_NUM:$WDS_STA_RADIO_ID br0 $WDS_STA_SECMODE $WDS_STA_SECFILE $WDS_WPS_ENABLE
 		VAP_NUM=$(($VAP_NUM+1))
 	if [ -f /tmp/sta_conf_filename ]; then
             wpa_supplicant `cat /tmp/sta_conf_filename` &
@@ -285,9 +286,9 @@ if [ "${AP_STARTMODE}" = "repeater" -o "${AP_STARTMODE}" = "repeater-ind" ]; the
 	fi
 	
 	if [ "${wds_flag_2}" = "on" ];then	
-	if [ "s$STA_SSID_2" != "s" ];then
+	if [ "s$WDS_STA_SSID_2" != "s" ];then
 	rm -fr /tmp/sta_conf_filename
-        activateVAP ath$VAP_NUM:$STA_RADIO_ID_2 br0 $STA_SECMODE_2 $STA_SECFILE_2 $WPS_ENABLE_2
+        activateVAP ath$VAP_NUM:$WDS_STA_RADIO_ID_2 br0 $WDS_STA_SECMODE_2 $WDS_STA_SECFILE_2 $WDS_WPS_ENABLE_2
 	if [ -f /tmp/sta_conf_filename ]; then
             wpa_supplicant `cat /tmp/sta_conf_filename` &
         fi
@@ -331,35 +332,35 @@ if [ "${AP_STARTMODE}" = "repeater_wisp" ]; then
 		fi
 		VAP_NUM=$(($VAP_NUM+1))
 	fi
-	export STA_RFPARAM=RF:$AP_PRIMARY_CH:$AP_CHMODE
-	export STA_RFPARAM_3=RF:$AP_PRIMARY_CH_3:$AP_CHMODE_3
+	export WISP_STA_RFPARAM=RF:$AP_PRIMARY_CH:$AP_CHMODE
+	export WISP_STA_RFPARAM_3=RF:$AP_PRIMARY_CH_3:$AP_CHMODE_3
 	
-	wds_flag=`cfg -e | grep  WDSON_OFF= | awk -F'=' '{print $2}'`
+	wds_flag=`cfg -e | grep  WISPON_OFF= | awk -F'=' '{print $2}'`
 	if [ "${wds_flag}" = "on" ];then
-	if [ "s$STA_SSID" != "s" ];then
- 	   makeVAP ${STAMODE} "$STA_SSID" $STA_RADIO_ID:$STA_RFPARAM
+	if [ "s$WISP_STA_SSID" != "s" ];then
+ 	   makeVAP ${STAMODE} "$WISP_STA_SSID" $WISP_STA_RADIO_ID:$WISP_STA_RFPARAM
 	    if [ $? != 0 ]; then
 	        echo "Unable to create VAP!"
         	exit
 	    fi
 		VAP_NUM=$(($VAP_NUM+1))
-	    if [ "${STA_SECMODE}" != "WPA" -a "${ROOTAP_MAC}" != "" ]; then
-        	iwconfig ath$VAP_NUM ap $ROOTAP_MAC
+	    if [ "${WISP_STA_SECMODE}" != "WPA" -a "${WISP_ROOTAP_MAC}" != "" ]; then
+        	iwconfig ath$VAP_NUM ap $WISP_ROOTAP_MAC
 	    fi
 	fi
 	fi
 	
-	wds_flag_2=`cfg -e | grep  WDSON_OFF_3= | awk -F'=' '{print $2}'`
+	wds_flag_2=`cfg -e | grep  WISPON_OFF_3= | awk -F'=' '{print $2}'`
 	if [ "${wds_flag_2}" = "on" ];then
-	if [ "s$STA_SSID_2" != "s" ];then
- 	   makeVAP ${STAMODE} "$STA_SSID_2" $STA_RADIO_ID_2:$STA_RFPARAM_3
+	if [ "s$WISP_STA_SSID_2" != "s" ];then
+ 	   makeVAP ${STAMODE} "$WISP_STA_SSID_2" $WISP_STA_RADIO_ID_2:$WISP_STA_RFPARAM_3
 	    if [ $? != 0 ]; then
 	        echo "Unable to create VAP!"
         	exit
 	    fi
 		VAP_NUM=$(($VAP_NUM+1))
-	    if [ "${STA_SECMODE_2}" != "WPA" -a "${ROOTAP_MAC_2}" != "" ]; then
-        	iwconfig ath$VAP_NUM ap $ROOTAP_MAC_2
+	    if [ "${WISP_STA_SECMODE_2}" != "WPA" -a "${WISP_ROOTAP_MAC_2}" != "" ]; then
+        	iwconfig ath$VAP_NUM ap $WISP_ROOTAP_MAC_2
 	    fi
 	fi
 	fi
@@ -379,8 +380,8 @@ if [ "${AP_STARTMODE}" = "repeater_wisp" ]; then
 	fi
 	
 	if [ "${wds_flag}" = "on" ];then
-	if [ "s$STA_SSID" != "s" ];then
-        activateVAP ath$VAP_NUM:$STA_RADIO_ID - $STA_SECMODE $STA_SECFILE $WPS_ENABLE
+	if [ "s$WISP_STA_SSID" != "s" ];then
+        activateVAP ath$VAP_NUM:$WISP_STA_RADIO_ID - $WISP_STA_SECMODE $WISP_STA_SECFILE $WISP_WPS_ENABLE
 		if [ -f /tmp/sta_conf_filename ]; then
             wpa_supplicant `cat /tmp/sta_conf_filename` &
 			sleep 2
@@ -401,9 +402,9 @@ if [ "${AP_STARTMODE}" = "repeater_wisp" ]; then
 	fi
 	
 	if [ "${wds_flag_2}" = "on" ];then	
-	if [ "s$STA_SSID_2" != "s" ];then
+	if [ "s$WISP_STA_SSID_2" != "s" ];then
 	rm -fr /tmp/sta_conf_filename
-        activateVAP ath$VAP_NUM:$STA_RADIO_ID_2 - $STA_SECMODE_2 $STA_SECFILE_2 $WPS_ENABLE_2
+        activateVAP ath$VAP_NUM:$WISP_STA_RADIO_ID_2 - $WISP_STA_SECMODE_2 $WISP_STA_SECFILE_2 $WISP_WPS_ENABLE_2
 		if [ -f /tmp/sta_conf_filename ]; then
             wpa_supplicant `cat /tmp/sta_conf_filename` &
         fi

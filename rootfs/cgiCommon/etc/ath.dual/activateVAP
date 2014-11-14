@@ -301,7 +301,12 @@ else
 		if [ "${RADIO}" = "1" ]; then
 			APINDEX=2
 		fi
-            cfg -t${APINDEX} /etc/ath/${SECFILE}.sta_wds ${APNAME} > /tmp/sup${APNAME}
+		if [ "${AP_STARTMODE}" = "repeater" ]; then
+            		cfg -t${APINDEX} /etc/ath/${SECFILE}.sta_wds ${APNAME} > /tmp/sup${APNAME}
+		fi
+		if [ "${AP_STARTMODE}" = "repeater_wisp" ]; then
+            		cfg -t${APINDEX} /etc/ath/${SECFILE}.sta_wisp ${APNAME} > /tmp/sup${APNAME}
+		fi
 
 	else
             cfg -t${APINDEX} /etc/ath/${SECFILE}.sta ${APNAME} > /tmp/sup${APNAME}

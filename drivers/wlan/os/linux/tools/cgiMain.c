@@ -4692,7 +4692,6 @@ void set_wireless_wan(void)
 		char mac[128];
 		char channel[128];
 		char channel_buf[128];
-		char ap_secmode[128]; 
 		char wdsonoff_flag_new[128]; 
 		char wdsonoff_flag[128];
 		char channel_5g[128];
@@ -4718,14 +4717,13 @@ void set_wireless_wan(void)
 		write_systemLog("set_wireless_wan WISP begin");	
 
 		//2.get old config from flash 
-		Execute_cmd("cfg -e | grep 'AP_SECMODE_2=' |  awk -F '\"' '{print $2}'",ap_secmode);
-		Execute_cmd("cfg -e | grep 'WDSON_OFF=' | awk -F '=' '{print $2}'",wdsonoff_flag);
+		Execute_cmd("cfg -e | grep 'WISPON_OFF=' | awk -F '=' '{print $2}'",wdsonoff_flag);
 
-		Execute_cmd("cfg -e | grep 'WDSON_OFF_3=' | awk -F '=' '{print $2}'",wdsonoff5g_flag);
+		Execute_cmd("cfg -e | grep 'WISPON_OFF_3=' | awk -F '=' '{print $2}'",wdsonoff5g_flag);
 		
 		//fprintf(errOut,"[luodp] wds %s,%s\n",valBuff2,valBuff5);
-		CFG_get_by_name("WDSON_OFF",wdsonoff_flag_new);
-		CFG_get_by_name("WDSON_OFF_3",wdsonoff_flag5g_new);
+		CFG_get_by_name("WISPON_OFF",wdsonoff_flag_new);
+		CFG_get_by_name("WISPON_OFF_3",wdsonoff_flag5g_new);
 //		fprintf(errOut,"[luodp] -----------  wds %s,%s----------%s,%s--------\n",wdsonoff_flag,wdsonoff5g_flag,
 //			wdsonoff_flag_new,wdsonoff_flag5g_new);
 		
@@ -4779,7 +4777,7 @@ void set_wireless_wan(void)
 		if((flag==3)||(flag==1))
 		{
 		if(strncmp(wdsonoff_flag_new,"on",2) == 0){
-			CFG_get_by_name("STA_SECMODE",sta_secmode);
+			CFG_get_by_name("WISP_STA_SECMODE",sta_secmode);
 			if(strncmp(sta_secmode,"None",4) != 0)
 			{
 				//AP_SECMODE=WPA
@@ -4790,11 +4788,11 @@ void set_wireless_wan(void)
 //				CFG_set_by_name("AP_WPA_2","3");
 //				CFG_set_by_name("AP_CYPHER_2","TKIP CCMP");
 //				CFG_set_by_name("AP_SECFILE_2","PSK"); 
-				CFG_set_by_name("STA_SECMODE","WPA");
-				CFG_set_by_name("STA_WPA","3");
+				CFG_set_by_name("WISP_STA_SECMODE","WPA");
+				CFG_set_by_name("WISP_STA_WPA","3");
 //				CFG_set_by_name("STA_CYPHER","TKIP CCMP");
-				CFG_set_by_name("STA_CYPHER","CCMP");
-				CFG_set_by_name("STA_SECFILE","PSK"); 
+				CFG_set_by_name("WISP_STA_CYPHER","CCMP");
+				CFG_set_by_name("WISP_STA_SECFILE","PSK"); 
 			}
 			if(strncmp(sta_secmode,"WPA",3) != 0)
 			{
@@ -4803,9 +4801,9 @@ void set_wireless_wan(void)
 				//AP_CYPHER="TKIP CCMP"
 				//CFG_set_by_name("AP_RADIO_ID_2","0");
 //				CFG_set_by_name("AP_SECMODE_2","None");
-				CFG_set_by_name("STA_SECMODE","None");
+				CFG_set_by_name("WISP_STA_SECMODE","None");
 			}
-			CFG_get_by_name("WDS_CHAN",channel);
+			CFG_get_by_name("WISP_CHAN",channel);
 			
 			if(strncmp(wdsonoff_flag,"off",3) == 0){
 				CFG_get_by_name("AP_PRIMARY_CH",channel_buf);
@@ -4846,7 +4844,7 @@ void set_wireless_wan(void)
 
 		
 		if(strncmp(wdsonoff_flag5g_new,"on",2) == 0){
-			CFG_get_by_name("STA_SECMODE_2",sta_secmode_5g);
+			CFG_get_by_name("WISP_STA_SECMODE_2",sta_secmode_5g);
 			if(strncmp(sta_secmode_5g,"None",4) != 0)
 			{
 				//AP_SECMODE=WPA
@@ -4854,11 +4852,11 @@ void set_wireless_wan(void)
 				//AP_CYPHER="TKIP CCMP"
 				//CFG_set_by_name("AP_RADIO_ID_2","0");
 
-				CFG_set_by_name("STA_SECMODE_2","WPA");
-				CFG_set_by_name("STA_WPA_2","3");
-//				CFG_set_by_name("STA_CYPHER_2","TKIP CCMP");
-				CFG_set_by_name("STA_CYPHER_2","CCMP");
-				CFG_set_by_name("STA_SECFILE_2","PSK"); 
+				CFG_set_by_name("WISP_STA_SECMODE_2","WPA");
+				CFG_set_by_name("WISP_STA_WPA_2","3");
+//				CFG_set_by_name("WISP_STA_CYPHER_2","TKIP CCMP");
+				CFG_set_by_name("WISP_STA_CYPHER_2","CCMP");
+				CFG_set_by_name("WISP_STA_SECFILE_2","PSK"); 
 			}
 			if(strncmp(sta_secmode_5g,"WPA",3) != 0)
 			{
@@ -4867,9 +4865,9 @@ void set_wireless_wan(void)
 				//AP_CYPHER="TKIP CCMP"
 				//CFG_set_by_name("AP_RADIO_ID_2","0");
 //				CFG_set_by_name("AP_SECMODE_2","None");
-				CFG_set_by_name("STA_SECMODE_2","None");
+				CFG_set_by_name("WISP_STA_SECMODE_2","None");
 			}
-			CFG_get_by_name("WDS_CHAN_2",channel_5g);
+			CFG_get_by_name("WISP_CHAN_2",channel_5g);
 			
 			if(strncmp(wdsonoff5g_flag,"off",3) == 0){
 				CFG_get_by_name("AP_PRIMARY_CH_3",channel_buf_5g);
@@ -6368,14 +6366,9 @@ int main(int argc,char **argv)
 		//1.destory old mode pid 
 		Execute_cmd("cfg -e | grep \"WAN_MODE=\" | awk -F \"=\" '{print $2}'",tmp);
 		//Execute_cmd("ps | grep udhcpc",rspBuff2);
-		if(strstr(tmp,"pppoe") != 0)
-		{
-			//kill pppoe
-			Execute_cmd("pppoe-stop > /dev/null 2>&1", rspBuff);
-		}
 		if(strstr(tmp,"dhcp") != 0)
 		{
-			//[TODO]kill udhcpc that may slow and httpd: bind: Address already in use
+			//[TODO]kill udhcpc that may slow and httpd: bind: Address already in use**wangyu
 			//Execute_cmd("ps | grep udhcpc | awk \'{print $1}\' | xargs kill -9 > /dev/null 2>&1", rspBuff);	
 			Execute_cmd("killall udhcpc > /dev/null 2>&1", rspBuff);
 			//flag=1;
@@ -6400,6 +6393,9 @@ int main(int argc,char **argv)
 				 //WAN_MODE rollback to old value
 				 tmp2=strtok(tmp,"\n");
 				 CFG_set_by_name("WAN_MODE",tmp2);
+				 //[TODO]kill udhcpc that may slow and httpd: bind: Address already in use
+				 Execute_cmd("killall udhcpc > /dev/null 2>&1", rspBuff);
+				 
 				 if(flag!=1)
 				 {
             writeParametersWithSync();
@@ -6435,6 +6431,9 @@ int main(int argc,char **argv)
 				 //WAN_MODE rollback to old value
 				 tmp2=strtok(tmp,"\n");
 				 CFG_set_by_name("WAN_MODE",tmp2);
+				 //[TODO]kill udhcpc that may slow and httpd: bind: Address already in use
+				 Execute_cmd("killall udhcpc > /dev/null 2>&1", rspBuff);
+
 				 if(flag!=1)
 				 {
             writeParametersWithSync();
@@ -6463,6 +6462,11 @@ int main(int argc,char **argv)
 				 printf(tempu2);
 				 printf("</body></html>");
 				 exit(1);
+		}
+		if(strstr(tmp,"pppoe") != 0)
+		{
+			//kill pppoe
+			Execute_cmd("pppoe-stop > /dev/null 2>&1", rspBuff);
 		}
 
         //restart udhcpd
@@ -6667,15 +6671,15 @@ int main(int argc,char **argv)
 			if(strncmp(valBuff3,"off",3) == 0)	
 			{
 	//			fprintf(errOut,"[luodp] -----------  wds off--------\n");
-				CFG_remove_by_name("STA_SSID");
-				CFG_remove_by_name("STA_PSK_KEY");
+				CFG_remove_by_name("WDS_STA_SSID");
+				CFG_remove_by_name("WDS_STA_PSK_KEY");
 			}
 
 			if(strncmp(valBuff3_5g,"off",3) == 0)	
 			{
 	//			fprintf(errOut,"[luodp] -----------  wds 5g off--------\n");
-				CFG_remove_by_name("STA_SSID_2");
-				CFG_remove_by_name("STA_PSK_KEY_2");
+				CFG_remove_by_name("WDS_STA_SSID_2");
+				CFG_remove_by_name("WDS_STA_PSK_KEY_2");
 			}
 			
             writeParameters(NVRAM,"w+", NVRAM_OFFSET);
@@ -6712,7 +6716,7 @@ int main(int argc,char **argv)
 		if((flag==3)||(flag==1))
 		{
 		if(strncmp(valBuff3,"on",2) == 0){
-			CFG_get_by_name("STA_SECMODE",valBuff3);
+			CFG_get_by_name("WDS_STA_SECMODE",valBuff3);
 			if(strncmp(valBuff3,"None",4) != 0)
 			{
 				//AP_SECMODE=WPA
@@ -6723,11 +6727,11 @@ int main(int argc,char **argv)
 //				CFG_set_by_name("AP_WPA_2","3");
 //				CFG_set_by_name("AP_CYPHER_2","TKIP CCMP");
 //				CFG_set_by_name("AP_SECFILE_2","PSK"); 
-				CFG_set_by_name("STA_SECMODE","WPA");
-				CFG_set_by_name("STA_WPA","3");
-//				CFG_set_by_name("STA_CYPHER","TKIP CCMP");
-				CFG_set_by_name("STA_CYPHER","CCMP");
-				CFG_set_by_name("STA_SECFILE","PSK"); 
+				CFG_set_by_name("WDS_STA_SECMODE","WPA");
+				CFG_set_by_name("WDS_STA_WPA","3");
+//				CFG_set_by_name("WDS_STA_CYPHER","TKIP CCMP");
+				CFG_set_by_name("WDS_STA_CYPHER","CCMP");
+				CFG_set_by_name("WDS_STA_SECFILE","PSK"); 
 			}
 			if(strncmp(valBuff3,"WPA",3) != 0)
 			{
@@ -6736,7 +6740,7 @@ int main(int argc,char **argv)
 				//AP_CYPHER="TKIP CCMP"
 				//CFG_set_by_name("AP_RADIO_ID_2","0");
 //				CFG_set_by_name("AP_SECMODE_2","None");
-				CFG_set_by_name("STA_SECMODE","None");
+				CFG_set_by_name("WDS_STA_SECMODE","None");
 			}
 			CFG_get_by_name("WDS_CHAN",channel);
 			CFG_get_by_name("AP_PRIMARY_CH",channel_buf);
@@ -6748,7 +6752,7 @@ int main(int argc,char **argv)
 
 		
 		if(strncmp(valBuff3_5g,"on",2) == 0){
-			CFG_get_by_name("STA_SECMODE_2",valBuff4_5g);
+			CFG_get_by_name("WDS_STA_SECMODE_2",valBuff4_5g);
 			if(strncmp(valBuff4_5g,"None",4) != 0)
 			{
 				//AP_SECMODE=WPA
@@ -6756,11 +6760,11 @@ int main(int argc,char **argv)
 				//AP_CYPHER="TKIP CCMP"
 				//CFG_set_by_name("AP_RADIO_ID_2","0");
 
-				CFG_set_by_name("STA_SECMODE_2","WPA");
-				CFG_set_by_name("STA_WPA_2","3");
-//				CFG_set_by_name("STA_CYPHER_2","TKIP CCMP");
-				CFG_set_by_name("STA_CYPHER_2","CCMP");
-				CFG_set_by_name("STA_SECFILE_2","PSK"); 
+				CFG_set_by_name("WDS_STA_SECMODE_2","WPA");
+				CFG_set_by_name("WDS_STA_WPA_2","3");
+//				CFG_set_by_name("WDS_STA_CYPHER_2","TKIP CCMP");
+				CFG_set_by_name("WDS_STA_CYPHER_2","CCMP");
+				CFG_set_by_name("WDS_STA_SECFILE_2","PSK"); 
 			}
 			if(strncmp(valBuff4_5g,"WPA",3) != 0)
 			{
@@ -6769,7 +6773,7 @@ int main(int argc,char **argv)
 				//AP_CYPHER="TKIP CCMP"
 				//CFG_set_by_name("AP_RADIO_ID_2","0");
 //				CFG_set_by_name("AP_SECMODE_2","None");
-				CFG_set_by_name("STA_SECMODE_2","None");
+				CFG_set_by_name("WDS_STA_SECMODE_2","None");
 			}
 			CFG_get_by_name("WDS_CHAN_2",channel_5g);
 			CFG_get_by_name("AP_PRIMARY_CH_3",channel_buf_5g);

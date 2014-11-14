@@ -1,0 +1,14 @@
+ap_scan=1
+network={
+~eWISP_STA_SSID#!any~ ssid="~~WISP_STA_SSID#~"
+~eWISP_STA_SSID#:any~ ssid=""
+~eWISP_STA_SSID#:any~ bssid=~~WISP_ROOTAP_MAC#~
+~eWISP_STA_SSID#!any~ scan_ssid=1
+~eWISP_STA_WPA#:1~    proto=WPA
+~eWISP_STA_WPA#:2~    proto=WPA2
+        key_mgmt=WPA-PSK
+        pairwise=~~WISP_STA_CYPHER#~
+~hPSK_KEY#!~        psk="~~WISP_STA_PSK_KEY#~"
+~hPSK_KEY#~        psk=~~WISP_STA_PSK_KEY#~
+}
+

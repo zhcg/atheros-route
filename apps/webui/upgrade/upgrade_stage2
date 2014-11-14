@@ -17,10 +17,6 @@ KERNEL_SIZE=1048576
 
 SIZE=`wc -c /tmp/9344version.img | awk -F' ' '{print $1}'`
 #echo $SIZE
-if [ $SIZE -lt $KERNEL_SIZE ] || [ $SIZE -gt $ROOTFS_SIZE ];then
-	echo "wrong size"
-	exit 1
-fi
 
 PAD=`expr $ROOTFS_SIZE + $KERNEL_SIZE - $SIZE`
 ROOTFSSIZE=`expr $SIZE - $KERNEL_SIZE`

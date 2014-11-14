@@ -40,6 +40,8 @@ cfg -a HAL_VERSION=${HAL_VERSION:="HBD-Router-B6-V3"}
 cfg -a ADMPASS=${ADMPASS:="admin"}
 cfg -a WDSON_OFF=${WDSON_OFF:="off"}
 cfg -a WDSON_OFF_3=${WDSON_OFF_3:="off"}
+cfg -a WISPON_OFF=${WISPON_OFF:="off"}
+cfg -a WISPON_OFF_3=${WISPON_OFF_3:="off"}
 cfg -a RADIO_STATUS=${RADIO_STATUS:="3"}
 cfg -a DHCPON_OFF=${DHCPON_OFF:="on"}
 cfg -a BEACON_INT=${BEACON_INT:="100"}
@@ -92,8 +94,11 @@ cfg -a AP_RADIO_ID=${AP_RADIO_ID:=0}
 cfg -a AP_RADIO_ID_2=${AP_RADIO_ID_2:=0}
 cfg -a AP_RADIO_ID_3=${AP_RADIO_ID_3:=1}
 cfg -a AP_RADIO_ID_4=${AP_RADIO_ID_4:=1}
-cfg -a STA_RADIO_ID=${STA_RADIO_ID:=0}
-cfg -a STA_RADIO_ID_2=${STA_RADIO_ID_2:=1}
+cfg -a WDS_STA_RADIO_ID=${WDS_STA_RADIO_ID:=0}
+cfg -a WDS_STA_RADIO_ID_2=${WDS_STA_RADIO_ID_2:=1}
+cfg -a WISP_STA_RADIO_ID=${WISP_STA_RADIO_ID:=0}
+cfg -a WISP_STA_RADIO_ID_2=${WISP_STA_RADIO_ID_2:=1}
+
 export NUMRADIO_AHB=1
 
 

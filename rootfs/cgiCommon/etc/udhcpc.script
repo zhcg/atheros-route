@@ -1,8 +1,8 @@
 #!/bin/sh
 #wangyu add for udhcpc function
 ath_flag=`echo $interface | grep ath`
-flag_2g_wds=`cfg -e | grep WDSON_OFF= | awk -F'=' '{print $2}'`
-flag_5g_wds=`cfg -e | grep WDSON_OFF_3= | awk -F'=' '{print $2}'`
+flag_2g_wds=`cfg -e | grep WISPON_OFF= | awk -F'=' '{print $2}'`
+flag_5g_wds=`cfg -e | grep WISPON_OFF_3= | awk -F'=' '{print $2}'`
 
 if [ -z $ip ];then
 	if [ $interface = "eth0" ];then

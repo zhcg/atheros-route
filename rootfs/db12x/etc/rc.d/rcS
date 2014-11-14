@@ -150,7 +150,8 @@ if [ -f /configure_backup/ip_mac.conf ]; then
 else
 	touch /configure_backup/ip_mac.conf
 fi
-if [ "${DHCPON_OFF}" != "off" ]; then
+if [ "${WDSON_OFF}" != "on" -a "${WDSON_OFF_3}" != "on" -a "${DHCPON_OFF}" != "off" ]; then
+#if [ "${DHCPON_OFF}" != "off" ]; then
 	/usr/sbin/udhcpd /etc/udhcpd.conf
 fi
 ifconfig $LAN_IF up

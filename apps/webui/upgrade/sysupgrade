@@ -12,8 +12,21 @@ fi
 if [ -e $1 ]; then
 #        echo "file exist!"
         cp /usr/sbin/__sysupgrade /tmp/
-		mv $1 /tmp/9344version.img 
-		cd /tmp
+	mv $1 /tmp/9344version.img 
+
+	#ROOTFS_SIZE=14876672
+	ROOTFS_SIZE=9568256
+	#KERNEL_SIZE=1441792
+	KERNEL_SIZE=1048576
+
+	SIZE=`wc -c /tmp/9344version.img | awk -F' ' '{print $1}'`
+	#echo $SIZE
+	if [ $SIZE -lt $KERNEL_SIZE ] || [ $SIZE -gt $ROOTFS_SIZE ];then
+	        echo "wrong size"
+	        exit 1
+	fi
+	
+	cd /tmp
 	test1=$(/usr/sbin/firmware_check /tmp/9344version.img | grep "OK")
 #	echo $test1
 
