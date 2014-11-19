@@ -1150,6 +1150,7 @@ int do_cmd_switch(dev_status_t* dev,char *sendbuf)
 		dev->audio_reconnect=0;
 		clean_who_is_online();
 		stopaudio(dev,PSTN,1);
+		phone_audio.audio_reconnect_flag = 0;
 		memset(sendbuf,0,SENDBUF);
 		snprintf(sendbuf, 23,"HEADR0011SON_RET0011\r\n");
 		netWrite(dev->client_fd, sendbuf, strlen(sendbuf));
