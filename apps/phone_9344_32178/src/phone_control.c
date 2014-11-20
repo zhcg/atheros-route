@@ -1361,7 +1361,11 @@ int do_cmd_set_mac(dev_status_t * dev, char * sendbuf)
 			}
 		}
 		macp = '\0';
+#if defined(S1_F3A)
+		sprintf(cmdbuf,"%s%s","set_macaddr -a ",mac_buf_out);
+#elif defined(S1)
 		sprintf(cmdbuf,"%s%s","set_macaddr -b ",mac_buf_out);
+#endif
 		PRINT("cmdbuf = %s\n",cmdbuf);
 		status = system(cmdbuf);
 		PRINT("status = %d\n",status);
