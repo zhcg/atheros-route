@@ -139,7 +139,7 @@ ifeq ($(BUILD_VERSION), S1)
 db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si32178_build spi32178_build terminal_dev_register cacm phone_9344_32178 check_phone_status modules_server getprinterip OTA_Base env  usbpassage_build  AR9344_interface ntpclient_arm  powerdowna20 ppy pppoe_build channel webui tester $(fs_build) makeotaimage makeoneimage 
 endif
 ifeq ($(BUILD_VERSION), S1_F3A)
-db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si32178_build spi32178_build terminal_dev_register cacm phone_9344_32178 check_phone_status modules_server getprinterip OTA_Base env  usbpassage_build  AR9344_interface ntpclient_arm  ppy pppoe_build channel webui tester $(fs_build) makeotaimage makeoneimage 
+db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si32178_build spi32178_build terminal_dev_register cacm phone_9344_32178 check_phone_status modules_server getprinterip OTA_Base env  usbpassage_build  AR9344_interface ntpclient_arm  powerdowna20 ppy pppoe_build channel webui tester $(fs_build) makeotaimage makeoneimage 
 endif
 #db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) OTA_Base env ppy pppoe_build  webui  $(fs_build)
 
