@@ -159,6 +159,10 @@ if [ -f /configure_backup/arp_ip_mac_on.conf ]; then
 	/usr/sbin/arp -f /configure_backup/arp_ip_mac_on.conf
 fi
 
+if [ !  -f /configure_backup/pwd.xml ]; then
+	cp /usr/www/pwd_backup.xml /configure_backup/pwd.xml
+fi
+
 #if [ ! -f /etc/mac.bin ]; then
 #	echo "mac.bin backup"
 #	echo "Backup mac at `date`"  >> /etc/maclog.txt

@@ -6028,7 +6028,7 @@ int main(int argc,char **argv)
 			writeParameters(NVRAM,"w+", NVRAM_OFFSET);
             writeParameters("/tmp/.apcfg","w+",0);
 			//[TODO] reset any args
-			system("echo -n \"admin\" > /usr/www/pwd.xml");
+			system("rm -f /configure_backup/pwd.xml");
 			//MAC and BACKUP
 			system("/usr/sbin/var_backup > /dev/null 2>&1");
 			system("rm -f /configure_backup/ath/iptables/parc");
