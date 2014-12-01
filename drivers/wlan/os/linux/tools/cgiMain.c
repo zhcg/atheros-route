@@ -4752,6 +4752,21 @@ void set_wireless_wan(void)
 		if((strncmp(wdsonoff_flag_new,"off",3) == 0)&&(strncmp(wdsonoff_flag5g_new,"off",3) == 0))
 		{
 //			CFG_set_by_name("AP_STARTMODE","standard");
+			if(strncmp(wdsonoff_flag_new,"off",3) == 0)	
+			{
+//				fprintf(errOut,"[luodp] -----------  wds off--------\n");
+				CFG_remove_by_name("WISP_STA_SSID");
+				CFG_remove_by_name("WISP_STA_PSK_KEY");
+			}
+
+			
+			if(strncmp(wdsonoff_flag5g_new,"off",3) == 0)	
+			{
+//				fprintf(errOut,"[luodp] -----------  wds 5g off--------\n");
+				CFG_remove_by_name("WISP_STA_SSID_2");
+				CFG_remove_by_name("WISP_STA_PSK_KEY_2");
+			}
+
 			if((strncmp(wdsonoff_flag,"on",2) == 0)||(strncmp(wdsonoff5g_flag,"on",2) == 0))
 				CFG_set_by_name("AP_STARTMODE","dual");
 //			CFG_set_by_name("DHCPON_OFF","on");
