@@ -251,6 +251,7 @@ int do_cmd_reboot()
 {
 	printf("reboot\n");
 	netWrite(clientfd,"REBOOT000",strlen("REBOOT000"));
+	sleep(2);
 	system("reboot");
 	return 0;
 }
