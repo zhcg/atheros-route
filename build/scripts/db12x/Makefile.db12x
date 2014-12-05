@@ -124,7 +124,7 @@ db12x_build: common_mainline driver_build usb_build pci_build spectral_app_build
 else
 ifeq ($(BUILD_FOR_32178), yes)
 ifeq ($(BUILD_VERSION), B6)
-db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si32178_build spi32178_build terminal_dev_register cacm phone_9344_32178 check_phone_status modules_server monitor remote_parse OTA_Base env  usbpassage_build phonepassage_build AR9344_interface as532h_build ntpclient_arm  ppy pppoe_build channel webui tester $(fs_build) makeotaimage makeoneimage 
+db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si32178_build spi32178_build terminal_dev_register cacm phone_9344_32178 check_phone_status modules_server libupdate  monitor remote_parse OTA_Base env  usbpassage_build phonepassage_build AR9344_interface as532h_build ntpclient_arm  ppy pppoe_build channel webui tester $(fs_build) makeotaimage makeoneimage 
 endif
 ifeq ($(BUILD_VERSION), B6_bak)
 db12x_build:common_mainline kernel_modules iptables_build driver_build  pci_build art_mod $(i2s_mod) OTA_Base env pppoe_build  webui rm_tcpdumps $(fs_build) system_bak
@@ -731,6 +731,10 @@ ifeq ($(BUILD_VERSION),B6)
 	cp -r $(STM32DEFIMAGE) $(STM32DEFIMAGEPATH)
 endif
 	
+libupdate:
+	@echo making libupdate application
+	cd ../apps/libupdate; make clean; make; \
+
 monitor:
 	@echo making monitor application
 	cd ../apps/monitor; make clean; make 9344_build BASE_TYPE=BASE_9344; \
