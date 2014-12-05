@@ -63,7 +63,9 @@ phone_control &
 
 monitor_base &
 
-check_phone_status phone_control modules_server monitor_base &
+remote_parse &
+
+check_phone_status phone_control modules_server monitor_base remote_parse &
 
 
 

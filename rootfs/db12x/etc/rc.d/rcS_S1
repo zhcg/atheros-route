@@ -44,6 +44,8 @@ modules_server &
 getprinterip &
 
 phone_control &
-check_phone_status modules_server phone_control getprinterip &
+remote_parse &
+
+check_phone_status modules_server phone_control getprinterip remote_parse &
 
 
