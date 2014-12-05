@@ -61,6 +61,66 @@ struct class_database_management database_management =
     .select_table = sqlite3_select_table
 };
 
+int check_dir()
+{
+	struct stat st;
+	int ret = 0;
+	ret = stat("/var/terminal_dev_register/db/",&st);
+	if(ret < 0)
+	{
+		PRINT("no db dir\n");
+		system("mkdir -p /var/terminal_dev_register/db/");
+	}
+	else
+		PRINT("found db dir\n");
+	return 0;
+}
+
+int reset_db(sqlite3 *db)
+{
+    char reset_sql_cmd[1024] = {0};
+    char reset_sql_cmd2[1024] = {0};
+    char table_data[1024] =
+       "base_sn varchar2(34) default \"\",\
+base_mac varchar2(12) default \"\",\
+base_ip varchar2(15) default \"\",\
+base_user_name varchar2(50) default \"\",\
+base_password varchar2(30) default \"\",\
+pad_sn varchar2(34) default \"\",\
+pad_mac varchar2(12) default \"\",\
+pad_ip varchar2(15) default \"\",\
+pad_user_name varchar2(50) default \"\",\
+pad_password varchar2(30) default \"\",\
+sip_ip varchar2(15) default \"\",\
+sip_port varchar2(10) default \"\",\
+heart_beat_cycle varchar2(10) default \"\",\
+business_cycle varchar2(10) default \"\",\
+ssid_user_name varchar2(50) default \"\",\
+ssid_password varchar2(30) default \"\",\
+device_token varchar2(100) default \"\",\
+position_token varchar2(100) default \"\",\
+default_ssid varchar2(50) default \"\",\
+default_ssid_password varchar2(30) default \"\",\
+register_state varchar2(5) default \"251\",\
+authentication_state varchar2(5) default \"240\"";
+    char table_data2[1024] =
+"device_name varchar2(30) default \"\",\
+device_id varchar2(10) default \"\",\
+device_mac varchar2(15) default \"\",\
+device_code varchar2(5) default \"\"";
+	char insert_default_cmd[512] = {0};
+	sprintf(insert_default_cmd,"insert into %s (register_state,authentication_state) values (\"251\",\"240\");",TB);
+    sprintf(reset_sql_cmd,"create table %s(%s)",TB,table_data);
+    PRINT("reset_sql_cmd = %s\n",reset_sql_cmd);
+    sprintf(reset_sql_cmd2,"create table %s(%s)",REGISTERTB,table_data2);
+    PRINT("reset_sql_cmd2 = %s\n",reset_sql_cmd2);
+    PRINT("insert_default_cmd = %s\n",insert_default_cmd);
+	if(sqlite3_exec(db,reset_sql_cmd,NULL,NULL,NULL) == SQLITE_OK)
+		sqlite3_exec(db,insert_default_cmd,NULL,NULL,NULL);
+	sqlite3_exec(db,reset_sql_cmd2,NULL,NULL,NULL);
+	return 0;
+}
+
 /**
  * 数据插入
  */ 
@@ -394,13 +454,13 @@ int sqlite3_select(unsigned char columns_count, char (*columns_name)[30], char (
 {
     PRINT_STEP("entry...\n");   
     int i = 0;
+    int ret = 0;
     int index = 0;
     char **result_buf; //是 char ** 类型，两个*号
     int row_count = 0, column_count = 0;
     sqlite3 *db;
     char *err_msg;
     char sql[1024] = {0};
-    
     if (columns_count == 0)
     {
         return 0;
@@ -412,6 +472,7 @@ int sqlite3_select(unsigned char columns_count, char (*columns_name)[30], char (
         return NULL_ERR;
     }
     PRINT("common_tools.config->db = %s\n", common_tools.config->db);
+    check_dir();
     if (sqlite3_open(common_tools.config->db, &db) != 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, sqlite3_errmsg(db), SQLITE_OPEN_ERR);
@@ -434,9 +495,14 @@ int sqlite3_select(unsigned char columns_count, char (*columns_name)[30], char (
     PRINT("sql = %s\n", sql);
     if(sqlite3_get_table(db, sql, &result_buf, &row_count, &column_count, &err_msg) != 0)
     {
-        OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, err_msg, SQLITE_GET_TABLE_ERR);
-        sqlite3_free_table(result_buf);
-        return SQLITE_GET_TABLE_ERR;
+		reset_db(db);
+		if(sqlite3_get_table(db, sql, &result_buf, &row_count, &column_count, &err_msg) != 0)
+		{
+			OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, err_msg, SQLITE_GET_TABLE_ERR);
+			sqlite3_free_table(result_buf);
+			
+			return SQLITE_GET_TABLE_ERR;
+		}
     }
     
     index = column_count;

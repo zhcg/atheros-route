@@ -2,12 +2,23 @@
 #define __MONITOR_H__
 
 #pragma pack (1)
+#define MONITOR_APP_NAME		"monitor_base"
+#ifdef BASE_9344
+#define MONITOR_APP_DES			"HBD_F2A_MONITOR_V1.0.2_20141201"
+#define MONITOR_APP_CODE		"HBD_F2A_MONITOR"
+#define MONITOR_APP_VERSION		"1.0.2"
+#elif defined(BASE_A20)
+#define MONITOR_APP_DES			"HBD_F2B_MONITOR_V1.0.2_20141201"
+#define MONITOR_APP_CODE		"HBD_F2B_MONITOR"
+#define MONITOR_APP_VERSION		"1.0.2"
+#endif
 //#define SIP_PORT 5060
 #define INIT_PORT 				9999
 #define INIT_SERVER_IP 			"210.14.156.93"
 //#define INIT_SERVER_IP		"218.241.217.218"
+#define SN_IN_E2PROM_POS		0
 #define STATUS_DELAY 	 		1800
-#define FAST_STATUS_DELAY 	 	120
+#define FAST_STATUS_DELAY 	 	60
 #define OPTION_DELAY	 		60
 #define CPU_WARING_THRESHOLD	70
 #define MEM_WARING_THRESHOLD	80
@@ -117,6 +128,7 @@ struct s_port_info
 struct msg_t
 {
     char base_sn[32];
+    char base_mac[32];
     char base_a20_version[64];
     char base_9344_version[64];
     char base_532_version[64];

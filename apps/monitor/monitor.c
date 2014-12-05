@@ -35,6 +35,9 @@
 
 #include "eXosip2/eXosip.h"
 #include "monitor.h"
+#include <arpa/inet.h>  //for in_addr  
+#include <linux/rtnetlink.h>    //for rtnetlink  
+#include <net/if.h> //for IF_NAMESIZ, route_info  
 #ifdef BASE_9344
 #include "sqlite3.h"
 #endif
@@ -53,6 +56,16 @@ int hd_warning_times = 0;
 struct timeval print_tv;	
 char print_time_buf_tmp[64] = {0};
 char print_time_buf[256] = {0};	
+#ifdef BASE_A20
+pthread_mutex_t mutex_ping_id;
+#endif
+#define BUFSIZE 8192
+struct route_info{  
+	u_int dstAddr;  
+	u_int srcAddr;  
+	u_int gateWay;  
+	char ifName[IF_NAMESIZE];  
+};  
 
 char *system_time()
 {
@@ -76,77 +89,6 @@ static int set_buf(char *buf,int len)
 	}
 	return 0;
 }
-
-#ifdef BASE_9344
-//打印16进制
-const char hex_to_asc_table[16] = {0x30,0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,0x39,0x41,0x42,0x43,0x44,0x45,0x46};
-int ComFunChangeHexBufferToAsc(unsigned char *hexbuf,int hexlen,char *ascstr)
-{
-	unsigned char i;
-	unsigned char ch,h,l;
-	char *pdes = ascstr;
-	for(i = 0;i < hexlen;i++)
-	{
-		ch = hexbuf[i];
-		h = (ch >> 4) & 0x0F;
-		l = ch & 0x0F;
-		*(pdes++) = hex_to_asc_table[h];
-		*(pdes++) = hex_to_asc_table[l];
-	}
-	*pdes = '\0';
-	return hexlen * 2;
-}
-
-void ComFunPrintfBuffer(unsigned char *pbuffer,unsigned char len)
-{
-	char *pstr;
-	pstr = (char *)malloc(512);
-	if(pstr == NULL)
-		return;
-	ComFunChangeHexBufferToAsc(pbuffer,len,pstr);
-
-	PRINT("%s\r\n",pstr);
-
-	free((void *)pstr);
-}
-
-unsigned char sumxor(const  unsigned char  *arr, int len)
-{
-	int i=0;
-	unsigned char sum = 0;
-	for(i=0; i<len; i++)
-	{
-		sum ^= arr[i];
-	}
-
-	return sum;
-}
-
-int get_sn()
-{
-    system("fw_printenv SN > /tmp/.sn_tmp");
-    char buf[128]={0};
-    int fd = open("/tmp/.sn_tmp",O_RDWR);
-    if(fd < 0)
-    {   
-        printf("open err\n");
-        return -1; 
-    }   
-    if(read(fd,buf,sizeof(buf))>0)
-    {   
-        if(strstr(buf,"SN=")==NULL)
-        {
-            close(fd);
-            return -1; 
-        }
-        printf("buf = %s\n",buf);
-        memset(base_sn,0,sizeof(base_sn));
-        sscanf(buf,"SN=%s",base_sn);
-    }   
-    close(fd);
-    return 0;
-}
-#endif
 
 static int get_flash_occupy_info(int *size)
 {  
@@ -456,12 +398,19 @@ static int get_base_state(char *buf, int *buf_len)
         flash_size = 0;
     }
 	get_ver();
+	memset(sip_msg.base_mac,0,sizeof(sip_msg.base_mac));
+	get_local_mac(sip_msg.base_mac);
+	for(i=0;i<strlen(sip_msg.base_mac);i++)
+	{
+		if(sip_msg.base_mac[i] == ':')
+			sip_msg.base_mac[i] = '-';
+	}
     //PRINT("tomcat = %d\n",tomcat);
     //PRINT("php = %d\n",php);
-    sprintf(buf,"{id:%s,dev_type:1,cpu:%d,memory:%d,hd:%d,tomcat:%d,php:%d,a20_ver:%s,9344_ver:%s,as532_ver:%s}",
-		sip_msg.base_sn,100-cpu_info.idle,mem_ret,flash_size,(tomcat >= 2)?1:0,(php >= 2)?1:0,sip_msg.base_a20_version,sip_msg.base_9344_version,sip_msg.base_532_version);
-    //sprintf(buf,"{id:%s,dev_type:1,cpu:%d,memory:%d,hd:%d,tomcat:%d,php:%d}",
-		//sip_msg.base_sn,100-cpu_info.idle,mem_ret,flash_size,(tomcat >= 2)?1:0,(php >= 2)?1:0);
+    sprintf(buf,"{id:%s,dev_type:1,cpu:%d,memory:%d,hd:%d,mac:%s,php:%d,monitor_ver:%s,a20_ver:%s,9344_ver:%s,as532_ver:%s}",
+		sip_msg.base_sn,100-cpu_info.idle,mem_ret,flash_size,sip_msg.base_mac,(php >= 2)?1:0,MONITOR_APP_VERSION,sip_msg.base_a20_version,sip_msg.base_9344_version,sip_msg.base_532_version);
+    //sprintf(buf,"{id:%s,dev_type:1,cpu:%d,memory:%d,hd:%d,tomcat:%d,php:%d,a20_ver:%s,9344_ver:%s,as532_ver:%s}",
+		//sip_msg.base_sn,100-cpu_info.idle,mem_ret,flash_size,(tomcat >= 2)?1:0,(php >= 2)?1:0,sip_msg.base_a20_version,sip_msg.base_9344_version,sip_msg.base_532_version);
     PRINT("strlen(buf) = %d\n", strlen(buf));
 	*buf_len = strlen(buf);
     //buf[0] = 0x02;
@@ -527,6 +476,42 @@ int sqlite3_interface(char *tb_name,char *data_name, char *where_value,char *whe
     return 0;
 }
 
+int get_9344_mac(char *base_mac)
+{
+	int i =0 ;
+	char buf_tmp[512] = {0};
+	char *p = NULL;
+	FILE* fd = fopen("/tmp/.apcfg","r");
+	if(fd == NULL)
+	{
+		PRINT("no apcfg\n");
+		return -1;
+	}
+	while(1)
+	{
+		memset(buf_tmp,0,sizeof(buf_tmp));
+		if(fgets(buf_tmp,sizeof(buf_tmp),fd) == NULL)
+		{
+			fclose(fd);
+			return -1;
+		}
+		p = strstr(buf_tmp,"ETH0_MAC=");
+		if(p != NULL)
+		{
+			p += strlen("ETH0_MAC=");
+			memcpy(base_mac,p,17);
+			for(i=0;i<strlen(base_mac);i++)
+			{
+				if(base_mac[i] == ':')
+					base_mac[i] = '-';
+			}
+			PRINT("mac = %s\n",base_mac);
+			break;
+		}
+	}
+	return 0;
+}
+
 static int get_base_state(char *buf, int *buf_len)
 {
     int i = 0;
@@ -537,6 +522,7 @@ static int get_base_state(char *buf, int *buf_len)
 	int cpu_out = 0;
 	char register_state[4]={0};
 	char pad_sn[34]={0};
+	char base_mac[64]={0};
     struct stat file_stat;
     char * file_name = "/var/log/.base_state";
     FILE *fp = NULL;
@@ -673,8 +659,9 @@ static int get_base_state(char *buf, int *buf_len)
 		memcpy(pad_sn,"0",strlen("0"));
 	}
 	get_ver();
-    sprintf(buf,"{id:%s,dev_type:1,cpu:%d,memory:%d,hd:%d,pad_sn:%s,9344_ver:%s,stm32_ver:%s,532_ver:%s}",
-		sip_msg.base_sn,cpu_out,mem_ret,flash_size,pad_sn,sip_msg.base_9344_version,sip_msg.base_a20_version,sip_msg.base_532_version);
+	get_9344_mac(base_mac);
+    sprintf(buf,"{id:%s,dev_type:1,cpu:%d,memory:%d,hd:%d,mac:%s,pad_sn:%s,monitor_ver:%s,9344_ver:%s,stm32_ver:%s,532_ver:%s}",
+		sip_msg.base_sn,cpu_out,mem_ret,flash_size,base_mac,pad_sn,MONITOR_APP_VERSION,sip_msg.base_9344_version,sip_msg.base_a20_version,sip_msg.base_532_version);
     PRINT("strlen(buf) = %d\n", strlen(buf));
 	*buf_len = strlen(buf);
     //buf[0] = 0x02;
@@ -2007,11 +1994,541 @@ int get_ver()
 	return 0;
 }
 
+#ifdef BASE_A20
+int readNlSock(int sockFd, char *bufPtr, int seqNum, int pId)  
+{  
+	struct nlmsghdr *nlHdr;  
+	int readLen = 0, msgLen = 0;  
+	do{  
+		//收到内核的应答  
+		if((readLen = recv(sockFd, bufPtr, BUFSIZE - msgLen, 0)) < 0)  
+		{  
+			perror("SOCK READ: ");  
+			return -1;  
+		}  
+
+		nlHdr = (struct nlmsghdr *)bufPtr;  
+		//检查header是否有效  
+		if((NLMSG_OK(nlHdr, readLen) == 0) || (nlHdr->nlmsg_type == NLMSG_ERROR))  
+		{  
+			perror("Error in recieved packet");  
+			return -1;  
+		}  
+
+		if(nlHdr->nlmsg_type == NLMSG_DONE)   
+		{  
+			break;  
+		}  
+		else  
+		{  
+			bufPtr += readLen;  
+			msgLen += readLen;  
+		}  
+
+		if((nlHdr->nlmsg_flags & NLM_F_MULTI) == 0)   
+		{  
+			break;  
+		}  
+	} while((nlHdr->nlmsg_seq != seqNum) || (nlHdr->nlmsg_pid != pId));  
+	return msgLen;  
+}  
+//分析返回的路由信息  
+void parseRoutes(struct nlmsghdr *nlHdr, struct route_info *rtInfo,char *gateway)  
+{  
+	struct rtmsg *rtMsg;  
+	struct rtattr *rtAttr;  
+	int rtLen;  
+	char *tempBuf = NULL;  
+	struct in_addr dst;  
+	struct in_addr gate;  
+
+	tempBuf = (char *)malloc(100);  
+	rtMsg = (struct rtmsg *)NLMSG_DATA(nlHdr);  
+	// If the route is not for AF_INET or does not belong to main routing table  
+	//then return.   
+	if((rtMsg->rtm_family != AF_INET) || (rtMsg->rtm_table != RT_TABLE_MAIN))  
+		return;  
+
+		rtAttr = (struct rtattr *)RTM_RTA(rtMsg);  
+		rtLen = RTM_PAYLOAD(nlHdr);  
+		for(;RTA_OK(rtAttr,rtLen);rtAttr = RTA_NEXT(rtAttr,rtLen)){  
+			switch(rtAttr->rta_type) {  
+				case RTA_OIF:  
+				if_indextoname(*(int *)RTA_DATA(rtAttr), rtInfo->ifName);  
+				break;  
+				case RTA_GATEWAY:  
+				rtInfo->gateWay = *(u_int *)RTA_DATA(rtAttr);  
+				break;  
+				case RTA_PREFSRC:  
+				rtInfo->srcAddr = *(u_int *)RTA_DATA(rtAttr);  
+				break;  
+				case RTA_DST:  
+				rtInfo->dstAddr = *(u_int *)RTA_DATA(rtAttr);  
+				break;  
+			}  
+		}  
+	dst.s_addr = rtInfo->dstAddr;  
+	if (strstr((char *)inet_ntoa(dst), "0.0.0.0"))  
+	{  
+		printf("oif:%s",rtInfo->ifName);  
+		gate.s_addr = rtInfo->gateWay;  
+		sprintf(gateway, (char *)inet_ntoa(gate));  
+		printf("%s\n",gateway);  
+		gate.s_addr = rtInfo->srcAddr;  
+		printf("src:%s\n",(char *)inet_ntoa(gate));  
+		gate.s_addr = rtInfo->dstAddr;  
+		printf("dst:%s\n",(char *)inet_ntoa(gate));   
+	}  
+	free(tempBuf);  
+	return;  
+}  
+
+int get_gateway(char *gateway)  
+{  
+	struct nlmsghdr *nlMsg;  
+	struct rtmsg *rtMsg;  
+	struct route_info *rtInfo;  
+	char msgBuf[BUFSIZE];  
+
+	int sock, len, msgSeq = 0;  
+
+	if((sock = socket(PF_NETLINK, SOCK_DGRAM, NETLINK_ROUTE)) < 0)  
+	{  
+		perror("Socket Creation: ");  
+		return -1;  
+	}  
+
+	memset(msgBuf, 0, BUFSIZE);  
+
+
+	nlMsg = (struct nlmsghdr *)msgBuf;  
+	rtMsg = (struct rtmsg *)NLMSG_DATA(nlMsg);  
+
+
+	nlMsg->nlmsg_len = NLMSG_LENGTH(sizeof(struct rtmsg)); // Length of message.  
+	nlMsg->nlmsg_type = RTM_GETROUTE; // Get the routes from kernel routing table .  
+
+	nlMsg->nlmsg_flags = NLM_F_DUMP | NLM_F_REQUEST; // The message is a request for dump.  
+	nlMsg->nlmsg_seq = msgSeq++; // Sequence of the message packet.  
+	nlMsg->nlmsg_pid = getpid(); // PID of process sending the request.  
+
+	if(send(sock, nlMsg, nlMsg->nlmsg_len, 0) < 0){  
+		printf("Write To Socket Failed…\n");  
+		return -1;  
+	}  
+
+
+	if((len = readNlSock(sock, msgBuf, msgSeq, getpid())) < 0) {  
+		printf("Read From Socket Failed…\n");  
+		return -1;  
+	}  
+
+	rtInfo = (struct route_info *)malloc(sizeof(struct route_info));  
+	for(;NLMSG_OK(nlMsg,len);nlMsg = NLMSG_NEXT(nlMsg,len)){  
+		memset(rtInfo, 0, sizeof(struct route_info));  
+		parseRoutes(nlMsg, rtInfo,gateway);  
+	}  
+	free(rtInfo);  
+	close(sock);  
+	return 0;  
+} 
+
+char BcdToHex(char inchar)
+{
+	if ((inchar>=0x30)&&(inchar<=0x39))
+	{
+		return inchar-0x30;
+	}
+	return 0;
+}
+
+int getSnData(unsigned char *pindata, int inlen, unsigned char *pout)
+{
+	int len=0;
+	unsigned char *p;
+	int size;
+	if((pindata == NULL)||(pout == NULL))
+		return -1;
+	p = strstr(pindata, "GET_SN");
+	if(p == NULL)
+	{
+		PRINT("Get Sn data Head Error\n");
+		return -1;
+	}
+	len = BcdToHex(p[7])*10;
+	len += BcdToHex(p[8]);
+	size = p-pindata;
+	size += len+9;
+	if(size > inlen)
+	{
+		PRINT("Parase Sn data Len error\n");
+		return -1;
+	}
+	if(len == 0)
+	{
+		PRINT("Get Sn data Len = 0, ERROR\n");
+		return -1;
+	}
+	memcpy(pout, &p[9], len);
+	return len;
+}
+
+int getMacData(unsigned char *pindata, int inlen, unsigned char *pout)
+{
+	int len=0;
+	unsigned char *p;
+	int size;
+	if((pindata == NULL)||(pout == NULL))
+		return -1;
+	p = strstr(pindata, "GETMAC");
+	if(p == NULL)
+	{
+		PRINT("Get Mac data Head Error\n");
+		return -1;
+	}
+	len = BcdToHex(p[7])*10;
+	len += BcdToHex(p[8]);
+	size = p-pindata;
+	size += len+9;
+	if(size > inlen)
+	{
+		PRINT("Parase Mac data Len error\n");
+		return -1;
+	}
+	if(len == 0)
+	{
+		PRINT("Get Mac data Len = 0, ERROR\n");
+		return -1;
+	}
+	memcpy(pout, &p[9], len);
+	return len;
+}
+
+int get_9344_mac(char *server_ip,char *mac)
+{
+	int retVal = 0;
+	int clientAddrId;
+	unsigned int dataSize = 1024;
+	unsigned char dataBuf[1024];
+//	char server_ip[64];
+	struct sockaddr_in serverAddr;
+	struct hostent;
+	char get_mac[6] = "GETMAC";
+	char get_sn[6] = "GET_SN";
+	fd_set fdset;	
+	struct timeval tv;
+	int ret = 0;
+	
+	memset(&tv, 0, sizeof(struct timeval));
+	
+	//创建套接字
+	clientAddrId = socket(AF_INET, SOCK_STREAM, 0);
+	if(clientAddrId < 0)
+	{
+		printf("Socket Error\n");
+		return -1;
+	}
+
+//	printf("Establish Server Socket ID %d\n", clientAddrId);
+
+	//设置socket_in结构体属性
+	serverAddr.sin_family 	= AF_INET;
+	serverAddr.sin_port	 	= htons(9998);
+	bzero(&(serverAddr.sin_zero), 8);
+	if(inet_aton(server_ip, &serverAddr.sin_addr) == 0)
+	{
+		printf("IP Error\n");
+		ret = -2;
+		goto ERROR;
+	}
+
+	if(connect(clientAddrId, (struct sockaddr *)&(serverAddr), sizeof(struct sockaddr)) == -1)
+	{
+		printf("Connect 9344 error\n");
+		ret = -3;
+		goto ERROR;
+	}
+	
+	FD_ZERO(&fdset);
+	FD_SET(clientAddrId, &fdset);
+
+	tv.tv_sec = 3;
+	tv.tv_usec = 0;
+	//发送获取SN命令
+	send(clientAddrId, get_mac, 6, 0);
+	
+	switch(select(clientAddrId + 1, &fdset, NULL, NULL,&tv))
+	{
+	case -1:
+	case 0:
+		ret = -4;
+		goto ERROR;
+	default:
+		if (FD_ISSET(clientAddrId, &fdset) > 0)
+		{
+			//接收数据
+			ret = recv(clientAddrId, dataBuf, 1024, 0);
+			if(ret > 0)
+			{
+				ret = getMacData(dataBuf, ret, mac);
+				if(ret > 0)
+				{
+					PRINT("Get Mac::%s\n", mac);
+					break;
+				}
+			}			
+			ret = -5;
+			goto ERROR;
+		}
+		ret = -6;
+		break;
+	}
+	
+ERROR:
+	close(clientAddrId);
+	return ret;
+}
+
+int get_mac_for_a20(char *mac)
+{
+	int ret = 0;
+	char server_ip[64] = {0};
+	ret = get_gateway(server_ip);
+	if(ret < 0)
+	{
+		PRINT("Get GateWay Ip error\n");
+		return -1;
+	}
+	PRINT("GateWay Ip::%s\n", server_ip);
+	ret = get_9344_mac(server_ip,mac);
+	if(ret < 0)
+	{
+		ret = get_9344_mac(server_ip,mac);
+		if(ret < 0)
+		{
+			ret = get_9344_mac(server_ip,mac);
+			if(ret < 0)
+			{
+				PRINT("get_9344_mac errro:%d\n", ret);
+				//strcpy(base_sn, "000000000000000101");
+				return -1;
+			}
+		}
+	}
+	return 0;
+}
+
+int get_9344_sn(char *server_ip)
+{
+	int retVal = 0;
+	int clientAddrId;
+	unsigned int dataSize = 1024;
+	unsigned char dataBuf[1024];
+//	char server_ip[64];
+	struct sockaddr_in serverAddr;
+	struct hostent;
+	char get_mac[6] = "GETMAC";
+	char get_sn[6] = "GET_SN";
+	fd_set fdset;	
+	struct timeval tv;
+	int ret = 0;
+	
+	memset(&tv, 0, sizeof(struct timeval));
+	
+	//创建套接字
+	clientAddrId = socket(AF_INET, SOCK_STREAM, 0);
+	if(clientAddrId < 0)
+	{
+		printf("Socket Error\n");
+		return -1;
+	}
+
+//	printf("Establish Server Socket ID %d\n", clientAddrId);
+
+	//设置socket_in结构体属性
+	serverAddr.sin_family 	= AF_INET;
+	serverAddr.sin_port	 	= htons(9998);
+	bzero(&(serverAddr.sin_zero), 8);
+	if(inet_aton(server_ip, &serverAddr.sin_addr) == 0)
+	{
+		printf("IP Error\n");
+		ret = -2;
+		goto ERROR;
+	}
+
+	if(connect(clientAddrId, (struct sockaddr *)&(serverAddr), sizeof(struct sockaddr)) == -1)
+	{
+		printf("Connect 9344 error\n");
+		ret = -3;
+		goto ERROR;
+	}
+	
+	FD_ZERO(&fdset);
+	FD_SET(clientAddrId, &fdset);
+
+	tv.tv_sec = 3;
+	tv.tv_usec = 0;
+	//发送获取SN命令
+	send(clientAddrId, get_sn, 6, 0);
+	
+	switch(select(clientAddrId + 1, &fdset, NULL, NULL,&tv))
+	{
+	case -1:
+	case 0:
+		ret = -4;
+		goto ERROR;
+	default:
+		if (FD_ISSET(clientAddrId, &fdset) > 0)
+		{
+			//接收数据
+			ret = recv(clientAddrId, dataBuf, 1024, 0);
+			if(ret > 0)
+			{
+				ret = getSnData(dataBuf, ret, base_sn);
+				if(ret > 0)
+				{
+					PRINT("Get Sn::%s\n", base_sn);
+					break;
+				}
+			}			
+			ret = -5;
+			goto ERROR;
+		}
+		ret = -6;
+		break;
+	}
+	
+ERROR:
+	close(clientAddrId);
+	return ret;
+}
+
+int get_sn_from_e2prom()
+{
+	int fd_sd0 = 0;
+	int read_ret = 0;
+	char data_buf[64] = {0};
+    fd_sd0 = open("/sys/bus/i2c/devices/3-0051/eeprom",O_RDWR);
+    if(fd_sd0 < 0)
+    {
+		PRINT("open e2 err\n");
+		return -1;
+	}
+	lseek(fd_sd0, SN_IN_E2PROM_POS, SEEK_SET);
+	read_ret = read(fd_sd0, data_buf, sizeof(data_buf));
+	if(strncmp(data_buf, "SN:" ,3) == 0)
+	{
+		PRINT("found SN\n");
+		memcpy(base_sn,data_buf+3,18);
+		PRINT("base_sn = %s\n",base_sn);
+		close(fd_sd0);
+		return 0;
+	}
+	else
+	{
+		close(fd_sd0);
+		return -1;
+	}
+}
+
+int set_sn()
+{
+	int fd_sd0 = 0;
+	int read_ret = 0;
+	char data_buf[64] = {0};
+    fd_sd0 = open("/sys/bus/i2c/devices/3-0051/eeprom",O_RDWR);
+    if(fd_sd0 < 0)
+    {
+		usleep(20*1000);
+		fd_sd0 = open("/sys/bus/i2c/devices/3-0051/eeprom",O_RDWR);
+		if(fd_sd0 < 0)
+		{
+			PRINT("open e2 err\n");
+			return -1;
+		}
+	}
+	lseek(fd_sd0, SN_IN_E2PROM_POS, SEEK_SET);
+	sprintf(data_buf,"SN:%s ",base_sn);
+	if(write(fd_sd0,data_buf,strlen(data_buf)) == strlen(data_buf))
+	{
+		close(fd_sd0);
+		PRINT("save sn success\n");
+		return 0;
+	}
+	else
+	{
+		close(fd_sd0);
+		return -1;
+	}
+}
+
+int check_date()
+{
+	char date[16] = {0}; 
+	//01A112201411300001
+	memcpy(date,base_sn+6,8);
+	PRINT("date = %s\n",date);
+	if(atoi(date) <= 20140601)
+		return 0;
+	return -1;
+}
+
+int check_sn()
+{
+	if(strlen(base_sn) != 18 || check_date() != 0)
+	{
+		PRINT("sn is not match\n");
+		return -1;
+	}
+	if(set_sn() == 0)
+		return 0;
+	return -1;
+}
+
+int get_sn_for_a20()
+{
+	int ret = 0;
+	char server_ip[64] = {0};
+	ret = get_sn_from_e2prom();
+	if(ret == 0)
+		return 0;
+	ret = get_gateway(server_ip);
+	if(ret < 0)
+	{
+		PRINT("Get GateWay Ip error\n");
+		return -1;
+	}
+	PRINT("GateWay Ip::%s\n", server_ip);
+	ret = get_9344_sn(server_ip);
+	if(ret < 0)
+	{
+		ret = get_9344_sn(server_ip);
+		if(ret < 0)
+		{
+			ret = get_9344_sn(server_ip);
+			if(ret < 0)
+			{
+				PRINT("get_9344_sn errro:%d\n", ret);
+				//strcpy(base_sn, "000000000000000101");
+				return -1;
+			}
+		}
+	}
+	check_sn();
+	return 0;
+}
+#endif
+
 int system_init()
 {
 	int ret = 0;
-	
+
+	memset(base_sn,0,sizeof(base_sn));
+#ifdef BASE_9344	
 	if(get_sn() == 0)
+#elif defined(BASE_A20)
+	if(get_sn_for_a20() == 0)
+#endif
 	{
 		memcpy(sip_msg.base_sn,base_sn,sizeof(sip_msg.base_sn));
 		if(get_sip_info() != 0)
@@ -2038,10 +2555,67 @@ int system_init()
 	return -1;
 }
 
-#ifdef BASE_A20
 static void *pthread_update(void *para)
 {
-	update("monitor_base","HBD_F2B_MONITOR_V1.0.1_20140618","HBD_F2B_MONITOR","1.0.1",60*60,0);
+	update(MONITOR_APP_NAME,MONITOR_APP_DES,MONITOR_APP_CODE,MONITOR_APP_VERSION,60*60,0);
+}
+#ifdef BASE_A20
+int system_interface(char *cmdline)
+{
+	pid_t status;
+	int ret = 0;
+	if(cmdline == NULL)
+		return -1;
+	status = system(cmdline);
+	PRINT("status = %d\n",status);
+	if(status == -1)
+	{
+		PRINT("system fail!\n");
+		return -2;
+	}
+	else
+	{
+		ret = WEXITSTATUS(status);
+		if(ret == 0)
+		{
+			PRINT("system success\n");
+			return 0;
+		}
+		PRINT("system fail!\n");
+		return -3;
+	}
+	
+}
+
+void *pthread_ping(void *para)
+{
+	char gateWay[64]={0};
+	char cmd[64] = {0};
+	while(1)
+	{
+		pthread_mutex_lock(&mutex_ping_id);
+		memset(gateWay,0,sizeof(gateWay));
+		if(get_gateway(gateWay) < 0)
+		{
+			system("killall  udhcpc");
+			sleep(1);
+			system("udhcpc eth0 -H HBD_F2B_A20");
+		}
+		else
+		{
+			//ping 10.10.10.254 -c 2 -W 1
+			sprintf(cmd,"ping %s -c 3 -W 1",gateWay);
+			//sprintf(cmd,"ping %s -c 3 -W 1","www.google.com");
+			if(system_interface(cmd) != 0)
+			{
+				system("killall  udhcpc");
+				sleep(1);
+				system("udhcpc eth0 -H HBD_F2B_A20");
+			}
+		}
+		pthread_mutex_unlock(&mutex_ping_id);
+		sleep(30);
+	}
 }
 
 int get_local_mac(unsigned char *mac_addr)  
@@ -2095,17 +2669,17 @@ int set_mac(unsigned char *mac)
 		return -1;
 	}
     lseek(fd_sd0, 0, SEEK_SET);
-    mallocp = malloc(2048);
+    mallocp = malloc(256);
     if(mallocp == NULL)
     {
 		close(fd_sd0);
 		return -1;
 	}
-	memset(mallocp,0xff,2048);
+	memset(mallocp,0xff,256);
     //mac[17] = '\n';
     mac[17] = ' ';
-	read_ret = write(fd_sd0, mallocp, 2048);
-	if (read_ret == 2048)
+	read_ret = write(fd_sd0, mallocp, 256);
+	if (read_ret == 256)
 	{
 		PRINT("eeprom erase success\n");
 	}
@@ -2149,25 +2723,9 @@ int repair_macaddr()
 	unsigned char temp[sizeof(unsigned int)] = {0};
 	unsigned char temp2[3] = {0};
 	unsigned int mac_int = 0;
-	int fd = open("/opt/.f2b_info.conf",O_RDONLY);
-	if(fd < 0)
-	{
-		PRINT("open f2b_info err\n");
+	if(get_mac_for_a20(mac_9344) != 0)
 		return -1;
-	}
-	memset(&fid,0,sizeof(fid));
-	if(read(fd,&fid,sizeof(fid))==sizeof(fid))
-	{
-		memset(mac_9344,0,sizeof(mac_9344));
-		memcpy(mac_9344,fid.mac,sizeof(fid.mac));
-		close(fd);
-	}
-	else
-	{
-		close(fd);
-		return -1;
-	}
-	if(strlen(mac_9344) == 0)
+	if(strlen(mac_9344) != 17)
 		return -1;
 	PRINT("9344 mac : %s\n",mac_9344);
 	if(get_local_mac(mac_a20) != 0)
@@ -2186,13 +2744,36 @@ int repair_macaddr()
 		memcpy(&mac_int,temp,sizeof(unsigned int));
 		mac_int = ntohl(mac_int);
 		PRINT("mac_int = 0x%x\n",mac_int);
+		if(get_a20_ver() < 0)
+		{
+			usleep(100*1000);
+			get_a20_ver();
+		}
 		if(mac_int%2==0)
 		{
-			mac_int += 4;
+			if(strstr(sip_msg.base_a20_version,"F2B") != NULL)
+			{
+				PRINT("F2B\n");
+				mac_int += 4;
+			}
+			else if(strstr(sip_msg.base_a20_version,"F3A") != NULL)	
+			{
+				PRINT("F3A\n");
+				mac_int += 6;
+			}
 		}
 		else
 		{
-			mac_int += 1;
+			if(strstr(sip_msg.base_a20_version,"F2B") != NULL)
+			{
+				PRINT("F2B\n");
+				mac_int += 1;
+			}
+			else if(strstr(sip_msg.base_a20_version,"F3A") != NULL)	
+			{
+				PRINT("F3A\n");
+				mac_int += 6;
+			}
 		}
 		PRINT("mac_int = 0x%x\n",mac_int);
 		mac_int = htonl(mac_int);
@@ -2216,22 +2797,34 @@ int main(int argc,char **argv)
 	pthread_t pthread_base_state_id;
 	pthread_t pthread_heartbeat_id;
 #ifdef BASE_A20
+	pthread_t pthread_ping_id;
+#endif
+//#ifdef BASE_A20
 	pthread_t pthread_update_id;
-#endif
+//#endif
 	int ret,fd,init_flag = 0;
-	int try_times = 0;
 #ifdef BASE_A20
+	pthread_mutex_init(&mutex_ping_id,NULL);
+	pthread_create(&pthread_ping_id, NULL, &pthread_ping,NULL);
+	sleep(5);
+	pthread_mutex_lock(&mutex_ping_id);
 	repair_macaddr();
-	pthread_create(&pthread_update_id, NULL, &pthread_update,NULL);
+	pthread_mutex_unlock(&mutex_ping_id);
 #endif
+	sleep(10);
+//#ifdef BASE_A20
+	pthread_create(&pthread_update_id, NULL, &pthread_update,NULL);
+//#endif
 	pthread_create(&pthread_get_respond_id, NULL, &pthread_get_respond,NULL);
     pthread_mutex_init(&send_mutex, NULL);
 	while(1)
 	{
-		if((ret = system_init()) == 0)
+		ret = system_init();
+		if(ret == 0)
 		{
 			PRINT("system init success\n");
-			if(monitor_init() == 0)
+			ret = monitor_init();
+			if(ret == 0)
 			{
 				init_success = 1;
 			}
@@ -2245,7 +2838,8 @@ int main(int argc,char **argv)
 			PRINT("system init err,%d\n",ret);
 			goto MAIN_NEXT;
 		}
-		if(sip_register()<0)
+		ret = sip_register();
+		if(ret < 0)
 		{
 			eXosip_quit();
 			PRINT("sip_register failed\n");
@@ -2293,12 +2887,8 @@ int main(int argc,char **argv)
 			goto MAIN_NEXT;
 		}
 MAIN_NEXT:
-		try_times++;
 		init_success = 0;
-		if(try_times < 5)
-			sleep(FAST_STATUS_DELAY);
-		else
-			sleep(STATUS_DELAY);
+		sleep(FAST_STATUS_DELAY);
 	}
 	if(sip_msg.register_flag == 1)
 	{
@@ -2308,9 +2898,9 @@ MAIN_NEXT:
 		pthread_join(pthread_get_respond_id, NULL);
 		pthread_join(pthread_base_state_id, NULL);
 	}
-#ifdef BASE_A20
+//#ifdef BASE_A20
  	pthread_join(pthread_update_id, NULL);
-#endif
+//#endif
     pthread_mutex_destroy(&send_mutex);
 	return 0;
 }
