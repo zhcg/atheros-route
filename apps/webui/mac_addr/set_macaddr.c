@@ -310,8 +310,11 @@ int main(int argc,char **argv)
 					}
 					
 					fseek(f, BR0_OFFSET, SEEK_SET);
-					if ( mac_data[5] == 0xff ){
-						mac_data[5] = 0x00;
+					if (( mac_data[5] == 0xff ) || ( mac_data[5] == 0xfe )){
+						if( mac_data[5] == 0xfe )
+							mac_data[5] = 0x00;
+						else
+							mac_data[5] = 0x01;
 						if ( mac_data[4] == 0xff ){
 							mac_data[4] = 0x00;
 							if ( mac_data[3] == 0xff ){
@@ -330,7 +333,8 @@ int main(int argc,char **argv)
 							mac_data[4] ++;
 					}
 					else
-						mac_data[5] ++;
+						mac_data[5] = mac_data[5] + 2;
+
 			
 					sprintf(mac_buff,"%c%c%c%c%c%c",mac_data[0],mac_data[1],mac_data[2],mac_data[3],mac_data[4],mac_data[5]);
 			
