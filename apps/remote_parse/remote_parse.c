@@ -72,7 +72,7 @@ char remote_port_buf[64]={0};
 char ota_ip_buf[128]={0};
 char ota_port_buf[64]={0};
 char conf_ver[64]={0};
-unsigned char as532_conf_version[5]={0};
+unsigned int as532_conf_version[5]={0};
 unsigned char base_sn[34] = {0};
 int remote_server_fd = -1;
 char remote_cmd[128]={0};
@@ -82,6 +82,7 @@ int load_net_config()
 	int i,ret = 0;
 	char buf[512]={0};
 	char tmp_buf[3]={0};
+	char tempbuf[64]={0};
 	int minor = 0;
 	char *p;
 	char *pp;
@@ -90,7 +91,7 @@ int load_net_config()
 	memset(as532_conf_version,0,sizeof(as532_conf_version));
 	memset(remote_ip_buf,0,sizeof(remote_ip_buf));
 	memset(remote_port_buf,0,sizeof(remote_port_buf));
-	int fd = open("/etc/532.conf",O_RDWR);
+	int fd = open(DOWNLOAD_UPDATE_CONF_FILE,O_RDWR);
 	if(fd < 0)
 	{
 		printf("532.conf is not found\n");
@@ -104,7 +105,7 @@ int load_net_config()
 		{
 			printf("config file err.\nfile's first line must be CONF_VER=\"Vx.x.x\"\n");
 			close(fd);
-			return -1;
+			return -2;
 		}
 
 		p += strlen("CONF_VER=\"");
@@ -113,42 +114,34 @@ int load_net_config()
 		{
 			printf("config file err.\nfile's first line must be CONF_VER=\"Vx.x.x\"\n");
 			close(fd);
-			return -1;
+			return -2;
 		}
 		memcpy(conf_ver,p,end-p);
+		conf_ver[end-p] = '\0';
 		//HBD_F2B_AS532_V4.0.1
 		//				012345
-		p = strstr(p,"V");
+		p = strstr(conf_ver,"_V");
 		if(p == NULL)
 		{
-			p = strstr(p,"v");
+			p = strstr(conf_ver,"_v");
 			if(p == NULL)
 			{
 				printf("config file err.\nfile's first line must be CONF_VER=\"Vx.x.x\"\n");
 				close(fd);
-				return -1;
+				return -2;
 			}
 		}
-		//V12.34.5678
-		pp = p;
-		i = 0;
-		while(1)
+		p += 2;
+		strcpy(tempbuf, p);
+		
+		for(i=0; i<strlen(tempbuf); i++)
 		{
-			if(*pp == '.')
-			{
-				i++;
-				*pp = ' ';
-			}
-			if(i == 2)
-				break;
-			pp++;
+			if(tempbuf[i] == '.')
+				tempbuf[i] = ' ';
 		}
-		PRINT("p = %s\n",p);
-		char temp[5] = {0};
-		unsigned long num = 0;
-		sscanf(p+1,"%s %x %d",temp,&as532_conf_version[1],&minor);
-		num = strtoul(temp,NULL,16);
-		as532_conf_version[0] = (char)num;
+
+		sscanf(tempbuf,"%x %x %d",&as532_conf_version[0],&as532_conf_version[1],&minor);
+		PRINT("tempbuf = %s\n",tempbuf);
 		PRINT("minor = %d\n",minor);
 		//5678
 		as532_conf_version[2] = ((minor/1000)<<4)+(minor%1000)/100;
