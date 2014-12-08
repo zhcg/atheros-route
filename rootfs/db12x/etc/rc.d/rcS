@@ -177,7 +177,8 @@ if [ ! -f /configure_backup/pwd.xml ]; then
 	echo -n "admin" >> /configure_backup/pwd.xml
 fi
 
-/bin/fw_setenv bootdelay 1
+#/bin/fw_setenv bootdelay 1
+/usr/bin/set_sn.sh
 
 /usr/bin/version_check &
 /bin/server &
