@@ -241,12 +241,16 @@ function switch_wifi()
 		widget_display("tt1");
 		widget_display("channel");
 		switch_security_mode();
+		widget_enable("AP_SSID");
+		widget_enable("hidewifi");
 	}
 	else
 	{
 		widget_hide("div_security_key");
 		widget_hide("tt1");
 		widget_hide("channel");
+		widget_disable("AP_SSID");
+		widget_disable("hidewifi");
 	}
 	window.parent.iFrameHeight();
 
@@ -259,12 +263,16 @@ function switch_wifi2()
 		widget_display("tt12");
 		widget_display("channel2");
 		switch_security_mode2();
+		widget_enable("AP_SSID_3");  
+		widget_enable("hidewifi2");
 	}
 	else
 	{
 		widget_hide("div_security_key2");
 		widget_hide("tt12");
 		widget_hide("channel2");
+		widget_disable("AP_SSID_3");
+		widget_disable("hidewifi2");
 	}
 	window.parent.iFrameHeight();
 }

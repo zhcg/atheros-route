@@ -119,7 +119,10 @@ function initTranslation()
 	e.value = _("admw bCANCEL");
 	e = document.getElementById("bAPPLY");
 	e.value = _("admw bAPPLY");
-
+	e = document.getElementById("waring");
+	e.innerHTML = _("admw wds_off_waring");
+	
+	
 }
 
 function CheckWirelessValue()
@@ -874,8 +877,13 @@ function help()
   <td class="title2" colspan="2" id="offwifides21"></td>
 </tr>
 </table>
-
-<!-- ================= STATIC Mode ================= -->
+<table width="100%" cellpadding="0" cellspacing="0"   style="border-top: 0px;" class="handaer_text">
+<tr>
+  <td>
+	<span id="waring"  style="color:#ff3c00"></span><br>
+  </td>
+</tr>
+</table>
 
 <table cellpadding="2" cellspacing="1" id="buttontable">
 <tr align="center">

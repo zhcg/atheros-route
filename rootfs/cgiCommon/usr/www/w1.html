@@ -443,6 +443,13 @@ function switch_security_mode()
 			widget_hide("div_security_key");
 			document.wizard_form.PSK_KEY.disabled = true;
 		}
+		widget_enable("AP_SSID");
+		widget_enable("hidewifi");
+	}
+	else
+	{
+		widget_disable("AP_SSID");
+		widget_disable("hidewifi");
 	}
 	window.parent.iFrameHeight();
 }
@@ -458,6 +465,13 @@ function switch_security_mode2()
 			widget_hide("div_security_key2");
 			document.wizard_form.PSK_KEY_3.disabled = true;
 		}
+		widget_enable("AP_SSID_3");  
+		widget_enable("hidewifi2");
+	}
+	else
+	{
+		widget_disable("AP_SSID_3");
+		widget_disable("hidewifi2");
 	}
 	window.parent.iFrameHeight();
 }
@@ -1286,12 +1300,16 @@ function switch_wifi()
 		widget_display("div_security_key");
 		widget_display("tt1");
 		widget_display("channel");
+		widget_enable("AP_SSID");
+		widget_enable("hidewifi");
 	}
 	else
 	{
 		widget_hide("div_security_key");
 		widget_hide("tt1");
 		widget_hide("channel");
+		widget_disable("AP_SSID");
+		widget_disable("hidewifi");
 	}
 	switch_security_mode();
 }
@@ -1302,12 +1320,16 @@ function switch_wifi2()
 		widget_display("div_security_key2");
 		widget_display("tt12");
 		widget_display("channel2");
+		widget_enable("AP_SSID_3");  
+		widget_enable("hidewifi2");
 	}
 	else
 	{
 		widget_hide("div_security_key2");
 		widget_hide("tt12");
 		widget_hide("channel2");
+		widget_disable("AP_SSID_3");
+		widget_disable("hidewifi2");
 	}
 	//window.parent.iFrameHeight();
 	switch_security_mode2();
@@ -1708,7 +1730,7 @@ function WIFI_HS()
 <tr><td class="title2" colspan="2" id="wsetingst"></td></tr>
 <tr>
   <td class="head" id="nname"></td>
-  <td><input type="text" name="AP_SSID" size="32" maxlength="24" class="handaer_text_content" value="~~AP_SSID~">&nbsp;<input type="checkbox" id="hidewifi" onClick="hidewififun();"/>&nbsp;<label for="hidewifi" id="hidewifides"></label>&nbsp;<span id="ssidrequest"></span></td>
+  <td><input type="text" name="AP_SSID" id="AP_SSID" size="32" maxlength="24" class="handaer_text_content" value="~~AP_SSID~">&nbsp;<input type="checkbox" id="hidewifi" onClick="hidewififun();"/>&nbsp;<label for="hidewifi" id="hidewifides"></label>&nbsp;<span id="ssidrequest"></span></td>
 </tr>
 
 <tr>
@@ -1758,7 +1780,7 @@ function WIFI_HS()
 <tr><td class="title2" colspan="2" id="wsetingst2"></td></tr>
 <tr>
   <td class="head" id="nname2"></td>
-  <td><input type="text" name="AP_SSID_3" size="32" maxlength="24" class="handaer_text_content" value="~~AP_SSID_3~">&nbsp;<input type="checkbox" id="hidewifi2" onClick="hidewififun2();"/>&nbsp;<label for="hidewifi2" id="hidewifides2"></label>&nbsp;<span id="ssidrequest2"></span></td>
+  <td><input type="text" name="AP_SSID_3" id="AP_SSID_3" size="32" maxlength="24" class="handaer_text_content" value="~~AP_SSID_3~">&nbsp;<input type="checkbox" id="hidewifi2" onClick="hidewififun2();"/>&nbsp;<label for="hidewifi2" id="hidewifides2"></label>&nbsp;<span id="ssidrequest2"></span></td>
 </tr>
 
 <tr>

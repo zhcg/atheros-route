@@ -24,7 +24,7 @@
 	<message msgid="admw PPPOEdisc" msgstr="Broadband service providers provide username and password" />
 
 	<message msgid="admw DISABLE_a" msgstr="Disable" />
-	<message msgid="admw DISABLEdisc" msgstr="Disable WAN settings" />
+	<message msgid="admw DISABLEdisc" msgstr="Disable WAN settings,this will be chosen after WISP turning on" />
 	<message msgid="admw wdsonmsg" msgstr="WDS is on,so WAN is disabled,if you want set WAN,please into Settings wizard,or you can get into Advanced Settings->Wireless Settings-> WDS Settings ,turning off WDS switch ,and then set WAN settings" />
 
 
@@ -138,6 +138,9 @@
 	<message msgid="admw wifides" msgstr="Please set the HBD router basic parameters. Your computer, PAD, intelligent mobile phone will use the following network." />  
 	<message msgid="admw wirelessdes" msgstr="Please select the WiFi to connect(Note:after WDS, WAN port will be disabled)" />  
 
+	<message msgid="admw wds_off_waring" msgstr="Note:WAN settings and WISP will be disabled after WDS turning on" />
+	<message msgid="admw wisp_off_waring" msgstr="Note:WAN settings and WDS will be disabled after WISP turning on" />
+
 	<message msgid="admw PPMAC" msgstr="The MAC address of parent PC" />
 	<message msgid="admw MPMAC" msgstr="The MAC address of management PC" />
 	<message msgid="admw maccopy" msgstr="Set to parent PC" />
@@ -190,7 +193,7 @@
 	<message msgid="admw settingmanual" msgstr="Setting,Please Wait......If the page does not jump , please manually" />
 	<message msgid="admw wifiout" msgstr="Setting completed, please check the WIFI and refresh the page" />
 
-	<message msgid="admw ssidrequest" msgstr="  (1-24 letters,1 Chinese character is same as 3 English letters)" />
+	<message msgid="admw ssidrequest" msgstr="  (1-24 letters, max support 8 Chinese characters)" />
 	<message msgid="admw passwordrequest" msgstr="  (8-63 letters, numbers or underscore)" />
 	<message msgid="admw passwordrequest1" msgstr="  (5-12 letters, numbers or underscore)" />
 
@@ -286,7 +289,7 @@
 	<message msgid="err gw format" msgstr="Gateway address is illegal" />
 	<message msgid="err DNS format" msgstr="DNS address is illegal" />
 	<message msgid="err SSID" msgstr="SSID is illegal" />
-	<message msgid="err SSIDformat" msgstr="SSID should be 1-24 letters ,1 Chinese character is same as 3 English letters" />
+	<message msgid="err SSIDformat" msgstr="SSID should be 1-24 letters ,max support 8 Chinese characters" />
 	
 	<message msgid="err Ruleexist" msgstr="This rule is already exist " />	
 	<message msgid="wan not connected" msgstr="Please check WAN line" />

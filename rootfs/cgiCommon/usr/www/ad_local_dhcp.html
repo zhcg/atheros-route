@@ -96,6 +96,8 @@ function CheckValue()
 	{
 		widget_disable("GW_IP");
 		widget_disable("GW_SUB");
+		widget_disable("WDSON_OFF");
+		widget_disable("WDSON_OFF_3");
 	}
 	Butterlate.setTextDomain("admin");
 	window.parent.Demo(_("admw settingwaiting"));
@@ -132,6 +134,7 @@ function initTranslation()
 	trans_value("bCANCEL","lan bCANCEL");	
 	trans_value("bAPPLY","lan bAPPLY");
 	trans_inner("help_r","help");	
+	trans_inner("waring","dhcp wds_waring");
 }
 
 function initValue()
@@ -139,6 +142,8 @@ function initValue()
 	Butterlate.setTextDomain("lan");
 	initTranslation();
 	switch_dhcp();
+	if((document.getElementById("WDSON_OFF").value == "on")||(document.getElementById("WDSON_OFF").value == "on"))
+		widget_disable("DHCPON_OFF1");
 }
 
 function switch_dhcp()
@@ -234,6 +239,13 @@ function help()
   <td><input type="text" name="DHCP_TIME" id="DHCP_TIME" size="32" maxlength="32" class="handaer_text_content"  value="~~DHCP_TIME~"><span id="t1_min">分钟</span><span id="t1_defaut"></span></td>
 </tr>
 </table>
+<table width="100%" cellpadding="0" cellspacing="0"   style="border-top: 0px;" class="handaer_text">
+<tr>
+  <td>
+	<span id="waring"  style="color:#ff3c00"></span><br>
+  </td>
+</tr>
+</table>
 <table id="buttontable">
 <tr align="center">
   <td>
@@ -241,6 +253,8 @@ function help()
     <input type="button" name="bAPPLY" id="bAPPLY" class="handaer_input" value="Apply" onClick="CheckValue();">    
 	<input type="text" name="GW_IP" style="display:none"  id="GW_IP" maxlength="15" class="handaer_text_content" value="~~AP_IPADDR~">
 	<input type="text" name="GW_SUB" style="display:none"  id="GW_SUB" maxlength="15" class="handaer_text_content" value="~~AP_NETMASK~">
+	<input type="text" name="WDSON_OFF" style="display:none"  id="WDSON_OFF" maxlength="15" class="handaer_text_content" value="~~WDSON_OFF~">
+	<input type="text" name="WDSON_OFF_3" style="display:none"  id="WDSON_OFF_3" maxlength="15" class="handaer_text_content" value="~~WDSON_OFF_3~">
 	<input type="submit" name="DHCP_SET" id="DHCP_SET" style="display:none" value="DHCP_SET">
   </td>
 </tr>

@@ -48,6 +48,7 @@
 	<message msgid="wan cs" msgstr="Connect status" />
 	<message msgid="wan cstatus" msgstr="Unknown" />
 	<message msgid="wan disable_note" msgstr=" WDS is on，WAN port is disabled" />
+	<message msgid="wan disable_note_con" msgstr="Disable WAN settings,this will be chosen after WISP turning on" />
 	
 	<message msgid="wisp connection type" msgstr="Connection Type:" />
 	
@@ -86,6 +87,7 @@
 	<message msgid="macc mactype1" msgstr="Use the management device MAC address" />
 	<message msgid="macc mactype2" msgstr="Manually enter the MAC address" />
 
+	<message msgid="err IP error" msgstr="WAN IP and local IP cannot be located in the same network, please reset" />
 	<message msgid="err MAC wuxiao" msgstr="MAC address is illegal" />
 	<message msgid="err MAC empty" msgstr="MAC is empty " />
 	<message msgid="err user empty" msgstr="User name is empty " />

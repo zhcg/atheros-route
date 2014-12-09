@@ -307,6 +307,8 @@ function switch_wifi2()
 		document.getElementById("channel2").style.display = style_display_on();
 		
 		switch_security_mode2();
+		widget_enable("AP_SSID_3");  
+		widget_enable("hidewifi2");
 	}
 	else
 	{
@@ -316,6 +318,8 @@ function switch_wifi2()
 		document.getElementById("tt12").style.display = "none";
 		document.getElementById("channel2").style.visibility = "hidden";
 		document.getElementById("channel2").style.display = "none";
+		widget_disable("AP_SSID_3");
+		widget_disable("hidewifi2");
 	}
 	window.parent.iFrameHeight();
 }
@@ -368,6 +372,8 @@ function switch_wifi()
 		document.getElementById("channel").style.display = style_display_on();
 		
 		switch_security_mode();
+		widget_enable("AP_SSID");
+		widget_enable("hidewifi");
 	}
 	else
 	{
@@ -377,6 +383,8 @@ function switch_wifi()
 		document.getElementById("tt1").style.display = "none";
 		document.getElementById("channel").style.visibility = "hidden";
 		document.getElementById("channel").style.display = "none";
+		widget_disable("AP_SSID");
+		widget_disable("hidewifi");
 	}
 	window.parent.iFrameHeight();
 }
@@ -459,7 +467,7 @@ function WIFI_HS()
 </tr>
 <tr>
   <td class="head" id="nname"></td>
-  <td><input type="text" name="AP_SSID" size="32" maxlength="24" class="handaer_text_content"  value="~~AP_SSID~">&nbsp;<input type="checkbox" id="hidewifi" onclick="hidewififun();"/>&nbsp;<label for="hidewifi" id="hidewifides"></label>&nbsp;<span id="ssidrequest"></span></td>
+  <td><input type="text" name="AP_SSID" id="AP_SSID" size="32" maxlength="24" class="handaer_text_content"  value="~~AP_SSID~">&nbsp;<input type="checkbox" id="hidewifi" onclick="hidewififun();"/>&nbsp;<label for="hidewifi" id="hidewifides"></label>&nbsp;<span id="ssidrequest"></span></td>
 </tr>
 
 <tr>
@@ -511,7 +519,7 @@ function WIFI_HS()
 <tr><td class="title2" colspan="2" id="wsetingst2"></td></tr>
 <tr>
   <td class="head" id="nname2"></td>
-  <td><input type="text" name="AP_SSID_3" size="32" maxlength="24" class="handaer_text_content"  value="~~AP_SSID_3~">&nbsp;<input type="checkbox" id="hidewifi2" onclick="hidewififun2();"/>&nbsp;<label for="hidewifi2" id="hidewifides2"></label>&nbsp;<span id="ssidrequest2"></span></td>
+  <td><input type="text" name="AP_SSID_3" id="AP_SSID_3" size="32" maxlength="24" class="handaer_text_content"  value="~~AP_SSID_3~">&nbsp;<input type="checkbox" id="hidewifi2" onclick="hidewififun2();"/>&nbsp;<label for="hidewifi2" id="hidewifides2"></label>&nbsp;<span id="ssidrequest2"></span></td>
 </tr>
 
 <tr>
