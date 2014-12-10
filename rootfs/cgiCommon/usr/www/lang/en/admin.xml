@@ -25,7 +25,7 @@
 
 	<message msgid="admw DISABLE_a" msgstr="Disable" />
 	<message msgid="admw DISABLEdisc" msgstr="Disable WAN settings,this will be chosen after WISP turning on" />
-	<message msgid="admw wdsonmsg" msgstr="WDS is on,so WAN is disabled,if you want set WAN,please into Settings wizard,or you can get into Advanced Settings->Wireless Settings-> WDS Settings ,turning off WDS switch ,and then set WAN settings" />
+	<message msgid="admw wdsonmsg" msgstr="WISP is on,so WAN is disabled,if you want set WAN,please into Settings wizard,or you can get into Advanced Settings->Wireless Settings-> WISP Settings ,turning off WISP switch ,and then set WAN settings" />
 
 
 	<message msgid="admw L2TPc" msgstr="L2TP Client" />
@@ -138,7 +138,7 @@
 	<message msgid="admw wifides" msgstr="Please set the HBD router basic parameters. Your computer, PAD, intelligent mobile phone will use the following network." />  
 	<message msgid="admw wirelessdes" msgstr="Please select the WiFi to connect(Note:after WDS, WAN port will be disabled)" />  
 
-	<message msgid="admw wds_off_waring" msgstr="Note:WAN settings and WISP will be disabled after WDS turning on" />
+	<message msgid="admw wds_off_waring" msgstr="Note:DHCP settings and WISP will be disabled after WDS turning on" />
 	<message msgid="admw wisp_off_waring" msgstr="Note:WAN settings and WDS will be disabled after WISP turning on" />
 
 	<message msgid="admw PPMAC" msgstr="The MAC address of parent PC" />
@@ -271,7 +271,7 @@
 	<message msgid="err file format" msgstr="Upgrade package and system hardware does not match, please select the correct upgrade package  " />
 	<message msgid="err file upload" msgstr="Firmware upload fail " />
 	<message msgid="admw chfile" msgstr="Choose file" />	
-	<message msgid="admw waring" msgstr="Note: the file should less than 8M,the upgrade process is completely automatic, please don't turn off the power, otherwise it will result in BASE damage and can not be used, the upgrade process about 80 seconds, when the upgrade is complete, the BASE will automatically restart." />	
+	<message msgid="admw waring" msgstr="Note: the file should less than 9M,the upgrade process is completely automatic, please don't turn off the power, otherwise it will result in BASE damage and can not be used, the upgrade process about 80 seconds, when the upgrade is complete, the BASE will automatically restart." />	
 	<message msgid="admw waring2" msgstr="Note: Please ensure that the HBD router can be connected to the Internet" />	
 
 	<message msgid="admw sysupgrade" msgstr="Confirm the firmware upgrade?" />

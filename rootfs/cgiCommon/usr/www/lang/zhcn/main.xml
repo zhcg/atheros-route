@@ -66,7 +66,7 @@
 	<message msgid="sysinfo t1_title" msgstr="版本信息" />
 	<message msgid="sysinfo t1_softv" msgstr="当前软件版本" />
 	<message msgid="sysinfo t1_firmv" msgstr="当前硬件版本" />
-	<message msgid="sysinfo t2_title" msgstr="互联网" />
+	<message msgid="sysinfo t2_title" msgstr="WAN口" />
 	<message msgid="sysinfo t2_intnets" msgstr="上网状态" />
 	<message msgid="sysinfo t2_mac" msgstr="MAC地址" />
 	<message msgid="sysinfo t2_ip" msgstr="IP地址" />

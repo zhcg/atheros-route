@@ -280,8 +280,8 @@ function disableWanSettings()
 	document.wizard_form.Dev3G.disabled = true;
 	
 	document.wizard_form.AP_locatIP.disabled = true; 	 	
-	document.wizard_form.WDSOF.disabled = true; 	
-	document.wizard_form.WDSOF2.disabled = true;
+	document.wizard_form.WISPON_OFF.disabled = true; 	
+	document.wizard_form.WISPON_OFF_3.disabled = true;
 }
 
 function connectionTypeSwitch()
@@ -887,7 +887,7 @@ function initTranslation()
 }
 function disablechange()
 {
-	if((document.getElementById("WDSOF").value=="on")||(document.getElementById("WDSOF2").value=="on"))
+	if((document.getElementById("WISPON_OFF").value=="on")||(document.getElementById("WISPON_OFF_3").value=="on"))
 	{
 		widget_hide("div_wan_opmode");
 		widget_display("div_wan_disable");
@@ -1355,8 +1355,8 @@ function workoutgw()
     <input type="submit" name="P2TP" id="P2TP" style="display:none" value="P2TP">
 	
 	<input type="text" style="display:none" name="AP_locatIP" id="AP_locatIP" size="20" maxlength="32" value="~~AP_IPADDR~">	
-	<input type="text" style="display:none" name="WDSOF" id="WDSOF" size="20" maxlength="32" value="~~WDSON_OFF~">		
-	<input type="text" style="display:none" name="WDSOF2" id="WDSOF2" size="20" maxlength="32" value="~~WDSON_OFF_3~">	
+	<input type="text" style="display:none" name="WISPON_OFF" id="WISPON_OFF" size="20" maxlength="32" value="~~WISPON_OFF~">		
+	<input type="text" style="display:none" name="WISPON_OFF_3" id="WISPON_OFF_3" size="20" maxlength="32" value="~~WISPON_OFF_3~">	
 
   </td>
 </tr>

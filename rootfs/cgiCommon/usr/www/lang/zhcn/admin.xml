@@ -25,7 +25,7 @@
 	
 	<message msgid="admw DISABLE_a" msgstr="禁用" />
 	<message msgid="admw DISABLEdisc" msgstr="禁用WAN口，当开启高级设置里面的无线WAN功能之后会自动禁用有线WAN口功能" />
-	<message msgid="admw wdsonmsg" msgstr="无线中继已经开启，WAN处于禁用状态，如果需要配置WAN口，请进入设置向导配置有线连接，或者进入高级设置->无线设置->无线中继中关闭无线中继，再进行WAN口配置" />
+	<message msgid="admw wdsonmsg" msgstr="无线WAN已经开启，WAN处于禁用状态，如果需要配置WAN口，请进入设置向导配置有线连接，或者进入高级设置->无线设置->无线WAN中关闭无线WAN，再进行WAN口配置" />
 	
 	<message msgid="admw L2TPc" msgstr="L2TP客户端" />
 	<message msgid="admw PPTPc" msgstr="PPTP客户端" />
@@ -135,7 +135,7 @@
 	<message msgid="admw wifides" msgstr="请您设置HBD路由器的基础参数。您的电脑、PAD、智能手机等将使用以下网络上网" />  
 	<message msgid="admw wirelessdes" msgstr="请您选择要连接的WiFi" />  
 	<message msgid="admw wispdes" msgstr="请您选择要连接的WiFi" />  
-	<message msgid="admw wds_off_waring" msgstr="注意：无线中继开启后，WAN口将自动禁用，该频段无线WAN也将无法使用" />
+	<message msgid="admw wds_off_waring" msgstr="注意：无线中继开启后，DHCP服务将自动禁用，该频段无线WAN也将无法使用" />
 	<message msgid="admw wisp_off_waring" msgstr="注意：无线WAN开启后，WAN口将自动禁用，该频段无线中继也将无法使用" />
 	
 	<message msgid="admw PPMAC" msgstr="家长PC的MAC地址" />
@@ -270,7 +270,7 @@
 	<message msgid="err file format" msgstr="升级包与系统硬件不匹配，请您选择正确的升级包" />
 	<message msgid="err file upload" msgstr="文件上传失败" />
 	<message msgid="admw chfile" msgstr="选择文件" />
-	<message msgid="admw waring" msgstr="注意:升级文件不得超过8M,升级过程完全自动,请您不要关闭电源,否则将导致HBD路由器损坏而无法使用,升级过程约80秒,当升级结束后,HBD路由器将自动重新启动" />	
+	<message msgid="admw waring" msgstr="注意:升级文件不得超过9M,升级过程完全自动,请您不要关闭电源,否则将导致HBD路由器损坏而无法使用,升级过程约80秒,当升级结束后,HBD路由器将自动重新启动" />	
 	<message msgid="admw waring2" msgstr="注意: 请确保HBD路由器可以正常连接到互联网" />	
 	<message msgid="admw sysupgrade" msgstr="确认进行固件升级?" />
 	<message msgid="err dhcp null" msgstr="无法自动获取到WAN口IP,请您检查是否为自动获取方式连接" />

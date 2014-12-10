@@ -47,7 +47,7 @@
 	<message msgid="wan protocol opmode timing" msgstr="Timing" />
 	<message msgid="wan cs" msgstr="Connect status" />
 	<message msgid="wan cstatus" msgstr="Unknown" />
-	<message msgid="wan disable_note" msgstr=" WDS is on，WAN port is disabled" />
+	<message msgid="wan disable_note" msgstr=" WISP is on，WAN port is disabled" />
 	<message msgid="wan disable_note_con" msgstr="Disable WAN settings,this will be chosen after WISP turning on" />
 	
 	<message msgid="wisp connection type" msgstr="Connection Type:" />

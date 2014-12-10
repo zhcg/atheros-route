@@ -67,7 +67,7 @@
 	<message msgid="sysinfo t1_title" msgstr="Version Info" />
 	<message msgid="sysinfo t1_softv" msgstr="The current software version" />
 	<message msgid="sysinfo t1_firmv" msgstr="The hardware version" />
-	<message msgid="sysinfo t2_title" msgstr="Internet" />
+	<message msgid="sysinfo t2_title" msgstr="WAN" />
 	<message msgid="sysinfo t2_intnets" msgstr="Internet status" />
 	<message msgid="sysinfo t2_mac" msgstr="MAC Address" />
 	<message msgid="sysinfo t2_ip" msgstr="IP Address" />
