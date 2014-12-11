@@ -163,7 +163,7 @@ int sqlite3_interface(char *tb_name,char *data_name, char *data_value,char *wher
         PRINT("para is NULL!\n");
         return -1;
     }
-    if (sqlite3_open("/var/terminal_dev_register/db/terminal_base_db", &db) != 0)
+    if (sqlite3_open("/configure_backup/terminal_dev_register/db/terminal_base_db", &db) != 0)
     {
         PRINT("%s\n",sqlite3_errmsg(db));
         return -1;

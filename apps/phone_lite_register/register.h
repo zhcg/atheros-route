@@ -14,6 +14,9 @@
 #define ERR_CODE			0X01
 
 #define DEFAULT_PASSWORD	"111111111111"
+#define TB "terminal_base_tb"
+#define REGISTERTB "terminal_register_tb"
+#define PASSWORD "terminal_pwd_tb"
 
 typedef struct __client_t
 {

@@ -493,12 +493,7 @@ terminal_dev_register:
 	cp -af terminal_dev_register $(INSTALL_ROOT)/bin; \
 	cp -af interface_test $(INSTALL_ROOT)/bin; \
 	cp -af monitor_application $(INSTALL_ROOT)/bin; \
-        mkdir -p $(INSTALL_ROOT)/var/terminal_dev_register/db/; \
-        mkdir -p $(INSTALL_ROOT)/var/terminal_dev_register/log/; \
-        mkdir -p $(INSTALL_ROOT)/var/terminal_dev_register/fs/; \
-	cp -af config $(INSTALL_ROOT)/var/terminal_dev_register/; \
-	cp -af terminal_base_db $(INSTALL_ROOT)/var/terminal_dev_register/db/; \
-	cp -af fat_fs $(INSTALL_ROOT)/var/terminal_dev_register/fs/; \
+	mkdir -p $(INSTALL_ROOT)/var/log/; \
 	echo finished making terminal_dev_register;	
 
 cacm:
@@ -677,8 +672,6 @@ phone_lite_register:
 	$(STRIP) sqlite-mips-linux/lib/libsqlite3.so.0.8.6; \
 	cp -f phone_lite_register $(INSTALL_ROOT)/bin; \
 	cp -af sqlite-mips-linux/lib/libsqlite3.so.0.8.6 $(INSTALL_ROOT)/lib; \
-	mkdir -p $(INSTALL_ROOT)/var/terminal_dev_register/db/; \
-	cp -af terminal_base_db $(INSTALL_ROOT)/var/terminal_dev_register/db/; \
 
 AR9344_interface:
 	@echo making AR9344_interface application

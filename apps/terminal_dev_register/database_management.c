@@ -65,11 +65,11 @@ int check_dir()
 {
 	struct stat st;
 	int ret = 0;
-	ret = stat("/var/terminal_dev_register/db/",&st);
+	ret = stat("/configure_backup/terminal_dev_register/db",&st);
 	if(ret < 0)
 	{
 		PRINT("no db dir\n");
-		system("mkdir -p /var/terminal_dev_register/db/");
+		system("mkdir -p /configure_backup/terminal_dev_register/db");
 	}
 	else
 		PRINT("found db dir\n");

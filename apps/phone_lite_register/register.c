@@ -36,6 +36,74 @@ void ComFunPrintfBuffer(unsigned char *pbuffer,unsigned char len)
 	free((void *)pstr);
 }
 
+int check_dir()
+{
+	struct stat st;
+	int ret = 0;
+	ret = stat("/configure_backup/terminal_dev_register/db/",&st);
+	if(ret < 0)
+	{
+		PRINT("no db dir\n");
+		system("mkdir -p /configure_backup/terminal_dev_register/db/");
+	}
+	else
+		PRINT("found db dir\n");
+	return 0;
+}
+
+int reset_db(sqlite3 *db)
+{
+    char reset_sql_cmd[1024] = {0};
+    char reset_sql_cmd2[1024] = {0};
+    char reset_sql_cmd3[1024] = {0};
+    char table_data[1024] =
+       "base_sn varchar2(34) default \"\",\
+base_mac varchar2(12) default \"\",\
+base_ip varchar2(15) default \"\",\
+base_user_name varchar2(50) default \"\",\
+base_password varchar2(30) default \"\",\
+pad_sn varchar2(34) default \"\",\
+pad_mac varchar2(12) default \"\",\
+pad_ip varchar2(15) default \"\",\
+pad_user_name varchar2(50) default \"\",\
+pad_password varchar2(30) default \"\",\
+sip_ip varchar2(15) default \"\",\
+sip_port varchar2(10) default \"\",\
+heart_beat_cycle varchar2(10) default \"\",\
+business_cycle varchar2(10) default \"\",\
+ssid_user_name varchar2(50) default \"\",\
+ssid_password varchar2(30) default \"\",\
+device_token varchar2(100) default \"\",\
+position_token varchar2(100) default \"\",\
+default_ssid varchar2(50) default \"\",\
+default_ssid_password varchar2(30) default \"\",\
+register_state varchar2(5) default \"251\",\
+authentication_state varchar2(5) default \"240\"";
+    char table_data2[1024] =
+"device_name varchar2(30) default \"\",\
+device_id varchar2(10) default \"\",\
+device_mac varchar2(15) default \"\",\
+device_code varchar2(5) default \"\"";
+    char table_data3[1024] =
+"_id integer default \"\",\
+password varchar2(30) default \"\"";
+
+	char insert_default_cmd[512] = {0};
+	sprintf(insert_default_cmd,"insert into %s (register_state,authentication_state) values (\"251\",\"240\");",TB);
+    sprintf(reset_sql_cmd,"create table %s(%s)",TB,table_data);
+    PRINT("reset_sql_cmd = %s\n",reset_sql_cmd);
+    sprintf(reset_sql_cmd2,"create table %s(%s)",REGISTERTB,table_data2);
+    PRINT("reset_sql_cmd2 = %s\n",reset_sql_cmd2);
+    sprintf(reset_sql_cmd3,"create table %s(%s)",PASSWORD,table_data3);
+    PRINT("reset_sql_cmd3 = %s\n",reset_sql_cmd2);
+    PRINT("insert_default_cmd = %s\n",insert_default_cmd);
+	if(sqlite3_exec(db,reset_sql_cmd,NULL,NULL,NULL) == SQLITE_OK)
+		sqlite3_exec(db,insert_default_cmd,NULL,NULL,NULL);
+	sqlite3_exec(db,reset_sql_cmd2,NULL,NULL,NULL);
+	sqlite3_exec(db,reset_sql_cmd3,NULL,NULL,NULL);
+	return 0;
+}
+
 int sqlite3_select(char *tb_name,char *data_name, char *data_value,char *where_name,char *out_value)
 {
     int i = 0;
@@ -51,7 +119,8 @@ int sqlite3_select(char *tb_name,char *data_name, char *data_value,char *where_n
         PRINT("para is NULL!\n");
         return -1;
     }
-    if (sqlite3_open("/var/terminal_dev_register/db/terminal_base_db", &db) != 0)
+    check_dir();
+    if (sqlite3_open("/configure_backup/terminal_dev_register/db/terminal_base_db", &db) != 0)
     {
         PRINT("%s\n",sqlite3_errmsg(db));
         return -2;
@@ -73,9 +142,13 @@ int sqlite3_select(char *tb_name,char *data_name, char *data_value,char *where_n
     PRINT("sql:%s\n",sql);
     if(sqlite3_get_table(db, sql, &result_buf, &row_count, &column_count, &err_msg) != 0)
     {
-        PRINT("%s\n", err_msg);
-        sqlite3_free_table(result_buf);
-        return -3;
+		reset_db(db);
+		if(sqlite3_get_table(db, sql, &result_buf, &row_count, &column_count, &err_msg) != 0)
+		{
+			PRINT("%s\n", err_msg);
+			sqlite3_free_table(result_buf);
+			return -3;
+		}
     }
     
     index = column_count;
@@ -113,7 +186,7 @@ int sqlite3_insert(int columns_count,char *tb_name, char (*columns_name)[30], ch
         return -2;
     }
     
-    if (sqlite3_open("/var/terminal_dev_register/db/terminal_base_db", &db) != 0)
+    if (sqlite3_open("/configure_backup/terminal_dev_register/db/terminal_base_db", &db) != 0)
     {
         PRINT("open err %s\n", sqlite3_errmsg(db));
         return -3;
@@ -171,7 +244,7 @@ int sqlite3_delete_row(unsigned char columns_count,char *tb_name, char (*columns
         return -2;
     }
     
-    if (sqlite3_open("/var/terminal_dev_register/db/terminal_base_db", &db) != 0)
+    if (sqlite3_open("/configure_backup/terminal_dev_register/db/terminal_base_db", &db) != 0)
     {
         PRINT("open err%s\n", sqlite3_errmsg(db));
         return -3;
@@ -220,7 +293,7 @@ int sqlite3_update(char *tb_name,unsigned char columns_count, char (*columns_nam
         return -2;
     }
     
-    if (sqlite3_open("/var/terminal_dev_register/db/terminal_base_db", &db) != 0)
+    if (sqlite3_open("/configure_backup/terminal_dev_register/db/terminal_base_db", &db) != 0)
     {
         PRINT("open err%s\n", sqlite3_errmsg(db));
         return -3;

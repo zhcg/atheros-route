@@ -56,7 +56,7 @@
 
 #define CTSI_SECURITY_SCHEME 2 // CTSI安全方案 
 
-#define AUTHENTICATION_CONFIG   "/var/terminal_dev_register/config"
+//#define AUTHENTICATION_CONFIG   "/var/terminal_dev_register/config"
 
 #if DEBUG
 #define PRINT_STEP(format, ...) printf("%s["__FILE__"][%s][%05d] "format"", common_tools.get_datetime_buf(), __FUNCTION__, __LINE__, ##__VA_ARGS__)

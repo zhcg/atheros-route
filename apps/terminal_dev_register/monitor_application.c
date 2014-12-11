@@ -150,7 +150,7 @@ static int monitor_app()
     	if ((res = database_management.select(1, columns_name, columns_value)) < 0)
     	{
     	    PERROR("sqlite_select failed!\n");
-    	    return res;
+    	    //return res;
     	}
         register_flag = 1;
         business_cycle = atoi(columns_value[0]);
@@ -183,6 +183,7 @@ static int monitor_app()
             }
             //PRINT("terminal_init is running...\n");
         }
+/*
         //cacm
         if (register_state == 0)
         {
@@ -222,6 +223,7 @@ static int monitor_app()
             sleep(business_cycle);
         }
         else
+    */
         {
             sleep(DELAYS);
         }
