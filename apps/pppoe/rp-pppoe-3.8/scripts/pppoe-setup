@@ -348,6 +348,8 @@ $ECHO "\"$U\"	*	\"$PWD1\"" >> /etc/ppp/pap-secrets
 egrep -v "^$U|^\"$U\"" /etc/ppp/chap-secrets-bak > /etc/ppp/chap-secrets
 $ECHO "\"$U\"	*	\"$PWD1\"" >> /etc/ppp/chap-secrets
 
+cp /etc/ppp/chap-secrets /configure_backup/
+
 $ECHO ""
 $ECHO ""
 $ECHO ""

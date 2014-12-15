@@ -26,6 +26,7 @@ else
 		rm $BACKUP_DIR/$BACKUP_DATE.ip_mac.conf
 		rm $BACKUP_DIR/$BACKUP_DATE.route.conf
 		rm $BACKUP_DIR/$BACKUP_DATE.arp_ip_mac.conf
+		rm $BACKUP_DIR/$BACKUP_DATE.arp_ip_mac_on.conf
 		rm $BACKUP_DIR/$BACKUP_DATE.portmap
 		rm $BACKUP_DIR/$BACKUP_DATE.parc
         echo "delete backup done"

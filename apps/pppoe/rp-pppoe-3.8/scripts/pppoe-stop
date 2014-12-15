@@ -92,5 +92,7 @@ else
     echo "$ME: No PPPoE connection appears to be running" >&2
     exit 1
 fi
+#update pppoestatus
+echo " " > /usr/www/pppoe_status.xml
 
 exit 0

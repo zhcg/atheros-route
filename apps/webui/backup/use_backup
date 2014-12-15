@@ -34,6 +34,9 @@ fi
 	if [ -f "$BACKUP_DIR/$BACKUP_DATE.arp_ip_mac.conf" ]; then
         cp -rf $BACKUP_DIR/$BACKUP_DATE.arp_ip_mac.conf /configure_backup/arp_ip_mac.conf
 	fi
+	if [ -f "$BACKUP_DIR/$BACKUP_DATE.arp_ip_mac_on.conf" ]; then
+        cp -rf $BACKUP_DIR/$BACKUP_DATE.arp_ip_mac_on.conf /configure_backup/arp_ip_mac_on.conf
+	fi
 	if [ -f "$BACKUP_DIR/$BACKUP_DATE.portmap" ]; then
         cp -rf $BACKUP_DIR/$BACKUP_DATE.portmap /configure_backup/ath/iptables/portmap
 	fi

@@ -1,6 +1,7 @@
 #!/bin/sh
 
 ARP_IP_MAC_FILE=/configure_backup/arp_ip_mac.conf
+ARP_IP_MAC_ON_FILE=/configure_backup/arp_ip_mac_on.conf
 
 if [ ! -f /configure_backup/arp_ip_mac.conf ]; then
         touch /configure_backup/arp_ip_mac.conf
@@ -33,6 +34,7 @@ fi
 if [ "$BIND_STATUS" -eq "1" ];then
         arp -s $IP_ADDR $MAC_ADDR
         BIND_STATUS=enable
+	echo "$IP_ADDR $MAC_ADDR" >>  $ARP_IP_MAC_ON_FILE
 elif [ "$BIND_STATUS" -eq "0" ];then
         BIND_STATUS=disable
 else

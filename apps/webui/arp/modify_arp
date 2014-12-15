@@ -1,6 +1,7 @@
 #!/bin/sh
 
 ARP_IP_MAC_FILE=/configure_backup/arp_ip_mac.conf
+ARP_IP_MAC_ON_FILE=/configure_backup/arp_ip_mac_on.conf
 
 IP_ADDR=`cfg -e | grep "MODXXX" |awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`
 if [ -z $IP_ADDR ];then
@@ -22,10 +23,12 @@ else
                 if [ "$MOD_STATUS" = "ON" ];then
                         SR_MAC=`cat $ARP_IP_MAC_FILE | grep $IP_ADDR | awk '{print $2}'`
                         sed -i '/'$IP_ADDR'/s/disable/enable/' $ARP_IP_MAC_FILE
+			echo "$IP_ADDR $SR_MAC" >>  $ARP_IP_MAC_ON_FILE
                         arp -s $IP_ADDR $SR_MAC
                 elif [ "$MOD_STATUS" = "OFF" ];then
                         SR_MAC=`cat $ARP_IP_MAC_FILE | grep $IP_ADDR | awk '{print $2}'`
                         sed -i '/'$IP_ADDR'/s/enable/disable/' $ARP_IP_MAC_FILE
+			sed -i '/'$IP_ADDR'/d' $ARP_IP_MAC_ON_FILE
                         arp -d $IP_ADDR
                 else
                         exit 4

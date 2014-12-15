@@ -1,6 +1,7 @@
 #!/bin/sh
 
 ARP_IP_MAC_FILE=/configure_backup/arp_ip_mac.conf
+ARP_IP_MAC_ON_FILE=/configure_backup/arp_ip_mac_on.conf
 
 IP_ADDR=`cfg -e | grep "DELXXX" |awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`
 if [ -z $IP_ADDR ];then
@@ -15,6 +16,7 @@ if [ -z "$str" ];then
 else
         echo "the arp bind is exist"
         sed -i '/'$IP_ADDR'/d' $ARP_IP_MAC_FILE
+        sed -i '/'$IP_ADDR'/d' $ARP_IP_MAC_ON_FILE
                 arp -d $IP_ADDR
         echo "delete IP/MAC bind done"
 fi
