@@ -3473,7 +3473,7 @@ int add_arp(void)
 		//fprintf(errOut,"the ret2 is [%x] \n", ret2);
 	}
 
-	if(ret == ret2)
+	if(ret == ret2 && addr_ip.s_addr != addr_ip2.s_addr)
 	{
 		result = 0;
 	}
@@ -3484,6 +3484,7 @@ int add_arp(void)
 	}
 	
 	
+#ifdef ARP_IP_BOUND
 	system("arp -a > /tmp/arplist");
 	fp = fopen("/tmp/arplist", "r");
 	while(fgets(buf, 128, fp))
@@ -3509,6 +3510,7 @@ int add_arp(void)
 		}
 	}
 	fclose(fp);
+#endif
 
 error:
 	if(result == 1)
@@ -5334,6 +5336,9 @@ int main(int argc,char **argv)
         fclose(f);
     }
 
+	if( 0  == FactoryDefault  )
+		CFG_set_by_name("FACTORY_RESET","0");
+		
     /*
     ** Now we look for options.
     ** -t means translate the indicated file
@@ -6052,7 +6057,7 @@ int main(int argc,char **argv)
 			system("echo `grep 10.10.10.100 /configure_backup/ip_mac.conf` > /configure_backup/ip_mac.conf");//wangyu add for ip and mac address bond operation
 
 			system("rm -f /configure_backup/.staAcl /configure_backup/.staMac");//wangyu add for wireless client manage
-			system("rm -f /configure_backup/arp_ip_mac.conf");//wangyu add for arp  ip and mac address bond operation
+			system("rm -f /configure_backup/arp_ip_mac.conf /configure_backup/arp_ip_mac_on.conf");//wangyu add for arp  ip and mac address bond operation
 			system("rm -f /configure_backup/route.conf");//wangyu add for static route list
 
 			CFG_set_by_name("FACTORY_RESET","1");
@@ -6405,6 +6410,8 @@ int main(int argc,char **argv)
 		//4.check the ip address 
 		//unnormal ¡¢none¡¢normal
 		Execute_cmd("cfg -e | grep \"WAN_IPFLAG=\"",valBuff);
+
+	#ifdef GET_IP_FAIL
 		//get ip fail
 		if(strstr(valBuff,"none") != 0)
 		{
@@ -6482,11 +6489,13 @@ int main(int argc,char **argv)
 				 printf("</body></html>");
 				 exit(1);
 		}
-		if(strstr(tmp,"pppoe") != 0)
-		{
-			//kill pppoe
-			Execute_cmd("pppoe-stop > /dev/null 2>&1", rspBuff);
-		}
+	#endif
+	
+	if(strstr(tmp,"pppoe") != 0)
+	{
+		//kill pppoe
+		Execute_cmd("pppoe-stop > /dev/null 2>&1", rspBuff);
+	}
 
         //restart udhcpd
         system("killall udhcpd > /dev/null 2>&1");           
@@ -7932,7 +7941,7 @@ int main(int argc,char **argv)
    *************************************/
     if(strcmp(CFG_get_by_name("GW_SET",valBuff),"GW_SET") == 0 ) 
     {
-		unsigned char br0_ip[20],br0_sub[20], eth0_ip[20];
+		unsigned char br0_ip[20],br0_sub[20],eth0_ip[20],br0_ip2[20],br0_sub2[20];
 		unsigned char*peth0_ip;
 		unsigned char* ptmp;
 		unsigned char dhcp_b[20],dhcp_e[20],net_seg[20],net_seg2[20],tmp[20],tmp2[20];
@@ -7947,8 +7956,10 @@ int main(int argc,char **argv)
 
 		CFG_get_by_name("AP_IPADDR",br0_ip);
 		CFG_get_by_name("AP_NETMASK",br0_sub);
-		Execute_cmd("cfg -e | grep AP_IPADDR= | awk -F '=' '{print $2}'",valBuff);
-		Execute_cmd("cfg -e | grep \"AP_NETMASK=\" | awk -F \"=\" \'{print $2}\'",valBuff2);
+		Execute_cmd("cfg -e | grep AP_IPADDR= | awk -F '\"' '{print $2}'",valBuff);
+		Execute_cmd("cfg -e | grep \"AP_NETMASK=\" | awk -F '\"' \'{print $2}\'",valBuff2);
+		sscanf(valBuff,"%s\n<br>",br0_ip2);
+		sscanf(valBuff2,"%s\n<br>",br0_sub2);
 
 		
 		Execute_cmd("ifconfig eth0", valBuff3);
@@ -7957,10 +7968,11 @@ int main(int argc,char **argv)
 			Execute_cmd("ifconfig eth0|grep 'inet addr:'|awk -F ' ' '{print$2}'|awk -F ':' '{print$2}'", eth0_ip);
 			peth0_ip=strtok(eth0_ip,"\n");
 		}
+//		fprintf(errOut,"valBuff %s, br0_ip  %s valBuff2 %s , br0_sub %s\n", valBuff, br0_ip,valBuff2, br0_sub);
 		
 		if((!strstr(valBuff3,"inet addr:"))||(strstr(valBuff3,"inet addr:")&&(strcmp(peth0_ip, br0_ip) )))
 		{
-			if(!strstr(valBuff, br0_ip) || !strstr(valBuff2, br0_sub))
+			if( strcmp(br0_ip2, br0_ip) ||  strcmp(br0_sub2, br0_sub))
 			{
 				sprintf(pChar,"ifconfig br0 %s netmask %s up > /dev/null 2>&1",br0_ip,br0_sub);
 				system(pChar);
@@ -8013,6 +8025,11 @@ int main(int argc,char **argv)
 				   strcpy(tmp,"0.0.0.1");
 				   get_net_seg_or(net_seg2,tmp,dhcp_b);
 				}
+				
+				sprintf(tmp,"/usr/sbin/set_bond %s %s > /dev/null 2>&1",br0_ip2, br0_ip);
+				Execute_cmd(tmp,rspBuff);
+
+
 				fprintf(errOut,"\ndhcp_b:%s\ndhcp_e:%s\n",dhcp_b,dhcp_e);
 
 				CFG_set_by_name("DHCP_BIP",dhcp_b);
@@ -8034,7 +8051,10 @@ int main(int argc,char **argv)
 				/*make the eth1(br0/lan)'s pc retake ip address*/
 				system("ifconfig eth1 down > /dev/null 2>&1");
 				system("ifconfig eth1 up > /dev/null 2>&1");
+
 				
+
+
 				//reboot hostapd
 				Execute_cmd("killall hostapd > /dev/null 2>&1",rspBuff);
 

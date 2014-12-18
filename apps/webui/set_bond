@@ -1,0 +1,13 @@
+#!/bin/sh
+
+IP_MAC_FILE=/configure_backup/ip_mac.conf
+
+IP_ADDR1=$( echo $1 | awk 'BEGIN{OFS=FS="."}{print $1,$2,$3}' )
+IP_ADDR2=$( echo $2 | awk 'BEGIN{OFS=FS="."}{print $1,$2,$3}' )
+if [ "$IP_ADDR1" != "$IP_ADDR2" ];then
+        echo "the ipaddr is different with the subnetwork"
+		echo $IP_ADDR1 $IP_ADDR2
+	if [ -f $IP_MAC_FILE ]; then
+        	sed -i '//s/'$IP_ADDR1'/'$IP_ADDR2'/' $IP_MAC_FILE
+	fi
+fi

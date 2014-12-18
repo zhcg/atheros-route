@@ -361,6 +361,7 @@ webui:
 	cp -f repeatVAP $(INSTALL_ROOT)/usr/bin;  \
 	cp -f repeatVAP_WISP $(INSTALL_ROOT)/usr/bin;  \
 	cp -f set_sn.sh $(INSTALL_ROOT)/usr/bin;  \
+	cp -f set_bond $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f nat_wwan.sh $(INSTALL_ROOT)/usr/bin;  \
 	cd dhcp/; \
 	make; \
