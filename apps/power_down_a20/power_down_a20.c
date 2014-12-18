@@ -291,6 +291,10 @@ extern int power_down_a20()
 
 int main(int argc, char **argv)
 {
+#if defined(B6) || defined(B6L)
+	printf("b6 or b6l ,exit..\n");
+	return 0;
+#endif
 	power_down_a20();
 	sleep(1);
 	power_down_a20();

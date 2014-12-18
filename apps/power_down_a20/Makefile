@@ -14,7 +14,7 @@ $(BIN):$(OBJ)
 		$(CC) -o $(BIN) $^
 
 .c.o:
-		$(CC) -c $^
+		$(CC) -c $^ -D$(BUILD_VERSION)
 
 clean:
 		rm -f $(BIN) $(OBJ)
