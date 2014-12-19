@@ -122,7 +122,7 @@ static int get_flash_occupy_info(int *size)
 			PRINT("fgets failed!\n");
 			break;
 		}
-		PRINT("strlen(buf_tmp) = %d buf_tmp = %s", strlen(buf_tmp), buf_tmp);
+		//PRINT("strlen(buf_tmp) = %d buf_tmp = %s", strlen(buf_tmp), buf_tmp);
 		memset(&flash_info,0,sizeof(flash_info));
 		sscanf(buf_tmp, "%s %d %d %d %d%% %s", flash_info.name,&flash_info.size ,&flash_info.used,&flash_info.available,
 				&flash_info.use,flash_info.mounted);
@@ -161,7 +161,7 @@ static int get_port_info(int *tomcat,int *php)
 			PRINT("fgets failed!\n");
 			break;
 		}
-		PRINT("strlen(buf_tmp) = %d buf_tmp = %s", strlen(buf_tmp), buf_tmp);
+		//PRINT("strlen(buf_tmp) = %d buf_tmp = %s", strlen(buf_tmp), buf_tmp);
 		memset(&port_info,0,sizeof(port_info));
 		sscanf(buf_tmp, "%s %d %d %s %s %s", port_info.proto,&port_info.recv ,&port_info.send,port_info.l_addr,
 				&port_info.f_addr,port_info.state);
@@ -201,10 +201,10 @@ int cal_cpuinfo (struct s_cpu_info* cpu_info, struct s_cpu_info* cpu_info2)
 
 	id = (unsigned long) (cpu_info2->user - cpu_info->user);
 	sd = (unsigned long) (cpu_info2->system - cpu_info->system);
-	PRINT("nd: %u\n",nd);
-	PRINT("od: %u\n",od);
-	PRINT("id: %u\n",id);
-	PRINT("sd: %u\n",sd);
+	//PRINT("nd: %u\n",nd);
+	//PRINT("od: %u\n",od);
+	//PRINT("id: %u\n",id);
+	//PRINT("sd: %u\n",sd);
 	if((nd-od) != 0)
 	{
 		cpu_use = (int)((sd+id)*100)/((nd-od));
@@ -267,12 +267,12 @@ static int get_base_state(char *buf, int *buf_len)
 		fclose(fp);
 		return -3;
 	}
-    PRINT("strlen(buf_tmp) = %d buf_tmp = %s", strlen(buf_tmp), buf_tmp);
+    //PRINT("strlen(buf_tmp) = %d buf_tmp = %s", strlen(buf_tmp), buf_tmp);
     sscanf(buf_tmp, "%s %uK %s %uK %s %uK %s %uK %s %uK %s", mem_info.name, &mem_info.used, mem_info.used_key, 
         &mem_info.free, mem_info.free_key, &mem_info.shrd, mem_info.shrd_key, &mem_info.buff, mem_info.buff_key,
         &mem_info.cached, mem_info.cached_key);
     memset(buf_tmp, 0, strlen(buf_tmp));
-    PRINT("mem_info.used_key = %s\n",mem_info.used_key);
+    //PRINT("mem_info.used_key = %s\n",mem_info.used_key);
     mem_ret = 100-(mem_info.free*100)/(mem_info.used+mem_info.free+mem_info.shrd+mem_info.buff+mem_info.cached);
     if(mem_ret > MEM_WARING_THRESHOLD)
     {
@@ -297,13 +297,13 @@ static int get_base_state(char *buf, int *buf_len)
 		fclose(fp);
 		return -4;
 	}
-    PRINT("strlen(buf_tmp) = %d buf_tmp = %s", strlen(buf_tmp), buf_tmp);
+    //PRINT("strlen(buf_tmp) = %d buf_tmp = %s", strlen(buf_tmp), buf_tmp);
     sscanf(buf_tmp, "%s %u%% %s %u%% %s %u%% %s %u%% %s %u%% %s %u%% %s %u%% %s", cpu_info.name, &cpu_info.user, cpu_info.user_key, 
         &cpu_info.system, cpu_info.system_key, &cpu_info.nice, cpu_info.nice_key, &cpu_info.idle, cpu_info.idle_key,
         &cpu_info.io, cpu_info.io_key, &cpu_info.irq, cpu_info.irq_key, &cpu_info.softirq, cpu_info.softirq_key);
     memset(buf_tmp, 0, strlen(buf_tmp));
-    PRINT("idle = %d\n",cpu_info.idle);
-    PRINT("user = %d\n",cpu_info.user);
+    //PRINT("idle = %d\n",cpu_info.idle);
+    //PRINT("user = %d\n",cpu_info.user);
     if((cpu_info.user+cpu_info.system) > CPU_WARING_THRESHOLD)
     {
 		PRINT("cpu warning\n");
@@ -326,7 +326,7 @@ static int get_base_state(char *buf, int *buf_len)
 		fclose(fp);
 		return -5;
 	}
-    PRINT("strlen(buf_tmp) = %d buf_tmp = %s", strlen(buf_tmp), buf_tmp);
+    //PRINT("strlen(buf_tmp) = %d buf_tmp = %s", strlen(buf_tmp), buf_tmp);
     memset(buf_tmp, 0, strlen(buf_tmp));
     //PRINT("_____________________\n");
     
@@ -411,7 +411,7 @@ static int get_base_state(char *buf, int *buf_len)
 		sip_msg.base_sn,100-cpu_info.idle,mem_ret,flash_size,sip_msg.base_mac,(php >= 2)?1:0,MONITOR_APP_VERSION,sip_msg.base_a20_version,sip_msg.base_9344_version,sip_msg.base_532_version);
     //sprintf(buf,"{id:%s,dev_type:1,cpu:%d,memory:%d,hd:%d,tomcat:%d,php:%d,a20_ver:%s,9344_ver:%s,as532_ver:%s}",
 		//sip_msg.base_sn,100-cpu_info.idle,mem_ret,flash_size,(tomcat >= 2)?1:0,(php >= 2)?1:0,sip_msg.base_a20_version,sip_msg.base_9344_version,sip_msg.base_532_version);
-    PRINT("strlen(buf) = %d\n", strlen(buf));
+    //PRINT("strlen(buf) = %d\n", strlen(buf));
 	*buf_len = strlen(buf);
     //buf[0] = 0x02;
     //buf[1] = 0x24;
@@ -576,7 +576,7 @@ static int get_base_state(char *buf, int *buf_len)
 		fclose(fp);
 		return -2;
 	}
-    PRINT("strlen(buf_tmp) = %d buf_tmp = %s", strlen(buf_tmp), buf_tmp);
+    //PRINT("strlen(buf_tmp) = %d buf_tmp = %s", strlen(buf_tmp), buf_tmp);
     sscanf(buf_tmp, "%s %u", mem_info.name, &mem_info.total);
     memset(buf_tmp, 0, strlen(buf_tmp));
     if(fgets(buf_tmp, sizeof(buf_tmp), fp) == NULL)
@@ -585,7 +585,7 @@ static int get_base_state(char *buf, int *buf_len)
 		fclose(fp);
 		return -3;
 	}
-    PRINT("strlen(buf_tmp) = %d buf_tmp = %s", strlen(buf_tmp), buf_tmp);
+    //PRINT("strlen(buf_tmp) = %d buf_tmp = %s", strlen(buf_tmp), buf_tmp);
     sscanf(buf_tmp, "%s %u", mem_info.name, &mem_info.free);
     memset(buf_tmp, 0, strlen(buf_tmp));
 	fclose(fp);
@@ -619,7 +619,7 @@ static int get_base_state(char *buf, int *buf_len)
 		fclose(fp);
 		return -7;
 	}
-    PRINT("strlen(buf_tmp) = %d buf_tmp = %s", strlen(buf_tmp), buf_tmp);
+    //PRINT("strlen(buf_tmp) = %d buf_tmp = %s", strlen(buf_tmp), buf_tmp);
     sscanf(buf_tmp, "%s %u %u %u %u %u %u", cpu_info2.name, &cpu_info2.user, &cpu_info2.nice,
         &cpu_info2.system, &cpu_info2.idle,&cpu_info2.irq, &cpu_info2.softirq);
     memset(buf_tmp, 0, strlen(buf_tmp));
@@ -662,7 +662,7 @@ static int get_base_state(char *buf, int *buf_len)
 	get_9344_mac(base_mac);
     sprintf(buf,"{id:%s,dev_type:1,cpu:%d,memory:%d,hd:%d,mac:%s,pad_sn:%s,monitor_ver:%s,9344_ver:%s,stm32_ver:%s,532_ver:%s}",
 		sip_msg.base_sn,cpu_out,mem_ret,flash_size,base_mac,pad_sn,MONITOR_APP_VERSION,sip_msg.base_9344_version,sip_msg.base_a20_version,sip_msg.base_532_version);
-    PRINT("strlen(buf) = %d\n", strlen(buf));
+    //PRINT("strlen(buf) = %d\n", strlen(buf));
 	*buf_len = strlen(buf);
     //buf[0] = 0x02;
     //buf[1] = 0x24;
