@@ -1,370 +1,304 @@
-#include "stdio.h"
-#include "string.h"
-#include "stdlib.h"
-#include "dirent.h"
-#include <assert.h>
-#include <unistd.h>
+
+/**************************************************************************
+        2007-1-5 11:42 establish by lzh.A cgi program.
+        get a file from user's explorer.
+***************************************************************************/
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "cgiMain.h"
 
 static FILE *errOut;
 
-static int atoii (char *zzzz)
+#define DEAL_BUF_LEN  1024
+#define SIGN_CODE_LEN  100
+#define FILE_NAME_LEN 64
+#define FILE_SAVE_DIR "/tmp/"
+
+enum
 {
-  int i = 0;
-  int num=0;
-for(i=0;i<20;i++)
-{
-  if(zzzz[i] >= '0' && zzzz[i] <= '9')
-  	{
-	  num = num * 10 + (zzzz[i] - '0');
- 	}else
- 	{
- 			break;
- 	}
-}
-  return num;
-}
-
-
-char* getCgiData(FILE* fp, char* requestmethod)
+    STATE_START,
+    STATE_GET_SIGN_CODE,
+    STATE_GET_FILE_NAME,
+    STATE_GET_FILE_START,
+    STATE_GET_FILE_CONTENT,
+    STATE_CHECK_END,
+    STATE_END
+};
+/***************************************************************************
+ShowErrorInfo
+****************************************************************************/
+static void ShowErrorInfo(char * error)
 {
 
-       char* input;
-       int len;
-	   char *pppp;
-       int size = 1024;
-       int i = 0;
-     if(!strcmp(requestmethod, "GET"))
-       {
-
-              input = getenv("QUERY_STRING");
-              return input;
-
-       }
-       else if (!strcmp(requestmethod, "POST"))
-       {
-   		    pppp=getenv("CONTENT_LENGTH");
-             len = atoii(pppp);
-              input = (char*)malloc(sizeof(char)*(size + 1));    
-
-              if (len == 0)
-              {
-                     input[0] = '\0';
-
-                     return input;
-              }
-        
-		fgets(input, len+1, stdin);
-			input[len]='\0';
-		 return input;
-       }
-
-       return NULL;
+    printf("Content-Type:text/html;charset=UTF-8\n\n");
+    printf("<center><font color='red'>%s</font></center>" , error );
 }
 
-static unsigned int tmppp=0;
+/* ?????“???è??é????�?§? */
 
-char *getFileName(unsigned char *req)
+int main(void)
 {
-	int i;
-	int leng;
-	tmppp=0;
-	char *psz1; char *psz2;
-	unsigned char *cur_post,*buf;
+    FILE *fp; /* ?–???????é’????????-???‘???è|?è?·??—????–???? */
+    int getState = STATE_START;
+    int contentLength;/*??????è?“?…￥??…??1é???o|*/
+    int nowReadLen;
+    int signCodeLen;
+    int tmpLen;
+    char *nowReadP;
+    char *nowWriteP;
+    char dealBuf[DEAL_BUF_LEN];
+    char signCode[SIGN_CODE_LEN]; /*?-???¨??????????‰1??????*/
+    char tmpSignCode[SIGN_CODE_LEN];
+    char fileName[FILE_NAME_LEN];
+    memset(dealBuf,0,DEAL_BUF_LEN);
+    memset(signCode,0,SIGN_CODE_LEN);
+    memset(fileName,0,FILE_NAME_LEN);
+    nowReadLen = 0;
+    char error=0;
 
-	// get filename keyword
-	if ((psz1=strstr(req, "filename=")) == NULL)
-	{
-	return (char *)&tmppp;
-	}
-
-	// get pointer to actual filename (it's in quotes)
-	psz1+=strlen("filename=");
-	if ((psz1 = strtok(psz1, "\"")) == NULL)
-	{
-	return (char *)&tmppp;
-	}
-	// remove leading path for both PC and UNIX systems
-	if ((psz2 = strrchr(psz1,'\\')) != NULL)
-	{
-	psz1 = psz2+1;
-	}
-	if ((psz2 = strrchr(psz1,'/')) != NULL)
-	{
-	psz1 = psz2+1;
-	}
-	return psz1;
-}
-static void  Reboot_tiaozhuan(char* res,char * gopage)
-{
-    char temp[256]={0};
-    printf("HTTP/1.0 200 OK\r\n");
-    printf("Content-type: text/html\r\n");
-    printf("Connection: close\r\n");
-    printf("\r\n");
-    printf("\r\n");
-    printf("<HTML><HEAD>\r\n");
-    printf("</head><body>");
-
-    sprintf(temp,"<script language=javascript>window.location.href=\"reboot?RESULT=%s?PAGE=%s&reboot=yes\";</script>",res,gopage);
-    printf(temp);
-    printf("</body></html>");
-}
-
-main()
-{
-	char *reqMethod;
-	char *wp;
-	char *var=NULL;
-	int len;
-	long total,i,count;
-	char *fileName,*ps1,*ps2;
-	char *fileN;
-	char Boundary[256];
-	char error=0;
-	char tmpBuf[512];
-	char filePath[256]="/tmp/";//directory of uploaded file
-	FILE *fileBuf=NULL;
-
-	write_systemLog("upload setting begin"); 
-
-
-//    if( (access( "/var/terminal_dev_register", 0 )) != -1 )
-//    {
-//        system("rm -r /configure_backup/terminal_dev_register >/dev/null 2>&1 &");
-//        system("cp -r /var/terminal_dev_register /configure_backup/ >/dev/null 2>&1 &");
-//    }
-//    system("cfg -a TERMINAL_BKP=1; cfg -c &");
-	
-	reqMethod=getenv("REQUEST_METHOD");
-	len=atoii(getenv("CONTENT_LENGTH"));
+    errOut = fopen("/dev/ttyS0","w");
+    write_systemLog("upload setting begin"); 
 
     
-        errOut = fopen("/dev/ttyS0","w");
-
-        
-	//printf("Content-type:text/html \r\n\r\n");
-	//printf("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=UTF-8\"><script 	type=\"text/javascript\" src=\"/lang/b28n.js\"></script></head><body>");
-
-	Boundary[0] = '\r';
-	Boundary[1] = '\n';
-	Boundary[2] = '\0';
-
-	if (fgets(&Boundary[2], sizeof(Boundary)-2, stdin) == NULL)
-	{
-                error=1;
-                fprintf(errOut,"%s  %d Get boundary failed !\n",__func__,__LINE__);
-		goto error;
-	}
-
-	//strip terminating CR / LF
-	if ((ps1=strchr(&Boundary[2],'\r')) != NULL)
-	{
-		*ps1 = '\0';
-	}
-
-	if ((ps1=strchr(&Boundary[2],'\n')) != NULL)
-	{
-		*ps1 = '\0';
-	}
-	fprintf(errOut,"%s  %d  Boundry=%s\n",__func__,__LINE__,Boundary);
-	fprintf(errOut,"%s  %d  content-length=%d\n",__func__,__LINE__,len);
-
-	fgets(tmpBuf,512,stdin);
-       fprintf(errOut,"%s  %d  All=%s\n",__func__,__LINE__,tmpBuf);
-
-	fileName=getFileName(tmpBuf);
-
-	if(fileName)
-	{
-            fprintf(errOut,"%s  %d  fileName=%s\n",__func__,__LINE__,fileName);
-	}
-	strcat(filePath,fileName);	
-
-    fprintf(errOut,"%s  %d  filepath===%s\n",__func__,__LINE__,filePath);
-
-	memset(tmpBuf,512,0x00);
-	fgets(tmpBuf,512,stdin);
-	//printf("%s<br>",tmpBuf);//content-type
-    fprintf(errOut,"%s  %d  tmpBuf===%s\n",__func__,__LINE__,tmpBuf);
-	memset(tmpBuf,512,0x00);
-	fgets(tmpBuf,512,stdin);	
-	//printf("%s<br>",tmpBuf);// \r\n
-    fprintf(errOut,"%s  %d  tmpBuf2===%s\n",__func__,__LINE__,tmpBuf);
-
-	if(fopen(filePath,"rb"))
-	{
-	    char cmdd[256];
-        fprintf(errOut,"%s  %d File already exist but delete it.\n",__func__,__LINE__);
-        sprintf(cmdd,"rm %s",filePath);
-	 	system(cmdd);
-	}
-
-	if ((fileBuf = fopen(filePath, "wb+")) == NULL)
-	{
-        fprintf(errOut,"%s  %d File open error.Make sure you have the permission.\n",__func__,__LINE__);
-        error=1;
-		goto error;
-	}
-	// copy the file
-	while ((count=fread(tmpBuf, 1, 512, stdin)) != 0)
-	{
-		if ((fwrite(tmpBuf, 1, count, fileBuf)) != count)
-		{
-                    fprintf(errOut,"%s  %d Write file error.\n",__func__,__LINE__);
-                    error=1;
-			goto error;
-		}
-	}
-	// re read last 128 bytes of file, handling files < 128 bytes
-	if ((count = ftell(fileBuf)) == -1)
-	{
-		error=1;
-              goto error;
-	}
-
-	if (count > 128)
-	{
-            count = 128;
-	}
-
-	if (fseek(fileBuf, 0-count, SEEK_END) != 0)
-	{
-            error=1;
-            goto error;
-	}
-	// get the new position
-	if ((total = ftell(fileBuf)) == -1)
-	{
-	    error=1;
-            goto error;
-	}
-
-	// and read the data from fileBuf
-	count = fread(tmpBuf, 1, sizeof(tmpBuf), fileBuf);
-	tmpBuf[count] = '\0';
-    fprintf(errOut,"%s  %d count==%ld.\n",__func__,__LINE__,count);
-    // determine offset of terminating boundary line
-	for (i=0; i<=(count); i++)//-(long)strlen(Boundary)
-	{
-              fprintf(errOut,"%c",tmpBuf[i]);
-		//printf("%c",tmpBuf[i]);
-		if (tmpBuf[i] == Boundary[0])
-		{
-                     fprintf(errOut,"found /r");
-			if(strncmp(Boundary, &tmpBuf[i], strlen(Boundary)) == 0)
-			{
-			    total+=i;
-                        fprintf(errOut,"find boudary.");
-			    break;
-			}
-		}
-	}
-       fprintf(errOut,"%s  %d i==%ld.\n",__func__,__LINE__,i);
-       fprintf(errOut,"%s  %d total==%ld.\n",__func__,__LINE__,total);
-	if (fseek(fileBuf,total, SEEK_SET) != 0)
-	{
-            error=1;
-            goto error;
-	}
-
-	if ((total = ftell(fileBuf)) == -1)
-	{
-	    error=1;
-	    goto error;
-	}
-    fprintf(errOut,"%s  %d total2==%ld.\n",__func__,__LINE__,total);
-	// truncate the terminating boundary line .
-	int fd=fileno(fileBuf);
-	ftruncate(fd,total);
-
-	fflush(fileBuf);
-error:
-	if (fileBuf != NULL)
-	{
-		fclose(fileBuf);
-	}
-	if(error==1)
-	{
-	     printf("Content-Type:text/html\n\n");
-         printf("<HTML><HEAD>\r\n");
-         printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
-         printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
-         printf("</head><body>");
- 	     printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();window.parent.clearttzhuan();alert(_(\"err file upload\"));window.location.href=\"ad_man_upgrade?ad_man_upgrade=yes\";</script>");
-         printf("</body></html>");
+    if((char *)getenv("CONTENT_LENGTH")!=NULL)
+    {
+        contentLength = atoi((char *)getenv("CONTENT_LENGTH"));
     }
-	//打印信息到网页的隐藏的iframe中
+    else
+    {
+        //ShowErrorInfo("?2???‰??￠?¤???°???!");
+       // exit(1);
+        error=1;
+        goto error;
+
+    }
+ 
+    while(contentLength > 0)
+    {
+        if(contentLength >= DEAL_BUF_LEN)
+        {
+            nowReadLen = DEAL_BUF_LEN;
+        }
+        else
+        {
+            nowReadLen = contentLength;
+        }
+        contentLength -= nowReadLen;
+        if(fread(dealBuf,sizeof(char),nowReadLen,stdin) != nowReadLen)
+        {
+            //ShowErrorInfo("èˉ???–??￠?¤???°????¤±è′￥???èˉ·é??èˉ????");
+            //exit(1);
+            error=1;
+            goto error;
+        }
+        nowReadP = dealBuf;
+        while(nowReadLen > 0)
+        {
+            switch (getState)
+            {
+                case STATE_START:
+                    nowWriteP = signCode;
+                    getState = STATE_GET_SIGN_CODE;
+                case STATE_GET_SIGN_CODE:
+                    if(strncmp(nowReadP,"\r\n",2) == 0)
+                    {
+                        signCodeLen = nowWriteP - signCode;
+                        nowReadP++;
+                        nowReadLen--;
+                        *nowWriteP = 0;
+                        getState = STATE_GET_FILE_NAME;
+                    }
+                    else
+                    {
+                        *nowWriteP = *nowReadP;
+                        nowWriteP++;
+                    }
+                    break;
+                case STATE_GET_FILE_NAME:
+                    if(strncmp(nowReadP,"filename=",strlen("filename=")) == 0)
+                    {
+                        nowReadP += strlen("filename=");
+                        nowReadLen -= strlen("filename=");
+                        nowWriteP = fileName + strlen(FILE_SAVE_DIR);
+                        while(*nowReadP != '\r')
+                        {
+                            if(*nowReadP == '\\' || *nowReadP == '/')
+                            {
+                                nowWriteP = fileName + strlen(FILE_SAVE_DIR);
+                            }
+                            else if(*nowReadP != '\"')
+                            {
+                                *nowWriteP = *nowReadP;
+                                nowWriteP++;
+                            }
+                            nowReadP++;
+                            nowReadLen--;
+                        }
+                        *nowWriteP = 0;
+                        nowReadP++;
+                        nowReadLen--;
+                        getState = STATE_GET_FILE_START;
+                        memcpy(fileName,FILE_SAVE_DIR,strlen(FILE_SAVE_DIR));
+                        if((fp=fopen(fileName,"w"))==NULL)
+                        {
+                            //fprintf(stderr,"open file error\n");
+                            //exit(1);
+                            error=1;
+                            goto error;
+                        }
+                    }
+                    break;
+                case STATE_GET_FILE_START:
+                    if(strncmp(nowReadP,"\r\n\r\n",4) == 0)
+                    {
+                        nowReadP += 3;
+                        nowReadLen -= 3;
+                        getState = STATE_GET_FILE_CONTENT;
+                    }
+                    break;
+                case STATE_GET_FILE_CONTENT:
+                    if(*nowReadP != '\r')
+                    {
+                        fputc(*nowReadP,fp);
+                    }
+                    else
+                    {
+                        if(nowReadLen >= (signCodeLen + 2))
+                        {
+                            if(strncmp(nowReadP + 2,signCode,signCodeLen) == 0)
+                            {
+                                getState = STATE_END;
+                                nowReadLen = 1;
+                                //ShowErrorInfo("??°???????????????");
+                             }
+                            else
+                            {
+                                fputc(*nowReadP,fp);
+                            }
+                        }
+                        else
+                        {
+                            getState = STATE_CHECK_END;
+                            nowWriteP = tmpSignCode;
+                            *nowWriteP = *nowReadP;
+                            nowWriteP++;
+                            tmpLen = 1;
+                        }
+                    }
+                    break;
+                case STATE_CHECK_END:
+                    if(*nowReadP != '\r')
+                    {
+                        if(tmpLen < signCodeLen + 2)
+                        {
+                            *nowWriteP = *nowReadP;
+                            nowWriteP++;
+                            tmpLen++;
+                            if(tmpLen == signCodeLen + 2)
+                            {
+                                *nowWriteP = 0;
+                                if((tmpSignCode[1] == '\n')&&(strncmp(tmpSignCode + 2,signCode,signCodeLen) == 0))
+                                {
+                                    getState = STATE_END;
+                                    nowReadLen = 1;
+                                    //ShowErrorInfo("??°???????????????");
+                                }
+                                else
+                                {
+                                    fwrite(tmpSignCode,sizeof(char),tmpLen,fp);
+                                    getState = STATE_GET_FILE_CONTENT;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        *nowWriteP = 0;
+                        fwrite(tmpSignCode,sizeof(char),tmpLen,fp);
+                        nowWriteP = tmpSignCode;
+                        *nowWriteP = *nowReadP;
+                        nowWriteP++;
+                        tmpLen = 1;
+                    }
+                    break;
+                case STATE_END:
+                    nowReadLen = 1;
+                    break;
+                    default:break;
+            }
+            nowReadLen--;
+            nowReadP++;
+        }
+    }
+
+    error:
+        if (fp != NULL)
+        {
+            fclose(fp);
+        }
+        if(error==1)
+        {
+            printf("Content-Type:text/html\n\n");
+            printf("<HTML><HEAD>\r\n");
+            printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+            printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
+            printf("</head><body>");
+            printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();window.parent.clearttzhuan();alert(_(\"err file upload\"));window.location.href=\"ad_man_upgrade?ad_man_upgrade=yes\";</script>");
+            printf("</body></html>");
+        }
+	//′òó?D??￠μ?í?ò3μ?òt2?μ?iframe?D
 	else 
 	{		
-            fprintf(errOut,"%s  %d file upload complete !\n",__func__,__LINE__);
-			char cmdd[256];
-			int firmware_flag=0;
-			sprintf(cmdd,"firmware_check %s > /tmp/firmware.log",filePath);
-			system(cmdd);
-			FILE *fileBuf2=NULL;
-			if ((fileBuf2= fopen("/tmp/firmware.log", "r")) == NULL)
-			{
-				fprintf(errOut,"%s  %d File open error.Make sure you have the permission.\n",__func__,__LINE__);
-				firmware_flag=1;
-			}else
-			{
-				fgets(cmdd,sizeof(cmdd),fileBuf2);
-				if(strstr(cmdd,"OK")!=NULL)
-				{
-					/*deal /etc/backup to mtdblock4(umount /etc)  zzw*/
-					system("upgrade_backup_reboot > /dev/null 2>&1");
-					firmware_flag=2;
-				}else
-				{
-					firmware_flag=1;
-				}
-				fclose(fileBuf2);
-			}
-					
-			if(firmware_flag!=1)
-			{
-			#if 1
-				//printf("Content-Type:text/html\n\n");
-				//printf("<HTML><HEAD>\r\n");
-				//printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
-				//printf("</head><body>");
-				//printf("<script type=\"text/javascript\">var xmlHttp; xmlHttp=GetXmlHttpObject()	if (xmlHttp==null)	{alert (\"Browser does not support HTTP Request\");	Return;}");
-                            //printf("var url=\"/cgi-bin/upgrade.cgi\"; url=url+\"?q=%s\"; url=url+\"&sid=\"+Math.random();xmlHttp.onreadystatechange=stateChanged;xmlHttp.open(\"GET\",url,true);xmlHttp.send(null);alert (\"Browser does not support HTTP Request %s\")",filePath,filePath);
-                            //printf("function stateChanged(){}");
-                            //printf("function GetXmlHttpObject(){	var xmlHttp=null;	try	{	xmlHttp=new XMLHttpRequest();	}catch (e){try	{xmlHttp=new ActiveXObject(\"Msxml2.XMLHTTP\");	}catch (e){xmlHttp=new ActiveXObject(\"Microsoft.XMLHTTP\");}}return xmlHttp;}</script>");
-				//printf("</body></html>");	
+            fprintf(errOut,"%s  %d file upload complete fileName:%s!\n",__func__,__LINE__,fileName);
+            char cmdd[256];
+            int firmware_flag=0;
+            sprintf(cmdd,"firmware_check %s > /tmp/firmware.log",fileName);
+            system(cmdd);
+            FILE *fileBuf2=NULL;
+            if ((fileBuf2= fopen("/tmp/firmware.log", "r")) == NULL)
+            {
+                fprintf(errOut,"%s  %d File open error.Make sure you have the permission.\n",__func__,__LINE__);
+                firmware_flag=1;
+            }
+            else
+            {
+                fgets(cmdd,sizeof(cmdd),fileBuf2);
+                if(strstr(cmdd,"OK")!=NULL)
+                {
+                    /*deal /etc/backup to mtdblock4(umount /etc)  zzw*/
+                    system("upgrade_backup_reboot > /dev/null 2>&1");
+                    firmware_flag=2;
+                }
+                else
+                {
+                    firmware_flag=1;
+                }
+                fclose(fileBuf2);
+            }
 
-                            printf("Content-Type:text/html\n\n");
-                            printf("<HTML><HEAD>\r\n");
-                            printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
-                            printf("<script type=\"text/javascript\"  src=\"/style/upload.js\"></script>");
-                            printf("</head><body>");
-                            printf("<script type='text/javascript' language='javascript'>CheckUser(\"%s\");</script>",filePath);
-                            printf("</body></html>");
-                #endif
-                            //Reboot_tiaozhuan("upload","index.html");
-				//[TODO]factory default
-				//system("cfg -x");
-				//sleep(1);
-		
-				//sprintf(cmdd,"sleep 1 && sysupgrade %s &",filePath);
-				//system(cmdd);
-			}else //error firmware file
-			{	
-				 printf("Content-Type:text/html\n\n");
-				 printf("<HTML><HEAD>\r\n");
-				 printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
-				 printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
-				 printf("</head><body>");
-				 printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();window.parent.clearttzhuan();alert(_(\"err file format\"));window.location.href=\"ad_man_upgrade?ad_man_upgrade=yes\";</script>");
-				 printf("</body></html>");
-			}
+            if(firmware_flag!=1)
+            {
+                printf("Content-Type:text/html\n\n");
+                printf("<HTML><HEAD>\r\n");
+                printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+                printf("<script type=\"text/javascript\"  src=\"/style/upload.js\"></script>");
+                printf("</head><body>");
+                printf("<script type='text/javascript' language='javascript'>CheckUser(\"%s\");</script>",fileName);
+                printf("</body></html>");
+            }
+            else
+            {	
+                printf("Content-Type:text/html\n\n");
+                printf("<HTML><HEAD>\r\n");
+                printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+                printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
+                printf("</head><body>");
+                printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();window.parent.clearttzhuan();alert(_(\"err file format\"));window.location.href=\"ad_man_upgrade?ad_man_upgrade=yes\";</script>");
+                printf("</body></html>");
+            }
 	}
 	
 	write_systemLog("upload setting  end"); 
-	
-	return;
-	
+        return 0;
 }
-
