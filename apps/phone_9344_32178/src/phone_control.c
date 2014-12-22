@@ -339,7 +339,7 @@ void clean_who_is_online()
 	phone_control.who_is_online.audio_client_fd = -1;
 }
 
-int do_cmd_offhook(dev_status_t *dev)
+int do_cmd_offhook(dev_status_t *dev,char *buf)
 {
 	int i,count=0;
 	int offhook_limit = 0;//挂机尝试次数限制
@@ -357,9 +357,10 @@ int do_cmd_offhook(dev_status_t *dev)
 		snprintf(sendbuf, 23,"HEADR0011INUSING0016\r\n");
 		goto OFFHOOK_ERR;
 	}
+	PRINT("buf[0] = %d \n",buf[0]);
 	if(phone_control.global_incoming == 1)
 	{
-		if(dev->incoming == 1)
+		if(dev->incoming == 1 && buf[0] != '0')
 		{
 			phone_audio.start_recv = 0;
 			goto OFFHOOK;
@@ -367,9 +368,15 @@ int do_cmd_offhook(dev_status_t *dev)
 		else
 		{
 			memset(sendbuf,0,SENDBUF);
-			snprintf(sendbuf, 23,"HEADR0011INUSING0014\r\n");
+			snprintf(sendbuf, 23,"HEADR0011INUSING0017\r\n");
 			goto OFFHOOK_ERR;
 		}
+	}
+	if(buf[0] == '1')
+	{
+		memset(sendbuf,0,SENDBUF);
+		snprintf(sendbuf, 23,"HEADR0011INUSING0017\r\n");
+		goto OFFHOOK_ERR;
 	}
 OFFHOOK:
 #ifdef REGISTER
@@ -526,6 +533,7 @@ int do_cmd_onhook(dev_status_t *dev)
 				if(devlist[i].incoming > 0)
 				{
 					devlist[i].incoming = 0;
+					netWrite(devlist[i].client_fd,"HEADR0010RINGEND000",strlen("HEADR0010RINGEND000"));
 				}
 			}
 			phone_control.global_incoming = 0;
@@ -1596,7 +1604,7 @@ int parse_msg(cli_request_t* cli,char *sendbuf)
 		case OFFHOOK:
 		{
 			PRINT("OFFHOOK from %s\n",cli->dev->client_ip);
-			do_cmd_offhook(cli->dev);
+			do_cmd_offhook(cli->dev,cli->arg);
 			break;
 		}
 		case ONHOOK:
@@ -2537,6 +2545,13 @@ void *loop_check_ring(void * argv)
 					PRINT("ringDectected = %d\n",phone_control.Status.ringDetected);
 					//结束检测ring
 					phone_control.check_ringon_count = RING_LIMIT;
+					for(i=0;i<CLIENT_NUM;i++)
+					{
+						if(devlist[i].client_fd == -1)
+							continue;
+						if(devlist[i].incoming == 1 && devlist[i].dev_is_using != 1)
+							netWrite(devlist[i].client_fd,"HEADR0010RINGEND000",strlen("HEADR0010RINGEND000"));
+					}
 				}
 				phone_control.ring_count = 0;
 				phone_control.ring_neg_count = 0;
@@ -3002,7 +3017,7 @@ void send_sw_ringon()
 					if(devlist[i].isswtiching == 1)
 					{
 						do_cmd_onhook(&devlist[i]);
-						
+						netWrite(devlist[i].client_fd,"HEADR0010RINGEND000",strlen("HEADR0010RINGEND000"));
 						//onhook();
 						//if(!set_onhook_monitor())
 							//PRINT("set_onhook_monitor success\n");
@@ -3071,6 +3086,7 @@ void send_tb_ringon()
 				{
 					//响铃超时
 					do_cmd_talkbackonhook(&devlist[i],tb_sendbuf);
+					netWrite(devlist[i].client_fd,"HEADR0010TBR_END000",strlen("HEADR0010TBR_END000"));
 					//devlist[i].talkbacked = 0;
 					phone_control.send_tb_ringon_limit = 0;
 				}

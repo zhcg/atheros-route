@@ -201,7 +201,7 @@ int do_cmd_heartbeat(dev_status_t *dev,char *buf);
 #else
 int do_cmd_heartbeat(dev_status_t *dev,char *buf);
 #endif
-int do_cmd_offhook(dev_status_t *dev);
+int do_cmd_offhook(dev_status_t *dev,char *buf);
 int do_cmd_onhook(dev_status_t *dev);
 int do_cmd_dialup(dev_status_t *dev);
 int do_cmd_dtmf(dev_status_t *dev);
