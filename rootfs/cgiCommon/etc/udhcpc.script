@@ -48,7 +48,7 @@ if [ $interface = "eth0" ];then
 				cfg -a WAN_IPFLAG=unnormal
 #				cfg -a WAN_IPADDR2=$ip
 #				cfg -c
-#				exit 2
+				exit 2
 			fi
 		fi
 	fi
@@ -79,11 +79,11 @@ if [ ! -z $ath_flag ];then
 		
 		if [ "${WWAN_ADDR}" = "${LAN_ADDR}" ];then
 			echo "the dhcp apply IP addr has same domain with br0"
-#			exit 2
+			exit 2
 		fi
 		if [ "${WWAN_ADDR}" = "${WAN_ADDR}" ];then
 			echo "the dhcp apply IP addr has same domain with eth0"
-#			exit 2
+			exit 2
 		fi
 
 		if [ $interface = "ath5" ];then
@@ -91,7 +91,7 @@ if [ ! -z $ath_flag ];then
 			if [ "${WWAN_ADDR}" = "${WLAN_ADDR}" ];then
 				echo "the dhcp apply IP addr has same domain with ath4"
 				cfg -a WWAN_5G_FLAG=unnormal
-#				exit 2
+				exit 2
 			fi
 		fi
 	fi
@@ -100,6 +100,7 @@ fi
 if [ $interface = "eth0" ];then
 	cfg -a WAN_IPFLAG=normal
 	cfg -a WAN_IPADDR2=$ip
+	route del default
 fi
 
 if [ ! -z $ath_flag ];then
