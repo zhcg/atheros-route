@@ -357,10 +357,24 @@ int do_cmd_offhook(dev_status_t *dev,char *buf)
 		snprintf(sendbuf, 23,"HEADR0011INUSING0016\r\n");
 		goto OFFHOOK_ERR;
 	}
-	PRINT("buf[0] = %d \n",buf[0]);
+	PRINT("buf[0] = %c \n",buf[0]);
 	if(phone_control.global_incoming == 1)
 	{
 		if(dev->incoming == 1 && buf[0] != '0')
+		{
+			phone_audio.start_recv = 0;
+			goto OFFHOOK;
+		}
+		else
+		{
+			memset(sendbuf,0,SENDBUF);
+			snprintf(sendbuf, 23,"HEADR0011INUSING0017\r\n");
+			goto OFFHOOK_ERR;
+		}
+	}
+	if(dev->isswtiching == 1)
+	{
+		if(buf[0] != '0')
 		{
 			phone_audio.start_recv = 0;
 			goto OFFHOOK;
@@ -1554,6 +1568,14 @@ int do_cmd_def_name(dev_status_t *dev, char *buf)
 	int len = strlen(buf);
 	memset(dev->dev_name,0,sizeof(dev->dev_name));
 	memcpy(dev->dev_name,buf,((len > (sizeof(dev->dev_name)-1))?(sizeof(dev->dev_name)-1):len));
+	//if(phone_control.vloop < 3 && phone_control.vloop > -3)
+	//{
+		//netWrite(dev->client_fd,"HEADR0011LINESTA0011",strlen("HEADR0011LINESTA0011"));
+	//}
+	//else
+	//{
+		//netWrite(dev->client_fd,"HEADR0011LINESTA0010",strlen("HEADR0011LINESTA0010"));
+	//}
 	if(dev->tick_time > 1)
 	{
 		generate_up_msg();
@@ -2473,6 +2495,12 @@ void *loop_check_ring(void * argv)
 #ifndef B6
 					led_control(LED2_ON);
 #endif
+					//for(i=0;i<CLIENT_NUM;i++)
+					//{
+						//if(devlist[i].client_fd == -1)
+							//continue;
+						//netWrite(devlist[i].client_fd,"HEADR0011LINESTA0010",strlen("HEADR0011LINESTA0010"));
+					//}
 				}
 			}
 		}
@@ -2491,6 +2519,12 @@ void *loop_check_ring(void * argv)
 #ifndef B6
 					led_control(LED2_OFF);
 #endif
+					//for(i=0;i<CLIENT_NUM;i++)
+					//{
+						//if(devlist[i].client_fd == -1)
+							//continue;
+						//netWrite(devlist[i].client_fd,"HEADR0011LINESTA0011",strlen("HEADR0011LINESTA0011"));
+					//}
 				}
 			}
 		}
