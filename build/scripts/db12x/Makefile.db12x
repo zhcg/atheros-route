@@ -735,7 +735,6 @@ monitor:
 	cd ../apps/monitor; make clean; make 9344_build BASE_TYPE=BASE_9344; \
 	$(STRIP) monitor_base; \
 	cp -f monitor_base $(INSTALL_ROOT)/bin;
-	ln -s /tmp/ $(INSTALL_ROOT)/var/log; \
 
 check_phone_status:
 	@echo making check_phone_status application
