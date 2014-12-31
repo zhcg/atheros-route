@@ -140,7 +140,8 @@ int main(void)
                         nowReadLen--;
                         getState = STATE_GET_FILE_START;
                         memcpy(fileName,FILE_SAVE_DIR,strlen(FILE_SAVE_DIR));
-                        if((fp=fopen(fileName,"w"))==NULL)
+                        sprintf(fileName,"%sota.bin",FILE_SAVE_DIR);
+                       if((fp=fopen(fileName,"w"))==NULL)
                         {
                             //fprintf(stderr,"open file error\n");
                             //exit(1);
