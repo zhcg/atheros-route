@@ -5,7 +5,7 @@ if [ ! -f /configure_backup/nvram.bin ]; then
 	echo "Backup nvram at `date`"  >> /etc/callog.txt 
 	dd if=/dev/nvram of=/configure_backup/nvram.bin
 fi
-CAL_MSG=`cfg -e |grep FACTORY`
+CAL_MSG=`cfg -e |grep FACTORY=`
 if [ -z "$CAL_MSG" ]; then
 	echo "[luodp] Restore nvram"
 	echo "Restore nvram at `date`"  >> /etc/callog.txt    
