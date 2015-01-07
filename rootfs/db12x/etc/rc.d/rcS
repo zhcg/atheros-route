@@ -64,6 +64,9 @@ insmod /lib/modules/2.6.31/net/athrs_gmac.ko
 export WAN_IF=eth0
 export LAN_IF=eth1
 
+#yaomingyue
+ifconfig $WAN_IF up
+
 . /etc/ath/apcfg
 
 #yuhaolei for mac default display
@@ -80,7 +83,7 @@ fi
 /usr/sbin/upgrade_backup
 
 /usr/bin/cal_check 
-ifconfig $WAN_IF up
+#ifconfig $WAN_IF up
 #ifconfig $LAN_IF up
 /etc/rc.d/rc.network
 /etc/rc.d/rc.bridge
