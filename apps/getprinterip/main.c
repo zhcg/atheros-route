@@ -256,6 +256,240 @@ int do_cmd_reboot()
 	return 0;
 }
 
+int do_cmd_wf2ghn()
+{
+	printf("do_cmd_wf2ghn\n");
+	FILE *fp;
+	fp = fopen("/tmp/.apcfg", "r");
+	char buffer[100];
+	char buf[64] = {0};
+	char sendbuf[64]={0};
+	if(fp != NULL)
+	{	
+		while(fgets(buffer, 100, fp) != NULL)
+		{
+			if(strstr(buffer, "AP_SSID_2") != 0)
+			{
+				sscanf(buffer, "AP_SSID_2=%s", buf);
+				printf("buf = %s\n",buf);
+				sprintf(sendbuf,"WF2GHN%03d%s",strlen(buf),buf);
+				netWrite(clientfd,sendbuf,strlen(sendbuf));
+				fclose(fp);
+				return 0;
+			}
+		}
+		fclose(fp);
+	}
+	netWrite(clientfd,"WF2GHN000",strlen("WF2GHN000"));
+	return -1;
+}
+int do_cmd_wf2ghp()
+{
+	printf("do_cmd_wf2ghp\n");
+	FILE *fp;
+	fp = fopen("/tmp/.apcfg", "r");
+	char buffer[100];
+	char buf[64] = {0};
+	char sendbuf[64]={0};
+	if(fp != NULL)
+	{	
+		while(fgets(buffer, 100, fp) != NULL)
+		{
+			if(strstr(buffer, "PSK_KEY_2") != 0)
+			{
+				sscanf(buffer, "PSK_KEY_2=%s", buf);
+				printf("buf = %s\n",buf);
+				sprintf(sendbuf,"WF2GHP%03d%s",strlen(buf),buf);
+				netWrite(clientfd,sendbuf,strlen(sendbuf));
+				fclose(fp);
+				return 0;
+			}
+		}
+		fclose(fp);
+	}
+	netWrite(clientfd,"WF2GHP000",strlen("WF2GHP000"));
+	return -1;
+}
+int do_cmd_wf5ghn()
+{
+	printf("do_cmd_wf5ghn\n");
+	FILE *fp;
+	fp = fopen("/tmp/.apcfg", "r");
+	char buffer[100];
+	char buf[64] = {0};
+	char sendbuf[64]={0};
+	if(fp != NULL)
+	{	
+		while(fgets(buffer, 100, fp) != NULL)
+		{
+			if(strstr(buffer, "AP_SSID_4") != 0)
+			{
+				sscanf(buffer, "AP_SSID_4=%s", buf);
+				printf("buf = %s\n",buf);
+				sprintf(sendbuf,"WF5GHN%03d%s",strlen(buf),buf);
+				netWrite(clientfd,sendbuf,strlen(sendbuf));
+				fclose(fp);
+				return 0;
+			}
+		}
+		fclose(fp);
+	}
+	netWrite(clientfd,"WF5GHN000",strlen("WF5GHN000"));
+	return -1;
+}
+int do_cmd_wf5ghp()
+{
+	printf("do_cmd_wf5ghp\n");
+	FILE *fp;
+	fp = fopen("/tmp/.apcfg", "r");
+	char buffer[100];
+	char buf[64] = {0};
+	char sendbuf[64]={0};
+	if(fp != NULL)
+	{	
+		while(fgets(buffer, 100, fp) != NULL)
+		{
+			if(strstr(buffer, "PSK_KEY_4") != 0)
+			{
+				sscanf(buffer, "PSK_KEY_4=%s", buf);
+				printf("buf = %s\n",buf);
+				sprintf(sendbuf,"WF5GHP%03d%s",strlen(buf),buf);
+				netWrite(clientfd,sendbuf,strlen(sendbuf));
+				fclose(fp);
+				return 0;
+			}
+		}
+		fclose(fp);
+	}
+	netWrite(clientfd,"WF5GHP000",strlen("WF5GHP000"));
+	return -1;
+}
+
+int do_cmd_wf2gsn()
+{
+	printf("do_cmd_wf2gsn\n");
+	FILE *fp;
+	fp = fopen("/tmp/.apcfg", "r");
+	char buffer[100];
+	char buf[64] = {0};
+	char sendbuf[64]={0};
+	if(fp != NULL)
+	{	
+		while(fgets(buffer, 100, fp) != NULL)
+		{
+			if(strstr(buffer, "AP_SSID=") != 0)
+			{
+				sscanf(buffer, "AP_SSID=%s", buf);
+				printf("buf = %s\n",buf);
+				sprintf(sendbuf,"WF2GSN%03d%s",strlen(buf),buf);
+				netWrite(clientfd,sendbuf,strlen(sendbuf));
+				fclose(fp);
+				return 0;
+			}
+		}
+		fclose(fp);
+	}
+	netWrite(clientfd,"WF2GSN000",strlen("WF2GSN000"));
+	return -1;
+}
+
+int do_cmd_wf2gsp()
+{
+	printf("do_cmd_wf2gsp\n");
+	FILE *fp;
+	fp = fopen("/tmp/.apcfg", "r");
+	char buffer[100];
+	char buf[64] = {0};
+	char sendbuf[64]={0};
+	if(fp != NULL)
+	{	
+		while(fgets(buffer, 100, fp) != NULL)
+		{
+			if(strstr(buffer, "PSK_KEY=") != 0)
+			{
+				sscanf(buffer, "PSK_KEY=%s", buf);
+				printf("buf = %s\n",buf);
+				sprintf(sendbuf,"WF2GSP%03d%s",strlen(buf),buf);
+				netWrite(clientfd,sendbuf,strlen(sendbuf));
+				fclose(fp);
+				return 0;
+			}
+		}
+		fclose(fp);
+	}
+	netWrite(clientfd,"WF2GSP000",strlen("WF2GSP000"));
+	return -1;
+}
+
+int do_cmd_wfalls()
+{
+	printf("do_cmd_wfalls\n");
+	FILE *fp;
+	fp = fopen("/tmp/.apcfg", "r");
+	char buffer[100];
+	char buf[64] = {0};
+	char sendbuf[256]={0};
+	char sendbuf_2gs[64]={0};
+	char sendbuf_2gp[64]={0};
+	char sendbuf_5gs[64]={0};
+	char sendbuf_5gp[64]={0};
+
+	if(fp != NULL)
+	{	
+		while(fgets(buffer, 100, fp) != NULL)
+		{
+			if(strstr(buffer, "AP_SSID=") != 0)
+			{
+				sscanf(buffer, "AP_SSID=%s", buf);
+				printf("buf = %s\n",buf);
+				sprintf(sendbuf_2gs,"%s",buf);
+				break;
+			}
+		}
+		while(fgets(buffer, 100, fp) != NULL)
+		{
+			if(strstr(buffer, "AP_SSID_3=") != 0)
+			{
+				sscanf(buffer, "AP_SSID_3=%s", buf);
+				printf("buf = %s\n",buf);
+				sprintf(sendbuf_5gs,"%s",buf);
+				break;
+			}
+		}
+		while(fgets(buffer, 100, fp) != NULL)
+		{
+			if(strstr(buffer, "PSK_KEY=") != 0)
+			{
+				sscanf(buffer, "PSK_KEY=%s", buf);
+				printf("buf = %s\n",buf);
+				sprintf(sendbuf_2gp,"%s",buf);
+				break;
+			}
+		}
+		while(fgets(buffer, 100, fp) != NULL)
+		{
+			if(strstr(buffer, "PSK_KEY_3=") != 0)
+			{
+				sscanf(buffer, "PSK_KEY_3=%s", buf);
+				printf("buf = %s\n",buf);
+				sprintf(sendbuf_5gp,"%s",buf);
+				break;
+			}
+		}
+
+		sprintf(sendbuf,"WFALLS%03d%s%s%s%s%s%s%s", \
+			strlen(sendbuf_2gs)+strlen(sendbuf_2gp)+strlen(sendbuf_5gs)+strlen(sendbuf_5gp)+3,\
+			sendbuf_2gs,",",sendbuf_2gp,",",sendbuf_5gs,",",sendbuf_5gp);
+
+		netWrite(clientfd,sendbuf,strlen(sendbuf));
+
+		fclose(fp);
+		return 0;
+	}
+	netWrite(clientfd,"WFALLS000",strlen("WFALLS000"));
+	return -1;
+}
+
 int prase_msg(char *msg)
 {
 	if(!strncmp(msg,"GET_IP",6))
@@ -282,6 +516,41 @@ int prase_msg(char *msg)
 	{
 		printf("REBOOT\n");
 		do_cmd_reboot();
+	}	
+	else if(!strncmp(msg,"WF2GHN",6))
+	{
+		printf("WF2GHN\n");
+		do_cmd_wf2ghn();
+	}	
+	else if(!strncmp(msg,"WF2GHP",6))
+	{
+		printf("WF2GHP\n");
+		do_cmd_wf2ghp();
+	}	
+	else if(!strncmp(msg,"WF5GHN",6))
+	{
+		printf("WF5GHN\n");
+		do_cmd_wf5ghn();
+	}	
+	else if(!strncmp(msg,"WF5GHP",6))
+	{
+		printf("WF5GHP\n");
+		do_cmd_wf5ghp();
+	}	
+	else if(!strncmp(msg,"WF2GSN",6))
+	{
+		printf("WF2GSN\n");
+		do_cmd_wf2gsn();
+	}	
+	else if(!strncmp(msg,"WF2GSP",6))
+	{
+		printf("WF2GSP\n");
+		do_cmd_wf2gsp();
+	}	
+	else if(!strncmp(msg,"WFALLS",6))
+	{
+		printf("WFALLS\n");
+		do_cmd_wfalls();
 	}	
 	else
 		printf("undefine\n");
