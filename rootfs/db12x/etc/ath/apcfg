@@ -112,7 +112,7 @@ export NUMRADIO_AHB=1
 #                a number or
 #                11ng (which means auto-scan in 11ng mode)
 
-cfg -a AP_PRIMARY_CH=${AP_PRIMARY_CH:=6}
+cfg -a AP_PRIMARY_CH=${AP_PRIMARY_CH:=1}
 cfg -a AP_CHMODE=${AP_CHMODE:="11NGHT40PLUS"}
 
 ##

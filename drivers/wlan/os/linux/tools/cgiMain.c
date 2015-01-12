@@ -3991,8 +3991,10 @@ int  add_sta_access()
 
 	memset(staMac, 0, sizeof staMac);
 	memset(staDesc, 0, sizeof staDesc);
-	Execute_cmd("cfg -e | grep \"WCONON_OFF=\" | awk -F \"=\" \'{print $2}\'", valBuf);
-	Execute_cmd("grep -c 168c /proc/bus/pci/devices", valBuf1);
+	memset(&stalist, 0, sizeof(struct staList));
+	
+	Execute_cmd("cfg -e | grep \"WCONON_OFF=\" | awk -F \"=\" \'{print $2}\'", valBuf);//access on/off
+	Execute_cmd("grep -c 168c /proc/bus/pci/devices", valBuf1);//5G on/off
 	//fprintf(errOut,"valBuf1 is [%s] \n", valBuf1);
 	
 	if ((fp = fopen(STA_MAC, "r")) == NULL)
@@ -4006,6 +4008,7 @@ int  add_sta_access()
 			CFG_get_by_name("MAC",staMac);
 			CFG_get_by_name("DES",staDesc);
 			CFG_get_by_name("CON_STATUS",status);
+			
 			strcpy(stalist.macAddr, staMac);
 			strcpy(stalist.staDesc, staDesc);
 			strcpy(stalist.status, status);
@@ -4014,7 +4017,7 @@ int  add_sta_access()
 			fclose(fp);
 
 			
-			if ((fp1 = fopen(STA_ACL, "r")) != NULL)
+			if ((fp1 = fopen(STA_ACL, "r")) != NULL)//STA_ACL
 			{
 				memset(con_buf, 0, 20);
 				fgets(con_buf, 8, fp1);
@@ -4026,22 +4029,26 @@ int  add_sta_access()
 				}
 				fclose(fp1);
 			}
-			else if(strstr(valBuf, "on"))
+			else if(strstr(valBuf, "on"))//access enable
 			{
 				restart_sta_access();
 				//sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
 				//Execute_cmd(buf, rspBuff);
 			}
-			if(strcmp(wifi0_flag,"on") == 0 ) //on			
-			{
-				sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
-				Execute_cmd(buf, rspBuff);
+
+			if(!strcmp(status, "1")){
+				if(strcmp(wifi0_flag,"on") == 0 ) //wifi0 on			
+				{
+					sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
+					Execute_cmd(buf, rspBuff);
+				}
+				if(strstr(valBuf1, "1"))//wifi1 on
+				{
+					sprintf(buf, "iwpriv ath2 addmac %s", stalist.macAddr);
+					Execute_cmd(buf, rspBuff);
+				}
 			}
-			if(strstr(valBuf1, "1"))
-			{
-				sprintf(buf, "iwpriv ath2 addmac %s", stalist.macAddr);
-				Execute_cmd(buf, rspBuff);
-			}
+			
 			//fprintf(errOut,"add_sta_access 1111 the add mac is %s\n", stalist.macAddr);
 		}
 	}
@@ -4051,6 +4058,7 @@ int  add_sta_access()
 		CFG_get_by_name("MAC",staMac);
 		CFG_get_by_name("DES",staDesc);
 		CFG_get_by_name("CON_STATUS",status);
+		
 		while(fread(&stalist, sizeof stalist, 1, fp) == 1)
 		{
 			id = stalist.id;
@@ -4079,7 +4087,7 @@ int  add_sta_access()
 				memset(con_buf, 0, 20);
 				fgets(con_buf, 8, fp1);
 				//fprintf(errOut,"\n the con_buf is %s\n", con_buf);
-				if((!strncmp(con_buf, "enable", 6)) && (!strcmp(status, "1")))
+				if((!strncmp(con_buf, "enable", 6)) && (!strcmp(status, "1")))//staAcl
 				{
 					restart_sta_access();
 					//memset(buf, 0, sizeof buf);
@@ -4088,7 +4096,7 @@ int  add_sta_access()
 				}
 				fclose(fp1);
 			}
-			else if(strstr(valBuf, "on"))
+			else if(strstr(valBuf, "on"))//access enable
 			{
 				restart_sta_access();
 				//sprintf(buf, "iptables -A control_sta -m mac --mac-source %s -j DROP", stalist.macAddr);
@@ -4096,18 +4104,22 @@ int  add_sta_access()
 			}
 
 			memset(buf, 0, sizeof buf);
-			
-			if(strcmp(wifi0_flag,"on") == 0 ) //on
-			{
-				sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
-				Execute_cmd(buf, rspBuff);
-			}
 
-			if(strstr(valBuf1, "1"))
-			{
-				sprintf(buf, "iwpriv ath2 addmac %s", stalist.macAddr);
-				Execute_cmd(buf, rspBuff);
+			
+			if(!strcmp(status, "1")){
+				if(strcmp(wifi0_flag,"on") == 0 ) //wifi0 on
+				{
+					sprintf(buf, "iwpriv ath0 addmac %s", stalist.macAddr);
+					Execute_cmd(buf, rspBuff);
+				}
+
+				if(strstr(valBuf1, "1"))//wifi1 on
+				{
+					sprintf(buf, "iwpriv ath2 addmac %s", stalist.macAddr);
+					Execute_cmd(buf, rspBuff);
+				}
 			}
+			
 			//fprintf(errOut,"add_sta_access 222 the add mac is %s\n", stalist.macAddr);
 		}
 		
