@@ -116,6 +116,9 @@ echo 20 > /proc/sys/vm/dirty_ratio
 # kick in the pdflush
 echo 5 > /proc/sys/vm/dirty_background_ratio
 
+#when kernel panic ,reboot the system
+echo 10 > /proc/sys/kernel/panic
+
 ##
 ## Check for Auto AP Start
 ##

@@ -3286,6 +3286,7 @@ ar9300InitCal(struct ath_hal *ah, HAL_CHANNEL *chan)
         HDPRINTF(ah, HAL_DBG_CALIBRATE,
                  "%s: offset calibration failed to complete in 1ms; "
                  "noisy environment?\n", __func__);
+        panic("9344_base: ar9300 reset error"); //add by yaomingyue
         return AH_FALSE;
     }
  
