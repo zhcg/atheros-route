@@ -483,7 +483,6 @@ terminal_dev_register:
 	$(STRIP) libcommon_tools.so; \
 	$(STRIP) terminal_dev_register; \
 	$(STRIP) interface_test; \
-	$(STRIP) monitor_application; \
 	cp -af sqlite-mips-linux/lib/libsqlite3.so.0.8.6 $(INSTALL_ROOT)/lib; \
 	cp -af sqlite-mips-linux/bin/sqlite3 $(INSTALL_ROOT)/bin; \
 	cp -af libdata_storager.so $(INSTALL_ROOT)/lib; \
@@ -493,7 +492,6 @@ terminal_dev_register:
 	cp -af libcommon_tools.so $(INSTALL_ROOT)/lib; \
 	cp -af terminal_dev_register $(INSTALL_ROOT)/bin; \
 	cp -af interface_test $(INSTALL_ROOT)/bin; \
-	cp -af monitor_application $(INSTALL_ROOT)/bin; \
 	ln -s /tmp/ $(INSTALL_ROOT)/var/log; \
 	echo finished making terminal_dev_register;	
 

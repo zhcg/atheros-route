@@ -5,7 +5,7 @@
 #include <sys/msg.h>
 #include <string.h>
 
-char cmd_buf[512];
+char cmd_buf[1024];
 /**
  * »ñµÃÃüÁîÊä³ö
  */
@@ -32,7 +32,7 @@ int get_cmd_out(char *cmd, char *buf, unsigned short buf_len)
 		return -1;
 	}
 	
-	memset(cmd_buf, 0, 512);
+	memset(cmd_buf, 0, 1024);
 	
 	if (child_pid == 0) // subprocess write
 	{
@@ -79,8 +79,8 @@ int get_cmd_out(char *cmd, char *buf, unsigned short buf_len)
 int main(int argc, char ** argv)
 {
     //char *modules_cmd = "ps | grep modules_server | sed '/grep/'d | sed '/\\[modules_server\\]/'d | sed '/sed/'d";
-	char cmd[128] = {0};
-	char buf[128] = {0};
+	char cmd[1024] = {0};
+	char buf[1024] = {0};
 	int i;
 	if(argc <= 1)
 	{
@@ -91,11 +91,11 @@ int main(int argc, char ** argv)
     {
 		for(i=0;i<argc-1;i++)
 		{
-			memset(cmd,0,128);
+			memset(cmd,0,1024);
 			sprintf(cmd,"ps | grep %s | sed '/%s/'d  | sed '/grep/'d | sed '/\\[%s\\]/'d | sed '/sed/'d",argv[i+1],argv[0],argv[i+1]);
-//		printf("cmd = %s\n",cmd);
+		//	printf("cmd = %s\n",cmd);
 			usleep(200*1000);
-			memset(buf,0,128);
+			memset(buf,0,1024);
 			if (get_cmd_out(cmd, buf, sizeof(buf)) < 0)
 			{
 				printf("get_cmd_out failed!\n");
@@ -106,7 +106,7 @@ int main(int argc, char ** argv)
 				if (strlen(buf) == 0)
 				{
 					printf("%s stop!\n",argv[i+1]);
-					memset(cmd,0,128);
+					memset(cmd,0,1024);
 					sprintf(cmd,"%s &",argv[i+1]);
 					system(cmd);
 					printf("%s restart!\n",argv[i+1]);
