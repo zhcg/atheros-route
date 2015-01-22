@@ -384,12 +384,12 @@ static int get_base_state(char *buf, int *buf_len)
     }
     fclose(fp);
     
-    if ((res = get_port_info(&tomcat,&php)) < 0)
-    {
-        PRINT("get_port_info failed!\n");
-        tomcat = -1;
-        php = -1;
-    }
+    //if ((res = get_port_info(&tomcat,&php)) < 0)
+    //{
+        //PRINT("get_port_info failed!\n");
+        //tomcat = -1;
+        //php = -1;
+    //}
     int flash_size = 0;
     // flash 使用情况
     if ((res = get_flash_occupy_info(&flash_size)) < 0)
@@ -408,9 +408,9 @@ static int get_base_state(char *buf, int *buf_len)
     //PRINT("tomcat = %d\n",tomcat);
     //PRINT("php = %d\n",php);
     sprintf(buf,"{id:%s,dev_type:1,cpu:%d,memory:%d,hd:%d,mac:%s,php:%d,monitor_ver:%s,a20_ver:%s,9344_ver:%s,as532_ver:%s}",
-		sip_msg.base_sn,100-cpu_info.idle,mem_ret,flash_size,sip_msg.base_mac,(php >= 2)?1:0,MONITOR_APP_VERSION,sip_msg.base_a20_version,sip_msg.base_9344_version,sip_msg.base_532_version);
+		sip_msg.base_sn,100-cpu_info.idle,mem_ret,flash_size,sip_msg.base_mac,(php >= 1)?1:0,MONITOR_APP_VERSION,sip_msg.base_a20_version,sip_msg.base_9344_version,sip_msg.base_532_version);
     //sprintf(buf,"{id:%s,dev_type:1,cpu:%d,memory:%d,hd:%d,tomcat:%d,php:%d,a20_ver:%s,9344_ver:%s,as532_ver:%s}",
-		//sip_msg.base_sn,100-cpu_info.idle,mem_ret,flash_size,(tomcat >= 2)?1:0,(php >= 2)?1:0,sip_msg.base_a20_version,sip_msg.base_9344_version,sip_msg.base_532_version);
+		//sip_msg.base_sn,100-cpu_info.idle,mem_ret,flash_size,(tomcat >= 2)?1:0,(php >= 1)?1:0,sip_msg.base_a20_version,sip_msg.base_9344_version,sip_msg.base_532_version);
     //PRINT("strlen(buf) = %d\n", strlen(buf));
 	*buf_len = strlen(buf);
     //buf[0] = 0x02;
@@ -456,6 +456,7 @@ int sqlite3_interface(char *tb_name,char *data_name, char *where_value,char *whe
     {
         PRINT("%s\n", err_msg);
         sqlite3_free_table(result_buf);
+		sqlite3_close(db);
         return -1;
     }
     
@@ -465,6 +466,8 @@ int sqlite3_interface(char *tb_name,char *data_name, char *where_value,char *whe
         if (strcmp(result_buf[index], "") == 0)
         {
             PRINT("no data\n");
+			sqlite3_free_table(result_buf);
+			sqlite3_close(db);
             return -1;    
         }
         memcpy(out_value, result_buf[index], strlen(result_buf[index]));
@@ -509,6 +512,7 @@ int get_9344_mac(char *base_mac)
 			break;
 		}
 	}
+	fclose(fd);
 	return 0;
 }
 
@@ -887,7 +891,7 @@ static void *pthread_get_respond(void *para)
 					case EXOSIP_REGISTRATION_SUCCESS:  // 用户已经成功注册
 					{
 						PRINT("eXosip registeration success!\n");
-						register_success(ev);                                                                                   
+						register_success(ev);  
 						break;
 					}
 					case EXOSIP_REGISTRATION_FAILURE: // 用户没有注册
@@ -1240,7 +1244,7 @@ static void * base_state_msg_manage(void* para)
 	memset(&old_tv,0,sizeof(old_tv));
 	memset(&new_tv,0,sizeof(new_tv));
 	gettimeofday(&new_tv,NULL);
-	tick_total = (3*1000*1000);
+	tick_total = (60*1000*1000);
 	tick_send_total = (STATUS_DELAY*1000*1000);
     while (1)
     {
@@ -1252,7 +1256,7 @@ static void * base_state_msg_manage(void* para)
 			diff = 0;
 		tick_total += diff;
 		tick_send_total += diff;
-		if(tick_total >= (3*1000*1000))
+		if(tick_total >= (60*1000*1000))
 		{
 			PRINT("tick_total = %ld\n",tick_total);
 			tick_total = 0;
@@ -1264,6 +1268,7 @@ static void * base_state_msg_manage(void* para)
 				usleep(200*1000);
 				continue;
 			}
+
 			if(res == 1)
 			{
 				PRINT("System is busy,send warning msg\n");
@@ -1287,7 +1292,7 @@ static void * base_state_msg_manage(void* para)
 				pthread_mutex_unlock(&send_mutex);
 			}
 		}
-		
+
 		if(tick_send_total >= (STATUS_DELAY*1000*1000))
 		{
 			PRINT("tick_send_total = %ld\n",tick_send_total);

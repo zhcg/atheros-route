@@ -184,6 +184,7 @@ int sqlite3_interface(char *tb_name,char *data_name, char *data_value,char *wher
     {
         PRINT("%s\n", err_msg);
         sqlite3_free_table(result_buf);
+		sqlite3_close(db);
         return -1;
     }
     
@@ -193,6 +194,8 @@ int sqlite3_interface(char *tb_name,char *data_name, char *data_value,char *wher
         if (strcmp(result_buf[index], "") == 0)
         {
             PRINT("no data\n");
+			sqlite3_free_table(result_buf);
+			sqlite3_close(db);
             return -1;    
         }
         memcpy(out_value, result_buf[index], strlen(result_buf[index]));

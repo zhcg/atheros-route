@@ -309,6 +309,7 @@ int sqlite3_exec_select_cmd(char *sql, char *db_name, char *buf, unsigned short 
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, err_msg, SQLITE_GET_TABLE_ERR);
         sqlite3_free_table(result_buf);
+		sqlite3_close(db);
         return SQLITE_GET_TABLE_ERR;
     }
     
@@ -500,6 +501,7 @@ int sqlite3_select(unsigned char columns_count, char (*columns_name)[30], char (
 		{
 			OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, err_msg, SQLITE_GET_TABLE_ERR);
 			sqlite3_free_table(result_buf);
+			sqlite3_close(db);
 			
 			return SQLITE_GET_TABLE_ERR;
 		}
@@ -579,6 +581,7 @@ int sqlite3_select_table(unsigned char columns_count, char (*columns_name)[30], 
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, err_msg, SQLITE_GET_TABLE_ERR);
         sqlite3_free_table(result_buf);
+		sqlite3_close(db);
         return SQLITE_GET_TABLE_ERR;
     }
     

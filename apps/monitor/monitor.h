@@ -23,11 +23,11 @@
 #define CPU_WARING_THRESHOLD	70
 #define MEM_WARING_THRESHOLD	80
 #define HD_WARING_THRESHOLD		90
-#define WARNING_TIMES			100
+#define WARNING_TIMES			5
 #define PRINT(format, ...)  	printf("[%s][%s][-%d-] "format"",__FILE__,__FUNCTION__,__LINE__,##__VA_ARGS__)
 //#define PRINT(format, ...) printf("[%s][%s][-%d-] "format"",system_time(),__FUNCTION__,__LINE__,##__VA_ARGS__)
 #define TOMCAT 					"/opt/jdk1.7.0_45/bin/java"
-#define PHP						"/opt/httpd/bin/httpd"
+#define PHP						"/var/httpd/bin/httpd"
 #define SUCCESS 				0x1001
 #define FAIL 					0x1002
 

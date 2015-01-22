@@ -147,6 +147,7 @@ int sqlite3_select(char *tb_name,char *data_name, char *data_value,char *where_n
 		{
 			PRINT("%s\n", err_msg);
 			sqlite3_free_table(result_buf);
+			sqlite3_close(db);
 			return -3;
 		}
     }
@@ -157,6 +158,8 @@ int sqlite3_select(char *tb_name,char *data_name, char *data_value,char *where_n
         if (strcmp(result_buf[index], "") == 0)
         {
             PRINT("no data\n");
+			sqlite3_free_table(result_buf);
+			sqlite3_close(db);
             return -4;    
         }
         memcpy(out_value, result_buf[index], strlen(result_buf[index]));
