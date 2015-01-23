@@ -1269,7 +1269,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 	                            if (strlen(lease.hostname) > 0)
 	                                outBuff += sprintf(outBuff,"<td>%s</td>",lease.hostname);
 	                            else
-	                                outBuff += sprintf(outBuff,"<td>NULL</td>");
+	                                outBuff += sprintf(outBuff,"<td></td>");
 	                            
 	                            if (lease.ip > 0)
 								{
@@ -1278,7 +1278,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 	                            	outBuff += sprintf(outBuff,"<td>%s</td>", inet_ntoa(addr));
 								}
 								else
-									outBuff += sprintf(outBuff,"<td>NULL</td>", inet_ntoa(addr));
+									outBuff += sprintf(outBuff,"<td></td>", inet_ntoa(addr));
 
 								if(strlen(mac_buf) > 0)
 								{
@@ -1286,7 +1286,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 									outBuff += sprintf(outBuff,"<td>%s</td>", buf);
 								}
 								else
-									outBuff += sprintf(outBuff,"<td>NULL</td>");
+									outBuff += sprintf(outBuff,"<td></td>");
 	                            //outBuff += sprintf(outBuff,"<td>%02x", lease.mac[0]);
 	                            //for (i = 1; i < 6; i++)
 	                            //     outBuff += sprintf(outBuff,":%02x", lease.mac[i]);
@@ -1366,7 +1366,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 		                            	if (strlen(lease.hostname) > 0)
 		                                    outBuff += sprintf(outBuff,"<td>%s</td>",lease.hostname);
 		                                else
-		                                    outBuff += sprintf(outBuff,"<td>NULL</td>");
+		                                    outBuff += sprintf(outBuff,"<td></td>");
 
 										
 										if (lease.ip > 0)
@@ -1377,7 +1377,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 											
 										}
 										else
-											outBuff += sprintf(outBuff,"<td>NULL</td>");
+											outBuff += sprintf(outBuff,"<td></td>");
 		                                
 		                                //outBuff += sprintf(outBuff,"<td>%02x", lease.mac[0]);
 		                                //for (i = 1; i < 6; i++)
@@ -1412,9 +1412,9 @@ char *processSpecial(char *paramStr, char *outBuff)
 	                                outBuff += sprintf(outBuff,"<td>%d</td>",num);
 	                                num++; 
 									/*hostname*/
-	                            	outBuff += sprintf(outBuff,"<td>NULL</td>");
+	                            	outBuff += sprintf(outBuff,"<td></td>");
 									/*ip*/
-									outBuff += sprintf(outBuff,"<td>NULL</td>");
+									outBuff += sprintf(outBuff,"<td></td>");
 	                                /*mac*/	
 	                                outBuff += sprintf(outBuff,"<td>%s</td>", buf);
 	                                
@@ -1476,7 +1476,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 		                            	if (strlen(lease.hostname) > 0)
 		                                    outBuff += sprintf(outBuff,"<td>%s</td>",lease.hostname);
 		                                else
-		                                    outBuff += sprintf(outBuff,"<td>NULL</td>");
+		                                    outBuff += sprintf(outBuff,"<td></td>");
 
 										
 										if (lease.ip > 0)
@@ -1486,7 +1486,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 		                                	outBuff += sprintf(outBuff,"<td>%s</td>", inet_ntoa(addr));
 										}
 										else
-											outBuff += sprintf(outBuff,"<td>NULL</td>", inet_ntoa(addr));
+											outBuff += sprintf(outBuff,"<td></td>", inet_ntoa(addr));
 		                                
 		                                //outBuff += sprintf(outBuff,"<td>%02x", lease.mac[0]);
 		                                //for (i = 1; i < 6; i++)
@@ -1522,9 +1522,9 @@ char *processSpecial(char *paramStr, char *outBuff)
 	                                outBuff += sprintf(outBuff,"<td>%d</td>",num);
 	                                num++; 
 									/*hostname*/
-	                            	outBuff += sprintf(outBuff,"<td>NULL</td>");
+	                            	outBuff += sprintf(outBuff,"<td></td>");
 									/*ip*/
-									outBuff += sprintf(outBuff,"<td>NULL</td>");
+									outBuff += sprintf(outBuff,"<td></td>");
 	                                /*mac*/	
 	                                outBuff += sprintf(outBuff,"<td>%s</td>", buf);
 	                                
@@ -1578,9 +1578,9 @@ char *processSpecial(char *paramStr, char *outBuff)
 	                                num++; 
 
 									/*hostname*/
-									outBuff += sprintf(outBuff,"<td>NULL</td>");
+									outBuff += sprintf(outBuff,"<td></td>");
 									/*ip*/
-									outBuff += sprintf(outBuff,"<td>NULL</td>");
+									outBuff += sprintf(outBuff,"<td></td>");
 									/*mac*/
 									outBuff += sprintf(outBuff,"<td>%s</td>", buf);
 	                                
@@ -1623,9 +1623,9 @@ char *processSpecial(char *paramStr, char *outBuff)
 									num++; 
 
 									/*hostname*/
-									outBuff += sprintf(outBuff,"<td>NULL</td>");
+									outBuff += sprintf(outBuff,"<td></td>");
 									/*ip*/
-									outBuff += sprintf(outBuff,"<td>NULL</td>");
+									outBuff += sprintf(outBuff,"<td></td>");
 									/*mac*/
 									outBuff += sprintf(outBuff,"<td>%s</td>", buf);
 
@@ -3243,6 +3243,8 @@ int set_dhcp(void)
 { 
 		fprintf(errOut,"\n%s  %d set_dhcp \n",__func__,__LINE__);		
 		char valBuff1[128]; 
+	char freqValBuf[50];
+	Execute_cmd("grep -c 168c /proc/bus/pci/devices", freqValBuf);
 		
 		write_systemLog("-----set_dhcp begin");	
 		
@@ -3257,6 +3259,10 @@ int set_dhcp(void)
 			//if( CFG_set_by_name(valBuff2,"off") )
 			//exit(-1);
 			Execute_cmd("killall udhcpd > /dev/null 2>&1",rspBuff);
+            Execute_cmd("ifconfig eth1 down;ifconfig eth1 up > /dev/null 2>&1",rspBuff);
+            Execute_cmd("ifconfig ath0 down;ifconfig ath0 up > /dev/null 2>&1",rspBuff);
+            if(strstr(freqValBuf, "1"))
+                Execute_cmd("ifconfig ath2 down;ifconfig ath2 up > /dev/null 2>&1",rspBuff);
 		}
 		else if(strcmp(valBuff1,"on") == 0 ) //on
 		{
@@ -3267,6 +3273,10 @@ int set_dhcp(void)
 			Execute_cmd("/etc/rc.d/rc.udhcpd",rspBuff);
 			Execute_cmd("/usr/sbin/set_addr_conf > /dev/null 2>&1",rspBuff);
 			Execute_cmd("/usr/sbin/udhcpd /etc/udhcpd.conf",rspBuff);
+            Execute_cmd("ifconfig eth1 down;ifconfig eth1 up > /dev/null 2>&1",rspBuff);
+            Execute_cmd("ifconfig ath0 down;ifconfig ath0 up > /dev/null 2>&1",rspBuff);
+            if(strstr(freqValBuf, "1"))
+                Execute_cmd("ifconfig ath2 down;ifconfig ath2 up > /dev/null 2>&1",rspBuff);
 		}
 		
 		write_systemLog("-----set_dhcp end");	
