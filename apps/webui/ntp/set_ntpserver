@@ -22,5 +22,13 @@ if [ "$ntp_switch" = "on" ];then
 		/usr/sbin/ntpclient -c 2 -d -s -h $ntpserverip1 -i 2 -t  $timezone  &
 		sleep 10
 	fi
+	killall ntpclient > /dev/null 2>&1
+	if [ ! -z $ntpserverip2 -a ! -z $timezone ];then
+		#/usr/sbin/ntpclient -d -s -h $ntpserverip2 -t  $timezone > /tmp/ntpserver.log 2>&1 &
+		/usr/sbin/ntpclient -c 2 -d -s -h $ntpserverip2 -i 2 -t  $timezone  &
+		sleep 10
+	fi
+	killall ntpclient > /dev/null 2>&1
+	
 fi
 done

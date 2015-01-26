@@ -376,7 +376,7 @@ irqreturn_t jumpstart_irq(int cpl, void *dev_id)
 			 * so disable it.
 			 */
 			disable_irq(ATH_GPIO_IRQn(JUMPSTART_GPIO));
-			dump_stack();
+			//dump_stack();
 			wake_up(&ath_fr_wq);
 		//	printk("\n 9344 DEBUG start**************************************************\n");
 //            printk("9344 DEBUG: The process is \"%s\" (pid %i)\n", current->comm,current->pid);

@@ -5358,8 +5358,8 @@ int main(int argc,char **argv)
         fclose(f);
     }
 
-	if( 0  == FactoryDefault  )
-		CFG_set_by_name("FACTORY_RESET","0");
+//	if( 0  == FactoryDefault  )
+//		CFG_set_by_name("FACTORY_RESET","0");
 		
     /*
     ** Now we look for options.
