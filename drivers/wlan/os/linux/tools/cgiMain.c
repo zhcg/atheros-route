@@ -1258,8 +1258,8 @@ char *processSpecial(char *paramStr, char *outBuff)
 	                        if(shi == 0)
 	                        {
 	                        	/*if wds client, not show*/
-								if( (strlen(lease.hostname) > 0) && (strstr(lease.hostname, "android")))
-									continue;
+							//	if( (strlen(lease.hostname) > 0) && (strstr(lease.hostname, "android")))
+							//		continue;
 	                        
 	                            outBuff += sprintf(outBuff,"<tr>");
 	                            outBuff += sprintf(outBuff,"<td>%d</td>",num);
