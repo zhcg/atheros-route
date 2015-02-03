@@ -3286,8 +3286,14 @@ ar9300InitCal(struct ath_hal *ah, HAL_CHANNEL *chan)
         HDPRINTF(ah, HAL_DBG_CALIBRATE,
                  "%s: offset calibration failed to complete in 1ms; "
                  "noisy environment?\n", __func__);
-        panic("9344_base: ar9300 reset error"); //add by yaomingyue
-        return AH_FALSE;
+        //panic("9344_base: ar9300 reset error"); //add by yaomingyue
+        printk("9344_base: ar9300 reset error once .............................\n"); //add by yaomingyue
+                     
+        if (!ath_hal_wait(ah, AR_PHY_AGC_CONTROL, AR_PHY_AGC_CONTROL_CAL, 0,
+            1000000)) {
+            printk("9344_base: ar9300 reset AGC timeout 1s!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! \n"); //add by yaomingyue
+            return AH_FALSE;
+        }
     }
  
 #if 0
@@ -4290,7 +4296,11 @@ ar9300Reset(struct ath_hal *ah, HAL_OPMODE opmode, HAL_CHANNEL *chan,
     //BB Step 7: Calibration
     if (!ar9300InitCal(ah, chan)) {
         HDPRINTF(ah, HAL_DBG_RESET, "%s: Init Cal Failed\n", __func__);
-        FAIL(HAL_ESELFTEST);
+        printk("9344_base: ar9300InitCal error 1\n"); //add by yaomingyue
+        if (!ar9300InitCal(ah, chan)) {
+            printk("9344_base: ar9300InitCal error 2\n"); //add by yaomingyue
+            FAIL(HAL_ESELFTEST);
+        }
     }
 
 
