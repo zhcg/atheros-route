@@ -24,8 +24,8 @@
 	<message msgid="admw PPPOEdisc" msgstr="网络运营商提供上网账户名和密码" />
 	
 	<message msgid="admw DISABLE_a" msgstr="禁用" />
-	<message msgid="admw DISABLEdisc" msgstr="禁用WAN口，当开启高级设置里面的无线WAN功能之后会自动禁用有线WAN口功能" />
-	<message msgid="admw wdsonmsg" msgstr="无线WAN已经开启，WAN处于禁用状态，如果需要配置WAN口，请进入设置向导配置有线连接，或者进入高级设置->无线设置->无线WAN中关闭无线WAN，再进行WAN口配置" />
+	<message msgid="admw DISABLEdisc" msgstr="禁用WAN口，当开启高级设置里面的无线桥接功能之后会自动禁用有线WAN口功能" />
+	<message msgid="admw wdsonmsg" msgstr="无线桥接已经开启，WAN处于禁用状态，如果需要配置WAN口，请进入设置向导配置有线连接，或者进入高级设置->无线设置->无线桥接中关闭无线桥接，再进行WAN口配置" />
 	
 	<message msgid="admw L2TPc" msgstr="L2TP客户端" />
 	<message msgid="admw PPTPc" msgstr="PPTP客户端" />
@@ -110,8 +110,8 @@
 	<message msgid="admw RMd2" msgstr="网络频段:5GHz" /> 
 	<message msgid="admw wds" msgstr="无线中继" /> 
 	<message msgid="admw wdsswitch" msgstr="无线中继开关" /> 
-	<message msgid="admw wisp" msgstr="无线WAN" /> 
-	<message msgid="admw wispswitch" msgstr="无线WAN开关" /> 
+	<message msgid="admw wisp" msgstr="无线桥接" /> 
+	<message msgid="admw wispswitch" msgstr="无线桥接开关" /> 
 
 	<message msgid="admw R_uname" msgstr="网络名称（SSID）" />  
 	<message msgid="admw R_pword" msgstr="密码" />  
@@ -135,8 +135,8 @@
 	<message msgid="admw wifides" msgstr="请您设置HBD路由器的基础参数。您的电脑、PAD、智能手机等将使用以下网络上网" />  
 	<message msgid="admw wirelessdes" msgstr="请您选择要连接的WiFi" />  
 	<message msgid="admw wispdes" msgstr="请您选择要连接的WiFi" />  
-	<message msgid="admw wds_off_waring" msgstr="注意：无线中继开启后，DHCP服务将自动禁用，该频段无线WAN也将无法使用" />
-	<message msgid="admw wisp_off_waring" msgstr="注意：无线WAN开启后，WAN口将自动禁用，该频段无线中继也将无法使用" />
+	<message msgid="admw wds_off_waring" msgstr="注意：无线中继开启后，DHCP服务将自动禁用，无线桥接也将无法使用" />
+	<message msgid="admw wisp_off_waring" msgstr="注意：无线桥接开启后，WAN口将自动禁用，无线中继也将无法使用" />
 	
 	<message msgid="admw PPMAC" msgstr="家长PC的MAC地址" />
 	<message msgid="admw MPMAC" msgstr="当前管理PC的MAC地址" />
@@ -257,9 +257,9 @@
 	<message msgid="upgrade fail" msgstr="版本一致,固件未升级" />
 
 	<message msgid="admw offwifides" msgstr="本频段WiFi已经禁用,无线中继无法使用" />
-	<message msgid="admw offwifideswan" msgstr="本频段WiFi已经禁用,无线WAN无法使用" />
-	<message msgid="admw offwifides1" msgstr="本频段无线中继已经开启,无线WAN无法使用" />
-	<message msgid="admw offwifides2" msgstr="本频段无线WAN已经开启,无线中继无法使用" />
+	<message msgid="admw offwifideswan" msgstr="本频段WiFi已经禁用,无线桥接无法使用" />
+	<message msgid="admw offwifides1" msgstr="无线中继已经开启,无线桥接无法使用" />
+	<message msgid="admw offwifides2" msgstr="无线桥接已经开启,无线中继无法使用" />
 	<message msgid="admw software" msgstr="当前软件版本" />
 	<message msgid="admw hardware" msgstr="硬件版本" />
 	<message msgid="admw hidewifides" msgstr="隐藏网络" />

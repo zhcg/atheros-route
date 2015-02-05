@@ -33,7 +33,7 @@
 	<message msgid="advmenu treeapp_wifi_basic" msgstr="无线基本设置" />
 	<message msgid="advmenu treeapp_wifi_adv" msgstr="无线高级设置" />
 	<message msgid="advmenu treeapp_wifi_wds" msgstr="无线中继" />
-	<message msgid="advmenu treeapp_wifi_wisp" msgstr="无线WAN" />
+	<message msgid="advmenu treeapp_wifi_wisp" msgstr="无线桥接" />
 	
 	<message msgid="advmenu treeapp_safe" msgstr="安全管理" />
 	<message msgid="advmenu treeapp_safe_ipmac" msgstr="ARP绑定" />
@@ -100,7 +100,7 @@
 	<message msgid="sysinfo l2tp" msgstr="L2TP" />
 	<message msgid="sysinfo pptp" msgstr="PPTP" />
 	<message msgid="sysinfo un" msgstr="未知" />
-	<message msgid="sysinfo wds" msgstr="中继" />
+	<message msgid="sysinfo wds" msgstr="无线桥接" />
 	<message msgid="sysinfo disable" msgstr="禁用" />
 	
 	<message msgid="sysinfo keepalive" msgstr="自动连接" />

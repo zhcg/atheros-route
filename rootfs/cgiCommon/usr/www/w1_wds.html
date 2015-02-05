@@ -130,7 +130,7 @@ function CheckWirelessValue()
 				alert(_("err no choose"));
 				return false;
 			}
-			else if(document.getElementById("STA_SECMODE").value == "WPA")
+			else if(document.getElementById("WISP_STA_SECMODE").value == "WPA")
 			{
 				var keyvalue = document.getElementById("pwd").value;
 				
@@ -166,8 +166,8 @@ function CheckWirelessValue()
 		document.getElementById("WISP_STA_SSID").disabled = true;	
 		document.getElementById("WISP_ROOTAP_MAC").disabled = true;	
 		document.getElementById("pwd").disabled = true;	
-		document.getElementById("WDS_CHAN").disabled = true;	 
-		document.getElementById("STA_SECMODE").disabled = true;	 
+		document.getElementById("WISP_CHAN").disabled = true;	 
+		document.getElementById("WISP_STA_SECMODE").disabled = true;	 
 		disableall();
 	}
 
@@ -188,7 +188,7 @@ function CheckWirelessValue()
 				alert(_("err no choose"));
 				return false;
 			}
-			else if(document.getElementById("STA_SECMODE_2").value == "WPA")
+			else if(document.getElementById("WISP_STA_SECMODE_2").value == "WPA")
 			{
 				var keyvalue = document.getElementById("pwd2").value;
 				if (keyvalue.length == 0)
@@ -223,13 +223,18 @@ function CheckWirelessValue()
 		document.getElementById("WISP_STA_SSID_2").disabled = true;	
 		document.getElementById("WISP_ROOTAP_MAC_2").disabled = true;	
 		document.getElementById("pwd2").disabled = true;	
-		document.getElementById("WDS_CHAN_2").disabled = true;	 
-		document.getElementById("STA_SECMODE_2").disabled = true;	
+		document.getElementById("WISP_CHAN_2").disabled = true;	 
+		document.getElementById("WISP_STA_SECMODE_2").disabled = true;	
 		disableall_5G();		
 	}
 
 	document.getElementById("WIFION_OFF").disabled = true;	 
 	document.getElementById("WIFION_OFF_3").disabled = true;	 
+	document.getElementById("WDSON_OFF").disabled = true;	 
+	document.getElementById("WDSON_OFF_3").disabled = true;	
+	document.getElementById("RADIO_STATUS").disabled = true;
+	document.getElementById("AP_locatIP").disabled = true;
+	
 	waitgifshow();
 	button_commit('WWIRRE_WAN');
 	return true;
@@ -284,8 +289,8 @@ function  WIFSwitch(val)
 		
 		document.getElementById("WISP_STA_SSID").value = s;//obj.options[index].text;
 		document.getElementById("WISP_ROOTAP_MAC").value = ss;//obj.options[index].text;
-		document.getElementById("WDS_CHAN").value = sss;//obj.options[index].text;
-		document.getElementById("STA_SECMODE").value = ssss;//obj.options[index].text;
+		document.getElementById("WISP_CHAN").value = sss;//obj.options[index].text;
+		document.getElementById("WISP_STA_SECMODE").value = ssss;//obj.options[index].text;
 		
 		if(ssss == "None")
 		{
@@ -322,8 +327,8 @@ function  WIFSwitch2(val)
 		
 		document.getElementById("WISP_STA_SSID_2").value = s;//obj.options[index].text;
 		document.getElementById("WISP_ROOTAP_MAC_2").value = ss;//obj.options[index].text;
-		document.getElementById("WDS_CHAN_2").value = sss;//obj.options[index].text;
-		document.getElementById("STA_SECMODE_2").value = ssss;//obj.options[index].text;
+		document.getElementById("WISP_CHAN_2").value = sss;//obj.options[index].text;
+		document.getElementById("WISP_STA_SECMODE_2").value = ssss;//obj.options[index].text;
 		
 		if(ssss == "None")
 		{
@@ -349,7 +354,7 @@ function liinit()
 	getEle("options").style.display = "block";
 	var e = document.getElementById("current");
 	e.innerHTML = _("admw current");
-	document.getElementById("STA_SECMODE").value = "";
+	document.getElementById("WISP_STA_SECMODE").value = "";
 	
 	var lis = getEle("options").getElementsByTagName("li");
 	for(i=0,len = lis.length;i<len;i++)
@@ -389,7 +394,7 @@ function liinit2()
 	getEle("options2").style.display = "block";
 	var e = document.getElementById("current2");
 	e.innerHTML = _("admw current");
-	document.getElementById("STA_SECMODE_2").value = "";
+	document.getElementById("WISP_STA_SECMODE_2").value = "";
 	
 	
 	var lis = getEle("options2").getElementsByTagName("li");
@@ -540,7 +545,7 @@ function switch_wds()
 			widget_display("dwsset2");
 		}
 		widget_display("dwsset3");
-		var ssss = document.getElementById("STA_SECMODE").value;
+		var ssss = document.getElementById("WISP_STA_SECMODE").value;
 		if(ssss != "")
 		{	
 			if(ssss == "None")
@@ -579,7 +584,7 @@ function switch_wds2()
 			widget_display("dwsset22");
 		}
 		widget_display("dwsset32");
-		var ssss=document.getElementById("STA_SECMODE_2").value;
+		var ssss=document.getElementById("WISP_STA_SECMODE_2").value;
 		if(ssss != "")
 		{	
 			if(ssss == "None")
@@ -1656,10 +1661,10 @@ function pppshowpwd_5G()
     <input type="button" name="cancel_motion" id="bCANCEL" class="handaer_input" value="Cancel" onClick="window.location.href='w1';">
     <input type="button" name="apply_motion" id="bAPPLY" class="handaer_input" value="Apply" onClick="CheckWirelessValue();">
 	<input type="submit" name="WWIRRE_WAN" id="WWIRRE_WAN" style="display:none" value="WWIRRE_WAN">
-	<input type="text" style="display:none" name="WDS_CHAN" id="WDS_CHAN" size="20" maxlength="32" value="~~WDS_CHAN~">	
-	<input type="text" style="display:none" name="STA_SECMODE" id="STA_SECMODE" size="20" maxlength="32" value="~~STA_SECMODE~">	
-	<input type="text" style="display:none" name="WDS_CHAN_2" id="WDS_CHAN_2" size="20" maxlength="32" value="~~WDS_CHAN_2~">	
-	<input type="text" style="display:none" name="STA_SECMODE_2" id="STA_SECMODE_2" size="20" maxlength="32" value="~~STA_SECMODE_2~">	
+	<input type="text" style="display:none" name="WISP_CHAN" id="WISP_CHAN" size="20" maxlength="32" value="~~WISP_CHAN~">	
+	<input type="text" style="display:none" name="WISP_STA_SECMODE" id="WISP_STA_SECMODE" size="20" maxlength="32" value="~~WISP_STA_SECMODE~">	
+	<input type="text" style="display:none" name="WISP_CHAN_2" id="WISP_CHAN_2" size="20" maxlength="32" value="~~WISP_CHAN_2~">	
+	<input type="text" style="display:none" name="WISP_STA_SECMODE_2" id="WISP_STA_SECMODE_2" size="20" maxlength="32" value="~~WISP_STA_SECMODE_2~">	
   </td>
 </tr>
 </table>
@@ -1667,6 +1672,9 @@ function pppshowpwd_5G()
 <div style="display:none">    
 	<input type="text" style="display:none" name="WIFION_OFF" id="WIFION_OFF" size="20" maxlength="32" value="~~WIFION_OFF~">	
 	<input type="text" style="display:none" name="WIFION_OFF_3" id="WIFION_OFF_3" size="20" maxlength="32" value="~~WIFION_OFF_3~">	
+	<input type="text" style="display:none" name="WDSON_OFF" id="WDSON_OFF" size="20" maxlength="32" value="~~WDSON_OFF~">	
+	<input type="text" style="display:none" name="WDSON_OFF_3" id="WDSON_OFF_3" size="20" maxlength="32" value="~~WDSON_OFF_3~">	
+
 	<input type="text" style="display:none" name="RADIO_STATUS" id="RADIO_STATUS" size="20" maxlength="32" value="~~RADIO_STATUS~">
 	<input type="text" style="display:none" name="AP_locatIP" id="AP_locatIP" size="20" maxlength="32" value="~~AP_IPADDR~">	
 </div>

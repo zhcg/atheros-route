@@ -24,8 +24,8 @@
 	<message msgid="admw PPPOEdisc" msgstr="Broadband service providers provide username and password" />
 
 	<message msgid="admw DISABLE_a" msgstr="Disable" />
-	<message msgid="admw DISABLEdisc" msgstr="Disable WAN settings,this will be chosen after WISP turning on" />
-	<message msgid="admw wdsonmsg" msgstr="WISP is on,so WAN is disabled,if you want set WAN,please into Settings wizard,or you can get into Advanced Settings->Wireless Settings-> WISP Settings ,turning off WISP switch ,and then set WAN settings" />
+	<message msgid="admw DISABLEdisc" msgstr="Disable WAN settings,this will be chosen after Wireless Bridge turning on" />
+	<message msgid="admw wdsonmsg" msgstr="Wireless Bridge is on,so WAN is disabled,if you want set WAN,please into Settings wizard,or you can get into Advanced Settings->Wireless Settings-> Wireless Bridge Settings ,turning off Wireless Bridge switch ,and then set WAN settings" />
 
 
 	<message msgid="admw L2TPc" msgstr="L2TP Client" />
@@ -112,8 +112,8 @@
 	<message msgid="admw RMd2" msgstr="Network Band:5GHz" />  
 	<message msgid="admw wds" msgstr="WDS Settings" /> 
 	<message msgid="admw wdsswitch" msgstr="WDS switch" /> 
-	<message msgid="admw wisp" msgstr="WISP Settings" /> 
-	<message msgid="admw wispswitch" msgstr="WISP switch" /> 
+	<message msgid="admw wisp" msgstr="Wireless Bridge Settings" /> 
+	<message msgid="admw wispswitch" msgstr="Wireless Bridge switch" /> 
 	
 	<message msgid="admw R_uname" msgstr="WiFi Name(SSID)" />  
 	<message msgid="admw R_pword" msgstr="Password" />  
@@ -138,8 +138,8 @@
 	<message msgid="admw wifides" msgstr="Please set the HBD router basic parameters. Your computer, PAD, intelligent mobile phone will use the following network." />  
 	<message msgid="admw wirelessdes" msgstr="Please select the WiFi to connect(Note:after WDS, WAN port will be disabled)" />  
 
-	<message msgid="admw wds_off_waring" msgstr="Note:DHCP settings and WISP will be disabled after WDS turning on" />
-	<message msgid="admw wisp_off_waring" msgstr="Note:WAN settings and WDS will be disabled after WISP turning on" />
+	<message msgid="admw wds_off_waring" msgstr="Note:DHCP settings and Wireless Bridge will be disabled after WDS turning on" />
+	<message msgid="admw wisp_off_waring" msgstr="Note:WAN settings and WDS will be disabled after Wireless Bridge turning on" />
 
 	<message msgid="admw PPMAC" msgstr="The MAC address of parent PC" />
 	<message msgid="admw MPMAC" msgstr="The MAC address of management PC" />
@@ -257,9 +257,9 @@
 	<message msgid="upgrade fail" msgstr="Version of the same, the firmware is not upgraded " />
 
 	<message msgid="admw offwifides" msgstr="wifi of this Band is off so WDS is not work" />
-	<message msgid="admw offwifideswan" msgstr="wifi of this Band is off so WISP is not work" />
-	<message msgid="admw offwifides1" msgstr="WDS of this Band is on so WISP is not work" />
-	<message msgid="admw offwifides2" msgstr="WISP of this Band is on so WDS is not work" />
+	<message msgid="admw offwifideswan" msgstr="wifi of this Band is off so Wireless Bridge is not work" />
+	<message msgid="admw offwifides1" msgstr="WDS is on so Wireless Bridge is not work" />
+	<message msgid="admw offwifides2" msgstr="Wireless Bridge is on so WDS is not work" />
 
 	<message msgid="admw software" msgstr="Softwsre Version" />
 	<message msgid="admw hardware" msgstr="Hardware Version" />

@@ -512,7 +512,7 @@ function initTranslation()
 	trans_inner("wConnTypeStatic","wan connection type static");
 	trans_inner("wConnTypeDhcp","wan connection type dhcp");
 	trans_inner("wConnTypePppoe","wan connection type pppoe");
-	trans_inner("wConnTypeDisable","wan connection type disable");
+	//trans_inner("wConnTypeDisable","wan connection type disable");
 	
 	//trans_inner("wConnTypeL2tp");
 	//e.innerHTML = _("wan connection type l2tp");
@@ -718,6 +718,12 @@ function disablechange()
 {
 	if((document.getElementById("WISPON_OFF").value=="on")||(document.getElementById("WISPON_OFF_3").value=="on"))
 	{
+		widget_hide("static_table");
+		widget_hide("dhcp_table");
+		widget_hide("pppoe_table");
+		widget_hide("pppoe_table2");
+		widget_hide("l2tp_table");
+		widget_hide("pptp_table");
 		widget_disable("WAN_MODE");
 		widget_display("disable_table");
 		widget_hide("buttontable");
@@ -910,7 +916,7 @@ function help()
       <option ~sWAN_MODE:static~ value="static" id="wConnTypeStatic">Static Mode (fixed IP)</option>
       <option ~sWAN_MODE:dhcp~ value="dhcp" id="wConnTypeDhcp">DHCP (Auto Config)</option>
       <option ~sWAN_MODE:pppoe~ value="pppoe" id="wConnTypePppoe">PPPOE (ADSL)</option>
-      <option ~sWAN_MODE:disable~ value="disable" id="wConnTypeDisable">Disable</option>
+      <!--option ~sWAN_MODE:disable~ value="disable" id="wConnTypeDisable" >Disable</option-->
       <!--option ~sWAN_MODE:l2tp~ value="l2tp" id="wConnTypeL2tp">L2TP</option>
       <option ~sWAN_MODE:pptp~ value="pptp" id="wConnTypePptp">PPTP</option-->
     </select>
