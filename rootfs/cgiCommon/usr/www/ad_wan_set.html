@@ -718,6 +718,7 @@ function disablechange()
 {
 	if((document.getElementById("WISPON_OFF").value=="on")||(document.getElementById("WISPON_OFF_3").value=="on"))
 	{
+		widget_hide("typetable");
 		widget_hide("static_table");
 		widget_hide("dhcp_table");
 		widget_hide("pppoe_table");
