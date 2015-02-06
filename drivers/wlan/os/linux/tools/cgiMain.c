@@ -7011,7 +7011,8 @@ int main(int argc,char **argv)
 				CFG_remove_by_name("WDS_STA_SSID_2");
 				CFG_remove_by_name("WDS_STA_PSK_KEY_2");
 				
-				writeParametersWithSync();
+				writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+				writeParameters("/tmp/.apcfg","w+",0);
 
 				Execute_cmd("repeatVAP on on > /dev/null 2>&1", rspBuff);
 			}
@@ -7702,6 +7703,8 @@ int main(int argc,char **argv)
 			//pure envionment 1
 			system("killall ppy > /dev/null 2>&1");sleep(1);
 			system("pppoe-stop > /dev/null 2>&1");sleep(1);
+			system("killall pppoe-connect > /dev/null 2>&1");
+			system("kill -9 `ps | grep pppoe | awk -F \" \" '{print $1}'` > /dev/null 2>&1");
 			//system("pppoe-stop > /dev/null 2>&1");sleep(1);
 			//pure envionment
 			
@@ -7739,7 +7742,13 @@ int main(int argc,char **argv)
 			{  
 				char	usernameBuff[128];
 				char	passBuff[128];
-							  
+
+			//pure envionment
+			system("killall ppy > /dev/null 2>&1");
+			system("pppoe-stop > /dev/null 2>&1");
+			system("killall pppoe-connect > /dev/null 2>&1");
+			system("kill -9 `ps | grep pppoe | awk -F \" \" '{print $1}'` > /dev/null 2>&1");
+			//pure envionment
 				CFG_get_by_name("PPPOE_USER",usernameBuff);
 				CFG_get_by_name("PPPOE_PWD",passBuff);
 	

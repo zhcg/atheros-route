@@ -10,13 +10,7 @@
       ts=`expr $ts + $ss`   
       
   man_flag=1
-  pppoe-stop > /dev/null 2>&1
-  kill -9 `ps | grep pppoe | awk -F " " '{print $1}'` > /dev/null 2>&1
   
-  #  sleep 2
-  #pppoe-start > /dev/null 2>&1
-  #  sleep 7
-      
   while [ true ] ; do
     sleep 1 
     pppoe_mode=`grep 'PPPOE_MODE' /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-6`
@@ -27,14 +21,11 @@
     #eth1_state=`ifconfig eth1 | grep BROADCAST | awk -F ' ' '{print $3}'` 
      eth1_port3=$((`ethreg -i eth1 -p 3 0x11 | awk -F '=' '{print$2}'| cut -c8`>>2))
      eth1_port2=$((`ethreg -i eth1 -p 2 0x11 | awk -F '=' '{print$2}'| cut -c8`>>2))
-	 ptp=$(`ifconfig ppp0 | grep P-t-P | awk -F " " '{print$3}'| cut -c1-5`)
-
-     
+	   ptp=$(`ifconfig ppp0 | grep P-t-P | awk -F " " '{print$3}'| cut -c1-5`)
+ 
      if [ "$eth1_port3" = "1" -o "$eth1_port2" = "1" ]; then
-       #lan is running
        eth1_state=RUNNING
      else
-       #lan is bad
        eth1_state=BAD
      fi
    
@@ -60,8 +51,8 @@
     
     #auto mode
     if [ "$wan_mode" = "pppoe" ] && [ "$pppoe_mode" = "auto" ]; then
-       pppoe-start > /dev/null 2>&1
-         sleep 7
+	       pppoe-start > /dev/null 2>&1
+	       sleep 5 
     fi
     #tim mode
     if [ "$wan_mode" = "pppoe" ] && [ "$pppoe_mode" = "timing" ]; then
@@ -118,11 +109,4 @@
         sleep 2
       fi
    fi
-#   if [ "$ptp" = "P-t-P" ]; then
-#     sleep 1
-#	   else
-#	      pppoe-stop > /dev/null 2>&1
-#   sleep 2
-#  fi
- 
 done
