@@ -11,8 +11,9 @@ typedef struct wireless_signal{
 	int signal;
 }wireless_signal_t;
 
-wireless_signal_t signal_list_2g[100];
-wireless_signal_t signal_list_5g[100];
+#define MAX_NUMBER 512
+wireless_signal_t signal_list_2g[MAX_NUMBER];
+wireless_signal_t signal_list_5g[MAX_NUMBER];
 wireless_signal_t param_bak;
 static int ii = 0;
 
@@ -77,21 +78,22 @@ int main()
     char *req_method;
     char name[64];
     char pass[64];
-    int i = 0;
-    int j = 0;
+    unsigned long  i = 0;
+    unsigned long  j = 0;
     char rspBuff1[65536];
     char rspBuff2[65536];
     char rspBuff3[65536];
     char rspBuff4[65536];
     char rspBuff5[65536];
-    char  *val1[100];
-    char  *val2[100];
-    char  *val3[100];
-    char  *val4[100];
-    char  *val5[100];    
-    int num=0;
+    char  *val1[MAX_NUMBER];
+    char  *val2[MAX_NUMBER];
+    char  *val3[MAX_NUMBER];
+    char  *val4[MAX_NUMBER];
+    char  *val5[MAX_NUMBER];    
+    unsigned long num=0;
     char  buf[100];//wangyu add  for ath scan
-    int lists=0;
+    unsigned long lists=0;
+	int count_write;
 
 	write_systemLog("search wireless signal list  begin"); 
 
@@ -123,7 +125,7 @@ int main()
     }
     pass[j] = '\0';
 
-    fprintf(errOut,"Your Username is %s<br>Your Password is %s<br> \n", name, pass);
+    fprintf(errOut,"1------Your Username is %s<br>Your Password is %s<br> \n", name, pass);
     //printf("Your Username is %s<br>Your Password is %s<br> \n", name, pass);
     if(strcmp(name,"2G")==0)
     {
@@ -131,6 +133,7 @@ int main()
 		ii = 0;
         //do check ath0
         //Execute_cmd("iwlist ath0 scanning > /tmp/scanlist", rspBuff);
+//		fprintf(errOut,"2-----Your Username is %s<br>Your Password is %s<br> \n", name, pass);
 
         system("iwlist ath0 scanning > /tmp/scanlist 2>&1");
 
@@ -147,6 +150,9 @@ int main()
        // {
         //fprintf(errOut,"[luodp] %s\n",val1[i]+4);
         //}
+        
+//		fprintf(errOut,"Your Username is %s<br>Your Password is %s<br> \n", name, pass);
+
         num=0;
         //Signal level
         Execute_cmd("cat /tmp/scanlist | grep Signal | awk '{print $3}' | cut -d \"-\" -f2", rspBuff5);
@@ -201,6 +207,8 @@ int main()
         {
         fprintf(errOut,"[luodp] %s(%s)(%s)(%s)\n",val2[i]+4,val1[i]+4,val3[i]+4,val4[i]+4);
         }*/
+        
+//	   fprintf(errOut,"3----Your Username is %s<br>Your Password is %s<br> lists = %d ---\n", name, pass,lists);
         char cmdd[512]={0};
         char pic[16]={0};
         FILE *fp;
@@ -226,6 +234,8 @@ int main()
             sprintf(cmdd,"<option id=\"%s(%s)(%s)(%s)\">%s(-%sdbm)</option>",buf,val1[0],val4[0],val3[0],buf,val5[0]);
             fwrite(cmdd,strlen(cmdd),1,fp);
 			#endif	
+
+	//		fprintf(errOut,"6----Your Username is %s<br>Your Password is %s<br> \n", name, pass);
 			
 			memcpy(signal_list_2g[ii].ssid,buf,(strlen(buf)));
 			memcpy(signal_list_2g[ii].Encryption,val3[0],(strlen(val3[0])));			
@@ -244,7 +254,7 @@ int main()
                 sprintf(val3[i]+4,"WPA");
                 else
                 sprintf(val3[i]+4,"None");
-               // fprintf(errOut,"[luodp] %s(%s)(%s)(%s) \n",val2[i]+4,val1[i]+4,val3[i]+4,val4[i]+4);
+                //fprintf(errOut,"[luodp] %s(%s)(%s)(%s) i=== %d \n",val2[i]+4,val1[i]+4,val3[i]+4,val4[i]+4,i);
                 memset(buf,0x00,100);	
                 memcpy(buf,val2[i]+5,(strlen(val2[i]+4)-2));
 				#if 0
@@ -260,7 +270,11 @@ int main()
 				ii ++;
 				
                 }
+				
             }
+			
+//			fprintf(errOut,"44----Your Username is %s<br>Your Password is %s<br>  ii ==== %d \n", name, pass,ii);
+
 			for(i=0;i<ii;i++){
 				for(j=0; j<ii-1-i;j++){
 	//				fprintf(errOut,"2-----------signal_list_2g \n");
@@ -274,6 +288,8 @@ int main()
 					}
 				}							
 			}
+			
+//			fprintf(errOut,"45----Your Username is %s<br>Your Password is %s<br>  ii ==== %d \n", name, pass,ii);
 		
 			for ( j = 0; j < ii ; j++ ){
                 memset(cmdd,0x00,512);
@@ -320,10 +336,11 @@ int main()
 
                 }
                 sprintf(cmdd,"<li rel=\"%s(%s)(%s)(%s)\"> <span><img src=\"/images/%s\"/></span>%s </li>",signal_list_2g[j].ssid,signal_list_2g[j].macaddr,signal_list_2g[j].freq,signal_list_2g[j].Encryption,pic,signal_list_2g[j].ssid);
-                fwrite(cmdd,strlen(cmdd),1,fp);
+                count_write = fwrite(cmdd,strlen(cmdd),1,fp);
 
-//				fprintf(errOut,"22-----------signal_list_2g[%d]:ssid %s Encryption %s signal %d dbm \n",
-//					j,signal_list_2g[j].ssid,signal_list_2g[j].Encryption,signal_list_2g[j].signal);
+	//			fprintf(errOut,"22-----------signal_list_2g[%d]:ssid %s Encryption %s signal %d dbm \n",
+	//				j,signal_list_2g[j].ssid,signal_list_2g[j].Encryption,signal_list_2g[j].signal);
+	
 			}
 			
         }

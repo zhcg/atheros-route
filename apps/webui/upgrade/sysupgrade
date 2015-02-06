@@ -25,7 +25,26 @@ if [ -e $1 ]; then
 	        echo "wrong size"
 	        exit 1
 	fi
+	ap_mode=`cfg -e | grep STARTMODE | awk -F'"' '{print $2}'`
+	if [ "${ap_mode}" = "repeater" -o "${ap_mode}" = "repeater_wisp" ];then
+		cfg -a AP_STARTMODE=dual
+		cfg -r WISPON_OFF
+		cfg -r WISPON_OFF_3
+		cfg -r WISP_STA_SSID
+		cfg -r WISP_STA_SSID_2
+		cfg -r WISP_STA_PSK_KEY
+		cfg -r WISP_STA_PSK_KEY_2
 	
+		cfg -r WDSON_OFF
+		cfg -r WDSON_OFF_3
+		cfg -r WDS_STA_SSID
+		cfg -r WDS_STA_SSID_2
+		cfg -r WDS_STA_PSK_KEY
+		cfg -r WDS_STA_PSK_KEY_2
+		
+		cfg -c
+	
+	fi
 	cd /tmp
 	test1=$(/usr/sbin/firmware_check /tmp/9344version.img | grep "OK")
 #	echo $test1

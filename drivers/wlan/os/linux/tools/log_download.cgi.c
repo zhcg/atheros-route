@@ -19,7 +19,27 @@ int main()
 	char filebuf[MAX_FILE_LEN];
 	char cmd[512];
 	struct stat sb;
-		
+
+	//added by yhl 20150107
+	system("echo *******check_pppoe_ps********* >> /tmp/systemLog");
+	system("ps  >>  /tmp/systemLog");
+	system("echo *******check_pppoe_cfg******** >> /tmp/systemLog");
+	system("cfg -e | grep PPPOE  >> /tmp/systemLog");
+	system("echo ******check_pppoe_chap******* >> /tmp/systemLog");
+	system("cat /etc/ppp/chap-secrets >> /tmp/systemLog");
+	
+	system("echo *******check_pppoe_ifg******* >> /tmp/systemLog");
+	system("ifconfig >> /tmp/systemLog");
+	
+	system("echo *******check_pppoe_route***** >> /tmp/systemLog");
+	system("route -n >> /tmp/systemLog");
+	
+	system("echo *******check_pppoe_try********* >> /tmp/systemLog");
+	system("pppoe-try >> /tmp/systemLog");
+
+	system("echo *******check_pppoe_tcpdps********** >> /tmp/systemLog");
+//	system("tcpdumps -c 30 >> /tmp/systemLog");
+
 	sprintf(cmd, "%s%s", DOWNLOAD_FILE_PATH, DOWNLOAD_FILE_NAME);
 	stat(cmd, &sb); //取待下载文件的大小
 	

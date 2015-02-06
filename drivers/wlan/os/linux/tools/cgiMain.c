@@ -4790,6 +4790,9 @@ void set_wireless_wan(void)
 				CFG_remove_by_name("WISP_STA_SSID_2");
 				CFG_remove_by_name("WISP_STA_PSK_KEY_2");
 			}
+			
+            writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+            writeParameters("/tmp/.apcfg","w+",0);
 
 			if((strncmp(wdsonoff_flag,"on",2) == 0)||(strncmp(wdsonoff5g_flag,"on",2) == 0))
 				CFG_set_by_name("AP_STARTMODE","dual");
@@ -6371,8 +6374,18 @@ int main(int argc,char **argv)
 			if(strstr(wan_modebuf,"repeater_wisp"))
 			{
 				CFG_set_by_name("AP_STARTMODE","dual");
-				CFG_set_by_name("WDSON_OFF","off");
-				CFG_set_by_name("WDSON_OFF_3","off");
+				CFG_set_by_name("WISPON_OFF","off");
+				CFG_set_by_name("WISPON_OFF_3","off");
+				
+				CFG_remove_by_name("WISP_STA_SSID");
+				CFG_remove_by_name("WISP_STA_PSK_KEY");
+
+				CFG_remove_by_name("WISP_STA_SSID_2");
+				CFG_remove_by_name("WISP_STA_PSK_KEY_2");
+
+				writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+				writeParameters("/tmp/.apcfg","w+",0);
+				
 				Execute_cmd("repeatVAP_WISP on on > /dev/null 2>&1", rspBuff);
 			}
 		}
@@ -6563,8 +6576,18 @@ int main(int argc,char **argv)
 			if(strstr(wan_modebuf,"repeater_wisp"))
 			{
 				CFG_set_by_name("AP_STARTMODE","dual");
-				CFG_set_by_name("WDSON_OFF","off");
-				CFG_set_by_name("WDSON_OFF_3","off");
+				CFG_set_by_name("WISPON_OFF","off");
+				CFG_set_by_name("WISPON_OFF_3","off");
+				
+				CFG_remove_by_name("WISP_STA_SSID");
+				CFG_remove_by_name("WISP_STA_PSK_KEY");
+
+				CFG_remove_by_name("WISP_STA_SSID_2");
+				CFG_remove_by_name("WISP_STA_PSK_KEY_2");
+				
+				writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+				writeParameters("/tmp/.apcfg","w+",0);
+
 				Execute_cmd("repeatVAP_WISP on on > /dev/null 2>&1", rspBuff);
 			}
 		}
@@ -6967,6 +6990,34 @@ int main(int argc,char **argv)
 	{
 		fprintf(errOut,"\n%s  %d WIRRE_WAN \n",__func__,__LINE__);
 
+		char pChar[128];
+		char valBuff2[128];	
+		char wan_modebuf[128];	
+		int flag=0;
+
+		if(strcmp(CFG_get_by_name("WWIRRE_WAN",valBuff),"WWIRRE_WAN") == 0 )
+		{
+		
+			CFG_get_by_name("AP_STARTMODE",wan_modebuf);
+			if(strstr(wan_modebuf,"repeater"))
+			{
+				CFG_set_by_name("AP_STARTMODE","dual");
+				CFG_set_by_name("WDSON_OFF","off");
+				CFG_set_by_name("WDSON_OFF_3","off");
+				
+				CFG_remove_by_name("WDS_STA_SSID");
+				CFG_remove_by_name("WDS_STA_PSK_KEY");
+
+				CFG_remove_by_name("WDS_STA_SSID_2");
+				CFG_remove_by_name("WDS_STA_PSK_KEY_2");
+				
+				writeParametersWithSync();
+
+				Execute_cmd("repeatVAP on on > /dev/null 2>&1", rspBuff);
+			}
+
+		}
+
 		set_wireless_wan();
 		gohome =1;
 	}
@@ -7000,8 +7051,37 @@ int main(int argc,char **argv)
 		int flag=0;
 		int ii;
         int led_flag=0;
+
+		char wan_modebuf[128];
 		
 		write_systemLog("WIRELESS basic setting begin"); 
+
+		if (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 ) 
+		{ 
+					flag=11; 
+		}	
+		
+		if(flag == 11)
+		{
+			CFG_get_by_name("AP_STARTMODE",wan_modebuf);
+			if(strstr(wan_modebuf,"repeater_wisp"))
+			{
+				CFG_set_by_name("AP_STARTMODE","dual");
+				CFG_set_by_name("WISPON_OFF","off");
+				CFG_set_by_name("WISPON_OFF_3","off");
+				
+				CFG_remove_by_name("WISP_STA_SSID");
+				CFG_remove_by_name("WISP_STA_PSK_KEY");
+		
+				CFG_remove_by_name("WISP_STA_SSID_2");
+				CFG_remove_by_name("WISP_STA_PSK_KEY_2");
+		
+				writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+				writeParameters("/tmp/.apcfg","w+",0);
+				
+				Execute_cmd("repeatVAP_WISP on on > /dev/null 2>&1", rspBuff);
+			}
+		}
 
         if(strcmp(CFG_get_by_name("WIRELESS",valBuff),"WIRELESS") == 0 )
         {
@@ -7607,6 +7687,17 @@ int main(int argc,char **argv)
 			char route_gw[20];
 			char pppoe_dns[20];
 			char wan_modebuf[128];
+			int flag=0; 
+
+
+			write_systemLog("pppoe basic setting begin"); 
+
+
+			if (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 ) 
+			{ 
+						flag=1; 
+			}	
+
 			
 			//pure envionment 1
 			system("killall ppy > /dev/null 2>&1");sleep(1);
@@ -7619,9 +7710,7 @@ int main(int argc,char **argv)
 			memset(tmp_Buff,'\0',10);
 			memset(cmdstr,'\0',128);
 			memset(route_gw,'\0',20);
-			int flag=0; 
 			
-			write_systemLog("pppoe basic setting begin"); 
 
 			system("ifconfig eth0 0.0.0.0 up"); //wangyu add for the wan mode change from static to pppoe			
 			
@@ -7630,33 +7719,7 @@ int main(int argc,char **argv)
 			{											
 				Execute_cmd("killall udhcpc > /dev/null 2>&1", rspBuff);			   
 			}
-			if (strcmp(CFG_get_by_name("PPPW",valBuff),"PPPW") == 0 ) 
-			{ 
-						flag=1; 
-			}	
 
-
-			if(flag!=1)
-			{
-				CFG_get_by_name("AP_STARTMODE",wan_modebuf);
-				if(strstr(wan_modebuf,"repeater_wisp"))
-				{
-					fprintf(errOut,"please set off the repeater mode first\n");
-					exit(1);
-				}
-			}
-			
-			if(flag == 1)
-			{
-				CFG_get_by_name("AP_STARTMODE",wan_modebuf);
-				if(strstr(wan_modebuf,"repeater_wisp"))
-				{
-					CFG_set_by_name("AP_STARTMODE","dual");
-					CFG_set_by_name("WDSON_OFF","off");
-					CFG_set_by_name("WDSON_OFF_3","off");
-					Execute_cmd("repeatVAP_WISP on on > /dev/null 2>&1", rspBuff);
-				}
-			}
 
 			CFG_get_by_name("PPPOE_MODE",pppoe_mode);
 			fprintf(errOut,"user select pppoe_mode:%s\n",pppoe_mode);

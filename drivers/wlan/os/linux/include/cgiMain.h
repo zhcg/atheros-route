@@ -32,7 +32,7 @@ void __write_systemLog(char *message)
 	fwrite(message,strlen(message),1,f);
 
 	system("echo ****************  >>  /tmp/systemLog");
-	system("dmesg  >>  /tmp/systemLog");
+	system("dmesg -c >>  /tmp/systemLog");
 	system("echo ****************  >>  /tmp/systemLog");
 	system("echo ----------------  >>  /tmp/systemLog");
 
