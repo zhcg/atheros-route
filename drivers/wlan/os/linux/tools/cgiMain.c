@@ -3244,6 +3244,8 @@ int set_dhcp(void)
 		fprintf(errOut,"\n%s  %d set_dhcp \n",__func__,__LINE__);		
 		char valBuff1[128]; 
 	char freqValBuf[50];
+	char valBuffWifiOn[10] = {0};
+	char valBuffWifiOn3[10] = {0};
 	Execute_cmd("grep -c 168c /proc/bus/pci/devices", freqValBuf);
 		
 		write_systemLog("-----set_dhcp begin");	
@@ -3260,9 +3262,19 @@ int set_dhcp(void)
 			//exit(-1);
 			Execute_cmd("killall udhcpd > /dev/null 2>&1",rspBuff);
             Execute_cmd("ifconfig eth1 down;ifconfig eth1 up > /dev/null 2>&1",rspBuff);
-            Execute_cmd("ifconfig ath0 down;ifconfig ath0 up > /dev/null 2>&1",rspBuff);
+			CFG_get_by_name("WIFION_OFF",valBuffWifiOn);
+			if(strcmp(valBuffWifiOn,"off")) 
+			{
+                Execute_cmd("ifconfig ath0 down;ifconfig ath0 up > /dev/null 2>&1",rspBuff);
+            }
             if(strstr(freqValBuf, "1"))
-                Execute_cmd("ifconfig ath2 down;ifconfig ath2 up > /dev/null 2>&1",rspBuff);
+            {
+                CFG_get_by_name("WIFION_OFF_3",valBuffWifiOn3);
+                if(strcmp(valBuffWifiOn3,"off")) 
+                {
+                    Execute_cmd("ifconfig ath2 down;ifconfig ath2 up > /dev/null 2>&1",rspBuff);
+                }
+            }
 		}
 		else if(strcmp(valBuff1,"on") == 0 ) //on
 		{
@@ -3274,9 +3286,22 @@ int set_dhcp(void)
 			Execute_cmd("/usr/sbin/set_addr_conf > /dev/null 2>&1",rspBuff);
 			Execute_cmd("/usr/sbin/udhcpd /etc/udhcpd.conf",rspBuff);
             Execute_cmd("ifconfig eth1 down;ifconfig eth1 up > /dev/null 2>&1",rspBuff);
-            Execute_cmd("ifconfig ath0 down;ifconfig ath0 up > /dev/null 2>&1",rspBuff);
+
+
+			CFG_get_by_name("WIFION_OFF",valBuffWifiOn);
+			if(strcmp(valBuffWifiOn,"off")) 
+			{
+                Execute_cmd("ifconfig ath0 down;ifconfig ath0 up > /dev/null 2>&1",rspBuff);
+            }
             if(strstr(freqValBuf, "1"))
-                Execute_cmd("ifconfig ath2 down;ifconfig ath2 up > /dev/null 2>&1",rspBuff);
+            {
+                CFG_get_by_name("WIFION_OFF_3",valBuffWifiOn3);
+                if(strcmp(valBuffWifiOn3,"off")) 
+                {
+                    Execute_cmd("ifconfig ath2 down;ifconfig ath2 up > /dev/null 2>&1",rspBuff);
+                }
+            }
+            
 		}
 		
 		write_systemLog("-----set_dhcp end");	
@@ -3859,6 +3884,8 @@ void delSta(char *maddr)
 void restart_sta_access()
 {
 	char valBuf[50];
+	char valBuffWifiOn[10] = {0};
+	char valBuffWifiOn3[10] = {0};
 	Execute_cmd("grep -c 168c /proc/bus/pci/devices", valBuf);
 	#if 0
 	int i, j, k;
@@ -3973,9 +4000,19 @@ void restart_sta_access()
 	Execute_cmd("hostapd -B /tmp/secath0 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
 	Execute_cmd("hostapd -B /tmp/secath2 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
 	#endif
-	Execute_cmd("ifconfig ath0 down;ifconfig ath0 up > /dev/null 2>&1",rspBuff);
+	CFG_get_by_name("WIFION_OFF",valBuffWifiOn);
+	if(strcmp(valBuffWifiOn,"off")) 
+	{
+    	Execute_cmd("ifconfig ath0 down;ifconfig ath0 up > /dev/null 2>&1",rspBuff);
+    }
 	if(strstr(valBuf, "1"))
-		Execute_cmd("ifconfig ath2 down;ifconfig ath2 up > /dev/null 2>&1",rspBuff);
+    {
+        CFG_get_by_name("WIFION_OFF_3",valBuffWifiOn3);
+        if(strcmp(valBuffWifiOn3,"off")) 
+        {
+            Execute_cmd("ifconfig ath2 down;ifconfig ath2 up > /dev/null 2>&1",rspBuff);
+        }
+    }
 	
 }
 
@@ -8043,6 +8080,8 @@ int main(int argc,char **argv)
 		char valBuff[50];
 		char valBuff2[50];
 		char valBuff3[1000];
+		char valBuffWifiOn[10] = {0};
+		char valBuffWifiOn3[10] = {0};
 		
 		int num,i=0;
 		
@@ -8148,16 +8187,20 @@ int main(int argc,char **argv)
 
 				
 
-
 				//reboot hostapd
 				Execute_cmd("killall hostapd > /dev/null 2>&1",rspBuff);
 
-				Execute_cmd("cfg -e | grep \"AP_SECMODE=\" | awk -F \"=\" \'{print $2}\'",valBuff3);
-				if(strstr(valBuff3,"None")) /*wifi doesn't use WPA*/
-				Execute_cmd("cfg -t0 /etc/ath/PSK.ap_bss_none ath0 > /tmp/secath0",rspBuff);
-				else
-				Execute_cmd("cfg -t0 /etc/ath/PSK.ap_bss ath0 > /tmp/secath0",rspBuff);
-				Execute_cmd("hostapd -B /tmp/secath0 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+                CFG_get_by_name("WIFION_OFF",valBuffWifiOn);
+                if(strcmp(valBuffWifiOn,"off")) 
+                {
+
+                    Execute_cmd("cfg -e | grep \"AP_SECMODE=\" | awk -F \"=\" \'{print $2}\'",valBuff3);
+                    if(strstr(valBuff3,"None")) /*wifi doesn't use WPA*/
+                    Execute_cmd("cfg -t0 /etc/ath/PSK.ap_bss_none ath0 > /tmp/secath0",rspBuff);
+                    else
+                    Execute_cmd("cfg -t0 /etc/ath/PSK.ap_bss ath0 > /tmp/secath0",rspBuff);
+                    Execute_cmd("hostapd -B /tmp/secath0 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+                }
 
 
 				Execute_cmd("cfg -e | grep \"AP_SECMODE_2=\" | awk -F \"=\" \'{print $2}\'",valBuff3);
@@ -8167,12 +8210,16 @@ int main(int argc,char **argv)
 				Execute_cmd("cfg -t2 /etc/ath/PSK.ap_bss ath1 > /tmp/secath1",rspBuff);
 				Execute_cmd("hostapd -B /tmp/secath1 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
 
-				Execute_cmd("cfg -e | grep \"AP_SECMODE_3=\" | awk -F \"=\" \'{print $2}\'",valBuff3);
-				if(strstr(valBuff3,"None")) /*wifi doesn't use WPA*/
-				Execute_cmd("cfg -t3 /etc/ath/PSK.ap_bss_none ath2 > /tmp/secath2",rspBuff);
-				else
-				Execute_cmd("cfg -t3 /etc/ath/PSK.ap_bss ath2 > /tmp/secath2",rspBuff);
-				Execute_cmd("hostapd -B /tmp/secath2 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+                CFG_get_by_name("WIFION_OFF_3",valBuffWifiOn3);
+                if(strcmp(valBuffWifiOn3,"off")) 
+                {
+                    Execute_cmd("cfg -e | grep \"AP_SECMODE_3=\" | awk -F \"=\" \'{print $2}\'",valBuff3);
+                    if(strstr(valBuff3,"None")) /*wifi doesn't use WPA*/
+                    Execute_cmd("cfg -t3 /etc/ath/PSK.ap_bss_none ath2 > /tmp/secath2",rspBuff);
+                    else
+                    Execute_cmd("cfg -t3 /etc/ath/PSK.ap_bss ath2 > /tmp/secath2",rspBuff);
+                    Execute_cmd("hostapd -B /tmp/secath2 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+                }
 
 				Execute_cmd("cfg -e | grep \"AP_SECMODE_4=\" | awk -F \"=\" \'{print $2}\'",valBuff3);
 				if(strstr(valBuff3,"None")) /*wifi doesn't use WPA*/
