@@ -254,11 +254,11 @@ function showpwd()
 	
 	if(document.getElementById("cccc").checked == true)
 	{
-		document.getElementById("pwdinput").innerHTML='<input type="text" name="WDS_STA_PSK_KEY" id="pwd" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
+		document.getElementById("pwdinput").innerHTML='<input type="text" name="WDS_STA_PSK_KEY" id="pwd" maxlength="64" size="32"  class="handaer_text_content" value="'+pass+'" />';
 	}
 	else
 	{
-		document.getElementById("pwdinput").innerHTML='<input type="password" name="WDS_STA_PSK_KEY" id="pwd" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
+		document.getElementById("pwdinput").innerHTML='<input type="password" name="WDS_STA_PSK_KEY" id="pwd" maxlength="64" size="32" class="handaer_text_content"  value="'+pass+'" />';
    }
  }
  
@@ -268,11 +268,11 @@ function showpwd()
 	
 	if(document.getElementById("cccc2").checked == true)
 	{
-		document.getElementById("pwdinput2").innerHTML='<input type="text" name="WDS_STA_PSK_KEY_2" id="pwd2" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
+		document.getElementById("pwdinput2").innerHTML='<input type="text" name="WDS_STA_PSK_KEY_2" id="pwd2" maxlength="64" size="32"  class="handaer_text_content" value="'+pass+'" />';
 	}
 	else
 	{
-		document.getElementById("pwdinput2").innerHTML='<input type="password" name="WDS_STA_PSK_KEY_2" id="pwd2" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
+		document.getElementById("pwdinput2").innerHTML='<input type="password" name="WDS_STA_PSK_KEY_2" id="pwd2" maxlength="64" size="32" class="handaer_text_content"  value="'+pass+'" />';
    }
  }
 function  WIFSwitch(val)
@@ -781,8 +781,8 @@ function help()
 	<td>
 	<input type="radio" ~cWDSON_OFF:on~ id="rad_1" name="WDSON_OFF" value="on" onClick="switch_wds();"/><label for="rad_1" id="onbutton"></label>
 	<input type="radio" ~cWDSON_OFF:off~ id="rad_2" name="WDSON_OFF" value="off" onClick="switch_wds();"/><label for="rad_2" id="offbutton"></label>
-	<input style="display:none" name="WDS_STA_SSID" id="WDS_STA_SSID" maxlength=32 size=32 class="handaer_text_content" value="~~WDS_STA_SSID~">
-	<input style="display:none" name="WDS_ROOTAP_MAC" id="WDS_ROOTAP_MAC" maxlength=32 size=32 class="handaer_text_content" value="~~WDS_ROOTAP_MAC~">
+	<input style="display:none" name="WDS_STA_SSID" id="WDS_STA_SSID" size=32 class="handaer_text_content" value="~~WDS_STA_SSID~">
+	<input style="display:none" name="WDS_ROOTAP_MAC" id="WDS_ROOTAP_MAC" size=32 class="handaer_text_content" value="~~WDS_ROOTAP_MAC~">
 	</td>
 </tr>
 <tr id="dwsset2">
@@ -809,7 +809,7 @@ function help()
  
 <tr style="display:none" id="tt2">
   <td class="head_s" id="R_pword"></td>
-  <td><span id="pwdinput"><input type="password" id="pwd" name="WDS_STA_PSK_KEY" maxlength="32" size="32" class="handaer_text_content" value="~~WDS_STA_PSK_KEY~" /></span>&nbsp;<input type="checkbox" id="cccc" onClick="showpwd()"/>&nbsp;<label for="cccc" id="showp"></label></td>
+  <td><span id="pwdinput"><input type="password" id="pwd" name="WDS_STA_PSK_KEY" maxlength="64" size="32" class="handaer_text_content" value="~~WDS_STA_PSK_KEY~" /></span>&nbsp;<input type="checkbox" id="cccc" onClick="showpwd()"/>&nbsp;<label for="cccc" id="showp"></label></td>
 </tr>
 
 <tr style="display:none" id="tishi1">
@@ -862,7 +862,7 @@ function help()
  
 <tr style="display:none" id="tt22">
   <td class="head_s" id="R_pword2"></td>
-  <td><span id="pwdinput2"><input type="password" id="pwd2" name="WDS_STA_PSK_KEY_2" maxlength="32" size="32" class="handaer_text_content" value="~~WDS_STA_PSK_KEY_2~" /></span>&nbsp;<input type="checkbox" id="cccc2" onClick="showpwd2()"/>&nbsp;<label for="cccc2" id="showp2"></label></td>
+  <td><span id="pwdinput2"><input type="password" id="pwd2" name="WDS_STA_PSK_KEY_2" maxlength="64" size="32" class="handaer_text_content" value="~~WDS_STA_PSK_KEY_2~" /></span>&nbsp;<input type="checkbox" id="cccc2" onClick="showpwd2()"/>&nbsp;<label for="cccc2" id="showp2"></label></td>
 </tr>
 
 <tr style="display:none" id="tishi2">
