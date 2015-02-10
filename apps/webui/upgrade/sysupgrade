@@ -43,8 +43,14 @@ if [ -e $1 ]; then
 		cfg -r WDS_STA_PSK_KEY_2
 		
 		cfg -c
-	
 	fi
+	
+	if [ "${ap_mode}" = "repeater_wisp" ];then
+		wan_mode=`cfg -e | grep WAN_MODE_BACK | awk -F'=' '{print $2}'`
+		cfg -a WAN_MODE=$wan_mode		
+		cfg -c
+	fi
+	
 	cd /tmp
 	test1=$(/usr/sbin/firmware_check /tmp/9344version.img | grep "OK")
 #	echo $test1
