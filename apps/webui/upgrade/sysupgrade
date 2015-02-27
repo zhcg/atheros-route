@@ -46,7 +46,7 @@ if [ -e $1 ]; then
 	fi
 	
 	if [ "${ap_mode}" = "repeater_wisp" ];then
-		wan_mode=`cfg -e | grep WAN_MODE_BACK | awk -F'=' '{print $2}'`
+		wan_mode=`cfg -e | grep WAN_BACK_MODE | awk -F'=' '{print $2}'`
 		cfg -a WAN_MODE=$wan_mode		
 		cfg -c
 	fi

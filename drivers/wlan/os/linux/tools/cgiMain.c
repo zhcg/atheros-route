@@ -4803,7 +4803,7 @@ void set_wireless_wan(void)
 			if((strncmp(wdsonoff_flag,"off",2) == 0)&&(strncmp(wdsonoff5g_flag,"off",2) == 0))	
 			{
 				CFG_get_by_name("WAN_MODE",wan_mode_backup);
-				CFG_set_by_name("WAN_MODE_BACK",wan_mode_backup);
+				CFG_set_by_name("WAN_BACK_MODE",wan_mode_backup);
 				CFG_set_by_name("WAN_MODE","disable");
 	//			CFG_set_by_name("DHCPON_OFF","off");
 			}
@@ -4834,7 +4834,7 @@ void set_wireless_wan(void)
 			if((strncmp(wdsonoff_flag,"on",2) == 0)||(strncmp(wdsonoff5g_flag,"on",2) == 0))
 				CFG_set_by_name("AP_STARTMODE","dual");
 //			CFG_set_by_name("DHCPON_OFF","on");
-			CFG_get_by_name("WAN_MODE_BACK",wan_mode_backup);
+			CFG_get_by_name("WAN_BACK_MODE",wan_mode_backup);
 			CFG_set_by_name("WAN_MODE",wan_mode_backup);
 			flag=2;
 		}
