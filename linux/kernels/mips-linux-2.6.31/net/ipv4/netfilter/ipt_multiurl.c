@@ -37,6 +37,11 @@
 
 #define	HOST_STR	"\r\nHost: "
 
+struct xt_dnsurl_info {
+	int enforce_dns;
+	int url_len;
+        char url[30];
+};
 /*
 start: the search area start mem addr;
 end:	the search area end mem addr;
@@ -188,6 +193,40 @@ static bool checkentry(const struct xt_mtchk_param *param)
 	return 1;
 }
 
+static bool dnsmatch(const struct sk_buff *skb, 
+      const struct xt_match_param *param)
+{	
+	const struct xt_dnsurl_info *info = param->matchinfo;		
+
+	struct iphdr *iph = ip_hdr(skb);
+        struct udphdr *udph = (void *)iph + iph->ihl*4;	/* Might be TCP, UDP */
+	 u_int8_t *url_len = (void *)udph + 20;
+	char *url = url_len+1;
+	if(info->enforce_dns)
+	{
+		return 1;
+	}
+	if( *url_len == info->url_len)
+	{
+		if (!memcmp(url, info->url, info->url_len))
+		{
+			printk("yaomoon: match dnsurl url_len = %d\n",info->url_len);
+			return 1;
+		}
+	}
+
+	return 0;
+
+}
+static bool dnscheckentry(const struct xt_mtchk_param *param)
+{
+/*
+	if (param->match->matchsize != XT_ALIGN(sizeof(struct xt_multiurl_info)))		
+		return 0;
+
+*/
+	return 1;
+}
 
 static struct xt_match multiurl_match = { 
     .name           = "multiurl",
@@ -198,13 +237,24 @@ static struct xt_match multiurl_match = {
     .me             = THIS_MODULE,
 };
 
+static struct xt_match dnsurl_match = { 
+    .name           = "dnsurl",
+    .family			= NFPROTO_IPV4,
+    .match          = &dnsmatch,
+    .checkentry     = &dnscheckentry,
+    .matchsize		= XT_ALIGN(sizeof(struct xt_dnsurl_info)),
+    .me             = THIS_MODULE,
+};
+
 static int __init init(void)
 {
+	xt_register_match(&dnsurl_match);
 	return xt_register_match(&multiurl_match);
 }
 
 static void __exit fini(void)
 {
+	xt_unregister_match(&dnsurl_match);
 	xt_unregister_match(&multiurl_match);
 }
 

@@ -280,6 +280,65 @@ nf_nat_mangle_udp_packet(struct sk_buff *skb,
 	return 1;
 }
 EXPORT_SYMBOL(nf_nat_mangle_udp_packet);
+int
+nf_nat_mangle_udp_packet_fw(struct sk_buff *skb,
+			 struct nf_conn *ct,
+			 enum ip_conntrack_info ctinfo,
+			 unsigned int match_offset,
+			 unsigned int match_len,
+			 const char *rep_buffer,
+			 unsigned int rep_len)
+{
+	struct rtable *rt = skb_rtable(skb);
+	struct iphdr *iph;
+	struct udphdr *udph;
+	int datalen, oldlen;
+
+	/* UDP helpers might accidentally mangle the wrong packet */
+	iph = ip_hdr(skb);
+	if (skb->len < iph->ihl*4 + sizeof(*udph) +
+			       match_offset + match_len)
+		return 0;
+
+	if (!skb_make_writable(skb, skb->len))
+		return 0;
+
+	if (rep_len > match_len &&
+	    rep_len - match_len > skb_tailroom(skb) &&
+	    !enlarge_skb(skb, rep_len - match_len))
+		return 0;
+
+	iph = ip_hdr(skb);
+	udph = (void *)iph + iph->ihl*4;
+
+	oldlen = skb->len - iph->ihl*4;
+	mangle_contents(skb, iph->ihl*4 + sizeof(*udph),
+			match_offset, match_len, rep_buffer, rep_len);
+
+	/* update the length of the UDP packet */
+	datalen = skb->len - iph->ihl*4;
+	udph->len = htons(datalen);
+
+	/* fix udp checksum if udp checksum was previously calculated */
+	if (!udph->check && skb->ip_summed != CHECKSUM_PARTIAL)
+		return 1;
+
+	if (skb->ip_summed != CHECKSUM_PARTIAL) {
+//printk("ssssssssssssssssssssssssssssssssssssssssssssssssss\n");
+			udph->check = 0;
+			udph->check = csum_tcpudp_magic(iph->saddr, iph->daddr,
+							datalen, IPPROTO_UDP,
+							csum_partial(udph,
+								     datalen, 0));
+			if (!udph->check)
+				udph->check = CSUM_MANGLED_0;
+	} else
+		inet_proto_csum_replace2(&udph->check, skb,
+					 htons(oldlen), htons(datalen), 1);
+
+	return 1;
+}
+EXPORT_SYMBOL(nf_nat_mangle_udp_packet_fw);
 
 /* Adjust one found SACK option including checksum correction */
 static void

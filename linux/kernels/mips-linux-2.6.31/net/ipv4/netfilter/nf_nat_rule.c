@@ -9,6 +9,7 @@
 /* Everything about the rules for NAT. */
 #include <linux/types.h>
 #include <linux/ip.h>
+#include <linux/udp.h>
 #include <linux/netfilter.h>
 #include <linux/netfilter_ipv4.h>
 #include <linux/module.h>
@@ -24,10 +25,19 @@
 #include <net/netfilter/nf_nat_core.h>
 #include <net/netfilter/nf_nat_rule.h>
 
+#include <net/netfilter/nf_nat_helper.h>
+#include <net/netfilter/nf_conntrack_helper.h>
+#include <net/netfilter/nf_conntrack_expect.h>
+
 #define NAT_VALID_HOOKS ((1 << NF_INET_PRE_ROUTING) | \
 			 (1 << NF_INET_POST_ROUTING) | \
 			 (1 << NF_INET_LOCAL_OUT))
 
+struct ipt_dns_info {
+        unsigned int ip;
+	//int url_len;
+        //char url[30];
+};
 static struct
 {
 	struct ipt_replace repl;
@@ -103,6 +113,75 @@ ipt_dnat_target(struct sk_buff *skb, const struct xt_target_param *par)
 	return nf_nat_setup_info(ct, &mr->range[0], IP_NAT_MANIP_DST);
 }
 
+static unsigned int
+ipt_dns_target(struct sk_buff *skb, const struct xt_target_param *par)
+{
+	const struct ipt_dns_info *dnsinfo = par->targinfo;
+
+	struct iphdr *iph = ip_hdr(skb);
+        struct udphdr *udph = (void *)iph + iph->ihl*4;	/* Might be TCP, UDP */
+	int ret = 0;
+	int addr = 0;
+	u_int16_t port = 0;
+	u_int16_t *flag = (void *)udph + 10;
+	char buff[50] = {0};
+	char *buff_p = buff;
+	enum ip_conntrack_info ctinfo;
+	struct nf_conn *ct = nf_ct_get(skb, &ctinfo);
+	 u_int16_t *udp_check = (void *)udph + 6;
+	 u_int8_t *url_len = (void *)udph + 20;
+	char *url = url_len+1;
+	
+/*
+	printk("yaomoon:dnat accep1111 url=%s\n", dnsinfo->url);
+	printk("yaomoon:dnat accep1111 url_len=%d\n", dnsinfo->url_len);
+	printk("yaomoon:dnat accep1111 ip=%x\n", dnsinfo->ip);
+*/
+
+/*
+	if( *url_len == dnsinfo->url_len)
+	{
+		if (!memcmp(url, dnsinfo->url, dnsinfo->url_len))
+		{
+*/
+
+			addr = iph->daddr;iph->daddr = iph->saddr; iph->saddr = addr;
+			port = udph->dest;
+			udph->dest = udph->source;
+			udph->source = port;
+
+			*flag ++= 0x8580;
+			*flag ++= 0x0001;
+			*flag = 0x0001;
+
+
+			*buff_p++=0xc0;	
+			*buff_p++=0x0c;	
+			*(int *)buff_p = 0x00010001;
+			buff_p +=4;
+			*(int *)buff_p = 0x0;
+			buff_p +=4;
+			*(u_int16_t *)buff_p = 0x4;
+			buff_p +=2;
+			*(int *)buff_p = dnsinfo->ip;
+
+			//printk("yaomoon:dnat accep1111 ttl=%x\n", iph->ttl);
+
+			nf_nat_mangle_udp_packet_fw(skb, ct, ctinfo,
+							      udph->len-8, 0,
+							      &buff, 16);
+
+			//printk("yaomoon:dnat accep2222 udp_check=%x\n",*udp_check);
+			//struct nf_conn *ct;
+			//enum ip_conntrack_info ctinfo;
+			//const struct nf_nat_multi_range_compat *mr = par->targinfo;
+
+			//printk("yaomoon : DNS target debu2222222222222222222222222222 \n");
+//		}
+//	}
+
+	return 1;
+}
 static bool ipt_snat_checkentry(const struct xt_tgchk_param *par)
 {
 	const struct nf_nat_multi_range_compat *mr = par->targinfo;
@@ -124,6 +203,19 @@ static bool ipt_dnat_checkentry(const struct xt_tgchk_param *par)
 		printk("DNAT: multiple ranges no longer supported\n");
 		return false;
 	}
+	return true;
+}
+static bool ipt_dns_checkentry(const struct xt_tgchk_param *par)
+{
+//	const struct nf_nat_multi_range_compat *mr = par->targinfo;
+
+	/* Must be a valid range */
+/*
+	if (mr->rangesize != 1) {
+		printk("DNS: multiple ranges no longer supported\n");
+		return false;
+	}
+*/
 	return true;
 }
 
@@ -184,6 +276,17 @@ static struct xt_target ipt_dnat_reg __read_mostly = {
 	.family		= AF_INET,
 };
 
+
+static struct xt_target ipt_dns_reg __read_mostly = {
+	.name		= "DNS",
+	.target		= ipt_dns_target,
+	.targetsize	= sizeof(struct ipt_dns_info),
+	.table		= "nat",
+	.hooks		= (1 << NF_INET_PRE_ROUTING) | (1 << NF_INET_LOCAL_OUT),
+	.checkentry	= ipt_dns_checkentry,
+	.family		= AF_INET,
+};
+
 static int __net_init nf_nat_rule_net_init(struct net *net)
 {
 	net->ipv4.nat_table = ipt_register_table(net, &nat_table,
@@ -218,6 +321,8 @@ int __init nf_nat_rule_init(void)
 	if (ret != 0)
 		goto unregister_snat;
 
+	ret = xt_register_target(&ipt_dns_reg);
+
 	return ret;
 
  unregister_snat:
@@ -231,6 +336,7 @@ int __init nf_nat_rule_init(void)
 void nf_nat_rule_cleanup(void)
 {
 	xt_unregister_target(&ipt_dnat_reg);
+	xt_unregister_target(&ipt_dns_reg);
 	xt_unregister_target(&ipt_snat_reg);
 	unregister_pernet_subsys(&nf_nat_rule_net_ops);
 }
