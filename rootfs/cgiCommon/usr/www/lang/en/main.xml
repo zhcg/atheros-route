@@ -117,7 +117,7 @@
 	<message msgid="netcheck netc" msgstr="Start" />
 	<message msgid="netcheck checkingwaiting" msgstr="Checking" />
 	<message msgid="netcheck Result" msgstr="Result" />
-	<message msgid="netcheck t1_wantype" msgstr="Automatic detection of WAN type" />
+	<message msgid="netcheck t1_wantype" msgstr="Automatic detection of wired WAN type" />
 	<message msgid="netcheck t1_basetype" msgstr="BASE option type" />
 	<message msgid="netcheck t1_pngBD" msgstr="Result of Ping www.baidu.com" />
 	<message msgid="netcheck t1_pingQQ" msgstr="Result of Ping www.qq.com" />

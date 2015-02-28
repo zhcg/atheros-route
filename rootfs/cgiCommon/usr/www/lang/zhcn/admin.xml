@@ -136,7 +136,7 @@
 	<message msgid="admw wirelessdes" msgstr="请您选择要连接的WiFi" />  
 	<message msgid="admw wispdes" msgstr="请您选择要连接的WiFi" />  
 	<message msgid="admw wds_off_waring" msgstr="注意：无线中继开启后，DHCP服务将自动禁用，无线桥接也将无法使用" />
-	<message msgid="admw wisp_off_waring" msgstr="注意：无线桥接开启后，WAN口将自动禁用，无线中继也将无法使用；禁用后，需要手动配置外网连接" />
+	<message msgid="admw wisp_off_waring" msgstr="注意：无线桥接开启后，WAN口将自动禁用，无线中继也将无法使用；无线桥接禁用后，需要手动配置外网连接" />
 	
 	<message msgid="admw PPMAC" msgstr="家长PC的MAC地址" />
 	<message msgid="admw MPMAC" msgstr="当前管理PC的MAC地址" />
@@ -171,8 +171,9 @@
 
 	<message msgid="admw wds0" msgstr="正在连接......" />
 	<message msgid="admw wds1" msgstr="连接成功" />
-	<message msgid="admw wds2" msgstr="连接失败" />
+	<message msgid="admw wds2" msgstr="连接失败（桥接路由与本机网关网段相同）" />
 	<message msgid="admw wds3" msgstr="连接超时" />
+	<message msgid="admw wds4" msgstr="连接失败（密码错误）" />
 
 
 	<message msgid="admin open" msgstr="不加密" />

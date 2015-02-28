@@ -56,14 +56,20 @@ function status_2G()
 				document.getElementById("w1_status").innerHTML=_("admw wds3");
 			}
 		}
+		else if(result1.indexOf("unnormal") >= 0 )
+		{
+			document.getElementById("w1_status").innerHTML=_("admw wds2");
+			clearInterval(timer_2G);
+		}		
 		else if(result1.indexOf("normal") >= 0 )
 		{
 			document.getElementById("w1_status").innerHTML=_("admw wds1");
 			clearInterval(timer_2G);
 		}
-		else if(result1.indexOf("unnormal") >= 0 )
+
+		else if(result1.indexOf("invalid") >= 0 )
 		{
-			document.getElementById("w1_status").innerHTML=_("admw wds2");
+			document.getElementById("w1_status").innerHTML=_("admw wds4");
 			clearInterval(timer_2G);
 		}
 		else
@@ -90,14 +96,20 @@ function status_5G()
 				document.getElementById("w2_status").innerHTML=_("admw wds3");
 			}
 		}
+		else if(result2.indexOf("unnormal") >= 0 )
+		{
+			document.getElementById("w2_status").innerHTML=_("admw wds2");
+			clearInterval(timer_5G);
+		}
 		else if(result2.indexOf("normal") >= 0 )
 		{
 			document.getElementById("w2_status").innerHTML=_("admw wds1");
 			clearInterval(timer_5G);
 		}
-		else if(result2.indexOf("unnormal") >= 0 )
+
+		else if(result2.indexOf("invalid") >= 0 )
 		{
-			document.getElementById("w2_status").innerHTML=_("admw wds2");
+			document.getElementById("w2_status").innerHTML=_("admw wds4");
 			clearInterval(timer_5G);
 		}
 		else

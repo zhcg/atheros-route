@@ -117,7 +117,7 @@
 	<message msgid="netcheck netc" msgstr="开始诊断" />
 	<message msgid="netcheck checkingwaiting" msgstr="正在检测" />
 	<message msgid="netcheck Result" msgstr="诊断结果" />
-	<message msgid="netcheck t1_wantype" msgstr="自动检测WAN口类型" />
+	<message msgid="netcheck t1_wantype" msgstr="自动检测有线WAN口类型" />
 	<message msgid="netcheck t1_basetype" msgstr="HBD路由器路由设置类型" />
 	<message msgid="netcheck t1_pngBD" msgstr="Ping百度结果" />
 	<message msgid="netcheck t1_pingQQ" msgstr="Ping腾讯结果" />
