@@ -108,6 +108,8 @@ function stateChanged()
 				trans_inner("type2","sysinfo l2tp");	
 			else if(ps2=="p2tp")
 				trans_inner("type2","sysinfo pptp");	
+			else if(ps2=="disable")
+				trans_inner("type2","sysinfo disable");	
 			else
 				trans_inner("type2","sysinfo un");	
 			widget_hide("TYPE2IMG");
