@@ -134,7 +134,9 @@ if [ "${wds_flag}" = "on" ];then
 		fi
 	    activateVAP ath$VAP_NUM:$WISP_STA_RADIO_ID - $WISP_STA_SECMODE $WISP_STA_SECFILE $WISP_WPS_ENABLE
 		if [ -f /tmp/sta_conf_filename ];then
-		    wpa_supplicant `cat /tmp/sta_conf_filename` &
+		#	wpa_supplicant `cat /tmp/sta_conf_filename` > /tmp/wifi2g.log 2>&1 &
+			wpa_supplicant `cat /tmp/sta_conf_filename` | tee /tmp/wifi2g.log & 
+			echo "$!" > /tmp/wifi2g.pid				
 			sleep 2
 		fi
 		nat_wwan.sh ath$VAP_NUM
@@ -153,7 +155,9 @@ if [ $number_pci = 1 ]; then
 			rm -fr /tmp/sta_conf_filename
 			activateVAP ath$VAP_NUM:$WISP_STA_RADIO_ID_2 - $WISP_STA_SECMODE_2 $WISP_STA_SECFILE_2 $WISP_WPS_ENABLE_2
 			if [ -f /tmp/sta_conf_filename ]; then
-				wpa_supplicant `cat /tmp/sta_conf_filename` &				
+				#wpa_supplicant `cat /tmp/sta_conf_filename` > /tmp/wifi5g.log 2>&1 &
+				wpa_supplicant `cat /tmp/sta_conf_filename` | tee /tmp/wifi5g.log &
+				echo "$!" > /tmp/wifi5g.pid				
 			fi
 			nat_wwan.sh ath$VAP_NUM
 		fi
@@ -162,7 +166,7 @@ fi
 
 if [ "${wds_flag}" = "on" ];then
 	if [ "s$WISP_STA_SSID" != "s" ];then
-		sleep 30
+		sleep 20
 		wisp_flag=`cfg -e | grep WISP_MODE_2G | awk -F'=' '{print $2}'`
                 if [ "${wisp_flag}" = "dhcp" ];then
                         udhcpc -b -i ath$VAP_NUM_2 -h HBD-Router -s /etc/udhcpc.script
@@ -183,7 +187,7 @@ if [ $number_pci = 1 ]; then
 			if [ "${wds_flag}" = "on" ];then
 				sleep 3
 			else
-				sleep 30
+				sleep 20
 			fi
 	                wisp_flag=`cfg -e | grep WISP_MODE_5G | awk -F'=' '{print $2}'`
 	                if [ "${wisp_flag}" = "dhcp" ];then

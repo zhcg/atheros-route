@@ -383,10 +383,13 @@ if [ "${AP_STARTMODE}" = "repeater_wisp" ]; then
 	if [ "s$WISP_STA_SSID" != "s" ];then
         activateVAP ath$VAP_NUM:$WISP_STA_RADIO_ID - $WISP_STA_SECMODE $WISP_STA_SECFILE $WISP_WPS_ENABLE
 		if [ -f /tmp/sta_conf_filename ]; then
-            wpa_supplicant `cat /tmp/sta_conf_filename` &
+            #wpa_supplicant `cat /tmp/sta_conf_filename` > /tmp/wifi2g.log 2>&1 &
+			wpa_supplicant `cat /tmp/sta_conf_filename`  | tee /tmp/wifi2g.log &
+			echo "$!" > /tmp/wifi2g.pid		
 			sleep 2
         fi
 		nat_wwan.sh ath$VAP_NUM
+		sleep 20
 		wisp_flag=`cfg -e | grep WISP_MODE_2G | awk -F'=' '{print $2}'`
 		if [ "${wisp_flag}" = "dhcp" ];then
 			udhcpc -b -i ath$VAP_NUM -h HBD-Router -s /etc/udhcpc.script
@@ -403,12 +406,19 @@ if [ "${AP_STARTMODE}" = "repeater_wisp" ]; then
 	
 	if [ "${wds_flag_2}" = "on" ];then	
 	if [ "s$WISP_STA_SSID_2" != "s" ];then
-	rm -fr /tmp/sta_conf_filename
+		rm -fr /tmp/sta_conf_filename
         activateVAP ath$VAP_NUM:$WISP_STA_RADIO_ID_2 - $WISP_STA_SECMODE_2 $WISP_STA_SECFILE_2 $WISP_WPS_ENABLE_2
 		if [ -f /tmp/sta_conf_filename ]; then
-            wpa_supplicant `cat /tmp/sta_conf_filename` &
+            	#wpa_supplicant `cat /tmp/sta_conf_filename` > /tmp/wifi5g.log 2>&1 &
+				wpa_supplicant `cat /tmp/sta_conf_filename`  | tee /tmp/wifi5g.log &
+				echo "$!" > /tmp/wifi5g.pid	
         fi
 		nat_wwan.sh ath$VAP_NUM
+		if [ "${wds_flag}" = "on" ];then
+			sleep 3
+		else
+			sleep 20
+		fi
 		wisp_flag=`cfg -e | grep WISP_MODE_5G | awk -F'=' '{print $2}'`
 		if [ "${wisp_flag}" = "dhcp" ];then
 			udhcpc -b -i ath$VAP_NUM -h HBD-Router -s /etc/udhcpc.script
@@ -421,7 +431,8 @@ if [ "${AP_STARTMODE}" = "repeater_wisp" ]; then
 		fi
 	fi
 	fi
-
+	sleep 5
+	repeatVAP_check
 fi
 
 ## Extender AP

@@ -5163,6 +5163,10 @@ void set_wireless_wan(void)
 	//			Execute_cmd("apup > /dev/null 2>&1", rspBuff);
 				sprintf(order,"repeatVAP_WISP %s %s > /dev/null 2>&1",wds2gturn_flag,wds5gturn_flag);
 				Execute_cmd(order, rspBuff);
+
+				sleep(5);
+				
+				Execute_cmd("repeatVAP_check > /dev/null 2>&1",rspBuff);
 //				Execute_cmd("repeatVAP > /dev/null 2>&1", rspBuff);
 				
 				//reboot hostapd

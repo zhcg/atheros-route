@@ -1,0 +1,44 @@
+#!/bin/sh
+
+ath_num=`ifconfig  | grep -c ath`
+number_pci=`grep -c 168c /proc/bus/pci/devices`
+
+wifi_flag=`cfg -e | grep  WIFION_OFF= | awk -F'=' '{print $2}'`
+wifi_flag_2=`cfg -e | grep  WIFION_OFF_3= | awk -F'=' '{print $2}'`
+wds2g_flag=`echo $1 | grep on`
+wds5g_flag=`echo $2 | grep on`
+
+. /etc/ath/apcfg_simple
+
+WIFI_2G_LOG="/tmp/wifi2g.log"
+WIFI_5G_LOG="/tmp/wifi5g.log"
+WIFI_2G_PID="/tmp/wifi2g.pid"
+WIFI_5G_PID="/tmp/wifi5g.pid"
+wds_flag=`cfg -e | grep  WISPON_OFF= | awk -F'=' '{print $2}'`
+
+if [ "${wds_flag}" = "on" ];then
+	wifi_key_check=`cat $WIFI_2G_LOG | grep  "4-Way Handshake failed - pre-shared key may be incorrect"`
+	if [ ! -z "${wifi_key_check}" ];then
+		#echo wifi key is wrong
+		cfg -a WWAN_2G_FLAG=invalid
+		cfg -c
+		rm -f $WIFI_2G_LOG
+		PID=`cat $WIFI_2G_PID`
+		kill -9 $PID > /dev/null 2>&1
+	fi
+fi
+	
+if [ $number_pci = 1 ]; then
+	wds_flag_2=`cfg -e | grep  WISPON_OFF_3= | awk -F'=' '{print $2}'`
+	if [ "${wds_flag_2}" = "on" ];then
+		wifi_key_check=`cat $WIFI_5G_LOG | grep  "4-Way Handshake failed - pre-shared key may be incorrect"`
+		if [ ! -z "${wifi_key_check}" ];then
+			#echo wifi key is wrong
+			cfg -a WWAN_5G_FLAG=invalid
+			cfg -c
+			rm -f $WIFI_5G_LOG
+			PID=`cat $WIFI_5G_PID`
+			kill -9 $PID > /dev/null 2>&1
+		fi
+	fi
+fi

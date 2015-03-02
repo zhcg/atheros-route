@@ -29,6 +29,7 @@ if [ -z $ip ];then
 			fi
 		fi
 	fi
+	cfg -c
 	exit 1
 fi
 
@@ -58,9 +59,10 @@ if [ ! -z $ath_flag ];then
 	WWAN_ADDR=`echo $ip | awk 'BEGIN{OFS=FS="."}{print $1,$2,$3}'`
 	if [ ! -z ${WWAN_ADDR} ];then
 		echo ---------------------- $WWAN_ADDR
-		WAN_ADDR=`ifconfig  eth0 | grep 'inet addr:'|  cut -d: -f2 | awk '{ print $1}'|awk 'BEGIN{OFS=FS="."}{print $1,$2,$3}'`
+		#WAN_ADDR=`ifconfig  eth0 | grep 'inet addr:'|  cut -d: -f2 | awk '{ print $1}'|awk 'BEGIN{OFS=FS="."}{print $1,$2,$3}'`
 
-		if [ ${WWAN_ADDR} = ${WAN_ADDR} -o  ${WWAN_ADDR} = ${LAN_ADDR} ];then
+		#if [ ${WWAN_ADDR} = ${WAN_ADDR} -o  ${WWAN_ADDR} = ${LAN_ADDR} ];then
+		if [ ${WWAN_ADDR} = ${LAN_ADDR} ];then
 		if [ $flag_2g_wds = "on" -a $flag_5g_wds = "off" ];then
 			cfg -a WWAN_2G_FLAG=unnormal
 		fi
@@ -77,23 +79,25 @@ if [ ! -z $ath_flag ];then
 		fi
 		fi
 		
+		cfg -c
+
 		if [ "${WWAN_ADDR}" = "${LAN_ADDR}" ];then
 			echo "the dhcp apply IP addr has same domain with br0"
 			exit 2
 		fi
-		if [ "${WWAN_ADDR}" = "${WAN_ADDR}" ];then
-			echo "the dhcp apply IP addr has same domain with eth0"
-			exit 2
-		fi
+		#if [ "${WWAN_ADDR}" = "${WAN_ADDR}" ];then
+		#	echo "the dhcp apply IP addr has same domain with eth0"
+		#	exit 2
+		#fi
 
-		if [ $interface = "ath5" ];then
-			WLAN_ADDR=`ifconfig  ath4 | grep 'inet addr:'|  cut -d: -f2 | awk '{ print $1}'|awk 'BEGIN{OFS=FS="."}{print $1,$2,$3}'`
-			if [ "${WWAN_ADDR}" = "${WLAN_ADDR}" ];then
-				echo "the dhcp apply IP addr has same domain with ath4"
-				cfg -a WWAN_5G_FLAG=unnormal
-				exit 2
-			fi
-		fi
+		#if [ $interface = "ath5" ];then
+	#		WLAN_ADDR=`ifconfig  ath4 | grep 'inet addr:'|  cut -d: -f2 | awk '{ print $1}'|awk 'BEGIN{OFS=FS="."}{print $1,$2,$3}'`
+		#	if [ "${WWAN_ADDR}" = "${WLAN_ADDR}" ];then
+		#		echo "the dhcp apply IP addr has same domain with ath4"
+		#		cfg -a WWAN_5G_FLAG=unnormal
+		#		exit 2
+		#	fi
+		#fi
 	fi
 fi
 
@@ -154,6 +158,8 @@ else
 #	cfg -c
 	rflag=
 fi
+
+cfg -c
 
 pridns=`echo $dns | awk -F' ' '{print $1}'`
 secdns=`echo $dns | awk -F' ' '{print $2}'`
