@@ -40,8 +40,7 @@ static void init(struct xt_entry_match *m)
 
 static void print_dnsurl(const struct xt_dnsurl_info *info)
 {
-    int i;
-		printf("%s", info->url[i]);
+		printf("%s  ", info->url);
 }
 
 /* Function which parses command options; returns true if it
@@ -97,9 +96,9 @@ static void print(const void *ip,
 
     const struct xt_dnsurl_info *info = (const struct xt_dnsurl_info *)match->data;
 
-    printf("dnsurl ");
-	printf("--url ");
-	//print_dnsurl(info);
+    //printf("dnsurl ");
+	//printf("--url ");
+	print_dnsurl(info);
 }
 
 /* Saves the union ipt_matchinfo in parsable form to stdout. */

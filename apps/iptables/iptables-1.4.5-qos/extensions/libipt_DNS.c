@@ -58,10 +58,16 @@ static int DNS_parse(int c, char **argv, int invert, unsigned int *flags,
 	return 1;
 }
 
-static void DNS_print(const void *ip, const struct xt_entry_target *target,
+static void DNS_print(const void *ip, struct xt_entry_target *target,
                       int numeric)
 {
-		printf("DNS print");
+	struct ipt_dns_info *dnsinfo = (struct ipt_dns_info *)target->data;
+
+    //char ip_addr[20] = {0};
+    char *ip_str = NULL;
+    struct in_addr *ip_addr = (struct in_addr *)(&(dnsinfo->ip));
+    ip_str = xtables_ipaddr_to_anyname(ip_addr);
+	printf("%s", ip_str);
 }
 
 static void DNS_save(const void *ip, const struct xt_entry_target *target)

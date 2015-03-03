@@ -210,7 +210,17 @@ static bool dnsmatch(const struct sk_buff *skb,
 	{
 		if (!memcmp(url, info->url, info->url_len))
 		{
-			printk("yaomoon: match dnsurl url_len = %d\n",info->url_len);
+	//		printk("yaomoon: match dnsurl url_len = %d\n",info->url_len);
+			return 1;
+		}
+	}
+	if( (*url_len == 3)&&(*(url_len+4) == info->url_len))
+	{
+        url_len +=4;
+        url = url_len+1;
+		if (!memcmp(url, info->url, info->url_len))
+		{
+	//		printk("yaomoon: match dnsurl url_len = %d\n",info->url_len);
 			return 1;
 		}
 	}
