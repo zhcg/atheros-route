@@ -493,6 +493,7 @@ upap_rauthack(u, inp, id, len)
 	    }
 	    msg = (char *) inp;
 	    PRINTMSG(msg, msglen);
+	    PRINTMSG("Authentication success", 22);
 	}
     }
 
