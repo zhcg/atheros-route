@@ -1740,7 +1740,7 @@ char *processSpecial(char *paramStr, char *outBuff)
                         if (strlen(lease.hostname) > 0)
                         	outBuff += sprintf(outBuff,"<td>%s</td>",lease.hostname);
                         else
-                        	outBuff += sprintf(outBuff,"<td>NULL</td>");
+                        	outBuff += sprintf(outBuff,"<td></td>");
 
 						/*mac*/
 						strncpy(buf, mac_buf, 17);
@@ -1749,7 +1749,7 @@ char *processSpecial(char *paramStr, char *outBuff)
 							outBuff += sprintf(outBuff,"<td>%s</td>", buf);
 						}
 						else
-                        	outBuff += sprintf(outBuff,"<td>NULL</td>");
+                        	outBuff += sprintf(outBuff,"<td></td>");
 						//outBuff += sprintf(outBuff,"<td>%02x", lease.mac[0]);
                         //for (i = 1; i < 6; i++)
                         //	outBuff += sprintf(outBuff,":%02x", lease.mac[i]);
@@ -8231,6 +8231,9 @@ int main(int argc,char **argv)
 				else
 				Execute_cmd("cfg -t4 /etc/ath/PSK.ap_bss ath3 > /tmp/secath3",rspBuff);
 				Execute_cmd("hostapd -B /tmp/secath3 -e /etc/wpa2/entropy > /dev/null 2>&1",rspBuff);
+
+			//	system("localdns > /dev/null 2>&1");
+                
 			}
 	   }//end eth0_ip != br0_ip
 	   else
