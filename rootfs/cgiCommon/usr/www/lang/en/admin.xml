@@ -177,7 +177,7 @@
 	<message msgid="admw wds0" msgstr="Connecting......" />
 	<message msgid="admw wds1" msgstr="Connected" />
 	<message msgid="admw wds2" msgstr="Connected fail(bridge routing with the same machine gateway network)" />
-	<message msgid="admw wds3" msgstr="Connected timeout" />
+	<message msgid="admw wds3" msgstr="Connected timeout(maybe bridge routing with the same machine gateway network)" />
 	<message msgid="admw wds4" msgstr="Connected fail(password error)" />
 
 
