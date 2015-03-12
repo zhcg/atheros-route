@@ -1087,9 +1087,15 @@ char *processSpecial(char *paramStr, char *outBuff)
 					CFG_get_by_name("WIFION_OFF_3",wifi1_flag);
 
 					if(strcmp(wifi0_flag,"on") == 0 ) //on
+                    {
                     	Execute_cmd("wlanconfig ath0 list sta > /configure_backup/.STAlist 2>&1", rspBuff);					
+                    	Execute_cmd("wlanconfig ath1 list sta >> /configure_backup/.STAlist 2>&1", rspBuff);					
+                    }
 					if(strcmp(wifi1_flag,"on") == 0 ) //on
+                    {
 						Execute_cmd("wlanconfig ath2 list sta > /configure_backup/.STAlist2 2>&1", rspBuff);  /*for 5G*/
+						Execute_cmd("wlanconfig ath3 list sta >> /configure_backup/.STAlist2 2>&1", rspBuff);  /*for 5G*/
+                    }
 
 					fprintf(errOut,"\n%s  %d  to open [dhcpclinetlist]\n",__func__,__LINE__);
 
@@ -1702,7 +1708,10 @@ char *processSpecial(char *paramStr, char *outBuff)
 					CFG_get_by_name("WIFION_OFF_3",wifi1_flag);
 
 					if(strcmp(wifi0_flag,"on") == 0 ) //on
+                    {
 						Execute_cmd("wlanconfig ath0 list sta > /configure_backup/.STAlist 2>&1", rspBuff);
+						Execute_cmd("wlanconfig ath1 list sta >> /configure_backup/.STAlist 2>&1", rspBuff);
+                    }
 
 					fprintf(errOut,"\n%s  %d  to open [dhcpclinetlist] \n",__func__,__LINE__);
 
@@ -1812,7 +1821,10 @@ char *processSpecial(char *paramStr, char *outBuff)
 					CFG_get_by_name("WIFION_OFF_3",wifi1_flag);
 
 					if(strcmp(wifi0_flag,"on") == 0 ) //on
+                    {
 	                    Execute_cmd("wlanconfig ath0 list sta > /configure_backup/.STAlist 2>&1", rspBuff);
+	                    Execute_cmd("wlanconfig ath1 list sta >> /configure_backup/.STAlist 2>&1", rspBuff);
+                    }
 
                     fp = fopen(UDHCPD_FILE, "r");  /*  /var/run/udhcpd.leases   */
                     if (NULL == fp)
@@ -4714,6 +4726,7 @@ int set_ntp_server( void)
 		}
 		fclose(fileBuf2);
 	}
+    set_dhcp();
 	write_systemLog("set_ntp_server end");	
 
 	return set_ntp_flag;
