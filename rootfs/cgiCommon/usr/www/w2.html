@@ -906,6 +906,10 @@ function initValue()
 	widget_display("div_wan_opmode");
 	widget_display("modedes");
 	butwork("true","false","true","true");
+	if (document.wizard_form.WAN_MODE[4].checked == true) 
+	{
+		document.wizard_form.WAN_MODE[0].checked = true;
+	}
 	disablechange();
 }
 
