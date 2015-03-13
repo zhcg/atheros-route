@@ -3279,6 +3279,7 @@ int set_dhcp(void)
 			{
                 Execute_cmd("ifconfig ath0 down;ifconfig ath0 up > /dev/null 2>&1",rspBuff);
             }
+            Execute_cmd("ifconfig ath1 down;ifconfig ath1 up > /dev/null 2>&1",rspBuff);
             if(strstr(freqValBuf, "1"))
             {
                 CFG_get_by_name("WIFION_OFF_3",valBuffWifiOn3);
@@ -3286,6 +3287,7 @@ int set_dhcp(void)
                 {
                     Execute_cmd("ifconfig ath2 down;ifconfig ath2 up > /dev/null 2>&1",rspBuff);
                 }
+                Execute_cmd("ifconfig ath3 down;ifconfig ath3 up > /dev/null 2>&1",rspBuff);
             }
 		}
 		else if(strcmp(valBuff1,"on") == 0 ) //on
@@ -3305,6 +3307,7 @@ int set_dhcp(void)
 			{
                 Execute_cmd("ifconfig ath0 down;ifconfig ath0 up > /dev/null 2>&1",rspBuff);
             }
+            Execute_cmd("ifconfig ath1 down;ifconfig ath1 up > /dev/null 2>&1",rspBuff);
             if(strstr(freqValBuf, "1"))
             {
                 CFG_get_by_name("WIFION_OFF_3",valBuffWifiOn3);
@@ -3312,6 +3315,7 @@ int set_dhcp(void)
                 {
                     Execute_cmd("ifconfig ath2 down;ifconfig ath2 up > /dev/null 2>&1",rspBuff);
                 }
+                Execute_cmd("ifconfig ath3 down;ifconfig ath3 up > /dev/null 2>&1",rspBuff);
             }
             
 		}
@@ -4726,7 +4730,6 @@ int set_ntp_server( void)
 		}
 		fclose(fileBuf2);
 	}
-    set_dhcp();
 	write_systemLog("set_ntp_server end");	
 
 	return set_ntp_flag;

@@ -11,3 +11,14 @@ SECOND=`cfg -e | grep $PCTIME|awk -F'"' '{print $2}'| awk -F'-' '{print $4}'| aw
 
 date -u $MONTH$DAY$HOUR$MINUTE$YEAR.$SECOND
 
+ifconfig eth1 down;ifconfig eth1 up > /dev/null 2>&1
+wifion=`cfg -e | grep "WIFION_OFF="|awk -F'=' '{print $2}'`
+if [ "$wifion" = "on" ];then
+ifconfig ath0 down;ifconfig ath0 up > /dev/null 2>&1
+fi
+ifconfig ath1 down;ifconfig ath1 up > /dev/null 2>&1
+wifion_3=`cfg -e | grep "WIFION_OFF_3="|awk -F'=' '{print $2}'`
+if [ "$wifion_3" = "on" ];then
+ifconfig ath2 down;ifconfig ath2 up > /dev/null 2>&1
+fi
+ifconfig ath3 down;ifconfig ath3 up > /dev/null 2>&1

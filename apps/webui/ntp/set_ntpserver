@@ -4,31 +4,57 @@ while true
 do
 ntp_switch=`cfg -e | grep "NTPON_OFF"|awk -F'=' '{print $2}'`
 echo $ntp_switch
+
+
+
 if [ "$ntp_switch" = "off" ];then
 	echo "the ntp switch is off"
 	killall ntpclient > /dev/null 2>&1
 	exit 1
 fi
 if [ "$ntp_switch" = "on" ];then
-	timezone=`cfg -e | grep "TIME_ZONE"| awk -F'=' '{print $2}'| cut -c6-8`
-	echo $timezone
-	ntpserverip1=`cfg -e | grep "NTPServerIP1"|awk -F'"' '{print $2}'`
-	echo $ntpserverip1
-	ntpserverip2=`cfg -e | grep "NTPServerIP2"|awk -F'"' '{print $2}'`
-	echo $ntpserverip2
 	
-	if [ ! -z $ntpserverip1 -a ! -z $timezone ];then
-		#/usr/sbin/ntpclient -d -s -h $ntpserverip1 -t  $timezone > /tmp/ntpserver.log 2>&1 &
-		/usr/sbin/ntpclient -c 2 -d -s -h $ntpserverip1 -i 2 -t  $timezone  &
-		sleep 10
-	fi
-	killall ntpclient > /dev/null 2>&1
-	if [ ! -z $ntpserverip2 -a ! -z $timezone ];then
-		#/usr/sbin/ntpclient -d -s -h $ntpserverip2 -t  $timezone > /tmp/ntpserver.log 2>&1 &
-		/usr/sbin/ntpclient -c 2 -d -s -h $ntpserverip2 -i 2 -t  $timezone  &
-		sleep 10
-	fi
-	killall ntpclient > /dev/null 2>&1
+    YEAR=`date +%Y`
+    if [ $YEAR -lt 2015 ];then
+        timezone=`cfg -e | grep "TIME_ZONE"| awk -F'=' '{print $2}'| cut -c6-8`
+        echo $timezone
+        ntpserverip1=`cfg -e | grep "NTPServerIP1"|awk -F'"' '{print $2}'`
+        echo $ntpserverip1
+        ntpserverip2=`cfg -e | grep "NTPServerIP2"|awk -F'"' '{print $2}'`
+        echo $ntpserverip2
+
+        if [ ! -z $ntpserverip1 -a ! -z $timezone ];then
+            #/usr/sbin/ntpclient -d -s -h $ntpserverip1 -t  $timezone > /tmp/ntpserver.log 2>&1 &
+            /usr/sbin/ntpclient -c 2 -d -s -h $ntpserverip1 -i 2 -t  $timezone  &
+            sleep 10
+        fi
+        killall ntpclient > /dev/null 2>&1
+        if [ ! -z $ntpserverip2 -a ! -z $timezone ];then
+            #/usr/sbin/ntpclient -d -s -h $ntpserverip2 -t  $timezone > /tmp/ntpserver.log 2>&1 &
+            /usr/sbin/ntpclient -c 2 -d -s -h $ntpserverip2 -i 2 -t  $timezone  &
+            sleep 10
+        fi
+        killall ntpclient > /dev/null 2>&1
+
+        YEAR=`date +%Y`
+        if [ $YEAR -lt 2015 ];then
+            echo notok
+        else
+            ifconfig eth1 down;ifconfig eth1 up > /dev/null 2>&1
+            wifion=`cfg -e | grep "WIFION_OFF="|awk -F'=' '{print $2}'`
+            if [ "$wifion" = "on" ];then
+                ifconfig ath0 down;ifconfig ath0 up > /dev/null 2>&1
+            fi
+            ifconfig ath1 down;ifconfig ath1 up > /dev/null 2>&1
+            wifion_3=`cfg -e | grep "WIFION_OFF_3="|awk -F'=' '{print $2}'`
+            if [ "$wifion_3" = "on" ];then
+                ifconfig ath2 down;ifconfig ath2 up > /dev/null 2>&1
+            fi
+            ifconfig ath3 down;ifconfig ath3 up > /dev/null 2>&1
+        fi
+
+    fi
+    sleep 10
 	
 fi
 done
