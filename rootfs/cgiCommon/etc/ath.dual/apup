@@ -383,8 +383,8 @@ if [ "${AP_STARTMODE}" = "repeater_wisp" ]; then
 	if [ "s$WISP_STA_SSID" != "s" ];then
         activateVAP ath$VAP_NUM:$WISP_STA_RADIO_ID - $WISP_STA_SECMODE $WISP_STA_SECFILE $WISP_WPS_ENABLE
 		if [ -f /tmp/sta_conf_filename ]; then
-            #wpa_supplicant `cat /tmp/sta_conf_filename` > /tmp/wifi2g.log 2>&1 &
-			wpa_supplicant `cat /tmp/sta_conf_filename`  | tee /tmp/wifi2g.log &
+			#wpa_supplicant `cat /tmp/sta_conf_filename`  | tee /tmp/wifi2g.log &
+			wpa_supplicant `cat /tmp/sta_conf_filename` & 
 			echo "$!" > /tmp/wifi2g.pid		
 			sleep 2
         fi
@@ -399,6 +399,11 @@ if [ "${AP_STARTMODE}" = "repeater_wisp" ]; then
                 	then
                 	        route add default gw ${WISP_GW_2G}
                 	fi
+			if ping -c 1 ${WISP_GW_2G} 2>/dev/null |grep "ttl=[0-9]\+"
+			then
+				cfg -a WWAN_2G_FLAG=normal
+				cfg -c
+			fi
 		fi
 		VAP_NUM=$(($VAP_NUM+1))
     fi
@@ -409,8 +414,8 @@ if [ "${AP_STARTMODE}" = "repeater_wisp" ]; then
 		rm -fr /tmp/sta_conf_filename
         activateVAP ath$VAP_NUM:$WISP_STA_RADIO_ID_2 - $WISP_STA_SECMODE_2 $WISP_STA_SECFILE_2 $WISP_WPS_ENABLE_2
 		if [ -f /tmp/sta_conf_filename ]; then
-            	#wpa_supplicant `cat /tmp/sta_conf_filename` > /tmp/wifi5g.log 2>&1 &
-				wpa_supplicant `cat /tmp/sta_conf_filename`  | tee /tmp/wifi5g.log &
+				#wpa_supplicant `cat /tmp/sta_conf_filename`  | tee /tmp/wifi5g.log &
+				wpa_supplicant `cat /tmp/sta_conf_filename` &
 				echo "$!" > /tmp/wifi5g.pid	
         fi
 		nat_wwan.sh ath$VAP_NUM
@@ -428,11 +433,16 @@ if [ "${AP_STARTMODE}" = "repeater_wisp" ]; then
                 	then
                 	        route add default gw ${WISP_GW_5G}
                 	fi
+			if ping -c 1 ${WISP_GW_5G} 2>/dev/null |grep "ttl=[0-9]\+"
+			then
+				cfg -a WWAN_5G_FLAG=normal
+				cfg -c
+			fi
 		fi
 	fi
 	fi
-	sleep 5
-	repeatVAP_check
+#	sleep 5
+#	repeatVAP_check
 fi
 
 ## Extender AP

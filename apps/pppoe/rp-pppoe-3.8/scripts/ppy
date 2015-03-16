@@ -13,8 +13,8 @@
   
   while [ true ] ; do
     sleep 1 
-    pppoe_mode=`grep 'PPPOE_MODE' /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-6`
-    wan_mode=`grep 'WAN_MODE' /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-5`
+    pppoe_mode=`grep 'PPPOE_MODE=' /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-6`
+    wan_mode=`grep 'WAN_MODE=' /tmp/.apcfg | awk -F '=' '{ print $2 }'|cut -c1-5`
     ppp0=`route -n|grep ppp0|awk -F ' ' '{print$8}'|awk 'NR==1'`
     sta_addr=`wlanconfig ath0 list | grep ADDR |awk '{print $1}'|cut -c1-4`
     #eth1_state=`dmesg | grep -n 'entering'| tail -n 1 | awk -F ' ' '{print$5}'`

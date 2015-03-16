@@ -135,7 +135,8 @@ if [ "${wds_flag}" = "on" ];then
 	    activateVAP ath$VAP_NUM:$WISP_STA_RADIO_ID - $WISP_STA_SECMODE $WISP_STA_SECFILE $WISP_WPS_ENABLE
 		if [ -f /tmp/sta_conf_filename ];then
 		#	wpa_supplicant `cat /tmp/sta_conf_filename` > /tmp/wifi2g.log 2>&1 &
-			wpa_supplicant `cat /tmp/sta_conf_filename` | tee /tmp/wifi2g.log & 
+		#	wpa_supplicant `cat /tmp/sta_conf_filename` | tee /tmp/wifi2g.log & 
+			wpa_supplicant `cat /tmp/sta_conf_filename` & 
 			echo "$!" > /tmp/wifi2g.pid				
 			sleep 2
 		fi
@@ -156,7 +157,8 @@ if [ $number_pci = 1 ]; then
 			activateVAP ath$VAP_NUM:$WISP_STA_RADIO_ID_2 - $WISP_STA_SECMODE_2 $WISP_STA_SECFILE_2 $WISP_WPS_ENABLE_2
 			if [ -f /tmp/sta_conf_filename ]; then
 				#wpa_supplicant `cat /tmp/sta_conf_filename` > /tmp/wifi5g.log 2>&1 &
-				wpa_supplicant `cat /tmp/sta_conf_filename` | tee /tmp/wifi5g.log &
+				#wpa_supplicant `cat /tmp/sta_conf_filename` | tee /tmp/wifi5g.log &
+				wpa_supplicant `cat /tmp/sta_conf_filename` &
 				echo "$!" > /tmp/wifi5g.pid				
 			fi
 			nat_wwan.sh ath$VAP_NUM
@@ -176,6 +178,11 @@ if [ "${wds_flag}" = "on" ];then
                         then
                                 route add default gw ${WISP_GW_2G}
                         fi
+			if ping -c 1 ${WISP_GW_2G} 2>/dev/null |grep "ttl=[0-9]\+"
+        		then
+                		cfg -a WWAN_2G_FLAG=normal
+				cfg -c
+       			fi
                 fi
 #		udhcpc -b -i ath$VAP_NUM_2 -h HBD-Router -s /etc/udhcpc.script
 	fi
@@ -198,6 +205,12 @@ if [ $number_pci = 1 ]; then
 	                        then
 	                                route add default gw ${WISP_GW_5G}
 	                        fi
+				if ping -c 1 ${WISP_GW_5G} 2>/dev/null |grep "ttl=[0-9]\+"
+        			then
+                			cfg -a WWAN_5G_FLAG=normal
+					cfg -c
+       				fi
+
 	                fi
 #				udhcpc -b -i ath$VAP_NUM -h HBD-Router -s /etc/udhcpc.script
 		fi

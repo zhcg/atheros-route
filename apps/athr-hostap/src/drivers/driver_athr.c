@@ -1153,6 +1153,9 @@ static void driver_atheros_event_wireless(struct driver_atheros_data *drv,
 
 		switch (iwe->cmd) {
 		case SIOCGIWAP:
+			
+//			wpa_printf(MSG_ERROR, "------EVENT_DISASSOC HAPPEN ------");
+			system("repeatVAP_check");
 			wpa_printf(MSG_DEBUG, "Wireless event: new AP: "
 				   MACSTR,
 				   MAC2STR((u8 *) iwe->u.ap_addr.sa_data));
