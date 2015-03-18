@@ -115,8 +115,8 @@ device_code varchar2(5) default \"\"";
     sprintf(reset_sql_cmd2,"create table %s(%s)",REGISTERTB,table_data2);
     PRINT("reset_sql_cmd2 = %s\n",reset_sql_cmd2);
     PRINT("insert_default_cmd = %s\n",insert_default_cmd);
-	if(sqlite3_exec(db,reset_sql_cmd,NULL,NULL,NULL) == SQLITE_OK)
-		sqlite3_exec(db,insert_default_cmd,NULL,NULL,NULL);
+	sqlite3_exec(db,reset_sql_cmd,NULL,NULL,NULL);
+	sqlite3_exec(db,insert_default_cmd,NULL,NULL,NULL);
 	sqlite3_exec(db,reset_sql_cmd2,NULL,NULL,NULL);
 	return 0;
 }
@@ -454,7 +454,7 @@ int sqlite3_update(unsigned char columns_count, char (*columns_name)[30], char (
 int sqlite3_select(unsigned char columns_count, char (*columns_name)[30], char (*columns_value)[100])
 {
     PRINT_STEP("entry...\n");   
-    int i = 0;
+	int i = 0;
     int ret = 0;
     int index = 0;
     char **result_buf; //是 char ** 类型，两个*号
@@ -462,10 +462,6 @@ int sqlite3_select(unsigned char columns_count, char (*columns_name)[30], char (
     sqlite3 *db;
     char *err_msg;
     char sql[1024] = {0};
-    if (columns_count == 0)
-    {
-        return 0;
-    }
     
     if ((columns_name == NULL) || (columns_value == NULL))
     {
@@ -473,6 +469,7 @@ int sqlite3_select(unsigned char columns_count, char (*columns_name)[30], char (
         return NULL_ERR;
     }
     PRINT("common_tools.config->db = %s\n", common_tools.config->db);
+
     check_dir();
     if (sqlite3_open(common_tools.config->db, &db) != 0)
     {
@@ -494,6 +491,7 @@ int sqlite3_select(unsigned char columns_count, char (*columns_name)[30], char (
     strcat(sql, " from ");
     strcat(sql, TB);
     PRINT("sql = %s\n", sql);
+
     if(sqlite3_get_table(db, sql, &result_buf, &row_count, &column_count, &err_msg) != 0)
     {
 		reset_db(db);

@@ -51,7 +51,7 @@ int init_env()
     char buf[64] = {0};
     
     PRINT("USB_NODE = %s\n", USB_NODE);
-    if ((res = open(USB_NODE, O_RDWR, 0644)) < 0)
+    if ((res = open(USB_NODE, O_RDWR)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "open failed", OPEN_ERR); 
         return OPEN_ERR;

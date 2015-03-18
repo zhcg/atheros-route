@@ -1340,19 +1340,35 @@ EXIT:
  */
 int get_register_state()
 {
+    int register_state = -1;
+    int authentication_state = 0;
     int res = 0;
-    char column_name[1][30] = {"register_state"};
-    char column_value[1][100] = {0};
+    char column_name[2][30] = {"register_state","authentication_state"};
+    char column_value[2][100] = {0};
     
-    if ((res = database_management.select(1, column_name, column_value)) < 0)
+    if ((res = database_management.select(2, column_name, column_value)) < 0)
     {
         OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_select failed!", res);
         return res;
     }
     
-    res = atoi(column_value[0]);
-    PRINT("register_state = %02X\n", (unsigned char)res);
-    return (unsigned char)res;
+    register_state = atoi(column_value[0]);
+    PRINT("register_state = %02X\n", (unsigned char)register_state);
+    authentication_state = atoi(column_value[1]);
+    PRINT("authentication_state = %02X\n", (unsigned char)authentication_state);
+    if(authentication_state != 240)
+    {
+		PRINT("delete db\n");
+		system("rm /configure_backup/terminal_dev_register/db/terminal_base_db");
+
+		if ((res = database_management.select(2, column_name, column_value)) < 0)
+		{
+			OPERATION_LOG(__FILE__, __FUNCTION__, __LINE__, "sqlite3_select failed!", res);
+			return res;
+		}
+		register_state = 251;
+	}
+    return (unsigned char)register_state;
 }
  
 /**

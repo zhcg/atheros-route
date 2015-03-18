@@ -274,24 +274,24 @@ int monitor_request(struct s_terminal_dev_register * terminal_dev_register)
 int main(int argc, char ** argv)
 {
     // 信号捕获和处理
-    signal(SIGHUP, signal_handle);
-    signal(SIGINT, signal_handle);
-    signal(SIGQUIT, signal_handle);
+    //signal(SIGHUP, signal_handle);
+    //signal(SIGINT, signal_handle);
+    //signal(SIGQUIT, signal_handle);
 
-    signal(SIGABRT, signal_handle);
-    signal(SIGBUS, signal_handle);
+    //signal(SIGABRT, signal_handle);
+    //signal(SIGBUS, signal_handle);
 
     signal(SIGPIPE, signal_handle);
-    signal(SIGALRM, signal_handle);
-    signal(SIGTERM, signal_handle);
+    //signal(SIGALRM, signal_handle);
+    //signal(SIGTERM, signal_handle);
     
-    signal(SIGCLD, signal_handle);
-    signal(SIGCHLD, signal_handle);
-    signal(SIGSTOP, signal_handle);
+    //signal(SIGCLD, signal_handle);
+    //signal(SIGCHLD, signal_handle);
+    //signal(SIGSTOP, signal_handle);
     
-    signal(SIGPROF, signal_handle);
-    signal(SIGVTALRM, signal_handle);
-    signal(SIGPWR, signal_handle);
+    //signal(SIGPROF, signal_handle);
+    //signal(SIGVTALRM, signal_handle);
+    //signal(SIGPWR, signal_handle);
 
     strcpy(common_tools.argv0, argv[0]);
 
