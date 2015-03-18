@@ -281,7 +281,7 @@ int main(int argc, char ** argv)
     //signal(SIGABRT, signal_handle);
     //signal(SIGBUS, signal_handle);
 
-    signal(SIGPIPE, signal_handle);
+    signal(SIGPIPE, SIG_IGN);
     //signal(SIGALRM, signal_handle);
     //signal(SIGTERM, signal_handle);
     
