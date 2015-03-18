@@ -3710,5 +3710,5 @@ void led_control_pthread_func(void *argv)
 
 void *pthread_update(void *para)
 {
-	update(PHONE_APP_NAME,PHONE_APP_DES,PHONE_APP_CODE,PHONE_APP_VERSION,10,&phone_control.phone_busy);
+	update(PHONE_APP_NAME,PHONE_APP_DES,PHONE_APP_CODE,PHONE_APP_VERSION,60*60,&phone_control.phone_busy);
 }
