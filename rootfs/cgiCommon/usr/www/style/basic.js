@@ -73,75 +73,134 @@ function isAllNum(str) {
     }
     return 1
 }
-function checkIpAddr(field, ismask) {
-    if (field.value == "") {
-        if (ismask == 1) {
+function checkIpAddr(field, ismask) 
+{
+    if (field.value == "")
+	{
+        if (ismask == 1) 
+		{
             alert(_("err IP empty"))
-        } else if (ismask == 2) {
+        } 
+		else if (ismask == 2) 
+		{
             alert(_("err sub empty"))
-        } else if (ismask == 3) {
+        } 
+		else if (ismask == 3) 
+		{
             alert(_("err gw empty"))
-        } else if (ismask == 4) {
+        } 
+		else if (ismask == 4) 
+		{
             alert(_("err DNS empty"))
         }
-        field.value = field.defaultValue;
-        field.focus();
-        return false
-    }
-    if (isAllNum(field.value) == 0) {
-        if (ismask == 1) {
-            alert(_("err IP format"))
-        } else if (ismask == 2) {
-            alert(_("err sub format"))
-        } else if (ismask == 3) {
-            alert(_("err gw format"))
-        } else if (ismask == 4) {
-            alert(_("err DNS format"))
+		else if (ismask == 5) 
+		{
+            alert(_("err IP empty"))
         }
         field.value = field.defaultValue;
         field.focus();
         return false
     }
-    if (ismask == 1) {
-        if ((!checkRange(field.value, 1, 1, 247)) || (!checkRange(field.value, 2, 0, 255)) || (!checkRange(field.value, 3, 0, 255)) || (!checkRange(field.value, 4, 1, 254))) {
+    if (isAllNum(field.value) == 0) 
+	{
+        if (ismask == 1) 
+		{
+            alert(_("err IP format"))
+        } 
+		else if (ismask == 2) 
+		{
+            alert(_("err sub format"))
+        } 
+		else if (ismask == 3) 
+		{
+            alert(_("err gw format"))
+        } 
+		else if (ismask == 4) 
+		{
+            alert(_("err DNS format"))
+        }
+		else if (ismask == 5) 
+		{
+            alert(_("err IP format"))
+        }
+        field.value = field.defaultValue;
+        field.focus();
+        return false
+    }
+    if (ismask == 1) 
+	{
+        if ((!checkRange(field.value, 1, 1, 247)) || (!checkRange(field.value, 2, 0, 255)) || (!checkRange(field.value, 3, 0, 255)) || (!checkRange(field.value, 4, 1, 254)))
+		{
             alert(_("err IP format"));
             field.value = field.defaultValue;
             field.focus();
             return false
         }
-    } else if (ismask == 2) {
-        if ((!checkRange(field.value, 1, 0, 255)) || (!checkRange(field.value, 2, 0, 255)) || (!checkRange(field.value, 3, 0, 255)) || (!checkRange(field.value, 4, 0, 255))) {
+    } 
+	else if (ismask == 2) 
+	{
+        if ((!checkRange(field.value, 1, 0, 255)) || (!checkRange(field.value, 2, 0, 255)) || (!checkRange(field.value, 3, 0, 255)) || (!checkRange(field.value, 4, 0, 255))) 
+		{
             alert(_("err sub format"));
             field.value = field.defaultValue;
             field.focus();
             return false
         }
-    } else if (ismask == 3) {
-        if ((!checkRange(field.value, 1, 1, 247)) || (!checkRange(field.value, 2, 0, 255)) || (!checkRange(field.value, 3, 0, 255)) || (!checkRange(field.value, 4, 1, 254))) {
+    } 
+	else if (ismask == 3) 
+	{
+        if ((!checkRange(field.value, 1, 1, 247)) || (!checkRange(field.value, 2, 0, 255)) || (!checkRange(field.value, 3, 0, 255)) || (!checkRange(field.value, 4, 1, 254))) 
+		{
             alert(_("err gw format"));
             field.value = field.defaultValue;
             field.focus();
             return false
         }
-    } else if (ismask == 4) {
-        if ((!checkRange(field.value, 1, 1, 247)) || (!checkRange(field.value, 2, 0, 255)) || (!checkRange(field.value, 3, 0, 255)) || (!checkRange(field.value, 4, 1, 254))) {
+    } 
+	else if (ismask == 4) 
+	{
+        if ((!checkRange(field.value, 1, 1, 247)) || (!checkRange(field.value, 2, 0, 255)) || (!checkRange(field.value, 3, 0, 255)) || (!checkRange(field.value, 4, 1, 254))) 
+		{
             alert(_("err DNS format"));
             field.value = field.defaultValue;
             field.focus();
             return false
         }
-    } {
+    } 
+	else if (ismask == 5) 
+	{
+        if ((!checkRange(field.value, 1, 1, 247)) || (!checkRange(field.value, 2, 0, 255)) || (!checkRange(field.value, 3, 0, 255)) || (!checkRange(field.value, 4, 0, 255)))
+		{
+            alert(_("err IP format"));
+            field.value = field.defaultValue;
+            field.focus();
+            return false
+        }
+    } 
+	{
         var exp = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
         var reg = field.value.match(exp);
-        if (reg == null) {
-            if (ismask == 1) {
+        if (reg == null) 
+		{
+            if (ismask == 1) 
+			{
                 alert(_("err IP format"))
-            } else if (ismask == 2) {
+            } 
+			else if (ismask == 2) 
+			{
                 alert(_("err sub format"))
-            } else if (ismask == 3) {
+            } 
+			else if (ismask == 3) 
+			{
                 alert(_("err gw format"))
-            } else if (ismask == 4) {
+            } 
+			else if (ismask == 4) 
+			{
                 alert(_("err DNS format"))
+            }
+			else if (ismask == 5) 
+			{
+                alert(_("err IP format"))
             }
             field.value = field.defaultValue;
             field.focus();
