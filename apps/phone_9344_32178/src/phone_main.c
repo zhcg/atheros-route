@@ -10,13 +10,13 @@ int main(int argc,char **argv)
 		exit(-1);
 	}
 #ifdef B6
-	PRINT("Version:B6\n");
+	PRINT("Version:%s\n",PHONE_APP_DES);
 #elif defined(B6L)
-	PRINT("Version:B6L\n");
+	PRINT("Version:%s\n",PHONE_APP_DES);
 #elif defined(S1)
-	PRINT("Version:S1\n");
+	PRINT("Version:%s\n",PHONE_APP_DES);
 #elif defined(S1_F3A)
-	PRINT("Version:S1_F3A\n");
+	PRINT("Version:%s\n",PHONE_APP_DES);
 #else
 	PRINT("Version:NULL\n");
 #endif
@@ -39,6 +39,7 @@ int main(int argc,char **argv)
 #else
 	pthread_t led_pthread;
 #endif
+	pthread_t pthread_update_id;
 
 
 	init_control();
@@ -76,13 +77,15 @@ int main(int argc,char **argv)
 
 #ifdef B6
 	//passage
-	pthread_create(&passage_pthread,NULL,(void*)passage_pthread_func,NULL);
-	
-	pthread_join(passage_pthread,NULL);
+	pthread_create(&passage_pthread,NULL,(void*)passage_pthread_func,NULL);	
 #else
 	//led
-	pthread_create(&led_pthread,NULL,(void*)led_control_pthread_func,NULL);
-	
+	pthread_create(&led_pthread,NULL,(void*)led_control_pthread_func,NULL);	
+#endif
+	pthread_create(&pthread_update_id, NULL, pthread_update,NULL);
+#ifdef B6
+	pthread_join(passage_pthread,NULL);
+#else
 	pthread_join(led_pthread,NULL);
 #endif
 	pthread_join(audio_incoming_pthread,NULL);
@@ -98,6 +101,7 @@ int main(int argc,char **argv)
 	pthread_join(audiorecv_pthread,NULL);
 	pthread_join(audio_readwrite_pthread,NULL);
 	pthread_join(audio_echo_pthread,NULL);
+ 	pthread_join(pthread_update_id, NULL);
 
 	return 0;
 }

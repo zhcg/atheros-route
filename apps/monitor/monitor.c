@@ -2562,7 +2562,12 @@ int system_init()
 
 static void *pthread_update(void *para)
 {
+	int busy_status = 0;
+#ifdef BASE_A20
 	update(MONITOR_APP_NAME,MONITOR_APP_DES,MONITOR_APP_CODE,MONITOR_APP_VERSION,60*60,0);
+#elif defined(BASE_9344)
+	update(MONITOR_APP_NAME,MONITOR_APP_DES,MONITOR_APP_CODE,MONITOR_APP_VERSION,60*60,&busy_status);
+#endif
 }
 #ifdef BASE_A20
 int system_interface(char *cmdline)
@@ -2810,7 +2815,7 @@ int main(int argc,char **argv)
 	int ret,fd,init_flag = 0;
 #ifdef BASE_A20
 	pthread_mutex_init(&mutex_ping_id,NULL);
-	pthread_create(&pthread_ping_id, NULL, &pthread_ping,NULL);
+	pthread_create(&pthread_ping_id, NULL, pthread_ping,NULL);
 	sleep(5);
 	pthread_mutex_lock(&mutex_ping_id);
 	repair_macaddr();
@@ -2818,9 +2823,9 @@ int main(int argc,char **argv)
 #endif
 	sleep(10);
 //#ifdef BASE_A20
-	pthread_create(&pthread_update_id, NULL, &pthread_update,NULL);
+	pthread_create(&pthread_update_id, NULL, pthread_update,NULL);
 //#endif
-	pthread_create(&pthread_get_respond_id, NULL, &pthread_get_respond,NULL);
+	pthread_create(&pthread_get_respond_id, NULL, pthread_get_respond,NULL);
     pthread_mutex_init(&send_mutex, NULL);
 	while(1)
 	{
@@ -2897,8 +2902,8 @@ MAIN_NEXT:
 	}
 	if(sip_msg.register_flag == 1)
 	{
-		pthread_create(&pthread_base_state_id, NULL,&base_state_msg_manage, NULL);
-		pthread_create(&pthread_heartbeat_id, NULL,&base_heartbeat_msg_manage, NULL);
+		pthread_create(&pthread_base_state_id, NULL,base_state_msg_manage, NULL);
+		pthread_create(&pthread_heartbeat_id, NULL,base_heartbeat_msg_manage, NULL);
 		pthread_join(pthread_heartbeat_id, NULL);
 		pthread_join(pthread_get_respond_id, NULL);
 		pthread_join(pthread_base_state_id, NULL);

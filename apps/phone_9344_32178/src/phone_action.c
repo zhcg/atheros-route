@@ -7,19 +7,6 @@
 
 int pcm_ret = 0;
 
-//计算校验
-unsigned char sumxor(const  char  *arr, int len)
-{
-	int i=0;
-	unsigned char sum = 0;
-	for(i=0; i<len; i++)
-	{
-		sum ^= arr[i];
-	}
-
-	return sum;
-}
-
 int senddtmf(char dtmf)
 {
 	//int tmp;

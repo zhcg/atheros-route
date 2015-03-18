@@ -45,6 +45,7 @@ struct class_phone_control phone_control =
 #endif
 	.vloop = 0,
 	.offhook_kill_talkback = 0,
+	.phone_busy = 0,
 };
 
 dev_status_t devlist[CLIENT_NUM];//设备列表
@@ -69,38 +70,6 @@ char *system_time()
 	strftime(print_time_buf_tmp, sizeof(print_time_buf_tmp), "%T:", localtime(&print_tv.tv_sec));    
 	sprintf(print_time_buf, "%s%03d", print_time_buf_tmp, print_tv.tv_usec/1000);
 	return print_time_buf;
-}
-
-//打印16进制
-const char hex_to_asc_table[16] = {0x30,0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,0x39,0x41,0x42,0x43,0x44,0x45,0x46};
-int ComFunChangeHexBufferToAsc(unsigned char *hexbuf,int hexlen,char *ascstr)
-{
-	unsigned char i;
-	unsigned char ch,h,l;
-	char *pdes = ascstr;
-	for(i = 0;i < hexlen;i++)
-	{
-		ch = hexbuf[i];
-		h = (ch >> 4) & 0x0F;
-		l = ch & 0x0F;
-		*(pdes++) = hex_to_asc_table[h];
-		*(pdes++) = hex_to_asc_table[l];
-	}
-	*pdes = '\0';
-	return hexlen * 2;
-}
-
-void ComFunPrintfBuffer(unsigned char *pbuffer,unsigned char len)
-{
-	char *pstr;
-	pstr = (char *)malloc(512);
-	if(pstr == NULL)
-		return;
-	ComFunChangeHexBufferToAsc(pbuffer,len,pstr);
-
-	PRINT("%s\r\n",pstr);
-
-	free((void *)pstr);
 }
 
 void print_devlist()
@@ -2594,8 +2563,8 @@ void *loop_check_ring(void * argv)
 				phone_control.ring_neg_count = 0;
 			}
 			if(((phone_audio.get_code == 1) && (phone_control.ring_neg_count > 1)) || ((phone_control.ring_count == 120) && (phone_control.ring_neg_count > 5)) || 
-			(phone_control.get_fsk_mfy == 1 && phone_control.get_fsk_zzl == 1) || ((phone_control.ring_count == 120) && (phone_control.get_fsk_zzl == 1))
-			|| ((phone_control.ring_count == 120) && (phone_control.get_fsk_mfy == 1)))
+			(phone_control.get_fsk_mfy == 1 && phone_control.get_fsk_zzl == 1 && phone_control.ring_neg_count > 1) || ((phone_control.ring_count == 120) && (phone_control.get_fsk_zzl == 1) && (phone_control.ring_neg_count > 1))
+			|| ((phone_control.ring_count == 120) && (phone_control.get_fsk_mfy == 1) && (phone_control.ring_neg_count > 1)))
 			{
 				PRINT("phone_control.ring_count = %d\n",phone_control.ring_count);
 				//产生Incoming
@@ -3204,6 +3173,31 @@ void check_audio_reconnect()
 	}
 }
 
+void get_phone_status()
+{
+	int i = 0;
+	int isswtiching = 0;
+	for(i=0;i<CLIENT_NUM;i++)
+	{
+		if(devlist[i].client_fd == -1)
+			continue;
+		if(devlist[i].isswtiching == 1)
+			isswtiching++;
+	}
+	if(phone_control.global_incoming == 0 && phone_control.global_phone_is_using == 0 && phone_control.global_talkback == 0 
+	&& phone_control.ring_neg_count == 0 && isswtiching == 0)
+	{
+		phone_control.phone_busy = 0;
+		//PRINT("idle!!\n");
+	}
+	else
+	{
+		phone_control.phone_busy = 1;
+		//PRINT("busy!!\n");
+	}
+	return 0;
+}
+
 //定时器处理函数
 void check_dev_tick(int signo)
 {
@@ -3215,6 +3209,7 @@ void check_dev_tick(int signo)
 			send_tb_ringon();
 			check_audio_reconnect();
 			get_code_timeout_func();
+			get_phone_status();
 			signal(SIGALRM, check_dev_tick);
 			break;
 	}
@@ -3712,3 +3707,8 @@ void led_control_pthread_func(void *argv)
 	}
 }
 #endif
+
+void *pthread_update(void *para)
+{
+	update(PHONE_APP_NAME,PHONE_APP_DES,PHONE_APP_CODE,PHONE_APP_VERSION,10,&phone_control.phone_busy);
+}

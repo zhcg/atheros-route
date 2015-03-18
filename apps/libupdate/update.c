@@ -24,9 +24,7 @@ char ota_ip_buf[BUF_LEN_128]={0};
 char ota_port_buf[BUF_LEN_64]={0};
 char conf_ver[BUF_LEN_64]={0};
 char tmp_app_name[BUF_LEN_64] = {0};
-char app_name[BUF_LEN_64]={0};
-char old_app_name[BUF_LEN_64]={0};
-int get_app_name = 0;
+char global_app_name[BUF_LEN_64]={0};
 unsigned char base_sn[34];
 F2B_INFO_DATA fid;
 
@@ -192,7 +190,7 @@ char *generate_get_remote_msg(char *remote_type,char *base_id)
     return text;
 }
 
-int prase_msg(char *msg,char *local_version_head,char *app_version)
+int prase_msg(char *msg,char *local_version_head,char *app_version,int *busy_status)
 {
 	char *msgp;
 	char *end;
@@ -278,15 +276,14 @@ int prase_msg(char *msg,char *local_version_head,char *app_version)
 		PRINT("ver desc err \n");
 		return -3;
 	}
-	memset(app_name,0,sizeof(app_name));
-	memcpy(app_name,msgp,end-msgp);
-	get_app_name = 1;
 	
 	//if(!strcmp(local_version_head,LOCAL_VERSION_HEAD))
 	//{
 		if(memcmp(old_remote_version,remote_version,sizeof(remote_version)) == 0)
 		{
 			PRINT("App has been downloaded\n");
+			if(busy_status != NULL && (*busy_status == 0))
+				new_bin();		
 			return -8;
 		}
 	//}
@@ -329,7 +326,7 @@ int prase_msg(char *msg,char *local_version_head,char *app_version)
 	return 0;	
 }
 
-int get_remote_request(char *local_version_head,char *app_version)
+int get_remote_request(char *local_version_head,char *app_version,int *busy_status)
 {
 	int loops = 0;
 	char recvbuf[BUFFER_SIZE_2K]={0};
@@ -354,7 +351,7 @@ int get_remote_request(char *local_version_head,char *app_version)
 			memcpy(&length,recvbuf,4);
 			PRINT("length = %d\n",length);
 			if(recv_ret > 16)
-				return prase_msg(recvbuf+16,local_version_head,app_version);
+				return prase_msg(recvbuf+16,local_version_head,app_version,busy_status);
 		}
 		else
 		{
@@ -387,7 +384,7 @@ int generate_msg_head(char *buf,int len,short type,short flag)
 	return 0;
 }
 
-int get_remote_msg(char *local_version_all,char *local_version_head,char *app_version)
+int get_remote_msg(char *local_version_all,char *local_version_head,char *app_version,int *busy_status)
 {
 	char *json_str;
 	char *send_str;
@@ -416,7 +413,7 @@ int get_remote_msg(char *local_version_all,char *local_version_head,char *app_ve
 		memcpy(send_str+16,json_str,strlen(json_str));
 		//ComFunPrintfBuffer(send_str,strlen(json_str)+16);
 		write(remote_server_fd,send_str,strlen(json_str)+16);
-		ret = get_remote_request(local_version_head,app_version);
+		ret = get_remote_request(local_version_head,app_version,busy_status);
 		free(json_str);
 		free(send_str);
 		close(remote_server_fd);
@@ -565,22 +562,41 @@ int get_ota_info()
 	return -1;
 }
 
-int stop_here(int restart_flag)
+int stop_here()
 {
 	char cmd[128] = {0};
-	printf("killed %s\n",old_app_name);
-	if(restart_flag == 1)
-	{
-		sprintf(cmd,"touch /etc/app_status/%s",app_name);
-		system(cmd);
-	}
+	printf("killed %s\n",global_app_name);
+	//if(restart_flag == 1)
+	//{
+		//sprintf(cmd,"touch /etc/app_status/%s",app_name);
+		//system(cmd);
+	//}
 	memset(cmd,0,sizeof(cmd));
-	sprintf(cmd,"killall -9 %s",old_app_name);
+	sprintf(cmd,"killall -9 %s",global_app_name);
 	system(cmd);
 	return 0;
 }
 
-int init_start(char *app_version_all,char *app_version_head,char *app_version,int restart_flag)
+int new_bin()
+{
+	char cmd[BUF_LEN_128]={0};
+	//memset(cmd,0,sizeof(cmd));	
+	sprintf(cmd,"%s%s","rm -rf /bin/",global_app_name);
+	PRINT("cmd=%s\n",cmd);
+	system(cmd);		
+	//memset(cmd,0,sizeof(cmd));	
+	sprintf(cmd,"%s%s%s%s","mv -f ",tmp_app_name," /bin/",global_app_name);
+	PRINT("cmd=%s\n",cmd);
+	system(cmd);
+	//memset(cmd,0,sizeof(cmd));	
+	sprintf(cmd,"%s%s%s","chmod +x ","/bin/",global_app_name);
+	PRINT("cmd=%s\n",cmd);
+	system(cmd);		
+	stop_here();
+	return 0;
+}
+
+int init_start(char *app_version_all,char *app_version_head,char *app_version,int *busy_status)
 {
 	char local_md5_buf[BUF_LEN_64]={0};
 	char cmd[BUF_LEN_128]={0};
@@ -588,32 +604,18 @@ int init_start(char *app_version_all,char *app_version_head,char *app_version,in
 
 	if(get_ota_info()!=0)
 		return -5;
-	if(get_remote_msg(app_version_all,app_version_head,app_version)!=0)
+	if(get_remote_msg(app_version_all,app_version_head,app_version,busy_status)!=0)
 		return -1;
 	//if(check_ver(app_version)!=0)
 		//return -2;
 	PRINT("needs update\n");
-	if(get_remote_image(app_name)!=0)
+	if(get_remote_image(global_app_name)!=0)
 		return -3;
 	if(check_md5(local_md5_buf)==0)
 	{
-		memcpy(old_remote_version,remote_version,sizeof(remote_version));
-		
-		//memset(cmd,0,sizeof(cmd));	
-		sprintf(cmd,"%s%s","rm -rf /bin/",old_app_name);
-		PRINT("cmd=%s\n",cmd);
-		system(cmd);		
-		//memset(cmd,0,sizeof(cmd));	
-		sprintf(cmd,"%s%s%s%s","mv -f ",tmp_app_name," /bin/",app_name);
-		PRINT("cmd=%s\n",cmd);
-		system(cmd);
-		//memset(cmd,0,sizeof(cmd));	
-		sprintf(cmd,"%s%s%s","chmod +x ","/bin/",app_name);
-		PRINT("cmd=%s\n",cmd);
-		system(cmd);		
-		stop_here(restart_flag);
-		memset(old_app_name,0,sizeof(old_app_name));
-		memcpy(old_app_name,app_name,strlen(app_name));
+		memcpy(old_remote_version,remote_version,sizeof(remote_version));	
+		if(busy_status != NULL && (*busy_status == 0))
+			new_bin();		
 		return 0;
 	}
 	else
@@ -741,12 +743,12 @@ int load_net_config()
 	return -1;
 }
 
-int update(char *app_name,char *app_version_all,char *app_version_head,char *app_version,int loop_time,int restart_flag)
+int update(char *app_name,char *app_version_all,char *app_version_head,char *app_version,int loop_time,int *busy_status)
 {
 	int times = loop_time;
 	
-	memset(old_app_name,0,sizeof(old_app_name));
-	memcpy(old_app_name,app_name,strlen(app_name));
+	memset(global_app_name,0,sizeof(global_app_name));
+	memcpy(global_app_name,app_name,strlen(app_name));
 	if(app_version_all != NULL)
 	{
 		PRINT("VER:%s\n",app_version_all);
@@ -758,33 +760,10 @@ int update(char *app_name,char *app_version_all,char *app_version_head,char *app
 			times = 0;
 			if(load_net_config() != 0)
 				continue;
-			init_start(app_version_all,app_version_head,app_version,restart_flag);
+			init_start(app_version_all,app_version_head,app_version,busy_status);
 		}
 		times++;
 		usleep(1000*1000);
 	}
 	return 0;
 }
-
-/*
-int main(int argc,char **argv)
-{
-	int times = 60*10;
-	
-	memset(old_app_name,0,sizeof(old_app_name));
-	memcpy(old_app_name,LOCAL_APP_NAME,strlen(LOCAL_APP_NAME));
-
-	while(1)
-	{
-		if(times >= 60*10)
-		{
-			load_net_config();
-			init_start();
-			times = 0;
-		}
-		times++;
-		usleep(1000*1000);
-	}
-	return 0;
-}
-*/

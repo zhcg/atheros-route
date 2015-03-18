@@ -146,6 +146,11 @@ int HighPassFilter_Process(HighPassFilterState* hpf, signed short* data, int len
 int AudioAecmInit(void)
 {
 	int ret = 0;
+	if(phone_audio.aecmInst != NULL)
+	{
+		WebRtcAecm_Free(phone_audio.aecmInst);
+		phone_audio.aecmInst = NULL;
+	}
 	if (ret = WebRtcAecm_Create(&phone_audio.aecmInst) < 0) 
 	{
 		PRINT("WebRtcAecm_Create failed,return=%d\r\n",ret);
@@ -1322,14 +1327,14 @@ void* AudioEchoThreadCallBack(void* argv)
 				{
 					memcpy((void *)(&output_stream_buffer[phone_audio.output_stream_wp]),(void *)(out_bufp),free_bytes);
 					memcpy((void *)(output_stream_buffer),(void *)(&out_bufp[free_bytes]),AUDIO_WRITE_BYTE_SIZE - free_bytes);
-					phone_audio.echo_stream_rp = (AUDIO_WRITE_BYTE_SIZE - free_bytes);					
+					phone_audio.output_stream_wp = AUDIO_WRITE_BYTE_SIZE - free_bytes;
 				}
 				else
 				{
 					memcpy((void *)(&output_stream_buffer[phone_audio.output_stream_wp]),(void *)(out_bufp),AUDIO_WRITE_BYTE_SIZE);					
-					phone_audio.echo_stream_rp += valid_bytes;					
+					phone_audio.output_stream_wp += AUDIO_WRITE_BYTE_SIZE;
 				}
-				phone_audio.output_stream_wp += AUDIO_WRITE_BYTE_SIZE;
+				phone_audio.echo_stream_rp += valid_bytes;					
 				if(phone_audio.output_stream_wp >= AUDIO_STREAM_BUFFER_SIZE)
 					phone_audio.output_stream_wp = 0;
 				if(phone_audio.echo_stream_rp >= AUDIO_STREAM_BUFFER_SIZE)

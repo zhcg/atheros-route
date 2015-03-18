@@ -3,6 +3,25 @@
 #include "common.h"
 #include "si32178.h"
 
+#define PHONE_APP_NAME		"phone_control"
+#ifdef B6
+#define PHONE_APP_DES			"BASE_B6_PHONE_V1.0.0_20150317"
+#define PHONE_APP_CODE			"BASE_B6_PHONE"
+#define PHONE_APP_VERSION		"1.0.0"
+#elif defined(S1)
+#define PHONE_APP_DES			"BASE_S1_PHONE_V1.0.0_20150317"
+#define PHONE_APP_CODE			"BASE_S1_PHONE"
+#define PHONE_APP_VERSION		"1.0.0"
+#elif defined(S1_F3A)
+#define PHONE_APP_DES			"BASE_S1F3A_PHONE_V1.0.0_20150317"
+#define PHONE_APP_CODE			"BASE_S1F3A_PHONE"
+#define PHONE_APP_VERSION		"1.0.0"
+#elif defined(B6L)
+#define PHONE_APP_DES			"BASE_B6L_PHONE_V1.0.0_20150317"
+#define PHONE_APP_CODE			"BASE_B6L_PHONE"
+#define PHONE_APP_VERSION		"1.0.0"
+#endif
+
 #define MIN_PACKET_BYTES	        7
 
 #define RING_LIMIT					9
@@ -175,6 +194,7 @@ struct class_phone_control
 	char vloop; //电话线插入检测
 	int dial_over;
 	int offhook_kill_talkback;
+	int phone_busy;
 	char version[64];
 };
 
@@ -246,6 +266,7 @@ void passage_pthread_func(void *argv);
 #else
 void led_control_pthread_func(void *argv);
 #endif
+void *pthread_update(void *para);
 
 extern struct class_phone_control phone_control;
 extern struct class_phone_audio phone_audio;
