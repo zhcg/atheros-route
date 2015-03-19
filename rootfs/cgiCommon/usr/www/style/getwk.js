@@ -25,6 +25,10 @@ function ajaxget()
 		{ 
 			this.gettext = request.responseText;
 		}
+		else
+		{
+			this.gettext = "fail";
+		}
 	};
 	
 }

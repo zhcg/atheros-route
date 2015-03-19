@@ -242,7 +242,7 @@
 	<message msgid="admw newversion" msgstr="检查到新版本" />
 	<message msgid="admw nonewversion" msgstr="当前已经是最新版本" />
 	<message msgid="admw downloaderr" msgstr="新版本下载失败" />
-
+	<message msgid="admw showupload" msgstr="检查到新版本,是否升级？" />
 	
 	<message msgid="admw channelchoose" msgstr="信道" />
 	<message msgid="admw channelauto" msgstr="自动" />

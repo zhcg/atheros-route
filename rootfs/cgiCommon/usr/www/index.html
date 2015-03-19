@@ -232,6 +232,94 @@ function pppoe_tiaozhuan()
 		},1000);
 	},10000);
 }
+//--> 
+var xmlHttp;
+var desIP;
+var destination;
+var timeID;
+var finaltimeID;
+function createXMLHttpRequest()
+{
+	if(window.ActiveXObject)
+	{
+		xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	else if(window.XMLHttpRequest)
+	{
+		xmlHttp=new XMLHttpRequest();
+	}
+}
+function  handleStateChange()
+{
+	//alert("handleStateChange"+xmlHttp.readyState+" "+xmlHttp.status);
+
+	if(xmlHttp.readyState==4)
+	{
+		//if(xmlHttp.status==200)
+		//{
+			window.location.href=destination;
+		//}
+	}
+}
+function  handleStateChange2()
+{
+	//alert("handleStateChange"+xmlHttp.readyState+" "+xmlHttp.status);
+
+	if(xmlHttp.readyState==4)
+	{
+		if(xmlHttp.status==200)
+		{
+			//window.location.href=destination;
+			clearTimeout(finaltimeID);
+			window.parent.endshow();
+			setTimeout(function(){window.top.location.href=destination;},10000);
+		}
+	}
+}
+function jump2(des)
+{
+	if(des=="")
+		desIP="10.10.10.254";
+	else
+		desIP=des;
+	//alert("desIP"+desIP);
+	setTimeout(function(){jump2request();},10000);	
+}
+
+function jump2request()
+{
+	clearTimeout(timeID);
+	timeID=setTimeout(function(){jump2request();},1000);
+	createXMLHttpRequest();
+	xmlHttp.onreadystatechange=handleStateChange;
+	destination = "http://"+desIP;
+	//alert("desIP"+destination);
+	xmlHttp.open("GET","http://"+desIP+"/simpleResponse.xml?now=" + new Date().getTime(),true);
+	xmlHttp.send(null);
+}
+var tttimerid;
+function ttzhuan(dIP)
+{
+	if(dIP=="")
+		desIP="10.10.10.254";
+	else
+		desIP=dIP;
+		
+	tttimerid = setTimeout(function(){startRequest();},100000);
+}
+function clearttzhuan()
+{
+	clearTimeout(tttimerid);
+}
+function startRequest()
+{
+	finaltimeID = setTimeout(function(){startRequest();},8000);
+	createXMLHttpRequest();
+	xmlHttp.onreadystatechange=handleStateChange2;
+	destination ="http://"+desIP+"/cgi-bin/"+"crupload";
+	xmlHttp.open("GET","http://"+desIP+"/simpleResponse.xml?now=" + new Date().getTime(),true);
+	xmlHttp.send(null);
+}
 
 </script>
 
