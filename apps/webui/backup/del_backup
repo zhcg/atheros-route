@@ -29,6 +29,7 @@ else
 		rm $BACKUP_DIR/$BACKUP_DATE.arp_ip_mac_on.conf
 		rm $BACKUP_DIR/$BACKUP_DATE.portmap
 		rm $BACKUP_DIR/$BACKUP_DATE.parc
+		rm $BACKUP_DIR/$BACKUP_DATE.pwd.xml
         echo "delete backup done"
         exit 1
 fi

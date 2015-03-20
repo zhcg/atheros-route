@@ -3450,12 +3450,43 @@ int del_addr_bind(void)
 //luodp route rule
 void add_route_rule(void)
 {
+	char ret[10];
+	char valBuff[128];
+	
+	memset(ret,0,sizeof(ret));
+	
 	write_systemLog("add_route_rule begin");			
 	writeParametersWithSync();
 	//writeParameters(NVRAM,"w+", NVRAM_OFFSET);
 	//writeParameters("/tmp/.apcfg","w+",0);
-	Execute_cmd("/usr/sbin/set_route > /dev/null 2>&1",rspBuff);
+	Execute_cmd("rm -fr /tmp/route_log ;/usr/sbin/set_route > /tmp/route_log 2>&1",ret);
+//	Execute_cmd("grep /tmp/route_log 2>&1",ret);
 
+	FILE *fileBuf=NULL;
+	if ((fileBuf= fopen("/tmp/route_log", "r")) == NULL)
+	{
+		fprintf(errOut,"%s	%d File open error.Make sure you have the permission.\n",__func__,__LINE__);
+	}else
+	{
+		fgets(valBuff,sizeof(valBuff),fileBuf);
+		if(strstr(valBuff,"5")!=NULL)
+		{
+			printf("HTTP/1.0 200 OK\r\n");
+			printf("Content-type: text/html\r\n");
+			printf("Connection: close\r\n");
+			printf("\r\n");
+			printf("\r\n");
+			
+			printf("<HTML><HEAD>\r\n");
+			printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+			printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
+			printf("</head><body>");
+			printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"lan\");window.parent.DialogHide();alert(_(\"err IP format\"));window.location.href=\"ad_local_addru\";</script>");
+			printf("</body></html>");
+		}
+		fclose(fileBuf);
+	}
+		
 	write_systemLog("add_route_rule end");			
 } 
 void del_route_rule(void)
@@ -3473,13 +3504,17 @@ void modify_route_rule(void)
 {
 	char tmp[128];
 	char valBuff[128];
+	char ret[10];
+
+	memset(ret,0,sizeof(ret));
 	write_systemLog("modify_route_rule begin");			
 	CFG_get_by_name("ON_OFF",valBuff);
-            writeParametersWithSync();
-            //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-            //writeParameters("/tmp/.apcfg","w+",0);
+    writeParametersWithSync();
+    //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+    //writeParameters("/tmp/.apcfg","w+",0);
 	sprintf(tmp,"/usr/sbin/modify_route %s > /dev/null 2>&1",valBuff);
-	Execute_cmd(tmp,rspBuff);
+	Execute_cmd(tmp,ret);
+
 	write_systemLog("modify_route_rule end");			
 }
 
@@ -3655,7 +3690,7 @@ void add_backup(void)
             //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
             //writeParameters("/tmp/.apcfg","w+",0);
 	CFG_get_by_name("SAV",valBuff1);
-	fprintf(errOut,"\n%s  %d valBuff1 is %s \n",__func__,__LINE__, valBuff1);
+//	fprintf(errOut,"\n%s  %d valBuff1 is %s \n",__func__,__LINE__, valBuff1);
 	sprintf(pChar,"/usr/sbin/set_backup %s > /dev/null 2>&1",valBuff1);
 	Execute_cmd(pChar,rspBuff);
 	
@@ -3673,6 +3708,9 @@ void del_backup(void)
             writeParametersWithSync();
             //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
             //writeParameters("/tmp/.apcfg","w+",0);
+            
+//	fprintf(errOut,"\n%s  %d valBuff1 is %s \n",__func__,__LINE__, valBuff1);
+			
 	sprintf(pChar,"/usr/sbin/del_backup %s > /dev/null 2>&1",valBuff1);
 	Execute_cmd(pChar,rspBuff);
 	CFG_set_by_name(valBuff1,"");
@@ -3700,6 +3738,7 @@ void use_backup(void)
             //writeParameters(NVRAM,"w+", NVRAM_OFFSET);
             //writeParameters("/tmp/.apcfg","w+",0);
 	CFG_get_by_name("ACT",valBuff1);
+	//fprintf(errOut,"\n%s  %d ACT is %s \n",__func__,__LINE__, valBuff1);
 	
     #if 0
 	printf("Content-Type:text/html\n\n");
@@ -3726,7 +3765,7 @@ void use_backup(void)
 					if(!strncmp(&buf[i], "20", 2))
 						break;
 				}
-				//fprintf(errOut,"\n%s  %d strlen(&buf[i]) is %d \n",__func__,__LINE__, strlen(&buf[i]));
+				fprintf(errOut,"\n%s  %d strlen(&buf[i]) is %d \n",__func__,__LINE__, strlen(&buf[i]));
 				bakupName = malloc(strlen(&buf[i]));
 				strncpy(bakupName, &buf[i], strlen(&buf[i]) - 1);
 				break;
@@ -3738,16 +3777,19 @@ void use_backup(void)
 	//fprintf(errOut,"\n%s  %d bakupName is %s the size is %d\n",__func__,__LINE__, bakupName, strlen(bakupName));
  #if 1
  //restore nvram 
-	sprintf(cmdd,"dd if=/configure_backup/backup/%s.bin of=/dev/nvram   > /dev/null 2>&1", bakupName);
+	sprintf(cmdd,"dd if=/configure_backup/backup/%s.bin of=/dev/nvram > /dev/null 2>&1", bakupName);
+ 	system(cmdd);
 	i = 5;
 	while(i--)
 	{
 		usleep(10);
-		system(cmdd);
 	}
 
 #endif
-	
+
+Execute_cmd("rm -f /tmp/.apcfg",rspBuff);
+
+#if 1	
 	if((fp = fopen("/configure_backup/backup/backup_list.conf", "r")) != NULL)
 	{
 		memset(buf, 0, sizeof buf);
@@ -3769,21 +3811,15 @@ void use_backup(void)
 				strncpy(bakupName, &buf[i], strlen(&buf[i]));
 				//fprintf(errOut,"bakname [%s] \n", bakname);
 				//fprintf(errOut,"bakupName [%s] \n", bakupName);
-				sprintf(extBuff, "%s=%s", bakname, bakupName);
 				
-				if((fp2 = fopen("/dev/nvram", "at")) != NULL)
-				{
-					len = fwrite("\r\n", 2, 1, fp2);
-					len = fwrite(extBuff, strlen(extBuff), 1, fp2);
-					fprintf(errOut,"the extBuff [%s] \n", extBuff);
-					fprintf(errOut,"the len %d \n", len);
-				}
-				fclose(fp2);
+				CFG_set_by_name(bakname,bakupName);
 			}
 		}
 		fclose(fp);
 	}
-	
+#endif	
+	writeParametersWithSync();
+
 	/*recover the /configure_backup/backup/*.staAcl & *.staMac to /configure_backup/.staAcl & .staMac*/
 	#if 0
 	memset(cmdd, 0, sizeof cmdd);
@@ -3793,8 +3829,11 @@ void use_backup(void)
 	sprintf(cmdd, "cp /configure_backup/backup/%s.staAcl /configure_backup/.staAcl > /dev/null 2>&1", bakupName);
 	system(cmdd);
 	#endif
+
 	
-	sprintf(pChar,"/usr/sbin/use_backup %s > /dev/null 2>&1", bakupName);
+//	fprintf(errOut,"bakupName [%s] \n", bakupName);
+
+	sprintf(pChar,"/usr/sbin/use_backup %s > /dev/null 2>&1", valBuff1);
 	Execute_cmd(pChar,rspBuff);
 
 	free(bakupName);
@@ -4825,27 +4864,30 @@ void set_wireless_wan(void)
 			}
 			flag=1;
 		}
+		
+		if(strncmp(wdsonoff_flag_new,"off",3) == 0)	
+		{
+//				fprintf(errOut,"[luodp] -----------  wds off--------\n");
+			CFG_remove_by_name("WISP_STA_SSID");
+			CFG_remove_by_name("WISP_STA_PSK_KEY");
+		}
+
+		
+		if(strncmp(wdsonoff_flag5g_new,"off",3) == 0)	
+		{
+//				fprintf(errOut,"[luodp] -----------  wds 5g off--------\n");
+			CFG_remove_by_name("WISP_STA_SSID_2");
+			CFG_remove_by_name("WISP_STA_PSK_KEY_2");
+		}
+
+		
+		writeParameters(NVRAM,"w+", NVRAM_OFFSET);
+		writeParameters("/tmp/.apcfg","w+",0);
+
 		//off
 		if((strncmp(wdsonoff_flag_new,"off",3) == 0)&&(strncmp(wdsonoff_flag5g_new,"off",3) == 0))
 		{
 //			CFG_set_by_name("AP_STARTMODE","standard");
-			if(strncmp(wdsonoff_flag_new,"off",3) == 0)	
-			{
-//				fprintf(errOut,"[luodp] -----------  wds off--------\n");
-				CFG_remove_by_name("WISP_STA_SSID");
-				CFG_remove_by_name("WISP_STA_PSK_KEY");
-			}
-
-			
-			if(strncmp(wdsonoff_flag5g_new,"off",3) == 0)	
-			{
-//				fprintf(errOut,"[luodp] -----------  wds 5g off--------\n");
-				CFG_remove_by_name("WISP_STA_SSID_2");
-				CFG_remove_by_name("WISP_STA_PSK_KEY_2");
-			}
-			
-            writeParameters(NVRAM,"w+", NVRAM_OFFSET);
-            writeParameters("/tmp/.apcfg","w+",0);
 
 			if((strncmp(wdsonoff_flag,"on",2) == 0)||(strncmp(wdsonoff5g_flag,"on",2) == 0))
 				CFG_set_by_name("AP_STARTMODE","dual");

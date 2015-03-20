@@ -39,6 +39,10 @@ fi
 if [ "$SR_STATUS" -eq "1" ];then
 	addr_status=enable
 	route add -net $SR_DESIP netmask $SR_SUB gw $SR_GW
+	if [ $? -ne 0 ];then
+		echo 5 > /tmp/route_log
+		exit 5
+	fi
 else if [ "$SR_STATUS" -eq "0" ];then
 	addr_status=disable
 else

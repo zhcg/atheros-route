@@ -128,7 +128,7 @@ cfg -a AP_HIDESSID_4=${AP_HIDESSID_4:="1"}
 ## Set up the channel for dual mode
 ##
 
-cfg -a AP_PRIMARY_CH_3=${AP_PRIMARY_CH_3:=157}
+cfg -a AP_PRIMARY_CH_3=${AP_PRIMARY_CH_3:=149}
 cfg -a AP_CHMODE_3=${AP_CHMODE_3:="11NAHT40PLUS"}
 ##
 ## This is for pure G or pure N operations.  Hmmmm...
