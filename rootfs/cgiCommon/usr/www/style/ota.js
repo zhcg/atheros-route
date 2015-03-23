@@ -64,6 +64,39 @@ function stateChanged2()
 			Butterlate.setTextDomain("admin");
 			trans_inner("cres","admw downloaderr");
 			window.parent.DialogHide();
+			widget_hide("otaupload");
+		}
+	}
+}
+
+function check_map()
+{
+	xmlHttpota=GetXmlHttpObject();
+	if (xmlHttpota==null)
+	{
+		alert ("Browser does not support HTTP Request");
+		Return;
+	}
+	var url="/cgi-bin/ota.cgi";
+
+	url=url+"?q=up";
+	xmlHttpota.onreadystatechange=stateChanged_map;
+	url=url+"&sid="+Math.random();
+	xmlHttpota.open("GET",url,true);
+	xmlHttpota.send(null);
+}
+function stateChanged_map()
+{
+	if (xmlHttpota.readyState==4 || xmlHttpota.readyState=="complete")
+	{
+		var result = xmlHttpota.responseText;
+		if((result.indexOf("UPDATE SYSTEM!!!") >= 0  )||(result.indexOf("NEW SYSTEM!!!") >= 0  ))
+		{
+			Butterlate.setTextDomain("other");
+			window.parent.Demo3(_("FUPLOAD"));
+			window.parent.beginshow(1500);
+			window.parent.ttzhuan(document.getElementById("IPA").value);
+			CheckUser("/tmp/AR9344.bin");
 		}
 	}
 }

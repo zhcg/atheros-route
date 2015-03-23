@@ -113,8 +113,15 @@ function tr()
 	trans_inner("treeapp_man_reboot","advmenu treeapp_man_reboot");
 	trans_inner("treeapp_netcheck","advmenu treeapp_netcheck");
 }
+
 function onInit()
 {
+	var getParam = getpp("up");
+	
+	if(getParam == "1")
+	{
+		window.ifm.location.href="cgi-bin/ad_man_upgrade?u=yes";
+	}
 	initLanguage();
 	Butterlate.setTextDomain("main");
 	var e = document.getElementById("top_fast");

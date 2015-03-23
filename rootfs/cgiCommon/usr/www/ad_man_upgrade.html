@@ -68,6 +68,13 @@ function init()
 {
 	Butterlate.setTextDomain("admin");
 	initTranslation();
+	var getParam = getpp("u");
+	
+	if(getParam == "yes")
+	{
+		trans_inner("cres","admw newversion");
+		widget_display("otaupload");
+	}
 }
   var isIE;
   function fileChange(target) 

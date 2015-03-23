@@ -10,6 +10,7 @@
 <script language="JavaScript" type="text/javascript" src="/style/netcheck.js"></script>
 <script language="JavaScript" type="text/javascript" src="/style/getwk.js"></script>
 <script language="JavaScript" type="text/javascript" src="/style/upload.js"></script>
+<script language="JavaScript" type="text/javascript" src="/style/ota.js"></script>
 <script language="JavaScript" type="text/javascript">
 if(getCookie()){}
 else{window.top.location.href="../login.html";}
@@ -247,11 +248,8 @@ function initValue()
 				if(confirm(_("admw showupload")))
 				{
 					//alert("你按了确认，那就是返回true");
-					Butterlate.setTextDomain("other");
-					window.parent.Demo3(_("FUPLOAD"));
-					window.parent.beginshow(1500);
-					window.parent.ttzhuan(document.getElementById("IPA").value);
-					CheckUser("/tmp/AR9344.bin");
+					//check_map();
+					window.top.location.href="../index2.html?up=1";	
 			
 				}
 				else
@@ -267,7 +265,7 @@ function initValue()
 
 	}
 
-	var timr = setInterval('checkupgrade()',1000);
+	timr = setInterval('checkupgrade()',1000);
 
 	</script>
 </body>
