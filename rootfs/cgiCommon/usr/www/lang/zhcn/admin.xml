@@ -238,7 +238,7 @@
 	<message msgid="admw otades" msgstr="在线升级(OTA)" />
 	<message msgid="admw otatitle" msgstr="在线升级" />
 	<message msgid="admw otacheck" msgstr="检查更新" />
-	<message msgid="admw otaupload" msgstr="升级" />
+	<message msgid="admw otaupload" msgstr="下载并更新" />
 	<message msgid="admw newversion" msgstr="检查到新版本" />
 	<message msgid="admw nonewversion" msgstr="当前已经是最新版本" />
 	<message msgid="admw downloaderr" msgstr="新版本下载失败" />
