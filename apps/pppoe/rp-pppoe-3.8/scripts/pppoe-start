@@ -176,6 +176,15 @@ while [ true ] ; do
 		 cfg -a WAN_IPADDR3=`ifconfig | grep P-t-P | awk -F ' ' '{print$2}'| awk -F ':' '{print$2}'`
      cfg -a IPGW3=`ifconfig | grep P-t-P | awk -F ' ' '{print$3}'| awk -F ':' '{print$2}'`
      cfg -a WAN_NETMASK3=`ifconfig | grep P-t-P | awk -F ' ' '{print$4}'| awk -F ':' '{print$2}'`
+     pridns=`awk -F' ' 'BEGIN{i=0;}{i++; if(i==1) {print $2}}' /etc/resolv.conf`
+     secdns=`awk -F' ' 'BEGIN{i=0;}{i++; if(i==2) {print $2}}' /etc/resolv.conf`
+     cfg -a PRIDNS=$pridns                                                      
+     cfg -a SECDNS=$secdns 
+     cfg -c
+     killall udhcpd > /dev/null 2>&1
+     /etc/rc.d/rc.udhcpd > /dev/null 2>&1
+     /usr/sbin/set_addr_conf > /dev/null 2>&1
+     /usr/sbin/udhcpd /etc/udhcpd.conf > /dev/null 2>&1
 	exit 0
     fi
 

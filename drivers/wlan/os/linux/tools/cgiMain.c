@@ -7935,8 +7935,10 @@ int main(int argc,char **argv)
 			system("ppy > /dev/null 2>&1 &");sleep(2);//bash  avoid let syntax error
 			//system("sleep 1 && reboot &");
 			
+            writeParametersWithSync();
 
 //add by mingyue
+/*
 			Execute_cmd("awk -F' ' 'BEGIN{i=0;}{i++; if(i==1) {print $2}}' /etc/resolv.conf 2> /dev/null", pppoe_dns);
 			CFG_set_by_name("PRIDNS",pppoe_dns);
 
@@ -7952,6 +7954,7 @@ int main(int argc,char **argv)
 		system("/usr/sbin/set_addr_conf > /dev/null 2>&1");	
 		system("/usr/sbin/udhcpd /etc/udhcpd.conf > /dev/null 2>&1");
 
+*/
 			write_systemLog("pppoe basic setting end"); 
 		}
 
