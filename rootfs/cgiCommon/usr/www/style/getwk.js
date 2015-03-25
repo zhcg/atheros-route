@@ -37,7 +37,6 @@ function ajaxget_2()
 	this.seturl = function(url) 
 	{ 
 		this.po=window.location.protocol+"//"+window.location.host+"/"+url; 
-		this.init(); 
 	}
 	this.init = function(xcb) 
 	{
