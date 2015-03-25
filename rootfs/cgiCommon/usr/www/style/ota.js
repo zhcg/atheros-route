@@ -53,7 +53,7 @@ function stateChanged2()
 	if (xmlHttpota.readyState==4 || xmlHttpota.readyState=="complete")
 	{
 		var result = xmlHttpota.responseText;
-		if(result.indexOf("UPDATE SYSTEM!!!") >= 0  )
+		if((result.indexOf("UPDATE SYSTEM!!!") >= 0  )||(result.indexOf("NEW SYSTEM!!!") >= 0  ))
 		{
 			waitgifshow();
 			window.parent.ttzhuan(document.getElementById("IPA").value);
