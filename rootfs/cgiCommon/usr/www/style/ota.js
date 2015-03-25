@@ -39,6 +39,7 @@ function stateChanged1()
 		else if(result.indexOf("NEW SYSTEM!!!") >= 0  )
 		{
 			trans_inner("cres","admw newversion");
+			widget_hide("otacheck");
 			widget_display("otaupload");
 		}
 		else
@@ -64,6 +65,7 @@ function stateChanged2()
 			Butterlate.setTextDomain("admin");
 			trans_inner("cres","admw downloaderr");
 			window.parent.DialogHide();
+			widget_display("otacheck");
 			widget_hide("otaupload");
 		}
 	}
