@@ -221,51 +221,58 @@ function initValue()
 	setInterval('refreshping()',3000);
 	
 	var timr =0;
+	var upgrade_http =0;
+	function show_upgrade()
+	{
+		if (upgrade_http.request.readyState==4 || upgrade_http.request.readyState=="complete")
+		{
+			var result = upgrade_http.request.responseText;
+			//alert(result);
+			if(result!=="fail")
+			{
+				if(result.indexOf("NO NEW SYSTEM!!!") >= 0  )
+				{
+
+				}
+				else if(result.indexOf("NEW SYSTEM!!!") >= 0  )
+				{
+					if(timr!=0)
+					{
+						clearTimeout(timr);
+					}
+					if(confirm(_("admw showupload")))
+					{
+						//alert("你按了确认，那就是返回true");
+						//check_map();
+						window.top.location.href="../index2.html?up=1";	
+				
+					}
+					else
+					{
+						//alert("你按了取消，那就是返回false");
+					}	
+				}
+				else
+				{
+
+				}
+			}
+		}
+	}
+	
 	function checkupgrade()
 	{
-		var check = new ajaxget() ;
+		upgrade_http = new ajaxget_2() ;
 		var result;
 		var url="/cgi-bin/ota.cgi";
 		url=url+"?q=check";	
 		url=url+"&sid="+Math.random();
 		
-		check.seturl(url);
-		check.init();
-		result = check.gettext;
-		//alert(check.gettext);
-		if(result!=="fail")
-		{
-			if(result.indexOf("NO NEW SYSTEM!!!") >= 0  )
-			{
-
-			}
-			else if(result.indexOf("NEW SYSTEM!!!") >= 0  )
-			{
-				if(timr!=0)
-				{
-					clearTimeout(timr);
-				}
-				if(confirm(_("admw showupload")))
-				{
-					//alert("你按了确认，那就是返回true");
-					//check_map();
-					window.top.location.href="../index2.html?up=1";	
-			
-				}
-				else
-				{
-					//alert("你按了取消，那就是返回false");
-				}	
-			}
-			else
-			{
-
-			}
-		}
-
+		upgrade_http.seturl(url);
+		upgrade_http.init(show_upgrade);
 	}
-
-	timr = setInterval('checkupgrade()',1000);
+	checkupgrade();
+	timr = setInterval('checkupgrade()',30000);
 
 	</script>
 </body>
