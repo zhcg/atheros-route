@@ -283,6 +283,7 @@ int rfc1305print(uint32_t *data, struct ntptime *arrival)
 			perror("settimeofday");
 			exit(1);
 		}
+         system("cfg -a NTP_FLG=1> /dev/null 2>&1");
 		if (debug) {
 			printf("set time to %lu.%.6lu\n", tv_set.tv_sec, tv_set.tv_usec);
 		}

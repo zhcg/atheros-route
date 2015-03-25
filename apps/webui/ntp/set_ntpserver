@@ -1,5 +1,6 @@
 #!/bin/sh
 #killall ntpclient > /dev/null 2>&1
+cfg -a NTP_FLG=0
 while true
 do
 ntp_switch=`cfg -e | grep "NTPON_OFF"|awk -F'=' '{print $2}'`
@@ -14,8 +15,6 @@ if [ "$ntp_switch" = "off" ];then
 fi
 if [ "$ntp_switch" = "on" ];then
 	
-    YEAR=`date +%Y`
-    if [ $YEAR -lt 2015 ];then
         timezone=`cfg -e | grep "TIME_ZONE"| awk -F'=' '{print $2}'| cut -c6-8`
         echo $timezone
         ntpserverip1=`cfg -e | grep "NTPServerIP1"|awk -F'"' '{print $2}'`
@@ -36,10 +35,8 @@ if [ "$ntp_switch" = "on" ];then
         fi
         killall ntpclient > /dev/null 2>&1
 
-        YEAR=`date +%Y`
-        if [ $YEAR -lt 2015 ];then
-            echo notok
-        else
+        flag=`cfg -e | grep "NTP_FLG"|awk -F'=' '{print $2}'`
+        if [ "$flag" = "1" ];then
             ifconfig eth1 down;ifconfig eth1 up > /dev/null 2>&1
             wifion=`cfg -e | grep "WIFION_OFF="|awk -F'=' '{print $2}'`
             if [ "$wifion" = "on" ];then
@@ -51,9 +48,10 @@ if [ "$ntp_switch" = "on" ];then
                 ifconfig ath2 down;ifconfig ath2 up > /dev/null 2>&1
             fi
             ifconfig ath3 down;ifconfig ath3 up > /dev/null 2>&1
+
+            break
         fi
 
-    fi
     sleep 10
 	
 fi
