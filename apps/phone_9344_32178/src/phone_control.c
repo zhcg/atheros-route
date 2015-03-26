@@ -75,8 +75,8 @@ char *system_time()
 void print_devlist()
 {
 	int i,offline = 0;
-	PRINT("*****************************************\n");
-	PRINT("*                 devlist               *\n");
+	PRINT("****************************************************************\n");
+	PRINT("*                            devlist                           *\n");
 	for(i=0;i<CLIENT_NUM;i++)
 	{
 		if(devlist[i].client_fd == -1)
@@ -84,10 +84,10 @@ void print_devlist()
 			offline ++;
 			continue;
 		}
-		PRINT("* %02d, cfd:%02d , afd:%02d , ip:%s *\n",i,devlist[i].client_fd,devlist[i].audio_client_fd,devlist[i].client_ip);
+		PRINT("* %02d, cfd:%02d , afd:%02d , ip:%s ,name:%s *\n",i,devlist[i].client_fd,devlist[i].audio_client_fd,devlist[i].client_ip,devlist[i].dev_name);
 	}
-	PRINT("*        max:%02d,online:%02d,last:%02d       *\n",CLIENT_NUM-1,CLIENT_NUM-offline,offline-1);
-	PRINT("*****************************************\n");
+	PRINT("*                   max:%02d,online:%02d,last:%02d                   *\n",CLIENT_NUM-1,CLIENT_NUM-offline,offline-1);
+	PRINT("****************************************************************\n");
 }
 
 //socket发送函数
@@ -849,6 +849,22 @@ GET_532VER_ERR:
 }
 #endif
 
+int generate_incoming(dev_status_t *dev)
+{
+	PRINT("%s\n",__FUNCTION__);
+	char sendbuf[128] = {0};
+	if(phone_control.global_incoming == 0 || dev->incoming == 1)
+	{
+		PRINT("no incoming\n");
+		return -1;
+	}
+	snprintf(sendbuf, 22+phone_control.telephone_num_len, "HEADR0%03dINCOMIN%03d%s\r\n",10+phone_control.telephone_num_len, phone_control.telephone_num_len, phone_control.telephone_num);
+	netWrite(dev->client_fd, sendbuf,strlen(sendbuf)+1);
+	dev->incoming = 1;
+	PRINT("send incoming\n");
+	return 0;
+}
+
 #ifdef REGISTER
 int do_cmd_heartbeat(dev_status_t *dev,char *buf)
 {
@@ -969,7 +985,10 @@ REGISTERED:
 	dev->tick_time++;
 	dev->registered = 1;
 	if(dev->tick_time == 1)
+	{
 		generate_up_msg();
+		generate_incoming(dev);
+	}
 	return 0;
 }
 #else
@@ -991,6 +1010,7 @@ int do_cmd_heartbeat(dev_status_t *dev,char *buf)
 		netWrite(dev->client_fd,"HEADR0010REG_SUC000\r\n",21);
 #endif
 		generate_up_msg();
+		generate_incoming(dev);
 	}
 	//memset(dev->dev_name,' ',16);
 	//for(i=0;i<CLIENT_NUM;i++)
@@ -2011,9 +2031,6 @@ void Incomingcall(unsigned char *ppacket,int bytes,int flag)
 	{
 		num_len=(int)ppacket[8];
 	}
-	phone_control.global_incoming = 1;
-	if(num_len >= 64)
-		num_len = 63;
 
 	//如果正在对讲，干掉！！
 	for(i=0;i<CLIENT_NUM;i++)
@@ -2038,6 +2055,9 @@ void Incomingcall(unsigned char *ppacket,int bytes,int flag)
 			devlist[i].audio_client_fd = -1;
 		}
 	}
+	phone_control.global_incoming = 1;
+	if(num_len >= 64)
+		num_len = 63;
 	phone_control.telephone_num_len = num_len;
 	memset(phone_control.telephone_num,0,64);
 	if(flag == FSK)
@@ -2901,12 +2921,13 @@ void *phone_control_loop_accept(void* arg)
 										sprintf(sendbuf,"%s","INSIDE");
 										sendbuf[6]=j+1;
 										netWrite(phone_control_fd[0],sendbuf, 7);
-										usleep(50*1000);									
+										//usleep(50*1000);									
 										break;
 									}
 								}
 								memset(devlist[i].dev_name,' ',16);
 								memcpy(devlist[i].dev_name,devlist[i].client_ip,strlen(devlist[i].client_ip));
+								PRINT("default name\n");
 								//sprintf(devlist[i].dev_name,"%s%d","子机",i+1);
 								for(j=0;j<16;j++)
 								{
