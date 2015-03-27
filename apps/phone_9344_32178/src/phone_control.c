@@ -2872,33 +2872,23 @@ void *phone_control_loop_accept(void* arg)
 						close(clientfd);
 						break;
 					}
-					//for(i=0; i<CLIENT_NUM; i++)
-					//{
-						//if(devlist[i].client_fd == -1)
-							//continue;
-						//if(!strcmp(new_ip,devlist[i].client_ip))
-						//{
-							//if(devlist[i].dev_is_using == 1 && devlist[i].dying == 1)
-							//{
-								//PRINT("control client reconnect\n");
-								//control_reconnect=1;
-							//}
-							//else
-							//{
-								//PRINT("reconnect\n");
-								//memset(sendbuf,0,SENDBUF);
-								//sprintf(sendbuf,"%s%d","INSIDE",i);
-								//netWrite(phone_control_fd[0],sendbuf, strlen(sendbuf));
-								//usleep(50*1000);
-							//}
-						//}
-					//}
 					if(clientfd >= 0)
 					{
 						for(i=0; i<CLIENT_NUM; i++)
 						{
 							if(devlist[i].client_fd == -1)
 							{
+								memset(devlist[i].dev_name,' ',16);
+								memcpy(devlist[i].dev_name,new_ip,strlen(new_ip));
+								PRINT("default name\n");
+								//sprintf(devlist[i].dev_name,"%s%d","子机",i+1);
+								for(j=0;j<16;j++)
+								{
+									if(devlist[i].dev_name[j] == '\0')
+									{
+										devlist[i].dev_name[j]=' ';
+									}
+								}							
 								devlist[i].client_fd = clientfd;
 								devlist[i].id = i;
 								memset(devlist[i].client_ip, 0, sizeof(devlist[i].client_ip));
@@ -2925,17 +2915,6 @@ void *phone_control_loop_accept(void* arg)
 										break;
 									}
 								}
-								memset(devlist[i].dev_name,' ',16);
-								memcpy(devlist[i].dev_name,devlist[i].client_ip,strlen(devlist[i].client_ip));
-								PRINT("default name\n");
-								//sprintf(devlist[i].dev_name,"%s%d","子机",i+1);
-								for(j=0;j<16;j++)
-								{
-									if(devlist[i].dev_name[j] == '\0')
-									{
-										devlist[i].dev_name[j]=' ';
-									}
-								}							
 								//generate_up_msg();
 								break;
 							}
