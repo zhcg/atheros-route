@@ -243,7 +243,7 @@
 	<message msgid="admw otades" msgstr="Online upgrade(OTA)" />
 	<message msgid="admw otatitle" msgstr="Online upgrade" />
 	<message msgid="admw otacheck" msgstr="Updates check" />
-	<message msgid="admw otaupload" msgstr="Download&Upgrade" />
+	<message msgid="admw otaupload" msgstr="Upgrade" />
 	<message msgid="admw newversion" msgstr="Higher version software is found" />
 	<message msgid="admw nonewversion" msgstr="No higher version software" />
 	<message msgid="admw downloaderr" msgstr="New software download error" />
