@@ -61,12 +61,13 @@ int offhook()
 //拨号
 int dialup(char *num,int num_len)
 {
-	if(num_len>40)
-		num_len = 40;
+	if(num_len>45)
+		num_len = 45;
 	phone_audio.input_stream_rp = 0;
 	phone_audio.input_stream_wp = 0;
 
 	pcm_ret = GenerateCodePcmData(num,num_len,&input_stream_buffer[phone_audio.input_stream_wp],Big_Endian);
+	PRINT("num_len = %d\n",num_len);
 	PRINT("ret = %d\n",pcm_ret);
 	phone_audio.input_stream_wp += pcm_ret;
 	if(phone_audio.input_stream_wp >= AUDIO_STREAM_BUFFER_SIZE)

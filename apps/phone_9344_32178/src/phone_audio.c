@@ -244,7 +244,7 @@ int startaudio(dev_status_t* devp,int flag,int action_mode)
 		return -1;
 	}
 	if(action_mode == CALL)
-		phone_audio.time_to_reset = 175;
+		phone_audio.time_to_reset = 125;
 	else if(action_mode == CALLED || action_mode == SWITCH || action_mode == RECONNECT || action_mode == OTHER)
 		phone_audio.time_to_reset = 60;
 	else 
