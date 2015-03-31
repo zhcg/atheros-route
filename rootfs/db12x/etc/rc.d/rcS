@@ -194,9 +194,8 @@ fi
 #/usr/sbin/threethread &
 
 #yhl,for update args losing
-#pppoe-setup `cfg -e | grep PPPOE_USER | awk -F "=" '{print$2}'` `cfg -e | grep PPPOE_PWD | awk -F "=" '{print$2}'`
-#pppoe-setup `cat /etc/ppp/chap-secrets | awk -F'"' '{print $2}'` `cat /etc/ppp/chap-secrets | awk -F'"' '{print $4}'`
-pppoe-setup `cat /configure_backup/chap-secrets | awk -F'"' '{print $2}'` `cat /configure_backup/chap-secrets | awk -F'"' '{print $4}'`
+pppoe-setup `cfg -e | grep PPPOE_USER | awk -F "=" '{print$2}'` `cfg -e | grep PPPOE_PWD | awk -F "=" '{print$2}'`
+#pppoe-setup `cat /configure_backup/chap-secrets | awk -F'"' '{print $2}'` `cat /configure_backup/chap-secrets | awk -F'"' '{print $4}'`
 
 /usr/sbin/ppy &
 /usr/sbin/web_control &

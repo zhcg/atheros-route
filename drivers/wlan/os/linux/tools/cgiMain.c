@@ -2477,6 +2477,10 @@ void writeParameters(char *name,char *mode,unsigned long offset)
     int         nvram_write=0;
 #endif
 
+    int f_lock;
+
+    f_lock = open("/tmp/br0", O_RDWR);
+    flock(f_lock, LOCK_EX);
     /*
     ** Code Begins
     ** The name of the file, and the offset into the file are passed as parameters.
@@ -2502,6 +2506,8 @@ void writeParameters(char *name,char *mode,unsigned long offset)
             if (athcfg_prepare_nvram(f, name,
                                      (config.numParams == 0 ? 0 : 1)) != 0) {
                 fclose(f);
+     flock(f_lock, LOCK_UN);
+     close(f_lock);
                 return;
             }
         }
@@ -2658,6 +2664,8 @@ void writeParameters(char *name,char *mode,unsigned long offset)
 
         fclose(f);
     }
+     flock(f_lock, LOCK_UN);
+     close(f_lock);
 }
 
 
@@ -2707,10 +2715,10 @@ void writeParametersWithSync(void)
 {
     FILE *f;
     int i;
-    int fd;
+    int f_lock;
 
-    fd = open("/tmp/br0", O_RDWR);
-    flock(fd, LOCK_EX);
+    f_lock = open("/tmp/br0", O_RDWR);
+    flock(f_lock, LOCK_EX);
 
     memset(&config,0,sizeof(config));
     
@@ -2736,6 +2744,8 @@ void writeParametersWithSync(void)
         fillParamStruct(f);
         fclose(f);
     }
+     flock(f_lock, LOCK_UN);
+     close(f_lock);
 
     for(i=0;i<config_sync.numParams;i++)
     {
@@ -2748,8 +2758,6 @@ void writeParametersWithSync(void)
             writeParameters("/tmp/.apcfg","w+",0);			
 
 
-     flock(fd, LOCK_UN);
-     close(fd);
 
 }
 
@@ -5410,6 +5418,10 @@ int main(int argc,char **argv)
     char wifi0_flag[5];
     char wifi1_flag[5];
 
+    int f_lock;
+
+    f_lock = open("/tmp/br0", O_RDWR);
+    flock(f_lock, LOCK_EX);
 
 	CFG_get_by_name("WIFION_OFF",wifi0_flag);
 	CFG_get_by_name("WIFION_OFF_3",wifi1_flag);
@@ -5441,6 +5453,8 @@ int main(int argc,char **argv)
         {
             printf("ERROR:  %s not defined on this device\n", NVRAM);
             printf("ERROR:  Cannot store data in flash!!!!\n");
+     flock(f_lock, LOCK_UN);
+     close(f_lock);
             exit(-1);
         }
 
@@ -5456,6 +5470,8 @@ int main(int argc,char **argv)
         fillParamStruct(f);
         fclose(f);
     }
+     flock(f_lock, LOCK_UN);
+     close(f_lock);
 
 //	if( 0  == FactoryDefault  )
 //		CFG_set_by_name("FACTORY_RESET","0");
