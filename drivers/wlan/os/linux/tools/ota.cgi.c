@@ -148,6 +148,7 @@ int main()
         //Execute_cmd("AR9344_interface 1", rspBuff1);
         //printf("%s",rspBuff1);
        // fprintf(errOut,"check:%s!!!!!  %d \n",rspBuff1,strlen(rspBuff1));
+       system("rm -f /tmp/AR9344.bin > /dev/null 2>&1");
         pipi_set(1);
     }
     if(strcmp(name,"up")==0)
