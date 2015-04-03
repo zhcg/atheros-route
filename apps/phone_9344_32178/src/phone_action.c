@@ -61,10 +61,25 @@ int offhook()
 //拨号
 int dialup(char *num,int num_len)
 {
-	if(num_len>45)
-		num_len = 45;
+	char temp_buf[64] = {0};
+	char num_bak[64] = {0};
+	if(num_len>40)
+		num_len = 40;
 	phone_audio.input_stream_rp = 0;
 	phone_audio.input_stream_wp = 0;
+	if(num_len > 1)
+	{
+		memcpy(num_bak,num,num_len);
+		num_len += 5;
+		memcpy(temp_buf,num+1,num_len-1);
+		num[1] = 'e';
+		num[2] = 'e';
+		num[3] = 'e';
+		num[4] = 'e';
+		num[5] = 'e';
+		memcpy(num+6,temp_buf,num_len-1);
+		PRINT("phone_num:%s\n",num);
+	}
 
 	pcm_ret = GenerateCodePcmData(num,num_len,&input_stream_buffer[phone_audio.input_stream_wp],Big_Endian);
 	PRINT("num_len = %d\n",num_len);
@@ -73,6 +88,11 @@ int dialup(char *num,int num_len)
 	if(phone_audio.input_stream_wp >= AUDIO_STREAM_BUFFER_SIZE)
 		phone_audio.input_stream_wp = 0;
 	phone_audio.dialup = 1;
+	if(num_len > 1)
+	{
+		memcpy(num,num_bak,num_len-5);
+		num[num_len-5] = '\0';
+	}
 	return 0;
 }
 

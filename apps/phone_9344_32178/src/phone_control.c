@@ -1035,7 +1035,6 @@ int do_cmd_heartbeat(dev_status_t *dev,char *buf)
 int do_cmd_dialup(dev_status_t* dev)
 {
 	int i,j,count=0;
-	char temp_buf[64] = {0};
 #ifdef REGISTER
 	if(dev->dev_is_using && dev->registered)
 #else
@@ -1061,21 +1060,12 @@ int do_cmd_dialup(dev_status_t* dev)
 				cli_req_buf[phone_control.cli_req_buf_rp].arglen = 40;
 			memcpy(phone_control.telephone_num, cli_req_buf[phone_control.cli_req_buf_rp].arg,cli_req_buf[phone_control.cli_req_buf_rp].arglen);
 			phone_control.telephone_num[cli_req_buf[phone_control.cli_req_buf_rp].arglen]='\0';
-			PRINT("phone_num:%s\n",phone_control.telephone_num);
 			phone_control.telephone_num_len = cli_req_buf[phone_control.cli_req_buf_rp].arglen;
-			if(phone_control.telephone_num_len > 1)
-			{
-				phone_control.telephone_num_len += 5;
-				memcpy(temp_buf,phone_control.telephone_num+1,phone_control.telephone_num_len-1);
-				phone_control.telephone_num[1] = 'e';
-				phone_control.telephone_num[2] = 'e';
-				phone_control.telephone_num[3] = 'e';
-				phone_control.telephone_num[4] = 'e';
-				phone_control.telephone_num[5] = 'e';
-				memcpy(phone_control.telephone_num+6,temp_buf,phone_control.telephone_num_len-1);
-				PRINT("phone_num:%s\n",phone_control.telephone_num);
-			}
+			PRINT("phone_num:%s\n",phone_control.telephone_num);
+			PRINT("phone_num_len:%d\n",phone_control.telephone_num_len);
 			dialup(phone_control.telephone_num, phone_control.telephone_num_len);
+			PRINT("phone_num:%s\n",phone_control.telephone_num);
+			PRINT("phone_num_len:%d\n",phone_control.telephone_num_len);
 		}
 #ifdef B6L
 	}
@@ -3186,7 +3176,7 @@ void check_audio_reconnect()
 	}
 }
 
-void get_phone_status()
+int get_phone_status()
 {
 	int i = 0;
 	int isswtiching = 0;
