@@ -14,6 +14,8 @@ function check(num)
 		url=url+"?q=check";	
 		xmlHttpota.onreadystatechange=stateChanged1;
 		widget_hide("otaupload");
+		widget_disable("otacheck");
+		waitgifshow3();
 	}
 	else if(num == 2)
 	{
@@ -47,6 +49,9 @@ function stateChanged1()
 			trans_inner("cres","admw nonewversion");
 			widget_hide("otaupload");
 		}
+		widget_enable("otacheck");
+		window.parent.DialogHide();
+		
 	}
 }
 function stateChanged2()
@@ -54,7 +59,15 @@ function stateChanged2()
 	if (xmlHttpota.readyState==4 || xmlHttpota.readyState=="complete")
 	{
 		var result = xmlHttpota.responseText;
-		if((result.indexOf("UPDATE SYSTEM!!!") >= 0  )||(result.indexOf("NEW SYSTEM!!!") >= 0  ))
+		if(result.indexOf("NO NEW SYSTEM!!!") >= 0  )
+		{
+			Butterlate.setTextDomain("admin");
+			trans_inner("cres","admw downloaderr");
+			window.parent.DialogHide();
+			widget_display("otacheck");
+			widget_hide("otaupload");
+		}
+		else if(result.indexOf("UPDATE SYSTEM!!!") >= 0  )
 		{
 			waitgifshow();
 			window.parent.ttzhuan(document.getElementById("IPA").value);

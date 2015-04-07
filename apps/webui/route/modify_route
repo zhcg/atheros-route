@@ -2,8 +2,9 @@
 
 ROUTE_FILE=/configure_backup/route.conf
 
-MOD_IP_ADDR=`cfg -e | grep "MODXXX" |awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`
-if [ -z $MOD_IP_ADDR ];then
+ID_IP_ADDR=`cfg -e | grep "MODXXX" |awk -F'=' '{print $2}'`
+#echo $ID_IP_ADDR
+if [ -z "$ID_IP_ADDR" ];then
 	exit 2
 fi
 
@@ -12,30 +13,33 @@ if [ x$1 = x ]; then
 fi
 
 MOD_STATUS=$1
+#echo $MOD_STATUS
 
-str=$(grep -i -E "\<$MOD_IP_ADDR\>" $ROUTE_FILE)
-if [ -z "$str" ];then
-        echo "the route destination address is not exist"
-        exit 1
-else
-		echo "the route destination address is exist"
-		if [ "$MOD_STATUS" = "ON" ];then
-			sed -i '/'$MOD_IP_ADDR'/s/disable/enable/' $ROUTE_FILE
-			SR_SUB=`cat $ROUTE_FILE | grep $MOD_IP_ADDR | awk '{print $2}'`
-			SR_GW=`cat $ROUTE_FILE | grep $MOD_IP_ADDR | awk '{print $3}'`		
-			route add -net $MOD_IP_ADDR mask $SR_SUB gw $SR_GW
+#echo "the route destination address is exist"
+if [ "$MOD_STATUS" = "ON" ];then
+	sed -i $ID_IP_ADDR's/disable/enable/' $ROUTE_FILE
+	MOD_IP_ADDR=`sed -n ${ID_IP_ADDR}'p' $ROUTE_FILE | awk  -F' ' '{print $1}'`
+	SR_SUB=`sed -n ${ID_IP_ADDR}'p' $ROUTE_FILE | awk  -F' ' '{print $2}'`
+	SR_GW=`sed -n ${ID_IP_ADDR}'p' $ROUTE_FILE | awk  -F' ' '{print $3}'`
+	
+#	echo MOD_IP_ADDR $MOD_IP_ADDR
+#	echo SR_SUB $SR_SUB
+#	echo SR_GW $SR_GW
+	
+	route add -net $MOD_IP_ADDR netmask $SR_SUB gw $SR_GW
 			#if [ $? -ne 0 ];then
 		#		sed -i '/'$MOD_IP_ADDR'/d' $ROUTE_FILE
 		#		exit 5
 		#	fi
-		else if [ "$MOD_STATUS" = "OFF" ];then
-			sed -i '/'$MOD_IP_ADDR'/s/enable/disable/' $ROUTE_FILE
-			route del -net $MOD_IP_ADDR			
-		else
-			exit 4
-		fi
-		fi
+else if [ "$MOD_STATUS" = "OFF" ];then
+	MOD_IP_ADDR=`sed -n ${ID_IP_ADDR}'p' $ROUTE_FILE | awk  -F' ' '{print $1}'`
+	sed -i $ID_IP_ADDR's/enable/disable/' $ROUTE_FILE
+	route del $MOD_IP_ADDR			
+else
+	exit 4
 fi
+fi
+#fi
 echo "modify route rule done"
 
 

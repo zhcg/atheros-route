@@ -2,19 +2,15 @@
 
 ROUTE_FILE=/configure_backup/route.conf
 
-DES_IP_ADDR=`cfg -e | grep "DELXXX" |awk -F'=' '{print $2}' | awk -F'"' '{print $2}'`
-if [ -z $DES_IP_ADDR ];then
+ID_IP_ADDR=`cfg -e | grep "DELXXX" |awk -F'=' '{print $2}'`
+# $ID_IP_ADDR
+if [ -z $ID_IP_ADDR ];then
 	exit 2
 fi
 
-str=$(grep -i -E "\<$DES_IP_ADDR\>" $ROUTE_FILE)
-#echo $str
-if [ -z "$str" ];then
-        echo "the route destination address is not exist"
-        exit 1
-else
-		echo "the route destination address is exist"
-        sed -i '/'$DES_IP_ADDR'/d' $ROUTE_FILE
-		route del $DES_IP_ADDR
-        echo "done"
-fi
+DES_IP_ADDR=`sed -n ${ID_IP_ADDR}'p' $ROUTE_FILE | awk  -F' ' '{print $1}'`
+sed -i ${ID_IP_ADDR}'d' $ROUTE_FILE
+#echo $DES_IP_ADDR
+route del $DES_IP_ADDR
+echo "done"
+#fi

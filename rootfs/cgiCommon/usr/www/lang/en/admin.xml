@@ -256,7 +256,7 @@
 	<message msgid="factory fail" msgstr="Return to factory setting fail " />
 	<message msgid="factory success" msgstr="Return to factory setting successfully " />
 	<message msgid="upgrade success" msgstr="Upgrade successfully " />
-	<message msgid="upgrade fail" msgstr="Version of the same, the firmware is not upgraded " />
+	<message msgid="upgrade fail" msgstr="Upgrade fail" />
 
 	<message msgid="admw offwifides" msgstr="wifi of this Band is off so WDS is not work" />
 	<message msgid="admw offwifideswan" msgstr="wifi of this Band is off so Wireless Bridge is not work" />

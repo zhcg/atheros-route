@@ -255,7 +255,7 @@
 	<message msgid="factory fail" msgstr="恢复出厂设置失败" />
 	<message msgid="factory success" msgstr="恢复出厂设置成功" />
 	<message msgid="upgrade success" msgstr="固件升级成功" />
-	<message msgid="upgrade fail" msgstr="版本一致,固件未升级" />
+	<message msgid="upgrade fail" msgstr="固件升级失败" />
 
 	<message msgid="admw offwifides" msgstr="本频段WiFi已经禁用,无线中继无法使用" />
 	<message msgid="admw offwifideswan" msgstr="本频段WiFi已经禁用,无线桥接无法使用" />

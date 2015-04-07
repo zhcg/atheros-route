@@ -46,6 +46,11 @@ function waitgifshow2()
 	Butterlate.setTextDomain("other");
 	window.parent.Demo(_("OTADOWNLOAD"));
 }
+function waitgifshow3()
+{
+	Butterlate.setTextDomain("other");
+	window.parent.Demo(_("CHECKING"));
+}
 
 function upgradef()
 { 
@@ -161,7 +166,7 @@ function upgradeota()
 </tr>
 <tr>
   <td colspan="2">
-	<input id="otacheck" class="handaer_input" onclick="check(1)" type="button" name="otacheck" ><span id="cres"></span></br>
+	<input id="otacheck" class="handaer_input" onclick="check(1)" type="button" name="otacheck" ><span style="font-size:16px;color: #000000;" id="cres"></span></br>
 	<input id="otaupload"  style="display:none" class="handaer_input" onclick="upgradeota()" type="button" name="otaupload">
   </td>
 </tr>

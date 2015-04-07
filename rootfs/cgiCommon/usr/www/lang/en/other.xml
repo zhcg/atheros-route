@@ -19,5 +19,6 @@
 	
 	<message msgid="login note" msgstr="Since the last update error, the system has to restore the system state, part of the function is limited, please upgrade the system" />
 	<message msgid="OTADOWNLOAD" msgstr="Loading new version software,please wait...... " />
+	<message msgid="CHECKING" msgstr="Check whether there is a new version, please wait...... " />
 	
 </po>

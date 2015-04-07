@@ -19,5 +19,6 @@
 
 	<message msgid="login note" msgstr="由于上次更新出错，系统已经进入到恢复系统状态，部分功能受限，请重新进行系统升级" />
 	<message msgid="OTADOWNLOAD" msgstr="正在下载最新版本，请稍等...... " />
+	<message msgid="CHECKING" msgstr="正在检查是否存在新版本，请稍等...... " />
 	
 </po>

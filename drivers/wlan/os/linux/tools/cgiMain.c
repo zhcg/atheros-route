@@ -956,11 +956,11 @@ char *processSpecial(char *paramStr, char *outBuff)
 	                    outBuff += sprintf(outBuff,"<td>%s</td>",de_mask);
 						outBuff += sprintf(outBuff,"<td>%s</td>",gw_ip);
 						if ( memcmp ( rule_status , "enable" ,6) == 0)
-		                   outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%s\" id=\"%s\" onclick=\"lismod(this.name)\" checked></td>",des_ip,des_ip);
+		                   outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%d\" id=\"%s\" onclick=\"lismod(this.name,this.id)\" checked></td>",id,des_ip);
 						if ( memcmp ( rule_status , "disable" ,7) == 0)
-		                    outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%s\" id=\"%s\" onclick=\"lismod(this.name)\"></td>",des_ip,des_ip);
+		                    outBuff += sprintf(outBuff,"<td><input type=\"checkbox\" name=\"%d\" id=\"%s\" onclick=\"lismod(this.name,this.id)\"></td>",id,des_ip);
 						//outBuff += sprintf(outBuff,"<td><input type=\"button\" name=\"%s\"  style=\"color:red;font-size:30px;cursor:hand;\" value=\"×\" onClick=\"listdel(this.name)\"></td>",des_ip);
-                        outBuff += sprintf(outBuff,"<td><img border=\"0\" name=\"%s\"  style=\"cursor:hand;\" src=\"../images/del.gif\" width=\"20\" height=\"20\" onclick=\"listdel(this.name)\" /></td>",des_ip);
+                        outBuff += sprintf(outBuff,"<td><img border=\"0\" name=\"%d\"  style=\"cursor:hand;\" src=\"../images/del.gif\" width=\"20\" height=\"20\" onclick=\"listdel(this.name)\" /></td>",id);
 		
 	                    outBuff += sprintf(outBuff,"</tr>");
 						id ++;						
