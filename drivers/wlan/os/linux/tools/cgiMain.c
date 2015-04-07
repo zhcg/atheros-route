@@ -3455,6 +3455,93 @@ int del_addr_bind(void)
 }
 /*end :  wangyu add for dhcp server operation */
 
+//add by mingyue 2015.4.7
+int check_IP_mask(char *str_IP, char *str_mask)
+{
+    unsigned long IP;
+    unsigned long mask;
+
+    IP = inet_addr(str_IP);
+    mask = inet_addr(str_mask);
+
+    if (IP & ~mask) {
+        return 1;
+    }
+
+    return 0;
+}
+int check_GW(char *str_IP, char *str_mask, char *str_gw)
+{
+    unsigned long IP;
+    unsigned long mask;
+    unsigned long gw;
+
+    IP = inet_addr(str_IP);
+    mask = inet_addr(str_mask);
+    gw = inet_addr(str_gw);
+
+    if ((IP & mask) == (gw & mask)) 
+    {
+        return 0;
+    }
+    else
+    {
+        return 1;
+
+    }
+
+}
+
+int check_route_rule(void)
+{
+	char buff_wan_mask[128] = {0}; 
+	char buff_wan_ip[128] = {0}; 
+	char buff_lan_mask[128] = {0}; 
+	char buff_lan_ip[128] = {0}; 
+	char buff_wan_mode[128] = {0}; 
+	char buff_desip[128] = {0}; 
+	char buff_sub[128] = {0}; 
+	char buff_gw[128] = {0}; 
+
+	CFG_get_by_name("SR_DESIP",buff_desip);
+	CFG_get_by_name("SR_SUB",buff_sub);
+	CFG_get_by_name("SR_GW",buff_gw);
+
+		//fprintf(errOut,"gw:%s\n",buff_gw);
+
+	CFG_get_by_name("AP_IPADDR",buff_lan_ip);
+	CFG_get_by_name("AP_NETMASK",buff_lan_mask);
+
+    CFG_get_by_name("WAN_MODE",buff_wan_mode);
+
+	if(!strcmp(buff_wan_mode, "static"))
+    {
+        CFG_get_by_name("WAN_IPADDR",buff_wan_ip);
+        CFG_get_by_name("WAN_NETMASK",buff_wan_mask);
+    }
+	if(!strcmp(buff_wan_mode, "dhcp"))
+    {
+        CFG_get_by_name("WAN_IPADDR2",buff_wan_ip);
+        CFG_get_by_name("WAN_NETMASK2",buff_wan_mask);
+    }
+	if(!strcmp(buff_wan_mode, "pppoe"))
+    {
+        CFG_get_by_name("WAN_IPADDR3",buff_wan_ip);
+        CFG_get_by_name("WAN_NETMASK3",buff_wan_mask);
+    }
+
+    if (check_IP_mask(buff_desip,buff_sub)) 
+    {
+        return 0;
+    }
+    if (check_GW(buff_wan_ip,buff_wan_mask,buff_gw) && check_GW(buff_lan_ip,buff_lan_mask,buff_gw)) 
+    {
+        return 0;
+    }
+
+    return 1;
+}
+
 //luodp route rule
 void add_route_rule(void)
 {
@@ -3467,7 +3554,29 @@ void add_route_rule(void)
 	writeParametersWithSync();
 	//writeParameters(NVRAM,"w+", NVRAM_OFFSET);
 	//writeParameters("/tmp/.apcfg","w+",0);
-	Execute_cmd("rm -fr /tmp/route_log ;/usr/sbin/set_route > /tmp/route_log 2>&1",ret);
+
+    if (check_route_rule()) 
+    {
+	    Execute_cmd("rm -fr /tmp/route_log ;/usr/sbin/set_route > /tmp/route_log 2>&1",ret);
+    }
+    else
+    {
+			printf("HTTP/1.0 200 OK\r\n");
+			printf("Content-type: text/html\r\n");
+			printf("Connection: close\r\n");
+			printf("\r\n");
+			printf("\r\n");
+			
+			printf("<HTML><HEAD>\r\n");
+			printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+			printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
+			printf("</head><body>");
+			printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"lan\");window.parent.DialogHide();alert(_(\"err IP format\"));window.location.href=\"ad_local_addru\";</script>");
+			printf("</body></html>");
+
+            return;
+
+    }
 //	Execute_cmd("grep /tmp/route_log 2>&1",ret);
 
 	FILE *fileBuf=NULL;
