@@ -15,6 +15,6 @@ if [ -z "$str" ];then
 else
 		echo "the route destination address is exist"
         sed -i '/'$DES_IP_ADDR'/d' $ROUTE_FILE
-		route del -net $DES_IP_ADDR
+		route del $DES_IP_ADDR
         echo "done"
 fi

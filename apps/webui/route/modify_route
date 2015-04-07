@@ -24,10 +24,10 @@ else
 			SR_SUB=`cat $ROUTE_FILE | grep $MOD_IP_ADDR | awk '{print $2}'`
 			SR_GW=`cat $ROUTE_FILE | grep $MOD_IP_ADDR | awk '{print $3}'`		
 			route add -net $MOD_IP_ADDR mask $SR_SUB gw $SR_GW
-			if [ $? -ne 0 ];then
-				sed -i '/'$MOD_IP_ADDR'/d' $ROUTE_FILE
-				exit 5
-			fi
+			#if [ $? -ne 0 ];then
+		#		sed -i '/'$MOD_IP_ADDR'/d' $ROUTE_FILE
+		#		exit 5
+		#	fi
 		else if [ "$MOD_STATUS" = "OFF" ];then
 			sed -i '/'$MOD_IP_ADDR'/s/enable/disable/' $ROUTE_FILE
 			route del -net $MOD_IP_ADDR			

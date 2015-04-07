@@ -3477,7 +3477,7 @@ void add_route_rule(void)
 	}else
 	{
 		fgets(valBuff,sizeof(valBuff),fileBuf);
-		if(strstr(valBuff,"5")!=NULL)
+		if(strstr(valBuff,"err IP format")!=NULL)
 		{
 			printf("HTTP/1.0 200 OK\r\n");
 			printf("Content-type: text/html\r\n");
@@ -3490,6 +3490,20 @@ void add_route_rule(void)
 			printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
 			printf("</head><body>");
 			printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"lan\");window.parent.DialogHide();alert(_(\"err IP format\"));window.location.href=\"ad_local_addru\";</script>");
+			printf("</body></html>");
+		}
+		else if(strstr(valBuff,"the route rule is exist")!=NULL)
+		{
+			printf("HTTP/1.0 200 OK\r\n");
+			printf("Content-type: text/html\r\n");
+			printf("Connection: close\r\n");
+			printf("\r\n");
+			printf("\r\n");
+			printf("<HTML><HEAD>\r\n");
+			printf("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+			printf("<script type=\"text/javascript\" src=\"/lang/b28n.js\"></script>");
+			printf("</head><body>");
+			printf("<script type='text/javascript' language='javascript'>Butterlate.setTextDomain(\"admin\");window.parent.DialogHide();alert(_(\"err Ruleexist\"));window.location.href=\"ad_local_addru\";</script>");
 			printf("</body></html>");
 		}
 		fclose(fileBuf);
