@@ -73,6 +73,20 @@ function isAllNum(str) {
     }
     return 1
 }
+function checkMask(mask) 
+{ 
+	obj=mask; 
+	var exp=/^(254|252|248|240|224|192|128|0)\.0\.0\.0|255\.(254|252|248|240|224|192|128|0)\.0\.0|255\.255\.(254|252|248|240|224|192|128|0)\.0|255\.255\.255\.(254|252|248|240|224|192|128|0)$/; 
+	var reg = obj.match(exp); 
+	if(reg==null) 
+	{ 
+		return false; //"非法" 
+	} 
+	else 
+	{ 
+		return true; //"合法" 
+	} 
+}
 function checkIpAddr(field, ismask) 
 {
     if (field.value == "")
@@ -129,6 +143,7 @@ function checkIpAddr(field, ismask)
     }
     if (ismask == 1) 
 	{
+
         if ((!checkRange(field.value, 1, 1, 247)) || (!checkRange(field.value, 2, 0, 255)) || (!checkRange(field.value, 3, 0, 255)) || (!checkRange(field.value, 4, 1, 254)))
 		{
             alert(_("err IP format"));
@@ -136,7 +151,8 @@ function checkIpAddr(field, ismask)
             field.focus();
             return false
         }
-    } 
+
+	} 
 	else if (ismask == 2) 
 	{
         if ((!checkRange(field.value, 1, 0, 255)) || (!checkRange(field.value, 2, 0, 255)) || (!checkRange(field.value, 3, 0, 255)) || (!checkRange(field.value, 4, 0, 255))) 
@@ -146,6 +162,13 @@ function checkIpAddr(field, ismask)
             field.focus();
             return false
         }
+		if(checkMask(field.value)== false)
+		{
+            alert(_("err sub format"));
+            field.value = field.defaultValue;
+            field.focus();
+            return false
+		}
     } 
 	else if (ismask == 3) 
 	{
