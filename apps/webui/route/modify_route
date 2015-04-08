@@ -33,8 +33,10 @@ if [ "$MOD_STATUS" = "ON" ];then
 		#	fi
 else if [ "$MOD_STATUS" = "OFF" ];then
 	MOD_IP_ADDR=`sed -n ${ID_IP_ADDR}'p' $ROUTE_FILE | awk  -F' ' '{print $1}'`
+	SR_SUB=`sed -n ${ID_IP_ADDR}'p' $ROUTE_FILE | awk  -F' ' '{print $2}'`
+	SR_GW=`sed -n ${ID_IP_ADDR}'p' $ROUTE_FILE | awk  -F' ' '{print $3}'`
 	sed -i $ID_IP_ADDR's/enable/disable/' $ROUTE_FILE
-	route del $MOD_IP_ADDR			
+	route del -net $MOD_IP_ADDR netmask $SR_SUB gw $SR_GW			
 else
 	exit 4
 fi

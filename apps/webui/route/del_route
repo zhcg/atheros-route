@@ -9,8 +9,10 @@ if [ -z $ID_IP_ADDR ];then
 fi
 
 DES_IP_ADDR=`sed -n ${ID_IP_ADDR}'p' $ROUTE_FILE | awk  -F' ' '{print $1}'`
+DES_NETMASK=`sed -n ${ID_IP_ADDR}'p' $ROUTE_FILE | awk  -F' ' '{print $2}'`
+DES_GW=`sed -n ${ID_IP_ADDR}'p' $ROUTE_FILE | awk  -F' ' '{print $3}'`
 sed -i ${ID_IP_ADDR}'d' $ROUTE_FILE
 #echo $DES_IP_ADDR
-route del $DES_IP_ADDR
+route del -net $DES_IP_ADDR netmask $DES_NETMASK gw $DES_GW
 echo "done"
 #fi
