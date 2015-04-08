@@ -127,10 +127,10 @@ ifeq ($(BUILD_VERSION), B6)
 db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si32178_build spi32178_build powerdowna20 terminal_dev_register cacm libupdate phone_9344_32178 check_phone_status modules_server monitor remote_parse OTA_Base env  usbpassage_build phonepassage_build AR9344_interface as532h_build ntpclient_arm  ppy pppoe_build channel webui tester $(fs_build) makeotaimage makeoneimage 
 endif
 ifeq ($(BUILD_VERSION), B6_bak)
-db12x_build:common_mainline kernel_modules iptables_build driver_build  pci_build art_mod $(i2s_mod) OTA_Base env pppoe_build  webui rm_tcpdumps $(fs_build) system_bak
+db12x_build:common_mainline kernel_modules iptables_build driver_build  pci_build art_mod $(i2s_mod) OTA_Base env AR9344_interface  pppoe_build  webui rm_tcpdumps $(fs_build) system_bak
 endif
 ifeq ($(BUILD_VERSION), S1_bak)
-db12x_build:common_mainline kernel_modules iptables_build driver_build  pci_build art_mod $(i2s_mod) OTA_Base env pppoe_build powerdowna20 webui rm_tcpdumps $(fs_build) system_bak
+db12x_build:common_mainline kernel_modules iptables_build driver_build  pci_build art_mod $(i2s_mod) OTA_Base env AR9344_interface pppoe_build powerdowna20 webui rm_tcpdumps $(fs_build) system_bak
 endif
 ifeq ($(BUILD_VERSION), B6L)
 db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si32178_build spi32178_build powerdowna20 cacm libupdate phone_9344_32178 phone_lite_register check_phone_status as532_interface remote_parse OTA_Base env ntpclient_arm  ppy pppoe_build channel webui tester $(fs_build) makeotaimage makeoneimage 
@@ -341,6 +341,15 @@ si3000_build: kernel_build
 
 rm_tcpdumps:
 	rm $(INSTALL_ROOT)/usr/sbin/tcpdumps
+	rm $(INSTALL_ROOT)/usr/sbin/del*
+	rm $(INSTALL_ROOT)/usr/sbin/modify*
+	rm $(INSTALL_ROOT)/usr/sbin/set_addr*
+	rm $(INSTALL_ROOT)/usr/sbin/set_mac*
+	rm $(INSTALL_ROOT)/usr/sbin/enable_route
+	rm $(INSTALL_ROOT)/usr/sbin/get_mac
+	rm $(INSTALL_ROOT)/usr/bin/repeatVAP*
+	rm $(INSTALL_ROOT)/bin/nart.out
+	find $(INSTALL_ROOT)/ -name *,bak -exec rm -fr {} +
 
 system_bak:
 	cd ../images/db12x; \
