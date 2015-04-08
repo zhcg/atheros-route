@@ -1,0 +1,15 @@
+#!/bin/sh
+
+ROUTE_FILE=/configure_backup/route.conf
+
+cat $ROUTE_FILE |while read line 
+do
+	enable=`echo $line | awk -F' ' '{print $4}'`
+	echo $enable
+	if [ "$enable" = "enable" ];then
+		ipaddr=`echo $line | awk -F' ' '{print $1}'`
+		netmask=`echo $line | awk -F' ' '{print $2}'`
+		gw=`echo $line | awk -F' ' '{print $3}'`
+		route add -net $ipaddr netmask $netmask gw $gw
+	fi
+done

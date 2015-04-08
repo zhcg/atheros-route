@@ -375,6 +375,7 @@ webui:
 	cp -f route/set_route $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f route/del_route $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f route/modify_route $(INSTALL_ROOT)/usr/sbin;  \
+	cp -f route/enable_route $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f arp/set_arp $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f arp/del_arp $(INSTALL_ROOT)/usr/sbin;  \
 	cp -f arp/modify_arp $(INSTALL_ROOT)/usr/sbin;  \
