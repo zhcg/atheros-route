@@ -615,7 +615,10 @@ function timecheck()
 	var eh = parseInt(document.wanCfg.PPPOE_TIMING_EH.value);
 	var em = parseInt(document.wanCfg.PPPOE_TIMING_EM.value);
 	
-	var myDate = new Date();
+	var tm_now = document.getElementById("PCTIME").value;
+	tm_now = tm_now.replace(/-/g,"/");
+	var myDate = new Date(tm_now );	
+
 	var ch = myDate.getHours();
 	var cm = myDate.getMinutes();
 	
@@ -1148,6 +1151,7 @@ function help()
 </table>
 
 </form>
+<input style="display:none" name="PCTIME" id="PCTIME" value="~Dtimenow~" type="text" >
 
 </td></tr></table></div>
 </body>
