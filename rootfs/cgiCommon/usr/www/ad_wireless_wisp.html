@@ -1036,7 +1036,7 @@ function initTranslationwan()
 	trans_inner("wConnectionType","wisp connection type");
 	trans_inner("wConnTypeStatic","wan connection type static");
 	trans_inner("wConnTypeDhcp","wan connection type dhcp");
-	trans_inner("wConnTypePppoe","wan connection type pppoe");
+	//trans_inner("wConnTypePppoe","wan connection type pppoe");
 	trans_inner("wStaticIp","inet ip");
 	trans_inner("wStaticNetmask","inet netmask");
 	trans_inner("wStaticGateway","inet gateway");
@@ -1371,7 +1371,7 @@ function initTranslationwan_5G()
 	trans_inner("wConnectionType_5G","wisp connection type");
 	trans_inner("wConnTypeStatic_5G","wan connection type static");
 	trans_inner("wConnTypeDhcp_5G","wan connection type dhcp");
-	trans_inner("wConnTypePppoe_5G","wan connection type pppoe");
+	//trans_inner("wConnTypePppoe_5G","wan connection type pppoe");
 	trans_inner("wStaticIp_5G","inet ip");
 	trans_inner("wStaticNetmask_5G","inet netmask");
 	trans_inner("wStaticGateway_5G","inet gateway");
@@ -1520,7 +1520,7 @@ function help()
     <select id="WISP_MODE_2G" name="WISP_MODE_2G" size="1" onChange="connectionTypeSwitch()">
       <option ~sWISP_MODE_2G:dhcp~ value="dhcp" id="wConnTypeDhcp">DHCP (Auto Config)</option>
       <option ~sWISP_MODE_2G:static~ value="static" id="wConnTypeStatic">Static Mode (fixed IP)</option>
-      <option ~sWISP_MODE_2G:pppoe~ value="pppoe" id="wConnTypePppoe">PPPOE (ADSL)</option>
+      <!--option ~sWISP_MODE_2G:pppoe~ value="pppoe" id="wConnTypePppoe">PPPOE (ADSL)</option-->
     </select>
 </td>
 </tr>
@@ -1657,7 +1657,7 @@ function help()
     <select id="WISP_MODE_5G" name="WISP_MODE_5G" size="1" onChange="connectionTypeSwitch_5G()">
 		<option ~sWISP_MODE_5G:dhcp~ value="dhcp" id="wConnTypeDhcp_5G">DHCP (Auto Config)</option>
 		<option ~sWISP_MODE_5G:static~ value="static" id="wConnTypeStatic_5G">Static Mode (fixed IP)</option>
-		<option ~sWISP_MODE_5G:pppoe~ value="pppoe" id="wConnTypePppoe_5G">PPPOE (ADSL)</option>
+		<!--option ~sWISP_MODE_5G:pppoe~ value="pppoe" id="wConnTypePppoe_5G">PPPOE (ADSL)</option-->
     </select>
 </td>
 </tr>
