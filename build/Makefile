@@ -82,11 +82,11 @@ endif
 #	cyj 2014-06-20
 ifndef BUILD_VERSION
 #export BUILD_VERSION=B6
-#export BUILD_VERSION=B6_bak
+export BUILD_VERSION=B6_bak
 #export BUILD_VERSION=B6L
 #export BUILD_VERSION=S1
 #export BUILD_VERSION=S1_bak
-export BUILD_VERSION=S1_F3A
+#export BUILD_VERSION=S1_F3A
 endif
 
 #
@@ -360,6 +360,7 @@ ifeq ($(BUILD_VERSION), B6)
 	cat $(INSTALL_ROOT)/etc/ath/apcfg_B6 >> $(INSTALL_ROOT)/etc/ath/apcfg
 endif
 ifeq ($(BUILD_VERSION), B6_bak)
+	cp -f ../rootfs/$(BOARD_TYPE)/etc/rc.d/rcS_bak $(INSTALL_ROOT)/etc/rc.d/rcS
 	cat $(INSTALL_ROOT)/etc/rc.d/rcS_B6 >> $(INSTALL_ROOT)/etc/rc.d/rcS
 	cat $(INSTALL_ROOT)/etc/ath/apcfg_B6_BAK >> $(INSTALL_ROOT)/etc/ath/apcfg
 endif
@@ -376,6 +377,7 @@ ifeq ($(BUILD_VERSION), S1_F3A)
 	cat $(INSTALL_ROOT)/etc/ath/apcfg_S1_F3A >> $(INSTALL_ROOT)/etc/ath/apcfg
 endif
 ifeq ($(BUILD_VERSION), S1_bak)
+	cp -f ../rootfs/$(BOARD_TYPE)/etc/rc.d/rcS_bak $(INSTALL_ROOT)/etc/rc.d/rcS
 	cat $(INSTALL_ROOT)/etc/rc.d/rcS_S1 >> $(INSTALL_ROOT)/etc/rc.d/rcS
 	cat $(INSTALL_ROOT)/etc/ath/apcfg_S1_BAK >> $(INSTALL_ROOT)/etc/ath/apcfg
 endif

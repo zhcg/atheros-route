@@ -1,0 +1,214 @@
+#!/bin/sh
+
+# This script runs when init it run during the boot process.
+# Mounts everything in the fstab
+
+mount -a
+mount -o remount +w /
+
+#added by yhl 2013.11.13
+mknod /dev/ppp c 108 0
+mkdir -p /var/local/tmp/ppp/status
+
+#add for wifi led
+mknod -m 666 /dev/wifiled c 254 0
+
+
+
+#
+# Mount the RAM filesystem to /tmp
+#
+
+mount -t ramfs -n none /tmp
+
+export PATH=$PATH:/etc/ath
+
+
+
+# for profile-based-optimization
+grep -iq "debugfs" /proc/filesystems
+if [ $? -eq 0 ]
+then
+	grep -iq "sysfs" /proc/filesystems
+	if [ $? -eq 0 ]
+	then
+		if [ ! -d /sys ]
+		then
+			mkdir /sys >/dev/null 2>&1
+		fi
+
+		mount -t sysfs none /sys >/dev/null 2>&1
+		if [ $? -eq 0 ]
+		then
+			mount -t debugfs none /sys/kernel/debug >/dev/null 2>&1
+			if [ $? -eq 0 ]
+			then
+				echo "** sysfs & debugfs mounted successfully **"
+			else
+				echo "****** debugfs mount failure ******"
+			fi
+					
+		else
+			echo "****** sysfs mount failure ******"
+		fi
+	fi
+fi
+
+insmod /lib/modules/2.6.31/net/athrs_gmac.ko
+
+##
+## Put the names of the interfaces in the environmental variables
+## (They can be board unique)
+##
+
+export WAN_IF=eth0
+export LAN_IF=eth1
+
+#yaomingyue
+ifconfig $WAN_IF up
+
+. /etc/ath/apcfg
+
+#yuhaolei for mac default display
+MACTYPE_FLAG=`cfg -e | grep "MACTYPE" | awk -F "=" '{print $2}'`
+if [ "${MACTYPE_FLAG}" != "0" ]; then
+	ETH0_MAC_2=`cfg -e | grep "ETH0_MAC" | awk -F "\"" '{print $2}'`
+	if [ "${ETH0_MAC_2}" != "" ]; then
+		ifconfig eth0 hw ether $ETH0_MAC_2
+	fi
+fi
+#yuhaolei
+
+#deal backup for upgrade by zzw
+/usr/sbin/upgrade_backup
+
+/usr/bin/cal_check 
+#ifconfig $WAN_IF up
+#ifconfig $LAN_IF up
+/etc/rc.d/rc.network
+/etc/rc.d/rc.bridge
+
+
+#
+# Enable I2S
+#
+#insmod /lib/modules/2.6.31/i2s/ath_i2s.ko
+
+#
+# Untar the debug tools into /tmp/tools
+#
+
+mkdir /tmp/tools
+cd /tmp/tools
+tar -xzvf /sbin/debug.tgz
+
+/usr/sbin/telnetd
+/bin/factoryreset /dev/freset
+
+# start the page cache/kmem cache cleanup timer in the kernel
+echo 1 > /proc/sys/vm/drop_caches
+
+# when processes uses page-cache more than 30% of system memory,
+# lets force them to write
+echo 20 > /proc/sys/vm/dirty_ratio
+
+# when the dirty pages cross more than 5% of sys memory,
+# kick in the pdflush
+echo 5 > /proc/sys/vm/dirty_background_ratio
+
+#when kernel panic ,reboot the system
+echo 10 > /proc/sys/kernel/panic
+
+##
+## Check for Auto AP Start
+##
+
+
+##
+## nat settings 
+##
+/etc/rc.d/rc.modules
+/etc/nat_vlan.sh
+
+#if [ "${WLAN_ON_BOOT}" = "y" -a "${WIFION_OFF}" = "on" ]; then
+if [ "${WLAN_ON_BOOT}" = "y" ]; then
+    /etc/ath/apup
+fi
+
+if [ "${PRIDNS}" != "" ]
+then
+	echo "nameserver ${PRIDNS}" > /etc/resolv.conf
+else
+	echo "nameserver 114.114.114.114" > /etc/resolv.conf
+fi
+if [ "${SECDNS}" != "" ]
+then
+	echo "nameserver ${SECDNS}" >> /etc/resolv.conf
+else
+	echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+fi
+##
+## dhcp
+##
+/etc/rc.d/rc.udhcpd
+if [ -f /configure_backup/ip_mac.conf ]; then
+	cat /configure_backup/ip_mac.conf | grep "enable" | awk 'BEGIN{OFS=FS=" "}{print $1,$2,$3}' >> /etc/udhcpd.conf
+else
+	touch /configure_backup/ip_mac.conf
+fi
+if [ "${WDSON_OFF}" != "on" -a "${WDSON_OFF_3}" != "on" -a "${DHCPON_OFF}" != "off" ]; then
+#if [ "${DHCPON_OFF}" != "off" ]; then
+	/usr/sbin/udhcpd /etc/udhcpd.conf
+fi
+ifconfig $LAN_IF up
+if [ -f /configure_backup/arp_ip_mac_on.conf ]; then
+	/usr/sbin/arp -f /configure_backup/arp_ip_mac_on.conf
+fi
+
+if [ -f /configure_backup/route.conf ]; then
+	/usr/sbin/enable_route
+fi
+
+if [ !  -f /configure_backup/pwd.xml ]; then
+	cp /usr/www/pwd_backup.xml /configure_backup/pwd.xml
+fi
+
+#if [ ! -f /etc/mac.bin ]; then
+#	echo "mac.bin backup"
+#	echo "Backup mac at `date`"  >> /etc/maclog.txt
+#	ifconfig | grep eth0 | awk -F ' ' '{print $5}' > /etc/mac.bin
+#	cfg -a ETH0_DFMAC=`cat /etc/mac.bin`
+#	cfg -a ETH0_MAC=`cat /etc/mac.bin`
+#	cfg -a BR0_MAC=`ifconfig | grep br0 | awk -F ' ' '{print$5}'`
+#	cfg -c
+#fi
+if [ ! -f /configure_backup/pwd.xml ]; then
+	touch /configure_backup/pwd.xml
+	echo -n "admin" >> /configure_backup/pwd.xml
+fi
+
+#/bin/fw_setenv bootdelay 1
+/usr/bin/set_sn.sh
+
+#/usr/bin/version_check &
+echo "check and not at `date`"  >> /etc/verlog.txt
+cfg -a UPGRADERESULT=0
+cfg -c
+
+/bin/server &
+#/bin/net_test &
+/usr/sbin/set_ntpserver &
+/usr/sbin/httpd -h /usr/www/
+#/usr/sbin/threethread &
+
+#yhl,for update args losing
+pppoe-setup `cfg -e | grep PPPOE_USER | awk -F "=" '{print$2}'` `cfg -e | grep PPPOE_PWD | awk -F "=" '{print$2}'`
+#pppoe-setup `cat /configure_backup/chap-secrets | awk -F'"' '{print $2}'` `cat /configure_backup/chap-secrets | awk -F'"' '{print $4}'`
+
+/usr/sbin/ppy &
+/usr/sbin/web_control &
+/bin/OTA_Base &
+/bin/AR9344_interface &
+#deal sta access control; by zzw 
+/usr/sbin/sta_access_control > /dev/null 2>&1
+
