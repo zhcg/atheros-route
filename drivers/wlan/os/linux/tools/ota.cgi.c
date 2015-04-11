@@ -67,7 +67,10 @@ int pipi_set(int type)
     }
  
     close(fd);
+	
+//	fprintf(errOut,"--------pipi_set(%d)!\n",type);  
 
+	sleep(1);
     /*打开有名管道，并设置非阻塞标志*/  
     if ((fd = open(pipeout, READMODE)) < 0) 
     {  

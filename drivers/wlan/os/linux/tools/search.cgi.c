@@ -125,7 +125,7 @@ int main()
     }
     pass[j] = '\0';
 
-    fprintf(errOut,"1------Your Username is %s<br>Your Password is %s<br> \n", name, pass);
+//    fprintf(errOut,"1------Your Username is %s<br>Your Password is %s<br> \n", name, pass);
     //printf("Your Username is %s<br>Your Password is %s<br> \n", name, pass);
     if(strcmp(name,"2G")==0)
     {

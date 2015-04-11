@@ -1,25 +1,28 @@
 #!/bin/sh
 
-ath_num=`ifconfig  | grep -c ath`
-number_pci=`grep -c 168c /proc/bus/pci/devices`
+ap_mode=`cfg -e | grep STARTMODE | awk -F'"' '{print $2}'`
+if [ "${ap_mode}" = "repeater" -o "${ap_mode}" = "repeater_wisp" ];then
+	ath_num=`ifconfig  | grep -c ath`
+	number_pci=`grep -c 168c /proc/bus/pci/devices`
 
-wifi_flag=`cfg -e | grep  WIFION_OFF= | awk -F'=' '{print $2}'`
-wifi_flag_2=`cfg -e | grep  WIFION_OFF_3= | awk -F'=' '{print $2}'`
+	wifi_flag=`cfg -e | grep  WIFION_OFF= | awk -F'=' '{print $2}'`
+	wifi_flag_2=`cfg -e | grep  WIFION_OFF_3= | awk -F'=' '{print $2}'`
 
-. /etc/ath/apcfg_simple
+	. /etc/ath/apcfg_simple
 
-wisp_flag=`cfg -e | grep  WISPON_OFF= | awk -F'=' '{print $2}'`
-wisp_flag_2=`cfg -e | grep  WISPON_OFF_3= | awk -F'=' '{print $2}'`
-wisp_2g_flag=`cfg -e | grep WWAN_2G_FLAG | awk -F'=' '{print $2}'`
-wisp_5g_flag=`cfg -e | grep WWAN_5G_FLAG | awk -F'=' '{print $2}'`
+	wisp_flag=`cfg -e | grep  WISPON_OFF= | awk -F'=' '{print $2}'`
+	wisp_flag_2=`cfg -e | grep  WISPON_OFF_3= | awk -F'=' '{print $2}'`
+	wisp_2g_flag=`cfg -e | grep WWAN_2G_FLAG | awk -F'=' '{print $2}'`
+	wisp_5g_flag=`cfg -e | grep WWAN_5G_FLAG | awk -F'=' '{print $2}'`
 
-if [ "${wisp_flag}" = "on"  -a "${wisp_flag_2}" = "off" -a "${wisp_2g_flag}" != "invalid" ];then
-	echo wifi key is wrong
-	cfg -a WWAN_2G_FLAG=invalid
-	cfg -c
-fi
-if [ "${wisp_flag}" = "off"  -a "${wisp_flag_2}" = "on" -a "${wisp_5g_flag}" != "invalid" ];then
-	echo wifi key is wrong
-	cfg -a WWAN_5G_FLAG=invalid
-	cfg -c
+	if [ "${wisp_flag}" = "on"  -a "${wisp_flag_2}" = "off" -a "${wisp_2g_flag}" != "invalid" ];then
+		echo wifi key is wrong
+		cfg -a WWAN_2G_FLAG=invalid
+		cfg -c
+	fi
+	if [ "${wisp_flag}" = "off"  -a "${wisp_flag_2}" = "on" -a "${wisp_5g_flag}" != "invalid" ];then
+		echo wifi key is wrong
+		cfg -a WWAN_5G_FLAG=invalid
+		cfg -c
+	fi
 fi

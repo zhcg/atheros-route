@@ -1350,7 +1350,6 @@ ath_beacon_tasklet(struct ath_softc *sc, int *needmark)
 **
 **  \return N/A
 */
-//extern void ath_restart(char *);
 
 void
 ath_bstuck_tasklet(struct ath_softc *sc)
@@ -1362,18 +1361,13 @@ ath_bstuck_tasklet(struct ath_softc *sc)
         printk(KERN_DEBUG "%s: stuck beacon; resetting (bmiss count %u)\n",
                __func__, sc->sc_bmisscount);
     }
-	
 //	dump_stack();
-	
     sc->sc_reset_type = ATH_RESET_NOLOSS;
-	
-//	panic("ath_bstuck_tasklet\n");
-
     ath_internal_reset(sc);
-//	ath_restart(NULL);
-	ath_radio_disable(sc);
-	ath_radio_enable(sc);	
-	
+ 
+    ath_radio_disable(sc);
+    ath_radio_enable(sc);
+    
     sc->sc_reset_type = ATH_RESET_DEFAULT;
     sc->sc_stats.ast_resetOnError++;
 

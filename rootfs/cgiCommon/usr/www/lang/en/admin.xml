@@ -13,7 +13,7 @@
 	<message msgid="admw int_1des" msgstr="Wired connection" />  
 	<message msgid="admw int_1disc" msgstr="Wired connection through a Wired relay" />  
 	<message msgid="admw int_2des" msgstr="Wireless connection" />  
-	<message msgid="admw int_2disc" msgstr="Wireless connection through a wireless relay" />  
+	<message msgid="admw int_2disc" msgstr="Wireless connection through Wireless Bridge" />  
 
 	<message msgid="admw div_wan_title" msgstr="Please select the HBD router WAN port connection." />
 	<message msgid="admw DHCP" msgstr="Automatic acquisition (dynamic IP)" />  
@@ -139,7 +139,7 @@
 	<message msgid="admw wirelessdes" msgstr="Please select the WiFi to connect(Note:after WDS, WAN port will be disabled)" />  
 
 	<message msgid="admw wds_off_waring" msgstr="Note:DHCP settings and Wireless Bridge will be disabled after WDS turning on" />
-	<message msgid="admw wisp_off_waring" msgstr="Note:WAN settings and WDS will be disabled after Wireless Bridge turning on;After Wireless Bridge turning off，WAN setting is needed" />
+	<message msgid="admw wisp_off_waring" msgstr="Note:WAN settings will be disabled after Wireless Bridge turning on;After Wireless Bridge turning off，WAN setting is needed" />
 
 	<message msgid="admw PPMAC" msgstr="The MAC address of parent PC" />
 	<message msgid="admw MPMAC" msgstr="The MAC address of management PC" />

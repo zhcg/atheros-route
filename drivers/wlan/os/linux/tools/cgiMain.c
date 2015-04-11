@@ -3896,7 +3896,7 @@ void use_backup(void)
 					if(!strncmp(&buf[i], "20", 2))
 						break;
 				}
-				fprintf(errOut,"\n%s  %d strlen(&buf[i]) is %d \n",__func__,__LINE__, strlen(&buf[i]));
+				//fprintf(errOut,"\n%s  %d strlen(&buf[i]) is %d \n",__func__,__LINE__, strlen(&buf[i]));
 				bakupName = malloc(strlen(&buf[i]));
 				strncpy(bakupName, &buf[i], strlen(&buf[i]) - 1);
 				break;

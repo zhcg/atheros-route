@@ -25,6 +25,8 @@ then
 return
 fi
 
+NUMRADIO_PCI=`grep -c 168c /proc/bus/pci/devices`
+NUMRADIO=`expr ${NUMRADIO_PCI} + 1`
 
 ##
 ## Set Network configuration
@@ -42,7 +44,9 @@ cfg -a WDSON_OFF=${WDSON_OFF:="off"}
 cfg -a WDSON_OFF_3=${WDSON_OFF_3:="off"}
 cfg -a WISPON_OFF=${WISPON_OFF:="off"}
 cfg -a WISPON_OFF_3=${WISPON_OFF_3:="off"}
-cfg -a RADIO_STATUS=${RADIO_STATUS:="3"}
+if [ $NUMRADIO = 2 ]; then
+	cfg -a RADIO_STATUS=${RADIO_STATUS:="3"}
+fi
 cfg -a DHCPON_OFF=${DHCPON_OFF:="on"}
 cfg -a BEACON_INT=${BEACON_INT:="100"}
 cfg -a BEACON_INT_3=${BEACON_INT_3:="100"}
@@ -128,8 +132,10 @@ cfg -a AP_HIDESSID_4=${AP_HIDESSID_4:="1"}
 ## Set up the channel for dual mode
 ##
 
-cfg -a AP_PRIMARY_CH_3=${AP_PRIMARY_CH_3:=149}
-cfg -a AP_CHMODE_3=${AP_CHMODE_3:="11NAHT40PLUS"}
+if [ $NUMRADIO = 2 ]; then
+	cfg -a AP_PRIMARY_CH_3=${AP_PRIMARY_CH_3:=149}
+	cfg -a AP_CHMODE_3=${AP_CHMODE_3:="11NAHT40PLUS"}
+fi
 ##
 ## This is for pure G or pure N operations.  Hmmmm...
 ##
