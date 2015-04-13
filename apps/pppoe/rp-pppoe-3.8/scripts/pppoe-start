@@ -150,9 +150,10 @@ if [ "$DEBUG" != "" ] ; then
 fi
 
 #added by yhl,2014.05.26
-#$CONNECT "$@" > /dev/null 2>&1 &
-echo " " > /usr/www/pppoe_status.xml
-$CONNECT "$@" > /usr/www/pppoe_status.xml &
+#added by mingyue 2015.04.13
+$CONNECT "$@" > /dev/null 2>&1 &
+#echo " " > /usr/www/pppoe_status.xml
+#$CONNECT "$@" > /usr/www/pppoe_status.xml &
 CONNECT_PID=$!
 
 if [ "$CONNECT_TIMEOUT" = "" -o "$CONNECT_TIMEOUT" = 0 ] ; then

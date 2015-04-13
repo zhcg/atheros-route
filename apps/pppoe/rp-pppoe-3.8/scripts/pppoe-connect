@@ -291,20 +291,18 @@ fi
 echo $$ > $PIDFILE
 
 while [ true ] ; do
-    #add by mingyue  2015.4.13
-    echo " " > /usr/www/pppoe_status.xml
-    # end add
+    #add "> /usr/www/pppoe_status.xml "by mingyue  2015.4.13
     if test "$OVERRIDE_PPPD_COMMAND" != "" ; then
-	$SETSID $OVERRIDE_PPPD_COMMAND &
+	$SETSID $OVERRIDE_PPPD_COMMAND > /usr/www/pppoe_status.xml &
 	echo "$!" > $PPPD_PIDFILE
     elif test "$LINUX_PLUGIN" != "" ; then
-	$SETSID $PPPD $PPP_STD_OPTIONS $DEMAND &
+	$SETSID $PPPD $PPP_STD_OPTIONS $DEMAND > /usr/www/pppoe_status.xml &
 	echo "$!" > $PPPD_PIDFILE
     else
 	$SETSID $PPPD pty "$PPPOE_CMD" \
 	    $PPP_STD_OPTIONS \
 	    $DEMAND \
-	    $PPPD_SYNC &
+	    $PPPD_SYNC > /usr/www/pppoe_status.xml &
 	echo "$!" > $PPPD_PIDFILE
     fi
     wait
