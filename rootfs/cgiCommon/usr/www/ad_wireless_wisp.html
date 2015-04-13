@@ -569,7 +569,11 @@ function switch_wds()
 			{
 				document.wizard_form.WISP_STA_PSK_KEY.disabled = true;
 				widget_hide("tt2");
-
+				if(cho1 == 1)
+				{				
+					widget_display("typetable_2G");
+					connectionTypeSwitch();	
+				}
 			}
 			else 
 			{
@@ -577,7 +581,8 @@ function switch_wds()
 				{
 					widget_display("tt2");
 					document.wizard_form.WISP_STA_PSK_KEY.disabled = false;
-					//document.getElementById("pwd").value="";
+					widget_display("typetable_2G");
+					connectionTypeSwitch();	
 				}
 			}
 		}	
@@ -589,6 +594,7 @@ function switch_wds()
 		widget_hide("w1status");
 		widget_hide("dwsset3");
 		widget_hide("tt2");
+		hidealltable();
 		widget_enable("rad_12");		
 	}
 	checklistempty();
@@ -612,6 +618,11 @@ function switch_wds2()
 			{
 				document.wizard_form.WISP_STA_PSK_KEY_2.disabled = true;
 				widget_hide("tt22");
+				if(cho2 == 1)
+				{
+					widget_display("typetable_5G");
+					connectionTypeSwitch_5G();	
+				}
 			}
 			else
 			{
@@ -619,6 +630,8 @@ function switch_wds2()
 				{
 					widget_display("tt22");
 					document.wizard_form.WISP_STA_PSK_KEY_2.disabled = false;
+					widget_display("typetable_5G");
+					connectionTypeSwitch_5G();	
 				}
 			}
 		}
@@ -630,6 +643,7 @@ function switch_wds2()
 		widget_hide("w2status");
 		widget_hide("dwsset32");
 		widget_hide("tt22");
+		hidealltable_5G();
 		widget_enable("rad_1");		
 	}
 	checklistempty();
