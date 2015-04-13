@@ -85,6 +85,7 @@
 	<message msgid="sysinfo t4_safes" msgstr="安全类型" />
 	<message msgid="sysinfo t4_channel" msgstr="无线信道" />
 	<message msgid="sysinfo t4_wds" msgstr="无线中继" />
+	<message msgid="sysinfo t4_wisp" msgstr="无线桥接" />
 
 	<message msgid="sysinfo ok" msgstr="可上网" />
 	<message msgid="sysinfo fail" msgstr="不可上网" />

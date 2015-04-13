@@ -86,6 +86,7 @@
 	<message msgid="sysinfo t4_safes" msgstr="Security type" />
 	<message msgid="sysinfo t4_channel" msgstr="Wireless channel" />
 	<message msgid="sysinfo t4_wds" msgstr="WDS" />
+	<message msgid="sysinfo t4_wisp" msgstr="WISP" />
 
 	<message msgid="sysinfo ok" msgstr="Access to the Internet" />
 	<message msgid="sysinfo fail" msgstr="Unable to access the Internet" />

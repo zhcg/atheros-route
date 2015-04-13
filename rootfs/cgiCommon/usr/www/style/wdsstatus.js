@@ -50,7 +50,7 @@ function status_2G()
 		{
 			document.getElementById("w1_status").innerHTML=_("admw wds0");
 			times_2G ++ ;
-			if(times_2G >= 60)
+			if(times_2G >= 30)
 			{
 				clearInterval(timer_2G);
 				document.getElementById("w1_status").innerHTML=_("admw wds3");
@@ -90,7 +90,7 @@ function status_5G()
 		{
 			document.getElementById("w2_status").innerHTML=_("admw wds0");
 			times_5G ++ ;
-			if(times_5G >= 60)
+			if(times_5G >= 30)
 			{
 				clearInterval(timer_5G);
 				document.getElementById("w2_status").innerHTML=_("admw wds3");
