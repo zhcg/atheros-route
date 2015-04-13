@@ -291,6 +291,9 @@ fi
 echo $$ > $PIDFILE
 
 while [ true ] ; do
+    #add by mingyue  2015.4.13
+    echo " " > /usr/www/pppoe_status.xml
+    # end add
     if test "$OVERRIDE_PPPD_COMMAND" != "" ; then
 	$SETSID $OVERRIDE_PPPD_COMMAND &
 	echo "$!" > $PPPD_PIDFILE
