@@ -139,7 +139,7 @@
 	<message msgid="admw wirelessdes" msgstr="Please select the WiFi to connect(Note:after WDS, WAN port will be disabled)" />  
 
 	<message msgid="admw wds_off_waring" msgstr="Note:DHCP settings and Wireless Bridge will be disabled after WDS turning on" />
-	<message msgid="admw wisp_off_waring" msgstr="Note:WAN settings will be disabled after Wireless Bridge turning on;After Wireless Bridge turning off，WAN setting is needed" />
+	<message msgid="admw wisp_off_waring" msgstr="Note:2.4GHz and 5GHz WISP cannot be on at the same time; WAN settings will be disabled after Wireless Bridge turning on;After Wireless Bridge turning off，WAN setting is needed" />
 
 	<message msgid="admw PPMAC" msgstr="The MAC address of parent PC" />
 	<message msgid="admw MPMAC" msgstr="The MAC address of management PC" />

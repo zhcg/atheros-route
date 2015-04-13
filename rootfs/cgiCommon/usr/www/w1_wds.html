@@ -102,6 +102,9 @@ function initTranslation()
 	e = document.getElementById("offwifides2");
 	e.innerHTML = _("admw offwifides");
 
+	e = document.getElementById("waring");
+	e.innerHTML = _("admw wisp_off_waring");
+
 	e = document.getElementById("bCANCEL");
 	e.value = _("admw bBACK");
 	e = document.getElementById("bAPPLY");
@@ -564,12 +567,14 @@ function switch_wds()
 				}
 			}
 		}		
+		widget_disable("rad_12");		
 	}
 	else
 	{
 		widget_hide("dwsset2");
 		widget_hide("dwsset3");
 		widget_hide("tt2");
+		widget_enable("rad_12");		
 	}
 	checklistempty();
 	
@@ -601,12 +606,14 @@ function switch_wds2()
 				}
 			}
 		}
+		widget_disable("rad_1");		
 	}
 	else
 	{
 		widget_hide("dwsset22");
 		widget_hide("dwsset32");
 		widget_hide("tt22");
+		widget_enable("rad_1");		
 	}
 	checklistempty();
 
@@ -1653,7 +1660,13 @@ function pppshowpwd_5G()
 </td>
 </tr>
 </table>
-
+<table id="war_table" width="100%" cellpadding="0" cellspacing="0"   style="border-top: 0px;" class="handaer_text">
+<tr>
+  <td>
+	<span id="waring"  style="color:#ff3c00"></span><br>
+  </td>
+</tr>
+</table>
 
 <table cellpadding="2" cellspacing="1" id="buttontable">
 <tr align="center">

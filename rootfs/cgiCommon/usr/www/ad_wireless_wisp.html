@@ -580,7 +580,8 @@ function switch_wds()
 					//document.getElementById("pwd").value="";
 				}
 			}
-		}		
+		}	
+		widget_disable("rad_12");		
 	}
 	else
 	{
@@ -588,6 +589,7 @@ function switch_wds()
 		widget_hide("w1status");
 		widget_hide("dwsset3");
 		widget_hide("tt2");
+		widget_enable("rad_12");		
 	}
 	checklistempty();
 	
@@ -620,6 +622,7 @@ function switch_wds2()
 				}
 			}
 		}
+		widget_disable("rad_1");		
 	}
 	else
 	{
@@ -627,6 +630,7 @@ function switch_wds2()
 		widget_hide("w2status");
 		widget_hide("dwsset32");
 		widget_hide("tt22");
+		widget_enable("rad_1");		
 	}
 	checklistempty();
 
