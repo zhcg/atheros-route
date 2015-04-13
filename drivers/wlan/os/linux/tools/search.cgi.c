@@ -164,7 +164,7 @@ int main()
         }
         num=0;
         //ssid
-        Execute_cmd("cat /tmp/scanlist | grep ESSID | awk '{print $1}' | cut -d \":\" -f2", rspBuff2);
+        Execute_cmd("cat /tmp/scanlist | grep ESSID | cut -d \":\" -f2", rspBuff2);
         //fprintf(errOut,"\n[luodp] %s\n",rspBuff2);
         val2[num]=strtok(rspBuff2,"\n");
         while(val2[num]) {
@@ -381,7 +381,7 @@ int main()
         }
         num=0;
         //ssid
-        Execute_cmd("cat /tmp/scanlist_2 | grep ESSID | awk '{print $1}' | cut -d \":\" -f2", rspBuff2);
+        Execute_cmd("cat /tmp/scanlist_2 | grep ESSID | cut -d \":\" -f2", rspBuff2);
         //fprintf(errOut,"\n[luodp] %s\n",rspBuff2);
         val2[num]=strtok(rspBuff2,"\n");
         while(val2[num]) {
