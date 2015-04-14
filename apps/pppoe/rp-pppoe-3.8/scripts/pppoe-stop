@@ -60,6 +60,14 @@ if [ -r "$PIDFILE" ] ; then
 	echo "$ME: The pppoe-connect script (PID $PID) appears to have died" >& 2
     fi
 
+    # Kill pppoe
+    if [ -r "$PPPOE_PIDFILE" ] ; then
+	PPPOE_PID=`cat "$PPPOE_PIDFILE"`
+	$LOGGER -p daemon.notice "Killing pppoe"
+	echo "Killing pppoe ($PPPOE_PID)"
+	kill $PPPOE_PID > /dev/null 2>&1 || exit 1
+    fi
+
     # Kill pppd, which should in turn kill pppoe
     if [ -r "$PPPD_PIDFILE" ] ; then
 	PPPD_PID=`cat "$PPPD_PIDFILE"`
