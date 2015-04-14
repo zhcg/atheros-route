@@ -696,9 +696,13 @@ function handleState2()
 				{
 					document.getElementById("cstatus").innerHTML=_("sysinfo fail")+"("+_("sysinfo ppppwderr")+")";	//密码错误
 				}
-				else
+				else if(pstatus.indexOf("Using interface") != -1 )
 				{
 					document.getElementById("cstatus").innerHTML=_("sysinfo cing");	
+				}				
+				else
+				{
+					document.getElementById("cstatus").innerHTML=_("sysinfo unlink");	
 				}
 				
 			}

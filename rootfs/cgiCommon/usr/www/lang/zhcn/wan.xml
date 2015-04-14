@@ -59,6 +59,7 @@
 	<message msgid="sysinfo ok" msgstr="可上网" />
 	<message msgid="sysinfo fail" msgstr="不可上网" />
 	<message msgid="sysinfo cing" msgstr="正在连接......" />
+	<message msgid="sysinfo unlink" msgstr="未连接" />
 	<message msgid="sysinfo timeout" msgstr="当前时间不在定时连接时间段内" />
 
 	<message msgid="wan static mode" msgstr="静态模式" />
