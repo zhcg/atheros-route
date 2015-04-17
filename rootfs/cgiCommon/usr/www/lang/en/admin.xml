@@ -134,7 +134,7 @@
 
 	<message msgid="admw modedes" msgstr="Please select the HBD router WAN connection type." />  
 	<message msgid="admw modedes1" msgstr="The parameters needed in the opening of the network, the network operators to provide" />  
-
+	<message msgid="admw wispdes" msgstr="Please chose the WiFi you want" />  
 	<message msgid="admw wifides" msgstr="Please set the HBD router basic parameters. Your computer, PAD, intelligent mobile phone will use the following network." />  
 	<message msgid="admw wirelessdes" msgstr="Please select the WiFi to connect(Note:after WDS, WAN port will be disabled)" />  
 
