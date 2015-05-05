@@ -35,7 +35,15 @@ sh /configure_backup/ath/iptables/parc
 iptables -t nat -N PREROUTING_PORTMAP
 iptables -t nat -I PREROUTING -j PREROUTING_PORTMAP
 
+#iptables -t nat -N LOCAL_DNS
+#iptables -t nat -I PREROUTING -j LOCAL_DNS
+#/usr/bin/localdns
+
 iptables -N FORWARD_PORTMAP
 iptables -I FORWARD -j FORWARD_PORTMAP
 
 sh /configure_backup/ath/iptables/portmap
+
+iptables -t nat -N PREROUTING_MULTISCR
+iptables -t nat -I PREROUTING -j PREROUTING_MULTISCR
+

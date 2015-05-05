@@ -410,7 +410,10 @@ webui:
 	cp -f firmware_check2 $(INSTALL_ROOT)/usr/sbin; \
 	cd ./../arp; \
 	make; \
-	cp -f arp $(INSTALL_ROOT)/usr/sbin;
+	cp -f arp $(INSTALL_ROOT)/usr/sbin; \
+    cd ./../multiscr_fw; \
+    make; \
+    cp -f multiscr_fw $(INSTALL_ROOT)/usr/sbin;
 	
 tester: 
 	cd ../apps/tester; \

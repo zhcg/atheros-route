@@ -207,4 +207,5 @@ pppoe-setup `cfg -e | grep PPPOE_USER | awk -F "=" '{print$2}'` `cfg -e | grep P
 /bin/AR9344_interface &
 #deal sta access control; by zzw 
 /usr/sbin/sta_access_control > /dev/null 2>&1
+/usr/sbin/multiscr_fw & > /dev/null 2>&1
 
