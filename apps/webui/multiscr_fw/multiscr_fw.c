@@ -172,7 +172,7 @@ void set_dnat(char *client_ip, char *iface)
 
 	//printf("set_dnat start ip:%s\n",client_ip);
         memset(cmd_buffer_w,0,512);
-        sprintf(cmd_buffer_w ,"#%s\n", client_ip);
+        sprintf(cmd_buffer_w ,"#%s#%s\n",iface, client_ip);
         ret = fgets(cmd_buffer_r,500,fd);
 
 	//printf("rrrr:%s\n", cmd_buffer_r);
@@ -189,7 +189,7 @@ void set_dnat(char *client_ip, char *iface)
 			memset(cmd_buffer_w,0,512);
 			sprintf(cmd_buffer_w ,"iptables -t nat -A PREROUTING_MULTISCR -i %s -p tcp -m tcp --dport %s -j DNAT --to-destination %s:%s\n", iface, port[i], client_ip, port[i]);
 		        fprintf(fd_w,"%s",cmd_buffer_w);
-			//printf("%s\n", cmd_buffer_w);
+		//	printf("%s\n", cmd_buffer_w);
 		}
 		fclose(fd_w);
 		system("iptables -t nat -F PREROUTING_MULTISCR");
@@ -305,8 +305,8 @@ int main()
 		//	printf("client ip  : %s\n", client_ip);
 		//	printf("ret is %d....\n",ret);
 		//	printf("%s\t \n", smsg);	
-			Execute_cmd("ifconfig eth0", retBuf);
-			if(strstr(retBuf,"inet addr:")){
+			Execute_cmd("ifconfig |grep eth0", retBuf);
+			if(strstr(retBuf,"eth0")){
 		//		printf("eth0 eth0 eth0 start\n");
 				Execute_cmd("ifconfig eth0|grep 'inet addr:'|awk -F ' ' '{print$2}'|awk -F ':' '{print$2}'", eth0_ip);
 				Execute_cmd("ifconfig eth0|grep 'inet addr:'|awk -F ' ' '{print$4}'|awk -F ':' '{print$2}'", eth0_mask);
