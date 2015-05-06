@@ -195,7 +195,8 @@ function valueinit()
 		{
 			if(document.getElementById("s6_wds").value == "repeater_wisp")
 			{
-				widget_hide("ip_line");
+				//widget_hide("ip_line");
+				document.getElementById("ss5").innerHTML=document.getElementById("s5g").value +"/"+document.getElementById("s5h").value;	
 			}
 			else
 			{
@@ -305,7 +306,8 @@ function valueinit()
 		{
 			if(document.getElementById("s6_wds").value == "repeater_wisp")
 			{
-				widget_hide("gw_line");
+				//widget_hide("gw_line");
+				document.getElementById("ss7").innerHTML=document.getElementById("s7d").value;			
 			}
 			else
 			{
@@ -422,6 +424,10 @@ function WIFI_HS()
   <input size="32" style="display:none" maxlength="64" name="s5d" id="s5d" value="~~WAN_NETMASK2~" type="text" readonly>
   <input size="32" style="display:none" maxlength="64" name="s5e" id="s5e" value="~~WAN_IPADDR3~" type="text" readonly>
   <input size="32" style="display:none" maxlength="64" name="s5f" id="s5f" value="~~WAN_NETMASK3~" type="text" readonly>
+
+  <input size="32" style="display:none" maxlength="64" name="s5g" id="s5g" value="~~WWAN_IPADDR2~" type="text" readonly>
+  <input size="32" style="display:none" maxlength="64" name="s5h" id="s5h" value="~~WWAN_NETMASK2~" type="text" readonly>
+
   </td>
 </tr>
 
@@ -431,6 +437,7 @@ function WIFI_HS()
   <input size="32" style="display:none" maxlength="64" name="s7a" id="s7a" value="~~IPGW~" type="text" readonly>
   <input size="32" style="display:none" maxlength="64" name="s7b" id="s7b" value="~~IPGW2~" type="text" readonly>
   <input size="32" style="display:none" maxlength="64" name="s7c" id="s7c" value="~~IPGW3~" type="text" readonly>
+  <input size="32" style="display:none" maxlength="64" name="s7d" id="s7d" value="~~WWAN_IPGW2~" type="text" readonly>
   </td>
 </tr>
 </table>

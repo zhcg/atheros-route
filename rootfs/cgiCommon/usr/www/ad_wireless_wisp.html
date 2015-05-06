@@ -559,7 +559,10 @@ function switch_wds()
 		if(show == 1)
 		{
 			widget_display("dwsset2");
-			widget_display("w1status");
+			if(document.getElementById("WMOD_2G").value!="static")
+			{
+				widget_display("w1status");
+			}
 		}
 		widget_display("dwsset3");
 		var ssss = document.getElementById("WISP_STA_SECMODE").value;
@@ -608,7 +611,11 @@ function switch_wds2()
 		if(show2 == 1)
 		{
 			widget_display("dwsset22");
-			widget_display("w2status");
+			if(document.getElementById("WMOD_5G").value!="static")
+			{
+				widget_display("w2status");
+			}
+			
 		}
 		widget_display("dwsset32");
 		var ssss=document.getElementById("WISP_STA_SECMODE_2").value;
@@ -655,7 +662,10 @@ function initshow()
 	if(show == 1)
 	{
 		widget_display("dwsset2")
-		widget_display("w1status")
+		if(document.getElementById("WMOD_2G").value!="static")
+		{
+			widget_display("w1status");
+		}		
 	}
 	else
 	{
@@ -668,7 +678,10 @@ function initshow2()
 	if(show2 == 1)
 	{
 		widget_display("dwsset22");
-		widget_display("w2status");
+		if(document.getElementById("WMOD_5G").value!="static")
+		{		
+			widget_display("w2status");
+		}
 	}
 	else
 	{
@@ -1783,7 +1796,12 @@ function help()
 	<input type="text" style="display:none" name="WDSON_OFF_3" id="WDSON_OFF_3" size="20" maxlength="32" value="~~WDSON_OFF_3~">	
 
 	<input type="text" style="display:none" name="RADIO_STATUS" id="RADIO_STATUS" size="20" maxlength="32" value="~~RADIO_STATUS~">
-	<input type="text" style="display:none" name="AP_locatIP" id="AP_locatIP" size="20" maxlength="32" value="~~AP_IPADDR~">	
+	<input type="text" style="display:none" name="AP_locatIP" id="AP_locatIP" size="20" maxlength="32" value="~~AP_IPADDR~">
+	
+	<input type="text" style="display:none" name="WMOD_2G" id="WMOD_2G" size="20" maxlength="32" value="~~WISP_MODE_2G~">
+	<input type="text" style="display:none" name="WMOD_5G" id="WMOD_5G" size="20" maxlength="32" value="~~WISP_MODE_5G~">
+
+	
 </div>
 </td></tr></table></div>
 </body>
