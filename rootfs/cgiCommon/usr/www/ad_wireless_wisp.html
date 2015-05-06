@@ -563,6 +563,10 @@ function switch_wds()
 			{
 				widget_display("w1status");
 			}
+			else
+			{
+				widget_hide("w1status");
+			}
 		}
 		widget_display("dwsset3");
 		var ssss = document.getElementById("WISP_STA_SECMODE").value;
@@ -615,6 +619,10 @@ function switch_wds2()
 			{
 				widget_display("w2status");
 			}
+			else
+			{
+				widget_hide("w2status");
+			}
 			
 		}
 		widget_display("dwsset32");
@@ -665,6 +673,10 @@ function initshow()
 		if(document.getElementById("WMOD_2G").value!="static")
 		{
 			widget_display("w1status");
+		}
+		else
+		{
+			widget_hide("w1status");
 		}		
 	}
 	else
@@ -681,6 +693,10 @@ function initshow2()
 		if(document.getElementById("WMOD_5G").value!="static")
 		{		
 			widget_display("w2status");
+		}
+		else
+		{
+			widget_hide("w2status");
 		}
 	}
 	else
