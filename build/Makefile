@@ -81,8 +81,8 @@ endif
 #export BUILD_VERSION=S1_bak
 #	cyj 2014-06-20
 ifndef BUILD_VERSION
-#export BUILD_VERSION=B6
-export BUILD_VERSION=B6_bak
+export BUILD_VERSION=B6
+#export BUILD_VERSION=B6_bak
 #export BUILD_VERSION=B6L
 #export BUILD_VERSION=S1
 #export BUILD_VERSION=S1_bak

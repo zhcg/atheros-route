@@ -26,6 +26,12 @@
 
 #include <atheros.h>
 
+#define	GPIO4	(0x1 << 4)
+#define	GPIO13	(0x1 << 13)
+#define	GPIO19	(0x1 << 19)
+#define	GPIO21	(0x1 << 21)
+#define	GPIO22	(0x1 << 22)
+
 struct wifiled_dev{
     int column;
     int page;
@@ -56,7 +62,15 @@ static void display_reg(void)
 	printk(KERN_WARNING "ATH_GPIO_OE:%x \n", reg);
 }
 
-
+static void lc65xx_init(void)
+{
+	/* pull down, lc65xx gpio5 pull up */
+    ath_reg_rmw_clear(ATH_GPIO_OUT, GPIO22);
+	/* lc65xx reset */
+	ath_reg_rmw_clear(ATH_GPIO_OUT, GPIO19);
+	mdelay(50);
+	ath_reg_rmw_set(ATH_GPIO_OUT, GPIO19);
+}
 
 static int led_dri_write(
     struct file *filp,
@@ -72,60 +86,61 @@ static int led_dri_write(
 
     if(strncmp(buf,"enable",6) == 0)
     {
-        ath_reg_rmw_clear(ATH_GPIO_OE, 0x1<<13); 
-        ath_reg_rmw_clear(ATH_GPIO_OUT_FUNCTION3, 0xff00<<0);
-        ath_reg_rmw_clear(ATH_GPIO_OUT, 0x1<<13);
-    }
-    else if(strncmp(buf,"test_on",7) == 0)
-    {
-        ath_reg_rmw_clear(ATH_GPIO_OE, 0x1<<13); 
-        ath_reg_rmw_clear(ATH_GPIO_OUT_FUNCTION3, 0xff00<<0);
-        ath_reg_rmw_clear(ATH_GPIO_OUT, 0x1<<13);
 
-   	    ath_reg_rmw_clear(ATH_GPIO_OUT_FUNCTION4, 0xff0000<<0);
-        ath_reg_rmw_clear(ATH_GPIO_OUT, 0x1<<18);
-
-   	    ath_reg_rmw_clear(ATH_GPIO_OUT_FUNCTION5, 0xff00<<0);
-        ath_reg_rmw_clear(ATH_GPIO_OUT, 0x1<<21);
-   	    
-		ath_reg_rmw_clear(ATH_GPIO_OUT_FUNCTION5, 0xff0000<<0);
-        ath_reg_rmw_clear(ATH_GPIO_OUT, 0x1<<22);
-	}
-    else if(strncmp(buf,"test_off",8) == 0)
-    {
-        ath_reg_rmw_set(ATH_GPIO_OE, 0x1<<13); 
-        ath_reg_rmw_set(ATH_GPIO_OUT, 0x1<<18); 
-        ath_reg_rmw_set(ATH_GPIO_OUT, 0x1<<21); 
-        ath_reg_rmw_set(ATH_GPIO_OUT, 0x1<<22); 
-	}
-	else if(strncmp(buf,"led1_on",7) == 0)
-    {
-		ath_reg_rmw_clear(ATH_GPIO_OE, 0x1<<3); 
-        ath_reg_rmw_clear(ATH_GPIO_OUT_FUNCTION0, 0xff000000<<0);
-        ath_reg_rmw_clear(ATH_GPIO_OUT, 0x1<<3);
-	}
-    else if(strncmp(buf,"led1_off",8) == 0)
-    {
-        //ath_reg_rmw_set(ATH_GPIO_OE, 0x1<<3); 		
-        ath_reg_rmw_set(ATH_GPIO_OUT, 0x1<<3);
-	}
-    else if(strncmp(buf,"led2_on",7) == 0)
-    {
- 		ath_reg_rmw_clear(ATH_GPIO_OE, 0x1<<4); 
-  	    ath_reg_rmw_clear(ATH_GPIO_OUT_FUNCTION1, 0xff<<0);
-        ath_reg_rmw_clear(ATH_GPIO_OUT, 0x1<<4);		
-	}
-    else if(strncmp(buf,"led2_off",8) == 0)
-    {
-        ath_reg_rmw_set(ATH_GPIO_OUT, 0x1<<4); 
-        //ath_reg_rmw_set(ATH_GPIO_OE, 0x1<<4); 		
-	}
-    else
-    {
-        //ath_reg_rmw_set(ATH_GPIO_OE, 0x1<<13); 
-          ath_reg_rmw_set(ATH_GPIO_OUT, 0x1<<13);
     }
-        
+    else if(!strncmp(buf,"test_on", strlen("test_on")))
+    {
+        ath_reg_rmw_clear(ATH_GPIO_OUT, GPIO4);
+        ath_reg_rmw_clear(ATH_GPIO_OUT, GPIO13);
+        ath_reg_rmw_clear(ATH_GPIO_OUT, GPIO21);
+	}
+    else if(!strncmp(buf,"test_off", strlen("test_off")))
+    {
+        ath_reg_rmw_set(ATH_GPIO_OUT, GPIO4);
+        ath_reg_rmw_set(ATH_GPIO_OUT, GPIO13);
+        ath_reg_rmw_set(ATH_GPIO_OUT, GPIO21);
+	}
+    else if(!strncmp(buf,"led1_on", strlen("led1_on")))
+    {
+        ath_reg_rmw_clear(ATH_GPIO_OUT, GPIO4);
+	}
+    else if(!strncmp(buf,"led1_off", strlen("led1_off")))
+    {
+        ath_reg_rmw_set(ATH_GPIO_OUT, GPIO4);
+	}
+    else if(!strncmp(buf,"led2_on", strlen("led2_on")))
+    {
+        ath_reg_rmw_clear(ATH_GPIO_OUT, GPIO13);
+	}
+    else if(!strncmp(buf,"led2_off", strlen("led2_off")))
+    {
+        ath_reg_rmw_set(ATH_GPIO_OUT, GPIO13);
+	}
+    else if(!strncmp(buf,"led3_on", strlen("led3_on")))
+    {
+		ath_reg_rmw_clear(ATH_GPIO_OUT_FUNCTION5, 0xffff<<8);
+        ath_reg_rmw_clear(ATH_GPIO_OUT, GPIO21);
+	}
+	else if(!strncmp(buf,"led3_off", strlen("led3_off")))
+    {
+		ath_reg_rmw_clear(ATH_GPIO_OUT_FUNCTION5, 0xffff<<8);
+        ath_reg_rmw_set(ATH_GPIO_OUT, GPIO21);
+	}
+    else if(!strncmp(buf,"lc65xx_reset", strlen("lc65xx_reset")))
+    {
+        ath_reg_rmw_clear(ATH_GPIO_OUT, GPIO19);
+		mdelay(50);
+        ath_reg_rmw_set(ATH_GPIO_OUT, GPIO19);
+	}
+	else if(!strncmp(buf,"sw2shell", strlen("sw2shell")))
+    {
+        ath_reg_rmw_set(ATH_GPIO_OUT, GPIO22);
+	}
+	else if(!strncmp(buf,"sw2at", strlen("sw2at")))
+    {
+        ath_reg_rmw_clear(ATH_GPIO_OUT, GPIO22);
+	}
+
     kfree(kbuf);
 
     return err ? -EINVAL : count;
@@ -151,6 +166,22 @@ static void led_dri_setup_cdev(struct wifiled_dev *dev)
     /* Fail gracefully if need be */
     if (err)
         printk(KERN_NOTICE "Error %d adding wifiled", err);
+}
+
+static int w2m_gpio_init(void)
+{
+	/* set GPIO as output and init */
+	ath_reg_rmw_clear(ATH_GPIO_OE, GPIO4|GPIO13|GPIO19|GPIO21|GPIO22);
+	ath_reg_rmw_clear(ATH_GPIO_OUT_FUNCTION1, 0xff<<0);
+	ath_reg_rmw_clear(ATH_GPIO_OUT_FUNCTION3, ~(int)0);
+	ath_reg_rmw_clear(ATH_GPIO_OUT_FUNCTION4, 0xff<<24);
+	ath_reg_rmw_clear(ATH_GPIO_OUT_FUNCTION5, 0xffff<<8);
+	ath_reg_rmw_clear(ATH_GPIO_OUT, GPIO4|GPIO13|GPIO19|GPIO21|GPIO22);
+
+	/* lc65xx switch to shell */
+	lc65xx_init();
+
+	return 0;
 }
 
 static int __init led_dri_init(void)
@@ -190,6 +221,9 @@ static int __init led_dri_init(void)
         return -1;
     }
     device_create(my_class,NULL,MKDEV(led_major, 0), NULL,"wifiled");
+
+	/* gpio init for w2m */
+	w2m_gpio_init();
 
     return 0; /* succeed */
 

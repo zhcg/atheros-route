@@ -21,7 +21,8 @@
 #define ATHR_GMAC_PORT_LED(p)                  (18 + p)
 
 extern void athr_gmac_fast_reset(athr_gmac_t *mac,athr_gmac_desc_t *ds,int ac);
-#if defined(CONFIG_ETH_SOFT_LED) || defined(CONFIG_ATHRS27_PHY)
+//#if defined(CONFIG_ETH_SOFT_LED) && defined(CONFIG_ATHRS27_PHY)
+#if 0
 static int ag934x_gmac_create_thread(void *p);
 static int led_control_func(void *arg);
 #endif
@@ -59,7 +60,8 @@ ar934x_set_gmac_caps(void *arg)
 #endif
 
     if ( is_ar934x()) {
-#ifdef CONFIG_ETH_SOFT_LED
+//#ifdef CONFIG_ETH_SOFT_LED
+#if 0
         mac_set_flag(mac, ETH_SOFT_LED);
 #else
 #ifdef CONFIG_ATHR_PHY_SWAP
@@ -73,7 +75,8 @@ ar934x_set_gmac_caps(void *arg)
 #endif /* CONFIG_ATHR_PHY_SWAP */
 #endif /* CONFIG_ETH_SOFT_LED */
 
-#if defined(CONFIG_ETH_SOFT_LED) || defined(CONFIG_ATHRS27_PHY)
+//#if defined(CONFIG_ETH_SOFT_LED) && defined(CONFIG_ATHRS27_PHY)
+#if 0
         if (mac_has_flag(mac, ETH_SOFT_LED)) {
             athr_reg_wr(ATHR_GPIO_OUT_FUNCTION4,
                 (athr_reg_rd(ATHR_GPIO_OUT_FUNCTION4) & 0xffff));
@@ -255,7 +258,9 @@ check_for_dma_status(void *arg,int ac) {
     return 0;
 }
 
-#if defined(CONFIG_ETH_SOFT_LED) || defined(CONFIG_ATHRS27_PHY)
+//#if defined(CONFIG_ETH_SOFT_LED) && defined(CONFIG_ATHRS27_PHY)
+#if 0
+
 
 inline const LED_BLINK_RATES *
 athr_gmac_get_blink_table(athr_phy_speed_t s)
@@ -474,10 +479,10 @@ int ar934x_gmac_attach(void *arg )
 
     ops->check_dma_st = check_for_dma_status;
 
-    for (i = 0; i < 5; i++) {
-        ath_gpio_config_output(ATHR_GMAC_PORT_LED(i));
-    }
-    ath_gpio_out_val(ATHR_GMAC_PORT_LED(2),0);
+   // for (i = 0; i < 5; i++) {
+   //     ath_gpio_config_output(ATHR_GMAC_PORT_LED(i));
+   // }
+   // ath_gpio_out_val(ATHR_GMAC_PORT_LED(2),0);
 
     ops->set_pll   = NULL;
 
