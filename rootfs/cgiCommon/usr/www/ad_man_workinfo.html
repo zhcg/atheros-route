@@ -1,0 +1,182 @@
+<html>
+<head>
+<title></title>
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<META http-equiv=Pragma content=no-cache>
+<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+<script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
+<script language="JavaScript" type="text/javascript" src="/style/basic.js"></script>
+<script language="JavaScript" type="text/javascript" src="/style/load.js"></script>
+<script language="JavaScript" type="text/javascript" src="/style/tuchuaninfo.js"></script>
+<script type="text/javascript">
+if(getCookie()){}
+else{window.top.location.href="../login.html";}
+var m = new Map();
+function TuChuanInfoRequest()
+	{
+		var pppoestatus = new getTuChuanInforesult();
+		var pstatus = pppoestatus.result;
+		var a = pstatus.split("\n");
+		for(var i=0;i<a.length-1;i++){
+		    var b = a[i].split("=");
+			m.put(b[0],b[1]);	
+		}
+		var es = m.entrys();  
+		for(var i = 0;i < es.length;i++){  
+			var e = es[i];
+			if(e.key == "linkState"){
+			document.getElementById("linkState").value = e.value;
+			} 
+			if(e.key == "devType"){
+			document.getElementById("devType").value = e.value;
+			}
+			if(e.key == "masterIP"){
+			document.getElementById("masterIP").value = e.value;
+			}
+			if(e.key == "slaveIP"){
+			document.getElementById("slaveIP").value = e.value;
+			}
+			if(e.key == "localID"){
+			document.getElementById("localID").value = e.value;
+			}
+			if(e.key == "oppositeID"){
+			document.getElementById("oppositeID").value = e.value;
+			}
+			if(e.key == "passwd"){
+			document.getElementById("passwd").value = e.value;
+			}
+			if(e.key == "band"){
+				if(e.value == "800"){
+					document.getElementById("band").value = e.value+"M";
+				}else{
+					document.getElementById("band").value = e.value+"G";
+				}
+			}
+			if(e.key == "bandwidth"){
+			document.getElementById("bandwidth").value = e.value+"M";
+			}
+			if(e.key == "power"){
+			document.getElementById("power").value = e.value;
+			}
+			if(e.key == "downRate"){
+			document.getElementById("downRate").value = e.value+"Mbps";
+			}
+			if(e.key == "upRate"){
+			document.getElementById("upRate").value = e.value+"Mbps";
+			}
+			if(e.key == "radioRep"){
+			document.getElementById("radioRep").value = e.value;
+			}
+		}  
+		
+	}
+function LINKInfoRequest()
+	{
+		var pppoestatus = new getLinkInforesult();
+		var pstatus = pppoestatus.result;
+		if(pstatus == 1){
+		document.getElementById("linkState").value = "已连接";
+		} 
+		if(pstatus == 0){
+		document.getElementById("linkState").value = "已断开";
+		}
+	}	
+function REPORTInfoRequest()
+	{
+		var pppoestatus = new getReportInforesult();
+		var pstatus = pppoestatus.result;
+		if(pstatus == ""){
+			document.getElementById("radioRep1").value = "";
+			document.getElementById("radioRep2").value = "";
+		}else{
+		    var arg = pstatus.split("\n");
+			document.getElementById("radioRep1").value = arg[0];
+			document.getElementById("radioRep2").value = arg[1];
+		} 
+		
+	}	
+	
+
+
+
+	
+function init()
+	{
+		Butterlate.setTextDomain("main");
+		TuChuanInfoRequest();
+		LINKInfoRequest();
+		REPORTInfoRequest();
+		setInterval('TuChuanInfoRequest()',10000);
+		setInterval('LINKInfoRequest()',2000);
+		setInterval('REPORTInfoRequest()',2000);
+	}
+</script>
+</head>
+
+<body onload="init();" oncontextmenu="window.event.returnValue=false" >
+<div class="handaer_main">
+<table id="WIFI_2G" width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
+<tr>
+<td class="title2" colspan="2">工作状态</td></tr>
+<tr>
+  <td class="head" id="link_state">链接状态</td>
+  <td><input size="32" maxlength="64" name="linkState" id="linkState" value="~~WIFION_OFF~" type="text" readonly></td>
+</tr>
+<tr>
+  <td class="head" id="dev_type">设备类型</td>
+  <td><input size="32" maxlength="64" name="devType" id="devType" value="~~WIFION_OFF~" type="text" readonly></td>
+</tr>
+<tr>
+  <td class="head" id="master_ip">主IP</td>
+  <td><input size="32" maxlength="64" name="masterIP" id="masterIP" value="~~AP_SSID~" type="text" readonly></td>
+</tr>
+<tr>
+  <td class="head" id="slave_ip">从IP</td>
+  <td><input size="32" maxlength="64" name="slaveIP" id="slaveIP" value="~~AP_SECMODE~" type="text" readonly></td>
+</tr>
+<tr>
+  <td class="head" id="local_id">本端ID</td>
+  <td><input size="32" maxlength="64" name="localID" id="localID" value="~~AP_PRIMARY_CH~" type="text" readonly></td>
+</tr>
+<tr>
+  <td class="head" id="opposite_id">对端ID</td>
+  <td><input size="32" maxlength="64" name="oppositeID" id="oppositeID" value="~~WDSON_OFF~" type="text" readonly></td>
+</tr>
+<tr>
+  <td class="head" id="wk_band">密码</td>
+  <td></span><input size="32" maxlength="64" name="passwd" id="passwd" value="~~WISPON_OFF~" type="text" readonly></td>
+</tr>
+<tr>
+  <td class="head" id="wk_point">频段</td>
+  <td><input size="32" maxlength="64" name="band" id="band" value="~~WIFION_OFF~" type="text" readonly></td>
+</tr>
+<tr>
+  <td class="head" id="band_width">带宽</td>
+  <td><input size="32" maxlength="64" name="bandwidth" id="bandwidth" value="~~AP_SSID~" type="text" readonly></td>
+</tr>
+<tr>
+  <td class="head" id="fs_rate">发射功率</td>
+  <td><input size="32" maxlength="64" name="power" id="power" value="~~AP_SECMODE~" type="text" readonly></td>
+</tr>
+<tr>
+  <td class="head" id="sx_speed">下行速率</td>
+  <td><input size="32" maxlength="64" name="downRate" id="downRate" value="~~AP_PRIMARY_CH~" type="text" readonly></td>
+</tr>
+<tr >
+  <td class="head" id="xx_speed">上行速率</td>
+  <td><input size="32" maxlength="64" name="upRate" id="upRate" value="~~WDSON_OFF~" type="text" readonly></td>
+</tr>
+<tr>
+  <td class="head" rowspan="2" id="rec_bags">radio_report</td>
+  <td><input size="32" maxlength="64" name="radioRep1" id="radioRep1" value="~~WISPON_OFF~" type="text" readonly></td>
+</tr>
+<tr>
+  <td><input size="32" maxlength="64" name="radioRep2" id="radioRep2" value="~~WISPON_OFF~" type="text" readonly></td>
+</tr>
+</table>
+</div>
+<input type="text" style="display:none" name="IPA" id="IPA" size="20" maxlength="32" value="~~AP_IPADDR~">
+</body>
+</html>

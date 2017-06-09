@@ -1,0 +1,341 @@
+﻿<html>
+<head>
+<title></title>
+<LINK REL="stylesheet" HREF="/style/handaer.css" TYPE="text/css" media="all">
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<META http-equiv=Pragma content=no-cache>
+<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+<script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
+<script language="JavaScript" type="text/javascript" src="/style/basic.js"></script>
+<script language="JavaScript" type="text/javascript" src="/style/localinfo.js"></script>
+<script type="text/javascript">
+if(getCookie()){}
+else{window.top.location.href="../login.html";}
+
+function waitgifshow()
+{
+	Butterlate.setTextDomain("other");
+	window.parent.Demo3(_("settingwaiting"));
+	window.parent.beginshow1(150);
+}
+function waitgifshow1()
+{
+	Butterlate.setTextDomain("other");
+	window.parent.Demo3(_("settingwaiting"));
+	window.parent.beginshow1(300);
+}
+function upgradef()
+{ 
+	var keyvalue = document.localSet.passwd.value;
+	var keyvalue1 = document.getElementById("localID").value;
+	var keyvalue2 = document.getElementById("oppositeID").value;
+	var keyvalue3 = document.getElementById("power").value;
+	var ip1 = document.getElementById("masterIP").value;
+	var ip2 = document.getElementById("slaveIP").value;
+	if (CheckPasswdValue() == 1)
+			{
+				alert("请输入密码！");
+				document.localSet.passwd.select();
+				return;
+			}
+			if (CheckPasswdValue() == 2)
+			{
+				alert("密码长度不正确！");
+				document.localSet.passwd.select();
+				return;
+			}
+	if(CheckPassformat(keyvalue)){
+				
+			}else{
+				alert("密码不合法！");
+				document.localSet.passwd.select();
+				return;
+				
+				}
+	if(isNum("localID",keyvalue1)){
+				
+			}else{
+				alert("本端ID不合法！");
+				document.getElementById("localID").select();
+				return;
+				
+				}
+	if(isNum("oppositeID",keyvalue2)){
+				
+			}else{
+				alert("对端ID不合法！");
+				document.getElementById("oppositeID").select();
+				return;
+				}
+	if(isNum("power",keyvalue3)){
+				
+			}else{
+				alert("电压值不合法！");
+				document.getElementById("power").select();
+				return;
+				
+				}
+	if(f_check_IP(ip1)){
+				
+			}else{
+				alert("IP有误！");
+				document.getElementById("masterIP").select();
+				return;
+				
+				}
+  if(f_check_IP(ip2)){
+				
+			}else{
+				alert("IP有误！");
+				document.getElementById("slaveIP").select();
+				return;
+				
+				}
+		waitgifshow();
+   
+		button_commit('UPGRADE');
+}
+
+function reportclick()
+{ 
+		button_commit('REPORT_RADIO');
+}
+
+function shellclick()
+{ 
+		waitgifshow1();
+		button_commit('SHELLS');
+}
+/*function isNum(str){
+    for (var i = 0; i < str.length; i++) {
+        if ((str.charAt(i) >= '0' && str.charAt(i) <= '9')) continue;
+        return false
+    }
+    return true
+}*/
+function isNum(nam,val) {
+	var arg = nam;
+	//var keyvalue = document.getElementById(arg).value;
+    var usern = /^[0-9]+$/;
+    if (!val.match(usern)) return false;
+    return true;
+}
+function CheckPassformat(val) {
+    var usern = /^[a-zA-Z0-9_]+$/;
+    if (!val.match(usern)) return false;
+    else return true;
+}
+function CheckPasswdValue()
+{
+			var keyvalue = document.localSet.passwd.value;
+			if (keyvalue.length == 0)
+			{
+				document.localSet.passwd.select();
+				return 1;
+			}
+			if ((keyvalue.length < 8)||( keyvalue.length > 63))
+			{
+				document.localSet.passwd.select();
+				return 2;
+			}
+
+	return 3;
+}
+function sh_pwd(spanID, passName, passID, checkboxID) 
+{
+    var pass = document.getElementById(passID).value;
+    if (document.getElementById(checkboxID).checked == true) 
+	{
+        document.getElementById(spanID).innerHTML = '<input type="text" name=' + passName + ' id=' + passID + ' maxlength="63" size="28"  class="handaer_text_content" value="' + pass + '" />';
+    } 
+	else 
+	{
+        document.getElementById(spanID).innerHTML = '<input type="password" name=' + passName + ' id=' + passID + ' maxlength="63" size="28"  class="handaer_text_content" value="' + pass + '" />';
+    }
+}
+function initclickfun()
+{
+	document.getElementById("cccc").onclick = function(){sh_pwd("pwdinput","passwd","pwd","cccc");}; 
+}
+
+function f_check_IP(inip)    
+{  var ip = inip;
+   var re=/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/;//正则表达式   
+   if(re.test(ip))   
+   {   
+       if( RegExp.$1<256 && RegExp.$2<256 && RegExp.$3<256 && RegExp.$4<256) 
+       return true;   
+   }      
+   return false;    
+}
+
+function init()
+{
+	Butterlate.setTextDomain("admin");
+}
+ 
+
+</script>
+</head>
+
+<body onload="init();" oncontextmenu="window.event.returnValue=false" >
+<div class="handaer_main">
+<table  border="0" cellpadding="0" cellspacing="0" id="tt1"><tr><td>
+<h1 id="paramsetting">基本信息设置</h1>
+<form name="localSet" action="/cgi-bin/localinfo.cgi" method="get">
+
+<table id="uploadff" width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
+<tr>
+  <td class="title" colspan="2">基本信息</td>
+  <input type="text" name="CONFIG" style="display:none" id="REPORTS" value="1">
+</tr>
+<tr>
+  <td class="head" id="dev_type">设备类型</td>
+  <td>
+    <select name="devType" id="devType" size="1">
+      <option value="1" selected>主设备</option>
+      <option value="2">从设备</option>
+    </select>	
+  </td>
+</tr>
+<tr>
+  <td class="head" id="argip">主IP</td>
+  <td><input type="text" name="masterIP" id="masterIP" size="35" class="handaer_text_content" value="10.10.10.254"></td>
+</tr>
+<tr>
+  <td class="head" id="argcip">从IP</td>
+  <td><input type="text" name="slaveIP" id="slaveIP" size="35" class="handaer_text_content" value="10.10.10.254"></td>
+</tr>
+<tr>
+  <td class="head" id="arg1">本端ID</td>
+  <td><input type="text" name="localID" id="localID" size="35" class="handaer_text_content" value="45"></td>
+</tr>
+<tr>
+  <td class="head" id="arg2">对端ID</td>
+  <td><input type="text" name="oppositeID" id="oppositeID" size="35" class="handaer_text_content" value="54"></td>
+</tr>
+<tr>
+  <td class="head" id="arg3">密码</td>
+  <td><span id="pwdinput"><input type="password" id="pwd" name="passwd" maxlength="63" size="28"  class="handaer_text_content"  value=""/></span>&nbsp;<input type="checkbox" id="cccc" />&nbsp;<label for="cccc" id="showp"></label>&nbsp;<span id="passwordrequest">显示密码(8-63位字母、数字或下划线)</span></td>
+</tr>
+
+<tr  id="tt12">
+  <td class="head" id="arg4">频段</td>
+  <td>
+    <select name="band" id="band" size="1">
+	  	<option value="2.4" selected>2.4G</option>
+      <option value="1.4">1.4G</option>
+      <option value="800">800M</option>
+    </select>
+  </td>
+</tr>
+<tr>
+  <td class="head" id="arg5">带宽</td>
+  <td>
+    <select name="bandwidth" id="bandwidth" size="1">
+      <option value="10" selected>10M</option>
+      <option value="20">20M</option>
+    </select>
+  </td>
+</tr>
+<tr>
+  <td class="head" id="arg6">发射功率</td>
+  <td><input type="text" name="power" id="power" size="35" class="handaer_text_content" value="25"></td>
+</tr>
+<tr>
+  <td class="head" id="down_rate">下行速率</td>
+  <td>
+  	<select name="downRate" id="downRate" size="1">
+      <option value="1" selected>1Mbps</option>
+      <option value="2">2Mbps</option>
+      <option value="3">3Mbps</option>
+      <option value="4">4Mbps</option>
+      <option value="5">5Mbps</option>
+      <option value="10">10Mbps</option>
+      <option value="15">15Mbps</option>
+      <option value="20">20Mbps</option>
+      <option value="30">30Mbps</option>
+    </select>
+  </td>
+</tr>
+<tr>
+  <td class="head" id="up_rate">上行速率</td>
+  <td>
+  	<select name="upRate" id="upRate" size="1">
+  		<option value="1" selected>1Mbps</option>
+      <option value="2">2Mbps</option>
+      <option value="3">3Mbps</option>
+      <option value="4">4Mbps</option>
+      <option value="5">5Mbps</option>
+      <option value="10">10Mbps</option>
+      <option value="15">15Mbps</option>
+      <option value="20">20Mbps</option>
+      <option value="30">30Mbps</option>
+     </select>
+</td>
+
+<tr>
+  <td class="head">&nbsp; &nbsp;</td>
+  <td>
+	<input id="Upload" class="handaer_input" onclick="upgradef()" type="button" name="Upload" value="保存">
+	<input type="submit" name="UPGRADE" style="display:none" id="UPGRADE" value="settingwaiting">
+  </td>
+</tr>
+</table>
+</form>
+<form name="report" action="/cgi-bin/localinfo.cgi" method="get">
+<table id="reportf" width="100%" cellpadding="0" cellspacing="0" class="handaer_text">
+<tr>
+  <td class="title" colspan="2">[上报参数]</td>
+  <input type="text" name="REPORT" style="display:none" id="REPORTS" value="2">
+</tr>
+<tr>
+  <td class="head" id="radio">参数radio_report</td>
+  <td>
+    <select name="radioRep" id="radioRep" size="1">
+	  	<option value="1" selected>打开</option>
+      <option value="0">关闭</option>
+    </select>
+  </td>
+</tr>
+</tr>
+<tr>
+  <td class="head">&nbsp; &nbsp;</td>
+  <td>
+	<input id="report" class="handaer_input" onclick="reportclick()" type="button" name="report" value="提交报告配置">
+	<input type="submit" name="REPORTS" style="display:none" id="REPORT_RADIO" value="settingreport">
+  </td>
+</tr>
+</table>
+</form>
+
+<form name="shell" action="/cgi-bin/localinfo.cgi" method="get">
+<table id="shellf" width="100%" cellpadding="0" cellspacing="0" class="handaer_text">
+<tr>
+  <td class="title" colspan="2">[shell代码]</td>
+  <input type="text" name="SHELL" style="display:none" id="SHELL" value="3">
+</tr>
+<tr>
+<td class="head" id="arg12">执行代码</td>
+<td><textarea name="code" rows="4" cols="40">
+
+</textarea>
+</td>	
+</tr>
+<tr>
+  <td class="head">&nbsp; &nbsp;</td>
+  <td>
+	<input id="shell" class="handaer_input" onclick="shellclick()" type="button" name="shell" value="提交执行代码">
+	<input type="submit" name="shell" style="display:none" id="SHELLS" value="settingshell">
+  </td>
+</tr>
+</table>
+</form>
+</td>
+</tr>
+</table>
+</div>
+<input type="text" style="display:none" name="IPA" id="IPA" size="20" maxlength="32" value="~~AP_IPADDR~">
+</body>
+</html>

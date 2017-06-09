@@ -124,6 +124,28 @@ function showpxb()
 	}
 	
 }
+
+
+function showpxb1()
+{
+	document.getElementById("demshow").style.width=pxi.toString()+"%";
+	document.getElementById("devval").innerHTML=pxi.toString()+"%";
+	pxi++;
+	if(pxi==101)
+	{
+		clearInterval(timer1);
+		DialogHide();
+		ScreenClean();
+		pxi=0;
+	}
+	
+}
+function beginshow1(tim)
+{
+	timer1=setInterval('showpxb1()',tim);
+}
+
+
 function beginshow(tim)
 {
 	timer1=setInterval('showpxb()',tim);

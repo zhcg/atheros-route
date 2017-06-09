@@ -213,7 +213,19 @@ function BarMenu(id)
 		{
 			window.ifm.location.href="cgi-bin/ad_netcheck";
 		}
+		if(id=="bar-menu2-0-0-2-3-3-2-2-2-7")
+		{
+			this.hide2();
+      this.show2("bar-menu2-0-0-2-3-3-2-2-2-7-0");
+			this.id_openbox2 = "bar-menu2-0-0-2-3-3-2-2-2-7-0";
+			window.ifm.location.href="cgi-bin/ad_man_workinfo";
+		}
+		
     }
+    
+    
+    
+    
 	this.show = function(id)
 	{
         if (document.getElementById(id + "-section")) 
