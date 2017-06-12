@@ -53,25 +53,26 @@ ln -s /lib/libosipparser2.so.4.2.0  /lib/libosipparser2.so.4
 ln -s /lib/libosip2.so.4.2.0 /lib/libosip2.so.4
 ln -s /lib/libeXosip2.so.4.2.0 /lib/libeXosip2.so.4
 
-insmod /lib/modules/2.6.31/si32178/ath_si32178.ko
-insmod /lib/modules/2.6.31/spi32178/ath_spi_si32178.ko
-insmod /lib/modules/2.6.31/passage/usb/usb_passage.ko
-insmod /lib/modules/2.6.31/passage/phone/phone_passage.ko
-insmod /lib/modules/2.6.31/as532h/as532h.ko
+#insmod /lib/modules/2.6.31/si32178/ath_si32178.ko
+#insmod /lib/modules/2.6.31/spi32178/ath_spi_si32178.ko
+#insmod /lib/modules/2.6.31/passage/usb/usb_passage.ko
+#insmod /lib/modules/2.6.31/passage/phone/phone_passage.ko
+#insmod /lib/modules/2.6.31/as532h/as532h.ko
 
-sleep 7
+#sleep 7
 
-modules_server &
+#modules_server &
 
-phone_control &
+#phone_control &
 
-monitor_base &
+#monitor_base &
 
-remote_parse &
+#remote_parse &
 
-terminal_dev_register &
+#terminal_dev_register &
 
-check_phone_status phone_control modules_server monitor_base remote_parse terminal_dev_register &
+#check_phone_status phone_control modules_server monitor_base remote_parse terminal_dev_register &
 
 
+lc65xx-daemon &
 
