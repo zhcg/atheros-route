@@ -170,12 +170,32 @@ static void led_dri_setup_cdev(struct wifiled_dev *dev)
 
 static int w2m_gpio_init(void)
 {
+	unsigned int rddata;
+
 	/* set GPIO as output and init */
 	ath_reg_rmw_clear(ATH_GPIO_OE, GPIO4|GPIO13|GPIO19|GPIO21|GPIO22);
-	ath_reg_rmw_clear(ATH_GPIO_OUT_FUNCTION1, 0xff<<0);
-	ath_reg_rmw_clear(ATH_GPIO_OUT_FUNCTION3, ~(int)0);
-	ath_reg_rmw_clear(ATH_GPIO_OUT_FUNCTION4, 0xff<<24);
-	ath_reg_rmw_clear(ATH_GPIO_OUT_FUNCTION5, 0xffff<<8);
+
+	/* set function1 */
+	rddata = ath_reg_rd(ATH_GPIO_OUT_FUNCTION1);
+	rddata = rddata & 0xffffff00;
+	//rddata = rddata | ATH_GPIO_OUT_FUNCTION1_ENABLE_GPIO_4(0x00);
+	ath_reg_wr(ATH_GPIO_OUT_FUNCTION4, rddata);
+
+	/* set function3 */
+	rddata = ath_reg_rd(ATH_GPIO_OUT_FUNCTION3);
+	rddata = rddata & 0xffff00ff;
+	ath_reg_wr(ATH_GPIO_OUT_FUNCTION3, rddata);
+
+	/* set function4 */
+	rddata = ath_reg_rd(ATH_GPIO_OUT_FUNCTION4);
+	rddata = rddata & 0x00ffffff;
+	ath_reg_wr(ATH_GPIO_OUT_FUNCTION4, rddata);
+
+	/* set function5 */
+	rddata = ath_reg_rd(ATH_GPIO_OUT_FUNCTION5);
+	rddata = rddata & 0xff0000ff;
+	ath_reg_wr(ATH_GPIO_OUT_FUNCTION5, rddata);
+
 	ath_reg_rmw_clear(ATH_GPIO_OUT, GPIO4|GPIO13|GPIO19|GPIO21|GPIO22);
 
 	/* lc65xx switch to shell */
