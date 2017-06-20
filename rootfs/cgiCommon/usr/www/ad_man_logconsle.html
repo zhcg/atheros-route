@@ -16,80 +16,6 @@ if(getCookie()){}
 else{window.top.location.href="../login.html";}
 
 
-function waitgifshow()
-{
-	Butterlate.setTextDomain("other");
-	window.parent.Demo3(_("FUPLOAD"));
-	window.parent.beginshow(1500);
-}
-function waitgifshow2()
-{
-	Butterlate.setTextDomain("other");
-	window.parent.Demo(_("OTADOWNLOAD"));
-}
-function waitgifshow3()
-{
-	Butterlate.setTextDomain("other");
-	window.parent.Demo(_("CHECKING"));
-}
-
-function upgradef()
-{ 
-	if(document.usb_upload.uploadedfile.value == "")
-	{
-		document.usb_upload.uploadedfile.focus();
-		alert(_("err file empty"));
-		return false;
-	}
-
-	if(confirm(_("admw sysupgrade")))
-	{
-		waitgifshow();
-		window.parent.ttzhuan(document.getElementById("IPA").value);
-		button_commit('UPGRADE');
-	}	
-}
-
-function init()
-{
-	Butterlate.setTextDomain("admin");
-	var getParam = getpp("u");
-	
-	if(getParam == "yes")
-	{
-		trans_inner("cres","admw newversion");
-		widget_display("otaupload");
-		widget_hide("otacheck");
-	}
-}
-  var isIE;
-  function fileChange(target) 
-  {     
-      
-	var fileSize = 0; 
-	isIE = /msie/i.test(navigator.userAgent) && !window.opera;	
-	if (isIE && !target.files) 
-	{      
-		var filePath = target.value;      
-		var fileSystem = new ActiveXObject("Scripting.FileSystemObject"); 
-		var file = fileSystem.GetFile (filePath);      
-		fileSize = file.Size;     
-	} 
-	else 
-	{     
-		fileSize = target.files[0].size;      
-	}    
-	var size = fileSize / 1024;     
-	if(size>15000)
-	{   
-		alert(_("err bin big"));
-	}
-} 
-function upgradeota()
-{
-	waitgifshow2();
-	check(2);
-}
 </script>
 </head>
 
@@ -97,38 +23,21 @@ function upgradeota()
 <div class="handaer_main">
 <table  border="0" cellpadding="0" cellspacing="0" id="tt1"><tr><td>
 <h1 id="paramsetting">调试Log</h1>
-<form name="usb_upload" action="/cgi-bin/logconsle.cgi" method="post">
+
 
 <table id="uploadff" width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
-<tr>
-  <td class="title" colspan="2">调试窗口</td>
-</tr>
-<tr>
-  <td class="head" id="arg1">Log保存</td>
-  <td>
-    <select name="dev" id="dev" size="1">
-	  	<option value="on" selected >打开</option>
-      <option value="close" >关闭</option>
-    </select>
+<tr><td class="title" colspan="4">调试窗口</td></tr>
+<tr><td class="head" id="arg1">操作</td><td>
+  	<form method="post" name="ExportSettings" action="/cgi-bin/log_play.cgi">
+		<input id="Upload" class="handaer_input" type="submit" name="Upload" value="显示日志"></form></td>
+  <td><form method="post" name="ExportSettings" action="/cgi-bin/log_down.cgi">
+			<input id="Download" class="handaer_input" type="submit" name="Download" value="下载日志"></form>
   </td>
-</tr>
-<tr>
-<td colspan="2"><textarea name="log" rows="30" cols="160">
-</textarea>
-</td>	
-</tr>
-<tr>
-  <td class="head">&nbsp; &nbsp;</td>
-  <td>
-	<input id="Upload" class="handaer_input" onclick="upgradef()" type="button" name="Upload" value="执行">
-	<input type="submit" name="UPGRADE" style="display:none" id="UPGRADE" value="UPGRADE">
-  </td>
-</tr>
-</table>
-</form>
-</td>
-</tr>
-</table>
+ </tr>
+ </table>
+ </td>
+ </tr>
+ </table>
 </div>
 <input type="text" style="display:none" name="IPA" id="IPA" size="20" maxlength="32" value="~~AP_IPADDR~">
 </body>

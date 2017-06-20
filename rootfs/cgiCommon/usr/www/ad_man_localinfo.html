@@ -8,7 +8,8 @@
 <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
 <script language="JavaScript" type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript" src="/style/basic.js"></script>
-<script language="JavaScript" type="text/javascript" src="/style/localinfo.js"></script>
+<script src="/style/jquery.min.js" type="text/javascript"></script> 
+<script src="/style/jquery.placeholder.js"></script>
 <script type="text/javascript">
 if(getCookie()){}
 else{window.top.location.href="../login.html";}
@@ -97,9 +98,9 @@ function upgradef()
 		button_commit('UPGRADE');
 }
 
-function reportclick()
+function repoclick()
 { 
-		button_commit('REPORT_RADIO');
+		button_commit('repo');
 }
 
 function shellclick()
@@ -107,13 +108,6 @@ function shellclick()
 		waitgifshow1();
 		button_commit('SHELLS');
 }
-/*function isNum(str){
-    for (var i = 0; i < str.length; i++) {
-        if ((str.charAt(i) >= '0' && str.charAt(i) <= '9')) continue;
-        return false
-    }
-    return true
-}*/
 function isNum(nam,val) {
 	var arg = nam;
 	//var keyvalue = document.getElementById(arg).value;
@@ -187,8 +181,8 @@ function init()
 
 <table id="uploadff" width="100%" cellpadding="0" cellspacing="0"   class="handaer_text">
 <tr>
-  <td class="title" colspan="2">基本信息</td>
-  <input type="text" name="CONFIG" style="display:none" id="REPORTS" value="1">
+  <td class="title" colspan="2">本机信息</td>
+  <input type="text" name="CONFIG" style="display:none" value="1">
 </tr>
 <tr>
   <td class="head" id="dev_type">设备类型</td>
@@ -204,22 +198,9 @@ function init()
   <td><input type="text" name="masterIP" id="masterIP" size="35" class="handaer_text_content" value="10.10.10.254"></td>
 </tr>
 <tr>
-  <td class="head" id="argcip">从IP</td>
-  <td><input type="text" name="slaveIP" id="slaveIP" size="35" class="handaer_text_content" value="10.10.10.254"></td>
-</tr>
-<tr>
   <td class="head" id="arg1">本端ID</td>
-  <td><input type="text" name="localID" id="localID" size="35" class="handaer_text_content" value="45"></td>
+  <td><input type="text" name="localID" id="localID" size="35" class="handaer_text_content" placeholder="1-6位数字组合"></td>
 </tr>
-<tr>
-  <td class="head" id="arg2">对端ID</td>
-  <td><input type="text" name="oppositeID" id="oppositeID" size="35" class="handaer_text_content" value="54"></td>
-</tr>
-<tr>
-  <td class="head" id="arg3">密码</td>
-  <td><span id="pwdinput"><input type="password" id="pwd" name="passwd" maxlength="63" size="28"  class="handaer_text_content"  value=""/></span>&nbsp;<input type="checkbox" id="cccc" />&nbsp;<label for="cccc" id="showp"></label>&nbsp;<span id="passwordrequest">显示密码(8-63位字母、数字或下划线)</span></td>
-</tr>
-
 <tr  id="tt12">
   <td class="head" id="arg4">频段</td>
   <td>
@@ -240,8 +221,29 @@ function init()
   </td>
 </tr>
 <tr>
+  <td class="head" id="arg3">认证口令</td>
+  <td><span id="pwdinput"><input type="password" id="pwd" name="passwd" maxlength="63" size="28"  class="handaer_text_content" placeholder="设置连接密码" value=""/></span>&nbsp;<input type="checkbox" id="cccc" />&nbsp;<label for="cccc" id="showp"></label>&nbsp;<span id="passwordrequest">显示密码(8-63位字母、数字或下划线)</span></td>
+</tr>
+<tr>
+  <td class="head" id="arg31">加密口令</td>
+  <td><span id="pwdinput1"><input type="password" id="pwd1" name="passwd1" maxlength="63" size="28"  class="handaer_text_content" placeholder="设置加密信息所用密码" value=""/></span>&nbsp;<input type="checkbox" id="cccc" />&nbsp;<label for="cccc" id="showp"></label>&nbsp;<span id="passwordrequest">显示密码(8-63位字母、数字或下划线)</span></td>
+</tr>
+
+
+<tr>
+  <td class="title" colspan="2">对方信息</td>
+</tr>
+<tr>
+  <td class="head" id="arg2">接收端ID</td>
+  <td><input type="text" name="oppositeID" id="oppositeID" size="35" class="handaer_text_content" placeholder="1-6位数字组合"></td>
+</tr>
+<tr>
+  <td class="head" id="argcip">接收端IP</td>
+  <td><input type="text" name="slaveIP" id="slaveIP" size="35" class="handaer_text_content" value="10.10.10.254"></td>
+</tr>
+<tr>
   <td class="head" id="arg6">发射功率</td>
-  <td><input type="text" name="power" id="power" size="35" class="handaer_text_content" value="25"></td>
+  <td><input type="text" name="power" id="power" size="35" class="handaer_text_content" placeholder="请在-40-23之间输入"></td>
 </tr>
 <tr>
   <td class="head" id="down_rate">下行速率</td>
@@ -274,7 +276,7 @@ function init()
       <option value="30">30Mbps</option>
      </select>
 </td>
-
+</tr>
 <tr>
   <td class="head">&nbsp; &nbsp;</td>
   <td>
@@ -288,7 +290,7 @@ function init()
 <table id="reportf" width="100%" cellpadding="0" cellspacing="0" class="handaer_text">
 <tr>
   <td class="title" colspan="2">[上报参数]</td>
-  <input type="text" name="REPORT" style="display:none" id="REPORTS" value="2">
+  <input type="text" name="REPORT" style="display:none" value="2">
 </tr>
 <tr>
   <td class="head" id="radio">参数radio_report</td>
@@ -303,8 +305,8 @@ function init()
 <tr>
   <td class="head">&nbsp; &nbsp;</td>
   <td>
-	<input id="report" class="handaer_input" onclick="reportclick()" type="button" name="report" value="提交报告配置">
-	<input type="submit" name="REPORTS" style="display:none" id="REPORT_RADIO" value="settingreport">
+	<input id="report" class="handaer_input" onclick="repoclick()" type="button" name="report" value="提交报告配置">
+	<input type="submit" name="repo" style="display:none" id="repo" value="settingreport">
   </td>
 </tr>
 </table>

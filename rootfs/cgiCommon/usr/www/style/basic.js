@@ -9,6 +9,18 @@ function getCookie() {
     }
     return false
 }
+function getUserName() {
+    var strCookie = document.cookie;
+    var arrCookie = strCookie.split("; ");
+    for (var i = 0; i < arrCookie.length; i++) {
+        var arr = arrCookie[i].split("=");
+        if (arr[0] == "userName") {
+            return arr[1];
+        }
+    }
+    return "";
+}
+
 function style_display_on() {
     if (window.ActiveXObject) {
         return "inline-block"

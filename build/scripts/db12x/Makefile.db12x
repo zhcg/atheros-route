@@ -25,6 +25,8 @@ export NTFS_3G_DIR=$(TOPDIR)/apps/ntfs-3g-2010.10.2
 export NTP_ARMDIR=$(TOPDIR)/apps/ntpclient_arm
 export SI32178DIR=$(TOPDIR)/linux/drivers/si32178
 export SI32178MODPATH=$(INSTALL_ROOT)/lib/modules/$(KERNELVER)/si32178
+export CSC03DIR=$(TOPDIR)/linux/drivers/csc03
+export CSC03MODPATH=$(INSTALL_ROOT)/lib/modules/$(KERNELVER)/csc03
 export SPI32178DIR=$(TOPDIR)/linux/drivers/spi32178
 export SPI32178MODPATH=$(INSTALL_ROOT)/lib/modules/$(KERNELVER)/spi32178
 export USBPASSAGEDIR=$(TOPDIR)/linux/drivers/passage/usb
@@ -124,7 +126,7 @@ db12x_build: common_mainline driver_build usb_build pci_build spectral_app_build
 else
 ifeq ($(BUILD_FOR_32178), yes)
 ifeq ($(BUILD_VERSION), B6)
-db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si32178_build spi32178_build powerdowna20 terminal_dev_register cacm libupdate phone_9344_32178 lc65xx-daemon check_phone_status modules_server monitor remote_parse OTA_Base env  usbpassage_build phonepassage_build AR9344_interface as532h_build ntpclient_arm  ppy pppoe_build channel webui tester $(fs_build) makeotaimage makeoneimage 
+db12x_build: common_mainline kernel_modules iptables_build driver_build usb_build pci_build art_mod $(i2s_mod) si32178_build csc03_build spi32178_build powerdowna20 terminal_dev_register cacm libupdate phone_9344_32178 lc65xx-daemon check_phone_status modules_server monitor remote_parse OTA_Base env  usbpassage_build phonepassage_build AR9344_interface as532h_build ntpclient_arm  ppy pppoe_build channel webui tester $(fs_build) makeotaimage makeoneimage 
 endif
 ifeq ($(BUILD_VERSION), B6_bak)
 db12x_build:common_mainline kernel_modules iptables_build driver_build  pci_build art_mod $(i2s_mod) OTA_Base env AR9344_interface  pppoe_build  webui rm_tcpdumps $(fs_build) system_bak
@@ -604,6 +606,12 @@ si32178_build: kernel_build
 	$(MAKEARCH) -C $(KERNELPATH) SUBDIRS=$(SI32178DIR) modules
 	test -d $(SI32178MODPATH) || mkdir -p $(SI32178MODPATH)
 	cp $(SI32178DIR)/ath_si32178.ko $(SI32178MODPATH)
+
+csc03_build: kernel_build
+	cd $(CSC03DIR) && rm -f *.o *.ko *.mod.*
+	$(MAKEARCH) -C $(KERNELPATH) SUBDIRS=$(CSC03DIR) modules
+	test -d $(CSC03MODPATH) || mkdir -p $(CSC03MODPATH)
+	cp $(CSC03DIR)/ath_spi_csc03.ko $(CSC03MODPATH)
 
 spi32178_build: kernel_build
 	cd $(SPI32178DIR) && rm -f *.o *.ko *.mod.*

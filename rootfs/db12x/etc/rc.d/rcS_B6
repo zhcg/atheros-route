@@ -74,5 +74,5 @@ ln -s /lib/libeXosip2.so.4.2.0 /lib/libeXosip2.so.4
 #check_phone_status phone_control modules_server monitor_base remote_parse terminal_dev_register &
 
 
-lc65xx-daemon &
+lc65xx-daemon > /var/log/lc65xx.log 2>&1 &
 

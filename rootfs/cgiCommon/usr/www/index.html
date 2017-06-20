@@ -16,7 +16,6 @@
 <script language="JavaScript" type="text/javascript">
 if(getCookie()){}
 else{window.top.location.href="../login.html";}
-
 function initLanguage()
 {
 	var cook="no";
@@ -63,12 +62,14 @@ function tr()
 	ee.innerHTML = _("admw m_wifi");
 	//ee = document.getElementById("m_wirere");
 	//ee.innerHTML = _("admw m_wirere");
-	document.title=_("HBDt");
+	document.title=_("CSt");
 }
 function onInit()
 {
 	initLanguage();
 	Butterlate.setTextDomain("main");
+	var user = getUserName();
+	document.getElementById("c5").innerHTML='欢迎：'+user;
 	var	e = document.getElementById("top_adv");
 	e.innerHTML =  _("top_adv");
 	e = document.getElementById("top_admin");
@@ -109,6 +110,16 @@ function switchsa()//quick to adv
 {
 	window.location.href="index2.html";
 }
+function logout()//quick to adv
+{
+	window.location.href="login.html";
+}
+
+ 	
+
+
+
+
 
 function hidehead()
 {
@@ -330,9 +341,9 @@ function startRequest()
 <div class="handaer_top">
 <div class="handaer_top_l  left">  <img src="/images/logo.gif" width="159" height="72" id="logoimage"/>   </div>
 <div class="handaer_top_r  right">  
-<div class="handaer_top_r_top"> 
-<a href="javascript:void(0)" id="top_zhcn" onClick="zhcn()">中文</a>| 
-<a href="javascript:void(0)" id="top_en" onClick="en()">English</a> 
+<div class="handaer_top_r_top">
+	<span id="c5"></span>&nbsp;&nbsp;| 
+<a href="javascript:void(0)" id="top_en" onClick="logout()">【退出】</a> 
 </div>
 <div class="handaer_top_r_bottom">   
 <a href="cgi-bin/adminset" target="ifm" id="top_admin">密码管理</a> 

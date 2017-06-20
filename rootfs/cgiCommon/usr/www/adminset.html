@@ -84,6 +84,8 @@ function initValue()
 }
 function showpwd()
 {
+	
+	
     var pass = document.getElementById("pwd").value;
     var pass2 = document.getElementById("pwd2").value;
 
@@ -98,7 +100,39 @@ function showpwd()
 		document.getElementById("pwdinput2").innerHTML='<input type="password" name="ADMPASS2" id="pwd2" maxlength="32" size="32" class="handaer_text_content"  value="'+pass2+'" />';
 	}
 }
-
+function showpwd1()
+{
+    var pass = document.getElementById("oldpwd").value;
+    var pass2 = document.getElementById("newp").value;
+    var pass3 = document.getElementById("newp2").value;
+	if(document.getElementById("aaaa1").checked == true)
+	{
+		document.getElementById("oldpwd1").innerHTML='<input type="text" name="OLDPASS" id="oldpwd" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
+		document.getElementById("newpwd1").innerHTML='<input type="text" name="NEWPASS" id="newp" maxlength="32" size="32"  class="handaer_text_content" value="'+pass2+'" />';
+		document.getElementById("newpwd2").innerHTML='<input type="text" name="NEWPASS2" id="newp2" maxlength="32" size="32"  class="handaer_text_content" value="'+pass3+'" />';
+	}
+	else
+	{
+		document.getElementById("oldpwd1").innerHTML='<input type="password" name="OLDPASS" id="oldpwd" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
+		document.getElementById("newpwd1").innerHTML='<input type="password" name="NEWPASS" id="newp" maxlength="32" size="32" class="handaer_text_content"  value="'+pass2+'" />';
+		document.getElementById("newpwd2").innerHTML='<input type="password" name="NEWPASS2" id="newp2" maxlength="32" size="32" class="handaer_text_content"  value="'+pass3+'" />';
+	}
+}
+function showpwd2()
+{
+    var pass = document.getElementById("auth").value;
+    var pass2 = document.getElementById("encryption1").value;
+	if(document.getElementById("aaaa2").checked == true)
+	{
+		document.getElementById("authinput").innerHTML='<input type="text" name="AUTHPASS" id="auth" maxlength="32" size="32"  class="handaer_text_content" value="'+pass+'" />';
+		document.getElementById("encryption").innerHTML='<input type="text" name="ENCRYASS" id="encryption1" maxlength="32" size="32"  class="handaer_text_content" value="'+pass2+'" />';
+	}
+	else
+	{
+		document.getElementById("authinput").innerHTML='<input type="password" name="AUTHPASS" id="auth" maxlength="32" size="32" class="handaer_text_content"  value="'+pass+'" />';
+		document.getElementById("encryption").innerHTML='<input type="password" name="ENCRYPASS" id="encryption1" maxlength="32" size="32" class="handaer_text_content"  value="'+pass2+'" />';
+	}
+}
 </script>
 </head>
 
@@ -108,25 +142,29 @@ function showpwd()
 <!-- ================= Adm Settings ================= -->
 <h1 id="securitytitle"></h1>
 <form method="post" name="Adm">
-<h2 id="securitydes"></h2>
-<table id="table2" cellpadding="0" cellspacing="0"   class="handaer_text">
+<h2 id="security">修改Web管理页面的登录密码</h2>
+ <table id="table2" cellpadding="0" cellspacing="0"   class="handaer_text">
   <tr>
-    <td class="title" colspan="2" id="manAdmSet"></td>
+    <td class="title" colspan="2" id="passSet">密码设置</td>
   </tr>
 
   <tr>
-    <td class="head" id="manAdmPasswd"></td>
-    <td><span id="pwdinput"><input type="password" id="pwd" name="ADMPASS" maxlength="12" size="32" class="handaer_text_content" value="~~ADMPASS~" /></span>&nbsp;<input type="checkbox" id="aaaa" onClick="showpwd()"/>&nbsp;<label for="aaaa" id="showp"></label>&nbsp;<span id="passwordrequest"></span></td>
+    <td class="head" id="oldPasswd">原密码</td>
+    <td><span id="oldpwd1"><input type="password" id="pwd" name="ADMPASS" maxlength="12" size="32" class="handaer_text_content" value="~~ADMPASS~" /></td>
   </tr>
   <tr>
-    <td class="head" id="manAdmPasswd2"></td>
-    <td><span id="pwdinput2"><input type="password" id="pwd2" name="ADMPASS2" maxlength="12" size="32" value="~~ADMPASS2~" class="handaer_text_content"/></span></td>
+    <td class="head" id="newPasswd">新密码</td>
+    <td><span id="newpwd1"><input type="password" id="pwd2" name="ADMPASS2" maxlength="12" size="32" value="~~ADMPASS2~" class="handaer_text_content"/></span></td>
+  </tr>
+  <tr>
+    <td class="head" id="newPasswd2">确认新密码</td>
+    <td><span id="newpwd2"><input type="password" id="pwd3" name="NEWPASS2" maxlength="12" size="32" value="~~ADMPASS2~" class="handaer_text_content"/></span></td>
   </tr>
  </table>
 <table id="table22" width="540" cellpadding="2" cellspacing="1"">
   <tr align="center">
     <td>
-      <input type="button"  class="handaer_input" value="Apply" id="manAdmApply" onClick="return AdmFormCheck()">
+      <input type="button"  class="handaer_input" value="确定" id="manAdmApply" onClick="return AdmFormCheck()">
 	  <input type="submit" name="ADMINSET" id="ADMINSET" style="display:none" value="ADMINSET">
     </td>
   </tr>

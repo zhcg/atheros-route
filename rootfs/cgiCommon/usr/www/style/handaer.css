@@ -11,10 +11,10 @@ a{text-decoration: none; font-size: 12px;}
 .handaer_top{ height:72px; background:url(../images/dh_bj.png) repeat-x;}
 .handaer_top_l{height:72px; padding-left:20px; }
 .handaer_top_r{ width:380px; overflow:hidden; text-align:right; padding-right:10px;}
-.handaer_top_r_top{ height:30px; line-height:30px; color:#FFF;}
-.handaer_top_r_top a{ font-size:12px; color:#FFF; padding:0 10px; cursor:hand}
+.handaer_top_r_top{ height:36px; line-height:36px; color:#FFF;}
+.handaer_top_r_top a{ font-size:14px; color:#FFF; padding:0 10px; cursor:hand}
 .handaer_top_r_top a:hover{text-decoration: underline; color:#CE4034;}
-.handaer_top_r_bottom{ height:42px; line-height:42px; color:#FFF;}
+.handaer_top_r_bottom{ height:36px; line-height:36px; color:#FFF;}
 .handaer_top_r_bottom a{ font-size:14px; color:#FFF; padding:0 10px; cursor:hand; float:right;}
 .handaer_top_r_bottom a:hover{text-decoration: underline; color:#CE4034;}
 

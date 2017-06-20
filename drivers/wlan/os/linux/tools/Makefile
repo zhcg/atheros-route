@@ -234,6 +234,11 @@ upload.cgi: upload.cgi.c
 	cp localinfo.cgi $(INSTALL_ROOT)/usr/www/cgi-bin
 	${CC} -o logconsle.cgi ${CFLAGS} ${LDFLAGS} logconsle.cgi.c
 	cp logconsle.cgi $(INSTALL_ROOT)/usr/www/cgi-bin
+	${CC} -o log_down.cgi ${CFLAGS} ${LDFLAGS} log_down.cgi.c
+	cp log_down.cgi $(INSTALL_ROOT)/usr/www/cgi-bin
+	${CC} -o log_play.cgi ${CFLAGS} ${LDFLAGS} log_play.cgi.c
+	cp log_play.cgi $(INSTALL_ROOT)/usr/www/cgi-bin
+
 athdebug: athdebug.c
 	${CC} -o athdebug ${CFLAGS} ${LDFLAGS} athdebug.c
 wlanconfig: wlanconfig.c
