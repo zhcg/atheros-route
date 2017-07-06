@@ -20,6 +20,8 @@
 
 #define ATH_FACTORY_RESET		0x89ABCDEF
 
+int key_sw4_state = 0;
+
 static atomic_t ath_fr_status = ATOMIC_INIT(0);
 static volatile int ath_fr_opened = 0;
 static wait_queue_head_t ath_fr_wq;
@@ -310,8 +312,13 @@ int ath_simple_config_invoke_cb(int simplecfg_only, int irq_enable, int cpl)
 {
 	printk("%s: sc %d, irq %d, ignorepb %d, jiffies %lu\n", __func__,
 		simplecfg_only, irq_enable, ignore_pushbutton, jiffies);
+
 	if (simplecfg_only) {
 		if (ignore_pushbutton) {
+			/* key sw4 state */
+			key_sw4_state = ~key_sw4_state;
+			printk("%s: ~~~~~~~~ key sw4: %d\n",__func__,key_sw4_state);
+
 			ath_gpio_config_int(JUMPSTART_GPIO, INT_TYPE_LEVEL,
 						INT_POL_ACTIVE_HIGH);
 			ignore_pushbutton = 0;
@@ -681,3 +688,5 @@ int __init ath_simple_config_init(void)
 #if !defined(CONFIG_ATH_EMULATION)
 late_initcall(ath_simple_config_init);
 #endif
+EXPORT_SYMBOL(key_sw4_state);
+
